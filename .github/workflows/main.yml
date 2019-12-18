@@ -8,13 +8,13 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-node@v1
-    - uses: jakejarvis/s3-sync-action@master
       with:
         node-version: '10.x'
     - run: yarn install
     - run: yarn dist
 
     - name: upload
+    - uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --delete
       env:
