@@ -8,6 +8,8 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install
-      uses: Borales/actions-yarn@v2.1.0
+    - uses: actions/setup-node@v1
       with:
-        cmd: install
+        node-version: '10.x'
+    - run: npm install yarn -g
+    - run: yarn install
