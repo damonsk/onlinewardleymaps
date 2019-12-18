@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: building for produciton
     - uses: actions/checkout@master
     - uses: Borales/actions-yarn@v2.1.0
+    - name: building for produciton
       with:
         cmd: yarn install
         
