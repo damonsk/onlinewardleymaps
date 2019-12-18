@@ -4,13 +4,13 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@master
-      
-    - name: yarn install
-    - uses: Borales/actions-yarn@v2.1.0
-    - run: |
-        yarn install
+    - name: Install
+      uses: Borales/actions-yarn@v2.1.0
+      with:
+        cmd: install
+    - name: Create distribution
+      with: 
+        cmd: dist
