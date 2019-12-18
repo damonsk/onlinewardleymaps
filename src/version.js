@@ -1,1 +1,1 @@
-var owmBuild = "0.0000";
+export var owmBuild =  "0.0000";
