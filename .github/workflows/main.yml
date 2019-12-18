@@ -7,11 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Generate build number
+      id: buildnumber
+      uses: einaregilsson/build-number@v2 
+      with:
+        token: ${{secrets.github_token}}
+    
+    
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
     - run: yarn install
     - run: yarn dist
+    - run: echo "var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > dist/version.js
+
 
     - name: upload
       uses: jakejarvis/s3-sync-action@master
