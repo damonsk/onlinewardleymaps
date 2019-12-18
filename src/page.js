@@ -2,7 +2,6 @@ import Convert from './convert';
 import { renderSvg } from './renderSwardley';
 
 var example = 'title Tea Shop' + '\r\n' + 'component Business [1, 0.65]' + '\r\n' + 'component Public [1, 0.79]' + '\r\n' + 'component Cup of Tea [0.8, 0.73]' + '\r\n' + 'component Cup [0.7, 0.88]' + '\r\n' + 'component Tea [0.6, 0.83]' + '\r\n' + 'component Hot Water [0.47, 0.8]' + '\r\n' + 'component Water [0.35, 0.83]' + '\r\n' + 'component Kettle [0.3, 0.3] evolve 0.78' + '\r\n' + 'component Power [0.1, 0.8]' + '\r\n' + 'Business->Cup of Tea' + '\r\n' + 'Public->Cup of Tea' + '\r\n' + 'Cup of Tea->Cup' + '\r\n' + 'Cup of Tea->Tea' + '\r\n' + 'Cup of Tea->Hot Water' + '\r\n' + 'Hot Water->Water' + '\r\n' + 'Hot Water->Kettle ' + '\r\n' + 'Kettle->Power';
-var owmBuild = "0.local";
 function setMetaData() {
 
     var i = $.map($('.draggable'), function (el) {
