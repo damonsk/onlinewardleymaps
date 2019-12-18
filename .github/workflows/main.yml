@@ -9,10 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
+      
     - name: yarn install
-      uses: Borales/actions-yarn@v2.1.0
-      with:
-        cmd: install
-    - name: yarn dist
-      with:
-        cmd: dist
+    - uses: Borales/actions-yarn@v2.1.0
+    - run: |
+        yarn install
