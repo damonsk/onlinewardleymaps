@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '10.x'
     - name: Write version number
-    - run: echo "export var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > src/version.js
+      run: echo "export var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > src/version.js
     - run: yarn install
     - run: yarn dist
 
