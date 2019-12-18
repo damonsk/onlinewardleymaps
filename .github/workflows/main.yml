@@ -17,9 +17,9 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
+    - run: echo "export var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > src/version.js
     - run: yarn install
     - run: yarn dist
-    - run: echo "var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > dist/version.js
 
 
     - name: upload
