@@ -9,7 +9,8 @@ jobs:
 
     steps:
     - name: building for produciton
-      uses: Borales/actions-yarn@v2.1.0
+    - uses: actions/checkout@master
+    - uses: Borales/actions-yarn@v2.1.0
       with:
         cmd: yarn install
         
