@@ -7,9 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Install
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - run: npm install yarn -g
     - run: yarn install
+    - run: yarn dist
