@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
+    <script src="https://cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+    <script src="mode-owm.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+
+    <title>
+        <%= htmlWebpackPlugin.options.title %>
+    </title>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark"> 
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <h3>Online Wardley Maps</h3>
+            </a>
+            <div>
+                <button id="new-map" type="button" class="btn btn-secondary">New Map</button>
+                <button id="example-map" type="button" class="btn btn-secondary">Example Map</button>
+                <button id="save-map" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </nav>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Your Map URL <a href="#" id="url">(unsaved)</a><span class="btn"><a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+                        class="twitter-share-button" data-via="damonsk" data-hashtags="WardleyMaps" data-related=""
+                        data-show-count="false">Tweet</a>
+                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+
+                <div id="htmPane">
+                    <div class="inner jumbotron" id="htmEditor"></div>
+                </div>
+
+
+                <div class="form-group">
+                    <div id="meta-alert" class="alert alert-warning" role="alert">
+                        Your map has meta data - <a href="#" id="showMeta">Show</a>
+                    </div>
+                    <div id="meta-container">
+                        <textarea class="form-control" id="meta"></textarea>
+                    </div>
+                    <p class="small">Usage:<br /><br />
+                        <strong>To create a component:</strong> <br />
+                        component Name [Visibility (Y Axis), Maturity (X Axis)]
+                        <br /><br />
+                        <strong>Example:</strong> <br /><a href="#" class="add">component Customer [1, 0.5]</a><br />
+                        <a href="#" class="add">component Cup of Tea [0.9, 0.5]</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To evolve a component:</strong> <br />
+                        component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis)
+                        <br /><br />
+                        <strong>Example:</strong> <br /><a href="#" class="add">component Customer [1, 0.5] evolve 0.8</a><br />
+                        <a href="#" class="add">component Cup of Tea [0.9, 0.5] evolve 0.8</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To evolve a component with inertia:</strong> <br />
+                        component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis) inertia
+                        <br /><br />
+                        <strong>Example:</strong> <br /><a href="#" class="add">component Customer [1, 0.5] evolve 0.8 inertia</a><br />
+                        <a href="#" class="add">component Cup of Tea [0.9, 0.5] evolve 0.8 inertia</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To link components:</strong><br />
+                        <a href="#" class="add">Start Component->End Component</a>
+                        <br /><br />
+                        <strong>Example:</strong><br /> <a href="#" class="add">Customer->Cup of Tea</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To indicate flow:</strong><br />
+                        <a href="#" class="add">Start Component+&lt;&gt;End Component</a>
+                        <br /><br />
+                        <strong>Example:</strong><br /> <a href="#" class="add">Public+&lt;&gt;Cup of Tea</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To indicate flow - past components only:</strong><br />
+                        <a href="#" class="add">Start Component+&lt;End Component</a>
+                        <br /><br />
+                        <strong>Example:</strong><br /> <a href="#" class="add">Hot Water+&lt;Kettle</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To indicate flow - future components only:</strong><br />
+                        <a href="#" class="add">Start Component+&gt;End Component</a>
+                        <br /><br />
+                        <strong>Example:</strong><br /> <a href="#" class="add">Hot Water+&gt;Kettle</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To indicate flow - with label:</strong><br />
+                        <a href="#" class="add">Start Component+'insert text'&gt;End Component</a>
+                        <br /><br />
+                        <strong>Example:</strong><br /> <a href="#" class="add">Hot Water+'+$0.10'&gt;Kettle</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>Available styles:</strong><br />
+                        <a href="#" class="add">style wardley</a>
+                        <br /><br />
+                        <a href="#" class="add">style handwritten</a>
+                        <br /><br />
+                        ------------------------<br />
+                        <strong>To set evolution labels:</strong><br />
+                        <a href="#" class="add">evolution First->Second->Third->Fourth</a>
+                        <br /><br />
+                        <strong>Example:</strong><br /> <a href="#" class="add">evolution Novel->Emerging->Good->Best</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-8">
+                <h3 id="title"></h3>
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bd-footer text-muted">
+        <div class="container-fluid p-3 p-md-5">
+            <p>Developed by <a href="https://twitter.com/damonsk" target="_blank">@damonsk</a>.</p>
+            <p>Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see <a target="blank" href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec">Simon's
+                    book</a>.</p>
+            <p>Created using portions of cioportfolio/swardley-script as licensed under the MIT License - <a target="blank"
+                    href="https://github.com/cioportfolio/swardley-script/">Source</a>.</p>
+            <p>Build: <span id="build"></span></p>
+        </div>
+
+    </footer>
+</body>
+
+</html>

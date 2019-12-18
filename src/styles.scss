@@ -1,0 +1,66 @@
+#text {
+    font-family: Consolas, Lucida Console, monospace;
+    font-size: 90%;
+}
+
+.draggable {
+    cursor: move;
+}
+
+
+#svgMap {
+    padding: 10px;
+    user-select: none;
+    &.wardley {
+        background: linear-gradient(to right, #e0e0e0 0%,#ffffff 20%,#ffffff 80%,#e0e0e0 99%);
+        #valueChain text, #Evolution text, .label {
+            font-family: Consolas, Lucida Console, monospace;
+        }
+        .label {
+            text-transform: uppercase;
+        }
+    }
+
+    &.handwritten {
+        #valueChain text, #Evolution text, .label {
+            font-family: 'Gloria Hallelujah', cursive;
+        }
+    }
+}
+
+nav.navbar {
+    background-color: #563d7c;
+}
+
+#text {
+    height: 682px;
+}
+
+#htmPane{  
+
+    background: #e9ecef;
+    padding: 5px;
+
+    .jumbotron {
+        height: 682px;
+        padding: 5px;
+        margin-bottom: 2px;
+    }
+}
+
+#meta-alert {
+    display: none;
+}
+
+#meta-container {
+    display: none;
+
+    #meta {
+        height: 120px;
+    }
+}
+
+footer {
+    background-color: #f7f7f7; 
+    font-size: 86%;
+}
