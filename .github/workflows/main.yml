@@ -11,5 +11,5 @@ jobs:
     - name: building for produciton
       uses: Borales/actions-yarn@v2.1.0
       with:
-        cmd: yarn dist
+        cmd: yarn install
         
