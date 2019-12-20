@@ -11,10 +11,13 @@ Created using portions of cioportfolio/swardley-script as licensed under the MIT
 
 ## Running locally
 
-Dependancies for running locally.   NodeJS, Yarn and Jest.
+Dependancies for running locally. NodeJS and Yarn.
 
     npm install yarn -g
-    npm install jest -g
+
+Install dependencies
+
+    yarn install
 
 Commands:
 
