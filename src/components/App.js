@@ -154,7 +154,6 @@ function App(){
         }
         window.addEventListener('resize', handleResize);
         window.addEventListener('load',  hashChange);
-        window.addEventListener('hashchange', hashChange);
     });
 
     return (
