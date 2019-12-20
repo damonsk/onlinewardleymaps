@@ -20,11 +20,10 @@ function App(){
     const [mapText, setMapText] = useState('');
     const mutateMapText = (newText) => {
         setMapText(newText);
-        
         try {
-            generateMap(newText);   
+            generateMap(newText);  
         } catch (e) {
-            console.log('could not render');
+            console.log('Invalid markup, could not render.');
         }
     };
 
@@ -85,9 +84,8 @@ function App(){
             .on('mousemove', drag)
             .on('mouseup', endDrag);
 
-        if ($('#meta').val().length > 0) {
-            $('#meta-alert').show();
-            var items = JSON.parse($('#meta').val());
+        if (metaText.length > 0) {
+            var items = JSON.parse(metaText);
             items.forEach(element => {
                 $('#' + element.name).attr('x', element.x).attr('y', element.y);
                 $('tspan', $('#' + element.name)).attr('x', element.x);
