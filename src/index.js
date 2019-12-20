@@ -6,7 +6,14 @@ import './page';
 import Usage from './components/editor/Usage';
 import Controls from './components/editor/Controls';
 import Breadcrumb from './components/editor/Breadcrumb';
+import MapView from './components/editor/MapView';
+import Meta from './components/editor/Meta';
 
+
+render(
+    <MapView />,
+    document.getElementById("mapControl")
+);
 
 render(
     <Usage />, 
@@ -27,3 +34,4 @@ render(
     <Meta />,
     document.getElementById("metaControl")
 );
+
