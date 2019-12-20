@@ -131,7 +131,7 @@ function App(){
 
     React.useEffect(() => {
         
-        function hashChange(){
+        function loadMap(){
             setCurrentUrl('(unsaved)');
             generateMap('', '');
             if (window.location.hash.length > 0 & loaded == false) {
@@ -153,7 +153,7 @@ function App(){
             generateMap(mapText);
         }
         window.addEventListener('resize', handleResize);
-        window.addEventListener('load',  hashChange);
+        window.addEventListener('load',  loadMap);
     });
 
     return (
