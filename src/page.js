@@ -14,24 +14,7 @@ function setMetaData() {
 
 $(function () {
     
-    var htmEditor;
-    ace.require("ace/ext/language_tools");
-    ace.config.set('modePath', './scripts');
-    htmEditor = ace.edit("htmEditor");
-    htmEditor.getSession().setMode("ace/mode/owm");
-    htmEditor.setTheme("ace/theme/chrimson");
-    htmEditor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        showGutter: false,
-        wrap: true
-    });
-    htmEditor.setShowPrintMargin(false);
-    htmEditor.setHighlightActiveLine(false);
-
-    $(htmEditor.textInput.getElement()).on('keyup', function () {
-        generateMap();
-    });
+    
 
     var selectedElement, offset;
 
@@ -103,7 +86,7 @@ $(function () {
     };
 
     var generateMap = function () {
-        var txt = htmEditor.session.getValue();
+        //var txt = htmEditor.session.getValue();
         var r = new Convert().parse(txt);
 
         $('#title').text(r.title);

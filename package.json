@@ -35,6 +35,7 @@
     "babel-preset-react-app": "^9.1.0",
     "bootstrap": "^4.2.1",
     "react": "^16.12.0",
+    "react-ace": "^8.0.0",
     "react-dom": "^16.12.0"
   },
   "scripts": {
