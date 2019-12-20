@@ -22,23 +22,13 @@
             <a class="navbar-brand" href="#">
                 <h3>Online Wardley Maps</h3> 
             </a>
-            <div>
-                <button id="new-map" type="button" class="btn btn-secondary">New Map</button>
-                <button id="example-map" type="button" class="btn btn-secondary">Example Map</button>
-                <button id="save-map" type="button" class="btn btn-primary">Save</button>
-            </div>
+            
+            <div id="controlsMenuControl"></div>
+            
         </div>
     </nav>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">Your Map URL <a href="#" id="url">(unsaved)</a><span class="btn"><a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-                        class="twitter-share-button" data-via="damonsk" data-hashtags="WardleyMaps" data-related=""
-                        data-show-count="false">Tweet</a>
-                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></span>
-            </li>
-        </ol>
-    </nav>
+    <div id="breadcrumbControl"></div>
 
     <div class="container-fluid">
         <div class="row">
@@ -50,13 +40,8 @@
 
 
                 <div class="form-group">
-                    <div id="meta-alert" class="alert alert-warning" role="alert">
-                        Your map has meta data - <a href="#" id="showMeta">Show</a>
-                    </div>
-                    <div id="meta-container">
-                        <textarea class="form-control" id="meta"></textarea>
-                    </div>
-                    <div id="usage"></div>
+                    <div id="metaControl"></div>
+                    <div id="usageControl"></div>
                 </div>
             </div>
             <div class="col-8">
