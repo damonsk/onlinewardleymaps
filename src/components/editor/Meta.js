@@ -34,7 +34,7 @@ var MetaText = createReactClass({
         return (
             <>
             <div id="meta-container">
-                <textarea className="form-control" id="meta" defaultValue={this.props.metaText}></textarea>
+                <textarea className="form-control" id="meta" value={this.props.metaText}></textarea>
             </div>
             </>
         );

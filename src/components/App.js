@@ -13,6 +13,7 @@ function App(){
     let loaded = false;
     const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
+
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
             return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
@@ -23,18 +24,23 @@ function App(){
 
     const mutateMapText = (newText) => {
         setMapText(newText);
+        updateMap(newText, metaText);
+    };
+
+    const updateMap = (newText, newMeta) => {
         try {
-            generateMap(newText);  
+            generateMap(newText, newMeta);  
         } catch (e) {
             console.log('Invalid markup, could not render.');
         }
     };
 
     function NewMap(){
-        mutateMapText('');
+        setMapText('');
         setMetaText('');
+        updateMap('','');
         window.location.hash = '';
-        setCurrentUrl('unsaved');
+        setCurrentUrl('(unsaved)');
     }
 
     function SaveMap(){
@@ -106,46 +112,40 @@ function App(){
         selectedElement = null;
     }
 
-    function generateMap(txt) {
+    function generateMap(txt, meta) {
         loaded = false;
-        console.log(txt);
         var r = new Convert().parse(txt);
-        
         $('#title').text(r.title);
         $('#map').html(renderSvg(r, getWidth(), 600));
-
         $('.draggable').on('mousedown', startDrag)
             .on('mousemove', drag)
             .on('mouseup', endDrag);
-
-        if (metaText.length > 0) {
-            var items = JSON.parse(metaText);
+        if (meta.length > 0) {
+            var items = JSON.parse(meta);
             items.forEach(element => {
                 $('#' + element.name).attr('x', element.x).attr('y', element.y);
                 $('tspan', $('#' + element.name)).attr('x', element.x);
             });
-        }
-        else {
-            $('#meta-alert').hide();
-            $('#meta').val('');
         }
     };
 
     React.useEffect(() => {
         
         function hashChange(){
-            generateMap('');
+            setCurrentUrl('(unsaved)');
+            generateMap('', '');
             if (window.location.hash.length > 0 & loaded == false) {
                 loaded = true;
                 setCurrentUrl('loading...');
                 var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
                 $.getJSON(fetch, function (d) {
-                    mutateMapText(d.text);
-                    if (d.meta != null && d.meta != undefined) {
-                        setMetaData(d.meta);
+                    if (d.meta == undefined || d.meta == null) {
+                        d.meta = "";
                     }
+                    setMapText(d.text);
+                    setMetaText(d.meta);
+                    updateMap(d.text, d.meta);
                     setCurrentUrl(window.location.href);
-                    generateMap(d.text);
                 });
             }
         }
@@ -178,7 +178,7 @@ function App(){
                     <Editor mapText={mapText} mutateMapText={mutateMapText} />
                     <div className="form-group">
                         <Meta metaText={metaText} />
-                        <Usage />
+                        <Usage mapText={mapText} mutateMapText={mutateMapText} />
                     </div>
                 </div>
                 <MapView />

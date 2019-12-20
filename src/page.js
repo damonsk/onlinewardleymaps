@@ -1,13 +1,7 @@
 
 $(function () {
     
-    $('.add').click(function () {
-        var before = htmEditor.getValue();
-        before = before + '\n' + $(this).text().trim();
-        htmEditor.setValue(before);
-        generateMap();
-        return false;
-    });
+    
 
     // $('#new-map').click(function () {
     //     $('#url').text('saving...');
