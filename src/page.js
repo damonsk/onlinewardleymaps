@@ -1,8 +1,4 @@
-import Convert from './convert';
-import { renderSvg } from './renderSwardley';
 
-
-var example = 'title Tea Shop' + '\r\n' + 'component Business [1, 0.65]' + '\r\n' + 'component Public [1, 0.79]' + '\r\n' + 'component Cup of Tea [0.8, 0.73]' + '\r\n' + 'component Cup [0.7, 0.88]' + '\r\n' + 'component Tea [0.6, 0.83]' + '\r\n' + 'component Hot Water [0.47, 0.8]' + '\r\n' + 'component Water [0.35, 0.83]' + '\r\n' + 'component Kettle [0.3, 0.3] evolve 0.78' + '\r\n' + 'component Power [0.1, 0.8]' + '\r\n' + 'Business->Cup of Tea' + '\r\n' + 'Public->Cup of Tea' + '\r\n' + 'Cup of Tea->Cup' + '\r\n' + 'Cup of Tea->Tea' + '\r\n' + 'Cup of Tea->Hot Water' + '\r\n' + 'Hot Water->Water' + '\r\n' + 'Hot Water->Kettle ' + '\r\n' + 'Kettle->Power';
 function setMetaData() {
 
     var i = $.map($('.draggable'), function (el) {
@@ -16,43 +12,9 @@ $(function () {
     
     
 
-    var selectedElement, offset;
+    
 
-    function getMousePosition(evt) {
-        var CTM = document.getElementById('svgMap').getScreenCTM();
-        return {
-            x: (evt.clientX - CTM.e) / CTM.a,
-            y: (evt.clientY - CTM.f) / CTM.d
-        };
-    }
-
-    function startDrag(evt) {
-
-        var target = evt.target;
-        if (target.nodeName == "tspan") {
-            target = target.parentElement;
-        }
-
-        if (target.classList.contains('draggable')) {
-            selectedElement = target;
-            offset = getMousePosition(evt);
-            offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
-            offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
-        }
-    }
-    function drag(evt) {
-        if (selectedElement) {
-            evt.preventDefault();
-            var coord = getMousePosition(evt);
-            $('tspan', $(selectedElement)).attr('x', coord.x - offset.x);
-            $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
-            setMetaData()
-        }
-    }
-    function endDrag(evt) {
-        setMetaData();
-        selectedElement = null;
-    }
+    
 
     var setUrl = function () {
         $('#url').text(window.location.href).attr('href', window.location.href);
@@ -78,39 +40,13 @@ $(function () {
         generateMap();
     });
 
-    var getWidth = function () {
-        var textWidth = $('#htmPane').width();
-        var width = $(window).width();
-        var calcWidth = (width - textWidth - 120);
-        return calcWidth;
-    };
+    
 
-    var generateMap = function () {
-        //var txt = htmEditor.session.getValue();
-        var r = new Convert().parse(txt);
+    var generateMap = function(){
+        console.log('old ref');
+    }
 
-        $('#title').text(r.title);
-        $('#map').html(renderSvg(r, getWidth(), 600));
-
-        $('.draggable').on('mousedown', startDrag)
-            .on('mousemove', drag)
-            .on('mouseup', endDrag);
-
-        if ($('#meta').val().length > 0) {
-            $('#meta-alert').show();
-            var items = JSON.parse($('#meta').val());
-            items.forEach(element => {
-                $('#' + element.name).attr('x', element.x).attr('y', element.y);
-                $('tspan', $('#' + element.name)).attr('x', element.x);
-            });
-        }
-        else {
-            $('#meta-alert').hide();
-            $('#meta').val('');
-        }
-    };
-
-    generateMap();
+    //generateMap();
 
     if (window.location.hash.length > 0) {
         $('#url').text('loading...');

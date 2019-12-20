@@ -1,36 +1,38 @@
 import React, { Component } from "react";
 import AceEditor from 'react-ace';
 
-function Editor(props){
+class Editor extends Component {
 
-    // var htmEditor;
-    // ace.require("ace/ext/language_tools");
-    // ace.config.set('modePath', './scripts');
-    // htmEditor = ace.edit("htmEditor");
-    // htmEditor.getSession().setMode("ace/mode/owm");
-    // htmEditor.setTheme("ace/theme/chrimson");
-    // htmEditor.setOptions({
-    //     enableBasicAutocompletion: true,
-    //     enableSnippets: true,
-    //     showGutter: false,
-    //     wrap: true
-    // });
-    // htmEditor.setShowPrintMargin(false);
-    // htmEditor.setHighlightActiveLine(false);
+    constructor(props) {
+        super(props)
+        this.state = {
+            width: 0
+        }
+    }
 
+    componentDidMount() {
+        const width = document.getElementById('htmPane').parentNode.clientWidth;
+        this.setState({ width });
+    }
 
-    return (
-        <div id="htmPane">
-            <AceEditor
-                mode="owm"
-                theme="ace/theme/chrimson"
-                onChange={props.mutateMapText}
-                name="htmEditor"
-                value={props.mapText}
-                editorProps={{ $blockScrolling: true }}
-            />
-        </div>
-    )
+    render() {
+        return (
+            <div id="htmPane">
+                    <AceEditor
+                        mode="owm"
+                        theme="ace/theme/chrimson"
+                        onChange={this.props.mutateMapText}
+                        name="htmEditor"
+                        value={this.props.mapText}
+                        showGutter= {false}
+                        width=""
+                        className="jumbotron"  
+                        showPrintMargin= {false}
+                        editorProps={{ $blockScrolling: true }}
+                    />
+            </div>
+        )
+    }
 }
 
 export default Editor;
