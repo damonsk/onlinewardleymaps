@@ -20,7 +20,6 @@ class Editor extends Component {
             <div id="htmPane">
                     <AceEditor
                         mode="owm"
-                        theme="ace/theme/chrimson"
                         onChange={this.props.mutateMapText}
                         name="htmEditor"
                         value={this.props.mapText}
