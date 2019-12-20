@@ -8,7 +8,12 @@ import Controls from './components/editor/Controls';
 import Breadcrumb from './components/editor/Breadcrumb';
 import MapView from './components/editor/MapView';
 import Meta from './components/editor/Meta';
+import Editor from './components/editor/Editor';
 
+render(
+    <Editor />,
+    document.getElementById("editorControl")
+);
 
 render(
     <MapView />,
