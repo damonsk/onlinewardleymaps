@@ -20,7 +20,12 @@ function App(){
     const [mapText, setMapText] = useState('');
     const mutateMapText = (newText) => {
         setMapText(newText);
-        generateMap(newText);
+        
+        try {
+            generateMap(newText);   
+        } catch (e) {
+            console.log('could not render');
+        }
     };
 
 
