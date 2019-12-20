@@ -15,8 +15,7 @@ function App(){
         var i = $.map($('.draggable'), function (el) {
             return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
         })
-        setMetaText(JSON.stringify(i))
-        $('#meta-alert').show();
+        setMetaText(JSON.stringify(i));
     }
     const [mapText, setMapText] = useState('');
     const mutateMapText = (newText) => {

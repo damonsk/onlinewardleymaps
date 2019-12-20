@@ -1,17 +1,44 @@
-import React from 'react';
+import React, {useState} from 'react';
+var createReactClass = require('create-react-class');
 
 function Meta(props) {
 
-    return(
+    const [showMeta, setShowMeta] = useState(false);
+
+    const onClickAlert = function(){
+        setShowMeta(!showMeta);
+    }
+
+    return (
         <>
-        <div id="meta-alert" className="alert alert-warning" role="alert">
-            Your map has meta data - <a href="#" id="showMeta">Show</a>
-        </div>
-        <div id="meta-container">
-            <textarea className="form-control" id="meta" value={props.metaText}></textarea>
-        </div>
+            { props.metaText.length > 0 ? <Alert toggleMeta={onClickAlert} /> : null }
+            { showMeta ? <MetaText metaText={props.metaText} /> : null }
         </>
     )
 }
+
+var Alert = createReactClass({
+    render: function() {
+        return (
+            <>
+            <div id="meta-alert" className="alert alert-warning" role="alert">
+            Your map has meta data - <a onClick={() => this.props.toggleMeta(true)} id="showMeta">Show</a>
+            </div>
+            </>
+        );
+    }
+});
+
+var MetaText = createReactClass({
+    render: function() {
+        return (
+            <>
+            <div id="meta-container">
+                <textarea className="form-control" id="meta" defaultValue={this.props.metaText}></textarea>
+            </div>
+            </>
+        );
+    }
+});
 
 export default Meta;
