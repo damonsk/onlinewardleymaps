@@ -24,10 +24,18 @@
     "webpack-cli": "^3.2.0",
     "webpack-dev-server": "^3.1.14"
   },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "babel-preset-react-app": "^9.1.0",
     "bootstrap": "^4.2.1",
-    "react": "^16.12.0"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   },
   "scripts": {
     "start": "webpack-dev-server --mode=development --env.isProduction=false",
