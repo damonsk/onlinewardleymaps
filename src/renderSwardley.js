@@ -44,7 +44,19 @@ var renderEvolvedElementsLink = function (startElement, endElement, mapWidth, ma
     var y2 = visToY(endElement.visibility, mapHeight);
     var returnString = '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="red" stroke-dasharray="5 5" marker-start="url(#arrow)" />';
     if (endElement.inertia) {
-        returnString = returnString + '<line x1="' + (x1 - 30) + '" y1="' + (y2 - 10) + '" x2="' + (x1 - 30) + '" y2="' + (y2 + 10) + '" stroke="black" stroke-width="6" />';
+
+        var boundary = x1;
+        if(startElement.maturity >= 0.25){
+            boundary = 0.25;
+        }
+        if (startElement.maturity >= 0.5){
+            boundary = 0.5;
+        }
+        if (startElement.maturity >= 0.75){
+            boundary = 0.75;
+        }
+        var boundaryX = matToX(boundary, mapWidth);
+        returnString = returnString + '<line x1="' + (boundaryX) + '" y1="' + (y2 - 10) + '" x2="' + (boundaryX) + '" y2="' + (y2 + 10) + '" stroke="black" stroke-width="6" />';
     }
 
     return returnString;
