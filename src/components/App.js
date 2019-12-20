@@ -10,8 +10,7 @@ import Convert from '../convert';
 
 function App(){
 
-
-    
+    let loaded = false;
     const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
     const setMetaData = () =>{
@@ -21,6 +20,7 @@ function App(){
         setMetaText(JSON.stringify(i));
     }
     const [mapText, setMapText] = useState('');
+
     const mutateMapText = (newText) => {
         setMapText(newText);
         try {
@@ -30,6 +30,34 @@ function App(){
         }
     };
 
+    function NewMap(){
+        mutateMapText('');
+        setMetaText('');
+        window.location.hash = '';
+        setCurrentUrl('unsaved');
+    }
+
+    function SaveMap(){
+        loaded = false;
+        var hash = window.location.hash.replace("#", "");
+        save(hash);
+    }
+
+    var save = function (hash) {
+        $.ajax({
+            type: "POST",
+            url: "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/save",
+            data: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                window.location.hash = '#' + data.id;
+            },
+            failure: function (errMsg) {
+                console.log(errMsg);
+            }
+        });
+    };
 
     var selectedElement, offset;
 
@@ -79,7 +107,10 @@ function App(){
     }
 
     function generateMap(txt) {
+        loaded = false;
+        console.log(txt);
         var r = new Convert().parse(txt);
+        
         $('#title').text(r.title);
         $('#map').html(renderSvg(r, getWidth(), 600));
 
@@ -103,7 +134,9 @@ function App(){
     React.useEffect(() => {
         
         function hashChange(){
-            if (window.location.hash.length > 0) {
+            generateMap('');
+            if (window.location.hash.length > 0 & loaded == false) {
+                loaded = true;
                 setCurrentUrl('loading...');
                 var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
                 $.getJSON(fetch, function (d) {
@@ -112,7 +145,7 @@ function App(){
                         setMetaData(d.meta);
                     }
                     setCurrentUrl(window.location.href);
-                    generateMap();
+                    generateMap(d.text);
                 });
             }
         }
@@ -120,7 +153,7 @@ function App(){
             generateMap(mapText);
         }
         window.addEventListener('resize', handleResize);
-        window.addEventListener('load', hashChange);
+        window.addEventListener('load',  hashChange);
         window.addEventListener('hashchange', hashChange);
     });
 
@@ -132,7 +165,7 @@ function App(){
                     <h3>Online Wardley Maps</h3> 
                 </a>
                 <div id="controlsMenuControl">
-                    <Controls mutateMapText={mutateMapText} />
+                    <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} />
                 </div>
             </div>
         </nav>

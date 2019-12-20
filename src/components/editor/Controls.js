@@ -9,9 +9,9 @@ function Controls(props){
 
     return (
         <>
-        <button id="new-map" type="button" className="btn btn-secondary">New Map</button>
+        <button id="new-map" onClick={props.newMapClick} type="button" className="btn btn-secondary">New Map</button>
         <button id="example-map" onClick={example} type="button" className="btn btn-secondary">Example Map</button>
-        <button id="save-map" type="button" className="btn btn-primary">Save</button>
+        <button id="save-map" onClick={props.saveMapClick} type="button" className="btn btn-primary">Save</button>
         </>
     )
 }

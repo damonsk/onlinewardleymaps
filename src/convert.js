@@ -17,7 +17,6 @@ export default class Convert {
     method(input) {
         let trimmed = input.trim();
         let elementsAsArray = trimmed.split('\n');
-
         let methodElements = [];
 
         for (let i = 0; i < elementsAsArray.length; i++) {
@@ -81,7 +80,7 @@ export default class Convert {
     }
 
     title(input) {
-
+        if(input.trim().length < 1) return "Untitled Map";
         let trimmed = input.trim();
         let firstLine = trimmed.split('\n')[0];
 
