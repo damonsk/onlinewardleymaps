@@ -9,9 +9,9 @@ $(function () {
 
     
 
-    var setUrl = function () {
-        $('#url').text(window.location.href).attr('href', window.location.href);
-    }
+    // var setUrl = function () {
+    //     $('#url').text(window.location.href).attr('href', window.location.href);
+    // }
 
     $('#wardley-style').click(function () {
         $('#svgMap').attr('class', 'wardley');
@@ -33,27 +33,6 @@ $(function () {
 
     var generateMap = function(){
         console.log('old ref');
-    }
-
-    //generateMap();
-
-    if (window.location.hash.length > 0) {
-        $('#url').text('loading...');
-        var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
-        $.getJSON(fetch, function (d) {
-            //htmEditor.setValue(d.text);
-            if (d.meta != null && d.meta != undefined) {
-                $('#meta').val(d.meta);
-                $('#meta-alert').show();
-                $('#meta-container').hide();
-            }
-            else {
-                $('#meta-alert').hide();
-                $('#meta-container').hide();
-            }
-            setUrl();
-            generateMap();
-        });
     }
 
     $('#example-map').click(function () {

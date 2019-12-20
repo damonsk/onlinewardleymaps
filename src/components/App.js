@@ -10,6 +10,9 @@ import Convert from '../convert';
 
 function App(){
 
+
+    
+    const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
@@ -97,14 +100,29 @@ function App(){
         }
     };
 
-    
-
     React.useEffect(() => {
+        
+        function hashChange(){
+            if (window.location.hash.length > 0) {
+                setCurrentUrl('loading...');
+                var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
+                $.getJSON(fetch, function (d) {
+                    mutateMapText(d.text);
+                    if (d.meta != null && d.meta != undefined) {
+                        setMetaData(d.meta);
+                    }
+                    setCurrentUrl(window.location.href);
+                    generateMap();
+                });
+            }
+        }
         function handleResize(){
             generateMap(mapText);
         }
-        window.addEventListener('resize', handleResize)
-      })
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('load', hashChange);
+        window.addEventListener('hashchange', hashChange);
+    });
 
     return (
         <>
@@ -119,7 +137,7 @@ function App(){
             </div>
         </nav>
 
-        <Breadcrumb />
+        <Breadcrumb currentUrl={currentUrl} />
 
         <div className="container-fluid">
             <div className="row">
