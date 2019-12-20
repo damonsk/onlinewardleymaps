@@ -10,6 +10,21 @@ import Convert from '../convert';
 
 function App(){
 
+    const [metaText, setMetaText] = useState('');
+    const setMetaData = () =>{
+        var i = $.map($('.draggable'), function (el) {
+            return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
+        })
+        setMetaText(JSON.stringify(i))
+        $('#meta-alert').show();
+    }
+    const [mapText, setMapText] = useState('');
+    const mutateMapText = (newText) => {
+        setMapText(newText);
+        generateMap(newText);
+    };
+
+
     var selectedElement, offset;
 
     function getMousePosition(evt) {
@@ -58,9 +73,7 @@ function App(){
     }
 
     function generateMap(txt) {
-        console.log(txt);
         var r = new Convert().parse(txt);
-
         $('#title').text(r.title);
         $('#map').html(renderSvg(r, getWidth(), 600));
 
@@ -82,11 +95,7 @@ function App(){
         }
     };
 
-    const [mapText, setMapText] = useState();
-    const mutateMapText = (newText) => {
-        setMapText(newText);
-        generateMap(newText);
-    };
+    
 
     React.useEffect(() => {
         function handleResize(){
@@ -115,7 +124,7 @@ function App(){
                 <div className="col">
                     <Editor mapText={mapText} mutateMapText={mutateMapText} />
                     <div className="form-group">
-                        <Meta />
+                        <Meta metaText={metaText} />
                         <Usage />
                     </div>
                 </div>

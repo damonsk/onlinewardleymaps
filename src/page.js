@@ -1,12 +1,5 @@
 
-function setMetaData() {
 
-    var i = $.map($('.draggable'), function (el) {
-        return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
-    })
-    $('#meta').val(JSON.stringify(i));
-    $('#meta-alert').show();
-}
 
 $(function () {
     
@@ -48,7 +41,7 @@ $(function () {
         $('#url').text('loading...');
         var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
         $.getJSON(fetch, function (d) {
-            htmEditor.setValue(d.text);
+            //htmEditor.setValue(d.text);
             if (d.meta != null && d.meta != undefined) {
                 $('#meta').val(d.meta);
                 $('#meta-alert').show();
