@@ -36,10 +36,6 @@ $(function () {
         return false;
     });
 
-    $(window).resize(function () {
-        generateMap();
-    });
-
     
 
     var generateMap = function(){
