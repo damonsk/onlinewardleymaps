@@ -10,6 +10,7 @@ import Convert from '../convert';
 
 function App(){
 
+    const apiEndpoint = 'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
     let loaded = false;
     const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
@@ -53,7 +54,7 @@ function App(){
     const save = function(hash) {
         $.ajax({
             type: "POST",
-            url: "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/save",
+            url: apiEndpoint + "save",
             data: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -139,7 +140,7 @@ function App(){
             if (window.location.hash.length > 0 & loaded == false) {
                 loaded = true;
                 setCurrentUrl('(loading...)');
-                var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
+                var fetch = apiEndpoint + "fetch?id=" + window.location.hash.replace("#", "");
                 $.getJSON(fetch, function (d) {
                     if (d.meta == undefined || d.meta == null) {
                         d.meta = "";
