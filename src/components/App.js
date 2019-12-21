@@ -45,6 +45,7 @@ function App(){
 
     function SaveMap(){
         loaded = false;
+        setCurrentUrl('saving...');
         var hash = window.location.hash.replace("#", "");
         save(hash);
     }
@@ -58,6 +59,7 @@ function App(){
             dataType: "json",
             success: function (data) {
                 window.location.hash = '#' + data.id;
+                setCurrentUrl(window.location.href);
             },
             failure: function (errMsg) {
                 console.log(errMsg);
