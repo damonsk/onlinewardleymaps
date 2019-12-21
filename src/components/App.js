@@ -45,12 +45,12 @@ function App(){
 
     function SaveMap(){
         loaded = false;
-        setCurrentUrl('saving...');
+        setCurrentUrl('(saving...)');
         var hash = window.location.hash.replace("#", "");
         save(hash);
     }
 
-    var save = function (hash) {
+    const save = function(hash) {
         $.ajax({
             type: "POST",
             url: "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/save",
@@ -62,7 +62,7 @@ function App(){
                 setCurrentUrl(window.location.href);
             },
             failure: function (errMsg) {
-                console.log(errMsg);
+                setCurrentUrl('(could not save map, please try again)')
             }
         });
     };
@@ -138,7 +138,7 @@ function App(){
             generateMap('', '');
             if (window.location.hash.length > 0 & loaded == false) {
                 loaded = true;
-                setCurrentUrl('loading...');
+                setCurrentUrl('(loading...)');
                 var fetch = "https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/fetch?id=" + window.location.hash.replace("#", "");
                 $.getJSON(fetch, function (d) {
                     if (d.meta == undefined || d.meta == null) {
