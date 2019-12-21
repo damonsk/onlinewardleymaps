@@ -87,9 +87,12 @@ function App(){
         return calcWidth;
     };
 
+    //Height is currently fixed to 600.
+    const getHeight = () => 600
+
     function startDrag(evt) {
 
-        var target = evt.target;
+        var target = evt.currentTarget;
         if (target.nodeName == "tspan") {
             target = target.parentElement;
         }
@@ -97,6 +100,12 @@ function App(){
         if (target.classList.contains('draggable')) {
             selectedElement = target;
             offset = getMousePosition(evt);
+            if (target.classList.contains('node')) {
+                //set offset against transform x and y values from the SVG element
+                const transforms = selectedElement.transform.baseVal.consolidate().matrix;
+                offset.x -= transforms.e;
+                offset.y -= transforms.f;
+            }
             offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
             offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
         }
@@ -107,8 +116,32 @@ function App(){
             evt.preventDefault();
             var coord = getMousePosition(evt);
             $('tspan', $(selectedElement)).attr('x', coord.x - offset.x);
-            $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
-            setMetaData()
+            if (selectedElement.classList.contains('node')) {
+                $(selectedElement).attr("transform", `translate(${coord.x},${coord.y})`);
+                //return line from the editor that need to be updated
+                mutateMapText(mapText.split('\n')
+                    .map(line => {
+                        //Remove all whitespace from the line in case the user has been abusive with their spaces.
+                        if (line.replace(/\s/g, '')
+                            //get text from the node in the map.
+                            .indexOf(selectedElement.querySelector('text').childNodes[0].nodeValue
+                                //Ensure that we are at the end of the full component name by checking for a bracket
+                                .replace(/\s/g, '') + '['
+                            ) !== -1) {
+                            //Update the component line in map text with new coord values.
+                            return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100)}, ${(100 / getWidth() * coord.x) / 100}]`)
+                        } else {
+                            return line;
+                        }
+
+                    })
+                    .join('\n')
+                );
+
+            } else {
+                $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
+                setMetaData()
+            }
         }
     }
 
@@ -121,7 +154,7 @@ function App(){
         loaded = false;
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
-        $('#map').html(renderSvg(r, getWidth(), 600));
+        $('#map').html(renderSvg(r, getWidth(), getHeight()));
         $('.draggable').on('mousedown', startDrag)
             .on('mousemove', drag)
             .on('mouseup', endDrag);
