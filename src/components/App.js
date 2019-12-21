@@ -24,7 +24,7 @@ function App(){
         })
         setMetaText(JSON.stringify(i));
     }
-    
+
     const mutateMapText = (newText) => {
         setMapText(newText);
         updateMap(newText, metaText);
@@ -32,7 +32,7 @@ function App(){
 
     const updateMap = (newText, newMeta) => {
         try {
-            generateMap(newText, newMeta);  
+            generateMap(newText, newMeta);
         } catch (e) {
             console.log('Invalid markup, could not render.');
         }
@@ -135,7 +135,7 @@ function App(){
     };
 
     React.useEffect(() => {
-        
+
         function loadMap(){
             setCurrentUrl('(unsaved)');
             generateMap('', '');
@@ -162,33 +162,33 @@ function App(){
     });
 
     return (
-        <>
-        <nav className="navbar navbar-dark"> 
-            <div className="container-fluid">
-                <a className="navbar-brand" href="#">
-                    <h3>Online Wardley Maps</h3> 
-                </a>
-                <div id="controlsMenuControl">
-                    <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} />
-                </div>
-            </div>
-        </nav>
-
-        <Breadcrumb currentUrl={currentUrl} />
-
-        <div className="container-fluid">
-            <div className="row">
-                <div className="col">
-                    <Editor mapText={mapText} mutateMapText={mutateMapText} />
-                    <div className="form-group">
-                        <Meta metaText={metaText} />
-                        <Usage mapText={mapText} mutateMapText={mutateMapText} />
+        <React.Fragment>
+            <nav className="navbar navbar-dark">
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="#">
+                        <h3>Online Wardley Maps</h3>
+                    </a>
+                    <div id="controlsMenuControl">
+                        <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} />
                     </div>
                 </div>
-                <MapView mapTitle={mapTitle} />
+            </nav>
+
+            <Breadcrumb currentUrl={currentUrl} />
+
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col">
+                        <Editor mapText={mapText} mutateMapText={mutateMapText} />
+                        <div className="form-group">
+                            <Meta metaText={metaText} />
+                            <Usage mapText={mapText} mutateMapText={mutateMapText} />
+                        </div>
+                    </div>
+                    <MapView mapTitle={mapTitle} />
+                </div>
             </div>
-        </div>
-        </>
+        </React.Fragment>
     )
 }
 
