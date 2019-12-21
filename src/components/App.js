@@ -12,8 +12,11 @@ function App(){
 
     const apiEndpoint = 'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
     let loaded = false;
+
     const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
+    const [mapText, setMapText] = useState('');
+    const [mapTitle, setMapTitle] = useState('Untitled Map');
 
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
@@ -21,8 +24,7 @@ function App(){
         })
         setMetaText(JSON.stringify(i));
     }
-    const [mapText, setMapText] = useState('');
-
+    
     const mutateMapText = (newText) => {
         setMapText(newText);
         updateMap(newText, metaText);
@@ -118,7 +120,7 @@ function App(){
     function generateMap(txt, meta) {
         loaded = false;
         var r = new Convert().parse(txt);
-        $('#title').text(r.title);
+        setMapTitle(r.title);
         $('#map').html(renderSvg(r, getWidth(), 600));
         $('.draggable').on('mousedown', startDrag)
             .on('mousemove', drag)
@@ -183,7 +185,7 @@ function App(){
                         <Usage mapText={mapText} mutateMapText={mutateMapText} />
                     </div>
                 </div>
-                <MapView />
+                <MapView mapTitle={mapTitle} />
             </div>
         </div>
         </>
