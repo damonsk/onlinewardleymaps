@@ -129,29 +129,48 @@ function App(){
     }
 
     function endDrag(evt) {
-        mutateMapText(mapText.split('\n')
-            .map(line => {
-                //Remove all whitespace from the line in case the user has been abusive with their spaces.
-                if (line.replace(/\s/g, '')
-                    //get text from the node in the map.
-                    .indexOf(selectedElement.querySelector('text').childNodes[0].nodeValue
-                        //Ensure that we are at the end of the full component name by checking for a bracket
-                        .replace(/\s/g, '') + '['
-                    ) !== -1) {
-                    //Update the component line in map text with new coord values.
-                    //For evolved components, we only update the evolved value
-                    if (selectedElement.classList.contains('evolved')) {
-                        return line.replace(/\](.+)/g, `] evolve ${((100 / getWidth() * coord.x) / 100).toFixed(2)}`)
+        mutateMapText(
+            mapText
+                .split("\n")
+                .map(line => {
+                    if (
+                        line
+                            .replace(/\s/g, "") //Remove all whitespace from the line in case the user has been abusive with their spaces.
+                            //get node name from the rendered text in the map
+                            .indexOf(
+                                selectedElement
+                                    .querySelector("text")
+                                    .childNodes[0].nodeValue
+                                    .replace(/\s/g, "") + "[" //Ensure that we are at the end of the full component name by checking for a brace
+                            ) !== -1
+                    ) {
+                        //Update the component line in map text with new coord values.
+                        //For evolved components, we only update the evolved value
+                        if (selectedElement.classList.contains("evolved")) {
+                            return line.replace(
+                                //Take all characters after the closing brace
+                                /\](.+)/g,
+                                `] evolve ${(
+                                    (1 / getWidth()) * coord.x
+                                ).toFixed(2)}`
+                            );
+                        } else {
+                            return line.replace(
+                                /\[(.+?)\]/g, //Find everything inside square braces.
+                                `[${1 - ((1 / getHeight()) * coord.y).toFixed(
+                                        2
+                                    )}, ${((1 / getWidth()) * coord.x).toFixed(
+                                    2
+                                )}]`
+                            );
+                        }
                     } else {
-                        return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100).toFixed(2)}, ${((100 / getWidth() * coord.x) / 100).toFixed(2)}]`)
+                        return line;
                     }
-                } else {
-                    return line;
-                }
-
-            })
-            .join('\n')
+                })
+                .join("\n")
         );
+
         setMetaData();
         selectedElement = null;
     }
