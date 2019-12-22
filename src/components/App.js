@@ -139,7 +139,12 @@ function App(){
                         .replace(/\s/g, '') + '['
                     ) !== -1) {
                     //Update the component line in map text with new coord values.
-                    return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100).toFixed(2)}, ${((100 / getWidth() * coord.x) / 100).toFixed(2)}]`)
+                    //For evolved components, we only update the evolved value
+                    if (selectedElement.classList.contains('evolved')) {
+                        return line.replace(/\](.+)/g, `] evolve ${((100 / getWidth() * coord.x) / 100).toFixed(2)}`)
+                    } else {
+                        return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100).toFixed(2)}, ${((100 / getWidth() * coord.x) / 100).toFixed(2)}]`)
+                    }
                 } else {
                     return line;
                 }

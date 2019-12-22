@@ -175,7 +175,7 @@ var renderElement = function (element, mapWidth, mapHeight) {
     }
 
     var elementSvg =
-        '<g class="draggable node" id="element_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
+        '<g class="draggable node ' + (element.evolved ? "evolved" : '') + ' " id="element_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
         '<circle id="element_circle_' + element.id + '" cx="0" cy="0" r="5" stroke="' + (element.evolved ? 'red' : 'black') + '" fill="white" />' +
         text +
         '</g>';
