@@ -65,6 +65,16 @@ function App(){
         saveToRemoteStorage(window.location.hash.replace("#", ""));
     }
 
+    function downloadMap() {
+        html2canvas(mapRef.current).then(canvas => {
+            const base64image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = mapTitle;
+            link.href = base64image;
+            link.click();
+        });
+    }
+
     const saveToRemoteStorage = function(hash) {
         $.ajax({
             type: "POST",
@@ -213,15 +223,7 @@ function App(){
         }
     };
 
-    function downloadMap() {
-        html2canvas(mapRef.current).then(canvas => {
-            const base64image = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.download = mapTitle;
-            link.href = base64image;
-            link.click();
-        });
-    }
+    
 
     React.useEffect(() => {
         function loadMap(){
