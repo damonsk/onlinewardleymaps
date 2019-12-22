@@ -177,10 +177,12 @@ function App(){
         loaded = false;
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
-        $('#map').html(renderSvg(r, getWidth(), getHeight()));
-        $('.draggable').on('mousedown', startDrag)
-            .on('mousemove', drag)
-            .on('mouseup', endDrag);
+        $("#map")
+            .html(renderSvg(r, getWidth(), getHeight()))
+            .on("mousemove", drag);
+        $(".draggable")
+            .on("mousedown", startDrag)
+            .on("mouseup", endDrag);
         if (meta.length > 0) {
             var items = JSON.parse(meta);
             items.forEach(element => {
