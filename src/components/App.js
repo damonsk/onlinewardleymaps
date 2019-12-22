@@ -11,6 +11,7 @@ import Convert from '../convert';
 
 function App(){
 
+    const PAGE_TITLE = 'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
     const apiEndpoint = 'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
     let loaded = false;
     const [currentUrl, setCurrentUrl] = useState('');
@@ -221,6 +222,7 @@ function App(){
         loaded = false;
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
+        document.title = r.title + ' - ' + PAGE_TITLE;
         setMapObject(r);
         setMapDimensions({width: getWidth(), height: getHeight()});
         setMapStyle(r.presentation.style);
