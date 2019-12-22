@@ -23,10 +23,10 @@ class Editor extends Component {
                         onChange={this.props.mutateMapText}
                         name="htmEditor"
                         value={this.props.mapText}
-                        showGutter= {false}
+                        showGutter={false}
                         width=""
                         className="jumbotron"  
-                        showPrintMargin= {false}
+                        showPrintMargin={false}
                         editorProps={{ $blockScrolling: true }}
                     />
             </div>
