@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
 import Breadcrumb from './editor/Breadcrumb';
-import MapView from './editor/MapView';
+import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import {renderSvg} from '../renderSwardley';
