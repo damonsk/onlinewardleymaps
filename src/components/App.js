@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
+
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
 import Breadcrumb from './editor/Breadcrumb';
@@ -18,13 +20,15 @@ function App(){
     const [mapText, setMapText] = useState('');
     const [mapTitle, setMapTitle] = useState('Untitled Map');
 
+    const mapRef = useRef(null);
+
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
             return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
         })
         setMetaText(JSON.stringify(i));
     }
-    
+
     const mutateMapText = (newText) => {
         setMapText(newText);
         updateMap(newText, metaText);
@@ -32,7 +36,7 @@ function App(){
 
     const updateMap = (newText, newMeta) => {
         try {
-            generateMap(newText, newMeta);  
+            generateMap(newText, newMeta);
         } catch (e) {
             console.log('Invalid markup, could not render.');
         }
@@ -134,8 +138,18 @@ function App(){
         }
     };
 
+    function downloadMap() {
+        html2canvas(mapRef.current).then(canvas => {
+            const base64image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = mapTitle;
+            link.href = base64image;
+            link.click();
+        });
+    }
+
     React.useEffect(() => {
-        
+
         function loadMap(){
             setCurrentUrl('(unsaved)');
             generateMap('', '');
@@ -163,13 +177,13 @@ function App(){
 
     return (
         <>
-        <nav className="navbar navbar-dark"> 
+        <nav className="navbar navbar-dark">
             <div className="container-fluid">
                 <a className="navbar-brand" href="#">
-                    <h3>Online Wardley Maps</h3> 
+                    <h3>Online Wardley Maps</h3>
                 </a>
                 <div id="controlsMenuControl">
-                    <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} />
+                    <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} downloadMapImage={downloadMap} />
                 </div>
             </div>
         </nav>
@@ -185,7 +199,7 @@ function App(){
                         <Usage mapText={mapText} mutateMapText={mutateMapText} />
                     </div>
                 </div>
-                <MapView mapTitle={mapTitle} />
+                <MapView mapTitle={mapTitle} mapRef={mapRef} />
             </div>
         </div>
         </>

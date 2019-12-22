@@ -8,11 +8,12 @@ function Controls(props){
     }
 
     return (
-        <>
-        <button id="new-map" onClick={props.newMapClick} type="button" className="btn btn-secondary">New Map</button>
-        <button id="example-map" onClick={example} type="button" className="btn btn-secondary">Example Map</button>
-        <button id="save-map" onClick={props.saveMapClick} type="button" className="btn btn-primary">Save</button>
-        </>
+        <React.Fragment>
+            <button id="new-map" onClick={props.newMapClick} type="button" className="btn btn-secondary">New Map</button>
+            <button id="example-map" onClick={example} type="button" className="btn btn-secondary">Example Map</button>
+            <button id="save-map" onClick={props.saveMapClick} type="button" className="btn btn-primary">Save</button>
+            <button id="download-image" onClick={props.downloadMapImage} type="button" className="btn btn-primary">Download</button>
+        </React.Fragment>
     )
 }
 
