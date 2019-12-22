@@ -196,7 +196,7 @@ function App(){
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
         setMapObject(r);
-        setMapDimensions({width: getWidth(), getHeight()});
+        setMapDimensions({width: getWidth(), height: getHeight()});
         setMapStyle(r.presentation.style);
 
         $('g#map').html(renderSvg(r, getWidth(), 600));
