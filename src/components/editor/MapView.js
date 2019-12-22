@@ -8,13 +8,12 @@ class MapView extends Component {
     }
 
     render() {
-
-        
-    
         return (
             <div className="col-8">
-                <h3 id="title">{this.props.mapTitle}</h3>
-                <div id="map">
+                {/* Wrapping div required to ensure that images aren't generated with a ton of whitespace */}
+                <div ref={props.mapRef}>
+                  <h3 id="title">{this.props.mapTitle}</h3>
+                  <div id="map">
 
                     <MapCanvas 
                         mapDimensions={this.props.mapDimensions} 
@@ -22,7 +21,8 @@ class MapView extends Component {
                         mapEvolutionStates={this.props.mapEvolutionStates}
                         mapStyle={this.props.mapStyle} />
 
-                </div>
+                  </div>
+              </div>
             </div>
         )
     }
@@ -77,7 +77,5 @@ var MapCanvas = createReactClass({
         );
     }
 });
-
-
 
 export default MapView;
