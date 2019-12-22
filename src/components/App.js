@@ -62,8 +62,7 @@ function App(){
     function saveMap(){
         loaded = false;
         setCurrentUrl('(saving...)');
-        var hash = window.location.hash.replace("#", "");
-        saveToRemoteStorage(hash);
+        saveToRemoteStorage(window.location.hash.replace("#", ""));
     }
 
     const saveToRemoteStorage = function(hash) {
