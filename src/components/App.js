@@ -242,10 +242,7 @@ function App(){
                 });
             }
         }
-        function handleResize(){
-            generateMap(mapText);
-        }
-        window.addEventListener('resize', handleResize);
+        window.addEventListener('resize', () => generateMap(mapText, metaText));
         window.addEventListener('load',  loadMap);
     });
 
