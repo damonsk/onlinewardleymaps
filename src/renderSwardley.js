@@ -173,7 +173,7 @@ var renderElement = function (element, mapWidth, mapHeight) {
     }
 
     var elementSvg =
-        '<g id="element_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
+        '<g class="draggable node ' + (element.evolved ? "evolved" : '') + ' " id="element_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
         '<circle id="element_circle_' + element.id + '" cx="0" cy="0" r="5" stroke="' + (element.evolved ? 'red' : 'black') + '" fill="white" />' +
         text +
         '</g>';
@@ -252,6 +252,5 @@ export var renderSvg = function (mapScript, mapWidth, mapHeight) {
         '<g id="elements">' +
         renderElements(mergedElements, mapWidth, mapHeight) +
         '</g>';
-
     return mapSvg;
 };

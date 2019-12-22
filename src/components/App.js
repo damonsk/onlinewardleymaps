@@ -1,6 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
-
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
 import Breadcrumb from './editor/Breadcrumb';
@@ -35,12 +34,13 @@ function App(){
 
     const mutateMapText = (newText) => {
         setMapText(newText);
-        updateMap(newText, metaText);
     };
-
-    const updateMap = (newText, newMeta) => {
+    useEffect(() => {
+        updateMap(mapText, metaText);
+    })
+    const updateMap = () => {
         try {
-            generateMap(newText, newMeta);
+            generateMap(mapText, metaText);
         } catch (e) {
             console.log('Invalid markup, could not render.');
         }
@@ -49,7 +49,6 @@ function App(){
     function NewMap(){
         setMapText('');
         setMetaText('');
-        updateMap('','');
         window.location.hash = '';
         setCurrentUrl('(unsaved)');
     }
@@ -95,9 +94,12 @@ function App(){
         return calcWidth;
     };
 
+    //Height is currently fixed to 600.
+    const getHeight = () => 600
+
     function startDrag(evt) {
 
-        var target = evt.target;
+        var target = evt.currentTarget;
         if (target.nodeName == "tspan") {
             target = target.parentElement;
         }
@@ -105,22 +107,86 @@ function App(){
         if (target.classList.contains('draggable')) {
             selectedElement = target;
             offset = getMousePosition(evt);
+            if (target.classList.contains('node')) {
+                //set offset against transform x and y values from the SVG element
+                const transforms = selectedElement.transform.baseVal.consolidate().matrix;
+                offset.x -= transforms.e;
+                offset.y -= transforms.f;
+            }
             offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
             offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
         }
     }
-
+    //write mouse coords here to update everything in endDrag.
+    let coord;
     function drag(evt) {
         if (selectedElement) {
             evt.preventDefault();
-            var coord = getMousePosition(evt);
+            coord = getMousePosition(evt);
             $('tspan', $(selectedElement)).attr('x', coord.x - offset.x);
-            $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
-            setMetaData()
+            if (selectedElement.classList.contains('node')) {
+                $(selectedElement).attr("transform", `translate(${coord.x},${coord.y})`);
+            } else {
+                $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
+                setMetaData()
+            }
         }
     }
 
     function endDrag(evt) {
+        mutateMapText(
+            mapText
+                .split("\n")
+                .map(line => {
+                    console.log('component ' +
+                    selectedElement
+                        .querySelector("text")
+                        .childNodes[0].nodeValue
+                        .replace(/\s/g, "") + "[")
+                    if (
+                        line
+                            .replace(/\s/g, "") //Remove all whitespace from the line in case the user has been abusive with their spaces.
+                            //get node name from the rendered text in the map
+                            .indexOf(
+                                "component" +
+                                    selectedElement
+                                        .querySelector("text")
+                                        .childNodes[0].nodeValue.replace(
+                                            /\s/g,
+                                            ""
+                                        ) +
+                                    "[" //Ensure that we are at the end of the full component name by checking for a brace
+                            ) !== -1
+                    ) {
+                        //Update the component line in map text with new coord values.
+                        //For evolved components, we only update the evolved value
+                        if (selectedElement.classList.contains("evolved")) {
+                            return line.replace(
+                                //Take only the string evolve and the number that follows
+                                /\] evolve\s([\.0-9])+/g,
+                                `] evolve ${(
+                                    (1 / getWidth()) *
+                                    coord.x
+                                ).toFixed(2)}`
+                            );
+                        } else {
+                            return line.replace(
+                                /\[(.+?)\]/g, //Find everything inside square braces.
+                                `[${1 -
+                                    ((1 / getHeight()) * coord.y).toFixed(
+                                        2
+                                    )}, ${((1 / getWidth()) * coord.x).toFixed(
+                                    2
+                                )}]`
+                            );
+                        }
+                    } else {
+                        return line;
+                    }
+                })
+                .join("\n")
+        );
+
         setMetaData();
         selectedElement = null;
     }
@@ -130,7 +196,7 @@ function App(){
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
         setMapObject(r);
-        setMapDimensions({width: getWidth(), height: 600});
+        setMapDimensions({width: getWidth(), getHeight()});
         setMapStyle(r.presentation.style);
 
         $('g#map').html(renderSvg(r, getWidth(), 600));
@@ -184,40 +250,40 @@ function App(){
     });
 
     return (
-        <>
-        <nav className="navbar navbar-dark">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="#">
-                    <h3>Online Wardley Maps</h3>
-                </a>
-                <div id="controlsMenuControl">
-                    <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} downloadMapImage={downloadMap} />
-                </div>
-            </div>
-        </nav>
-
-        <Breadcrumb currentUrl={currentUrl} />
-
-        <div className="container-fluid">
-            <div className="row">
-                <div className="col">
-                    <Editor mapText={mapText} mutateMapText={mutateMapText} />
-                    <div className="form-group">
-                        <Meta metaText={metaText} />
-                        <Usage mapText={mapText} mutateMapText={mutateMapText} />
+    <React.Fragment>
+            <nav className="navbar navbar-dark">
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="#">
+                        <h3>Online Wardley Maps</h3>
+                    </a>
+                    <div id="controlsMenuControl">
+                        <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} downloadMapImage={downloadMap} />
                     </div>
                 </div>
+            </nav>
+
+            <Breadcrumb currentUrl={currentUrl} />
+
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col">
+                        <Editor mapText={mapText} mutateMapText={mutateMapText} />
+                        <div className="form-group">
+                            <Meta metaText={metaText} />
+                            <Usage mapText={mapText} mutateMapText={mutateMapText} />
+                        </div>
+                    </div>
       
-                <MapView 
-                        mapTitle={mapTitle} 
-                        mapObject={mapObject} 
-                        mapDimensions={mapDimensions} 
-                        mapEvolutionStates={mapEvolutionStates}
-                        mapStyle={mapStyle}
-                        mapRef={mapRef} />
+                    <MapView 
+                            mapTitle={mapTitle} 
+                            mapObject={mapObject} 
+                            mapDimensions={mapDimensions} 
+                            mapEvolutionStates={mapEvolutionStates}
+                            mapStyle={mapStyle}
+                            mapRef={mapRef} />
+                </div>
             </div>
-        </div>
-        </>
+        </React.Fragment>
     )
 }
 
