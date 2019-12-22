@@ -36,7 +36,7 @@ function App(){
             return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
         })
         setMetaText(JSON.stringify(i));
-    }
+    };
 
     const mutateMapText = (newText) => {
         setMapText(newText);
@@ -50,6 +50,42 @@ function App(){
             console.log('Invalid markup, could not render.');
         }
     };
+
+    const saveToRemoteStorage = function(hash) {
+        $.ajax({
+            type: "POST",
+            url: apiEndpoint + "save",
+            data: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                window.location.hash = '#' + data.id;
+                setCurrentUrl(window.location.href);
+            },
+            failure: function (errMsg) {
+                setCurrentUrl('(could not save map, please try again)')
+            }
+        });
+    };
+
+    const loadFromRemoteStorage(){
+        setCurrentUrl('(unsaved)');
+        generateMap('', '');
+        if (window.location.hash.length > 0 & loaded == false) {
+            loaded = true;
+            setCurrentUrl('(loading...)');
+            var fetch = apiEndpoint + "fetch?id=" + window.location.hash.replace("#", "");
+            $.getJSON(fetch, function (d) {
+                if (d.meta == undefined || d.meta == null) {
+                    d.meta = "";
+                }
+                setMapText(d.text);
+                setMetaText(d.meta);
+                updateMap(d.text, d.meta);
+                setCurrentUrl(window.location.href);
+            });
+        }
+    }
 
     function newMap(){
         setMapText('');
@@ -75,22 +111,7 @@ function App(){
         });
     }
 
-    const saveToRemoteStorage = function(hash) {
-        $.ajax({
-            type: "POST",
-            url: apiEndpoint + "save",
-            data: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                window.location.hash = '#' + data.id;
-                setCurrentUrl(window.location.href);
-            },
-            failure: function (errMsg) {
-                setCurrentUrl('(could not save map, please try again)')
-            }
-        });
-    };
+    
 
     var selectedElement, offset;
 
@@ -223,29 +244,9 @@ function App(){
         }
     };
 
-    
-
     React.useEffect(() => {
-        function loadMap(){
-            setCurrentUrl('(unsaved)');
-            generateMap('', '');
-            if (window.location.hash.length > 0 & loaded == false) {
-                loaded = true;
-                setCurrentUrl('(loading...)');
-                var fetch = apiEndpoint + "fetch?id=" + window.location.hash.replace("#", "");
-                $.getJSON(fetch, function (d) {
-                    if (d.meta == undefined || d.meta == null) {
-                        d.meta = "";
-                    }
-                    setMapText(d.text);
-                    setMetaText(d.meta);
-                    updateMap(d.text, d.meta);
-                    setCurrentUrl(window.location.href);
-                });
-            }
-        }
         window.addEventListener('resize', () => generateMap(mapText, metaText));
-        window.addEventListener('load',  loadMap);
+        window.addEventListener('load',  loadFromRemoteStorage);
     });
 
     return (
