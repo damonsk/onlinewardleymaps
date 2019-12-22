@@ -131,15 +131,24 @@ function App(){
             mapText
                 .split("\n")
                 .map(line => {
+                    console.log('component ' +
+                    selectedElement
+                        .querySelector("text")
+                        .childNodes[0].nodeValue
+                        .replace(/\s/g, "") + "[")
                     if (
                         line
                             .replace(/\s/g, "") //Remove all whitespace from the line in case the user has been abusive with their spaces.
                             //get node name from the rendered text in the map
                             .indexOf(
-                                selectedElement
-                                    .querySelector("text")
-                                    .childNodes[0].nodeValue
-                                    .replace(/\s/g, "") + "[" //Ensure that we are at the end of the full component name by checking for a brace
+                                "component" +
+                                    selectedElement
+                                        .querySelector("text")
+                                        .childNodes[0].nodeValue.replace(
+                                            /\s/g,
+                                            ""
+                                        ) +
+                                    "[" //Ensure that we are at the end of the full component name by checking for a brace
                             ) !== -1
                     ) {
                         //Update the component line in map text with new coord values.
@@ -149,13 +158,15 @@ function App(){
                                 //Take only the string evolve and the number that follows
                                 /\] evolve\s([\.0-9])+/g,
                                 `] evolve ${(
-                                    (1 / getWidth()) * coord.x
+                                    (1 / getWidth()) *
+                                    coord.x
                                 ).toFixed(2)}`
                             );
                         } else {
                             return line.replace(
                                 /\[(.+?)\]/g, //Find everything inside square braces.
-                                `[${1 - ((1 / getHeight()) * coord.y).toFixed(
+                                `[${1 -
+                                    ((1 / getHeight()) * coord.y).toFixed(
                                         2
                                     )}, ${((1 / getWidth()) * coord.x).toFixed(
                                     2
