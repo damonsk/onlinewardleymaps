@@ -68,7 +68,7 @@ function App(){
         });
     };
 
-    const loadFromRemoteStorage(){
+    const loadFromRemoteStorage = function(){
         setCurrentUrl('(unsaved)');
         generateMap('', '');
         if (window.location.hash.length > 0 & loaded == false) {
