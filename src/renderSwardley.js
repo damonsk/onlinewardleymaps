@@ -1,6 +1,4 @@
 
-var padding = 20;
-
 var visToY = function (visibility, mapHeight) {
     return (1 - visibility) * mapHeight;
 };
@@ -199,7 +197,7 @@ var renderElements = function (elements, mapWidth, mapHeight) {
     return elements.map(mapElement).join('');
 };
 
-var renderMap = function (mapScript, mapWidth, mapHeight) {
+export var renderSvg = function (mapScript, mapWidth, mapHeight) {
 
     var evolveElements = mapScript.elements.filter(el => el.evolving);
     var noneEvolving = mapScript.elements.filter(el => el.evolving == false);
@@ -224,7 +222,6 @@ var renderMap = function (mapScript, mapWidth, mapHeight) {
     var evolvedToEvolving = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && evolveElements.find(i => i.name == li.end));
 
     var mapSvg =
-        '<g id="map">' +
         '<g id="methods">' +
         renderMethods(nonEvolvedElements, mapScript.methods, mapWidth, mapHeight) +
         '</g>' +
@@ -254,79 +251,7 @@ var renderMap = function (mapScript, mapWidth, mapHeight) {
         '</g>' +
         '<g id="elements">' +
         renderElements(mergedElements, mapWidth, mapHeight) +
-        '</g>'
-    '</g>';
-
-    return mapSvg;
-};
-
-export var renderSvg = function (mapScript, mapWidth, mapHeight) {
-    var svgWidth = mapWidth + 2 * padding;
-    var svgHeight = mapHeight + 4 * padding;
-    var vbWidth = mapWidth + padding;
-    var vbHeight = mapHeight + padding;
-    var custMark = mapWidth / 4;
-    var prodMark = mapWidth / 2;
-    var commMark = mapWidth / 4 * 3;
-    var visMark = mapHeight / 2;
-    var svgHeader =
-        '<svg class="' + mapScript.presentation.style + '" id="svgMap" width="' + svgWidth + '" height="' + svgHeight + '" viewbox="-' + padding + ' 0 ' + vbWidth + ' ' + vbHeight + '" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' +
-        '<defs>' +
-        '<marker id="arrow" markerWidth="10" markerHeight="10" refX="15" refY="0" viewBox="0 -5 10 10" orient="0">' +
-        '<path d="M0,-5L10,0L0,5" fill="#ff0000" />' +
-        '</marker>' +
-        '</defs>' +
-        '<g id="grid">' +
-        '<g id="valueChain" transform="translate(0,' + mapHeight + ') rotate(270)">' +
-        '<line x1="0" y1="0" x2="' + mapHeight + '" y2="0" stroke="black"/>' +
-        '<line x1="-2em" y1="' + custMark + '" x2="' + mapHeight + '" y2="' + custMark + '" stroke="black" stroke-dasharray="5,5"/>' +
-        '<line x1="-2em" y1="' + prodMark + '" x2="' + mapHeight + '" y2="' + prodMark + '" stroke="black" stroke-dasharray="5,5"/>' +
-        '<line x1="-2em" y1="' + commMark + '" x2="' + mapHeight + '" y2="' + commMark + '" stroke="black" stroke-dasharray="5,5"/>' +
-        '<text x="0" y="-0.2em" text-anchor="start">' +
-        'Invisible' +
-        '</text>' +
-        '<text x="' + visMark + '" y="-0.2em" text-anchor="middle" font-weight="bold">' +
-        'Value Chain' +
-        '</text>' +
-        '<text x="' + mapHeight + '" y="-0.2em" text-anchor="end">' +
-        'Visible' +
-        '</text>' +
-        '</g>' +
-        '<g id="Evolution" transform="translate(0,' + mapHeight + ')">' +
-        '<line x1="0" y1="0" x2="' + mapWidth + '" y2="0" stroke="black"/>' +
-        '<text x="0" y="1em" text-anchor="start">' +
-        mapScript.evolution[0].line1 +
-        '</text>' +
-        '<text x="0" y="2em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[0].line2 +
-        '</text>' +
-        '<text x="' + custMark + '" y="1em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[1].line1 +
-        '</text>' +
-        '<text x="' + custMark + '" y="2em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[1].line2 +
-        '</text>' +
-        '<text x="' + prodMark + '" y="1em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[2].line1 +
-        '</text>' +
-        '<text x="' + prodMark + '" y="2em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[2].line2 +
-        '</text>' +
-        '<text x="' + commMark + '" y="1em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[3].line1 +
-        '</text>' +
-        '<text x="' + commMark + '" y="2em" text-anchor="start">' +
-        '&nbsp;' + mapScript.evolution[3].line2 +
-        '</text>' +
-        '<text x="' + mapWidth + '" y="1.5em" text-anchor="end" font-weight="bold">' +
-        'Evolution' +
-        '</text>' +
-        '</g>' +
         '</g>';
 
-    var svgFooter =
-        '</g>' +
-        '</svg> ';
-
-    return svgHeader + renderMap(mapScript, mapWidth, mapHeight) + svgFooter;
+    return mapSvg;
 };
