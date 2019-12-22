@@ -198,6 +198,11 @@ function App(){
         setMapObject(r);
         setMapDimensions({width: getWidth(), height: getHeight()});
         setMapStyle(r.presentation.style);
+        setMapEvolutionStates({
+            genesis: r.evolution[0].line1, 
+            custom:r.evolution[1].line1, 
+            product: r.evolution[2].line1, 
+            commodity: r.evolution[3].line1});
 
         $('g#map').html(renderSvg(r, getWidth(), 600));
         $('.draggable').on('mousedown', startDrag)
