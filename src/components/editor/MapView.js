@@ -11,7 +11,7 @@ class MapView extends Component {
         return (
             <div className="col-8">
                 {/* Wrapping div required to ensure that images aren't generated with a ton of whitespace */}
-                <div ref={props.mapRef}>
+                <div ref={this.props.mapRef}>
                   <h3 id="title">{this.props.mapTitle}</h3>
                   <div id="map">
 
