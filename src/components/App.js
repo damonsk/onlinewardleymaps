@@ -17,6 +17,10 @@ function App(){
     const [metaText, setMetaText] = useState('');
     const [mapText, setMapText] = useState('');
     const [mapTitle, setMapTitle] = useState('Untitled Map');
+    const [mapObject, setMapObject] = useState({});
+    const [mapDimensions, setMapDimensions] = useState({width: 500, height: 600});
+    const [mapEvolutionStates, setMapEvolutionStates] = useState({genesis: "Genesis", custom:"Custom Built", product: "Product", commodity: "Commodity"});
+    const [mapStyle, setMapStyle] = useState('plain');
 
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
@@ -121,7 +125,11 @@ function App(){
         loaded = false;
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
-        $('#map').html(renderSvg(r, getWidth(), 600));
+        setMapObject(r);
+        setMapDimensions({width: getWidth(), height: 600});
+        setMapStyle(r.presentation.style);
+
+        $('g#map').html(renderSvg(r, getWidth(), 600));
         $('.draggable').on('mousedown', startDrag)
             .on('mousemove', drag)
             .on('mouseup', endDrag);
@@ -185,7 +193,12 @@ function App(){
                         <Usage mapText={mapText} mutateMapText={mutateMapText} />
                     </div>
                 </div>
-                <MapView mapTitle={mapTitle} />
+                <MapView 
+                        mapTitle={mapTitle} 
+                        mapObject={mapObject} 
+                        mapDimensions={mapDimensions} 
+                        mapEvolutionStates={mapEvolutionStates}
+                        mapStyle={mapStyle} />
             </div>
         </div>
         </>
