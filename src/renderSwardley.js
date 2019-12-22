@@ -1,6 +1,4 @@
 
-var padding = 20;
-
 var visToY = function (visibility, mapHeight) {
     return (1 - visibility) * mapHeight;
 };
