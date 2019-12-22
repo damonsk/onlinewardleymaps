@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
 import Breadcrumb from './editor/Breadcrumb';
@@ -17,6 +18,12 @@ function App(){
     const [metaText, setMetaText] = useState('');
     const [mapText, setMapText] = useState('');
     const [mapTitle, setMapTitle] = useState('Untitled Map');
+    const [mapObject, setMapObject] = useState({});
+    const [mapDimensions, setMapDimensions] = useState({width: 500, height: 600});
+    const [mapEvolutionStates, setMapEvolutionStates] = useState({genesis: "Genesis", custom:"Custom Built", product: "Product", commodity: "Commodity"});
+    const [mapStyle, setMapStyle] = useState('plain');
+
+    const mapRef = useRef(null);
 
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
@@ -25,7 +32,7 @@ function App(){
         setMetaText(JSON.stringify(i));
     }
 
-    const mutateMapText =  (newText) => {
+    const mutateMapText = (newText) => {
         setMapText(newText);
     };
     useEffect(() => {
@@ -188,12 +195,14 @@ function App(){
         loaded = false;
         var r = new Convert().parse(txt);
         setMapTitle(r.title);
-        $("#map")
-            .html(renderSvg(r, getWidth(), getHeight()))
-            .on("mousemove", drag);
-        $(".draggable")
-            .on("mousedown", startDrag)
-            .on("mouseup", endDrag);
+        setMapObject(r);
+        setMapDimensions({width: getWidth(), getHeight()});
+        setMapStyle(r.presentation.style);
+
+        $('g#map').html(renderSvg(r, getWidth(), 600));
+        $('.draggable').on('mousedown', startDrag)
+            .on('mousemove', drag)
+            .on('mouseup', endDrag);
         if (meta.length > 0) {
             var items = JSON.parse(meta);
             items.forEach(element => {
@@ -202,6 +211,16 @@ function App(){
             });
         }
     };
+
+    function downloadMap() {
+        html2canvas(mapRef.current).then(canvas => {
+            const base64image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = mapTitle;
+            link.href = base64image;
+            link.click();
+        });
+    }
 
     React.useEffect(() => {
 
@@ -231,14 +250,14 @@ function App(){
     });
 
     return (
-        <React.Fragment>
+    <React.Fragment>
             <nav className="navbar navbar-dark">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="#">
                         <h3>Online Wardley Maps</h3>
                     </a>
                     <div id="controlsMenuControl">
-                        <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} />
+                        <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} downloadMapImage={downloadMap} />
                     </div>
                 </div>
             </nav>
@@ -254,7 +273,14 @@ function App(){
                             <Usage mapText={mapText} mutateMapText={mutateMapText} />
                         </div>
                     </div>
-                    <MapView mapTitle={mapTitle} />
+      
+                    <MapView 
+                            mapTitle={mapTitle} 
+                            mapObject={mapObject} 
+                            mapDimensions={mapDimensions} 
+                            mapEvolutionStates={mapEvolutionStates}
+                            mapStyle={mapStyle}
+                            mapRef={mapRef} />
                 </div>
             </div>
         </React.Fragment>
