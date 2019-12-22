@@ -13,7 +13,6 @@ function App(){
 
     const apiEndpoint = 'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
     let loaded = false;
-    const getHeight = () => 600;
     const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
     const [mapText, setMapText] = useState('');
@@ -23,6 +22,14 @@ function App(){
     const [mapEvolutionStates, setMapEvolutionStates] = useState({genesis: "Genesis", custom:"Custom Built", product: "Product", commodity: "Commodity"});
     const [mapStyle, setMapStyle] = useState('plain');
     const mapRef = useRef(null);
+
+    const getHeight = () => 600;
+    const getWidth = function () {
+        var textWidth = $('#htmPane').width();
+        var width = $(window).width();
+        var calcWidth = (width - textWidth - 120);
+        return calcWidth;
+    };
 
     const setMetaData = () =>{
         var i = $.map($('.draggable'), function (el) {
@@ -86,12 +93,7 @@ function App(){
         };
     }
 
-    var getWidth = function () {
-        var textWidth = $('#htmPane').width();
-        var width = $(window).width();
-        var calcWidth = (width - textWidth - 120);
-        return calcWidth;
-    };
+    
 
     
 
