@@ -110,33 +110,16 @@ function App(){
             offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
         }
     }
-
+    //write mouse coords here to update everything in endDrag.
+    let coord;
     function drag(evt) {
         if (selectedElement) {
             evt.preventDefault();
-            var coord = getMousePosition(evt);
+            coord = getMousePosition(evt);
             $('tspan', $(selectedElement)).attr('x', coord.x - offset.x);
             if (selectedElement.classList.contains('node')) {
                 $(selectedElement).attr("transform", `translate(${coord.x},${coord.y})`);
                 //return line from the editor that need to be updated
-                mutateMapText(mapText.split('\n')
-                    .map(line => {
-                        //Remove all whitespace from the line in case the user has been abusive with their spaces.
-                        if (line.replace(/\s/g, '')
-                            //get text from the node in the map.
-                            .indexOf(selectedElement.querySelector('text').childNodes[0].nodeValue
-                                //Ensure that we are at the end of the full component name by checking for a bracket
-                                .replace(/\s/g, '') + '['
-                            ) !== -1) {
-                            //Update the component line in map text with new coord values.
-                            return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100).toFixed(2)}, ${((100 / getWidth() * coord.x) / 100).toFixed(2)}]`)
-                        } else {
-                            return line;
-                        }
-
-                    })
-                    .join('\n')
-                );
 
             } else {
                 $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
@@ -146,6 +129,24 @@ function App(){
     }
 
     function endDrag(evt) {
+        mutateMapText(mapText.split('\n')
+            .map(line => {
+                //Remove all whitespace from the line in case the user has been abusive with their spaces.
+                if (line.replace(/\s/g, '')
+                    //get text from the node in the map.
+                    .indexOf(selectedElement.querySelector('text').childNodes[0].nodeValue
+                        //Ensure that we are at the end of the full component name by checking for a bracket
+                        .replace(/\s/g, '') + '['
+                    ) !== -1) {
+                    //Update the component line in map text with new coord values.
+                    return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100).toFixed(2)}, ${((100 / getWidth() * coord.x) / 100).toFixed(2)}]`)
+                } else {
+                    return line;
+                }
+
+            })
+            .join('\n')
+        );
         setMetaData();
         selectedElement = null;
     }
