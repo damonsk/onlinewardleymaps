@@ -146,8 +146,8 @@ function App(){
                         //For evolved components, we only update the evolved value
                         if (selectedElement.classList.contains("evolved")) {
                             return line.replace(
-                                //Take all characters after the closing brace
-                                /\](.+)/g,
+                                //Take only the string evolve and the number that follows
+                                /\] evolve\s([\.0-9])+/g,
                                 `] evolve ${(
                                     (1 / getWidth()) * coord.x
                                 ).toFixed(2)}`
