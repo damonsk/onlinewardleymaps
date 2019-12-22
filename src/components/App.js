@@ -63,10 +63,10 @@ function App(){
         loaded = false;
         setCurrentUrl('(saving...)');
         var hash = window.location.hash.replace("#", "");
-        save(hash);
+        saveToRemoteStorage(hash);
     }
 
-    const save = function(hash) {
+    const saveToRemoteStorage = function(hash) {
         $.ajax({
             type: "POST",
             url: apiEndpoint + "save",
