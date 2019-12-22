@@ -34,13 +34,12 @@ function App(){
 
     const mutateMapText = (newText) => {
         setMapText(newText);
+        updateMap(newText, metaText);
     };
-    useEffect(() => {
-        //updateMap(mapText, metaText);
-    })
-    const updateMap = () => {
+
+    const updateMap = (newText, newMeta) => {
         try {
-            generateMap(mapText, metaText);
+            generateMap(newText, newMeta);
         } catch (e) {
             console.log('Invalid markup, could not render.');
         }
@@ -49,6 +48,7 @@ function App(){
     function NewMap(){
         setMapText('');
         setMetaText('');
+        updateMap('','');
         window.location.hash = '';
         setCurrentUrl('(unsaved)');
     }
