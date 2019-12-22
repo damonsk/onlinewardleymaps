@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
 import Breadcrumb from './editor/Breadcrumb';
@@ -25,14 +25,15 @@ function App(){
         setMetaText(JSON.stringify(i));
     }
 
-    const mutateMapText = (newText) => {
+    const mutateMapText =  (newText) => {
         setMapText(newText);
-        updateMap(newText, metaText);
     };
-
-    const updateMap = (newText, newMeta) => {
+    useEffect(() => {
+        updateMap(mapText, metaText);
+    })
+    const updateMap = () => {
         try {
-            generateMap(newText, newMeta);
+            generateMap(mapText, metaText);
         } catch (e) {
             console.log('Invalid markup, could not render.');
         }
@@ -41,7 +42,6 @@ function App(){
     function NewMap(){
         setMapText('');
         setMetaText('');
-        updateMap('','');
         window.location.hash = '';
         setCurrentUrl('(unsaved)');
     }
@@ -129,7 +129,7 @@ function App(){
                                 .replace(/\s/g, '') + '['
                             ) !== -1) {
                             //Update the component line in map text with new coord values.
-                            return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100)}, ${(100 / getWidth() * coord.x) / 100}]`)
+                            return line.replace(/\[(.+?)\]/g, `[${1 - ((100 / getHeight() * coord.y) / 100).toFixed(2)}, ${((100 / getWidth() * coord.x) / 100).toFixed(2)}]`)
                         } else {
                             return line;
                         }
