@@ -51,7 +51,7 @@ function App(){
         }
     };
 
-    function NewMap(){
+    function newMap(){
         setMapText('');
         setMetaText('');
         updateMap('','');
@@ -59,7 +59,7 @@ function App(){
         setCurrentUrl('(unsaved)');
     }
 
-    function SaveMap(){
+    function saveMap(){
         loaded = false;
         setCurrentUrl('(saving...)');
         var hash = window.location.hash.replace("#", "");
@@ -92,10 +92,6 @@ function App(){
             y: (evt.clientY - CTM.f) / CTM.d
         };
     }
-
-    
-
-    
 
     function startDrag(evt) {
 
@@ -228,7 +224,6 @@ function App(){
     }
 
     React.useEffect(() => {
-
         function loadMap(){
             setCurrentUrl('(unsaved)');
             generateMap('', '');
@@ -262,7 +257,7 @@ function App(){
                         <h3>Online Wardley Maps</h3>
                     </a>
                     <div id="controlsMenuControl">
-                        <Controls mutateMapText={mutateMapText} newMapClick={NewMap} saveMapClick={SaveMap} downloadMapImage={downloadMap} />
+                        <Controls mutateMapText={mutateMapText} newMapClick={newMap} saveMapClick={saveMap} downloadMapImage={downloadMap} />
                     </div>
                 </div>
             </nav>
