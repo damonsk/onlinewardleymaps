@@ -4,7 +4,6 @@ var createReactClass = require('create-react-class');
 function Meta(props) {
 
     const [showMeta, setShowMeta] = useState(false);
-
     const onClickAlert = function(){
         setShowMeta(!showMeta);
     }
