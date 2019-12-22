@@ -36,7 +36,7 @@ function App(){
         setMapText(newText);
     };
     useEffect(() => {
-        updateMap(mapText, metaText);
+        //updateMap(mapText, metaText);
     })
     const updateMap = () => {
         try {
