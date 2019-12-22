@@ -13,7 +13,7 @@ function App(){
 
     const apiEndpoint = 'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
     let loaded = false;
-
+    const getHeight = () => 600;
     const [currentUrl, setCurrentUrl] = useState('');
     const [metaText, setMetaText] = useState('');
     const [mapText, setMapText] = useState('');
@@ -22,7 +22,6 @@ function App(){
     const [mapDimensions, setMapDimensions] = useState({width: 500, height: 600});
     const [mapEvolutionStates, setMapEvolutionStates] = useState({genesis: "Genesis", custom:"Custom Built", product: "Product", commodity: "Commodity"});
     const [mapStyle, setMapStyle] = useState('plain');
-
     const mapRef = useRef(null);
 
     const setMetaData = () =>{
@@ -94,8 +93,7 @@ function App(){
         return calcWidth;
     };
 
-    //Height is currently fixed to 600.
-    const getHeight = () => 600
+    
 
     function startDrag(evt) {
 
