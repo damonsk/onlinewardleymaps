@@ -119,8 +119,6 @@ function App(){
             $('tspan', $(selectedElement)).attr('x', coord.x - offset.x);
             if (selectedElement.classList.contains('node')) {
                 $(selectedElement).attr("transform", `translate(${coord.x},${coord.y})`);
-                //return line from the editor that need to be updated
-
             } else {
                 $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
                 setMetaData()
