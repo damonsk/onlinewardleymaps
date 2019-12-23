@@ -58,6 +58,8 @@ var MapCanvas = createReactClass({
             return getElementByName(startElements, l.start) != undefined && getElementByName(endElements, l.end) != undefined
         }
 
+        
+
         var evolvingEndLinks = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.end) && mapElements.getNoneEvolvingElements().find(i => i.name == li.start));
         var evolvedToEvolving = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.start) && mapElements.getEvolveElements().find(i => i.name == li.end));
         var bothEvolved = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.start) && mapElements.getEvolvedElements().find(i => i.name == li.end));
@@ -91,12 +93,13 @@ var MapCanvas = createReactClass({
                 </g>
                 <g id="map">
                     <g id="methods">
-                    {this.props.mapObject.methods.map((m, i) => 
-                        <MethodElement 
+                    {this.props.mapObject.methods.map((m, i) => getElementByName(mapElements.getNonEvolvedElements(), m.name) == undefined ? null 
+                        : <MethodElement 
                             key={i} 
                             element={getElementByName(mapElements.getNonEvolvedElements(), m.name)} 
                             mapDimensions={this.props.mapDimensions} 
                             method={m} /> 
+                    
                     )}
                     </g>
                     <g id="links">
