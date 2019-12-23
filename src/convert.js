@@ -126,7 +126,6 @@ export default class Convert {
 
         for (let i = 0; i < elementsAsArray.length; i++) {
             const element = elementsAsArray[i];
-            console.log(element);
             if (element.trim().length > 0 &&
                 element.trim().indexOf('evolution') == -1 &&
                 element.trim().indexOf('component') == -1 &&
