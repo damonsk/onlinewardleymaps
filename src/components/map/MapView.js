@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
+import ComponentLink from './ComponentLink';
 var createReactClass = require('create-react-class');
 
 
@@ -54,6 +55,10 @@ var MapCanvas = createReactClass({
         var commMark = (this.props.mapDimensions.width / 4 * 3) + 2;
         var visMark = this.props.mapDimensions.height / 2;
 
+        var canSatisfyLink = function(l){
+            return getElementByName(mapElements.getMergedElements(), l.start) != undefined && getElementByName(mapElements.getMergedElements(), l.end) != undefined
+        }
+
         return (
             <>
             <svg className={this.props.mapStyle} id="svgMap" width={svgWidth} height={svgHeight} viewBox={"-" + this.props.mapPadding + " 0 " + vbWidth + " " + vbHeight} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
@@ -94,6 +99,17 @@ var MapCanvas = createReactClass({
                             mapDimensions={this.props.mapDimensions} 
                             method={m} /> 
                     )}
+                    </g>
+                    <g id="links">
+                        {this.props.mapObject.links.map((l, i) => canSatisfyLink(l) == false ? null : <ComponentLink
+                                    key={i}
+                                    mapDimensions={this.props.mapDimensions} 
+                                    startElement={getElementByName(mapElements.getMergedElements(), l.start)}
+                                    endElement={getElementByName(mapElements.getMergedElements(), l.end)}
+                                    link={l}
+                                    />
+ 
+                        )}
                     </g>
                 </g>
                 <g id="map">
