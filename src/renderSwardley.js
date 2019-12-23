@@ -2,6 +2,7 @@ import MapPositionCalculator from "./MapPositionCalculator";
 
 var _mapHelper = new MapPositionCalculator();
 
+//ComponentLink.
 var renderLink = function (startElement, endElement, link, mapWidth, mapHeight) {
     var x1 = _mapHelper.maturityToX(startElement.maturity, mapWidth);
     var x2 = _mapHelper.maturityToX(endElement.maturity, mapWidth);
