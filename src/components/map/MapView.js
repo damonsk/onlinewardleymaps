@@ -54,10 +54,6 @@ var MapCanvas = createReactClass({
         var commMark = (this.props.mapDimensions.width / 4 * 3) + 2;
         var visMark = this.props.mapDimensions.height / 2;
 
-        const evolveElements = this.props.mapObject.elements.filter(el => el.evolving);
-        const noneEvolving = this.props.mapObject.elements.filter(el => el.evolving == false);
-        const nonEvolvedElements = noneEvolving.concat(evolveElements);
-
         return (
             <>
             <svg className={this.props.mapStyle} id="svgMap" width={svgWidth} height={svgHeight} viewBox={"-" + this.props.mapPadding + " 0 " + vbWidth + " " + vbHeight} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
