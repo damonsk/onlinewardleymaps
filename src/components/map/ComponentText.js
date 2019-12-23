@@ -4,22 +4,26 @@ function ComponentText(props){
 
     const elementId = "element_text_" + props.element.id;
     const getMetaPosition = () => {
+        var defaultPosition = {
+            x: 5,
+            y: -5,
+            coords: {},
+        };
         if(props.metaText.length > 0){
             var meta = JSON.parse(props.metaText);
             var itemToModify = meta.find((el) => {
                 if(el.name == elementId) return el;
             });
-            return {
-                x: itemToModify.x,
-                y: itemToModify.y,
-                coords: {},
+            if(itemToModify != undefined){
+                return {
+                    x: itemToModify.x,
+                    y: itemToModify.y,
+                    coords: {},
+                }
             }
+            else return defaultPosition;
         }
-        return {
-            x: 5,
-            y: -5,
-            coords: {},
-        };
+        return defaultPosition;
     }
 
 
@@ -70,6 +74,9 @@ function ComponentText(props){
     const endDrag = () =>{
         if(props.metaText.length>0){
             var meta = JSON.parse(props.metaText);
+            if(meta.find((el) => el.name == elementId) == undefined){
+                meta.push({name: elementId, x: position.x, y: position.y});
+            }
             var modifiedArray = meta.map((el) => {
                 if(el.name == elementId) {
                     el.x = position.x;
