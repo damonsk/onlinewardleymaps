@@ -7,5 +7,4 @@ export default class MapPositionCalculator {
     maturityToX (maturity, mapWidth) {
         return maturity * mapWidth;
     }
-
 }

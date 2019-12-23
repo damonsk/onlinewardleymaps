@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import MethodElement from './MethodElement';
+import MapElements from '../../MapElements';
 var createReactClass = require('create-react-class');
+
 
 class MapView extends Component {
 
@@ -33,6 +35,8 @@ class MapView extends Component {
 
 var MapCanvas = createReactClass({
     render: function() {
+
+        var mapElements = new MapElements(this.props.mapObject);
 
         var getElementByName = function (elements, name) {
             var hasName = function (element) {
@@ -90,7 +94,7 @@ var MapCanvas = createReactClass({
                     {this.props.mapObject.methods.map((m, i) => 
                         <MethodElement 
                             key={i} 
-                            element={getElementByName(nonEvolvedElements, m.name)} 
+                            element={getElementByName(mapElements.getNonEvolvedElements(), m.name)} 
                             mapDimensions={this.props.mapDimensions} 
                             method={m} /> 
                     )}
