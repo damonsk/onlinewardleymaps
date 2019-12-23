@@ -181,7 +181,9 @@ function App(){
                             mapRef={mapRef}
                             mapObject={mapObject}
                             mapText={mapText}
-                            mutateMapText={mutateMapText} />
+                            mutateMapText={mutateMapText}
+                            setMetaText={setMetaText}
+                            metaText={metaText} />
                 </div>
             </div>
         </React.Fragment>

@@ -31,6 +31,8 @@ class MapView extends Component {
                         mapObject={this.props.mapObject}
                         mapText={this.props.mapText}
                         mutateMapText={this.props.mutateMapText}
+                        setMetaText={this.props.setMetaText}
+                        metaText={this.props.metaText}
                         />
 
                   </div>
@@ -80,7 +82,8 @@ var MapCanvas = createReactClass({
                 </defs>
                 <g id="grid">
 
-                    <MapGrid mapDimensions={this.props.mapDimensions} />
+                    <MapGrid 
+                        mapDimensions={this.props.mapDimensions} />
                     <MapEvolution 
                         mapDimensions={this.props.mapDimensions} 
                         mapEvolutionStates={this.props.mapEvolutionStates} />
@@ -187,6 +190,8 @@ var MapCanvas = createReactClass({
                                 element={el}
                                 mapText={this.props.mapText}
                                 mutateMapText={this.props.mutateMapText}
+                                setMetaText={this.props.setMetaText}
+                                metaText={this.props.metaText}
                                 />
                             )}
                     </g>

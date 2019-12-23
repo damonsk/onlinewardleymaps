@@ -23,30 +23,21 @@ export default class Convert {
             const element = elementsAsArray[i];
             if (element.trim().indexOf('outsource ') == 0) {
                 let name = element.split('outsource ')[1].trim();
-
-                methodElements.push(
-                    {
-                        name: name,
-                        method: "outsource"
-                    });
+                if(name.length > 0){
+                    methodElements.push({name: name,method: "outsource"});
+                }
             }
             else if (element.trim().indexOf('build ') == 0) {
                 let name = element.split('build ')[1].trim();
-
-                methodElements.push(
-                    {
-                        name: name,
-                        method: "build"
-                    });
+                if(name.length > 0){
+                    methodElements.push({ name: name, method: "build" });
+                }
             }
             else if (element.trim().indexOf('buy ') == 0) {
                 let name = element.split('buy ')[1].trim();
-
-                methodElements.push(
-                    {
-                        name: name,
-                        method: "buy"
-                    });
+                if(name.length > 0){
+                    methodElements.push({name: name, method: "buy" });
+                }
             }
         }
 
