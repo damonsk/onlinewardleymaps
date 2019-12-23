@@ -54,10 +54,7 @@ function App(){
     };
 
     const updateMap = (newText, newMeta) => {
-
-            generateMap(newText, newMeta);
-
-
+        generateMap(newText, newMeta);  
     };
 
     const saveToRemoteStorage = function(hash) {
@@ -120,112 +117,6 @@ function App(){
         });
     }
 
-
-
-    var selectedElement, offset;
-
-    function getMousePosition(evt) {
-        var CTM = document.getElementById('svgMap').getScreenCTM();
-        return {
-            x: (evt.clientX - CTM.e) / CTM.a,
-            y: (evt.clientY - CTM.f) / CTM.d
-        };
-    }
-
-    function startDrag(evt) {
-
-        var target = evt.currentTarget;
-        if (target.nodeName == "tspan") {
-            target = target.parentElement;
-        }
-
-        if (target.classList.contains('draggable')) {
-            selectedElement = target;
-            offset = getMousePosition(evt);
-            if (target.classList.contains('node')) {
-                //set offset against transform x and y values from the SVG element
-                const transforms = selectedElement.transform.baseVal.consolidate().matrix;
-                offset.x -= transforms.e;
-                offset.y -= transforms.f;
-            }
-            offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
-            offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
-        }
-    }
-    //write mouse coords here to update everything in endDrag.
-    let coord;
-    function drag(evt) {
-        if (selectedElement) {
-            evt.preventDefault();
-            coord = getMousePosition(evt);
-            $('tspan', $(selectedElement)).attr('x', coord.x - offset.x);
-            if (selectedElement.classList.contains('node')) {
-                $(selectedElement).attr("transform", `translate(${coord.x},${coord.y})`);
-            } else {
-                $(selectedElement).attr("x", coord.x - offset.x).attr("y", coord.y - offset.y);
-                setMetaData()
-            }
-        }
-    }
-
-    function endDrag(evt) {
-        mutateMapText(
-            mapText
-                .split("\n")
-                .map(line => {
-                    console.log('component ' +
-                    selectedElement
-                        .querySelector("text")
-                        .childNodes[0].nodeValue
-                        .replace(/\s/g, "") + "[")
-                    if (
-                        line
-                            .replace(/\s/g, "") //Remove all whitespace from the line in case the user has been abusive with their spaces.
-                            //get node name from the rendered text in the map
-                            .indexOf(
-                                "component" +
-                                    selectedElement
-                                        .querySelector("text")
-                                        .childNodes[0].nodeValue.replace(
-                                            /\s/g,
-                                            ""
-                                        ) +
-                                    "[" //Ensure that we are at the end of the full component name by checking for a brace
-                            ) !== -1
-                    ) {
-                        //Update the component line in map text with new coord values.
-                        //For evolved components, we only update the evolved value
-                        if (selectedElement.classList.contains("evolved")) {
-                            return line.replace(
-                                //Take only the string evolve and the number that follows
-                                /\] evolve\s([\.0-9])+/g,
-                                `] evolve ${(
-                                    (1 / getWidth()) *
-                                    coord.x
-                                ).toFixed(2)}`
-                            );
-                        } else {
-                            return line.replace(
-                                /\[(.+?)\]/g, //Find everything inside square braces.
-                                `[${1 -
-                                    ((1 / getHeight()) * coord.y).toFixed(
-                                        2
-                                    )}, ${((1 / getWidth()) * coord.x).toFixed(
-                                    2
-                                )}]`
-                            );
-                        }
-                    } else {
-                        return line;
-                    }
-                })
-                .join("\n")
-        );
-
-        setMetaData();
-        selectedElement = null;
-    }
-
     function generateMap(txt, meta) {
         loaded = false;
         try {
@@ -249,22 +140,7 @@ function App(){
     React.useEffect(() => {
         window.addEventListener('resize', () => generateMap(mapText, metaText));
         window.addEventListener('load', loadFromRemoteStorage);
-        try {
-            // $('#map').on('mousemove', drag);
-            // $('.draggable').on('mousedown', startDrag)
-            //     .on('mouseup', endDrag);
-            // if (metaText.length > 0) {
-            //     var items = JSON.parse(meta);
-            //     items.forEach(element => {
-            //         $('#' + element.name).attr('x', element.x).attr('y', element.y);
-            //         $('tspan', $('#' + element.name)).attr('x', element.x);
-            //     });
-            // }
-
-        } catch (err) {
-            console.log('Invalid markup, could not render.');
-        }
-
+        
         return function cleanup() {
             window.removeEventListener('resize', () => generateMap(mapText, metaText));
             window.removeEventListener('load', loadFromRemoteStorage);
@@ -303,7 +179,9 @@ function App(){
                             mapEvolutionStates={mapEvolutionStates}
                             mapStyle={mapStyle}
                             mapRef={mapRef}
-                            mapObject={mapObject} />
+                            mapObject={mapObject}
+                            mapText={mapText}
+                            mutateMapText={mutateMapText} />
                 </div>
             </div>
         </React.Fragment>

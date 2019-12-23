@@ -29,6 +29,8 @@ class MapView extends Component {
                         mapEvolutionStates={this.props.mapEvolutionStates}
                         mapStyle={this.props.mapStyle} 
                         mapObject={this.props.mapObject}
+                        mapText={this.props.mapText}
+                        mutateMapText={this.props.mutateMapText}
                         />
 
                   </div>
@@ -183,6 +185,8 @@ var MapCanvas = createReactClass({
                                 key={i}
                                 mapDimensions={this.props.mapDimensions} 
                                 element={el}
+                                mapText={this.props.mapText}
+                                mutateMapText={this.props.mutateMapText}
                                 />
                             )}
                     </g>
