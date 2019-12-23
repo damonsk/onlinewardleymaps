@@ -22,7 +22,6 @@ function EvolvingComponentLink(props){
             boundary = 0.75;
         }
         var boundaryX = mapCalc.maturityToX(boundary, props.mapDimensions.width);
-        //returnString = returnString + '<line x1="' + (boundaryX) + '" y1="' + (y2 - 10) + '" x2="' + (boundaryX) + '" y2="' + (y2 + 10) + '" stroke="black" stroke-width="6" />';
     }
 
     return (
@@ -36,7 +35,7 @@ function EvolvingComponentLink(props){
                 markerStart="url(#arrow)"
                 stroke="red" />
             {props.endElement.inertia == false ? null 
-                : <line x1={boundaryX} y1={(y2() - 10)} x2={boundaryX} y2={(y2() + 10)} stroke="black" stroke-width="6" />
+                : <line x1={boundaryX} y1={(y2() - 10)} x2={boundaryX} y2={(y2() + 10)} stroke="black" strokeWidth="6" />
             }
 
         </g>

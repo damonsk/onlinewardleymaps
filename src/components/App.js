@@ -6,7 +6,6 @@ import Breadcrumb from './editor/Breadcrumb';
 import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
-import {renderSvg} from '../renderSwardley';
 import Convert from '../convert';
 
 function App(){
