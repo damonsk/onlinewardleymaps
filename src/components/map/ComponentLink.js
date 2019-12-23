@@ -27,17 +27,17 @@ function ComponentLink(props){
     }
 
     return (
-        <>
-        <line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke={defineStoke()} />
-        {isFlow() ? <FlowLink 
-            endElement={props.endElement} 
-            startElement={props.startElement} 
-            link={props.link}
-            x1={x1()}
-            x2={x2()}
-            y1={y1()}
-            y2={y2()} /> : null }
-        </>
+        <g id={props.key}>
+            <line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke={defineStoke()} />
+            {isFlow() ? <FlowLink 
+                endElement={props.endElement} 
+                startElement={props.startElement} 
+                link={props.link}
+                x1={x1()}
+                x2={x2()}
+                y1={y1()}
+                y2={y2()} /> : null }
+        </g>
     )
 }
 
@@ -45,7 +45,7 @@ var FlowLink = createReactClass({
     render: function() {
         return ( 
             <>
-                <g key={this.props.key} id={"flow_" + this.props.endElement.name} transform={"translate(" + this.props.x2 + "," + this.props.y2 + ")"}>
+                <g id={"flow_" + this.props.endElement.name} transform={"translate(" + this.props.x2 + "," + this.props.y2 + ")"}>
                     {this.props.link.flowValue != undefined ? null : 
                         <text class="draggable label" id={"flow_text_" + this.props.startElement.id + "_"+ this.props.endElement.id} x="10" y="-30" textAnchor="start" fill="#03a9f4">
                             {this.props.link.flowValue}
