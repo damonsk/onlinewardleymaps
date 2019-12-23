@@ -6,6 +6,8 @@ import MapEvolution from './MapEvolution';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
+import AnnotationElement from './AnnotationElement';
+
 var createReactClass = require('create-react-class');
 
 
@@ -57,8 +59,6 @@ var MapCanvas = createReactClass({
         var canSatisfyLink = function(l, startElements, endElements){
             return getElementByName(startElements, l.start) != undefined && getElementByName(endElements, l.end) != undefined
         }
-
-        
 
         var evolvingEndLinks = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.end) && mapElements.getNoneEvolvingElements().find(i => i.name == li.start));
         var evolvedToEvolving = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.start) && mapElements.getEvolveElements().find(i => i.name == li.end));
@@ -199,7 +199,18 @@ var MapCanvas = createReactClass({
                             )}
                     </g>
                     
-
+                    <g id="annotations">
+                    {this.props.mapObject.annotations.map((a, i) =>  
+                        <AnnotationElement  
+                            key={i} 
+                            annotation={a} 
+                            mapDimensions={this.props.mapDimensions} 
+                            mutateMapText={this.props.mutateMapText}
+                            mapText={this.props.mapText}
+                            /> 
+                    
+                    )}
+                    </g>
                 </g>
             </svg>
             </>

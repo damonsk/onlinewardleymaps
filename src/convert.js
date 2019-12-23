@@ -8,7 +8,8 @@ export default class Convert {
             links: this.links(data),
             evolution: this.evolution(data),
             presentation: this.presentation(data),
-            methods: this.method(data)
+            methods: this.method(data),
+            annotations: this.annotations(data)
         };
 
         return jobj;
@@ -82,6 +83,27 @@ export default class Convert {
         return "Untitled Map";
     }
 
+    annotations(input) {
+        if(input.trim().length < 1) return [];
+        let trimmed = input.trim();
+        let elementsAsArray = trimmed.split('\n');
+        var annotationsArray = [];
+        for (let i = 0; i < elementsAsArray.length; i++) {
+            const element = elementsAsArray[i];
+            if (element.trim().indexOf('annotation') == 0) {
+                let number = element.split('annotation ')[1].trim().split(' [')[0].trim();
+                let positionData = element.split('[')[1].trim().split(']')[0].trim().split(',');
+                let text = "";
+                if(element.indexOf('"') > -1){
+                    text = element.split('"')[1].trim().split('"')[0].trim();
+                }
+                annotationsArray.push({number: number, maturity: positionData[1], visibility: positionData[0], text: text });
+            }
+        }
+        console.log(annotationsArray);
+        return annotationsArray;
+    }
+
     elements(input) {
 
         let trimmed = input.trim();
@@ -133,7 +155,8 @@ export default class Convert {
                 element.trim().indexOf('build') == -1 &&
                 element.trim().indexOf('buy') == -1 &&
                 element.trim().indexOf('outsource') == -1 &&
-                element.trim().indexOf('title') == -1) {
+                element.trim().indexOf('title') == -1 && 
+                element.trim().indexOf('annotation') == -1) {
 
                 // future
                 if (element.indexOf('+>') > -1) {

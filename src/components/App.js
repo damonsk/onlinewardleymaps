@@ -17,7 +17,8 @@ function App(){
         links: [],
         evolution: [],
         presentation: { style: 'plain' },
-        methods: []
+        methods: [], 
+        annotations: []
     };
 
     const PAGE_TITLE = 'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';

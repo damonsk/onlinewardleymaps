@@ -25,7 +25,7 @@ function EvolvingComponentLink(props){
     }
 
     return (
-        <g id={props.key}>
+        <g>
             <line 
                 x1={x1()} 
                 y1={y1()} 

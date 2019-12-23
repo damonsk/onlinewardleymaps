@@ -24,7 +24,7 @@ function MethodElement(props){
     }
 
     return (
-        <g key={props.key} id={"method_" + props.element.id} transform={"translate (" + x() + "," + y() +")"}>
+        <g id={"method_" + props.element.id} transform={"translate (" + x() + "," + y() +")"}>
             <circle id={"element_circle_" + props.element.id} cx="0" cy="0" r="20" fill={defineFill()} stroke={defineStoke()} />
         </g>
     )

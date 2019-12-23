@@ -105,7 +105,6 @@ function MapComponent(props){
 
     return ( 
         <g 
-            key={props.key} 
             className={"draggable node " + (props.element.evolved ? "evolved" : "")} 
             id={"element_" + props.element.id}
             transform={"translate(" + position.x + "," + (props.element.evolved ? y() : position.y) + ")"}>
@@ -121,7 +120,6 @@ function MapComponent(props){
                 fill="white" />
             
             <ComponentText 
-                key={props.key} 
                 element={props.element} 
                 mapText={props.mapText}
                 mutateMapText={props.mutateMapText}
