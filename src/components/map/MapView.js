@@ -56,7 +56,6 @@ var MapCanvas = createReactClass({
         var custMark = (this.props.mapDimensions.width / 4) + 2;
         var prodMark = (this.props.mapDimensions.width / 2) + 2;
         var commMark = (this.props.mapDimensions.width / 4 * 3) + 2;
-        var visMark = this.props.mapDimensions.height / 2;
 
         var canSatisfyLink = function(l, startElements, endElements){
             return getElementByName(startElements, l.start) != undefined && getElementByName(endElements, l.end) != undefined
