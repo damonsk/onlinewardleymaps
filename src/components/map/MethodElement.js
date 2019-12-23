@@ -30,4 +30,4 @@ function MethodElement(props){
     )
 }
 
-export default Breadcrumb;
+export default MethodElement;
