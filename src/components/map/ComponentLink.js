@@ -29,25 +29,32 @@ function ComponentLink(props){
     return (
         <>
         <line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke={defineStoke()} />
-        {isFlow() ? <FlowLink />  : null }
+        {isFlow() ? <FlowLink 
+            endElement={props.endElement} 
+            startElement={props.startElement} 
+            link={props.link}
+            x1={x1()}
+            x2={x2()}
+            y1={y1()}
+            y2={y2()} /> : null }
         </>
     )
 }
 
 var FlowLink = createReactClass({
     render: function() {
-        <>
-        <g key={props.key} id={"flow_" + props.endElement.name} transform={"translate(" + x2() + "," + y2() + ")"}>
-            {props.link.flowValue.length > 0 
-                ? 
-                <text class="draggable label" id={"flow_text_" + props.startElement.id + "_"+ props.endElement.id} x="10" y="-30" textAnchor="start" fill="#03a9f4">
-                    {prop.link.flowValue}
-                </text>
-                : null
-            }
-        </g>
-        <line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke-width="10" stroke="#99c5ee9e" />
-        </>
+        return ( 
+            <>
+                <g key={this.props.key} id={"flow_" + this.props.endElement.name} transform={"translate(" + this.props.x2 + "," + this.props.y2 + ")"}>
+                    {this.props.link.flowValue != undefined ? null : 
+                        <text class="draggable label" id={"flow_text_" + this.props.startElement.id + "_"+ this.props.endElement.id} x="10" y="-30" textAnchor="start" fill="#03a9f4">
+                            {this.props.link.flowValue}
+                        </text>
+                    }
+                </g>
+                <line x1={this.props.x1} y1={this.props.y1} x2={this.props.x2} y2={this.props.y2} stroke-width="10" stroke="#99c5ee9e" />
+            </>
+        )
     }
 });
 
