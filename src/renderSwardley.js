@@ -136,7 +136,7 @@ var renderEvolvingStartLinks = function (links, noneEvolvedElements, evolvedElem
     }
 };
 
-
+// MethodElement React Component
 var renderMethod = function (element, method, mapWidth, mapHeight) {
     var x = _mapHelper.maturityToX(element.maturity, mapWidth);
     var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
