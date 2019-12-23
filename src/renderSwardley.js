@@ -1,17 +1,12 @@
+import MapPositionCalculator from "./MapPositionCalculator";
 
-var visToY = function (visibility, mapHeight) {
-    return (1 - visibility) * mapHeight;
-};
-
-var matToX = function (maturity, mapWidth) {
-    return maturity * mapWidth;
-};
+var _mapHelper = new MapPositionCalculator();
 
 var renderLink = function (startElement, endElement, link, mapWidth, mapHeight) {
-    var x1 = matToX(startElement.maturity, mapWidth);
-    var x2 = matToX(endElement.maturity, mapWidth);
-    var y1 = visToY(startElement.visibility, mapHeight);
-    var y2 = visToY(endElement.visibility, mapHeight);
+    var x1 = _mapHelper.maturityToX(startElement.maturity, mapWidth);
+    var x2 = _mapHelper.maturityToX(endElement.maturity, mapWidth);
+    var y1 = _mapHelper.visibilityToY(startElement.visibility, mapHeight);
+    var y2 = _mapHelper.visibilityToY(endElement.visibility, mapHeight);
     var returnString = '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + ((startElement.evolved || endElement.evolved) ? 'red' : 'grey') + '" />';
 
     if (link.flow && (
@@ -36,10 +31,10 @@ var renderLink = function (startElement, endElement, link, mapWidth, mapHeight) 
 };
 
 var renderEvolvedElementsLink = function (startElement, endElement, mapWidth, mapHeight) {
-    var x1 = matToX(startElement.maturity, mapWidth);
-    var x2 = matToX(endElement.maturity, mapWidth);
-    var y1 = visToY(startElement.visibility, mapHeight);
-    var y2 = visToY(endElement.visibility, mapHeight);
+    var x1 = _mapHelper.maturityToX(startElement.maturity, mapWidth);
+    var x2 = _mapHelper.maturityToX(endElement.maturity, mapWidth);
+    var y1 = _mapHelper.visibilityToY(startElement.visibility, mapHeight);
+    var y2 = _mapHelper.visibilityToY(endElement.visibility, mapHeight);
     var returnString = '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="red" stroke-dasharray="5 5" marker-start="url(#arrow)" />';
     if (endElement.inertia) {
 
@@ -53,7 +48,7 @@ var renderEvolvedElementsLink = function (startElement, endElement, mapWidth, ma
         if (startElement.maturity >= 0.75){
             boundary = 0.75;
         }
-        var boundaryX = matToX(boundary, mapWidth);
+        var boundaryX = _mapHelper.maturityToX(boundary, mapWidth);
         returnString = returnString + '<line x1="' + (boundaryX) + '" y1="' + (y2 - 10) + '" x2="' + (boundaryX) + '" y2="' + (y2 + 10) + '" stroke="black" stroke-width="6" />';
     }
 
@@ -143,8 +138,8 @@ var renderEvolvingStartLinks = function (links, noneEvolvedElements, evolvedElem
 
 
 var renderMethod = function (element, method, mapWidth, mapHeight) {
-    var x = matToX(element.maturity, mapWidth);
-    var y = visToY(element.visibility, mapHeight);
+    var x = _mapHelper.maturityToX(element.maturity, mapWidth);
+    var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
 
     var elementSvg =
         '<g id="method_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
@@ -155,8 +150,8 @@ var renderMethod = function (element, method, mapWidth, mapHeight) {
 };
 
 var renderElement = function (element, mapWidth, mapHeight) {
-    var x = matToX(element.maturity, mapWidth);
-    var y = visToY(element.visibility, mapHeight);
+    var x = _mapHelper.maturityToX(element.maturity, mapWidth);
+    var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
 
     var text = '<text id="element_text_' + element.id + '" class="draggable label" x="10" y="-5" text-anchor="start" fill="' + (element.evolved ? 'red' : 'black') + '">' +
         element.name +
