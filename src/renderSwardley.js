@@ -208,7 +208,6 @@ export var renderSvg = function (mapScript, mapWidth, mapHeight) {
         };
     });
 
-    var nonEvolvedElements = noneEvolving.concat(evolveElements);
     var mergedElements = noneEvolving.concat(evolvedElements).concat(evolveElements);
     var evolveEndLinks = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.end) && noneEvolving.find(i => i.name == li.start));
     var evolveStartLinks = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && noneEvolving.find(i => i.name == li.end));
@@ -218,9 +217,6 @@ export var renderSvg = function (mapScript, mapWidth, mapHeight) {
     var evolvedToEvolving = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && evolveElements.find(i => i.name == li.end));
 
     var mapSvg =
-        '<g id="methods">' +
-        renderMethods(nonEvolvedElements, mapScript.methods, mapWidth, mapHeight) +
-        '</g>' +
         '<g id="links">' +
         renderLinks(mapScript.links, mergedElements, mapWidth, mapHeight) +
         '</g>' +

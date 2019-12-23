@@ -11,6 +11,16 @@ import Convert from '../convert';
 
 function App(){
 
+
+    const defaultMapObject = {
+        title: '',
+        elements: [],
+        links: [],
+        evolution: [],
+        presentation: { style: 'plain' },
+        methods: []
+    };
+
     const PAGE_TITLE = 'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
     const apiEndpoint = 'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
     let loaded = false;
@@ -18,7 +28,7 @@ function App(){
     const [metaText, setMetaText] = useState('');
     const [mapText, setMapText] = useState('');
     const [mapTitle, setMapTitle] = useState('Untitled Map');
-    const [mapObject, setMapObject] = useState({});
+    const [mapObject, setMapObject] = useState(defaultMapObject);
     const [mapDimensions, setMapDimensions] = useState({width: 500, height: 600});
     const [mapEvolutionStates, setMapEvolutionStates] = useState({genesis: "Genesis", custom:"Custom Built", product: "Product", commodity: "Commodity"});
     const [mapStyle, setMapStyle] = useState('plain');
@@ -294,7 +304,8 @@ function App(){
                             mapDimensions={mapDimensions}
                             mapEvolutionStates={mapEvolutionStates}
                             mapStyle={mapStyle}
-                            mapRef={mapRef} />
+                            mapRef={mapRef}
+                            mapObject={mapObject} />
                 </div>
             </div>
         </React.Fragment>

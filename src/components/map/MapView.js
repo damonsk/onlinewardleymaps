@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import MethodElement from './MethodElement';
 var createReactClass = require('create-react-class');
 
 class MapView extends Component {
@@ -19,7 +20,9 @@ class MapView extends Component {
                         mapDimensions={this.props.mapDimensions} 
                         mapPadding={20} 
                         mapEvolutionStates={this.props.mapEvolutionStates}
-                        mapStyle={this.props.mapStyle} />
+                        mapStyle={this.props.mapStyle} 
+                        mapObject={this.props.mapObject}
+                        />
 
                   </div>
               </div>
@@ -31,6 +34,13 @@ class MapView extends Component {
 var MapCanvas = createReactClass({
     render: function() {
 
+        var getElementByName = function (elements, name) {
+            var hasName = function (element) {
+                return element.name === name;
+            };
+            return elements.find(hasName);
+        };
+
         var svgWidth = this.props.mapDimensions.width + 2 * this.props.mapPadding;
         var svgHeight = this.props.mapDimensions.height + 4 * this.props.mapPadding;
         var vbWidth = this.props.mapDimensions.width + this.props.mapPadding;
@@ -39,6 +49,10 @@ var MapCanvas = createReactClass({
         var prodMark = (this.props.mapDimensions.width / 2) + 2;
         var commMark = (this.props.mapDimensions.width / 4 * 3) + 2;
         var visMark = this.props.mapDimensions.height / 2;
+
+        const evolveElements = this.props.mapObject.elements.filter(el => el.evolving);
+        const noneEvolving = this.props.mapObject.elements.filter(el => el.evolving == false);
+        const nonEvolvedElements = noneEvolving.concat(evolveElements);
 
         return (
             <>
@@ -71,7 +85,19 @@ var MapCanvas = createReactClass({
                         <text x={this.props.mapDimensions.width} y="1.5em" textAnchor="end" fontWeight="bold">Evolution</text>
                     </g>
                 </g>
-                <g id="map"></g>
+                <g id="newMap">
+                    <g id="methods">
+                    {this.props.mapObject.methods.map((m, i) => 
+                        <MethodElement 
+                            key={i} 
+                            element={getElementByName(nonEvolvedElements, m.name)} 
+                            mapDimensions={this.props.mapDimensions} 
+                            method={m} /> 
+                    )}
+                    </g>
+                </g>
+                <g id="map">
+                </g>
             </svg>
             </>
         );
