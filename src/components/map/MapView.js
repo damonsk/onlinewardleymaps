@@ -3,6 +3,7 @@ import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
+import MapComponent from './MapComponent';
 var createReactClass = require('create-react-class');
 
 
@@ -190,6 +191,15 @@ var MapCanvas = createReactClass({
                                         />
                             
                             )};
+                    </g>
+                    <g id="elements">
+                        {mapElements.getMergedElements().map((el, i) =>
+                            <MapComponent   
+                                key={i}
+                                mapDimensions={this.props.mapDimensions} 
+                                element={el}
+                                />
+                            )}
                     </g>
                     
 
