@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
 import MapGrid from './MapGrid';
+import MapEvolution from './MapEvolution';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
@@ -49,14 +50,6 @@ var MapCanvas = createReactClass({
             return elements.find(hasName);
         };
 
-        var svgWidth = this.props.mapDimensions.width + 2 * this.props.mapPadding;
-        var svgHeight = this.props.mapDimensions.height + 4 * this.props.mapPadding;
-        var vbWidth = this.props.mapDimensions.width + this.props.mapPadding;
-        var vbHeight = this.props.mapDimensions.height + this.props.mapPadding;
-        var custMark = (this.props.mapDimensions.width / 4) + 2;
-        var prodMark = (this.props.mapDimensions.width / 2) + 2;
-        var commMark = (this.props.mapDimensions.width / 4 * 3) + 2;
-
         var canSatisfyLink = function(l, startElements, endElements){
             return getElementByName(startElements, l.start) != undefined && getElementByName(endElements, l.end) != undefined
         }
@@ -70,27 +63,26 @@ var MapCanvas = createReactClass({
 
         return (
             <>
-            <svg className={this.props.mapStyle} id="svgMap" width={svgWidth} height={svgHeight} viewBox={"-" + this.props.mapPadding + " 0 " + vbWidth + " " + vbHeight} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+            <svg 
+                className={this.props.mapStyle} 
+                id="svgMap" 
+                width={this.props.mapDimensions.width + 2 * this.props.mapPadding} 
+                height={this.props.mapDimensions.height + 4 * this.props.mapPadding} 
+                viewBox={"-" + this.props.mapPadding + " 0 " + (this.props.mapDimensions.width + this.props.mapPadding) + " " + (this.props.mapDimensions.height + this.props.mapPadding)} 
+                version="1.1" xmlns="http://www.w3.org/2000/svg" 
+                xmlnsXlink="http://www.w3.org/1999/xlink">
                 <defs>
                     <marker id="arrow" markerWidth="10" markerHeight="10" refX="15" refY="0" viewBox="0 -5 10 10" orient="0">
                         <path d="M0,-5L10,0L0,5" fill="#ff0000" />
                     </marker>
                 </defs>
                 <g id="grid">
+
                     <MapGrid mapDimensions={this.props.mapDimensions} />
-                    
-                    <g id="Evolution" transform={"translate(0," + this.props.mapDimensions.height + ")"}>
-                        <line x1="0" y1="0" x2={this.props.mapDimensions.width} y2="0" stroke="black"/>
-                        <text x="0" y="1em" textAnchor="start">{this.props.mapEvolutionStates.genesis}</text>
-                        <text x="0" y="2em" textAnchor="start">&nbsp;</text>
-                        <text x={custMark + 5} y="1em" textAnchor="start">{this.props.mapEvolutionStates.custom}</text>
-                        <text x={custMark + 5} y="2em" textAnchor="start">&nbsp;</text>
-                        <text x={prodMark + 5} y="1em" textAnchor="start">{this.props.mapEvolutionStates.product}</text>
-                        <text x={prodMark + 5} y="2em" textAnchor="start">&nbsp;</text>
-                        <text x={commMark + 5} y="1em" textAnchor="start">{this.props.mapEvolutionStates.commodity}</text>
-                        <text x={commMark + 5} y="2em" textAnchor="start">&nbsp;</text>
-                        <text x={this.props.mapDimensions.width} y="1.5em" textAnchor="end" fontWeight="bold">Evolution</text>
-                    </g>
+                    <MapEvolution 
+                        mapDimensions={this.props.mapDimensions} 
+                        mapEvolutionStates={this.props.mapEvolutionStates} />
+
                 </g>
                 <g id="map">
                     <g id="methods">
