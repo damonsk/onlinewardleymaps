@@ -250,17 +250,16 @@ function App(){
         window.addEventListener('resize', () => generateMap(mapText, metaText));
         window.addEventListener('load', loadFromRemoteStorage);
         try {
-            $('#map').on('mousemove', drag);
-            $('g#map').html(renderSvg(new Convert().parse(mapText), getWidth(), getHeight()))
-            $('.draggable').on('mousedown', startDrag)
-                .on('mouseup', endDrag);
-            if (metaText.length > 0) {
-                var items = JSON.parse(meta);
-                items.forEach(element => {
-                    $('#' + element.name).attr('x', element.x).attr('y', element.y);
-                    $('tspan', $('#' + element.name)).attr('x', element.x);
-                });
-            }
+            // $('#map').on('mousemove', drag);
+            // $('.draggable').on('mousedown', startDrag)
+            //     .on('mouseup', endDrag);
+            // if (metaText.length > 0) {
+            //     var items = JSON.parse(meta);
+            //     items.forEach(element => {
+            //         $('#' + element.name).attr('x', element.x).attr('y', element.y);
+            //         $('tspan', $('#' + element.name)).attr('x', element.x);
+            //     });
+            // }
 
         } catch (err) {
             console.log('Invalid markup, could not render.');

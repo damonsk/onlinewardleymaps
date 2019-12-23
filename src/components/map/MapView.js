@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
+import MapGrid from './MapGrid';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
@@ -77,15 +78,8 @@ var MapCanvas = createReactClass({
                     </marker>
                 </defs>
                 <g id="grid">
-                    <g id="valueChain" transform={"translate(0,"+this.props.mapDimensions.height+") rotate(270)"}>
-                        <line x1="0" y1="0" x2={this.props.mapDimensions.height} y2="0" stroke="black"/>
-                        <line x1="-2em" y1={custMark} x2={this.props.mapDimensions.height} y2={custMark} stroke="black" strokeDasharray="5,5"/>
-                        <line x1="-2em" y1={prodMark} x2={this.props.mapDimensions.height} y2={prodMark} stroke="black" strokeDasharray="5,5"/>
-                        <line x1="-2em" y1={commMark} x2={this.props.mapDimensions.height} y2={commMark} stroke="black" strokeDasharray="5,5"/>
-                        <text x="0" y="-0.2em" textAnchor="start">Invisible</text>
-                        <text x={visMark} y="-0.2em" textAnchor="middle" fontWeight="bold">Value Chain</text>
-                        <text x={this.props.mapDimensions.height} y="-0.2em" textAnchor="end">Visible</text>
-                    </g>
+                    <MapGrid mapDimensions={this.props.mapDimensions} />
+                    
                     <g id="Evolution" transform={"translate(0," + this.props.mapDimensions.height + ")"}>
                         <line x1="0" y1="0" x2={this.props.mapDimensions.width} y2="0" stroke="black"/>
                         <text x="0" y="1em" textAnchor="start">{this.props.mapEvolutionStates.genesis}</text>
@@ -99,7 +93,7 @@ var MapCanvas = createReactClass({
                         <text x={this.props.mapDimensions.width} y="1.5em" textAnchor="end" fontWeight="bold">Evolution</text>
                     </g>
                 </g>
-                <g id="newMap">
+                <g id="map">
                     <g id="methods">
                     {this.props.mapObject.methods.map((m, i) => 
                         <MethodElement 
@@ -203,8 +197,6 @@ var MapCanvas = createReactClass({
                     </g>
                     
 
-                </g>
-                <g id="map">
                 </g>
             </svg>
             </>
