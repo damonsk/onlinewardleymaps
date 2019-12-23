@@ -45,11 +45,10 @@ function App(){
     };
 
     const updateMap = (newText, newMeta) => {
-        try {
+
             generateMap(newText, newMeta);
-        } catch (e) {
-            console.log('Invalid markup, could not render.');
-        }
+
+
     };
 
     const saveToRemoteStorage = function(hash) {
@@ -112,7 +111,7 @@ function App(){
         });
     }
 
-    
+
 
     var selectedElement, offset;
 
@@ -220,35 +219,48 @@ function App(){
 
     function generateMap(txt, meta) {
         loaded = false;
-        var r = new Convert().parse(txt);
-        setMapTitle(r.title);
-        document.title = r.title + ' - ' + PAGE_TITLE;
-        setMapObject(r);
-        setMapDimensions({width: getWidth(), height: getHeight()});
-        setMapStyle(r.presentation.style);
-        setMapEvolutionStates({
-            genesis: r.evolution[0].line1, 
-            custom:r.evolution[1].line1, 
-            product: r.evolution[2].line1, 
-            commodity: r.evolution[3].line1
-        });
-
-        $('g#map').html(renderSvg(r, getWidth(), 600));
-        $('.draggable').on('mousedown', startDrag)
-            .on('mousemove', drag)
-            .on('mouseup', endDrag);
-        if (meta.length > 0) {
-            var items = JSON.parse(meta);
-            items.forEach(element => {
-                $('#' + element.name).attr('x', element.x).attr('y', element.y);
-                $('tspan', $('#' + element.name)).attr('x', element.x);
+        try {
+            var r = new Convert().parse(txt);
+            setMapTitle(r.title);
+            document.title = r.title + ' - ' + PAGE_TITLE;
+            setMapObject(r);
+            setMapDimensions({width: getWidth(), height: getHeight()});
+            setMapStyle(r.presentation.style);
+            setMapEvolutionStates({
+                genesis: r.evolution[0].line1,
+                custom:r.evolution[1].line1,
+                product: r.evolution[2].line1,
+                commodity: r.evolution[3].line1
             });
+        } catch (err) {
+            console.log('Invalid markup, could not render.');
         }
     };
 
     React.useEffect(() => {
         window.addEventListener('resize', () => generateMap(mapText, metaText));
-        window.addEventListener('load',  loadFromRemoteStorage);
+        window.addEventListener('load', loadFromRemoteStorage);
+        try {
+            $('#map').on('mousemove', drag);
+            $('g#map').html(renderSvg(new Convert().parse(mapText), getWidth(), getHeight()))
+            $('.draggable').on('mousedown', startDrag)
+                .on('mouseup', endDrag);
+            if (metaText.length > 0) {
+                var items = JSON.parse(meta);
+                items.forEach(element => {
+                    $('#' + element.name).attr('x', element.x).attr('y', element.y);
+                    $('tspan', $('#' + element.name)).attr('x', element.x);
+                });
+            }
+
+        } catch (err) {
+            console.log('Invalid markup, could not render.');
+        }
+
+        return function cleanup() {
+            window.removeEventListener('resize', () => generateMap(mapText, metaText));
+            window.removeEventListener('load', loadFromRemoteStorage);
+        }
     });
 
     return (
@@ -275,11 +287,11 @@ function App(){
                             <Usage mapText={mapText} mutateMapText={mutateMapText} />
                         </div>
                     </div>
-      
-                    <MapView 
-                            mapTitle={mapTitle} 
-                            mapObject={mapObject} 
-                            mapDimensions={mapDimensions} 
+
+                    <MapView
+                            mapTitle={mapTitle}
+                            mapObject={mapObject}
+                            mapDimensions={mapDimensions}
                             mapEvolutionStates={mapEvolutionStates}
                             mapStyle={mapStyle}
                             mapRef={mapRef} />
