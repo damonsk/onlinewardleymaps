@@ -217,27 +217,23 @@ export var renderSvg = function (mapScript, mapWidth, mapHeight) {
     var evolvedToEvolving = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && evolveElements.find(i => i.name == li.end));
 
     var mapSvg =
-        // '<g id="links">' +
-        // renderLinks(mapScript.links, mergedElements, mapWidth, mapHeight) +
+      
+        // '<g id="evolvingBothLinks">' +
+        // renderEvolvingBothLinks(bothEvolved, evolvedElements, evolvedElements, mapWidth, mapHeight) +
         // '</g>' +
-        // '<g id="evolvingEndLinks">' +
-        // renderEvolvingEndLinks(evolveEndLinks, noneEvolving, evolveElements, mapWidth, mapHeight) +
+        // '<g id="evolvedToEvolvingLinks">' +
+        // renderEvolvingEndLinks(evolvedToEvolving, evolvedElements, evolveElements, mapWidth, mapHeight) +
         // '</g>' +
-        '<g id="evolvingBothLinks">' +
-        renderEvolvingBothLinks(bothEvolved, evolvedElements, evolvedElements, mapWidth, mapHeight) +
-        '</g>' +
-        '<g id="evolvedToEvolvingLinks">' +
-        renderEvolvingEndLinks(evolvedToEvolving, evolvedElements, evolveElements, mapWidth, mapHeight) +
-        '</g>' +
-        '<g id="evolvingStartLinks">' +
-        renderEvolvingStartLinks(evolveStartLinks, noneEvolving, evolveElements, mapWidth, mapHeight) +
-        '</g>' +
-        '<g id="evolvingStartEvolvingEndLinks">' +
-        renderEvolvingStartEvolvingEndLinks(bothEvolving, evolveElements, mapWidth, mapHeight) +
-        '</g>' +
-        '<g id="evolvedStartEvolvingEndLinks">' +
-        renderEvolvingStartEvolvedEndLinks(evolveToEvolved, evolveElements, evolvedElements, mapWidth, mapHeight) +
-        '</g>' +
+        // '<g id="evolvingStartLinks">' +
+        // renderEvolvingStartLinks(evolveStartLinks, noneEvolving, evolveElements, mapWidth, mapHeight) +
+        // '</g>' +
+        // '<g id="evolvingStartEvolvingEndLinks">' +
+        // renderEvolvingStartEvolvingEndLinks(bothEvolving, evolveElements, mapWidth, mapHeight) +
+        // '</g>' +
+
+        // '<g id="evolvedStartEvolvingEndLinks">' +
+        // renderEvolvingStartEvolvedEndLinks(evolveToEvolved, evolveElements, evolvedElements, mapWidth, mapHeight) +
+        // '</g>' +
         '<g id="evolvedLinks">' +
         renderEvolvedLinks(evolvedElements, evolveElements, mapWidth, mapHeight) +
         '</g>' +

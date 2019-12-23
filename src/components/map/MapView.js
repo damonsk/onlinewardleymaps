@@ -60,6 +60,11 @@ var MapCanvas = createReactClass({
         }
 
         var evolvingEndLinks = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.end) && mapElements.getNoneEvolvingElements().find(i => i.name == li.start));
+        var evolvedToEvolving = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.start) && mapElements.getEvolveElements().find(i => i.name == li.end));
+        var bothEvolved = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.start) && mapElements.getEvolvedElements().find(i => i.name == li.end));
+        var evolveStartLinks = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.start) && mapElements.getNoneEvolvingElements().find(i => i.name == li.end));
+        var bothEvolving = this.props.mapObject.links.filter(li => mapElements.getEvolveElements().find(i => i.name == li.start) && mapElements.getEvolveElements().find(i => i.name == li.end));
+        var evolveToEvolved = this.props.mapObject.links.filter(li => mapElements.getEvolveElements().find(i => i.name == li.start) && mapElements.getEvolvedElements().find(i => i.name == li.end));
 
         return (
             <>
@@ -115,15 +120,67 @@ var MapCanvas = createReactClass({
                     </g>
 
                     <g id="evolvingEndLinks">
-                    {evolvingEndLinks.map((l, i) => canSatisfyLink(l, mapElements.getNoneEvolvingElements(), mapElements.getEvolveElements()) == false ? null : <ComponentLink
-                                    key={i}
-                                    mapDimensions={this.props.mapDimensions} 
-                                    startElement={getElementByName(mapElements.getNoneEvolvingElements(), l.start)}
-                                    endElement={getElementByName(mapElements.getEvolveElements(), l.end)}
-                                    link={l}
-                                    />
-                    )}
+                        {evolvingEndLinks.map((l, i) => canSatisfyLink(l, mapElements.getNoneEvolvingElements(), mapElements.getEvolveElements()) == false ? null : <ComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getNoneEvolvingElements(), l.start)}
+                                        endElement={getElementByName(mapElements.getEvolveElements(), l.end)}
+                                        link={l}
+                                        />
+                        )}
                     </g>
+                    <g id="evolvingBothLinks">
+                        {bothEvolved.map((l, i) => canSatisfyLink(l, mapElements.getEvolvedElements(), mapElements.getEvolvedElements()) == false ? null : <ComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getEvolvedElements(), l.start)}
+                                        endElement={getElementByName(mapElements.getEvolvedElements(), l.end)}
+                                        link={l}
+                                        />
+                        )}
+                    </g> 
+                    <g id="evolvedToEvolvingLinks">
+                        {evolvedToEvolving.map((l, i) => canSatisfyLink(l, mapElements.getEvolvedElements(), mapElements.getEvolveElements()) == false ? null : <ComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getEvolvedElements(), l.start)}
+                                        endElement={getElementByName(mapElements.getEvolveElements(), l.end)}
+                                        link={l}
+                                        />
+                        )}
+                    </g> 
+                    <g id="evolvingStartLinks">
+                        {evolveStartLinks.map((l, i) => canSatisfyLink(l, mapElements.getNoneEvolvingElements(), mapElements.getEvolveElements()) == false ? null : <ComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getNoneEvolvingElements(), l.start)}
+                                        endElement={getElementByName(mapElements.getEvolveElements(), l.end)}
+                                        link={l}
+                                        />
+                        )}
+                    </g> 
+                    <g id="evolvingStartEvolvingEndLinks">
+                        {bothEvolving.map((l, i) => canSatisfyLink(l, mapElements.getEvolveElements(), mapElements.getEvolveElements()) == false ? null : <ComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getEvolveElements(), l.start)}
+                                        endElement={getElementByName(mapElements.getEvolveElements(), l.end)}
+                                        link={l}
+                                        />
+                        )}
+                    </g> 
+                    <g id="evolvedStartEvolvingEndLinks">
+                        {evolveToEvolved.map((l, i) => canSatisfyLink(l, mapElements.getEvolveElements(), mapElements.getEvolvedElements()) == false ? null : <ComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getEvolveElements(), l.start)}
+                                        endElement={getElementByName(mapElements.getEvolvedElements(), l.end)}
+                                        link={l}
+                                        />
+                        )}
+                    </g> 
+                    
+
                 </g>
                 <g id="map">
                 </g>
