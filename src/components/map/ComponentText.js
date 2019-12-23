@@ -34,9 +34,6 @@ function ComponentText(props){
         setPosition(position => {
             const xDiff = position.coords.x - e.pageX;
             const yDiff = position.coords.y - e.pageY;
-            console.log({
-                x: position.x - xDiff,
-                y: position.y - yDiff});
             return {
                 x: position.x - xDiff,
                 y: position.y - yDiff,
