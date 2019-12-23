@@ -13,17 +13,19 @@ export default class MapElements {
                 id: (el.id + 'ev'),
                 maturity: el.evolveMaturity,
                 visibility: el.visibility,
-                evoving: false,
+                evolving: false,
                 evolved: true
             };
         });
     }
 
     getEvolveElements(){
+        //evolveElements
         return this.mapObject.elements.filter(el => el.evolving);
     }
 
     getNoneEvolvingElements(){
+        //noneEvolving   
         return this.mapObject.elements.filter(el => el.evolving == false);
     }
 
@@ -40,13 +42,11 @@ export default class MapElements {
                 id: (el.id + 'ev'),
                 maturity: el.evolveMaturity,
                 visibility: el.visibility,
-                evoving: false,
+                evolving: false,
                 evolved: true
             };
         });
-    
-        var mergedElements = noneEvolving.concat(evolvedElements).concat(evolveElements);
-        return mergedElements;
-    }
 
+        return noneEvolving.concat(evolvedElements).concat(evolveElements);
+    }
 }

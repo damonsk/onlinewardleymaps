@@ -55,9 +55,11 @@ var MapCanvas = createReactClass({
         var commMark = (this.props.mapDimensions.width / 4 * 3) + 2;
         var visMark = this.props.mapDimensions.height / 2;
 
-        var canSatisfyLink = function(l){
-            return getElementByName(mapElements.getMergedElements(), l.start) != undefined && getElementByName(mapElements.getMergedElements(), l.end) != undefined
+        var canSatisfyLink = function(l, startElements, endElements){
+            return getElementByName(startElements, l.start) != undefined && getElementByName(endElements, l.end) != undefined
         }
+
+        var evolvingEndLinks = this.props.mapObject.links.filter(li => mapElements.getEvolvedElements().find(i => i.name == li.end) && mapElements.getNoneEvolvingElements().find(i => i.name == li.start));
 
         return (
             <>
@@ -101,7 +103,7 @@ var MapCanvas = createReactClass({
                     )}
                     </g>
                     <g id="links">
-                        {this.props.mapObject.links.map((l, i) => canSatisfyLink(l) == false ? null : <ComponentLink
+                        {this.props.mapObject.links.map((l, i) => canSatisfyLink(l, mapElements.getMergedElements(), mapElements.getMergedElements()) == false ? null : <ComponentLink
                                     key={i}
                                     mapDimensions={this.props.mapDimensions} 
                                     startElement={getElementByName(mapElements.getMergedElements(), l.start)}
@@ -110,6 +112,17 @@ var MapCanvas = createReactClass({
                                     />
  
                         )}
+                    </g>
+
+                    <g id="evolvingEndLinks">
+                    {evolvingEndLinks.map((l, i) => canSatisfyLink(l, mapElements.getNoneEvolvingElements(), mapElements.getEvolveElements()) == false ? null : <ComponentLink
+                                    key={i}
+                                    mapDimensions={this.props.mapDimensions} 
+                                    startElement={getElementByName(mapElements.getNoneEvolvingElements(), l.start)}
+                                    endElement={getElementByName(mapElements.getEvolveElements(), l.end)}
+                                    link={l}
+                                    />
+                    )}
                     </g>
                 </g>
                 <g id="map">

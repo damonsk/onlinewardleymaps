@@ -70,6 +70,13 @@ var getEvolveElementByName = function (elements, name) {
     return elements.find(hasName);
 };
 
+// var renderLinks = function (links, elements, mapWidth, mapHeight) {
+//     var mapLink = function (link) {
+//         return renderLink(getElementByName(elements, link.start), getElementByName(elements, link.end), link, mapWidth, mapHeight);
+//     };
+//     return links.map(mapLink).join('');
+// };
+
 var renderEvolvingEndLinks = function (links, noneEvolvedElements, evolvedElements, mapWidth, mapHeight) {
     try {
         var mapLink = function (link) {
@@ -130,6 +137,19 @@ var renderEvolvingStartLinks = function (links, noneEvolvedElements, evolvedElem
     }
 };
 
+// MethodElement React Component
+// var renderMethod = function (element, method, mapWidth, mapHeight) {
+//     var x = _mapHelper.maturityToX(element.maturity, mapWidth);
+//     var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
+
+//     var elementSvg =
+//         '<g id="method_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
+//         '<circle id="element_circle_' + element.id + '" cx="0" cy="0" r="20" stroke="' + (method.method == "outsource" ? '#444444' : (method.method == "build" ? "#000000" : '#D6D6D6')) + '" fill="' + (method.method == "outsource" ? '#444444' : (method.method == "build" ? "#D6D6D6" : '#AAA5A9')) + '" />' +
+//         '</g>';
+
+//     return elementSvg;
+// };
+
 var renderElement = function (element, mapWidth, mapHeight) {
     var x = _mapHelper.maturityToX(element.maturity, mapWidth);
     var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
@@ -156,6 +176,15 @@ var renderElement = function (element, mapWidth, mapHeight) {
 
     return elementSvg;
 };
+
+// var renderMethods = function (elements, methods, mapWidth, mapHeight) {
+
+//     var mapElement = function (method, elements) {
+//         var el = getElementByName(elements, method.name);
+//         return renderMethod(el, method, mapWidth, mapHeight);
+//     };
+//     return methods.map(m => mapElement(m, elements)).join('');
+// };
 
 var renderElements = function (elements, mapWidth, mapHeight) {
     var mapElement = function (element) {
@@ -188,9 +217,12 @@ export var renderSvg = function (mapScript, mapWidth, mapHeight) {
     var evolvedToEvolving = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && evolveElements.find(i => i.name == li.end));
 
     var mapSvg =
-        '<g id="evolvingEndLinks">' +
-        renderEvolvingEndLinks(evolveEndLinks, noneEvolving, evolveElements, mapWidth, mapHeight) +
-        '</g>' +
+        // '<g id="links">' +
+        // renderLinks(mapScript.links, mergedElements, mapWidth, mapHeight) +
+        // '</g>' +
+        // '<g id="evolvingEndLinks">' +
+        // renderEvolvingEndLinks(evolveEndLinks, noneEvolving, evolveElements, mapWidth, mapHeight) +
+        // '</g>' +
         '<g id="evolvingBothLinks">' +
         renderEvolvingBothLinks(bothEvolved, evolvedElements, evolvedElements, mapWidth, mapHeight) +
         '</g>' +
