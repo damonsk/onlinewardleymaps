@@ -2,154 +2,6 @@ import MapPositionCalculator from "./MapPositionCalculator";
 
 var _mapHelper = new MapPositionCalculator();
 
-//ComponentLink.
-var renderLink = function (startElement, endElement, link, mapWidth, mapHeight) {
-    var x1 = _mapHelper.maturityToX(startElement.maturity, mapWidth);
-    var x2 = _mapHelper.maturityToX(endElement.maturity, mapWidth);
-    var y1 = _mapHelper.visibilityToY(startElement.visibility, mapHeight);
-    var y2 = _mapHelper.visibilityToY(endElement.visibility, mapHeight);
-    var returnString = '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + ((startElement.evolved || endElement.evolved) ? 'red' : 'grey') + '" />';
-
-    if (link.flow && (
-        (link.future == link.past) // both
-        || (link.past == true && endElement.evolving == false && startElement.evolving == true)
-        || (link.past == true && endElement.evolving == true && startElement.evolving == false)
-
-        || (link.future == true && startElement.eolving == true)
-        || (link.future == true && startElement.evolved == true)
-        || (link.future == true && endElement.evolved == true)
-    )
-    ) {
-
-        var text = '<g id="flow_' + endElement.name + '" transform="translate(' + x2 + ',' + y2 + ')">' +
-            ((link.flowValue != null && link.flowValue != undefined) ? '<text class="draggable label" id="flow_text_' + startElement.id + '_' + endElement.id + '" x="' + (10) + '" y="' + (-30) + '" text-anchor="start" fill="#03a9f4">' + link.flowValue + '</text>' : '') +
-            '</g>' +
-            '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke-width="10" stroke="#99c5ee9e" />';
-
-        returnString = returnString + text;
-    }
-    return returnString;
-};
-
-var renderEvolvedElementsLink = function (startElement, endElement, mapWidth, mapHeight) {
-    var x1 = _mapHelper.maturityToX(startElement.maturity, mapWidth);
-    var x2 = _mapHelper.maturityToX(endElement.maturity, mapWidth);
-    var y1 = _mapHelper.visibilityToY(startElement.visibility, mapHeight);
-    var y2 = _mapHelper.visibilityToY(endElement.visibility, mapHeight);
-    var returnString = '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="red" stroke-dasharray="5 5" marker-start="url(#arrow)" />';
-    if (endElement.inertia) {
-
-        var boundary = x1;
-        if(startElement.maturity >= 0.25){
-            boundary = 0.25;
-        }
-        if (startElement.maturity >= 0.5){
-            boundary = 0.5;
-        }
-        if (startElement.maturity >= 0.75){
-            boundary = 0.75;
-        }
-        var boundaryX = _mapHelper.maturityToX(boundary, mapWidth);
-        returnString = returnString + '<line x1="' + (boundaryX) + '" y1="' + (y2 - 10) + '" x2="' + (boundaryX) + '" y2="' + (y2 + 10) + '" stroke="black" stroke-width="6" />';
-    }
-
-    return returnString;
-};
-
-var getElementByName = function (elements, name) {
-    var hasName = function (element) {
-        return element.name === name;
-    };
-    return elements.find(hasName);
-};
-
-var getEvolveElementByName = function (elements, name) {
-    var hasName = function (element) {
-        return element.name === name;
-    };
-    return elements.find(hasName);
-};
-
-// var renderLinks = function (links, elements, mapWidth, mapHeight) {
-//     var mapLink = function (link) {
-//         return renderLink(getElementByName(elements, link.start), getElementByName(elements, link.end), link, mapWidth, mapHeight);
-//     };
-//     return links.map(mapLink).join('');
-// };
-
-var renderEvolvingEndLinks = function (links, noneEvolvedElements, evolvedElements, mapWidth, mapHeight) {
-    try {
-        var mapLink = function (link) {
-            return renderLink(getElementByName(noneEvolvedElements, link.start), getElementByName(evolvedElements, link.end), link, mapWidth, mapHeight);
-        };
-        return links.map(mapLink).join('');
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-var renderEvolvingBothLinks = function (links, evolving, evolved, mapWidth, mapHeight) {
-    var mapLink = function (link) {
-        return renderLink(getElementByName(evolved, link.start), getElementByName(evolving, link.end), link, mapWidth, mapHeight);
-    };
-    return links.map(mapLink).join('');
-};
-
-
-var renderEvolvedLinks = function (evolvedElements, evolveElements, mapWidth, mapHeight) {
-    var mapLink = function (link) {
-        return renderEvolvedElementsLink(getEvolveElementByName(evolvedElements, link.name), getElementByName(evolveElements, link.name), mapWidth, mapHeight);
-    };
-    return evolveElements.map(mapLink).join('');
-};
-
-var renderEvolvingStartEvolvedEndLinks = function (links, evolveElements, evolvedElements, mapWidth, mapHeight) {
-    try {
-        var mapLink = function (link) {
-            return renderLink(getEvolveElementByName(evolveElements, link.start), getElementByName(evolvedElements, link.end), link, mapWidth, mapHeight);
-        };
-        return links.map(mapLink).join('');
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-
-var renderEvolvingStartEvolvingEndLinks = function (links, evolveElements, mapWidth, mapHeight) {
-    try {
-        var mapLink = function (link) {
-            return renderLink(getEvolveElementByName(evolveElements, link.start), getEvolveElementByName(evolveElements, link.end), link, mapWidth, mapHeight);
-        };
-        return links.map(mapLink).join('');
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-var renderEvolvingStartLinks = function (links, noneEvolvedElements, evolvedElements, mapWidth, mapHeight) {
-    try {
-        var mapLink = function (link) {
-            return renderLink(getEvolveElementByName(evolvedElements, link.start), getElementByName(noneEvolvedElements, link.end), link, mapWidth, mapHeight);
-        };
-        return links.map(mapLink).join('');
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// MethodElement React Component
-// var renderMethod = function (element, method, mapWidth, mapHeight) {
-//     var x = _mapHelper.maturityToX(element.maturity, mapWidth);
-//     var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
-
-//     var elementSvg =
-//         '<g id="method_' + element.id + '" transform="translate(' + x + ',' + y + ')">' +
-//         '<circle id="element_circle_' + element.id + '" cx="0" cy="0" r="20" stroke="' + (method.method == "outsource" ? '#444444' : (method.method == "build" ? "#000000" : '#D6D6D6')) + '" fill="' + (method.method == "outsource" ? '#444444' : (method.method == "build" ? "#D6D6D6" : '#AAA5A9')) + '" />' +
-//         '</g>';
-
-//     return elementSvg;
-// };
-
 var renderElement = function (element, mapWidth, mapHeight) {
     var x = _mapHelper.maturityToX(element.maturity, mapWidth);
     var y = _mapHelper.visibilityToY(element.visibility, mapHeight);
@@ -177,15 +29,6 @@ var renderElement = function (element, mapWidth, mapHeight) {
     return elementSvg;
 };
 
-// var renderMethods = function (elements, methods, mapWidth, mapHeight) {
-
-//     var mapElement = function (method, elements) {
-//         var el = getElementByName(elements, method.name);
-//         return renderMethod(el, method, mapWidth, mapHeight);
-//     };
-//     return methods.map(m => mapElement(m, elements)).join('');
-// };
-
 var renderElements = function (elements, mapWidth, mapHeight) {
     var mapElement = function (element) {
         return renderElement(element, mapWidth, mapHeight);
@@ -209,34 +52,8 @@ export var renderSvg = function (mapScript, mapWidth, mapHeight) {
     });
 
     var mergedElements = noneEvolving.concat(evolvedElements).concat(evolveElements);
-    var evolveEndLinks = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.end) && noneEvolving.find(i => i.name == li.start));
-    var evolveStartLinks = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && noneEvolving.find(i => i.name == li.end));
-    var bothEvolving = mapScript.links.filter(li => evolveElements.find(i => i.name == li.start) && evolveElements.find(i => i.name == li.end));
-    var evolveToEvolved = mapScript.links.filter(li => evolveElements.find(i => i.name == li.start) && evolvedElements.find(i => i.name == li.end));
-    var bothEvolved = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && evolvedElements.find(i => i.name == li.end));
-    var evolvedToEvolving = mapScript.links.filter(li => evolvedElements.find(i => i.name == li.start) && evolveElements.find(i => i.name == li.end));
 
     var mapSvg =
-      
-        // '<g id="evolvingBothLinks">' +
-        // renderEvolvingBothLinks(bothEvolved, evolvedElements, evolvedElements, mapWidth, mapHeight) +
-        // '</g>' +
-        // '<g id="evolvedToEvolvingLinks">' +
-        // renderEvolvingEndLinks(evolvedToEvolving, evolvedElements, evolveElements, mapWidth, mapHeight) +
-        // '</g>' +
-        // '<g id="evolvingStartLinks">' +
-        // renderEvolvingStartLinks(evolveStartLinks, noneEvolving, evolveElements, mapWidth, mapHeight) +
-        // '</g>' +
-        // '<g id="evolvingStartEvolvingEndLinks">' +
-        // renderEvolvingStartEvolvingEndLinks(bothEvolving, evolveElements, mapWidth, mapHeight) +
-        // '</g>' +
-
-        // '<g id="evolvedStartEvolvingEndLinks">' +
-        // renderEvolvingStartEvolvedEndLinks(evolveToEvolved, evolveElements, evolvedElements, mapWidth, mapHeight) +
-        // '</g>' +
-        '<g id="evolvedLinks">' +
-        renderEvolvedLinks(evolvedElements, evolveElements, mapWidth, mapHeight) +
-        '</g>' +
         '<g id="elements">' +
         renderElements(mergedElements, mapWidth, mapHeight) +
         '</g>';

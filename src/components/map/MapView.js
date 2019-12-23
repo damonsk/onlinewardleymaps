@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
 import ComponentLink from './ComponentLink';
+import EvolvingComponentLink from './EvolvingComponentLink';
 var createReactClass = require('create-react-class');
 
 
@@ -179,6 +180,17 @@ var MapCanvas = createReactClass({
                                         />
                         )}
                     </g> 
+                    <g id="evolvedLinks">
+                        {mapElements.getEvolveElements().map((e, i) => <EvolvingComponentLink
+                                        key={i}
+                                        mapDimensions={this.props.mapDimensions} 
+                                        startElement={getElementByName(mapElements.getEvolvedElements(), e.name)}
+                                        endElement={getElementByName(mapElements.getEvolveElements(), e.name)}
+                                        link={e}
+                                        />
+                            
+                            )};
+                    </g>
                     
 
                 </g>
