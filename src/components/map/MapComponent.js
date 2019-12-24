@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ComponentText from './ComponentText';
 import MapPositionCalculator from "../../MapPositionCalculator";
 var createReactClass = require('create-react-class');
 
 function MapComponent(props){
-
+    
     var _mapHelper = new MapPositionCalculator();
     const x = () => _mapHelper.maturityToX(props.element.maturity, props.mapDimensions.width);
     const y = () => _mapHelper.visibilityToY(props.element.visibility, props.mapDimensions.height);
@@ -13,7 +13,7 @@ function MapComponent(props){
         y: y(),
         coords: {},
     });
-    
+
     const handleMouseMove = React.useRef(e => {
         setPosition(position => {
             const xDiff = position.coords.x - e.pageX;
@@ -102,9 +102,21 @@ function MapComponent(props){
         );
     }
 
+    useEffect(() => {
+        position.x = x();
+      }, [props.element.maturity]);
+    useEffect(() => {
+        position.y = y();
+      }, [props.element.visibility]);
+
+    useEffect(() => {
+        position.y = y();
+        position.x = x();
+    }, [props.mapDimensions]);
 
     return ( 
         <g 
+            key={"element_" + props.element.id}
             className={"draggable node " + (props.element.evolved ? "evolved" : "")} 
             id={"element_" + props.element.id}
             transform={"translate(" + position.x + "," + (props.element.evolved ? y() : position.y) + ")"}>

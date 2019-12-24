@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import MapPositionCalculator from "../../MapPositionCalculator";
 
 function AnnotationText(props){
@@ -68,6 +68,7 @@ function AnnotationText(props){
             <>
             {props.annotation.text.length < 15 ? 
                 <text 
+                    key={"annotation_" + props.annotation.number}
                     className="label"    
                     x={position.x} 
                     y={position.y}  
@@ -76,6 +77,7 @@ function AnnotationText(props){
                     onMouseUp={(e) => handleMouseUp(e)}
                     fill="black">{props.annotation.text}</text>
                 : <text 
+                    key={"annotation_" + props.annotation.number}
                     onMouseDown={(e) => handleMouseDown(e)}
                     onMouseUp={(e) => handleMouseUp(e)}
                     x={position.x} 
@@ -84,7 +86,11 @@ function AnnotationText(props){
                     transform="translate(30, 10)" 
                     className="label">
                         {props.annotation.text.trim().split(' ').map((text, i) => 
-                            <tspan x={position.x} dy={((i > 0) ? 15 : 0)} textAnchor="middle">{text.trim()}</tspan>
+                            <tspan
+                                key={"annotationTextSpan_" + props.annotation.number + "_" + i}
+                                x={position.x} 
+                                dy={((i > 0) ? 15 : 0)} 
+                                textAnchor="middle">{text.trim()}</tspan>
                         )}
                     </text>
             }

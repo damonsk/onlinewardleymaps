@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import MapPositionCalculator from "../../MapPositionCalculator";
 import AnnotationText from './AnnotationText';
 
@@ -73,11 +73,24 @@ function AnnotationElement(props){
         return "#FFF";
     }
 
+    useEffect(() => {
+        position.x = x();
+    }, [props.annotation.maturity]);
+    useEffect(() => {
+        position.y = y();
+    }, [props.annotation.visibility]);
+
+    useEffect(() => {
+        position.y = y();
+        position.x = x();
+    }, [props.mapDimensions]);
+
     return (
         <g transform={"translate (" + position.x + "," + position.y +")"}>            
             <circle 
                 cx="-0" 
                 cy="0" 
+                className="draggable" 
                 r="20" 
                 onMouseDown={(e) => handleMouseDown(e)}
                 onMouseUp={(e) => handleMouseUp(e)}
@@ -86,7 +99,7 @@ function AnnotationElement(props){
             <text 
                 x="-5"
                 y="5"
-                className="label" 
+                className="label draggable" 
                 textAnchor="start" 
                 fill="black">{props.annotation.number}</text>
             {props.annotation.text.length > 0 ? <AnnotationText mapText={props.mapText} mutateMapText={props.mutateMapText} annotation={props.annotation} mapDimensions={props.mapDimensions} /> : null}

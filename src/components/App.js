@@ -139,11 +139,11 @@ function App(){
     };
 
     React.useEffect(() => {
-        window.addEventListener('resize', () => generateMap(mapText, metaText));
+        window.addEventListener('resize', () => setMapDimensions({width: getWidth(), height: getHeight()}));
         window.addEventListener('load', loadFromRemoteStorage);
         
         return function cleanup() {
-            window.removeEventListener('resize', () => generateMap(mapText, metaText));
+            window.removeEventListener('resize', () => setMapDimensions({width: getWidth(), height: getHeight()}));
             window.removeEventListener('load', loadFromRemoteStorage);
         }
     });
