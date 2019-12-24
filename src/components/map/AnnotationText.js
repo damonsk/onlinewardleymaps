@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import React from 'react';
 
 function AnnotationText(props) {
-	var _mapHelper = new MapPositionCalculator();
 	const x = () => 0;
 	const y = () => 0;
 	const [position, setPosition] = React.useState({
@@ -101,7 +99,6 @@ function AnnotationText(props) {
 					onMouseUp={e => handleMouseUp(e)}
 					x={position.x}
 					y={position.y}
-					key={props.key}
 					transform="translate(30, 10)"
 					className="label"
 				>

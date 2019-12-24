@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
@@ -50,13 +50,6 @@ function App() {
 		return calcWidth;
 	};
 
-	const setMetaData = () => {
-		var i = $.map($('.draggable'), function(el) {
-			return { name: $(el).attr('id'), x: $(el).attr('x'), y: $(el).attr('y') };
-		});
-		setMetaText(JSON.stringify(i));
-	};
-
 	const mutateMapText = newText => {
 		setMapText(newText);
 		updateMap(newText, metaText);
@@ -77,7 +70,7 @@ function App() {
 				window.location.hash = '#' + data.id;
 				setCurrentUrl(window.location.href);
 			},
-			failure: function(errMsg) {
+			failure: function() {
 				setCurrentUrl('(could not save map, please try again)');
 			},
 		});
@@ -127,7 +120,7 @@ function App() {
 		});
 	}
 
-	function generateMap(txt, meta) {
+	function generateMap(txt) {
 		loaded = false;
 		try {
 			var r = new Convert().parse(txt);
@@ -198,7 +191,6 @@ function App() {
 						mapEvolutionStates={mapEvolutionStates}
 						mapStyle={mapStyle}
 						mapRef={mapRef}
-						mapObject={mapObject}
 						mapText={mapText}
 						mutateMapText={mutateMapText}
 						setMetaText={setMetaText}

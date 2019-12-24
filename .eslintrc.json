@@ -9,8 +9,9 @@
 	"env": {
 		"browser": true,
 		"es6": true,
-        "jest": true,
-        "jquery": true //This should be removed once jquery has been removed as a dependency
+		"jest": true,
+		"jquery": true, //This should be removed once jquery has been removed as a dependency
+		"amd": true
 	},
 	"plugins": ["react", "prettier"],
 	"extends": [
@@ -21,6 +22,7 @@
 	],
 	"rules": {
 		"prettier/prettier": "error",
-		"linebreak-style": ["error", "unix"]
+		"linebreak-style": ["error", "unix"],
+		"react/prop-types": 0
 	}
 }

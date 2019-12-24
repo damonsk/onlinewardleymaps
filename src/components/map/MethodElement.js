@@ -1,15 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import MapPositionCalculator from '../../MapPositionCalculator';
 
-function MethodElement(props) {
+function MethodElement({ element, mapDimensions, method }) {
+	console.log(element);
 	const mapCalc = new MapPositionCalculator();
-	const x = () =>
-		mapCalc.maturityToX(props.element.maturity, props.mapDimensions.width);
+	const x = () => mapCalc.maturityToX(element.maturity, mapDimensions.width);
 	const y = () =>
-		mapCalc.visibilityToY(props.element.visibility, props.mapDimensions.height);
+		mapCalc.visibilityToY(element.visibility, mapDimensions.height);
 
 	const defineStoke = function() {
-		switch (props.method.method) {
+		switch (method.method) {
 			case 'outsource':
 				return '#444444';
 			case 'build':
@@ -20,7 +22,7 @@ function MethodElement(props) {
 	};
 
 	const defineFill = function() {
-		switch (props.method.method) {
+		switch (method.method) {
 			case 'outsource':
 				return '#444444';
 			case 'build':
@@ -32,11 +34,11 @@ function MethodElement(props) {
 
 	return (
 		<g
-			id={'method_' + props.element.id}
+			id={'method_' + element.id}
 			transform={'translate (' + x() + ',' + y() + ')'}
 		>
 			<circle
-				id={'element_circle_' + props.element.id}
+				id={'element_circle_' + element.id}
 				cx="0"
 				cy="0"
 				r="20"
@@ -46,5 +48,20 @@ function MethodElement(props) {
 		</g>
 	);
 }
+
+MethodElement.propTypes = {
+	element: PropTypes.shape({
+		id: PropTypes.string,
+		maturity: PropTypes.number,
+		visibility: PropTypes.number,
+	}),
+	mapDimensions: PropTypes.shape({
+		width: PropTypes.number,
+		height: PropTypes.number,
+	}),
+	method: PropTypes.shape({
+		method: PropTypes.string,
+	}),
+};
 
 export default MethodElement;

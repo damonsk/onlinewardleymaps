@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import ComponentText from './ComponentText';
 import MapPositionCalculator from '../../MapPositionCalculator';
-var createReactClass = require('create-react-class');
 
 function MapComponent(props) {
 	var _mapHelper = new MapPositionCalculator();
@@ -58,7 +57,7 @@ function MapComponent(props) {
 		endDrag();
 	};
 
-	function endDrag(evt) {
+	function endDrag() {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
@@ -76,7 +75,7 @@ function MapComponent(props) {
 						if (props.element.evolved) {
 							return line.replace(
 								//Take only the string evolve and the number that follows
-								/\] evolve\s([\.0-9])+/g,
+								/\] evolve\s([.0-9])+/g,
 								`] evolve ${(
 									(1 / props.mapDimensions.width) *
 									position.x

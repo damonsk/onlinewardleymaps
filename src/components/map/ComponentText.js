@@ -88,7 +88,7 @@ function ComponentText(props) {
 	};
 
 	return (
-		<>
+		<React.Fragment>
 			{props.element.name.length < 15 ? (
 				<text
 					key={props.key}
@@ -118,13 +118,18 @@ function ComponentText(props) {
 						.trim()
 						.split(' ')
 						.map((text, i) => (
-							<tspan x={position.x} dy={i > 0 ? 15 : 0} textAnchor="middle">
+							<tspan
+								key={props.key}
+								x={position.x}
+								dy={i > 0 ? 15 : 0}
+								textAnchor="middle"
+							>
 								{text.trim()}
 							</tspan>
 						))}
 				</text>
 			)}
-		</>
+		</React.Fragment>
 	);
 }
 

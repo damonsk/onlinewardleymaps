@@ -40,7 +40,7 @@ class MapView extends Component {
 	}
 }
 
-var MapCanvas = createReactClass({
+const MapCanvas = createReactClass({
 	render: function() {
 		var mapElements = new MapElements(this.props.mapObject);
 
@@ -90,7 +90,7 @@ var MapCanvas = createReactClass({
 		);
 
 		return (
-			<>
+			<React.Fragment>
 				<svg
 					className={this.props.mapStyle}
 					id="svgMap"
@@ -352,7 +352,7 @@ var MapCanvas = createReactClass({
 						</g>
 					</g>
 				</svg>
-			</>
+			</React.Fragment>
 		);
 	},
 });

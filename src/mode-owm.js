@@ -1,4 +1,4 @@
-define('ace/mode/owm', function(require, exports, module) {
+define('ace/mode/owm', function(require, exports) {
 	var oop = require('ace/lib/oop');
 	var TextMode = require('ace/mode/text').Mode;
 	var OwmHighlightRules = require('ace/mode/owm_highlight_rules')
@@ -16,7 +16,7 @@ define('ace/mode/owm', function(require, exports, module) {
 	exports.Mode = Mode;
 });
 
-define('ace/mode/owm_highlight_rules', function(require, exports, module) {
+define('ace/mode/owm_highlight_rules', function(require, exports) {
 	var oop = require('ace/lib/oop');
 	var TextHighlightRules = require('ace/mode/text_highlight_rules')
 		.TextHighlightRules;
