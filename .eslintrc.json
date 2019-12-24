@@ -1,0 +1,25 @@
+{
+	"parserOptions": {
+		"ecmaVersion": 2017,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"env": {
+		"browser": true,
+		"es6": true,
+		"jest": true
+	},
+	"plugins": ["react", "prettier"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"prettier",
+		"prettier/react"
+	],
+	"rules": {
+		"prettier/prettier": "error",
+		"linebreak-style": ["error", "unix"]
+	}
+}
