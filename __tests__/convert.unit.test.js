@@ -117,16 +117,31 @@ describe('Convert test suite', function() {
         expect(result.annotations[0].text).toEqual('Standardising power allows Kettles to evolve faster');
     });
 
-    test('should create map object with annotations property with an annotation with many occurances', function() {
+    test('should create map object with annotations property with an annotation with many occurances with no text', function() {
 
-      let actual = 'annotation 1 [[.38, .4],[0.44, 0.33]] Standardising power allows Kettles to evolve faster';
+      let actual = 'annotation 1 [[.38, .4],[0.44, 0.33]]';
       let result = new Convert().parse(actual);
       
       expect(result.annotations.length).toEqual(1);
       expect(result.annotations[0].number).toEqual(1);
       expect(result.annotations[0].occurances[0].visibility).toEqual(0.38);
       expect(result.annotations[0].occurances[0].maturity).toEqual(0.4);
-      expect(result.annotations[0].text).toEqual('Standardising power allows Kettles to evolve faster');
+      expect(result.annotations[0].text).toEqual('');
   });
+
+  test('should create map object with annotations property with an annotation with many occurances', function() {
+
+    let actual = 'annotation 1 [[.38, .4],[0.44, 0.33],[0.11, 0.22]] Standardising power allows Kettles to evolve faster';
+    let result = new Convert().parse(actual);
+    
+    expect(result.annotations.length).toEqual(1);
+    expect(result.annotations[0].number).toEqual(1);
+    expect(result.annotations[0].occurances[0].visibility).toEqual(0.38);
+    expect(result.annotations[0].occurances[0].maturity).toEqual(0.4);
+    expect(result.annotations[0].occurances[1].visibility).toEqual(0.44);
+    expect(result.annotations[0].occurances[1].maturity).toEqual(0.33);
+    expect(result.annotations[0].occurances.length).toEqual(3);
+    expect(result.annotations[0].text).toEqual('Standardising power allows Kettles to evolve faster');
+});
 
 });
