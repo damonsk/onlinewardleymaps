@@ -100,11 +100,11 @@ export default class Convert {
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			const element = elementsAsArray[i];
 			if (element.trim().indexOf('annotation') == 0) {
-				let number = element
+				let number = parseInt(element
 					.split('annotation ')[1]
 					.trim()
 					.split(' [')[0]
-					.trim();
+					.trim());
 				let positionData = element
 					.split('[')[1]
 					.trim()
@@ -112,17 +112,15 @@ export default class Convert {
 					.trim()
 					.split(',');
 				let text = '';
-				if (element.indexOf('"') > -1) {
+				if (element.trim().indexOf(']') != element.trim().length - 1) {
 					text = element
-						.split('"')[1]
-						.trim()
-						.split('"')[0]
+						.split(']')[1]
 						.trim();
 				}
 				annotationsArray.push({
-					number: number,
-					maturity: positionData[1],
-					visibility: positionData[0],
+					number: parseInt(number),
+					maturity: parseFloat(positionData[1]),
+					visibility: parseFloat(positionData[0]),
 					text: text,
 				});
 			}

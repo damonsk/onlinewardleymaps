@@ -105,4 +105,16 @@ describe('Convert test suite', function() {
   
       });
 
+      test('should create map object with annotations property with an annotation with a single occurance', function() {
+
+        let actual = 'annotation 1 [.38,.4] Standardising power allows Kettles to evolve faster';
+        let result = new Convert().parse(actual);
+        
+        expect(result.annotations.length).toEqual(1);
+        expect(result.annotations[0].number).toEqual(1);
+        expect(result.annotations[0].visibility).toEqual(0.38);
+        expect(result.annotations[0].maturity).toEqual(0.4);
+        expect(result.annotations[0].text).toEqual('Standardising power allows Kettles to evolve faster');
+    });
+
 });
