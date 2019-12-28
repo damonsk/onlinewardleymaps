@@ -144,4 +144,21 @@ describe('Convert test suite', function() {
     expect(result.annotations[0].text).toEqual('Standardising power allows Kettles to evolve faster');
 });
 
+test('should create map object with map style data', function() {
+
+  let actual = 'style wardley';
+  let result = new Convert().parse(actual);
+  
+  expect(result.presentation.style).toEqual('wardley');
+});
+
+test('should create map object with annotations positional data', function() {
+
+  let actual = 'annotations [.38, .4]';
+  let result = new Convert().parse(actual);
+  
+  expect(result.presentation.annotations.visibility).toEqual(0.38);
+  expect(result.presentation.annotations.maturity).toEqual(0.4);
+});
+
 });

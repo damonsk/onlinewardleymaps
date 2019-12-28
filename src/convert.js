@@ -42,16 +42,26 @@ export default class Convert {
 	}
 
 	presentation(input) {
+		let presentationObject = {style: 'plain'};
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			const element = elementsAsArray[i];
 			if (element.trim().indexOf('style') == 0) {
 				let name = element.split('style ')[1].trim();
-				return { style: name };
+				presentationObject.style = name;
+			}
+
+			if (element.trim().indexOf('annotations ') == 0) {
+				let annotations = element.split('[')[1]
+					.trim()
+					.split(']')[0]
+					.replace(/\s/g,'')
+					.split(',');
+				presentationObject.annotations = {visibility: parseFloat(annotations[0]), maturity: parseFloat(annotations[1])};
 			}
 		}
-		return { style: 'plain' };
+		return presentationObject;
 	}
 
 	evolution(input) {
@@ -99,7 +109,7 @@ export default class Convert {
 		var annotationsArray = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			const element = elementsAsArray[i];
-			if (element.trim().indexOf('annotation') == 0) {
+			if (element.trim().indexOf('annotation ') == 0) {
 				let number = parseInt(element
 					.split('annotation ')[1]
 					.trim()
@@ -215,7 +225,8 @@ export default class Convert {
 				element.trim().indexOf('buy') == -1 &&
 				element.trim().indexOf('outsource') == -1 &&
 				element.trim().indexOf('title') == -1 &&
-				element.trim().indexOf('annotation') == -1
+				element.trim().indexOf('annotation') == -1 &&
+				element.trim().indexOf('annotations') == -1
 			) {
 				// future
 				if (element.indexOf('+>') > -1) {
