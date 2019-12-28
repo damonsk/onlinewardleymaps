@@ -105,22 +105,49 @@ export default class Convert {
 					.trim()
 					.split(' [')[0]
 					.trim());
-				let positionData = element
-					.split('[')[1]
-					.trim()
-					.split(']')[0]
-					.trim()
-					.split(',');
+				let positionData = [];
+				if(element.trim().indexOf('[[') > -1){
+					var extractedOccurances = element
+						.trim()
+						.split('[[')[1]
+						.split(']]')[0]
+						.replace(/\s/g,'')
+						.split('],[');
+					extractedOccurances.forEach((e, i) => {
+						let splitString = e.split(',');
+						positionData.push({maturity: parseFloat(splitString[1]), visibility: parseFloat(splitString[0])});
+					});
+				}
+				else {
+					let pos = element
+						.split('[')[1]
+						.trim()
+						.split(']')[0]
+						.trim()
+						.split(',');
+					var occurance = {
+						maturity: parseFloat(pos[1]),
+						visibility: parseFloat(pos[0])
+					};
+					positionData.push(occurance);
+				}
 				let text = '';
 				if (element.trim().indexOf(']') != element.trim().length - 1) {
-					text = element
-						.split(']')[1]
-						.trim();
+					if(element.trim().indexOf(']]') === -1){
+						text = element
+							.split(']')[1]
+							.trim();
+					}
+					if(element.trim().indexOf(']]') > -1){
+						text = element
+							.split(']]')[1]
+							.trim();
+					}
 				}
+				console.log(positionData);
 				annotationsArray.push({
 					number: parseInt(number),
-					maturity: parseFloat(positionData[1]),
-					visibility: parseFloat(positionData[0]),
+					occurances: positionData,
 					text: text,
 				});
 			}
