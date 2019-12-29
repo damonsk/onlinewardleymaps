@@ -23,66 +23,47 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 
 	var OwmHighlightRules = function() {
 		this.$rules = {
-			start: [
+			"start" : [
 				{
-					token: ['keyword', 'variable.parameter.function.asp'],
-					regex:
-						'(component|title|style|outsource|build|buy)(\\s*[a-zA-Z0-9\\s*]+)',
+				   "token" : ["keyword", "variable.parameter.function.asp"],
+				   "regex" : "(annotations|component|title|style|outsource|build|product)(\\s*[a-zA-Z0-9\\s*]+)"
 				},
 				{
-					token: 'keyword',
-					regex: '(inertia)',
+				   "token" : ["keyword", "variable.parameter.function.asp"],
+				   "regex" : "(annotation)(\\s*[a-zA-Z0-9\\s*]+)"
 				},
 				{
-					token: [
-						'punctuation',
-						'constant.numeric',
-						'punctuation',
-						'constant.numeric',
-						'punctuation',
-					],
-					regex: '(\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])',
+				   "token" : "keyword",
+				   "regex" : "(inertia)"
 				},
 				{
-					token: ['keyword', 'constant.numeric'],
-					regex: '(evolve)(\\s*\\d+(?:\\.\\d{1,})*)',
+				   "token" : ["punctuation", "punctuation", "constant.numeric", "punctuation", "constant.numeric", "punctuation", "punctuation"],
+				   "regex" : "(\\[*)(\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])(\\]*)"
 				},
 				{
-					token: ['keyword', 'constant.numeric'],
-					regex: '(evolve)(\\s*(?:\\.\\d{1,})*)',
+				   "token" : ["keyword", "constant.numeric"],
+				   "regex" : "(evolve)(\\s*\\d+(?:\\.\\d{1,})*)"
 				},
 				{
-					token: [
-						'variable.parameter.function.asp',
-						'punctuation',
-						'variable.parameter.function.asp',
-					],
-					regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[a-zA-Z0-9\\s*]+)',
+				   "token" : ["keyword", "constant.numeric"],
+				   "regex" : "(evolve)(\\s*(?:\\.\\d{1,})*)"
 				},
 				{
-					token: [
-						'variable.parameter.function.asp',
-						'punctuation',
-						'variable.parameter.function.asp',
-					],
-					regex:
-						'(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)',
+				   "token" : ["variable.parameter.function.asp", "punctuation", "variable.parameter.function.asp"],
+				   "regex" : "(\\s*[a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[a-zA-Z0-9\\s*]+)"
 				},
 				{
-					token: [
-						'variable.parameter.function.asp',
-						'punctuation',
-						'punctuation.definition.string.begin.asp',
-						'punctuation',
-						'variable.parameter.function.asp',
-					],
-					regex:
-						"(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\'))([^']+)(\\'(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)",
+				   "token" : ["variable.parameter.function.asp", "punctuation", "variable.parameter.function.asp"],
+				   "regex" : "(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)"
 				},
 				{
-					defaultToken: 'text',
+				   "token" : ["variable.parameter.function.asp", "punctuation", "punctuation.definition.string.begin.asp", "punctuation", "variable.parameter.function.asp"],
+				   "regex" : "(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\'))([^']+)(\\'(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)"
 				},
-			],
+				{
+				   defaultToken : "text",
+				}
+			 ]
 		};
 	};
 
