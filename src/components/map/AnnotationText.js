@@ -4,7 +4,7 @@ function AnnotationText(props) {
 
 	return (
 		<tspan
-			className="label"
+			className="label draggable"
 			textAnchor="start"
 			dy={props.parentIndex > 0 ? 18 : 0}
 			x={0}

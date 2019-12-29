@@ -98,6 +98,7 @@ function AnnotationElement(props) {
 		rect.setAttribute("x", (SVGRect.x - 2));
 		rect.setAttribute('id', 'annotationsBoxWrap');
 		rect.setAttribute("y", (SVGRect.y - 2));
+		rect.setAttribute('class', 'draggable');
 		rect.setAttribute("width", (SVGRect.width + 4));
 		rect.setAttribute("height", (SVGRect.height + 4));
 		rect.setAttribute("stroke", '#aeaeae');
