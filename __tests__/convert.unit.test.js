@@ -131,7 +131,7 @@ describe('Convert test suite', function() {
 
   test('should create map object with annotations property with an annotation with many occurances', function() {
 
-    let actual = 'annotation 1 [[.38, .4],[0.44, 0.33],[0.11, 0.22]] Standardising power allows Kettles to evolve faster';
+    let actual = 'annotation 1 [[.38, .4],[0.44, 0.33],[0.11, 0.22] ]    Standardising power allows Kettles to evolve faster';
     let result = new Convert().parse(actual);
     
     expect(result.annotations.length).toEqual(1);
@@ -159,6 +159,22 @@ test('should create map object with annotations positional data', function() {
   
   expect(result.presentation.annotations.visibility).toEqual(0.38);
   expect(result.presentation.annotations.maturity).toEqual(0.4);
+});
+
+test('should not create map object with annotations when incomplete', function() {
+
+  let actual = 'annotation ';
+  let result = new Convert().parse(actual);
+  
+  expect(result.annotations.length).toEqual(0);
+});
+
+test('should not create map object with annotations when incomplete', function() {
+
+  let actual = 'annotation 1';
+  let result = new Convert().parse(actual);
+  
+  expect(result.annotations.length).toEqual(0);
 });
 
 });

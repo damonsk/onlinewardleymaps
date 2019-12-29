@@ -7,6 +7,7 @@ import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
 import AnnotationElement from './AnnotationElement';
+import AnnotationBox from './AnnotationBox';
 
 var createReactClass = require('create-react-class');
 
@@ -341,14 +342,29 @@ const MapCanvas = createReactClass({
 
 						<g id="annotations">
 							{this.props.mapObject.annotations.map((a, i) => (
-								<AnnotationElement
-									key={i}
-									annotation={a}
-									mapDimensions={this.props.mapDimensions}
+								<React.Fragment key={i}>
+								{a.occurances.map((o, i1) => ( 
+									<AnnotationElement
+									 	key={i1 + "_" + i}
+									 	annotation={a}
+										 occurance={o}
+										 occuranceIndex={i1}
+									 	mapDimensions={this.props.mapDimensions}
+									 	mutateMapText={this.props.mutateMapText}
+									 	mapText={this.props.mapText}
+									 />
+								))}
+								</React.Fragment>
+							))}
+							{this.props.mapObject.annotations.length == 0 ? null : 
+								<AnnotationBox 
 									mutateMapText={this.props.mutateMapText}
 									mapText={this.props.mapText}
-								/>
-							))}
+									annotations={this.props.mapObject.annotations} 
+									position={this.props.mapObject.presentation.annotations}
+									mapDimensions={this.props.mapDimensions}
+									/>
+							}
 						</g>
 					</g>
 				</svg>

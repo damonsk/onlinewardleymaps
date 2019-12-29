@@ -42,7 +42,7 @@ export default class Convert {
 	}
 
 	presentation(input) {
-		let presentationObject = {style: 'plain'};
+		let presentationObject = {style: 'plain', annotations: {visibility: 0.9, maturity: 0.1}};
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
 		for (let i = 0; i < elementsAsArray.length; i++) {
@@ -116,19 +116,18 @@ export default class Convert {
 					.split(' [')[0]
 					.trim());
 				let positionData = [];
-				if(element.trim().indexOf('[[') > -1){
+				if(element.replace(/\s/g,'').indexOf('[[') > -1){
 					var extractedOccurances = element
-						.trim()
+						.replace(/\s/g,'')
 						.split('[[')[1]
 						.split(']]')[0]
-						.replace(/\s/g,'')
 						.split('],[');
 					extractedOccurances.forEach((e, i) => {
 						let splitString = e.split(',');
 						positionData.push({maturity: parseFloat(splitString[1]), visibility: parseFloat(splitString[0])});
 					});
 				}
-				else {
+				else if(element.indexOf('[') > -1 && element.indexOf(']') > -1) {
 					let pos = element
 						.split('[')[1]
 						.trim()
@@ -142,27 +141,29 @@ export default class Convert {
 					positionData.push(occurance);
 				}
 				let text = '';
-				if (element.trim().indexOf(']') != element.trim().length - 1) {
-					if(element.trim().indexOf(']]') === -1){
+				if (element.trim().indexOf(']') > -1 && (element.trim().indexOf(']') != element.trim().length - 1)) {
+					if(element.replace(/\s/g,'').indexOf(']]') === -1){
 						text = element
 							.split(']')[1]
 							.trim();
 					}
-					if(element.trim().indexOf(']]') > -1){
+					if(element.replace(/\s/g,'').indexOf(']]') > -1){
+						var pos = element
+							.lastIndexOf(']');
 						text = element
-							.split(']]')[1]
+							.substr((pos + 1), element.length - 1)
 							.trim();
 					}
 				}
-				console.log(positionData);
-				annotationsArray.push({
-					number: parseInt(number),
-					occurances: positionData,
-					text: text,
-				});
+				if(positionData.length > 0){
+					annotationsArray.push({
+						number: parseInt(number),
+						occurances: positionData,
+						text: text,
+					});
+				}
 			}
 		}
-		console.log(annotationsArray);
 		return annotationsArray;
 	}
 
