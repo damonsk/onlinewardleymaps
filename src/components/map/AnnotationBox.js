@@ -61,31 +61,37 @@ function AnnotationElement(props) {
 	};
 
 	function endDrag() {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'annotations'
-							) !== -1
-					) {
-						return line.replace(
-							/\[(.+?)\]/g,
-							`[${1 -
-								((1 / props.mapDimensions.height) * position.y).toFixed(2)}, ${(
-								(1 / props.mapDimensions.width) *
-								position.x
-							).toFixed(2)}]`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
-		);
+		if(props.mapText.indexOf('annotations ') > -1){
+			props.mutateMapText(	
+				props.mapText
+					.split('\n')
+					.map(line => {
+						if (
+							line
+								.replace(/\s/g, '')
+								.indexOf(
+									'annotations'
+								) !== -1
+						) {
+							return line.replace(
+								/\[(.+?)\]/g,
+								`[${(1 -
+									((1 / props.mapDimensions.height) * position.y)).toFixed(2)}, ${(
+									(1 / props.mapDimensions.width) *
+									position.x
+								).toFixed(2)}]`
+							);
+						} else {
+							return line;
+						}
+					})
+					.join('\n')
+			);		
+		}
+		else {
+			props.mutateMapText(props.mapText + '\n' + 'annotations ['+ (1 -
+			((1 / props.mapDimensions.height) * position.y)).toFixed(2) + ', '+((1 / props.mapDimensions.width) * position.x).toFixed(2)+']');
+		}
 	}
 
 	var redraw = function(){

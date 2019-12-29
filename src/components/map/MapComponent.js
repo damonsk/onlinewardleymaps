@@ -84,8 +84,8 @@ function MapComponent(props) {
 						} else {
 							return line.replace(
 								/\[(.+?)\]/g, //Find everything inside square braces.
-								`[${1 -
-									((1 / props.mapDimensions.height) * position.y).toFixed(
+								`[${(1 -
+									((1 / props.mapDimensions.height) * position.y)).toFixed(
 										2
 									)}, ${((1 / props.mapDimensions.width) * position.x).toFixed(
 									2

@@ -78,7 +78,7 @@ function AnnotationElement(props) {
 								.split('[[')[1]
 								.split(']]')[0]
 								.split('],[');
-							extractedOccurances[props.occuranceIndex] = 1-((1 / props.mapDimensions.height) * position.y).toFixed(2) + ',' + ((1 / props.mapDimensions.width) *
+							extractedOccurances[props.occuranceIndex] = (1 -((1 / props.mapDimensions.height) * position.y)).toFixed(2) + ',' + ((1 / props.mapDimensions.width) *
 							position.x).toFixed(2);
 							var beforeCoords = line.split('[')[0].trim();
 							var afterCoords = line.substr(line.lastIndexOf(']'), (line.length - line.lastIndexOf(']')))
@@ -88,8 +88,8 @@ function AnnotationElement(props) {
 						else {
 							return line.replace(
 								/\[(.+?)\]/g,
-								`[${1 -
-									((1 / props.mapDimensions.height) * position.y).toFixed(2)}, ${(
+								`[${(1 -
+									((1 / props.mapDimensions.height) * position.y)).toFixed(2)}, ${(
 									(1 / props.mapDimensions.width) *
 									position.x
 								).toFixed(2)}]`
@@ -136,6 +136,8 @@ function AnnotationElement(props) {
 				stroke={defineStoke()}
 			/>
 			<text
+				onMouseDown={e => handleMouseDown(e)}
+				onMouseUp={e => handleMouseUp(e)}
 				x="-5"
 				y="5"
 				className="label draggable"
