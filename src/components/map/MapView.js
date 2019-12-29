@@ -64,6 +64,11 @@ const MapCanvas = createReactClass({
 				mapElements.getEvolvedElements().find(i => i.name == li.end) &&
 				mapElements.getNoneEvolvingElements().find(i => i.name == li.start)
 		);
+		var evolvingToNoneEvolvingEndLinks = this.props.mapObject.links.filter(
+			li =>
+				mapElements.getEvolveElements().find(i => i.name == li.start) &&
+				mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
+		);
 		var evolvedToEvolving = this.props.mapObject.links.filter(
 			li =>
 				mapElements.getEvolvedElements().find(i => i.name == li.start) &&
@@ -170,6 +175,30 @@ const MapCanvas = createReactClass({
 							)}
 						</g>
 
+						<g id="evolvingToEvolveEndLinks">
+							{evolvingToNoneEvolvingEndLinks.map((l, i) =>
+								canSatisfyLink(
+									l,
+									mapElements.getEvolveElements(),
+									mapElements.getNoneEvolvingElements()
+								) == false ? null : (
+									<ComponentLink
+										key={i}
+										mapDimensions={this.props.mapDimensions}
+										startElement={getElementByName(
+											mapElements.getEvolveElements(),
+											l.start
+										)}
+										endElement={getElementByName(
+											mapElements.getNoneEvolvingElements(),
+											l.end
+										)}
+										link={l}
+									/>
+								)
+							)}
+						</g>
+						
 						<g id="evolvingEndLinks">
 							{evolvingEndLinks.map((l, i) =>
 								canSatisfyLink(
