@@ -363,6 +363,7 @@ const MapCanvas = createReactClass({
 									annotations={this.props.mapObject.annotations} 
 									position={this.props.mapObject.presentation.annotations}
 									mapDimensions={this.props.mapDimensions}
+									mapStyle={this.props.mapStyle}
 									/>
 							}
 						</g>

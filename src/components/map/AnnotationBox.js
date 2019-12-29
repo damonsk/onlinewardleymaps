@@ -119,7 +119,7 @@ function AnnotationElement(props) {
 		position.y = y();
 		position.x = x();
 		redraw();
-	}, [props.mapDimensions]);
+	}, [props.mapDimensions, props.mapStyle]);
 
 	useEffect(()=> {
 		redraw();
