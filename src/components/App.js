@@ -177,7 +177,7 @@ function App() {
 			<div className="container-fluid">
 				<div className="row">
 					<div className="col">
-						<Editor mapText={mapText} mutateMapText={mutateMapText} />
+						<Editor mapText={mapText} mutateMapText={mutateMapText} mapObject={mapObject} />
 						<div className="form-group">
 							<Meta metaText={metaText} />
 							<Usage mapText={mapText} mutateMapText={mutateMapText} />
