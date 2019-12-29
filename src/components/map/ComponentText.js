@@ -99,7 +99,7 @@ function ComponentText(props) {
 					onMouseDown={e => handleMouseDown(e)}
 					onMouseUp={e => handleMouseUp(e)}
 					textAnchor="start"
-					fill={props.element.evolved ? 'red' : 'black'}
+					fill={props.element.evolved ? props.mapStyleDefs.component.evolvedTextColor : props.mapStyleDefs.component.textColor}
 				>
 					{props.element.name}
 				</text>
@@ -113,6 +113,7 @@ function ComponentText(props) {
 					key={props.key}
 					transform="translate(30, 10)"
 					className="label"
+					fill={props.element.evolved ? props.mapStyleDefs.component.evolvedTextColor : props.mapStyleDefs.component.textColor}
 				>
 					{props.element.name
 						.trim()

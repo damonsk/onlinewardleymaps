@@ -15,7 +15,8 @@ function MapEvolution(props) {
 				y1="0"
 				x2={props.mapDimensions.width}
 				y2="0"
-				stroke="black"
+				stroke={props.mapStyleDefs.stroke}
+				strokeWidth={props.mapStyleDefs.strokeWidth}
 			/>
 			<text x="0" y="1em" textAnchor="start">
 				{props.mapEvolutionStates.genesis}
@@ -43,7 +44,7 @@ function MapEvolution(props) {
 			</text>
 			<text
 				x={props.mapDimensions.width}
-				y="1.5em"
+				y="1.8em"
 				textAnchor="end"
 				fontWeight="bold"
 			>

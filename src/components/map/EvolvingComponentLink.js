@@ -41,7 +41,8 @@ function EvolvingComponentLink(props) {
 				y2={y2()}
 				strokeDasharray="5 5"
 				markerStart="url(#arrow)"
-				stroke="red"
+				stroke={props.mapStyleDefs.link.evolvedStroke}
+				strokeWidth={props.mapStyleDefs.link.evolvedStrokeWidth}
 			/>
 			{props.endElement.inertia == false ? null : (
 				<line

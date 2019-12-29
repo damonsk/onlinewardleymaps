@@ -104,11 +104,11 @@ function AnnotationElement(props) {
 	}
 
 	const defineStoke = function() {
-		return 'darkred';
+		return props.mapStyleDefs.annotations.stroke;
 	};
 
 	const defineFill = function() {
-		return '#FFF';
+		return props.mapStyleDefs.annotations.fill;
 	};
 
 	useEffect(() => {
@@ -132,8 +132,9 @@ function AnnotationElement(props) {
 				r="15"
 				onMouseDown={e => handleMouseDown(e)}
 				onMouseUp={e => handleMouseUp(e)}
-				fill={defineFill()}
-				stroke={defineStoke()}
+				fill={props.mapStyleDefs.annotations.fill}
+				stroke={props.mapStyleDefs.annotations.stroke}
+				strokeWidth={props.mapStyleDefs.annotations.strokeWidth}
 			/>
 			<text
 				onMouseDown={e => handleMouseDown(e)}
@@ -142,7 +143,7 @@ function AnnotationElement(props) {
 				y="5"
 				className="label draggable"
 				textAnchor="start"
-				fill="black"
+				fill={props.mapStyleDefs.annotations.text}
 			>
 				{props.annotation.number}
 			</text>

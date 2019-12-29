@@ -40,7 +40,7 @@ export default class Convert {
 
 		return methodElements;
 	}
-
+	
 	presentation(input) {
 		let presentationObject = {style: 'plain', annotations: {visibility: 0.9, maturity: 0.1}};
 		let trimmed = input.trim();

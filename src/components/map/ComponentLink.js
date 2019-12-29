@@ -21,8 +21,14 @@ function ComponentLink(props) {
 
 	function defineStoke() {
 		return props.startElement.evolved || props.endElement.evolved
-			? 'red'
-			: 'grey';
+			? props.mapStyleDefs.link.evolvedStroke
+			: props.mapStyleDefs.link.stroke;
+	}
+
+	function defineStokeWidth() {
+		return props.startElement.evolved || props.endElement.evolvedS
+			? props.mapStyleDefs.link.evolvedStrokeWidth
+			: props.mapStyleDefs.link.strokeWidth;
 	}
 
 	const isFlow = () => {
@@ -43,9 +49,10 @@ function ComponentLink(props) {
 
 	return (
 		<g>
-			<line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke={defineStoke()} />
+			<line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke={defineStoke()} strokeWidth={defineStokeWidth()} />
 			{isFlow() ? (
 				<FlowLink
+					mapStyleDefs={props.mapStyleDefs}
 					endElement={props.endElement}
 					startElement={props.startElement}
 					link={props.link}
@@ -90,8 +97,8 @@ var FlowLink = createReactClass({
 					y1={this.props.y1}
 					x2={this.props.x2}
 					y2={this.props.y2}
-					strokeWidth="10"
-					stroke="#99c5ee9e"
+					strokeWidth={this.props.mapStyleDefs.link.flowStrokeWidth}
+					stroke={this.props.mapStyleDefs.link.flow}
 				/>
 			</>
 		);

@@ -9,6 +9,75 @@ import Editor from './editor/Editor';
 import Convert from '../convert';
 
 function App() {
+
+	const plainStyleDef = {
+		stroke: 'black', 
+		strokeWidth: '1', 
+		strokeDasharray: '5,5',
+		component: {
+			fill: 'white', 
+			stroke: 'black',
+			evolved: 'red',
+			evolvedFill: 'white', 
+			strokeWidth: '1', 
+			radius: 5,
+			textColor: 'black', 
+			evolvedTextColor: 'red'
+		}, 
+		link: {
+			stroke: 'grey',
+			strokeWidth: 1,
+			evolvedStroke: 'red',
+			evolvedStrokeWidth: 1,
+			flow: '#99c5ee9e',
+			flowStrokeWidth: 10
+		}, 
+		annotations: {
+			stroke: 'darkred',
+			strokeWidth: 2,
+			fill: 'white',
+			text: 'black',
+			boxStroke: '#aeaeae',
+			boxStrokeWidth: 2,
+			boxFill: '#ececec',
+			boxTextColour: 'black'
+		}
+	};
+
+	const colourStyleDef = {
+		stroke: '#c23667', 
+		strokeWidth: '3', 
+		strokeDasharray: '2,2',
+		component: {
+			fill: 'white', 
+			stroke: '#8cb358',
+			evolved: '#ea7f5b',
+			evolvedFill: 'white',
+			strokeWidth: '3',
+			radius: 7,
+			textColor: '#486b1a', 
+			evolvedTextColor: '#ea7f5b'
+		}, 
+		link: {
+			stroke: '#c6c6c6',
+			strokeWidth: 1,
+			evolvedStroke: '#ea7f5b',
+			evolvedStrokeWidth: 1,
+			flow: '#99c5ee9e',
+			flowStrokeWidth: 10
+		}, 
+		annotations: {
+			stroke: '#015fa5',
+			strokeWidth: 2,
+			fill: '#99c5ee',
+			text: 'black',
+			boxStroke: '#015fa5',
+			boxStrokeWidth: 2,
+			boxFill: '#99c5ee',
+			boxTextColour: 'black'
+		}
+	};
+
 	const defaultMapObject = {
 		title: '',
 		elements: [],
@@ -40,6 +109,7 @@ function App() {
 		commodity: 'Commodity',
 	});
 	const [mapStyle, setMapStyle] = useState('plain');
+	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
 	const mapRef = useRef(null);
 
 	const getHeight = () => 600;
@@ -129,6 +199,15 @@ function App() {
 			setMapObject(r);
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
+
+			switch(r.presentation.style){
+				case 'colour':
+				case 'color':
+					setMapStyleDefs(colourStyleDef);
+					break;
+				default: setMapStyleDefs(plainStyleDef);
+			}
+
 			setMapEvolutionStates({
 				genesis: r.evolution[0].line1,
 				custom: r.evolution[1].line1,
@@ -187,6 +266,7 @@ function App() {
 					<MapView
 						mapTitle={mapTitle}
 						mapObject={mapObject}
+						mapStyleDefs={mapStyleDefs}
 						mapDimensions={mapDimensions}
 						mapEvolutionStates={mapEvolutionStates}
 						mapStyle={mapStyle}

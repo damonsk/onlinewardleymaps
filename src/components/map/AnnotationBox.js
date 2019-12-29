@@ -107,8 +107,9 @@ function AnnotationElement(props) {
 		rect.setAttribute('class', 'draggable');
 		rect.setAttribute("width", (SVGRect.width + 4));
 		rect.setAttribute("height", (SVGRect.height + 4));
-		rect.setAttribute("stroke", '#aeaeae');
-		rect.setAttribute("fill", "#ececec");
+		rect.setAttribute("stroke", props.mapStyleDefs.annotations.boxStroke);
+		rect.setAttribute("stroke-width", props.mapStyleDefs.annotations.boxStrokeWidth);
+		rect.setAttribute("fill", props.mapStyleDefs.annotations.boxFill);
 		ctx.insertBefore(rect, document.getElementById('annotationsBoxTextContainer'));
 	}
 
@@ -125,7 +126,7 @@ function AnnotationElement(props) {
 		position.y = y();
 		position.x = x();
 		redraw();
-	}, [props.mapDimensions, props.mapStyle]);
+	}, [props.mapDimensions, props.mapStyle, props.mapStyleDefs]);
 
 	useEffect(()=> {
 		redraw();
@@ -140,8 +141,18 @@ function AnnotationElement(props) {
 			onMouseUp={e => handleMouseUp(e)}
 		>	
 			<text id={'annotationsBoxTextContainer'}>
+				<tspan
+				className="label draggable"
+				textAnchor="start"
+				dy={0}
+				x={2}
+				fill={props.mapStyleDefs.annotations.boxTextColour}
+				textDecoration="underline"
+			>
+				Annotations:
+			</tspan>
 				{props.annotations.map((a, i) => {			
-					return <AnnotationText annotation={a} key={i} parentIndex={i} />
+					return <AnnotationText annotation={a} key={i} parentIndex={i} mapStyleDefs={props.mapStyleDefs} />
 				})}
 			</text>
 		</g>

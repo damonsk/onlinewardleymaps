@@ -26,6 +26,7 @@ class MapView extends Component {
 						<MapCanvas
 							mapDimensions={this.props.mapDimensions}
 							mapPadding={20}
+							mapStyleDefs={this.props.mapStyleDefs}
 							mapEvolutionStates={this.props.mapEvolutionStates}
 							mapStyle={this.props.mapStyle}
 							mapObject={this.props.mapObject}
@@ -98,6 +99,8 @@ const MapCanvas = createReactClass({
 		return (
 			<React.Fragment>
 				<svg
+					fontFamily='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
+					fontSize='0.85em'
 					className={this.props.mapStyle}
 					id="svgMap"
 					width={this.props.mapDimensions.width + 2 * this.props.mapPadding}
@@ -117,21 +120,22 @@ const MapCanvas = createReactClass({
 					<defs>
 						<marker
 							id="arrow"
-							markerWidth="10"
-							markerHeight="10"
+							markerWidth="12"
+							markerHeight="12"
 							refX="15"
 							refY="0"
 							viewBox="0 -5 10 10"
 							orient="0"
 						>
-							<path d="M0,-5L10,0L0,5" fill="#ff0000" />
+							<path d="M0,-5L10,0L0,5" fill={this.props.mapStyleDefs.link.evolvedStroke} />
 						</marker>
 					</defs>
 					<g id="grid">
-						<MapGrid mapDimensions={this.props.mapDimensions} />
+						<MapGrid mapDimensions={this.props.mapDimensions} mapStyleDefs={this.props.mapStyleDefs} />
 						<MapEvolution
 							mapDimensions={this.props.mapDimensions}
 							mapEvolutionStates={this.props.mapEvolutionStates}
+							mapStyleDefs={this.props.mapStyleDefs}
 						/>
 					</g>
 					<g id="map">
@@ -159,6 +163,7 @@ const MapCanvas = createReactClass({
 									mapElements.getMergedElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -183,6 +188,7 @@ const MapCanvas = createReactClass({
 									mapElements.getNoneEvolvingElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -207,6 +213,7 @@ const MapCanvas = createReactClass({
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -230,6 +237,7 @@ const MapCanvas = createReactClass({
 									mapElements.getEvolvedElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -253,6 +261,7 @@ const MapCanvas = createReactClass({
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -276,6 +285,7 @@ const MapCanvas = createReactClass({
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -299,6 +309,7 @@ const MapCanvas = createReactClass({
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -322,6 +333,7 @@ const MapCanvas = createReactClass({
 									mapElements.getEvolvedElements()
 								) == false ? null : (
 									<ComponentLink
+										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
 										startElement={getElementByName(
@@ -340,6 +352,7 @@ const MapCanvas = createReactClass({
 						<g id="evolvedLinks">
 							{mapElements.getEvolveElements().map((e, i) => (
 								<EvolvingComponentLink
+									mapStyleDefs={this.props.mapStyleDefs}
 									key={i}
 									mapDimensions={this.props.mapDimensions}
 									startElement={getElementByName(
@@ -365,6 +378,7 @@ const MapCanvas = createReactClass({
 									mutateMapText={this.props.mutateMapText}
 									setMetaText={this.props.setMetaText}
 									metaText={this.props.metaText}
+									mapStyleDefs={this.props.mapStyleDefs}
 								/>
 							))}
 						</g>
@@ -374,10 +388,11 @@ const MapCanvas = createReactClass({
 								<React.Fragment key={i}>
 								{a.occurances.map((o, i1) => ( 
 									<AnnotationElement
-									 	key={i1 + "_" + i}
+										mapStyleDefs={this.props.mapStyleDefs} 
+										key={i1 + "_" + i}
 									 	annotation={a}
-										 occurance={o}
-										 occuranceIndex={i1}
+										occurance={o}
+										occuranceIndex={i1}
 									 	mapDimensions={this.props.mapDimensions}
 									 	mutateMapText={this.props.mutateMapText}
 									 	mapText={this.props.mapText}
@@ -387,6 +402,7 @@ const MapCanvas = createReactClass({
 							))}
 							{this.props.mapObject.annotations.length == 0 ? null : 
 								<AnnotationBox 
+									mapStyleDefs={this.props.mapStyleDefs}
 									mutateMapText={this.props.mutateMapText}
 									mapText={this.props.mapText}
 									annotations={this.props.mapObject.annotations} 

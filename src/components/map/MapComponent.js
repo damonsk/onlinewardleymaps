@@ -131,12 +131,14 @@ function MapComponent(props) {
 				onMouseUp={e => handleMouseUp(e)}
 				cx="0"
 				cy="0"
-				r="5"
-				stroke={props.element.evolved ? 'red' : 'black'}
-				fill="white"
+				strokeWidth={props.mapStyleDefs.component.strokeWidth}
+				r={props.mapStyleDefs.component.radius}
+				stroke={props.element.evolved ? props.mapStyleDefs.component.evolved : props.mapStyleDefs.component.stroke}
+				fill={props.element.evolved ? props.mapStyleDefs.component.evolvedFill : props.mapStyleDefs.component.fill}
 			/>
 
 			<ComponentText
+				mapStyleDefs={props.mapStyleDefs}
 				element={props.element}
 				mapText={props.mapText}
 				mutateMapText={props.mutateMapText}

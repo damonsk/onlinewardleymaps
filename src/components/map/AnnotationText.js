@@ -6,9 +6,9 @@ function AnnotationText(props) {
 		<tspan
 			className="label draggable"
 			textAnchor="start"
-			dy={props.parentIndex > 0 ? 18 : 0}
+			dy={18}
 			x={0}
-			fill="black"
+			fill={props.mapStyleDefs.annotations.boxTextColour}
 		>
 			&nbsp;{props.annotation.number}. {props.annotation.text}&nbsp;
 		</tspan>
