@@ -14,14 +14,14 @@ function MapGrid(props) {
 				y2="0"
 				stroke={props.mapStyleDefs.stroke}
 				strokeWidth={props.mapStyleDefs.strokeWidth}
-				markerEnd="url(#graphArrow"
+				markerEnd="url(#graphArrow)"
 			/>
 			<line
 				x1="-2em"
 				y1={props.mapDimensions.width / 4}
 				x2={props.mapDimensions.height}
 				y2={props.mapDimensions.width / 4}
-				stroke={props.mapStyleDefs.stroke}
+				stroke={props.mapStyleDefs.evolutionSeparationStroke}
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<line
@@ -29,7 +29,7 @@ function MapGrid(props) {
 				y1={props.mapDimensions.width / 2}
 				x2={props.mapDimensions.height}
 				y2={props.mapDimensions.width / 2}
-				stroke={props.mapStyleDefs.stroke}
+				stroke={props.mapStyleDefs.evolutionSeparationStroke}
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<line
@@ -37,7 +37,7 @@ function MapGrid(props) {
 				y1={(props.mapDimensions.width / 4) * 3}
 				x2={props.mapDimensions.height}
 				y2={(props.mapDimensions.width / 4) * 3}
-				stroke={props.mapStyleDefs.stroke}
+				stroke={props.mapStyleDefs.evolutionSeparationStroke}
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<text x="0" y="-0.4em" textAnchor="start">

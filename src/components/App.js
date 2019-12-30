@@ -11,9 +11,11 @@ import Convert from '../convert';
 function App() {
 
 	const plainStyleDef = {
+		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
 		stroke: 'black', 
+		evolutionSeparationStroke: 'black', 
 		strokeWidth: '1', 
-		strokeDasharray: '5,5',
+		strokeDasharray: '2,2',
 		component: {
 			fill: 'white', 
 			stroke: 'black',
@@ -34,19 +36,58 @@ function App() {
 			flowStrokeWidth: 10
 		}, 
 		annotations: {
-			stroke: 'darkred',
+			stroke: '#595959',
 			strokeWidth: 2,
 			fill: 'white',
 			text: 'black',
-			boxStroke: '#aeaeae',
-			boxStrokeWidth: 2,
-			boxFill: '#ececec',
+			boxStroke: '#595959',
+			boxStrokeWidth: 1,
+			boxFill: '#FFFFFF',
+			boxTextColour: 'black'
+		}
+	};
+
+	const wardleyStyleDef = {
+		fontFamily: 'Consolas, Lucida Console, monospace',
+		stroke: 'black', 
+		evolutionSeparationStroke: '#b8b8b8', 
+		strokeWidth: '1', 
+		strokeDasharray: '2,2',
+		component: {
+			fill: 'white', 
+			stroke: 'black',
+			evolved: 'red',
+			evolvedFill: 'white', 
+			strokeWidth: '1', 
+			radius: 5,
+			textColor: 'black', 
+			textOffset: 8,
+			evolvedTextColor: 'red'
+		}, 
+		link: {
+			stroke: 'grey',
+			strokeWidth: 1,
+			evolvedStroke: 'red',
+			evolvedStrokeWidth: 1,
+			flow: '#99c5ee9e',
+			flowStrokeWidth: 10
+		}, 
+		annotations: {
+			stroke: '#595959',
+			strokeWidth: 2,
+			fill: 'white',
+			text: 'black',
+			boxStroke: '#595959',
+			boxStrokeWidth: 1,
+			boxFill: '#FFFFFF',
 			boxTextColour: 'black'
 		}
 	};
 
 	const colourStyleDef = {
+		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
 		stroke: '#c23667', 
+		evolutionSeparationStroke: '#b8b8b8', 
 		strokeWidth: '3', 
 		strokeDasharray: '2,2',
 		component: {
@@ -79,6 +120,7 @@ function App() {
 			boxTextColour: 'black'
 		}
 	};
+	
 
 	const defaultMapObject = {
 		title: '',
@@ -206,6 +248,9 @@ function App() {
 				case 'colour':
 				case 'color':
 					setMapStyleDefs(colourStyleDef);
+					break;
+				case 'wardley':
+					setMapStyleDefs(wardleyStyleDef);
 					break;
 				default: setMapStyleDefs(plainStyleDef);
 			}

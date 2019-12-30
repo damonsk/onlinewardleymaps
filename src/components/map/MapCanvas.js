@@ -71,8 +71,8 @@ class MapCanvas extends React.Component {
 		return (
 			<React.Fragment>
 				<svg
-					fontFamily='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
-					fontSize='0.85em'
+					fontFamily={this.props.mapStyleDefs.fontFamily}
+					fontSize='13px'
 					className={this.props.mapStyle}
 					id="svgMap"
 					width={this.props.mapDimensions.width + 2 * this.props.mapPadding}

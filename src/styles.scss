@@ -15,13 +15,7 @@
     padding: 10px;
     user-select: none;
     &.wardley {
-        background: linear-gradient(to right, #e0e0e0 0%,#ffffff 20%,#ffffff 80%,#e0e0e0 99%);
-        #valueChain text, #Evolution text, .label {
-            font-family: Consolas, Lucida Console, monospace;
-        }
-        .label {
-            text-transform: uppercase;
-        }
+        background: linear-gradient(to right, #c4c4c4 0%,#ffffff 20%,#ffffff 80%,#c4c4c4 99%);
     }
 
     &.handwritten {
