@@ -76,20 +76,12 @@ function MapComponent(props) {
 							return line.replace(
 								//Take only the string evolve and the number that follows
 								/\] evolve\s([.0-9])+/g,
-								`] evolve ${(
-									(1 / props.mapDimensions.width) *
-									position.x
-								).toFixed(2)}`
+								`] evolve ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}`
 							);
 						} else {
 							return line.replace(
 								/\[(.+?)\]/g, //Find everything inside square braces.
-								`[${(1 -
-									((1 / props.mapDimensions.height) * position.y)).toFixed(
-										2
-									)}, ${((1 / props.mapDimensions.width) * position.x).toFixed(
-									2
-								)}]`
+								`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`
 							);
 						}
 					} else {

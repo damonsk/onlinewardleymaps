@@ -75,11 +75,7 @@ function AnnotationElement(props) {
 						) {
 							return line.replace(
 								/\[(.+?)\]/g,
-								`[${(1 -
-									((1 / props.mapDimensions.height) * position.y)).toFixed(2)}, ${(
-									(1 / props.mapDimensions.width) *
-									position.x
-								).toFixed(2)}]`
+								`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`
 							);
 						} else {
 							return line;
@@ -89,8 +85,7 @@ function AnnotationElement(props) {
 			);		
 		}
 		else {
-			props.mutateMapText(props.mapText + '\n' + 'annotations ['+ (1 -
-			((1 / props.mapDimensions.height) * position.y)).toFixed(2) + ', '+((1 / props.mapDimensions.width) * position.x).toFixed(2)+']');
+			props.mutateMapText(props.mapText + '\n' + 'annotations ['+ _mapHelper.yToVisibility(position.y, props.mapDimensions.height) + ', '+_mapHelper.xToMaturity(position.x, props.mapDimensions.width)+']');
 		}
 	}
 

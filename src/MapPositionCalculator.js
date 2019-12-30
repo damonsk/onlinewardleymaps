@@ -6,4 +6,12 @@ export default class MapPositionCalculator {
 	maturityToX(maturity, mapWidth) {
 		return maturity * mapWidth;
 	}
+
+	xToMaturity(x, mapWidth) {
+		return ((1 / mapWidth) * x).toFixed(2);
+	}
+
+	yToVisibility(y, mapHeight) {
+		return (1 - ((1 / mapHeight) * y)).toFixed(2);
+	}
 }

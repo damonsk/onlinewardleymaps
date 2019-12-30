@@ -78,8 +78,7 @@ function AnnotationElement(props) {
 								.split('[[')[1]
 								.split(']]')[0]
 								.split('],[');
-							extractedOccurances[props.occuranceIndex] = (1 -((1 / props.mapDimensions.height) * position.y)).toFixed(2) + ',' + ((1 / props.mapDimensions.width) *
-							position.x).toFixed(2);
+							extractedOccurances[props.occuranceIndex] = _mapHelper.yToVisibility(position.y, props.mapDimensions.height) + ',' + _mapHelper.xToMaturity(position.x, props.mapDimensions.width);
 							var beforeCoords = line.split('[')[0].trim();
 							var afterCoords = line.substr(line.lastIndexOf(']'), (line.length - line.lastIndexOf(']')))
 							var newCoords = '[' + extractedOccurances.map((e,i) => { return '[' + e + ']' }).join(',');
@@ -88,11 +87,7 @@ function AnnotationElement(props) {
 						else {
 							return line.replace(
 								/\[(.+?)\]/g,
-								`[${(1 -
-									((1 / props.mapDimensions.height) * position.y)).toFixed(2)}, ${(
-									(1 / props.mapDimensions.width) *
-									position.x
-								).toFixed(2)}]`
+								`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`
 							);
 						}
 					} else {
