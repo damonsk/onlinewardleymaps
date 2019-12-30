@@ -87,6 +87,7 @@ function Usage(props) {
 				summary={'Change the look and feel of a map'}
 				example={'style wardley'}
 				example2={'style handwritten'}
+				example3={'style colour'}
 				addOnClick={addOnClick}
 			/>
 		</p>
@@ -117,6 +118,15 @@ var UsageDefinition = createReactClass({
 						<UsageExample
 							addOnClick={this.props.addOnClick}
 							example={this.props.example2}
+						/>{' '}
+					</>
+				) : null}
+				{this.props.example3!= undefined && this.props.example3.length > 0 ? (
+					<>
+						<br />
+						<UsageExample
+							addOnClick={this.props.addOnClick}
+							example={this.props.example3}
 						/>{' '}
 					</>
 				) : null}
