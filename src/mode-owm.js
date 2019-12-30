@@ -26,7 +26,7 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 			"start" : [
 				{
 				   "token" : ["keyword", "variable.parameter.function.asp"],
-				   "regex" : "(annotations|component|title|style|outsource|build|product)(\\s*[a-zA-Z0-9\\s*]+)"
+				   "regex" : "(evolution|annotations|component|title|style|outsource|build|product)(\\s*[a-zA-Z0-9\\s*]+)"
 				},
 				{
 				   "token" : ["keyword", "variable.parameter.function.asp"],
