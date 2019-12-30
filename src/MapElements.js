@@ -2,9 +2,7 @@ export default class MapElements {
 	constructor(mapObject) {
 		this.mapObject = mapObject;
 	}
-
-	//    var mergedElements = noneEvolving.concat(evolvedElements).concat(evolveElements);
-
+	
 	getEvolvedElements() {
 		return this.getEvolveElements().map(el => {
 			return {
@@ -19,12 +17,10 @@ export default class MapElements {
 	}
 
 	getEvolveElements() {
-		//evolveElements
 		return this.mapObject.elements.filter(el => el.evolving);
 	}
 
 	getNoneEvolvingElements() {
-		//noneEvolving
 		return this.mapObject.elements.filter(el => el.evolving == false);
 	}
 
