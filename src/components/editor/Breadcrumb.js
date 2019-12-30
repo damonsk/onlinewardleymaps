@@ -5,7 +5,7 @@ const Breadcrumb = props => (
 		<ol className="breadcrumb">
 			<li className="breadcrumb-item">
 				Your Map URL{' '}
-				<a href={props.currentUrl} id="url">
+				<a href={props.currentUrl.indexOf('#') === -1 ? '' : props.currentUrl } id="url">
 					{props.currentUrl}
 				</a>
 			</li>
