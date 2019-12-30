@@ -22,6 +22,7 @@ function App() {
 			strokeWidth: '1', 
 			radius: 5,
 			textColor: 'black', 
+			textOffset: 8,
 			evolvedTextColor: 'red'
 		}, 
 		link: {
@@ -53,13 +54,14 @@ function App() {
 			stroke: '#8cb358',
 			evolved: '#ea7f5b',
 			evolvedFill: 'white',
-			strokeWidth: '3',
+			strokeWidth: '2',
 			radius: 7,
 			textColor: '#486b1a', 
+			textOffset: 8,
 			evolvedTextColor: '#ea7f5b'
 		}, 
 		link: {
-			stroke: '#c6c6c6',
+			stroke: '#5c5c5c',
 			strokeWidth: 1,
 			evolvedStroke: '#ea7f5b',
 			evolvedStrokeWidth: 1,
@@ -103,10 +105,10 @@ function App() {
 		height: 600,
 	});
 	const [mapEvolutionStates, setMapEvolutionStates] = useState({
-		genesis: 'Genesis',
-		custom: 'Custom Built',
-		product: 'Product',
-		commodity: 'Commodity',
+		genesis: {l1: 'Genesis', l2: ''},
+		custom: {l1: 'Custom Built', l2: ''},
+		product: {l1: 'Product', l2: '(+rental)'},
+		commodity: {l1:'Commodity', l2: '(+utility)'}
 	});
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
@@ -209,10 +211,10 @@ function App() {
 			}
 
 			setMapEvolutionStates({
-				genesis: r.evolution[0].line1,
-				custom: r.evolution[1].line1,
-				product: r.evolution[2].line1,
-				commodity: r.evolution[3].line1,
+				genesis: {l1: r.evolution[0].line1, l2:r.evolution[0].line2},
+				custom: {l1: r.evolution[1].line1, l2:r.evolution[1].line2},
+				product: {l1: r.evolution[2].line1, l2:r.evolution[2].line2},
+				commodity: {l1: r.evolution[3].line1, l2:r.evolution[3].line2},
 			});
 		} catch (err) {
 			console.log('Invalid markup, could not render.');

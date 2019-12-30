@@ -84,7 +84,7 @@ export default class Convert {
 		}
 		return [
 			{ line1: 'Genesis', line2: '' },
-			{ line1: 'Custom', line2: 'built' },
+			{ line1: 'Custom-Built', line2: '' },
 			{ line1: 'Product', line2: '(+rental)' },
 			{ line1: 'Commodity', line2: '(+utility)' },
 		];

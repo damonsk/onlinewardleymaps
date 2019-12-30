@@ -379,6 +379,7 @@ const MapCanvas = createReactClass({
 									setMetaText={this.props.setMetaText}
 									metaText={this.props.metaText}
 									mapStyleDefs={this.props.mapStyleDefs}
+									mapStyle={this.props.mapStyle}
 								/>
 							))}
 						</g>

@@ -19,28 +19,28 @@ function MapEvolution(props) {
 				strokeWidth={props.mapStyleDefs.strokeWidth}
 			/>
 			<text x="0" y="1em" textAnchor="start">
-				{props.mapEvolutionStates.genesis}
+				{props.mapEvolutionStates.genesis.l1}
 			</text>
 			<text x="0" y="2em" textAnchor="start">
-				&nbsp;
+				{props.mapEvolutionStates.genesis.l2}
 			</text>
 			<text x={custMark + 5} y="1em" textAnchor="start">
-				{props.mapEvolutionStates.custom}
+				{props.mapEvolutionStates.custom.l1}
 			</text>
 			<text x={custMark + 5} y="2em" textAnchor="start">
-				&nbsp;
+				{props.mapEvolutionStates.custom.l2}
 			</text>
 			<text x={prodMark + 5} y="1em" textAnchor="start">
-				{props.mapEvolutionStates.product}
+				{props.mapEvolutionStates.product.l1}
 			</text>
 			<text x={prodMark + 5} y="2em" textAnchor="start">
-				&nbsp;
+				{props.mapEvolutionStates.product.l2}
 			</text>
 			<text x={commMark + 5} y="1em" textAnchor="start">
-				{props.mapEvolutionStates.commodity}
+				{props.mapEvolutionStates.commodity.l1}
 			</text>
 			<text x={commMark + 5} y="2em" textAnchor="start">
-				&nbsp;
+				{props.mapEvolutionStates.commodity.l2}
 			</text>
 			<text
 				x={props.mapDimensions.width}
