@@ -4,8 +4,8 @@ function ComponentText(props) {
 	const elementId = 'element_text_' + props.element.id;
 	const getMetaPosition = () => {
 		var defaultPosition = {
-			x: 5,
-			y: -5,
+			x: props.mapStyleDefs.component.textOffset,
+			y: -props.mapStyleDefs.component.textOffset,
 			coords: {},
 		};
 		if (props.metaText.length > 0) {
