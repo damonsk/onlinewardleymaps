@@ -47,6 +47,43 @@ function App() {
 		}
 	};
 
+	const handwrittenStyleDef = {
+		fontFamily: '"Gloria Hallelujah", cursive',
+		stroke: 'black', 
+		evolutionSeparationStroke: 'black', 
+		strokeWidth: '1', 
+		strokeDasharray: '2,2',
+		component: {
+			fill: 'white', 
+			stroke: 'black',
+			evolved: 'red',
+			evolvedFill: 'white', 
+			strokeWidth: '1', 
+			radius: 5,
+			textColor: 'black', 
+			textOffset: 8,
+			evolvedTextColor: 'red'
+		}, 
+		link: {
+			stroke: 'grey',
+			strokeWidth: 1,
+			evolvedStroke: 'red',
+			evolvedStrokeWidth: 1,
+			flow: '#99c5ee9e',
+			flowStrokeWidth: 10
+		}, 
+		annotations: {
+			stroke: '#595959',
+			strokeWidth: 2,
+			fill: 'white',
+			text: 'black',
+			boxStroke: '#595959',
+			boxStrokeWidth: 1,
+			boxFill: '#FFFFFF',
+			boxTextColour: 'black'
+		}
+	};
+
 	const wardleyStyleDef = {
 		fontFamily: 'Consolas, Lucida Console, monospace',
 		stroke: 'black', 
@@ -251,6 +288,9 @@ function App() {
 					break;
 				case 'wardley':
 					setMapStyleDefs(wardleyStyleDef);
+					break;
+				case 'handwritten':
+					setMapStyleDefs(handwrittenStyleDef);
 					break;
 				default: setMapStyleDefs(plainStyleDef);
 			}
