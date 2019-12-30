@@ -14,6 +14,7 @@ function MapGrid(props) {
 				y2="0"
 				stroke={props.mapStyleDefs.stroke}
 				strokeWidth={props.mapStyleDefs.strokeWidth}
+				markerEnd="url(#graphArrow"
 			/>
 			<line
 				x1="-2em"
@@ -50,7 +51,7 @@ function MapGrid(props) {
 			>
 				Value Chain
 			</text>
-			<text x={props.mapDimensions.height} y="-0.4em" textAnchor="end">
+			<text x={props.mapDimensions.height - 20} y="-0.4em" textAnchor="end">
 				Visible
 			</text>
 		</g>

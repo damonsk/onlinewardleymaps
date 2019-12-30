@@ -13,10 +13,11 @@ function MapEvolution(props) {
 			<line
 				x1="0"
 				y1="0"
-				x2={props.mapDimensions.width}
+				x2={props.mapDimensions.width - 2}
 				y2="0"
 				stroke={props.mapStyleDefs.stroke}
 				strokeWidth={props.mapStyleDefs.strokeWidth}
+				markerEnd="url(#graphArrow)"
 			/>
 			<text x="0" y="1em" textAnchor="start">
 				{props.mapEvolutionStates.genesis.l1}

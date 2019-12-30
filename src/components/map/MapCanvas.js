@@ -101,6 +101,19 @@ class MapCanvas extends React.Component {
 						>
 							<path d="M0,-5L10,0L0,5" fill={this.props.mapStyleDefs.link.evolvedStroke} />
 						</marker>
+
+						<marker
+							id="graphArrow"
+							markerWidth={ 12 / this.props.mapStyleDefs.strokeWidth}
+							markerHeight={ 12 / this.props.mapStyleDefs.strokeWidth}
+							refX="9"
+							refY="0"
+							viewBox="0 -5 10 10"
+							orient="0"
+						>
+							<path d="M0,-5L10,0L0,5" fill={this.props.mapStyleDefs.stroke} />
+						</marker>
+
 					</defs>
 					<g id="grid">
 						<MapGrid mapDimensions={this.props.mapDimensions} mapStyleDefs={this.props.mapStyleDefs} />
