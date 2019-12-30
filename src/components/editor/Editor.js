@@ -30,7 +30,7 @@ class Editor extends Component {
 
 	createExpressionSuggester = (props) => {
 		let c = props.mapObject.elements.map((_, i) => { return _.name; });
-		return {elements: c, prefix: ['component', 'annotation', 'annotations', 'style', 'evolve', 'inertia', 'title', 'evolution']};
+		return {elements: c, prefix: ['outsource ', 'build ', 'buy ', 'component', 'annotation', 'annotations', 'style', 'evolve', 'inertia', 'title', 'evolution']};
 	}
 
 	componentDidUpdate(prevProps, prevState){
