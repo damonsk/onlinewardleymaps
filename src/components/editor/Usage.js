@@ -11,7 +11,7 @@ function Usage(props) {
 	};
 
 	return (
-		<p className="small">
+		<p id="usage" className="small">
 			Usage:
 			<br />
 			<br />
