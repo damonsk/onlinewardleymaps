@@ -43,6 +43,11 @@ class Editor extends Component {
 	}
 
 	render() {
+
+		function bindKey(win, mac) {
+			return {win: win, mac: mac};
+		}
+
 		return (
 			<div id="htmPane">
 				<AceEditor
@@ -60,6 +65,23 @@ class Editor extends Component {
 						enableBasicAutocompletion:[this.customAceEditorCompleter(this)],
 						enableLiveAutocompletion: true
 					}}
+					// commands={[
+					// 	{
+					// 		name: "togglecomment",
+					// 		description: "Toggle comment",
+					// 		bindKey: bindKey("Ctrl-/", "Command-/"),
+					// 		exec: function(editor) { editor.toggleCommentLines(); },
+					// 		multiSelectAction: "forEachLine",
+					// 		scrollIntoView: "selectionPart"
+					// 	}, {
+					// 		name: "toggleBlockComment",
+					// 		description: "Toggle block comment",
+					// 		bindKey: bindKey("Ctrl-Shift-/", "Command-Shift-/"),
+					// 		exec: function(editor) { editor.toggleBlockComment(); },
+					// 		multiSelectAction: "forEach",
+					// 		scrollIntoView: "selectionPart"
+					// 	}
+					// ]}
 				/>
 			</div>
 		);

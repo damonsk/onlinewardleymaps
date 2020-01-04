@@ -11,7 +11,8 @@ define('ace/mode/owm', function(require, exports) {
 	oop.inherits(Mode, TextMode);
 
 	(function() {
-		// Extra logic goes here. (see below)
+		this.lineCommentStart = "//";
+    	this.blockComment = {start: "/*", end: "*/"};
 	}.call(Mode.prototype));
 
 	exports.Mode = Mode;
