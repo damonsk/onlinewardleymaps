@@ -10,6 +10,12 @@ import Convert from '../convert';
 
 function App() {
 
+	const evoOffsets = {
+		custom: 3.5,
+		product: 8, 
+		commodity: 14
+	}
+
 	const plainStyleDef = {
 		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
 		stroke: 'black', 
@@ -191,6 +197,7 @@ function App() {
 	});
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
+
 	const mapRef = useRef(null);
 
 	const getHeight = () => {
@@ -365,6 +372,7 @@ function App() {
 						mutateMapText={mutateMapText}
 						setMetaText={setMetaText}
 						metaText={metaText}
+						evolutionOffsets={evoOffsets}
 					/>
 				</div>
 			</div>

@@ -18,25 +18,25 @@ function MapGrid(props) {
 			/>
 			<line
 				x1="-2em"
-				y1={props.mapDimensions.width / 4}
+				y1={(props.mapDimensions.width / 20) * props.evolutionOffsets.custom}
 				x2={props.mapDimensions.height}
-				y2={props.mapDimensions.width / 4}
+				y2={(props.mapDimensions.width / 20) * props.evolutionOffsets.custom}
 				stroke={props.mapStyleDefs.evolutionSeparationStroke}
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<line
 				x1="-2em"
-				y1={props.mapDimensions.width / 2}
+				y1={(props.mapDimensions.width / 20) * props.evolutionOffsets.product}
 				x2={props.mapDimensions.height}
-				y2={props.mapDimensions.width / 2}
+				y2={(props.mapDimensions.width / 20) * props.evolutionOffsets.product}
 				stroke={props.mapStyleDefs.evolutionSeparationStroke}
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<line
 				x1="-2em"
-				y1={(props.mapDimensions.width / 4) * 3}
+				y1={(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity}
 				x2={props.mapDimensions.height}
-				y2={(props.mapDimensions.width / 4) * 3}
+				y2={(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity}
 				stroke={props.mapStyleDefs.evolutionSeparationStroke}
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>

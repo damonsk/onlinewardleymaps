@@ -1,9 +1,9 @@
 import React from 'react';
 
 function MapEvolution(props) {
-	var custMark = props.mapDimensions.width / 4 + 2;
-	var prodMark = props.mapDimensions.width / 2 + 2;
-	var commMark = (props.mapDimensions.width / 4) * 3 + 2;
+	var custMark = ((props.mapDimensions.width / 20) * props.evolutionOffsets.custom) + 2;
+	var prodMark = ((props.mapDimensions.width / 20) * props.evolutionOffsets.product) + 2;
+	var commMark = ((props.mapDimensions.width / 20) * props.evolutionOffsets.commodity) + 2;
 
 	return (
 		<g

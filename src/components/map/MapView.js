@@ -24,6 +24,7 @@ class MapView extends Component {
 							mutateMapText={this.props.mutateMapText}
 							setMetaText={this.props.setMetaText}
 							metaText={this.props.metaText}
+							evolutionOffsets={this.props.evolutionOffsets}
 						/>
 					</div>
 				</div>

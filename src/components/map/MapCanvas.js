@@ -116,11 +116,15 @@ class MapCanvas extends React.Component {
 
 					</defs>
 					<g id="grid">
-						<MapGrid mapDimensions={this.props.mapDimensions} mapStyleDefs={this.props.mapStyleDefs} />
+						<MapGrid 
+							mapDimensions={this.props.mapDimensions} 
+							mapStyleDefs={this.props.mapStyleDefs} 
+							evolutionOffsets={this.props.evolutionOffsets} />
 						<MapEvolution
 							mapDimensions={this.props.mapDimensions}
 							mapEvolutionStates={this.props.mapEvolutionStates}
 							mapStyleDefs={this.props.mapStyleDefs}
+							evolutionOffsets={this.props.evolutionOffsets}
 						/>
 					</g>
 					<g id="map">
