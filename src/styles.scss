@@ -7,12 +7,26 @@
     cursor: move;
 }
 
+.map-view {
+    padding-left: 0;
+}
+
+.breadcrumb {
+    padding: 2px 1rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #6c757d;
+}
+
 #controlsMenuControl button {
     margin: 0 2px;
 }
 
+#title {
+    margin-bottom: 0;
+}
+
 #svgMap {
-    padding: 10px;
+    padding: 0;
     user-select: none;
     &.wardley {
         background: linear-gradient(to right, #c4c4c4 0%,#ffffff 20%,#ffffff 80%,#c4c4c4 99%);
@@ -21,6 +35,16 @@
 
 nav.navbar {
     background-color: #563d7c;
+    padding: 0.4rem 0rem;
+    h3 {
+        font-size: 1.3rem;
+        margin: 0;
+    }
+
+    button {
+        font-size: 14px;
+        line-height: 1.1;
+    }
 }
 
 #text {

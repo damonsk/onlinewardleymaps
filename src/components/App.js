@@ -195,10 +195,10 @@ function App() {
 
 	const getHeight = () => 600;
 	const getWidth = function() {
-		var textWidth = $('#htmPane').width();
-		var width = $(window).width();
-		var calcWidth = width - textWidth - 120;
-		return calcWidth;
+		var textWidth = $('.map-view').width();
+		//var width = $(window).width();
+		//var calcWidth = width - textWidth - 80;
+		return textWidth - 40;
 	};
 
 	const mutateMapText = newText => {

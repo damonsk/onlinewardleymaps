@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import MapCanvas from './MapCanvas';
 
-var createReactClass = require('create-react-class');
-
 class MapView extends Component {
 	constructor(props) {
 		super(props);
@@ -10,10 +8,10 @@ class MapView extends Component {
 
 	render() {
 		return (
-			<div className="col-8">
+			<div className="col-8 map-view">
 				{/* Wrapping div required to ensure that images aren't generated with a ton of whitespace */}
 				<div ref={this.props.mapRef}>
-					<h3 id="title">{this.props.mapTitle}</h3>
+					<h5 id="title">{this.props.mapTitle}</h5>
 					<div id="map">
 						<MapCanvas
 							mapDimensions={this.props.mapDimensions}
