@@ -1,16 +1,48 @@
 export default class Convert {
 	parse(data) {
+
+		var cleanedData = this.stripComments(data);
+		console.log(cleanedData);
 		let jobj = {
-			title: this.title(data),
-			elements: this.elements(data),
-			links: this.links(data),
-			evolution: this.evolution(data),
-			presentation: this.presentation(data),
-			methods: this.method(data),
-			annotations: this.annotations(data),
+			title: this.title(cleanedData),
+			elements: this.elements(cleanedData),
+			links: this.links(cleanedData),
+			evolution: this.evolution(cleanedData),
+			presentation: this.presentation(cleanedData),
+			methods: this.method(cleanedData),
+			annotations: this.annotations(cleanedData),
 		};
 
 		return jobj;
+	}
+
+	stripComments(data){
+		var doubleSlashRemoved = data.split('\n').map((line, ind) => {
+			return line.split('//')[0];
+		});
+
+		let lines = doubleSlashRemoved;
+		let linesToKeep = [];
+		let open = false;
+
+		for (let i = 0; i < lines.length; i++) {
+			let currentLine = lines[i];
+			if(currentLine.indexOf('/*') > -1){
+				open = true;
+				linesToKeep.push(currentLine.split('/*')[0].trim());
+			}
+			else if (open) {
+				if(currentLine.indexOf('*/') > -1){
+					open = false;
+					linesToKeep.push(currentLine.split('*/')[1].trim());
+				}
+			}
+			else if(open == false) {
+				linesToKeep.push(currentLine);
+			}
+		}
+
+		return linesToKeep.join('\n');
 	}
 
 	method(input) {
@@ -219,7 +251,6 @@ export default class Convert {
 			const element = elementsAsArray[i];
 			if (
 				element.trim().length > 0 &&
-				element.trim().indexOf('//') == -1 &&
 				element.trim().indexOf('evolution') == -1 &&
 				element.trim().indexOf('component') == -1 &&
 				element.trim().indexOf('style') == -1 &&

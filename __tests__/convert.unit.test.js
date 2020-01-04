@@ -185,4 +185,12 @@ test('comments are ignored', function() {
   expect(result.elements.length).toEqual(0);
 });
 
+test('comments are ignored', function() {
+
+  let actual = '/* hello world.\r\n* something\r\n*/' ;
+  let result = new Convert().parse(actual);
+  
+  expect(result.elements.length).toEqual(0);
+});
+
 });
