@@ -48,6 +48,10 @@ class Editor extends Component {
 		this.expressionSuggester = this.createExpressionSuggester(this.props);	
 	}
 
+	componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize);
+    }
+
 	componentDidMount() {
 		this.setState({ height: this.getHeight()});
 		if (typeof window !== 'undefined') {
