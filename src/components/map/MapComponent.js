@@ -82,10 +82,7 @@ function MapComponent(props) {
 							);
 						}
 					}
-					else if(line
-							.replace(/\s/g, '')
-							.indexOf('component' + props.element.name.replace(/\s/g, '')) !== -1
-					){
+					else if(line.replace(/\s/g, '') === 'component' + props.element.name.replace(/\s/g, '')){
 						return line.trim() + ' ' + 
 							`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`;
 					} else {
