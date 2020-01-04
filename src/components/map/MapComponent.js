@@ -70,20 +70,24 @@ function MapComponent(props) {
 								'component' + props.element.name.replace(/\s/g, '') + '[' //Ensure that we are at the end of the full component name by checking for a brace
 							) !== -1
 					) {
-						//Update the component line in map text with new coord values.
-						//For evolved components, we only update the evolved value
 						if (props.element.evolved) {
 							return line.replace(
-								//Take only the string evolve and the number that follows
 								/\] evolve\s([.0-9])+/g,
 								`] evolve ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}`
 							);
 						} else {
 							return line.replace(
-								/\[(.+?)\]/g, //Find everything inside square braces.
+								/\[(.?|.+?)\]/g, //Find everything inside square braces.
 								`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`
 							);
 						}
+					}
+					else if(line
+							.replace(/\s/g, '')
+							.indexOf('component' + props.element.name.replace(/\s/g, '')) !== -1
+					){
+						return line.trim() + ' ' + 
+							`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`;
 					} else {
 						return line;
 					}

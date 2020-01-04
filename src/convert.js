@@ -2,7 +2,6 @@ export default class Convert {
 	parse(data) {
 
 		var cleanedData = this.stripComments(data);
-		console.log(cleanedData);
 		let jobj = {
 			title: this.title(cleanedData),
 			elements: this.elements(cleanedData),
@@ -213,12 +212,17 @@ export default class Convert {
 					.trim()
 					.split(' [')[0]
 					.trim();
-				let positionData = element
-					.split('[')[1]
-					.trim()
-					.split(']')[0]
-					.trim()
-					.split(',');
+
+				let positionData = [0.95, 0.05];
+				if (element.trim().indexOf('[') > -1){
+					positionData = element
+						.split('[')[1]
+						.trim()
+						.split(']')[0]
+						.trim()
+						.split(',');
+				}
+				
 				let newPoint;
 
 				if (element.indexOf('evolve ') > -1) {
@@ -228,8 +232,8 @@ export default class Convert {
 
 				elementsToReturn.push({
 					name: name,
-					maturity: positionData[1],
-					visibility: positionData[0],
+					maturity: isNaN(parseFloat(positionData[1])) ? 0.05 : positionData[1],
+					visibility: isNaN(parseFloat(positionData[0])) ? 0.95 : positionData[0],
 					id: 1 + i,
 					evolving: newPoint != null && newPoint != undefined,
 					evolveMaturity: newPoint,

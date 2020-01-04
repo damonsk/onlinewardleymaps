@@ -193,4 +193,24 @@ test('comments are ignored', function() {
   expect(result.elements.length).toEqual(0);
 });
 
+test('component with little info is still made available to the map', function() {
+
+  let actual = 'component Foo []' ;
+  let result = new Convert().parse(actual);
+  
+  expect(result.elements.length).toEqual(1);
+  expect(result.elements[0].visibility).toEqual(0.95);
+  expect(result.elements[0].maturity).toEqual(0.05);
+});
+
+test('component with little info is still made available to the map', function() {
+
+  let actual = 'component Foo' ;
+  let result = new Convert().parse(actual);
+  
+  expect(result.elements.length).toEqual(1);
+  expect(result.elements[0].visibility).toEqual(0.95);
+  expect(result.elements[0].maturity).toEqual(0.05);
+});
+
 });
