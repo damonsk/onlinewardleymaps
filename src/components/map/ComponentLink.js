@@ -74,7 +74,7 @@ var FlowLink = createReactClass({
 					id={'flow_' + this.props.endElement.name}
 					transform={'translate(' + this.props.x2 + ',' + this.props.y2 + ')'}
 				>
-					{this.props.link.flowValue != undefined ? null : (
+					{this.props.link.flowValue == undefined ? null : (
 						<text
 							className="draggable label"
 							id={
