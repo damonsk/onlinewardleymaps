@@ -177,4 +177,12 @@ test('should not create map object with annotations when incomplete', function()
   expect(result.annotations.length).toEqual(0);
 });
 
+test('comments are ignored', function() {
+
+  let actual = '// hello world.';
+  let result = new Convert().parse(actual);
+  
+  expect(result.elements.length).toEqual(0);
+});
+
 });

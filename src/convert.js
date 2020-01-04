@@ -219,6 +219,7 @@ export default class Convert {
 			const element = elementsAsArray[i];
 			if (
 				element.trim().length > 0 &&
+				element.trim().indexOf('//') == -1 &&
 				element.trim().indexOf('evolution') == -1 &&
 				element.trim().indexOf('component') == -1 &&
 				element.trim().indexOf('style') == -1 &&
@@ -229,7 +230,6 @@ export default class Convert {
 				element.trim().indexOf('annotation') == -1 &&
 				element.trim().indexOf('annotations') == -1
 			) {
-				// future
 				if (element.indexOf('+>') > -1) {
 					let name = element.split('+>');
 					linksToReturn.push({
@@ -262,7 +262,6 @@ export default class Convert {
 					let endName;
 					let isFuture = false;
 					let isPast = false;
-					// future
 					if (element.indexOf("'>") > -1) {
 						flowValue = element.split("+'")[1].split("'>")[0];
 						endName = element.split("'>");
