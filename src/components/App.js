@@ -193,10 +193,14 @@ function App() {
 	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
 	const mapRef = useRef(null);
 
-	const getHeight = () => 600;
+	const getHeight = () => {
+		var winHeight = window.innerHeight;
+		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+		var titleHeight = document.getElementById('title').clientHeight;
+		return (winHeight - topNavHeight - titleHeight - 85);
+	};
 	const getWidth = function() {
-		var textWidth = $('#map').outerWidth();
-		return textWidth - 50;
+		return document.getElementById('map').clientWidth - 50;
 	};
 
 	const mutateMapText = newText => {
@@ -305,7 +309,7 @@ function App() {
 	}
 
 	React.useEffect(() => {
-		window.addEventListener('resize', () =>
+		window.addEventListener('resize', () => 
 			setMapDimensions({ width: getWidth(), height: getHeight() })
 		);
 		window.addEventListener('load', loadFromRemoteStorage);
@@ -320,28 +324,29 @@ function App() {
 
 	return (
 		<React.Fragment>
-			<nav className="navbar navbar-dark">
-				<div className="container-fluid">
-					<a className="navbar-brand" href="#">
-						<h3>Online Wardley Maps</h3>
-					</a>
-					<div id="controlsMenuControl">
-						<Controls
-							mutateMapText={mutateMapText}
-							newMapClick={newMap}
-							saveMapClick={saveMap}
-							downloadMapImage={downloadMap}
-						/>
+			<div id="top-nav-wrapper">
+				<nav className="navbar navbar-dark">
+					<div className="container-fluid">
+						<a className="navbar-brand" href="#">
+							<h3>Online Wardley Maps</h3>
+						</a>
+						<div id="controlsMenuControl">
+							<Controls
+								mutateMapText={mutateMapText}
+								newMapClick={newMap}
+								saveMapClick={saveMap}
+								downloadMapImage={downloadMap}
+							/>
+						</div>
 					</div>
-				</div>
-			</nav>
+				</nav>
 
-			<Breadcrumb currentUrl={currentUrl} />
-
+				<Breadcrumb currentUrl={currentUrl} />
+			</div>
 			<div className="container-fluid">
 				<div className="row">
-					<div className="col">
-						<Editor mapText={mapText} mutateMapText={mutateMapText} mapObject={mapObject} />
+					<div className="col editor">
+						<Editor mapText={mapText} mutateMapText={mutateMapText} mapObject={mapObject} mapDimensions={mapDimensions} />
 						<div className="form-group">
 							<Meta metaText={metaText} />
 							<Usage mapText={mapText} mutateMapText={mutateMapText} />

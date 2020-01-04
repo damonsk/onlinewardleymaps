@@ -19,10 +19,17 @@ class Editor extends Component {
 		}
 	}	
 
+	getHeight = () => {
+		var winHeight = window.innerHeight;
+		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+		var titleHeight = document.getElementById('title').clientHeight;
+		return (winHeight - topNavHeight - titleHeight);
+	}
+
 	constructor(props) {
 		super(props);
 		this.state = {
-			width: 0,
+			height: 500
 		};
 
 		this.expressionSuggester = this.createExpressionSuggester(props);
@@ -33,20 +40,22 @@ class Editor extends Component {
 		return {elements: c, prefix: ['outsource ', 'build ', 'buy ', 'component', 'annotation', 'annotations', 'style', 'evolve', 'inertia', 'title', 'evolution']};
 	}
 
+	handleResize = () =>{
+		this.setState({ height: this.getHeight()});
+	}
+
 	componentDidUpdate(prevProps, prevState){
-		this.expressionSuggester = this.createExpressionSuggester(this.props)
+		this.expressionSuggester = this.createExpressionSuggester(this.props);	
 	}
 
 	componentDidMount() {
-		const width = document.getElementById('htmPane').parentNode.clientWidth;
-		this.setState({ width });
+		this.setState({ height: this.getHeight()});
+		if (typeof window !== 'undefined') {
+			window.addEventListener('resize', this.handleResize);
+		}
 	}
 
 	render() {
-
-		function bindKey(win, mac) {
-			return {win: win, mac: mac};
-		}
 
 		return (
 			<div id="htmPane">
@@ -57,7 +66,8 @@ class Editor extends Component {
 					name="htmEditor"
 					value={this.props.mapText}
 					showGutter={false}
-					width=""
+					width={""}
+					height={this.state.height + "px"}
 					className="jumbotron"
 					showPrintMargin={false}
 					editorProps={{ $blockScrolling: true }}
@@ -65,23 +75,6 @@ class Editor extends Component {
 						enableBasicAutocompletion:[this.customAceEditorCompleter(this)],
 						enableLiveAutocompletion: true
 					}}
-					// commands={[
-					// 	{
-					// 		name: "togglecomment",
-					// 		description: "Toggle comment",
-					// 		bindKey: bindKey("Ctrl-/", "Command-/"),
-					// 		exec: function(editor) { editor.toggleCommentLines(); },
-					// 		multiSelectAction: "forEachLine",
-					// 		scrollIntoView: "selectionPart"
-					// 	}, {
-					// 		name: "toggleBlockComment",
-					// 		description: "Toggle block comment",
-					// 		bindKey: bindKey("Ctrl-Shift-/", "Command-Shift-/"),
-					// 		exec: function(editor) { editor.toggleBlockComment(); },
-					// 		multiSelectAction: "forEach",
-					// 		scrollIntoView: "selectionPart"
-					// 	}
-					// ]}
 				/>
 			</div>
 		);

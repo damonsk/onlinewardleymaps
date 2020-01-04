@@ -7,13 +7,22 @@
     cursor: move;
 }
 
+#top-nav-wrapper {
+    overflow: hidden;
+}
+
+#usage {
+    margin-top: 20px;
+}
+
 .map-view {
     padding-left: 0;
     h5 {
         text-align: center;
-        border-bottom: 1px solid #6c757d;
-        margin-right: 10px;
     }
+}
+
+.editor {
 }
 
 .breadcrumb {
