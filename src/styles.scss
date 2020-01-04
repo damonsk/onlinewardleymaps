@@ -9,11 +9,17 @@
 
 .map-view {
     padding-left: 0;
+    h5 {
+        text-align: center;
+        border-bottom: 1px solid #6c757d;
+        margin-right: 10px;
+    }
 }
 
 .breadcrumb {
     padding: 2px 1rem;
     font-size: 0.85rem;
+    margin-bottom: 0.8rem;
     border-bottom: 1px solid #6c757d;
 }
 
