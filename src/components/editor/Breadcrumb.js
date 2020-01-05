@@ -7,8 +7,9 @@ const Breadcrumb = props => {
 				<li className="breadcrumb-item" data-testid="breadcrumb-list-item">
 					Your Map:{' '}
 					<a
-						href={props.currentUrl.indexOf('#') === -1 ? '' : props.currentUrl}
+						href={props.currentUrl.indexOf('#') === -1 ? '#' : props.currentUrl}
 						id="url"
+						data-testid="breadcrumb-list-item-your-map"
 					>
 						{props.currentUrl}
 					</a>

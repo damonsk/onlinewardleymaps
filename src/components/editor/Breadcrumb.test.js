@@ -36,7 +36,12 @@ describe('Breadcrumb', () => {
 				const component = render(<Breadcrumb currentUrl="Some test String" />);
 				expect(component.getByText('Some test String')).toBeDefined();
 			});
-			it.skip('if provided currentUrl is "(unsaved)" anchor should link to an empty fragment', () => {});
+			it('if provided currentUrl is "(unsaved)" anchor should link to an empty fragment', () => {
+				const component = render(<Breadcrumb currentUrl="(Unsaved)" />);
+				expect(
+					component.getByTestId('breadcrumb-list-item-your-map')
+				).toHaveAttribute('href', '#');
+			});
 			it.skip('if valid link is provided the item should link to it.', () => {});
 			it.skip('should display "(unsaved)" in place of currentUrl value if junk data is provided', () => {});
 		});
