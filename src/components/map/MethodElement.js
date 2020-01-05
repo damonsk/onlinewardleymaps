@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import MapPositionCalculator from '../../MapPositionCalculator';
 
 function MethodElement({ element, mapDimensions, method }) {
-	console.log(element);
 	const mapCalc = new MapPositionCalculator();
 	const x = () => mapCalc.maturityToX(element.maturity, mapDimensions.width);
 	const y = () =>
