@@ -109,19 +109,15 @@ function AnnotationElement(props) {
 	}
 
 	useEffect(() => {
-		position.x = x();
+		setPosition(
+			{
+				x: x(),
+				y: y(),
+				coords: {},
+			}
+		);
 		redraw();
-	}, [props.position.maturity]);
-	useEffect(() => {
-		position.y = y();
-		redraw();
-	}, [props.position.visibility]);
-
-	useEffect(() => {
-		position.y = y();
-		position.x = x();
-		redraw();
-	}, [props.mapDimensions, props.mapStyle, props.mapStyleDefs]);
+	}, [props.position.maturity, props.position.visibility, props.mapDimensions, props.mapStyle, props.mapStyleDefs]);
 
 	useEffect(()=> {
 		redraw();

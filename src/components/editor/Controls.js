@@ -52,6 +52,7 @@ function Controls(props) {
 		'\r\n' +
 		'style colour';
 		props.mutateMapText(exampleText);
+		props.setMetaText("");
 	};
 
 	return (

@@ -343,6 +343,7 @@ function App() {
 						<div id="controlsMenuControl">
 							<Controls
 								saveOutstanding={saveOutstanding}
+								setMetaText={setMetaText}
 								mutateMapText={mutateMapText}
 								newMapClick={newMap}
 								saveMapClick={saveMap}

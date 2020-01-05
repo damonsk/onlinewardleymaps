@@ -107,16 +107,14 @@ function AnnotationElement(props) {
 	};
 
 	useEffect(() => {
-		position.x = x();
-	}, [props.occurance.maturity]);
-	useEffect(() => {
-		position.y = y();
-	}, [props.occurance.visibility]);
-
-	useEffect(() => {
-		position.y = y();
-		position.x = x();
-	}, [props.mapDimensions]);
+		setPosition(
+			{
+				x: x(),
+				y: y(),
+				coords: {},
+			}
+		);
+	}, [props.occurance.maturity, props.occurance.visibility, props.mapDimensions]);
 
 	return (
 		<g transform={'translate (' + position.x + ',' + position.y + ')'} >

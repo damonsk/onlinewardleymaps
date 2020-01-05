@@ -94,16 +94,14 @@ function MapComponent(props) {
 	}
 
 	useEffect(() => {
-		position.x = x();
-	}, [props.element.maturity]);
-	useEffect(() => {
-		position.y = y();
-	}, [props.element.visibility]);
-
-	useEffect(() => {
-		position.y = y();
-		position.x = x();
-	}, [props.mapDimensions]);
+		setPosition(
+			{
+				x: x(),
+				y: y(),
+				coords: {},
+			}
+		);
+	}, [props.element.maturity, props.element.visibility, props.mapDimensions]);
 
 	return (
 		<g
@@ -131,6 +129,7 @@ function MapComponent(props) {
 			/>
 
 			<ComponentText
+				key={"component_text_" + props.element.id}
 				mapStyleDefs={props.mapStyleDefs}
 				element={props.element}
 				mapText={props.mapText}

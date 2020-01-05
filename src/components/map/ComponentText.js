@@ -91,7 +91,7 @@ function ComponentText(props) {
 		<React.Fragment>
 			{props.element.name.length < 15 ? (
 				<text
-					key={props.key}
+					key={elementId}
 					id={elementId}
 					className="label"
 					x={position.x}
@@ -110,7 +110,7 @@ function ComponentText(props) {
 					onMouseUp={e => handleMouseUp(e)}
 					x={position.x}
 					y={position.y}
-					key={props.key}
+					key={elementId}
 					transform="translate(30, 10)"
 					className="label"
 					fill={props.element.evolved ? props.mapStyleDefs.component.evolvedTextColor : props.mapStyleDefs.component.textColor}
@@ -120,7 +120,7 @@ function ComponentText(props) {
 						.split(' ')
 						.map((text, i) => (
 							<tspan
-								key={props.key}
+								key={"component_text_span_" + elementId + "_"+ i}
 								x={position.x}
 								dy={i > 0 ? 15 : 0}
 								textAnchor="middle"
