@@ -4,7 +4,7 @@ const Breadcrumb = props => {
 	return (
 		<nav aria-label="breadcrumb">
 			<ol className="breadcrumb" data-testid="breadcrumb-list">
-				<li className="breadcrumb-item">
+				<li className="breadcrumb-item" data-testid="breadcrumb-list-item">
 					Your Map:{' '}
 					<a
 						href={props.currentUrl.indexOf('#') === -1 ? '' : props.currentUrl}

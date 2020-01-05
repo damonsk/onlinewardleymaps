@@ -19,5 +19,11 @@ describe('Breadcrumb', () => {
 				'breadcrumb'
 			);
 		});
+		it('should render all list items with the className "breadcrumb-item"', () => {
+			const component = render(<Breadcrumb currentUrl="(Unsaved)" />);
+			component.getAllByTestId('breadcrumb-list-item').map(element => {
+				expect(element).toHaveClass('breadcrumb-item');
+			});
+		});
 	});
 });
