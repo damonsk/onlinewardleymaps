@@ -1,7 +1,6 @@
 import React from 'react';
 
 function MapGrid(props) {
-
 	return (
 		<g
 			id="valueChain"

@@ -4,10 +4,7 @@ import MapPositionCalculator from '../../MapPositionCalculator';
 function AnnotationElement(props) {
 	var _mapHelper = new MapPositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(
-			props.occurance.maturity,
-			props.mapDimensions.width
-		);
+		_mapHelper.maturityToX(props.occurance.maturity, props.mapDimensions.width);
 	const y = () =>
 		_mapHelper.visibilityToY(
 			props.occurance.visibility,
@@ -67,27 +64,44 @@ function AnnotationElement(props) {
 					if (
 						line
 							.replace(/\s/g, '')
-							.indexOf(
-								'annotation' + props.annotation.number + '['
-							) !== -1
+							.indexOf('annotation' + props.annotation.number + '[') !== -1
 					) {
-
-						if(line.replace(/\s/g,'').indexOf(']]') > -1){
+						if (line.replace(/\s/g, '').indexOf(']]') > -1) {
 							var extractedOccurances = line
-								.replace(/\s/g,'')
+								.replace(/\s/g, '')
 								.split('[[')[1]
 								.split(']]')[0]
 								.split('],[');
-							extractedOccurances[props.occuranceIndex] = _mapHelper.yToVisibility(position.y, props.mapDimensions.height) + ',' + _mapHelper.xToMaturity(position.x, props.mapDimensions.width);
+							extractedOccurances[props.occuranceIndex] =
+								_mapHelper.yToVisibility(
+									position.y,
+									props.mapDimensions.height
+								) +
+								',' +
+								_mapHelper.xToMaturity(position.x, props.mapDimensions.width);
 							var beforeCoords = line.split('[')[0].trim();
-							var afterCoords = line.substr(line.lastIndexOf(']'), (line.length - line.lastIndexOf(']')))
-							var newCoords = '[' + extractedOccurances.map((e,i) => { return '[' + e + ']' }).join(',');
+							var afterCoords = line.substr(
+								line.lastIndexOf(']'),
+								line.length - line.lastIndexOf(']')
+							);
+							var newCoords =
+								'[' +
+								extractedOccurances
+									.map(e => {
+										return '[' + e + ']';
+									})
+									.join(',');
 							return beforeCoords + ' ' + newCoords + ' ' + afterCoords;
-						}
-						else {
+						} else {
 							return line.replace(
 								/\[(.+?)\]/g,
-								`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`
+								`[${_mapHelper.yToVisibility(
+									position.y,
+									props.mapDimensions.height
+								)}, ${_mapHelper.xToMaturity(
+									position.x,
+									props.mapDimensions.width
+								)}]`
 							);
 						}
 					} else {
@@ -98,26 +112,20 @@ function AnnotationElement(props) {
 		);
 	}
 
-	const defineStoke = function() {
-		return props.mapStyleDefs.annotations.stroke;
-	};
-
-	const defineFill = function() {
-		return props.mapStyleDefs.annotations.fill;
-	};
-
 	useEffect(() => {
-		setPosition(
-			{
-				x: x(),
-				y: y(),
-				coords: {},
-			}
-		);
-	}, [props.occurance.maturity, props.occurance.visibility, props.mapDimensions]);
+		setPosition({
+			x: x(),
+			y: y(),
+			coords: {},
+		});
+	}, [
+		props.occurance.maturity,
+		props.occurance.visibility,
+		props.mapDimensions,
+	]);
 
 	return (
-		<g transform={'translate (' + position.x + ',' + position.y + ')'} >
+		<g transform={'translate (' + position.x + ',' + position.y + ')'}>
 			<circle
 				cx="-0"
 				cy="0"

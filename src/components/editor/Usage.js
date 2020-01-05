@@ -121,7 +121,7 @@ var UsageDefinition = createReactClass({
 						/>{' '}
 					</>
 				) : null}
-				{this.props.example3!= undefined && this.props.example3.length > 0 ? (
+				{this.props.example3 != undefined && this.props.example3.length > 0 ? (
 					<>
 						<br />
 						<UsageExample

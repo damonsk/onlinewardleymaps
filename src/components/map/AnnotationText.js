@@ -1,7 +1,6 @@
 import React from 'react';
 
 function AnnotationText(props) {
-
 	return (
 		<tspan
 			className="label draggable"

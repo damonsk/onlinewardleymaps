@@ -1,6 +1,5 @@
 export default class Convert {
 	parse(data) {
-
 		var cleanedData = this.stripComments(data);
 		let jobj = {
 			title: this.title(cleanedData),
@@ -15,8 +14,8 @@ export default class Convert {
 		return jobj;
 	}
 
-	stripComments(data){
-		var doubleSlashRemoved = data.split('\n').map((line, ind) => {
+	stripComments(data) {
+		var doubleSlashRemoved = data.split('\n').map(line => {
 			return line.split('//')[0];
 		});
 
@@ -26,17 +25,15 @@ export default class Convert {
 
 		for (let i = 0; i < lines.length; i++) {
 			let currentLine = lines[i];
-			if(currentLine.indexOf('/*') > -1){
+			if (currentLine.indexOf('/*') > -1) {
 				open = true;
 				linesToKeep.push(currentLine.split('/*')[0].trim());
-			}
-			else if (open) {
-				if(currentLine.indexOf('*/') > -1){
+			} else if (open) {
+				if (currentLine.indexOf('*/') > -1) {
 					open = false;
 					linesToKeep.push(currentLine.split('*/')[1].trim());
 				}
-			}
-			else if(open == false) {
+			} else if (open == false) {
 				linesToKeep.push(currentLine);
 			}
 		}
@@ -71,9 +68,12 @@ export default class Convert {
 
 		return methodElements;
 	}
-	
+
 	presentation(input) {
-		let presentationObject = {style: 'plain', annotations: {visibility: 0.9, maturity: 0.1}};
+		let presentationObject = {
+			style: 'plain',
+			annotations: { visibility: 0.9, maturity: 0.1 },
+		};
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
 		for (let i = 0; i < elementsAsArray.length; i++) {
@@ -84,12 +84,16 @@ export default class Convert {
 			}
 
 			if (element.trim().indexOf('annotations ') == 0) {
-				let annotations = element.split('[')[1]
+				let annotations = element
+					.split('[')[1]
 					.trim()
 					.split(']')[0]
-					.replace(/\s/g,'')
+					.replace(/\s/g, '')
 					.split(',');
-				presentationObject.annotations = {visibility: parseFloat(annotations[0]), maturity: parseFloat(annotations[1])};
+				presentationObject.annotations = {
+					visibility: parseFloat(annotations[0]),
+					maturity: parseFloat(annotations[1]),
+				};
 			}
 		}
 		return presentationObject;
@@ -141,24 +145,28 @@ export default class Convert {
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			const element = elementsAsArray[i];
 			if (element.trim().indexOf('annotation ') == 0) {
-				let number = parseInt(element
-					.split('annotation ')[1]
-					.trim()
-					.split(' [')[0]
-					.trim());
+				let number = parseInt(
+					element
+						.split('annotation ')[1]
+						.trim()
+						.split(' [')[0]
+						.trim()
+				);
 				let positionData = [];
-				if(element.replace(/\s/g,'').indexOf('[[') > -1){
+				if (element.replace(/\s/g, '').indexOf('[[') > -1) {
 					var extractedOccurances = element
-						.replace(/\s/g,'')
+						.replace(/\s/g, '')
 						.split('[[')[1]
 						.split(']]')[0]
 						.split('],[');
-					extractedOccurances.forEach((e, i) => {
+					extractedOccurances.forEach(e => {
 						let splitString = e.split(',');
-						positionData.push({maturity: parseFloat(splitString[1]), visibility: parseFloat(splitString[0])});
+						positionData.push({
+							maturity: parseFloat(splitString[1]),
+							visibility: parseFloat(splitString[0]),
+						});
 					});
-				}
-				else if(element.indexOf('[') > -1 && element.indexOf(']') > -1) {
+				} else if (element.indexOf('[') > -1 && element.indexOf(']') > -1) {
 					let pos = element
 						.split('[')[1]
 						.trim()
@@ -167,26 +175,24 @@ export default class Convert {
 						.split(',');
 					var occurance = {
 						maturity: parseFloat(pos[1]),
-						visibility: parseFloat(pos[0])
+						visibility: parseFloat(pos[0]),
 					};
 					positionData.push(occurance);
 				}
 				let text = '';
-				if (element.trim().indexOf(']') > -1 && (element.trim().indexOf(']') != element.trim().length - 1)) {
-					if(element.replace(/\s/g,'').indexOf(']]') === -1){
-						text = element
-							.split(']')[1]
-							.trim();
+				if (
+					element.trim().indexOf(']') > -1 &&
+					element.trim().indexOf(']') != element.trim().length - 1
+				) {
+					if (element.replace(/\s/g, '').indexOf(']]') === -1) {
+						text = element.split(']')[1].trim();
 					}
-					if(element.replace(/\s/g,'').indexOf(']]') > -1){
-						var pos = element
-							.lastIndexOf(']');
-						text = element
-							.substr((pos + 1), element.length - 1)
-							.trim();
+					if (element.replace(/\s/g, '').indexOf(']]') > -1) {
+						var pos = element.lastIndexOf(']');
+						text = element.substr(pos + 1, element.length - 1).trim();
 					}
 				}
-				if(positionData.length > 0){
+				if (positionData.length > 0) {
 					annotationsArray.push({
 						number: parseInt(number),
 						occurances: positionData,
@@ -214,7 +220,7 @@ export default class Convert {
 					.trim();
 
 				let positionData = [0.95, 0.05];
-				if (element.trim().indexOf('[') > -1){
+				if (element.trim().indexOf('[') > -1) {
 					positionData = element
 						.split('[')[1]
 						.trim()
@@ -222,7 +228,7 @@ export default class Convert {
 						.trim()
 						.split(',');
 				}
-				
+
 				let newPoint;
 
 				if (element.indexOf('evolve ') > -1) {
@@ -233,7 +239,9 @@ export default class Convert {
 				elementsToReturn.push({
 					name: name,
 					maturity: isNaN(parseFloat(positionData[1])) ? 0.05 : positionData[1],
-					visibility: isNaN(parseFloat(positionData[0])) ? 0.95 : positionData[0],
+					visibility: isNaN(parseFloat(positionData[0]))
+						? 0.95
+						: positionData[0],
 					id: 1 + i,
 					evolving: newPoint != null && newPoint != undefined,
 					evolveMaturity: newPoint,
