@@ -44,4 +44,4 @@ jobs:
         # Region of the S3 Bucket
         AWS_REGION: ${{ secrets.AWS_REGION }}
         # ID of the Cloudfront Distribution
-        DISTRIBUTION_ID: ${{secrets.AWS_CF_DIST}}
+        DISTRIBUTION_ID: ${{ secrets.AWS_CF_DIST }}
