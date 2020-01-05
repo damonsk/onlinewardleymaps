@@ -42,7 +42,17 @@ describe('Breadcrumb', () => {
 					component.getByTestId('breadcrumb-list-item-your-map')
 				).toHaveAttribute('href', '#');
 			});
-			it.skip('if valid link is provided the item should link to it.', () => {});
+			it('if valid link is provided the item should link to it.', () => {
+				const component = render(
+					<Breadcrumb currentUrl="https://onlinewardleymaps.com/#qp4WjIQa8COMdvZt" />
+				);
+				expect(
+					component.getByTestId('breadcrumb-list-item-your-map')
+				).toHaveAttribute(
+					'href',
+					'https://onlinewardleymaps.com/#qp4WjIQa8COMdvZt'
+				);
+			});
 			it.skip('should display "(unsaved)" in place of currentUrl value if junk data is provided', () => {});
 		});
 	});
