@@ -250,6 +250,7 @@ function App() {
 				if (d.meta == undefined || d.meta == null) {
 					d.meta = '';
 				}
+				setSaveOutstanding(false);
 				setMapText(d.text);
 				setMetaText(d.meta);
 				updateMap(d.text, d.meta);
