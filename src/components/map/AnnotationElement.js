@@ -87,7 +87,7 @@ function AnnotationElement(props) {
 							var newCoords =
 								'[' +
 								extractedOccurances
-									.map((e, i) => {
+									.map(e => {
 										return '[' + e + ']';
 									})
 									.join(',');
@@ -111,14 +111,6 @@ function AnnotationElement(props) {
 				.join('\n')
 		);
 	}
-
-	const defineStoke = function() {
-		return props.mapStyleDefs.annotations.stroke;
-	};
-
-	const defineFill = function() {
-		return props.mapStyleDefs.annotations.fill;
-	};
 
 	useEffect(() => {
 		setPosition({
