@@ -26,4 +26,13 @@ describe('Breadcrumb', () => {
 			});
 		});
 	});
+	describe('Unique Items', () => {
+		describe('Your Map', () => {
+			it.skip('should have the text prefix "Your Map"', () => {});
+			it.skip('should render the value of provided currentUrl', () => {});
+			it.skip('if provided currentUrl is "(unsaved)" anchor should link to an empty fragment', () => {});
+			it.skip('if valid link is provided the item should link to it.', () => {});
+			it.skip('should display "(unsaved)" in place of currentUrl value if junk data is provided', () => {});
+		});
+	});
 });
