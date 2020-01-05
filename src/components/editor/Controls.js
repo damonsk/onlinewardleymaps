@@ -77,7 +77,7 @@ function Controls(props) {
 				id="save-map"
 				onClick={props.saveMapClick}
 				type="button"
-				className="btn btn-primary"
+				className={"btn btn-primary " + (props.saveOutstanding ? 'btn-danger' : 'btn-success')}
 			>
 				Save
 			</button>

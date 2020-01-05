@@ -197,7 +197,7 @@ function App() {
 	});
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
-
+	const [saveOutstanding, setSaveOutstanding] = useState('false');
 	const mapRef = useRef(null);
 
 	const getHeight = () => {
@@ -212,6 +212,7 @@ function App() {
 
 	const mutateMapText = newText => {
 		setMapText(newText);
+		setSaveOutstanding(true);
 		updateMap(newText, metaText);
 	};
 
@@ -229,6 +230,7 @@ function App() {
 			success: function(data) {
 				window.location.hash = '#' + data.id;
 				setCurrentUrl(window.location.href);
+				setSaveOutstanding(false);
 			},
 			failure: function() {
 				setCurrentUrl('(could not save map, please try again)');
@@ -339,6 +341,7 @@ function App() {
 						</a>
 						<div id="controlsMenuControl">
 							<Controls
+								saveOutstanding={saveOutstanding}
 								mutateMapText={mutateMapText}
 								newMapClick={newMap}
 								saveMapClick={saveMap}
