@@ -40,7 +40,7 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 
 	oop.inherits(DocCommentHighlightRules, TextHighlightRules);
 
-	DocCommentHighlightRules.getTagRule = function(start) {
+	DocCommentHighlightRules.getTagRule = function() {
 		return {
 			token: 'comment.doc.tag.storage.type',
 			regex: '\\b(?:TODO|FIXME|XXX|HACK)\\b',
