@@ -7,7 +7,6 @@ import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Convert from '../convert';
-import {owmBuild} from '../version';
 
 function App() {
 
@@ -382,7 +381,6 @@ function App() {
 					<p>Developed by <a href="https://twitter.com/damonsk" target="_blank">@damonsk</a>.</p>
 					<p>Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see <a target="blank" href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec">Simon's
 							book</a>.</p>
-					<p>Build: {owmBuild}</p>
 					<p>Source: <a href="https://github.com/damonsk/onlinewardleymaps" target="_blank">https://github.com/damonsk/onlinewardleymaps</a></p>
 				</div>
 			</footer>

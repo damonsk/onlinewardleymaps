@@ -1,4 +1,5 @@
 import React from 'react';
+import {owmBuild} from '../../version';
 
 function Controls(props) {
 	const example = () => {
@@ -55,6 +56,7 @@ function Controls(props) {
 
 	return (
 		<React.Fragment>
+			<small id="owm-build">v{owmBuild}</small>
 			<button
 				id="new-map"
 				onClick={props.newMapClick}
