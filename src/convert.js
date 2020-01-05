@@ -15,7 +15,7 @@ export default class Convert {
 	}
 
 	stripComments(data) {
-		var doubleSlashRemoved = data.split('\n').map((line, ind) => {
+		var doubleSlashRemoved = data.split('\n').map(line => {
 			return line.split('//')[0];
 		});
 
@@ -159,7 +159,7 @@ export default class Convert {
 						.split('[[')[1]
 						.split(']]')[0]
 						.split('],[');
-					extractedOccurances.forEach((e, i) => {
+					extractedOccurances.forEach(e => {
 						let splitString = e.split(',');
 						positionData.push({
 							maturity: parseFloat(splitString[1]),
