@@ -33,3 +33,15 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'eu-west-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'dist'      # optional: defaults to entire repository
+  
+    - name: AWS Cloudfront Invalidate Action
+      uses: awact/cloudfront-action@0.1.1
+      with:
+        # AWS Access Key. [AWS Docs](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        # AWS Secret Access Key. [AWS Docs](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        # Region of the S3 Bucket
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        # ID of the Cloudfront Distribution
+        DISTRIBUTION_ID: ${{secrets.AWS_CF_DIST}}
