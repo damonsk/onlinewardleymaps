@@ -389,7 +389,12 @@ function App() {
 				<div className="container-fluid p-3 p-md-5">
 					<p>
 						Developed by{' '}
-						<a href="https://twitter.com/damonsk" target="_blank">
+						<a
+							href="https://twitter.com/damonsk"
+							target="_blank" //eslint-disable-line react/jsx-no-target-blank
+							without
+							rel="noopener"
+						>
 							@damonsk
 						</a>
 						.
@@ -401,7 +406,7 @@ function App() {
 							target="blank"
 							href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec"
 						>
-							Simon's book
+							Simon&apos;s book
 						</a>
 						.
 					</p>
@@ -409,7 +414,8 @@ function App() {
 						Source:{' '}
 						<a
 							href="https://github.com/damonsk/onlinewardleymaps"
-							target="_blank"
+							target="_blank" //eslint-disable-line react/jsx-no-target-blank
+							rel="noopener"
 						>
 							https://github.com/damonsk/onlinewardleymaps
 						</a>
