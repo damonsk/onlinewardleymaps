@@ -33,8 +33,14 @@ describe('Breadcrumb', () => {
 				expect(component.getByText('Your Map:')).toBeDefined();
 			});
 			it('should render the value of provided currentUrl', () => {
-				const component = render(<Breadcrumb currentUrl="Some test String" />);
-				expect(component.getByText('Some test String')).toBeDefined();
+				const component = render(
+					<Breadcrumb currentUrl="https://onlinewardleymaps.com/#SA88ATD3ly2Vn0v8CB" />
+				);
+				expect(
+					component.getByText(
+						'https://onlinewardleymaps.com/#SA88ATD3ly2Vn0v8CB'
+					)
+				).toBeDefined();
 			});
 			it('if provided currentUrl is "(unsaved)" anchor should link to an empty fragment', () => {
 				const component = render(<Breadcrumb currentUrl="(Unsaved)" />);
@@ -53,7 +59,14 @@ describe('Breadcrumb', () => {
 					'https://onlinewardleymaps.com/#qp4WjIQa8COMdvZt'
 				);
 			});
-			it.skip('should display "(unsaved)" in place of currentUrl value if junk data is provided', () => {});
+			it('should display "(unsaved)" in place of currentUrl value if junk data is provided', () => {
+				const component = render(
+					<Breadcrumb currentUrl="Some junk test String" />
+				);
+				expect(
+					component.getByTestId('breadcrumb-list-item-your-map')
+				).toContainHTML('(unsaved)');
+			});
 		});
 	});
 });

@@ -1,17 +1,17 @@
 import React from 'react';
 
-const Breadcrumb = props => {
+const Breadcrumb = ({ currentUrl }) => {
 	return (
 		<nav aria-label="breadcrumb">
 			<ol className="breadcrumb" data-testid="breadcrumb-list">
 				<li className="breadcrumb-item" data-testid="breadcrumb-list-item">
 					Your Map:{' '}
 					<a
-						href={props.currentUrl.indexOf('#') === -1 ? '#' : props.currentUrl}
+						href={currentUrl.indexOf('#') === -1 ? '#' : currentUrl}
 						id="url"
 						data-testid="breadcrumb-list-item-your-map"
 					>
-						{props.currentUrl}
+						{currentUrl.indexOf('#') > -1 ? currentUrl : '(unsaved)'}
 					</a>
 				</li>
 			</ol>
