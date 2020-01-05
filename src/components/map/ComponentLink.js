@@ -49,7 +49,14 @@ function ComponentLink(props) {
 
 	return (
 		<g>
-			<line x1={x1()} y1={y1()} x2={x2()} y2={y2()} stroke={defineStoke()} strokeWidth={defineStokeWidth()} />
+			<line
+				x1={x1()}
+				y1={y1()}
+				x2={x2()}
+				y2={y2()}
+				stroke={defineStoke()}
+				strokeWidth={defineStokeWidth()}
+			/>
 			{isFlow() ? (
 				<FlowLink
 					mapStyleDefs={props.mapStyleDefs}

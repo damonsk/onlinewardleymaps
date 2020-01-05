@@ -12,6 +12,6 @@ export default class MapPositionCalculator {
 	}
 
 	yToVisibility(y, mapHeight) {
-		return (1 - ((1 / mapHeight) * y)).toFixed(2);
+		return (1 - (1 / mapHeight) * y).toFixed(2);
 	}
 }

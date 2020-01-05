@@ -10,8 +10,7 @@ import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
 
 class MapCanvas extends React.Component {
-
-	constructor(props){
+	constructor(props) {
 		super(props);
 	}
 
@@ -72,7 +71,7 @@ class MapCanvas extends React.Component {
 			<React.Fragment>
 				<svg
 					fontFamily={this.props.mapStyleDefs.fontFamily}
-					fontSize='13px'
+					fontSize="13px"
 					className={this.props.mapStyle}
 					id="svgMap"
 					width={this.props.mapDimensions.width + 2 * this.props.mapPadding}
@@ -99,13 +98,16 @@ class MapCanvas extends React.Component {
 							viewBox="0 -5 10 10"
 							orient="0"
 						>
-							<path d="M0,-5L10,0L0,5" fill={this.props.mapStyleDefs.link.evolvedStroke} />
+							<path
+								d="M0,-5L10,0L0,5"
+								fill={this.props.mapStyleDefs.link.evolvedStroke}
+							/>
 						</marker>
 
 						<marker
 							id="graphArrow"
-							markerWidth={ 12 / this.props.mapStyleDefs.strokeWidth}
-							markerHeight={ 12 / this.props.mapStyleDefs.strokeWidth}
+							markerWidth={12 / this.props.mapStyleDefs.strokeWidth}
+							markerHeight={12 / this.props.mapStyleDefs.strokeWidth}
 							refX="9"
 							refY="0"
 							viewBox="0 -5 10 10"
@@ -113,13 +115,13 @@ class MapCanvas extends React.Component {
 						>
 							<path d="M0,-5L10,0L0,5" fill={this.props.mapStyleDefs.stroke} />
 						</marker>
-
 					</defs>
 					<g id="grid">
-						<MapGrid 
-							mapDimensions={this.props.mapDimensions} 
-							mapStyleDefs={this.props.mapStyleDefs} 
-							evolutionOffsets={this.props.evolutionOffsets} />
+						<MapGrid
+							mapDimensions={this.props.mapDimensions}
+							mapStyleDefs={this.props.mapStyleDefs}
+							evolutionOffsets={this.props.evolutionOffsets}
+						/>
 						<MapEvolution
 							mapDimensions={this.props.mapDimensions}
 							mapEvolutionStates={this.props.mapEvolutionStates}
@@ -193,7 +195,7 @@ class MapCanvas extends React.Component {
 								)
 							)}
 						</g>
-						
+
 						<g id="evolvingEndLinks">
 							{evolvingEndLinks.map((l, i) =>
 								canSatisfyLink(
@@ -376,31 +378,31 @@ class MapCanvas extends React.Component {
 						<g id="annotations">
 							{this.props.mapObject.annotations.map((a, i) => (
 								<React.Fragment key={i}>
-								{a.occurances.map((o, i1) => ( 
-									<AnnotationElement
-										mapStyleDefs={this.props.mapStyleDefs} 
-										key={i1 + "_" + i}
-									 	annotation={a}
-										occurance={o}
-										occuranceIndex={i1}
-									 	mapDimensions={this.props.mapDimensions}
-									 	mutateMapText={this.props.mutateMapText}
-									 	mapText={this.props.mapText}
-									 />
-								))}
+									{a.occurances.map((o, i1) => (
+										<AnnotationElement
+											mapStyleDefs={this.props.mapStyleDefs}
+											key={i1 + '_' + i}
+											annotation={a}
+											occurance={o}
+											occuranceIndex={i1}
+											mapDimensions={this.props.mapDimensions}
+											mutateMapText={this.props.mutateMapText}
+											mapText={this.props.mapText}
+										/>
+									))}
 								</React.Fragment>
 							))}
-							{this.props.mapObject.annotations.length == 0 ? null : 
-								<AnnotationBox 
+							{this.props.mapObject.annotations.length == 0 ? null : (
+								<AnnotationBox
 									mapStyleDefs={this.props.mapStyleDefs}
 									mutateMapText={this.props.mutateMapText}
 									mapText={this.props.mapText}
-									annotations={this.props.mapObject.annotations} 
+									annotations={this.props.mapObject.annotations}
 									position={this.props.mapObject.presentation.annotations}
 									mapDimensions={this.props.mapDimensions}
 									mapStyle={this.props.mapStyle}
-									/>
-							}
+								/>
+							)}
 						</g>
 					</g>
 				</svg>

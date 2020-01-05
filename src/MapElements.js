@@ -2,7 +2,7 @@ export default class MapElements {
 	constructor(mapObject) {
 		this.mapObject = mapObject;
 	}
-	
+
 	getEvolvedElements() {
 		return this.getEvolveElements().map(el => {
 			return {

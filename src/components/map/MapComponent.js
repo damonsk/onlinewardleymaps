@@ -73,18 +73,38 @@ function MapComponent(props) {
 						if (props.element.evolved) {
 							return line.replace(
 								/\] evolve\s([.0-9])+/g,
-								`] evolve ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}`
+								`] evolve ${_mapHelper.xToMaturity(
+									position.x,
+									props.mapDimensions.width
+								)}`
 							);
 						} else {
 							return line.replace(
 								/\[(.?|.+?)\]/g, //Find everything inside square braces.
-								`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`
+								`[${_mapHelper.yToVisibility(
+									position.y,
+									props.mapDimensions.height
+								)}, ${_mapHelper.xToMaturity(
+									position.x,
+									props.mapDimensions.width
+								)}]`
 							);
 						}
-					}
-					else if(line.replace(/\s/g, '') === 'component' + props.element.name.replace(/\s/g, '')){
-						return line.trim() + ' ' + 
-							`[${_mapHelper.yToVisibility(position.y, props.mapDimensions.height)}, ${_mapHelper.xToMaturity(position.x, props.mapDimensions.width)}]`;
+					} else if (
+						line.replace(/\s/g, '') ===
+						'component' + props.element.name.replace(/\s/g, '')
+					) {
+						return (
+							line.trim() +
+							' ' +
+							`[${_mapHelper.yToVisibility(
+								position.y,
+								props.mapDimensions.height
+							)}, ${_mapHelper.xToMaturity(
+								position.x,
+								props.mapDimensions.width
+							)}]`
+						);
 					} else {
 						return line;
 					}
@@ -94,13 +114,11 @@ function MapComponent(props) {
 	}
 
 	useEffect(() => {
-		setPosition(
-			{
-				x: x(),
-				y: y(),
-				coords: {},
-			}
-		);
+		setPosition({
+			x: x(),
+			y: y(),
+			coords: {},
+		});
 	}, [props.element.maturity, props.element.visibility, props.mapDimensions]);
 
 	return (
@@ -124,12 +142,20 @@ function MapComponent(props) {
 				cy="0"
 				strokeWidth={props.mapStyleDefs.component.strokeWidth}
 				r={props.mapStyleDefs.component.radius}
-				stroke={props.element.evolved ? props.mapStyleDefs.component.evolved : props.mapStyleDefs.component.stroke}
-				fill={props.element.evolved ? props.mapStyleDefs.component.evolvedFill : props.mapStyleDefs.component.fill}
+				stroke={
+					props.element.evolved
+						? props.mapStyleDefs.component.evolved
+						: props.mapStyleDefs.component.stroke
+				}
+				fill={
+					props.element.evolved
+						? props.mapStyleDefs.component.evolvedFill
+						: props.mapStyleDefs.component.fill
+				}
 			/>
 
 			<ComponentText
-				key={"component_text_" + props.element.id}
+				key={'component_text_' + props.element.id}
 				mapStyleDefs={props.mapStyleDefs}
 				element={props.element}
 				mapText={props.mapText}

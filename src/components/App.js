@@ -9,38 +9,37 @@ import Editor from './editor/Editor';
 import Convert from '../convert';
 
 function App() {
-
 	const evoOffsets = {
 		custom: 3.5,
-		product: 8, 
-		commodity: 14
-	}
+		product: 8,
+		commodity: 14,
+	};
 
 	const plainStyleDef = {
 		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
-		stroke: 'black', 
-		evolutionSeparationStroke: 'black', 
-		strokeWidth: '1', 
+		stroke: 'black',
+		evolutionSeparationStroke: 'black',
+		strokeWidth: '1',
 		strokeDasharray: '2,2',
 		component: {
-			fill: 'white', 
+			fill: 'white',
 			stroke: 'black',
 			evolved: 'red',
-			evolvedFill: 'white', 
-			strokeWidth: '1', 
+			evolvedFill: 'white',
+			strokeWidth: '1',
 			radius: 5,
-			textColor: 'black', 
+			textColor: 'black',
 			textOffset: 8,
-			evolvedTextColor: 'red'
-		}, 
+			evolvedTextColor: 'red',
+		},
 		link: {
 			stroke: 'grey',
 			strokeWidth: 1,
 			evolvedStroke: 'red',
 			evolvedStrokeWidth: 1,
 			flow: '#99c5ee9e',
-			flowStrokeWidth: 10
-		}, 
+			flowStrokeWidth: 10,
+		},
 		annotations: {
 			stroke: '#595959',
 			strokeWidth: 2,
@@ -49,35 +48,35 @@ function App() {
 			boxStroke: '#595959',
 			boxStrokeWidth: 1,
 			boxFill: '#FFFFFF',
-			boxTextColour: 'black'
-		}
+			boxTextColour: 'black',
+		},
 	};
 
 	const handwrittenStyleDef = {
 		fontFamily: '"Gloria Hallelujah", cursive',
-		stroke: 'black', 
-		evolutionSeparationStroke: 'black', 
-		strokeWidth: '1', 
+		stroke: 'black',
+		evolutionSeparationStroke: 'black',
+		strokeWidth: '1',
 		strokeDasharray: '2,2',
 		component: {
-			fill: 'white', 
+			fill: 'white',
 			stroke: 'black',
 			evolved: 'red',
-			evolvedFill: 'white', 
-			strokeWidth: '1', 
+			evolvedFill: 'white',
+			strokeWidth: '1',
 			radius: 5,
-			textColor: 'black', 
+			textColor: 'black',
 			textOffset: 8,
-			evolvedTextColor: 'red'
-		}, 
+			evolvedTextColor: 'red',
+		},
 		link: {
 			stroke: 'grey',
 			strokeWidth: 1,
 			evolvedStroke: 'red',
 			evolvedStrokeWidth: 1,
 			flow: '#99c5ee9e',
-			flowStrokeWidth: 10
-		}, 
+			flowStrokeWidth: 10,
+		},
 		annotations: {
 			stroke: '#595959',
 			strokeWidth: 2,
@@ -86,35 +85,35 @@ function App() {
 			boxStroke: '#595959',
 			boxStrokeWidth: 1,
 			boxFill: '#FFFFFF',
-			boxTextColour: 'black'
-		}
+			boxTextColour: 'black',
+		},
 	};
 
 	const wardleyStyleDef = {
 		fontFamily: 'Consolas, Lucida Console, monospace',
-		stroke: 'black', 
-		evolutionSeparationStroke: '#b8b8b8', 
-		strokeWidth: '1', 
+		stroke: 'black',
+		evolutionSeparationStroke: '#b8b8b8',
+		strokeWidth: '1',
 		strokeDasharray: '2,2',
 		component: {
-			fill: 'white', 
+			fill: 'white',
 			stroke: 'black',
 			evolved: 'red',
-			evolvedFill: 'white', 
-			strokeWidth: '1', 
+			evolvedFill: 'white',
+			strokeWidth: '1',
 			radius: 5,
-			textColor: 'black', 
+			textColor: 'black',
 			textOffset: 8,
-			evolvedTextColor: 'red'
-		}, 
+			evolvedTextColor: 'red',
+		},
 		link: {
 			stroke: 'grey',
 			strokeWidth: 1,
 			evolvedStroke: 'red',
 			evolvedStrokeWidth: 1,
 			flow: '#99c5ee9e',
-			flowStrokeWidth: 10
-		}, 
+			flowStrokeWidth: 10,
+		},
 		annotations: {
 			stroke: '#595959',
 			strokeWidth: 2,
@@ -123,35 +122,35 @@ function App() {
 			boxStroke: '#595959',
 			boxStrokeWidth: 1,
 			boxFill: '#FFFFFF',
-			boxTextColour: 'black'
-		}
+			boxTextColour: 'black',
+		},
 	};
 
 	const colourStyleDef = {
 		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
-		stroke: '#c23667', 
-		evolutionSeparationStroke: '#b8b8b8', 
-		strokeWidth: '3', 
+		stroke: '#c23667',
+		evolutionSeparationStroke: '#b8b8b8',
+		strokeWidth: '3',
 		strokeDasharray: '2,2',
 		component: {
-			fill: 'white', 
+			fill: 'white',
 			stroke: '#8cb358',
 			evolved: '#ea7f5b',
 			evolvedFill: 'white',
 			strokeWidth: '2',
 			radius: 7,
-			textColor: '#486b1a', 
+			textColor: '#486b1a',
 			textOffset: 8,
-			evolvedTextColor: '#ea7f5b'
-		}, 
+			evolvedTextColor: '#ea7f5b',
+		},
 		link: {
 			stroke: '#5c5c5c',
 			strokeWidth: 1,
 			evolvedStroke: '#ea7f5b',
 			evolvedStrokeWidth: 1,
 			flow: '#99c5ee9e',
-			flowStrokeWidth: 10
-		}, 
+			flowStrokeWidth: 10,
+		},
 		annotations: {
 			stroke: '#015fa5',
 			strokeWidth: 2,
@@ -160,10 +159,9 @@ function App() {
 			boxStroke: '#015fa5',
 			boxStrokeWidth: 2,
 			boxFill: '#99c5ee',
-			boxTextColour: 'black'
-		}
+			boxTextColour: 'black',
+		},
 	};
-	
 
 	const defaultMapObject = {
 		title: '',
@@ -190,10 +188,10 @@ function App() {
 		height: 600,
 	});
 	const [mapEvolutionStates, setMapEvolutionStates] = useState({
-		genesis: {l1: 'Genesis', l2: ''},
-		custom: {l1: 'Custom Built', l2: ''},
-		product: {l1: 'Product', l2: '(+rental)'},
-		commodity: {l1:'Commodity', l2: '(+utility)'}
+		genesis: { l1: 'Genesis', l2: '' },
+		custom: { l1: 'Custom Built', l2: '' },
+		product: { l1: 'Product', l2: '(+rental)' },
+		commodity: { l1: 'Commodity', l2: '(+utility)' },
 	});
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
@@ -204,7 +202,7 @@ function App() {
 		var winHeight = window.innerHeight;
 		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
 		var titleHeight = document.getElementById('title').clientHeight;
-		return (winHeight - topNavHeight - titleHeight - 85);
+		return winHeight - topNavHeight - titleHeight - 85;
 	};
 	const getWidth = function() {
 		return document.getElementById('map').clientWidth - 50;
@@ -293,7 +291,7 @@ function App() {
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
 
-			switch(r.presentation.style){
+			switch (r.presentation.style) {
 				case 'colour':
 				case 'color':
 					setMapStyleDefs(colourStyleDef);
@@ -304,14 +302,15 @@ function App() {
 				case 'handwritten':
 					setMapStyleDefs(handwrittenStyleDef);
 					break;
-				default: setMapStyleDefs(plainStyleDef);
+				default:
+					setMapStyleDefs(plainStyleDef);
 			}
 
 			setMapEvolutionStates({
-				genesis: {l1: r.evolution[0].line1, l2:r.evolution[0].line2},
-				custom: {l1: r.evolution[1].line1, l2:r.evolution[1].line2},
-				product: {l1: r.evolution[2].line1, l2:r.evolution[2].line2},
-				commodity: {l1: r.evolution[3].line1, l2:r.evolution[3].line2},
+				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
+				custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
+				product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
+				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
 			});
 		} catch (err) {
 			console.log('Invalid markup, could not render.');
@@ -319,7 +318,7 @@ function App() {
 	}
 
 	React.useEffect(() => {
-		window.addEventListener('resize', () => 
+		window.addEventListener('resize', () =>
 			setMapDimensions({ width: getWidth(), height: getHeight() })
 		);
 		window.addEventListener('load', loadFromRemoteStorage);
@@ -358,7 +357,12 @@ function App() {
 			<div className="container-fluid">
 				<div className="row">
 					<div className="col editor">
-						<Editor mapText={mapText} mutateMapText={mutateMapText} mapObject={mapObject} mapDimensions={mapDimensions} />
+						<Editor
+							mapText={mapText}
+							mutateMapText={mutateMapText}
+							mapObject={mapObject}
+							mapDimensions={mapDimensions}
+						/>
 						<div className="form-group">
 							<Meta metaText={metaText} />
 							<Usage mapText={mapText} mutateMapText={mutateMapText} />
@@ -383,10 +387,33 @@ function App() {
 			</div>
 			<footer className="bd-footer text-muted">
 				<div className="container-fluid p-3 p-md-5">
-					<p>Developed by <a href="https://twitter.com/damonsk" target="_blank">@damonsk</a>.</p>
-					<p>Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see <a target="blank" href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec">Simon's
-							book</a>.</p>
-					<p>Source: <a href="https://github.com/damonsk/onlinewardleymaps" target="_blank">https://github.com/damonsk/onlinewardleymaps</a></p>
+					<p>
+						Developed by{' '}
+						<a href="https://twitter.com/damonsk" target="_blank">
+							@damonsk
+						</a>
+						.
+					</p>
+					<p>
+						Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn
+						more, see{' '}
+						<a
+							target="blank"
+							href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec"
+						>
+							Simon's book
+						</a>
+						.
+					</p>
+					<p>
+						Source:{' '}
+						<a
+							href="https://github.com/damonsk/onlinewardleymaps"
+							target="_blank"
+						>
+							https://github.com/damonsk/onlinewardleymaps
+						</a>
+					</p>
 				</div>
 			</footer>
 		</React.Fragment>

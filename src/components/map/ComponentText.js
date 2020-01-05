@@ -99,7 +99,11 @@ function ComponentText(props) {
 					onMouseDown={e => handleMouseDown(e)}
 					onMouseUp={e => handleMouseUp(e)}
 					textAnchor="start"
-					fill={props.element.evolved ? props.mapStyleDefs.component.evolvedTextColor : props.mapStyleDefs.component.textColor}
+					fill={
+						props.element.evolved
+							? props.mapStyleDefs.component.evolvedTextColor
+							: props.mapStyleDefs.component.textColor
+					}
 				>
 					{props.element.name}
 				</text>
@@ -113,14 +117,18 @@ function ComponentText(props) {
 					key={elementId}
 					transform="translate(30, 10)"
 					className="label"
-					fill={props.element.evolved ? props.mapStyleDefs.component.evolvedTextColor : props.mapStyleDefs.component.textColor}
+					fill={
+						props.element.evolved
+							? props.mapStyleDefs.component.evolvedTextColor
+							: props.mapStyleDefs.component.textColor
+					}
 				>
 					{props.element.name
 						.trim()
 						.split(' ')
 						.map((text, i) => (
 							<tspan
-								key={"component_text_span_" + elementId + "_"+ i}
+								key={'component_text_span_' + elementId + '_' + i}
 								x={position.x}
 								dy={i > 0 ? 15 : 0}
 								textAnchor="middle"
