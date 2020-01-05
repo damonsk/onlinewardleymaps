@@ -28,9 +28,9 @@ describe('Breadcrumb', () => {
 	});
 	describe('Unique Items', () => {
 		describe('Your Map', () => {
-			it('should have the text prefix "Your Map:"', () => {
+			it('should have the text prefix "Your Map:" before link', () => {
 				const component = render(<Breadcrumb currentUrl="(Unsaved)" />);
-				expect(component.getByText('Your Map:')).toBeDefined();
+				expect(component.getByText('Your Map:')).toContainHTML('Your Map: <a');
 			});
 			it('should render the value of provided currentUrl', () => {
 				const component = render(

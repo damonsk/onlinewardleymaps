@@ -11,7 +11,7 @@ const Breadcrumb = ({ currentUrl }) => {
 						id="url"
 						data-testid="breadcrumb-list-item-your-map"
 					>
-						{currentUrl.indexOf('#') > -1 ? currentUrl : '(unsaved)'}
+						{currentUrl.indexOf('#') === -1 ? '(unsaved)' : currentUrl}
 					</a>
 				</li>
 			</ol>
