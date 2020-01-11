@@ -60,6 +60,9 @@ function OfflineApp() {
 		if (ev.action == 'open-file') {
 			ipcRenderer.send('open-file');
 		}
+		if (ev.action == 'new-window') {
+			ipcRenderer.send('new-window');
+		}
 		if (ev.action == 'new-file') {
 			newMap();
 		}

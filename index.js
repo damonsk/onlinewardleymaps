@@ -1,14 +1,12 @@
 'use strict';
-
-// Import parts of electron to use
 const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 const {
 	default: installExtension,
 	REACT_DEVELOPER_TOOLS,
 } = require('electron-devtools-installer');
-const fs = require('fs');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -66,8 +64,13 @@ const template = [
 		submenu: [
 			{
 				role: 'new',
-				label: 'New',
+				label: 'New Map',
 				click: appCommandSender({ action: 'new-file' }),
+			},
+			{
+				role: 'new',
+				label: 'New Window',
+				click: appCommandSender({ action: 'new-window' }),
 			},
 			{ type: 'separator' },
 			{
@@ -167,7 +170,6 @@ const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
 function createWindow() {
-	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 1024,
 		height: 768,
@@ -239,6 +241,10 @@ app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow();
 	}
+});
+
+ipcMain.on('new-window', () => {
+	createWindow();
 });
 
 ipcMain.on('save-file', (e, d) => {
