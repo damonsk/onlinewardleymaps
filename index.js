@@ -8,6 +8,7 @@ const {
 	default: installExtension,
 	REACT_DEVELOPER_TOOLS,
 } = require('electron-devtools-installer');
+const fs = require('fs');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -63,15 +64,37 @@ const template = [
 	{
 		label: 'File',
 		submenu: [
-			isMac ? { role: 'close' } : { role: 'quit' },
+			{
+				role: 'new',
+				label: 'New',
+				click: appCommandSender({ action: 'new-file' }),
+			},
+			{ type: 'separator' },
 			{
 				role: 'open',
-				label: 'Save Map',
+				label: 'Open...',
+				click: appCommandSender({ action: 'open-file' }),
+			},
+			{ type: 'separator' },
+			{
+				role: 'save',
+				label: 'Save',
 				click: appCommandSender({ action: 'save-file' }),
 			},
+			{
+				role: 'save',
+				label: 'Save As...',
+				click: appCommandSender({ action: 'save-as' }),
+			},
+			{
+				role: 'save',
+				label: 'Export PNG',
+				click: appCommandSender({ action: 'export' }),
+			},
+			{ type: 'separator' },
+			isMac ? { role: 'close' } : { role: 'quit' },
 		],
 	},
-	// { role: 'editMenu' }
 	{
 		label: 'Edit',
 		submenu: [
@@ -219,6 +242,7 @@ app.on('activate', () => {
 });
 
 ipcMain.on('save-file', (e, d) => {
+	console.log(d);
 	let options = {
 		title: 'Save Map',
 		buttonLabel: 'Save',
@@ -230,7 +254,42 @@ ipcMain.on('save-file', (e, d) => {
 		properties: ['saveFile'],
 	};
 
-	dialog.showSaveDialog(mainWindow, options).then(s => console.log(s));
+	if (d.new == true && d.filePath !== undefined && d.filePath.length > 0) {
+		options.defaultPath = d.filePath;
+	}
+
+	if (d.new) {
+		dialog.showSaveDialog(mainWindow, options).then(s => {
+			if (s.canceled == false) {
+				fs.writeFileSync(s.filePath, d.d);
+				e.sender.send('save-file-changed', { filePath: s.filePath });
+			}
+		});
+	} else {
+		fs.writeFileSync(d.filePath, d.d);
+	}
+
+	console.log(d);
+});
+
+ipcMain.on('open-file', (e, d) => {
+	let options = {
+		title: 'Open Map',
+		buttonLabel: 'Open',
+		filters: [
+			{ name: 'WardleyMaps', extensions: ['owm'] },
+			{ name: 'Plain Text', extensions: ['txt'] },
+			{ name: 'All Files', extensions: ['*'] },
+		],
+		properties: ['openFile'],
+	};
+
+	dialog.showOpenDialog(mainWindow, options).then(open => {
+		if (open.canceled == false) {
+			let d = fs.readFileSync(open.filePaths[0]).toString();
+			e.sender.send('loaded-file', { data: d, filePath: open.filePaths[0] });
+		}
+	});
 
 	console.log(d);
 });

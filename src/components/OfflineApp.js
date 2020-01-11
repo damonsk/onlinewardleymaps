@@ -7,6 +7,7 @@ import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 import { owmBuild } from '../version';
 import { ipcRenderer } from 'electron';
+import html2canvas from 'html2canvas';
 
 function OfflineApp() {
 	const OPERATING_MODE = 'app';
@@ -16,6 +17,7 @@ function OfflineApp() {
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
+	const [mapFile, setMapFile] = useState('');
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
@@ -40,45 +42,74 @@ function OfflineApp() {
 		generateMap(newText, newMeta);
 	};
 
-	const saveToRemoteStorage = function(_, ev) {
-		console.log(ev);
-		ipcRenderer.send('save-file', { d: mapText });
+	const handleAppCommand = function(_, ev) {
+		if (ev.action == 'save-as') {
+			ipcRenderer.send('save-file', { d: mapText, new: true });
+		}
+		if (ev.action == 'save-file') {
+			if (mapFile.length > 0) {
+				ipcRenderer.send('save-file', {
+					d: mapText,
+					new: false,
+					filePath: mapFile,
+				});
+			} else {
+				ipcRenderer.send('save-file', { d: mapText, new: false });
+			}
+		}
+		if (ev.action == 'open-file') {
+			ipcRenderer.send('open-file');
+		}
+		if (ev.action == 'new-file') {
+			newMap();
+		}
+		if (ev.action == 'export') {
+			downloadMap();
+		}
 	};
 
-	//ipcRenderer.on('save-file', () => ipcRenderer.send('save-file-content', {d: mapText}) );
-
-	const loadFromRemoteStorage = function() {
-		alert('TODO');
+	const handleFileLoad = function(_, ev) {
+		setMapText(ev.data);
+		generateMap(ev.data);
+		setMapFile(ev.filePath);
 	};
 
-	// function newMap() {
-	// 	setMapText('');
-	// 	setMetaText('');
-	// 	updateMap('', '');
-	// 	window.location.hash = '';
-	// 	setCurrentUrl('(unsaved)');
-	// }
+	const handleFileChanged = function(_, ev) {
+		console.log(ev.filePath);
+		setMapFile(ev.filePath);
+	};
 
-	// function saveMap() {
-	// 	setCurrentUrl('(saving...)');
-	// 	saveToRemoteStorage(window.location.hash.replace('#', ''));
-	// }
+	function newMap() {
+		setMapText('');
+		setMapFile('');
+		setMetaText('');
+		updateMap('', '');
+	}
 
-	// function downloadMap() {
-	// 	html2canvas(mapRef.current).then(canvas => {
-	// 		const base64image = canvas.toDataURL('image/png');
-	// 		const link = document.createElement('a');
-	// 		link.download = mapTitle;
-	// 		link.href = base64image;
-	// 		link.click();
-	// 	});
-	// }
+	function downloadMap() {
+		html2canvas(mapRef.current).then(canvas => {
+			const base64image = canvas.toDataURL('image/png');
+			const link = document.createElement('a');
+			link.download = mapTitle;
+			link.href = base64image;
+			link.click();
+		});
+	}
+
+	React.useEffect(() => {
+		if (mapFile.length > 0) {
+			let parts = mapFile.split('/');
+			document.title =
+				mapTitle + ' - ' + PAGE_TITLE + ' (' + parts[parts.length - 1] + ')';
+		} else {
+			document.title = mapTitle + ' - ' + PAGE_TITLE;
+		}
+	}, [mapFile, mapTitle]);
 
 	function generateMap(txt) {
 		try {
 			var r = new Convert().parse(txt);
 			setMapTitle(r.title);
-			document.title = r.title + ' - ' + PAGE_TITLE;
 			setMapObject(r);
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
@@ -110,20 +141,22 @@ function OfflineApp() {
 	}
 
 	React.useEffect(() => {
-		ipcRenderer.on('appCommand', saveToRemoteStorage);
+		ipcRenderer.on('appCommand', handleAppCommand);
+		ipcRenderer.on('loaded-file', handleFileLoad);
+		ipcRenderer.on('save-file-changed', handleFileChanged);
 
 		window.addEventListener('resize', () =>
 			setMapDimensions({ width: getWidth(), height: getHeight() })
 		);
-		window.addEventListener('load', loadFromRemoteStorage);
 
 		return function cleanup() {
-			ipcRenderer.removeListener('appCommand', saveToRemoteStorage);
+			ipcRenderer.removeListener('appCommand', handleAppCommand);
+			ipcRenderer.removeListener('loaded-file', handleFileLoad);
+			ipcRenderer.removeListener('save-file-changed', handleFileChanged);
 
 			window.removeEventListener('resize', () =>
 				setMapDimensions({ width: getWidth(), height: getHeight() })
 			);
-			window.removeEventListener('load', loadFromRemoteStorage);
 		};
 	});
 
