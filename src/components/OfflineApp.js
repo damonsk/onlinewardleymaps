@@ -1,19 +1,16 @@
 import React, { useState, useRef } from 'react';
-import html2canvas from 'html2canvas';
-import Usage from './editor/Usage';
-import Controls from './editor/Controls';
-import Breadcrumb from './editor/Breadcrumb';
 import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Convert from '../convert';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
+import { owmBuild } from '../version';
+import { ipcRenderer } from 'electron';
 
 function OfflineApp() {
-	const PAGE_TITLE =
-		'APP - Draw Wardley Maps in seconds using this free online tool';
-	const [currentUrl, setCurrentUrl] = useState('');
+	const OPERATING_MODE = 'app';
+	const PAGE_TITLE = 'Offline Wardley Map - ' + owmBuild;
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
@@ -23,15 +20,12 @@ function OfflineApp() {
 		Defaults.EvolutionStages
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
-	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.PlainStyleDef);
-	const [saveOutstanding, setSaveOutstanding] = useState('false');
+	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const mapRef = useRef(null);
 
 	const getHeight = () => {
 		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight - 85;
+		return winHeight - 105;
 	};
 	const getWidth = function() {
 		return document.getElementById('map').clientWidth - 50;
@@ -39,7 +33,6 @@ function OfflineApp() {
 
 	const mutateMapText = newText => {
 		setMapText(newText);
-		setSaveOutstanding(true);
 		updateMap(newText, metaText);
 	};
 
@@ -47,36 +40,39 @@ function OfflineApp() {
 		generateMap(newText, newMeta);
 	};
 
-	const saveToRemoteStorage = function() {
-		alert('TODO');
+	const saveToRemoteStorage = function(_, ev) {
+		console.log(ev);
+		ipcRenderer.send('save-file', { d: mapText });
 	};
+
+	//ipcRenderer.on('save-file', () => ipcRenderer.send('save-file-content', {d: mapText}) );
 
 	const loadFromRemoteStorage = function() {
 		alert('TODO');
 	};
 
-	function newMap() {
-		setMapText('');
-		setMetaText('');
-		updateMap('', '');
-		window.location.hash = '';
-		setCurrentUrl('(unsaved)');
-	}
+	// function newMap() {
+	// 	setMapText('');
+	// 	setMetaText('');
+	// 	updateMap('', '');
+	// 	window.location.hash = '';
+	// 	setCurrentUrl('(unsaved)');
+	// }
 
-	function saveMap() {
-		setCurrentUrl('(saving...)');
-		saveToRemoteStorage(window.location.hash.replace('#', ''));
-	}
+	// function saveMap() {
+	// 	setCurrentUrl('(saving...)');
+	// 	saveToRemoteStorage(window.location.hash.replace('#', ''));
+	// }
 
-	function downloadMap() {
-		html2canvas(mapRef.current).then(canvas => {
-			const base64image = canvas.toDataURL('image/png');
-			const link = document.createElement('a');
-			link.download = mapTitle;
-			link.href = base64image;
-			link.click();
-		});
-	}
+	// function downloadMap() {
+	// 	html2canvas(mapRef.current).then(canvas => {
+	// 		const base64image = canvas.toDataURL('image/png');
+	// 		const link = document.createElement('a');
+	// 		link.download = mapTitle;
+	// 		link.href = base64image;
+	// 		link.click();
+	// 	});
+	// }
 
 	function generateMap(txt) {
 		try {
@@ -114,12 +110,16 @@ function OfflineApp() {
 	}
 
 	React.useEffect(() => {
+		ipcRenderer.on('appCommand', saveToRemoteStorage);
+
 		window.addEventListener('resize', () =>
 			setMapDimensions({ width: getWidth(), height: getHeight() })
 		);
 		window.addEventListener('load', loadFromRemoteStorage);
 
 		return function cleanup() {
+			ipcRenderer.removeListener('appCommand', saveToRemoteStorage);
+
 			window.removeEventListener('resize', () =>
 				setMapDimensions({ width: getWidth(), height: getHeight() })
 			);
@@ -129,31 +129,11 @@ function OfflineApp() {
 
 	return (
 		<React.Fragment>
-			<div id="top-nav-wrapper">
-				<nav className="navbar navbar-dark">
-					<div className="container-fluid">
-						<a className="navbar-brand" href="#">
-							<h3>Online Wardley Maps</h3>
-						</a>
-						<div id="controlsMenuControl">
-							<Controls
-								saveOutstanding={saveOutstanding}
-								setMetaText={setMetaText}
-								mutateMapText={mutateMapText}
-								newMapClick={newMap}
-								saveMapClick={saveMap}
-								downloadMapImage={downloadMap}
-							/>
-						</div>
-					</div>
-				</nav>
-
-				<Breadcrumb currentUrl={currentUrl} />
-			</div>
-			<div className="container-fluid">
+			<div className="container-fluid app">
 				<div className="row">
 					<div className="col editor">
 						<Editor
+							operatingMode={OPERATING_MODE}
 							mapText={mapText}
 							mutateMapText={mutateMapText}
 							mapObject={mapObject}
@@ -161,7 +141,6 @@ function OfflineApp() {
 						/>
 						<div className="form-group">
 							<Meta metaText={metaText} />
-							<Usage mapText={mapText} mutateMapText={mutateMapText} />
 						</div>
 					</div>
 
@@ -181,43 +160,6 @@ function OfflineApp() {
 					/>
 				</div>
 			</div>
-			<footer className="bd-footer text-muted">
-				<div className="container-fluid p-3 p-md-5">
-					<p>
-						Developed by{' '}
-						<a
-							href="https://twitter.com/damonsk"
-							target="_blank" //eslint-disable-line react/jsx-no-target-blank
-							without
-							rel="noopener"
-						>
-							@damonsk
-						</a>
-						.
-					</p>
-					<p>
-						Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn
-						more, see{' '}
-						<a
-							target="blank"
-							href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec"
-						>
-							Simon&apos;s book
-						</a>
-						.
-					</p>
-					<p>
-						Source:{' '}
-						<a
-							href="https://github.com/damonsk/onlinewardleymaps"
-							target="_blank" //eslint-disable-line react/jsx-no-target-blank
-							rel="noopener"
-						>
-							https://github.com/damonsk/onlinewardleymaps
-						</a>
-					</p>
-				</div>
-			</footer>
 		</React.Fragment>
 	);
 }

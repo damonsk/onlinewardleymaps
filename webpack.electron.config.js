@@ -6,8 +6,7 @@ const { HotModuleReplacementPlugin } = require('webpack');
 const { spawn } = require('child_process');
 const path = require('path');
 
-const PAGE_TITLE =
-	'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
+const PAGE_TITLE = 'Offline Wardley Maps';
 const HTML_LOCATION = 'src/app/index.html';
 
 function getRules(isProduction) {

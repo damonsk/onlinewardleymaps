@@ -19,10 +19,13 @@ class Editor extends Component {
 	};
 
 	getHeight = () => {
-		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight;
+		let winHeight = window.innerHeight;
+		if (this.props.operatingMode == 'browser') {
+			let topNavHeight = document.getElementById('top-nav-wrapper')
+				.clientHeight;
+			let titleHeight = document.getElementById('title').clientHeight;
+			return winHeight - topNavHeight - titleHeight;
+		} else return winHeight - 30;
 	};
 
 	constructor(props) {

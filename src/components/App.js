@@ -11,6 +11,7 @@ import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 
 function App() {
+	const OPERATING_MODE = 'browser';
 	const PAGE_TITLE =
 		'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
 	const apiEndpoint =
@@ -190,6 +191,7 @@ function App() {
 				<div className="row">
 					<div className="col editor">
 						<Editor
+							operatingMode={OPERATING_MODE}
 							mapText={mapText}
 							mutateMapText={mutateMapText}
 							mapObject={mapObject}

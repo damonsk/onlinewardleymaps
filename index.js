@@ -1,7 +1,7 @@
 'use strict';
 
 // Import parts of electron to use
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
 const {
@@ -30,6 +30,118 @@ if (process.platform === 'win32') {
 	app.commandLine.appendSwitch('high-dpi-support', 'true');
 	app.commandLine.appendSwitch('force-device-scale-factor', '1');
 }
+
+const isMac = process.platform === 'darwin';
+const appCommandSender = arg => {
+	return (item, focusedWindow) => {
+		if (focusedWindow) {
+			focusedWindow.webContents.send('appCommand', arg);
+		}
+	};
+};
+
+const template = [
+	...(isMac
+		? [
+				{
+					label: app.name,
+					submenu: [
+						{ role: 'about' },
+						{ type: 'separator' },
+						{ role: 'services' },
+						{ type: 'separator' },
+						{ role: 'hide' },
+						{ role: 'hideothers' },
+						{ role: 'unhide' },
+						{ type: 'separator' },
+						{ role: 'quit' },
+					],
+				},
+		  ]
+		: []),
+	// { role: 'fileMenu' }
+	{
+		label: 'File',
+		submenu: [
+			isMac ? { role: 'close' } : { role: 'quit' },
+			{
+				role: 'open',
+				label: 'Save Map',
+				click: appCommandSender({ action: 'save-file' }),
+			},
+		],
+	},
+	// { role: 'editMenu' }
+	{
+		label: 'Edit',
+		submenu: [
+			{ role: 'undo' },
+			{ role: 'redo' },
+			{ type: 'separator' },
+			{ role: 'cut' },
+			{ role: 'copy' },
+			{ role: 'paste' },
+			...(isMac
+				? [
+						{ role: 'pasteAndMatchStyle' },
+						{ role: 'delete' },
+						{ role: 'selectAll' },
+						{ type: 'separator' },
+						{
+							label: 'Speech',
+							submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
+						},
+				  ]
+				: [{ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' }]),
+		],
+	},
+	// { role: 'viewMenu' }
+	{
+		label: 'View',
+		submenu: [
+			{ role: 'reload' },
+			{ role: 'forcereload' },
+			{ role: 'toggledevtools' },
+			{ type: 'separator' },
+			{ role: 'resetzoom' },
+			{ role: 'zoomin' },
+			{ role: 'zoomout' },
+			{ type: 'separator' },
+			{ role: 'togglefullscreen' },
+		],
+	},
+	// { role: 'windowMenu' }
+	{
+		label: 'Window',
+		submenu: [
+			{ role: 'minimize' },
+			{ role: 'zoom' },
+			...(isMac
+				? [
+						{ type: 'separator' },
+						{ role: 'front' },
+						{ type: 'separator' },
+						{ role: 'window' },
+				  ]
+				: [{ role: 'close' }]),
+		],
+	},
+	{
+		role: 'help',
+		submenu: [
+			{
+				label: 'Learn More',
+				click: async () => {
+					const { shell } = require('electron');
+					await shell.openExternal('https://electronjs.org');
+				},
+			},
+		],
+	},
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
 
 function createWindow() {
 	// Create the browser window.
@@ -104,4 +216,8 @@ app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow();
 	}
+});
+
+ipcMain.on('save-file', (e, d) => {
+	console.log(d);
 });
