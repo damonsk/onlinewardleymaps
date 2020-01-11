@@ -9,6 +9,7 @@
 	"parser": "babel-eslint",
 	"env": {
 		"browser": true,
+		"node": true,
 		"es6": true,
 		"jest": true,
 		"jquery": true, //This should be removed once jquery has been removed as a dependency
