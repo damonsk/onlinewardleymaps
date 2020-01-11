@@ -1,0 +1,15 @@
+name: BuildApp
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Electron Builder Action
+      uses: samuelmeuli/action-electron-builder@v1.2.0
+      with:
+        github_token: ${{secrets.github_token}}
