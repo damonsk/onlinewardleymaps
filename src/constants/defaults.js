@@ -20,3 +20,8 @@ export const EvolutionStages = {
 	product: { l1: 'Product', l2: '(+rental)' },
 	commodity: { l1: 'Commodity', l2: '(+utility)' },
 };
+
+export const MapDimensions = {
+	width: 500,
+	height: 600,
+};

@@ -18,10 +18,7 @@ function OfflineApp() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
-	const [mapDimensions, setMapDimensions] = useState({
-		width: 500,
-		height: 600,
-	});
+	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
