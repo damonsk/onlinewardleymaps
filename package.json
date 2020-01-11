@@ -47,6 +47,7 @@
 		"es6": true,
 		"jest": true
 	},
+	"build": { "directories": { "output": "release/" } },
 	"dependencies": {
 		"@babel/polyfill": "^7.2.5",
 		"ace-builds": "^1.4.7",
@@ -74,8 +75,8 @@
 		"prettify": "pretty-quick",
 		"precommit": "lint-staged",
 		"offline:dev": "webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.electron.config.js --mode=development --env.isProduction=false",
-		"offline:prod": "webpack --config webpack.electron.config.js --mode production --env.isProduction=true",
+		"offline:prod": "webpack --config webpack.electron.config.js --mode production --env.isProduction=true && electron --noDevServer .",
 		"build": "webpack --config webpack.electron.config.js --mode production --env.isProduction=true",
-		"package": "electron-packager ./ --out=./builds"
+		"test-builder": "electron-builder --dir"
 	}
 }
