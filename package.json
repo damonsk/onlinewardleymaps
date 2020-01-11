@@ -63,7 +63,7 @@
 		"*.{js,jsx}": [
 			"yarn run prettify --staged",
 			"yarn run lint src/ --fix",
-			"git add" 
+			"git add"
 		]
 	},
 	"scripts": {
