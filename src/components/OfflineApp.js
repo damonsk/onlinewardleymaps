@@ -13,9 +13,6 @@ import * as Defaults from '../constants/defaults';
 function OfflineApp() {
 	const PAGE_TITLE =
 		'APP - Draw Wardley Maps in seconds using this free online tool';
-	const apiEndpoint =
-		'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
-	let loaded = false;
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
@@ -53,43 +50,12 @@ function OfflineApp() {
 		generateMap(newText, newMeta);
 	};
 
-	const saveToRemoteStorage = function(hash) {
-		$.ajax({
-			type: 'POST',
-			url: apiEndpoint + 'save',
-			data: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
-			contentType: 'application/json; charset=utf-8',
-			dataType: 'json',
-			success: function(data) {
-				window.location.hash = '#' + data.id;
-				setCurrentUrl(window.location.href);
-				setSaveOutstanding(false);
-			},
-			failure: function() {
-				setCurrentUrl('(could not save map, please try again)');
-			},
-		});
+	const saveToRemoteStorage = function() {
+		alert('TODO');
 	};
 
 	const loadFromRemoteStorage = function() {
-		setCurrentUrl('(unsaved)');
-		generateMap('', '');
-		if ((window.location.hash.length > 0) & (loaded == false)) {
-			loaded = true;
-			setCurrentUrl('(loading...)');
-			var fetch =
-				apiEndpoint + 'fetch?id=' + window.location.hash.replace('#', '');
-			$.getJSON(fetch, function(d) {
-				if (d.meta == undefined || d.meta == null) {
-					d.meta = '';
-				}
-				setSaveOutstanding(false);
-				setMapText(d.text);
-				setMetaText(d.meta);
-				updateMap(d.text, d.meta);
-				setCurrentUrl(window.location.href);
-			});
-		}
+		alert('TODO');
 	};
 
 	function newMap() {
@@ -101,7 +67,6 @@ function OfflineApp() {
 	}
 
 	function saveMap() {
-		loaded = false;
 		setCurrentUrl('(saving...)');
 		saveToRemoteStorage(window.location.hash.replace('#', ''));
 	}
@@ -117,7 +82,6 @@ function OfflineApp() {
 	}
 
 	function generateMap(txt) {
-		loaded = false;
 		try {
 			var r = new Convert().parse(txt);
 			setMapTitle(r.title);
