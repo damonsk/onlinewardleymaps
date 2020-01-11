@@ -95,7 +95,7 @@ function webpackBuilder({ isProduction }) {
 	process.env.NODE_ENV = mode;
 	process.env.BABEL_ENV = mode;
 
-	return {
+	let r = {
 		mode,
 		devtool,
 		watch,
@@ -104,7 +104,10 @@ function webpackBuilder({ isProduction }) {
 		module: {
 			rules,
 		},
-		devServer: {
+	};
+
+	if (isProductionBuild == false) {
+		r.devServer = {
 			contentBase: path.resolve(__dirname, 'dist'),
 			stats: {
 				colors: true,
@@ -120,8 +123,10 @@ function webpackBuilder({ isProduction }) {
 					.on('close', () => process.exit(0))
 					.on('error', spawnError => console.error(spawnError));
 			},
-		},
-	};
+		};
+	}
+
+	return r;
 }
 
 module.exports = webpackBuilder;
