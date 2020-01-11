@@ -1,6 +1,6 @@
 {
 	"name": "online-wardley-maps",
-	"version": "1.0.0",
+	"version": "1.117.0",
 	"main": "index.js",
 	"license": "MIT",
 	"devDependencies": {
