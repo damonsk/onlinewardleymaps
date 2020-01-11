@@ -7,162 +7,10 @@ import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Convert from '../convert';
+import * as MapStyles from '../constants/mapstyles';
+import * as Defaults from '../constants/defaults';
 
 function App() {
-	const evoOffsets = {
-		custom: 3.5,
-		product: 8,
-		commodity: 14,
-	};
-
-	const plainStyleDef = {
-		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
-		stroke: 'black',
-		evolutionSeparationStroke: 'black',
-		strokeWidth: '1',
-		strokeDasharray: '2,2',
-		component: {
-			fill: 'white',
-			stroke: 'black',
-			evolved: 'red',
-			evolvedFill: 'white',
-			strokeWidth: '1',
-			radius: 5,
-			textColor: 'black',
-			textOffset: 8,
-			evolvedTextColor: 'red',
-		},
-		link: {
-			stroke: 'grey',
-			strokeWidth: 1,
-			evolvedStroke: 'red',
-			evolvedStrokeWidth: 1,
-			flow: '#99c5ee9e',
-			flowStrokeWidth: 10,
-		},
-		annotations: {
-			stroke: '#595959',
-			strokeWidth: 2,
-			fill: 'white',
-			text: 'black',
-			boxStroke: '#595959',
-			boxStrokeWidth: 1,
-			boxFill: '#FFFFFF',
-			boxTextColour: 'black',
-		},
-	};
-
-	const handwrittenStyleDef = {
-		fontFamily: '"Gloria Hallelujah", cursive',
-		stroke: 'black',
-		evolutionSeparationStroke: 'black',
-		strokeWidth: '1',
-		strokeDasharray: '2,2',
-		component: {
-			fill: 'white',
-			stroke: 'black',
-			evolved: 'red',
-			evolvedFill: 'white',
-			strokeWidth: '1',
-			radius: 5,
-			textColor: 'black',
-			textOffset: 8,
-			evolvedTextColor: 'red',
-		},
-		link: {
-			stroke: 'grey',
-			strokeWidth: 1,
-			evolvedStroke: 'red',
-			evolvedStrokeWidth: 1,
-			flow: '#99c5ee9e',
-			flowStrokeWidth: 10,
-		},
-		annotations: {
-			stroke: '#595959',
-			strokeWidth: 2,
-			fill: 'white',
-			text: 'black',
-			boxStroke: '#595959',
-			boxStrokeWidth: 1,
-			boxFill: '#FFFFFF',
-			boxTextColour: 'black',
-		},
-	};
-
-	const wardleyStyleDef = {
-		fontFamily: 'Consolas, Lucida Console, monospace',
-		stroke: 'black',
-		evolutionSeparationStroke: '#b8b8b8',
-		strokeWidth: '1',
-		strokeDasharray: '2,2',
-		component: {
-			fill: 'white',
-			stroke: 'black',
-			evolved: 'red',
-			evolvedFill: 'white',
-			strokeWidth: '1',
-			radius: 5,
-			textColor: 'black',
-			textOffset: 8,
-			evolvedTextColor: 'red',
-		},
-		link: {
-			stroke: 'grey',
-			strokeWidth: 1,
-			evolvedStroke: 'red',
-			evolvedStrokeWidth: 1,
-			flow: '#99c5ee9e',
-			flowStrokeWidth: 10,
-		},
-		annotations: {
-			stroke: '#595959',
-			strokeWidth: 2,
-			fill: 'white',
-			text: 'black',
-			boxStroke: '#595959',
-			boxStrokeWidth: 1,
-			boxFill: '#FFFFFF',
-			boxTextColour: 'black',
-		},
-	};
-
-	const colourStyleDef = {
-		fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
-		stroke: '#c23667',
-		evolutionSeparationStroke: '#b8b8b8',
-		strokeWidth: '3',
-		strokeDasharray: '2,2',
-		component: {
-			fill: 'white',
-			stroke: '#8cb358',
-			evolved: '#ea7f5b',
-			evolvedFill: 'white',
-			strokeWidth: '2',
-			radius: 7,
-			textColor: '#486b1a',
-			textOffset: 8,
-			evolvedTextColor: '#ea7f5b',
-		},
-		link: {
-			stroke: '#5c5c5c',
-			strokeWidth: 1,
-			evolvedStroke: '#ea7f5b',
-			evolvedStrokeWidth: 1,
-			flow: '#99c5ee9e',
-			flowStrokeWidth: 10,
-		},
-		annotations: {
-			stroke: '#015fa5',
-			strokeWidth: 2,
-			fill: '#99c5ee',
-			text: 'black',
-			boxStroke: '#015fa5',
-			boxStrokeWidth: 2,
-			boxFill: '#99c5ee',
-			boxTextColour: 'black',
-		},
-	};
-
 	const defaultMapObject = {
 		title: '',
 		elements: [],
@@ -194,7 +42,7 @@ function App() {
 		commodity: { l1: 'Commodity', l2: '(+utility)' },
 	});
 	const [mapStyle, setMapStyle] = useState('plain');
-	const [mapStyleDefs, setMapStyleDefs] = useState(plainStyleDef);
+	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState('false');
 	const mapRef = useRef(null);
 
@@ -294,16 +142,16 @@ function App() {
 			switch (r.presentation.style) {
 				case 'colour':
 				case 'color':
-					setMapStyleDefs(colourStyleDef);
+					setMapStyleDefs(MapStyles.Colour);
 					break;
 				case 'wardley':
-					setMapStyleDefs(wardleyStyleDef);
+					setMapStyleDefs(MapStyles.Wardley);
 					break;
 				case 'handwritten':
-					setMapStyleDefs(handwrittenStyleDef);
+					setMapStyleDefs(MapStyles.Handwritten);
 					break;
 				default:
-					setMapStyleDefs(plainStyleDef);
+					setMapStyleDefs(MapStyles.Plain);
 			}
 
 			setMapEvolutionStates({
@@ -381,7 +229,7 @@ function App() {
 						mutateMapText={mutateMapText}
 						setMetaText={setMetaText}
 						metaText={metaText}
-						evolutionOffsets={evoOffsets}
+						evolutionOffsets={Defaults.EvoOffsets}
 					/>
 				</div>
 			</div>
