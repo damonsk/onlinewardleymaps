@@ -15,6 +15,10 @@
 		"babel-loader": "^8.0.5",
 		"copy-webpack-plugin": "^4.6.0",
 		"css-loader": "^2.1.0",
+		"electron": "^7.1.8",
+		"electron-builder": "^22.0.0",
+		"electron-devtools-installer": "^2.2.4",
+		"electron-packager": "^14.1.1",
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.7.0",
 		"eslint-plugin-prettier": "^3.1.2",
@@ -35,11 +39,7 @@
 		"style-loader": "^0.23.1",
 		"webpack": "^4.28.3",
 		"webpack-cli": "^3.2.0",
-		"webpack-dev-server": "^3.1.14",
-		"electron-builder": "^21.2.0",
-		"electron": "^7.1.8",
-		"electron-devtools-installer": "^2.2.4",
-		"electron-packager": "^14.1.1"
+		"webpack-dev-server": "^3.1.14"
 	},
 	"env": {
 		"browser": true,
