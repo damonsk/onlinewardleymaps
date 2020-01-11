@@ -1,5 +1,5 @@
 {
-	"name": "refactor",
+	"name": "online-wardley-maps",
 	"version": "1.0.0",
 	"main": "index.js",
 	"license": "MIT",
@@ -50,6 +50,9 @@
 		"bootstrap": "^4.2.1",
 		"brace": "^0.11.1",
 		"create-react-class": "^15.6.3",
+		"electron": "^7.1.8",
+		"electron-devtools-installer": "^2.2.4",
+		"electron-packager": "^14.1.1",
 		"fsevents": "^2.1.2",
 		"html2canvas": "^1.0.0-rc.5",
 		"react": "^16.12.0",
@@ -58,8 +61,8 @@
 	},
 	"lint-staged": {
 		"*.{js,jsx}": [
-			"npm run prettify --staged",
-			"npm run lint src/ --fix",
+			"yarn run prettify --staged",
+			"yarn run lint src/ --fix",
 			"git add"
 		]
 	},
@@ -69,6 +72,7 @@
 		"test": "jest --watchAll",
 		"lint": "eslint src/",
 		"prettify": "pretty-quick",
-		"precommit": "lint-staged"
+		"precommit": "lint-staged",
+		"local": "webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.electron.config.js --mode=development --env.isProduction=false"
 	}
 }
