@@ -1,9 +1,8 @@
 'use strict';
-
-// Import parts of electron to use
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 const {
 	default: installExtension,
 	REACT_DEVELOPER_TOOLS,
@@ -31,8 +30,146 @@ if (process.platform === 'win32') {
 	app.commandLine.appendSwitch('force-device-scale-factor', '1');
 }
 
+const isMac = process.platform === 'darwin';
+const appCommandSender = arg => {
+	return (item, focusedWindow) => {
+		if (focusedWindow) {
+			focusedWindow.webContents.send('appCommand', arg);
+		}
+	};
+};
+
+const template = [
+	...(isMac
+		? [
+				{
+					label: app.name,
+					submenu: [
+						{ role: 'about' },
+						{ type: 'separator' },
+						{ role: 'services' },
+						{ type: 'separator' },
+						{ role: 'hide' },
+						{ role: 'hideothers' },
+						{ role: 'unhide' },
+						{ type: 'separator' },
+						{ role: 'quit' },
+					],
+				},
+		  ]
+		: []),
+	// { role: 'fileMenu' }
+	{
+		label: 'File',
+		submenu: [
+			{
+				role: 'new',
+				label: 'New Map',
+				click: appCommandSender({ action: 'new-file' }),
+			},
+			{
+				role: 'new',
+				label: 'New Window',
+				click: appCommandSender({ action: 'new-window' }),
+			},
+			{ type: 'separator' },
+			{
+				role: 'open',
+				label: 'Open...',
+				click: appCommandSender({ action: 'open-file' }),
+			},
+			{ type: 'separator' },
+			{
+				role: 'save',
+				label: 'Save',
+				click: appCommandSender({ action: 'save-file' }),
+			},
+			{
+				role: 'save',
+				label: 'Save As...',
+				click: appCommandSender({ action: 'save-as' }),
+			},
+			{
+				role: 'save',
+				label: 'Export PNG',
+				click: appCommandSender({ action: 'export' }),
+			},
+			{ type: 'separator' },
+			isMac ? { role: 'close' } : { role: 'quit' },
+		],
+	},
+	{
+		label: 'Edit',
+		submenu: [
+			{ role: 'undo' },
+			{ role: 'redo' },
+			{ type: 'separator' },
+			{ role: 'cut' },
+			{ role: 'copy' },
+			{ role: 'paste' },
+			...(isMac
+				? [
+						{ role: 'pasteAndMatchStyle' },
+						{ role: 'delete' },
+						{ role: 'selectAll' },
+						{ type: 'separator' },
+						{
+							label: 'Speech',
+							submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
+						},
+				  ]
+				: [{ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' }]),
+		],
+	},
+	// { role: 'viewMenu' }
+	{
+		label: 'View',
+		submenu: [
+			{ role: 'reload' },
+			{ role: 'forcereload' },
+			{ role: 'toggledevtools' },
+			{ type: 'separator' },
+			{ role: 'resetzoom' },
+			{ role: 'zoomin' },
+			{ role: 'zoomout' },
+			{ type: 'separator' },
+			{ role: 'togglefullscreen' },
+		],
+	},
+	// { role: 'windowMenu' }
+	{
+		label: 'Window',
+		submenu: [
+			{ role: 'minimize' },
+			{ role: 'zoom' },
+			...(isMac
+				? [
+						{ type: 'separator' },
+						{ role: 'front' },
+						{ type: 'separator' },
+						{ role: 'window' },
+				  ]
+				: [{ role: 'close' }]),
+		],
+	},
+	{
+		role: 'help',
+		submenu: [
+			{
+				label: 'Learn More',
+				click: async () => {
+					const { shell } = require('electron');
+					await shell.openExternal('https://electronjs.org');
+				},
+			},
+		],
+	},
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
+
 function createWindow() {
-	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 1024,
 		height: 768,
@@ -104,4 +241,61 @@ app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow();
 	}
+});
+
+ipcMain.on('new-window', () => {
+	createWindow();
+});
+
+ipcMain.on('save-file', (e, d) => {
+	console.log(d);
+	let options = {
+		title: 'Save Map',
+		buttonLabel: 'Save',
+		filters: [
+			{ name: 'WardleyMaps', extensions: ['owm'] },
+			{ name: 'Plain Text', extensions: ['txt'] },
+			{ name: 'All Files', extensions: ['*'] },
+		],
+		properties: ['saveFile'],
+	};
+
+	if (d.new == true && d.filePath !== undefined && d.filePath.length > 0) {
+		options.defaultPath = d.filePath;
+	}
+
+	if (d.new) {
+		dialog.showSaveDialog(mainWindow, options).then(s => {
+			if (s.canceled == false) {
+				fs.writeFileSync(s.filePath, d.d);
+				e.sender.send('save-file-changed', { filePath: s.filePath });
+			}
+		});
+	} else {
+		fs.writeFileSync(d.filePath, d.d);
+	}
+
+	console.log(d);
+});
+
+ipcMain.on('open-file', (e, d) => {
+	let options = {
+		title: 'Open Map',
+		buttonLabel: 'Open',
+		filters: [
+			{ name: 'WardleyMaps', extensions: ['owm'] },
+			{ name: 'Plain Text', extensions: ['txt'] },
+			{ name: 'All Files', extensions: ['*'] },
+		],
+		properties: ['openFile'],
+	};
+
+	dialog.showOpenDialog(mainWindow, options).then(open => {
+		if (open.canceled == false) {
+			let d = fs.readFileSync(open.filePaths[0]).toString();
+			e.sender.send('loaded-file', { data: d, filePath: open.filePaths[0] });
+		}
+	});
+
+	console.log(d);
 });

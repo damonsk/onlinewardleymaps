@@ -1,98 +1,105 @@
 #text {
-    font-family: Consolas, Lucida Console, monospace;
-    font-size: 90%;
+	font-family: Consolas, Lucida Console, monospace;
+	font-size: 90%;
 }
 
 #owm-build {
-    color: #cbbde2;
-    margin-right: 10px;
-    font-size: 10px;
-
+	color: #cbbde2;
+	margin-right: 10px;
+	font-size: 10px;
 }
 
 .draggable {
-    cursor: move;
+	cursor: move;
 }
 
 #top-nav-wrapper {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 #usage {
-    margin-top: 20px;
+	margin-top: 20px;
 }
 
 .map-view {
-    padding-left: 0;
-    h5 {
-        text-align: center;
-    }
+	padding-left: 0;
+	h5 {
+		text-align: center;
+	}
 }
 
-.editor {
+.app {
+	.editor {
+		padding: 0;
+		background-color: #e9ecef;
+	}
 }
 
 .breadcrumb {
-    padding: 2px 1rem;
-    font-size: 0.85rem;
-    margin-bottom: 0.8rem;
-    border-bottom: 1px solid #6c757d;
+	padding: 2px 1rem;
+	font-size: 0.85rem;
+	margin-bottom: 0.8rem;
+	border-bottom: 1px solid #6c757d;
 }
 
 #controlsMenuControl button {
-    margin: 0 2px;
+	margin: 0 2px;
 }
 
 #title {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 #svgMap {
-    padding: 10px;
-    user-select: none;
-    &.wardley {
-        background: linear-gradient(to right, #c4c4c4 0%,#ffffff 20%,#ffffff 80%,#c4c4c4 99%);
-    }
+	padding: 10px;
+	user-select: none;
+	&.wardley {
+		background: linear-gradient(
+			to right,
+			#c4c4c4 0%,
+			#ffffff 20%,
+			#ffffff 80%,
+			#c4c4c4 99%
+		);
+	}
 }
 
 nav.navbar {
-    background-color: #563d7c;
-    padding: 0.4rem 0rem;
-    h3 {
-        font-size: 1.3rem;
-        margin: 0;
-    }
+	background-color: #563d7c;
+	padding: 0.4rem 0rem;
+	h3 {
+		font-size: 1.3rem;
+		margin: 0;
+	}
 
-    button {
-        font-size: 14px;
-        line-height: 1.1;
-    }
+	button {
+		font-size: 14px;
+		line-height: 1.1;
+	}
 }
 
 #text {
-    height: 682px;
+	height: 682px;
 }
 
-#htmPane{  
+#htmPane {
+	background: #e9ecef;
+	padding: 5px;
 
-    background: #e9ecef;
-    padding: 5px;
-
-    .jumbotron {
-        height: 682px;
-        padding: 5px;
-        margin-bottom: 2px;
-    }
+	.jumbotron {
+		height: 682px;
+		padding: 5px;
+		margin-bottom: 2px;
+	}
 }
 
 #meta-container {
-
-    #meta {
-        height: 120px;
-    }
+	#meta {
+		height: 120px;
+	}
 }
 
 footer {
-    background-color: #f7f7f7; 
-    font-size: 86%;
+	background-color: #f7f7f7;
+	font-size: 86%;
 }
