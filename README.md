@@ -1,5 +1,8 @@
 # OnlineWardleyMaps
 
+[![Mentioned in Awesome Wardley Maps](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/wardley-maps-community/awesome-wardley-maps#apps)
+
+
 The source code that runs www.OnlineWardleyMaps.com.
 
 Developed by  [@damonsk](https://twitter.com/damonsk).
