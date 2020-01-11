@@ -3,10 +3,6 @@ const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
-const {
-	default: installExtension,
-	REACT_DEVELOPER_TOOLS,
-} = require('electron-devtools-installer');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -205,6 +201,10 @@ function createWindow() {
 
 		// Open the DevTools automatically if developing
 		if (dev) {
+			const {
+				default: installExtension,
+				REACT_DEVELOPER_TOOLS,
+			} = require('electron-devtools-installer');
 			installExtension(REACT_DEVELOPER_TOOLS).catch(err =>
 				console.log('Error loading React DevTools: ', err)
 			);
