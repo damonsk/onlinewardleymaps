@@ -8,7 +8,7 @@ const path = require('path');
 
 const PAGE_TITLE =
 	'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
-const HTML_LOCATION = 'src/index.html';
+const HTML_LOCATION = 'src/app/index.html';
 
 function getRules(isProduction) {
 	let rules = [
@@ -96,6 +96,7 @@ function webpackBuilder({ isProduction }) {
 	process.env.BABEL_ENV = mode;
 
 	let r = {
+		entry: './src/app/index.js',
 		mode,
 		devtool,
 		watch,
