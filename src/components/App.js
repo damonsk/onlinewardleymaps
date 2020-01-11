@@ -11,16 +11,6 @@ import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 
 function App() {
-	const defaultMapObject = {
-		title: '',
-		elements: [],
-		links: [],
-		evolution: [],
-		presentation: { style: 'plain' },
-		methods: [],
-		annotations: [],
-	};
-
 	const PAGE_TITLE =
 		'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
 	const apiEndpoint =
@@ -30,17 +20,14 @@ function App() {
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
-	const [mapObject, setMapObject] = useState(defaultMapObject);
+	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
 	const [mapDimensions, setMapDimensions] = useState({
 		width: 500,
 		height: 600,
 	});
-	const [mapEvolutionStates, setMapEvolutionStates] = useState({
-		genesis: { l1: 'Genesis', l2: '' },
-		custom: { l1: 'Custom Built', l2: '' },
-		product: { l1: 'Product', l2: '(+rental)' },
-		commodity: { l1: 'Commodity', l2: '(+utility)' },
-	});
+	const [mapEvolutionStates, setMapEvolutionStates] = useState(
+		Defaults.EvolutionStages
+	);
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState('false');
