@@ -74,6 +74,7 @@
 		"precommit": "lint-staged",
 		"offline:dev": "webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.electron.config.js --mode=development --env.isProduction=false",
 		"offline:prod": "webpack --config webpack.electron.config.js --mode production --env.isProduction=true",
+		"build":"webpack --config webpack.electron.config.js --mode production --env.isProduction=true",
 		"package": "electron-packager ./ --out=./builds"
 	}
 }
