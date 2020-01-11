@@ -1,7 +1,7 @@
 'use strict';
 
 // Import parts of electron to use
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
 const {
@@ -219,5 +219,18 @@ app.on('activate', () => {
 });
 
 ipcMain.on('save-file', (e, d) => {
+	let options = {
+		title: 'Save Map',
+		buttonLabel: 'Save',
+		filters: [
+			{ name: 'WardleyMaps', extensions: ['owm'] },
+			{ name: 'Plain Text', extensions: ['txt'] },
+			{ name: 'All Files', extensions: ['*'] },
+		],
+		properties: ['saveFile'],
+	};
+
+	dialog.showSaveDialog(mainWindow, options).then(s => console.log(s));
+
 	console.log(d);
 });
