@@ -29,7 +29,7 @@ function App() {
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
-	const [saveOutstanding, setSaveOutstanding] = useState('false');
+	const [saveOutstanding, setSaveOutstanding] = useState(false);
 	const mapRef = useRef(null);
 
 	const getHeight = () => {
