@@ -83,6 +83,13 @@ function Usage(props) {
 				addOnClick={addOnClick}
 			/>
 			<UsageDefinition
+				title={'Y-Axis Labels:'}
+				summary={'Change the text of the y-axis labels'}
+				example={'y-axis Label->Min->Max'}
+				example2={'y-axis Value Chain->Invisible->Visible'}
+				addOnClick={addOnClick}
+			/>
+			<UsageDefinition
 				title={'Available styles:'}
 				summary={'Change the look and feel of a map'}
 				example={'style wardley'}
