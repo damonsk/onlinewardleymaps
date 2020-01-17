@@ -40,7 +40,7 @@ function MapGrid(props) {
 				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<text x="0" y="-0.4em" textAnchor="start">
-				Invisible
+				{props.mapYAxis.min}
 			</text>
 			<text
 				x={props.mapDimensions.height / 2}
@@ -48,10 +48,10 @@ function MapGrid(props) {
 				textAnchor="middle"
 				fontWeight="bold"
 			>
-				Value Chain
+				{props.mapYAxis.label}
 			</text>
 			<text x={props.mapDimensions.height - 20} y="-0.4em" textAnchor="end">
-				Visible
+				{props.mapYAxis.max}
 			</text>
 		</g>
 	);

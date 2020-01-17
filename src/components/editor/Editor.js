@@ -55,6 +55,7 @@ class Editor extends Component {
 				'inertia',
 				'title',
 				'evolution',
+				'y-axis Label->Min->Max',
 			],
 		};
 	};

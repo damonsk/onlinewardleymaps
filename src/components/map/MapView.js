@@ -17,6 +17,7 @@ class MapView extends Component {
 							mapDimensions={this.props.mapDimensions}
 							mapPadding={20}
 							mapStyleDefs={this.props.mapStyleDefs}
+							mapYAxis={this.props.mapYAxis}
 							mapEvolutionStates={this.props.mapEvolutionStates}
 							mapStyle={this.props.mapStyle}
 							mapObject={this.props.mapObject}

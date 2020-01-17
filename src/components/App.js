@@ -27,6 +27,7 @@ function App() {
 		Defaults.EvolutionStages
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
+	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState('false');
 	const mapRef = useRef(null);
@@ -123,6 +124,7 @@ function App() {
 			setMapObject(r);
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
+			setMapYAxis(r.presentation.yAxis);
 
 			switch (r.presentation.style) {
 				case 'colour':
@@ -207,6 +209,7 @@ function App() {
 						mapTitle={mapTitle}
 						mapObject={mapObject}
 						mapStyleDefs={mapStyleDefs}
+						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}
 						mapEvolutionStates={mapEvolutionStates}
 						mapStyle={mapStyle}
