@@ -73,6 +73,7 @@ export default class Convert {
 		let presentationObject = {
 			style: 'plain',
 			annotations: { visibility: 0.9, maturity: 0.1 },
+			yAxis: { label: 'Value Chain', max: 'Visible', min: 'Invisible' },
 		};
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
@@ -94,6 +95,18 @@ export default class Convert {
 					visibility: parseFloat(annotations[0]),
 					maturity: parseFloat(annotations[1]),
 				};
+			}
+
+			if (element.trim().indexOf('y-axis ') == 0) {
+				let yAxis = element
+					.trim()
+					.split('y-axis ')[1]
+					.split('->');
+				if (yAxis.length == 3) {
+					presentationObject.yAxis.label = yAxis[0].trim();
+					presentationObject.yAxis.min = yAxis[1].trim();
+					presentationObject.yAxis.max = yAxis[2].trim();
+				}
 			}
 		}
 		return presentationObject;
@@ -271,7 +284,8 @@ export default class Convert {
 				element.trim().indexOf('outsource') == -1 &&
 				element.trim().indexOf('title') == -1 &&
 				element.trim().indexOf('annotation') == -1 &&
-				element.trim().indexOf('annotations') == -1
+				element.trim().indexOf('annotations') == -1 &&
+				element.trim().indexOf('y-axis') == -1
 			) {
 				if (element.indexOf('+>') > -1) {
 					let name = element.split('+>');
