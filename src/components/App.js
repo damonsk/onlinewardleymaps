@@ -16,7 +16,6 @@ function App() {
 		'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
 	const apiEndpoint =
 		'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
-	let loaded = false;
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
@@ -53,41 +52,43 @@ function App() {
 	};
 
 	const saveToRemoteStorage = function(hash) {
-		$.ajax({
-			type: 'POST',
-			url: apiEndpoint + 'save',
-			data: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
-			contentType: 'application/json; charset=utf-8',
-			dataType: 'json',
-			success: function(data) {
+		fetch(apiEndpoint + 'save', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json; charset=utf-8' },
+			body: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
+		})
+			.then(resp => resp.json())
+			.then(data => {
 				window.location.hash = '#' + data.id;
 				setCurrentUrl(window.location.href);
 				setSaveOutstanding(false);
-			},
-			failure: function() {
+			})
+			.catch(function(error) {
+				console.log('Request failed', error);
 				setCurrentUrl('(could not save map, please try again)');
-			},
-		});
+			});
 	};
 
 	const loadFromRemoteStorage = function() {
 		setCurrentUrl('(unsaved)');
 		generateMap('', '');
-		if ((window.location.hash.length > 0) & (loaded == false)) {
-			loaded = true;
+		if (window.location.hash.length > 0) {
 			setCurrentUrl('(loading...)');
-			var fetch =
+			var fetchUrl =
 				apiEndpoint + 'fetch?id=' + window.location.hash.replace('#', '');
-			$.getJSON(fetch, function(d) {
-				if (d.meta == undefined || d.meta == null) {
-					d.meta = '';
-				}
-				setSaveOutstanding(false);
-				setMapText(d.text);
-				setMetaText(d.meta);
-				updateMap(d.text, d.meta);
-				setCurrentUrl(window.location.href);
-			});
+
+			fetch(fetchUrl)
+				.then(resp => resp.json())
+				.then(d => {
+					if (d.meta == undefined || d.meta == null) {
+						d.meta = '';
+					}
+					setSaveOutstanding(false);
+					setMapText(d.text);
+					setMetaText(d.meta);
+					updateMap(d.text, d.meta);
+					setCurrentUrl(window.location.href);
+				});
 		}
 	};
 
@@ -100,7 +101,6 @@ function App() {
 	}
 
 	function saveMap() {
-		loaded = false;
 		setCurrentUrl('(saving...)');
 		saveToRemoteStorage(window.location.hash.replace('#', ''));
 	}
@@ -116,7 +116,6 @@ function App() {
 	}
 
 	function generateMap(txt) {
-		loaded = false;
 		try {
 			var r = new Convert().parse(txt);
 			setMapTitle(r.title);
