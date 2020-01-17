@@ -34,3 +34,22 @@ To run all tests.
 
     yarn test
 
+## Running in Docker & Kubernetes
+
+Build the Docker image
+
+    docker build -t luebken/onlinewardleymaps -f Dockerfile dist/
+
+Run the Docker container to test locally
+
+    docker run -p 8080:80 luebken/onlinewardleymaps
+
+Push the Docker image
+
+    docker push luebken/onlinewardleymaps
+
+Create Kubernetes Deployment and Service
+
+    kubectl create -f kubernetes.yaml
+
+Grab the EXTERNAL-IP from `kubectl get svc onlinewardleymaps`

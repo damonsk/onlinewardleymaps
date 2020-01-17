@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onlinewardleymaps
+spec:
+  selector:
+    matchLabels:
+      app: onlinewardleymaps
+  template:
+    metadata:
+      labels:
+        app: onlinewardleymaps
+    spec:
+      containers:
+      - name: onlinewardleymaps
+        image: luebken/onlinewardleymaps
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: onlinewardleymaps
+spec:
+  selector:
+    app: onlinewardleymaps
+  ports:
+    - protocol: TCP
+      port: 80
+  type: LoadBalancer
