@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import MapPositionCalculator from '../../MapPositionCalculator';
 import AnnotationText from './AnnotationText';
+import Movable from './Movable';
 
 function AnnotationElement(props) {
 	var _mapHelper = new MapPositionCalculator();
@@ -11,53 +12,8 @@ function AnnotationElement(props) {
 			props.position.visibility,
 			props.mapDimensions.height
 		);
-	const [position, setPosition] = React.useState({
-		x: x(),
-		y: y(),
-		coords: {},
-	});
 
-	const handleMouseMove = React.useRef(e => {
-		setPosition(position => {
-			const xDiff = position.coords.x - e.pageX;
-			const yDiff = position.coords.y - e.pageY;
-			return {
-				x: position.x - xDiff,
-				y: position.y - yDiff,
-				coords: {
-					x: e.pageX,
-					y: e.pageY,
-				},
-			};
-		});
-	});
-
-	const handleMouseDown = e => {
-		const pageX = e.pageX;
-		const pageY = e.pageY;
-
-		setPosition(position =>
-			Object.assign({}, position, {
-				coords: {
-					x: pageX,
-					y: pageY,
-				},
-			})
-		);
-		document.addEventListener('mousemove', handleMouseMove.current);
-	};
-
-	const handleMouseUp = () => {
-		document.removeEventListener('mousemove', handleMouseMove.current);
-		setPosition(position =>
-			Object.assign({}, position, {
-				coords: {},
-			})
-		);
-		endDrag();
-	};
-
-	function endDrag() {
+	function endDrag(moved) {
 		if (props.mapText.indexOf('annotations ') > -1) {
 			props.mutateMapText(
 				props.mapText
@@ -67,10 +23,10 @@ function AnnotationElement(props) {
 							return line.replace(
 								/\[(.+?)\]/g,
 								`[${_mapHelper.yToVisibility(
-									position.y,
+									moved.y,
 									props.mapDimensions.height
 								)}, ${_mapHelper.xToMaturity(
-									position.x,
+									moved.x,
 									props.mapDimensions.width
 								)}]`
 							);
@@ -85,21 +41,22 @@ function AnnotationElement(props) {
 				props.mapText +
 					'\n' +
 					'annotations [' +
-					_mapHelper.yToVisibility(position.y, props.mapDimensions.height) +
+					_mapHelper.yToVisibility(moved.y, props.mapDimensions.height) +
 					', ' +
-					_mapHelper.xToMaturity(position.x, props.mapDimensions.width) +
+					_mapHelper.xToMaturity(moved.x, props.mapDimensions.width) +
 					']'
 			);
 		}
 	}
 
 	var redraw = function() {
-		var elem = document.getElementById('annotationsBoxWrap');
+		let elem = document.getElementById('annotationsBoxWrap');
 		if (elem != undefined) elem.parentNode.removeChild(elem);
 
-		var ctx = document.getElementById('annotationsBox'),
-			SVGRect = ctx.getBBox();
-		var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+		let ctx = document.getElementById('movable_annotationsBox'),
+			SVGRect = ctx.getBBox(),
+			rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+
 		rect.setAttribute('x', SVGRect.x - 2);
 		rect.setAttribute('id', 'annotationsBoxWrap');
 		rect.setAttribute('y', SVGRect.y - 2);
@@ -119,11 +76,6 @@ function AnnotationElement(props) {
 	};
 
 	useEffect(() => {
-		setPosition({
-			x: x(),
-			y: y(),
-			coords: {},
-		});
 		redraw();
 	}, [
 		props.position.maturity,
@@ -131,44 +83,41 @@ function AnnotationElement(props) {
 		props.mapDimensions,
 		props.mapStyle,
 		props.mapStyleDefs,
+		props.annotations,
 	]);
 
-	useEffect(() => {
-		redraw();
-	}, [props.annotations]);
-
 	return (
-		<>
-			<g
-				id={'annotationsBox'}
-				transform={'translate (' + position.x + ',' + position.y + ')'}
-				onMouseDown={e => handleMouseDown(e)}
-				onMouseUp={e => handleMouseUp(e)}
-			>
-				<text id={'annotationsBoxTextContainer'}>
-					<tspan
-						className="label draggable"
-						textAnchor="start"
-						dy={0}
-						x={2}
-						fill={props.mapStyleDefs.annotations.boxTextColour}
-						textDecoration="underline"
-					>
-						Annotations:
-					</tspan>
-					{props.annotations.map((a, i) => {
-						return (
-							<AnnotationText
-								annotation={a}
-								key={i}
-								parentIndex={i}
-								mapStyleDefs={props.mapStyleDefs}
-							/>
-						);
-					})}
-				</text>
-			</g>
-		</>
+		<Movable
+			id={'annotationsBox'}
+			onMove={endDrag}
+			fixedY={false}
+			fixedX={false}
+			x={x()}
+			y={y()}
+		>
+			<text id={'annotationsBoxTextContainer'}>
+				<tspan
+					className="label draggable"
+					textAnchor="start"
+					dy={0}
+					x={2}
+					fill={props.mapStyleDefs.annotations.boxTextColour}
+					textDecoration="underline"
+				>
+					Annotations:
+				</tspan>
+				{props.annotations.map((a, i) => {
+					return (
+						<AnnotationText
+							annotation={a}
+							key={i}
+							parentIndex={i}
+							mapStyleDefs={props.mapStyleDefs}
+						/>
+					);
+				})}
+			</text>
+		</Movable>
 	);
 }
 
