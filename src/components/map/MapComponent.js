@@ -69,42 +69,45 @@ function MapComponent(props) {
 	}
 
 	return (
-		<Movable
-			id={'element_' + props.element.id}
-			onMove={endDrag}
-			x={x()}
-			y={y()}
-			fixedY={props.element.evolved}
-			fixedX={false}
-		>
-			<circle
-				id={'element_circle_' + props.element.id}
-				cx="0"
-				cy="0"
-				strokeWidth={props.mapStyleDefs.component.strokeWidth}
-				r={props.mapStyleDefs.component.radius}
-				stroke={
-					props.element.evolved
-						? props.mapStyleDefs.component.evolved
-						: props.mapStyleDefs.component.stroke
-				}
-				fill={
-					props.element.evolved
-						? props.mapStyleDefs.component.evolvedFill
-						: props.mapStyleDefs.component.fill
-				}
-			/>
-
-			<ComponentText
-				key={'component_text_' + props.element.id}
-				mapStyleDefs={props.mapStyleDefs}
-				element={props.element}
-				mapText={props.mapText}
-				mutateMapText={props.mutateMapText}
-				setMetaText={props.setMetaText}
-				metaText={props.metaText}
-			/>
-		</Movable>
+		<>
+			<Movable
+				id={'element_' + props.element.id}
+				onMove={endDrag}
+				x={x()}
+				y={y()}
+				fixedY={props.element.evolved}
+				fixedX={false}
+			>
+				<circle
+					id={'element_circle_' + props.element.id}
+					cx="0"
+					cy="0"
+					strokeWidth={props.mapStyleDefs.component.strokeWidth}
+					r={props.mapStyleDefs.component.radius}
+					stroke={
+						props.element.evolved
+							? props.mapStyleDefs.component.evolved
+							: props.mapStyleDefs.component.stroke
+					}
+					fill={
+						props.element.evolved
+							? props.mapStyleDefs.component.evolvedFill
+							: props.mapStyleDefs.component.fill
+					}
+				/>
+			</Movable>
+			<g transform={'translate(' + x() + ',' + y() + ')'}>
+				<ComponentText
+					key={'component_text_' + props.element.id}
+					mapStyleDefs={props.mapStyleDefs}
+					element={props.element}
+					mapText={props.mapText}
+					mutateMapText={props.mutateMapText}
+					setMetaText={props.setMetaText}
+					metaText={props.metaText}
+				/>
+			</g>
+		</>
 	);
 }
 
