@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MapPositionCalculator from '../../MapPositionCalculator';
+import Movable from './Movable';
 
 function AnnotationElement(props) {
 	var _mapHelper = new MapPositionCalculator();
@@ -10,53 +11,8 @@ function AnnotationElement(props) {
 			props.occurance.visibility,
 			props.mapDimensions.height
 		);
-	const [position, setPosition] = React.useState({
-		x: x(),
-		y: y(),
-		coords: {},
-	});
 
-	const handleMouseMove = React.useRef(e => {
-		setPosition(position => {
-			const xDiff = position.coords.x - e.pageX;
-			const yDiff = position.coords.y - e.pageY;
-			return {
-				x: position.x - xDiff,
-				y: position.y - yDiff,
-				coords: {
-					x: e.pageX,
-					y: e.pageY,
-				},
-			};
-		});
-	});
-
-	const handleMouseDown = e => {
-		const pageX = e.pageX;
-		const pageY = e.pageY;
-
-		setPosition(position =>
-			Object.assign({}, position, {
-				coords: {
-					x: pageX,
-					y: pageY,
-				},
-			})
-		);
-		document.addEventListener('mousemove', handleMouseMove.current);
-	};
-
-	const handleMouseUp = () => {
-		document.removeEventListener('mousemove', handleMouseMove.current);
-		setPosition(position =>
-			Object.assign({}, position, {
-				coords: {},
-			})
-		);
-		endDrag();
-	};
-
-	function endDrag() {
+	function endDrag(moved) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
@@ -73,12 +29,9 @@ function AnnotationElement(props) {
 								.split(']]')[0]
 								.split('],[');
 							extractedOccurances[props.occuranceIndex] =
-								_mapHelper.yToVisibility(
-									position.y,
-									props.mapDimensions.height
-								) +
+								_mapHelper.yToVisibility(moved.y, props.mapDimensions.height) +
 								',' +
-								_mapHelper.xToMaturity(position.x, props.mapDimensions.width);
+								_mapHelper.xToMaturity(moved.x, props.mapDimensions.width);
 							var beforeCoords = line.split('[')[0].trim();
 							var afterCoords = line.substr(
 								line.lastIndexOf(']'),
@@ -96,10 +49,10 @@ function AnnotationElement(props) {
 							return line.replace(
 								/\[(.+?)\]/g,
 								`[${_mapHelper.yToVisibility(
-									position.y,
+									moved.y,
 									props.mapDimensions.height
 								)}, ${_mapHelper.xToMaturity(
-									position.x,
+									moved.x,
 									props.mapDimensions.width
 								)}]`
 							);
@@ -112,34 +65,25 @@ function AnnotationElement(props) {
 		);
 	}
 
-	useEffect(() => {
-		setPosition({
-			x: x(),
-			y: y(),
-			coords: {},
-		});
-	}, [
-		props.occurance.maturity,
-		props.occurance.visibility,
-		props.mapDimensions,
-	]);
-
 	return (
-		<g transform={'translate (' + position.x + ',' + position.y + ')'}>
+		<Movable
+			id={'annotation_element_' + props.annotation.number}
+			onMove={endDrag}
+			x={x()}
+			y={y()}
+			fixedY={false}
+			fixedX={false}
+		>
 			<circle
 				cx="-0"
 				cy="0"
 				className="draggable"
 				r="15"
-				onMouseDown={e => handleMouseDown(e)}
-				onMouseUp={e => handleMouseUp(e)}
 				fill={props.mapStyleDefs.annotations.fill}
 				stroke={props.mapStyleDefs.annotations.stroke}
 				strokeWidth={props.mapStyleDefs.annotations.strokeWidth}
 			/>
 			<text
-				onMouseDown={e => handleMouseDown(e)}
-				onMouseUp={e => handleMouseUp(e)}
 				x="-5"
 				y="5"
 				className="label draggable"
@@ -148,7 +92,7 @@ function AnnotationElement(props) {
 			>
 				{props.annotation.number}
 			</text>
-		</g>
+		</Movable>
 	);
 }
 
