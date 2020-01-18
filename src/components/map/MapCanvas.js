@@ -147,216 +147,86 @@ class MapCanvas extends React.Component {
 								)
 							)}
 						</g>
-						<g id="links">
-							{this.props.mapObject.links.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getMergedElements(),
-									mapElements.getMergedElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getMergedElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getMergedElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
+						{[
+							{
+								id: 'links',
+								links: this.props.mapObject.links,
+								startElements: mapElements.getMergedElements(),
+								endElements: mapElements.getMergedElements(),
+							},
+							{
+								id: 'evolvingToEvolveEndLinks',
+								links: evolvingToNoneEvolvingEndLinks,
+								startElements: mapElements.getEvolveElements(),
+								endElements: mapElements.getNoneEvolvingElements(),
+							},
+							{
+								id: 'evolvingEndLinks',
+								links: evolvingEndLinks,
+								startElements: mapElements.getNoneEvolvingElements(),
+								endElements: mapElements.getEvolveElements(),
+							},
+							{
+								id: 'evolvingBothLinks',
+								links: bothEvolved,
+								startElements: mapElements.getEvolvedElements(),
+								endElements: mapElements.getEvolvedElements(),
+							},
+							{
+								id: 'evolvedToEvolvingLinks',
+								links: evolvedToEvolving,
+								startElements: mapElements.getEvolvedElements(),
+								endElements: mapElements.getEvolveElements(),
+							},
+							{
+								id: 'evolvingStartLinks',
+								links: evolveStartLinks,
+								startElements: mapElements.getNoneEvolvingElements(),
+								endElements: mapElements.getEvolveElements(),
+							},
+							{
+								id: 'evolvingStartEvolvingEndLinks',
+								links: bothEvolving,
+								startElements: mapElements.getEvolveElements(),
+								endElements: mapElements.getEvolveElements(),
+							},
+							{
+								id: 'evolvedStartEvolvingEndLinks',
+								links: evolveToEvolved,
+								startElements: mapElements.getEvolveElements(),
+								endElements: mapElements.getEvolvedElements(),
+							},
+						].map(current => {
+							return (
+								<g id={current.id} key={current.id}>
+									{current.links.map((l, i) =>
+										canSatisfyLink(
+											l,
+											current.startElements,
+											current.endElements
+										) == false ? null : (
+											<ComponentLink
+												setMetaText={this.props.setMetaText}
+												metaText={this.props.metaText}
+												mapStyleDefs={this.props.mapStyleDefs}
+												key={i}
+												mapDimensions={this.props.mapDimensions}
+												startElement={getElementByName(
+													current.startElements,
+													l.start
+												)}
+												endElement={getElementByName(
+													current.endElements,
+													l.end
+												)}
+												link={l}
+											/>
+										)
+									)}
+								</g>
+							);
+						})}
 
-						<g id="evolvingToEvolveEndLinks">
-							{evolvingToNoneEvolvingEndLinks.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getEvolveElements(),
-									mapElements.getNoneEvolvingElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getNoneEvolvingElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
-
-						<g id="evolvingEndLinks">
-							{evolvingEndLinks.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getNoneEvolvingElements(),
-									mapElements.getEvolveElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getNoneEvolvingElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
-						<g id="evolvingBothLinks">
-							{bothEvolved.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getEvolvedElements(),
-									mapElements.getEvolvedElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getEvolvedElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getEvolvedElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
-						<g id="evolvedToEvolvingLinks">
-							{evolvedToEvolving.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getEvolvedElements(),
-									mapElements.getEvolveElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getEvolvedElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
-						<g id="evolvingStartLinks">
-							{evolveStartLinks.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getNoneEvolvingElements(),
-									mapElements.getEvolveElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getNoneEvolvingElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
-						<g id="evolvingStartEvolvingEndLinks">
-							{bothEvolving.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getEvolveElements(),
-									mapElements.getEvolveElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
-						<g id="evolvedStartEvolvingEndLinks">
-							{evolveToEvolved.map((l, i) =>
-								canSatisfyLink(
-									l,
-									mapElements.getEvolveElements(),
-									mapElements.getEvolvedElements()
-								) == false ? null : (
-									<ComponentLink
-										setMetaText={this.props.setMetaText}
-										metaText={this.props.metaText}
-										mapStyleDefs={this.props.mapStyleDefs}
-										key={i}
-										mapDimensions={this.props.mapDimensions}
-										startElement={getElementByName(
-											mapElements.getEvolveElements(),
-											l.start
-										)}
-										endElement={getElementByName(
-											mapElements.getEvolvedElements(),
-											l.end
-										)}
-										link={l}
-									/>
-								)
-							)}
-						</g>
 						<g id="evolvedLinks">
 							{mapElements.getEvolveElements().map((e, i) => (
 								<EvolvingComponentLink

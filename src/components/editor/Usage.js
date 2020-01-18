@@ -4,7 +4,6 @@ var createReactClass = require('create-react-class');
 function Usage(props) {
 	const addOnClick = txt => {
 		let before = props.mapText;
-		console.log(before);
 		before =
 			before + (props.mapText.trim().length > 0 ? '\n' : '') + txt.trim();
 		props.mutateMapText(before);
@@ -111,7 +110,6 @@ var UsageDefinition = createReactClass({
 						<br /> {this.props.summary}{' '}
 					</>
 				) : null}
-				<br />
 				<br />
 				<strong>Example:</strong>
 				<br />
