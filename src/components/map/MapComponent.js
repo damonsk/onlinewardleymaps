@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ComponentText from './ComponentText';
 import MapPositionCalculator from '../../MapPositionCalculator';
+import Movable from './Movable';
 
 function MapComponent(props) {
 	var _mapHelper = new MapPositionCalculator();
@@ -11,81 +12,35 @@ function MapComponent(props) {
 			props.element.visibility,
 			props.mapDimensions.height
 		);
-	const [position, setPosition] = React.useState({
-		x: x(),
-		y: y(),
-		coords: {},
-	});
 
-	const handleMouseMove = React.useRef(e => {
-		setPosition(position => {
-			const xDiff = position.coords.x - e.pageX;
-			const yDiff = position.coords.y - e.pageY;
-			return {
-				x: position.x - xDiff,
-				y: position.y - yDiff,
-				coords: {
-					x: e.pageX,
-					y: e.pageY,
-				},
-			};
-		});
-	});
-
-	const handleMouseDown = e => {
-		const pageX = e.pageX;
-		const pageY = e.pageY;
-
-		setPosition(position =>
-			Object.assign({}, position, {
-				coords: {
-					x: pageX,
-					y: pageY,
-				},
-			})
-		);
-		document.addEventListener('mousemove', handleMouseMove.current);
-	};
-
-	const handleMouseUp = () => {
-		document.removeEventListener('mousemove', handleMouseMove.current);
-		setPosition(position =>
-			Object.assign({}, position, {
-				coords: {},
-			})
-		);
-		endDrag();
-	};
-
-	function endDrag() {
+	function endDrag(moved) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
 				.map(line => {
 					if (
 						line
-							.replace(/\s/g, '') //Remove all whitespace from the line in case the user has been abusive with their spaces.
-							//get node name from the rendered text in the map
+							.replace(/\s/g, '')
 							.indexOf(
-								'component' + props.element.name.replace(/\s/g, '') + '[' //Ensure that we are at the end of the full component name by checking for a brace
+								'component' + props.element.name.replace(/\s/g, '') + '['
 							) !== -1
 					) {
 						if (props.element.evolved) {
 							return line.replace(
 								/\] evolve\s([.0-9])+/g,
 								`] evolve ${_mapHelper.xToMaturity(
-									position.x,
+									moved.x,
 									props.mapDimensions.width
 								)}`
 							);
 						} else {
 							return line.replace(
-								/\[(.?|.+?)\]/g, //Find everything inside square braces.
+								/\[(.?|.+?)\]/g,
 								`[${_mapHelper.yToVisibility(
-									position.y,
+									moved.y,
 									props.mapDimensions.height
 								)}, ${_mapHelper.xToMaturity(
-									position.x,
+									moved.x,
 									props.mapDimensions.width
 								)}]`
 							);
@@ -98,10 +53,10 @@ function MapComponent(props) {
 							line.trim() +
 							' ' +
 							`[${_mapHelper.yToVisibility(
-								position.y,
+								moved.y,
 								props.mapDimensions.height
 							)}, ${_mapHelper.xToMaturity(
-								position.x,
+								moved.x,
 								props.mapDimensions.width
 							)}]`
 						);
@@ -113,31 +68,17 @@ function MapComponent(props) {
 		);
 	}
 
-	useEffect(() => {
-		setPosition({
-			x: x(),
-			y: y(),
-			coords: {},
-		});
-	}, [props.element.maturity, props.element.visibility, props.mapDimensions]);
-
 	return (
-		<g
-			key={'element_' + props.element.id}
-			className={'draggable node ' + (props.element.evolved ? 'evolved' : '')}
+		<Movable
 			id={'element_' + props.element.id}
-			transform={
-				'translate(' +
-				position.x +
-				',' +
-				(props.element.evolved ? y() : position.y) +
-				')'
-			}
+			onMove={endDrag}
+			x={x()}
+			y={y()}
+			fixedY={props.element.evolved}
+			fixedX={false}
 		>
 			<circle
 				id={'element_circle_' + props.element.id}
-				onMouseDown={e => handleMouseDown(e)}
-				onMouseUp={e => handleMouseUp(e)}
 				cx="0"
 				cy="0"
 				strokeWidth={props.mapStyleDefs.component.strokeWidth}
@@ -163,7 +104,7 @@ function MapComponent(props) {
 				setMetaText={props.setMetaText}
 				metaText={props.metaText}
 			/>
-		</g>
+		</Movable>
 	);
 }
 
