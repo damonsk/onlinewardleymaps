@@ -155,6 +155,8 @@ class MapCanvas extends React.Component {
 									mapElements.getMergedElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -180,6 +182,8 @@ class MapCanvas extends React.Component {
 									mapElements.getNoneEvolvingElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -205,6 +209,8 @@ class MapCanvas extends React.Component {
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -229,6 +235,8 @@ class MapCanvas extends React.Component {
 									mapElements.getEvolvedElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -253,6 +261,8 @@ class MapCanvas extends React.Component {
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -277,6 +287,8 @@ class MapCanvas extends React.Component {
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -301,6 +313,8 @@ class MapCanvas extends React.Component {
 									mapElements.getEvolveElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}
@@ -325,6 +339,8 @@ class MapCanvas extends React.Component {
 									mapElements.getEvolvedElements()
 								) == false ? null : (
 									<ComponentLink
+										setMetaText={this.props.setMetaText}
+										metaText={this.props.metaText}
 										mapStyleDefs={this.props.mapStyleDefs}
 										key={i}
 										mapDimensions={this.props.mapDimensions}

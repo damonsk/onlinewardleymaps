@@ -1,5 +1,7 @@
 import React from 'react';
 import MapPositionCalculator from '../../MapPositionCalculator';
+import RelativeMovable from './Movable';
+import MetaPositioner from '../../MetaPositioner';
 var createReactClass = require('create-react-class');
 
 function ComponentLink(props) {
@@ -63,6 +65,8 @@ function ComponentLink(props) {
 					endElement={props.endElement}
 					startElement={props.startElement}
 					link={props.link}
+					metaText={props.metaText}
+					setMetaText={props.setMetaText}
 					x1={x1()}
 					x2={x2()}
 					y1={y1()}
@@ -75,6 +79,30 @@ function ComponentLink(props) {
 
 var FlowLink = createReactClass({
 	render: function() {
+		const metaPosition = new MetaPositioner();
+		const flowLabelElementId =
+			'flow_text_' +
+			this.props.startElement.id +
+			'_' +
+			this.props.endElement.id;
+		const getMetaPosition = () => {
+			const defaultOffset = {
+				x: 0,
+				y: -30,
+			};
+			return metaPosition.for(
+				flowLabelElementId,
+				this.props.metaText,
+				defaultOffset
+			);
+		};
+		const flowLabelEndDrag = moved => {
+			this.props.setMetaText(
+				metaPosition.update(flowLabelElementId, this.props.metaText, moved)
+			);
+		};
+		const flowLabelPosition = getMetaPosition();
+
 		return (
 			<>
 				<g
@@ -82,21 +110,30 @@ var FlowLink = createReactClass({
 					transform={'translate(' + this.props.x2 + ',' + this.props.y2 + ')'}
 				>
 					{this.props.link.flowValue == undefined ? null : (
-						<text
-							className="draggable label"
-							id={
-								'flow_text_' +
-								this.props.startElement.id +
-								'_' +
-								this.props.endElement.id
-							}
-							x="10"
-							y="-30"
-							textAnchor="start"
-							fill="#03a9f4"
+						<RelativeMovable
+							id={flowLabelElementId}
+							fixedX={false}
+							fixedY={false}
+							onMove={flowLabelEndDrag}
+							y={flowLabelPosition.y}
+							x={flowLabelPosition.x}
 						>
-							{this.props.link.flowValue}
-						</text>
+							<text
+								className="draggable label"
+								id={
+									'flow_text_' +
+									this.props.startElement.id +
+									'_' +
+									this.props.endElement.id
+								}
+								x="0"
+								y="0"
+								textAnchor="start"
+								fill="#03a9f4"
+							>
+								{this.props.link.flowValue}
+							</text>
+						</RelativeMovable>
 					)}
 				</g>
 				<line
