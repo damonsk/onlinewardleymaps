@@ -47,7 +47,11 @@
 		"es6": true,
 		"jest": true
 	},
-	"build": { "directories": { "output": "release/" } },
+	"build": {
+		"directories": {
+			"output": "release/"
+		}
+	},
 	"dependencies": {
 		"@babel/polyfill": "^7.2.5",
 		"ace-builds": "^1.4.7",
@@ -58,6 +62,7 @@
 		"html2canvas": "^1.0.0-rc.5",
 		"react": "^16.12.0",
 		"react-ace": "^8.0.0",
+		"react-bootstrap": "^1.0.0-beta.16",
 		"react-dom": "^16.12.0"
 	},
 	"lint-staged": {

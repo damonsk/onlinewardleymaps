@@ -73,9 +73,13 @@ function App() {
 		setCurrentUrl('(unsaved)');
 		generateMap('', '');
 		if (window.location.hash.length > 0) {
+			var mapId = window.location.hash.replace('#', '');
+
+			if (window.location.hash.indexOf('#clone:') == 0)
+				mapId = window.location.hash.replace('#clone:', '');
+
 			setCurrentUrl('(loading...)');
-			var fetchUrl =
-				apiEndpoint + 'fetch?id=' + window.location.hash.replace('#', '');
+			var fetchUrl = apiEndpoint + 'fetch?id=' + mapId;
 
 			fetch(fetchUrl)
 				.then(resp => resp.json())
@@ -88,6 +92,10 @@ function App() {
 					setMetaText(d.meta);
 					updateMap(d.text, d.meta);
 					setCurrentUrl(window.location.href);
+					if (window.location.hash.indexOf('#clone:') == 0) {
+						setCurrentUrl('(unsaved)');
+						window.location.hash = '';
+					}
 				});
 		}
 	};
@@ -175,6 +183,7 @@ function App() {
 						</a>
 						<div id="controlsMenuControl">
 							<Controls
+								currentUrl={currentUrl}
 								saveOutstanding={saveOutstanding}
 								setMetaText={setMetaText}
 								mutateMapText={mutateMapText}
@@ -228,7 +237,6 @@ function App() {
 						<a
 							href="https://twitter.com/damonsk"
 							target="_blank" //eslint-disable-line react/jsx-no-target-blank
-							without
 							rel="noopener"
 						>
 							@damonsk

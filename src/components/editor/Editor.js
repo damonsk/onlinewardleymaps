@@ -21,8 +21,8 @@ class Editor extends Component {
 	getHeight = () => {
 		let winHeight = window.innerHeight;
 		if (this.props.operatingMode == 'browser') {
-			let topNavHeight = document.getElementById('top-nav-wrapper')
-				.clientHeight;
+			let topNavHeight =
+				document.getElementById('top-nav-wrapper').clientHeight + 15;
 			let titleHeight = document.getElementById('title').clientHeight;
 			return winHeight - topNavHeight - titleHeight;
 		} else return winHeight - 30;
