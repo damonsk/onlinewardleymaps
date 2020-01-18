@@ -242,6 +242,7 @@ class MapCanvas extends React.Component {
 										e.name
 									)}
 									link={e}
+									evolutionOffsets={this.props.evolutionOffsets}
 								/>
 							))}
 							;

@@ -17,17 +17,43 @@ function EvolvingComponentLink(props) {
 			props.endElement.visibility,
 			props.mapDimensions.height
 		);
-
 	if (props.endElement.inertia) {
 		var boundary = x1;
-		if (props.startElement.maturity >= 0.25) {
-			boundary = 0.25;
+		if (
+			props.startElement.maturity >=
+			mapCalc.xToMaturity(
+				(props.mapDimensions.width / 20) * props.evolutionOffsets.custom,
+				props.mapDimensions.width
+			)
+		) {
+			boundary = mapCalc.xToMaturity(
+				(props.mapDimensions.width / 20) * props.evolutionOffsets.custom,
+				props.mapDimensions.width
+			);
 		}
-		if (props.startElement.maturity >= 0.5) {
-			boundary = 0.5;
+		if (
+			props.startElement.maturity >=
+			mapCalc.xToMaturity(
+				(props.mapDimensions.width / 20) * props.evolutionOffsets.product,
+				props.mapDimensions.width
+			)
+		) {
+			boundary = mapCalc.xToMaturity(
+				(props.mapDimensions.width / 20) * props.evolutionOffsets.product,
+				props.mapDimensions.width
+			);
 		}
-		if (props.startElement.maturity >= 0.75) {
-			boundary = 0.75;
+		if (
+			props.startElement.maturity >=
+			mapCalc.xToMaturity(
+				(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity,
+				props.mapDimensions.width
+			)
+		) {
+			boundary = mapCalc.xToMaturity(
+				(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity,
+				props.mapDimensions.width
+			);
 		}
 		var boundaryX = mapCalc.maturityToX(boundary, props.mapDimensions.width);
 	}
