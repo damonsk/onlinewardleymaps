@@ -22,6 +22,7 @@ function OfflineApp() {
 		Defaults.EvolutionStages
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
+	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const mapRef = useRef(null);
 
@@ -116,7 +117,7 @@ function OfflineApp() {
 			setMapObject(r);
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
-
+			setMapYAxis(r.presentation.yAxis);
 			switch (r.presentation.style) {
 				case 'colour':
 				case 'color':
@@ -184,6 +185,7 @@ function OfflineApp() {
 						mapTitle={mapTitle}
 						mapObject={mapObject}
 						mapStyleDefs={mapStyleDefs}
+						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}
 						mapEvolutionStates={mapEvolutionStates}
 						mapStyle={mapStyle}
