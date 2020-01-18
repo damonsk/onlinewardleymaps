@@ -103,7 +103,10 @@ function Controls(props) {
 					)}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant={'success'} onClick={props.saveMapClick}>
+					<Button
+						variant={props.saveOutstanding ? 'danger' : 'success'}
+						onClick={props.saveMapClick}
+					>
 						Save Map
 					</Button>
 					<Button onClick={() => setModalShow(false)}>Close</Button>
