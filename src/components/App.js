@@ -106,6 +106,7 @@ function App() {
 		updateMap('', '');
 		window.location.hash = '';
 		setCurrentUrl('(unsaved)');
+		setSaveOutstanding(false);
 	}
 
 	function saveMap() {

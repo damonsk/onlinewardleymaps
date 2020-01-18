@@ -28,33 +28,25 @@ function Controls(props) {
 	return (
 		<React.Fragment>
 			<small id="owm-build">v{owmBuild}</small>
-			<button
-				id="new-map"
-				onClick={props.newMapClick}
-				type="button"
-				className="btn btn-secondary"
-			>
+			<Button id="new-map" variant="secondary" onClick={props.newMapClick}>
 				New Map
-			</button>
-			<button
+			</Button>
+			<Button
 				id="example-map"
 				onClick={example}
 				type="button"
-				className="btn btn-secondary"
+				variant="secondary"
 			>
 				Example Map
-			</button>
-			<button
+			</Button>
+			<Button
 				id="save-map"
 				onClick={props.saveMapClick}
 				type="button"
-				className={
-					'btn btn-primary ' +
-					(props.saveOutstanding ? 'btn-danger' : 'btn-success')
-				}
+				variant={props.saveOutstanding ? 'danger' : 'success'}
 			>
 				Save
-			</button>
+			</Button>
 
 			<DropdownButton
 				as={ButtonGroup}
