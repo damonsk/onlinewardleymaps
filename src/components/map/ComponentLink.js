@@ -1,6 +1,6 @@
 import React from 'react';
 import MapPositionCalculator from '../../MapPositionCalculator';
-import RelativeMovable from './Movable';
+import RelativeMovable from './RelativeMovable';
 import MetaPositioner from '../../MetaPositioner';
 var createReactClass = require('create-react-class');
 

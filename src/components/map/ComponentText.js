@@ -1,5 +1,5 @@
 import React from 'react';
-import RelativeMovable from './Movable';
+import RelativeMovable from './RelativeMovable';
 import MetaPositioner from '../../MetaPositioner';
 
 function ComponentText(props) {

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-function Movable(props) {
+function RelativeMovable(props) {
 	const x = () => props.x;
 	const y = () => props.y;
 	const [position, setPosition] = React.useState({
@@ -85,4 +85,4 @@ function Movable(props) {
 	);
 }
 
-export default Movable;
+export default RelativeMovable;
