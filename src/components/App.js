@@ -22,6 +22,7 @@ function App() {
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapLinks, setMapLinks] = useState([]);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
@@ -131,6 +132,7 @@ function App() {
 			setMapTitle(r.title);
 			document.title = r.title + ' - ' + PAGE_TITLE;
 			setMapComponents(r.elements);
+			setMapLinks(r.links);
 			setMapObject(r);
 
 			setMapDimensions({ width: getWidth(), height: getHeight() });
@@ -221,6 +223,7 @@ function App() {
 						mapTitle={mapTitle}
 						mapObject={mapObject}
 						mapComponents={mapComponents}
+						mapLinks={mapLinks}
 						mapStyleDefs={mapStyleDefs}
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}

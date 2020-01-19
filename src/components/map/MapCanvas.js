@@ -30,37 +30,37 @@ class MapCanvas extends React.Component {
 			);
 		};
 
-		var evolvingEndLinks = this.props.mapObject.links.filter(
+		var evolvingEndLinks = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolvedElements().find(i => i.name == li.end) &&
 				mapElements.getNoneEvolvingElements().find(i => i.name == li.start)
 		);
-		var evolvingToNoneEvolvingEndLinks = this.props.mapObject.links.filter(
+		var evolvingToNoneEvolvingEndLinks = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolveElements().find(i => i.name == li.start) &&
 				mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
 		);
-		var evolvedToEvolving = this.props.mapObject.links.filter(
+		var evolvedToEvolving = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolvedElements().find(i => i.name == li.start) &&
 				mapElements.getEvolveElements().find(i => i.name == li.end)
 		);
-		var bothEvolved = this.props.mapObject.links.filter(
+		var bothEvolved = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolvedElements().find(i => i.name == li.start) &&
 				mapElements.getEvolvedElements().find(i => i.name == li.end)
 		);
-		var evolveStartLinks = this.props.mapObject.links.filter(
+		var evolveStartLinks = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolvedElements().find(i => i.name == li.start) &&
 				mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
 		);
-		var bothEvolving = this.props.mapObject.links.filter(
+		var bothEvolving = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolveElements().find(i => i.name == li.start) &&
 				mapElements.getEvolveElements().find(i => i.name == li.end)
 		);
-		var evolveToEvolved = this.props.mapObject.links.filter(
+		var evolveToEvolved = this.props.mapLinks.filter(
 			li =>
 				mapElements.getEvolveElements().find(i => i.name == li.start) &&
 				mapElements.getEvolvedElements().find(i => i.name == li.end)
@@ -149,7 +149,7 @@ class MapCanvas extends React.Component {
 						{[
 							{
 								id: 'links',
-								links: this.props.mapObject.links,
+								links: this.props.mapLinks,
 								startElements: mapElements.getMergedElements(),
 								endElements: mapElements.getMergedElements(),
 							},
