@@ -20,11 +20,14 @@ function App() {
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
-	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
 
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
+	const [mapMethods, setMapMethods] = useState([]);
+	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
+		[]
+	);
 
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
@@ -136,10 +139,10 @@ function App() {
 			document.title = r.title + ' - ' + PAGE_TITLE;
 
 			setMapAnnotations(r.annotations);
+			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapComponents(r.elements);
 			setMapLinks(r.links);
-
-			setMapObject(r);
+			setMapMethods(r.methods);
 
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
@@ -227,10 +230,11 @@ function App() {
 
 					<MapView
 						mapTitle={mapTitle}
-						mapObject={mapObject}
 						mapComponents={mapComponents}
 						mapLinks={mapLinks}
 						mapAnnotations={mapAnnotations}
+						mapAnnotationsPresentation={mapAnnotationsPresentation}
+						mapMethods={mapMethods}
 						mapStyleDefs={mapStyleDefs}
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}

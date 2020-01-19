@@ -131,7 +131,7 @@ class MapCanvas extends React.Component {
 					</g>
 					<g id="map">
 						<g id="methods">
-							{this.props.mapObject.methods.map((m, i) =>
+							{this.props.mapMethods.map((m, i) =>
 								getElementByName(mapElements.getNonEvolvedElements(), m.name) ==
 								undefined ? null : (
 									<MethodElement
@@ -285,7 +285,7 @@ class MapCanvas extends React.Component {
 									mutateMapText={this.props.mutateMapText}
 									mapText={this.props.mapText}
 									annotations={this.props.mapAnnotations}
-									position={this.props.mapObject.presentation.annotations}
+									position={this.props.mapAnnotationsPresentation}
 									mapDimensions={this.props.mapDimensions}
 									mapStyle={this.props.mapStyle}
 								/>
