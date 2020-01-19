@@ -21,6 +21,7 @@ function App() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
+	const [mapComponents, setMapComponents] = useState([]);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
@@ -129,7 +130,9 @@ function App() {
 			var r = new Convert().parse(txt);
 			setMapTitle(r.title);
 			document.title = r.title + ' - ' + PAGE_TITLE;
+			setMapComponents(r.elements);
 			setMapObject(r);
+
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
 			setMapYAxis(r.presentation.yAxis);
@@ -205,7 +208,7 @@ function App() {
 							operatingMode={OPERATING_MODE}
 							mapText={mapText}
 							mutateMapText={mutateMapText}
-							mapObject={mapObject}
+							mapComponents={mapComponents}
 							mapDimensions={mapDimensions}
 						/>
 						<div className="form-group">
@@ -217,6 +220,7 @@ function App() {
 					<MapView
 						mapTitle={mapTitle}
 						mapObject={mapObject}
+						mapComponents={mapComponents}
 						mapStyleDefs={mapStyleDefs}
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}

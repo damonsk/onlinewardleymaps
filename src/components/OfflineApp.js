@@ -16,6 +16,7 @@ function OfflineApp() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
+	const [mapComponents, setMapComponents] = useState([]);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapFile, setMapFile] = useState('');
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
@@ -115,6 +116,7 @@ function OfflineApp() {
 			var r = new Convert().parse(txt);
 			setMapTitle(r.title);
 			setMapObject(r);
+			setMapComponents(r.elements);
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
 			setMapYAxis(r.presentation.yAxis);
@@ -184,6 +186,7 @@ function OfflineApp() {
 					<MapView
 						mapTitle={mapTitle}
 						mapObject={mapObject}
+						mapComponents={mapComponents}
 						mapStyleDefs={mapStyleDefs}
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}

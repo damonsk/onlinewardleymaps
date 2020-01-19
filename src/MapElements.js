@@ -1,6 +1,6 @@
 export default class MapElements {
-	constructor(mapObject) {
-		this.mapObject = mapObject;
+	constructor(components) {
+		this.mapComponents = components;
 	}
 
 	getEvolvedElements() {
@@ -17,11 +17,11 @@ export default class MapElements {
 	}
 
 	getEvolveElements() {
-		return this.mapObject.elements.filter(el => el.evolving);
+		return this.mapComponents.filter(el => el.evolving);
 	}
 
 	getNoneEvolvingElements() {
-		return this.mapObject.elements.filter(el => el.evolving == false);
+		return this.mapComponents.filter(el => el.evolving == false);
 	}
 
 	getNonEvolvedElements() {
@@ -29,10 +29,8 @@ export default class MapElements {
 	}
 
 	getMergedElements() {
-		var evolveElements = this.mapObject.elements.filter(el => el.evolving);
-		var noneEvolving = this.mapObject.elements.filter(
-			el => el.evolving == false
-		);
+		var evolveElements = this.mapComponents.filter(el => el.evolving);
+		var noneEvolving = this.mapComponents.filter(el => el.evolving == false);
 		var evolvedElements = evolveElements.map(el => {
 			return {
 				name: el.name,

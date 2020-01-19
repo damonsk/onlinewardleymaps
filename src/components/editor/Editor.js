@@ -34,11 +34,13 @@ class Editor extends Component {
 			height: 500,
 		};
 
-		this.expressionSuggester = this.createExpressionSuggester(props);
+		this.expressionSuggester = this.createExpressionSuggester(
+			props.mapComponents
+		);
 	}
 
-	createExpressionSuggester = props => {
-		let c = props.mapObject.elements.map(_ => {
+	createExpressionSuggester = mapComponents => {
+		let c = mapComponents.map(_ => {
 			return _.name;
 		});
 		return {
@@ -71,7 +73,9 @@ class Editor extends Component {
 	};
 
 	componentDidUpdate() {
-		this.expressionSuggester = this.createExpressionSuggester(this.props);
+		this.expressionSuggester = this.createExpressionSuggester(
+			this.props.mapComponents
+		);
 	}
 
 	componentWillUnmount() {

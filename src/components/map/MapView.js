@@ -21,6 +21,7 @@ class MapView extends Component {
 							mapEvolutionStates={this.props.mapEvolutionStates}
 							mapStyle={this.props.mapStyle}
 							mapObject={this.props.mapObject}
+							mapComponents={this.props.mapComponents}
 							mapText={this.props.mapText}
 							mutateMapText={this.props.mutateMapText}
 							setMetaText={this.props.setMetaText}

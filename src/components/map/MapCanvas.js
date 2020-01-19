@@ -15,8 +15,7 @@ class MapCanvas extends React.Component {
 	}
 
 	render() {
-		var mapElements = new MapElements(this.props.mapObject);
-
+		var mapElements = new MapElements(this.props.mapComponents);
 		var getElementByName = function(elements, name) {
 			var hasName = function(element) {
 				return element.name === name;
