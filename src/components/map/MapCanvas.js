@@ -263,7 +263,7 @@ class MapCanvas extends React.Component {
 						</g>
 
 						<g id="annotations">
-							{this.props.mapObject.annotations.map((a, i) => (
+							{this.props.mapAnnotations.map((a, i) => (
 								<React.Fragment key={i}>
 									{a.occurances.map((o, i1) => (
 										<AnnotationElement
@@ -279,12 +279,12 @@ class MapCanvas extends React.Component {
 									))}
 								</React.Fragment>
 							))}
-							{this.props.mapObject.annotations.length == 0 ? null : (
+							{this.props.mapAnnotations.length == 0 ? null : (
 								<AnnotationBox
 									mapStyleDefs={this.props.mapStyleDefs}
 									mutateMapText={this.props.mutateMapText}
 									mapText={this.props.mapText}
-									annotations={this.props.mapObject.annotations}
+									annotations={this.props.mapAnnotations}
 									position={this.props.mapObject.presentation.annotations}
 									mapDimensions={this.props.mapDimensions}
 									mapStyle={this.props.mapStyle}

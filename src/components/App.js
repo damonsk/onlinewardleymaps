@@ -21,8 +21,11 @@ function App() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
+
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
+	const [mapAnnotations, setMapAnnotations] = useState([]);
+
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
@@ -131,8 +134,11 @@ function App() {
 			var r = new Convert().parse(txt);
 			setMapTitle(r.title);
 			document.title = r.title + ' - ' + PAGE_TITLE;
+
+			setMapAnnotations(r.annotations);
 			setMapComponents(r.elements);
 			setMapLinks(r.links);
+
 			setMapObject(r);
 
 			setMapDimensions({ width: getWidth(), height: getHeight() });
@@ -224,6 +230,7 @@ function App() {
 						mapObject={mapObject}
 						mapComponents={mapComponents}
 						mapLinks={mapLinks}
+						mapAnnotations={mapAnnotations}
 						mapStyleDefs={mapStyleDefs}
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}
