@@ -15,8 +15,14 @@ function OfflineApp() {
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
-	const [mapObject, setMapObject] = useState(Defaults.DefaultMapObject);
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapLinks, setMapLinks] = useState([]);
+	const [mapAnnotations, setMapAnnotations] = useState([]);
+	const [mapMethods, setMapMethods] = useState([]);
+	const [invalid, setInvalid] = useState(false);
+	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
+		[]
+	);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
 	const [mapFile, setMapFile] = useState('');
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
@@ -37,11 +43,6 @@ function OfflineApp() {
 
 	const mutateMapText = newText => {
 		setMapText(newText);
-		updateMap(newText, metaText);
-	};
-
-	const updateMap = (newText, newMeta) => {
-		generateMap(newText, newMeta);
 	};
 
 	const handleAppCommand = function(_, ev) {
@@ -75,7 +76,6 @@ function OfflineApp() {
 
 	const handleFileLoad = function(_, ev) {
 		setMapText(ev.data);
-		generateMap(ev.data);
 		setMapFile(ev.filePath);
 	};
 
@@ -88,7 +88,6 @@ function OfflineApp() {
 		setMapText('');
 		setMapFile('');
 		setMetaText('');
-		updateMap('', '');
 	}
 
 	function downloadMap() {
@@ -102,6 +101,30 @@ function OfflineApp() {
 	}
 
 	React.useEffect(() => {
+		try {
+			setInvalid(false);
+			var r = new Convert().parse(mapText);
+			setMapTitle(r.title);
+			setMapAnnotations(r.annotations);
+			setMapComponents(r.elements);
+			setMapLinks(r.links);
+			setMapMethods(r.methods);
+			setMapStyle(r.presentation.style);
+			setMapYAxis(r.presentation.yAxis);
+			setMapAnnotationsPresentation(r.presentation.annotations);
+			setMapEvolutionStates({
+				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
+				custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
+				product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
+				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
+			});
+		} catch (err) {
+			setInvalid(true);
+			console.log('Invalid markup, could not render.');
+		}
+	}, [mapText]);
+
+	React.useEffect(() => {
 		if (mapFile.length > 0) {
 			let parts = mapFile.split('/');
 			document.title =
@@ -111,39 +134,32 @@ function OfflineApp() {
 		}
 	}, [mapFile, mapTitle]);
 
-	function generateMap(txt) {
-		try {
-			var r = new Convert().parse(txt);
-			setMapTitle(r.title);
-			setMapObject(r);
-			setMapComponents(r.elements);
-			setMapDimensions({ width: getWidth(), height: getHeight() });
-			setMapStyle(r.presentation.style);
-			setMapYAxis(r.presentation.yAxis);
-			switch (r.presentation.style) {
-				case 'colour':
-				case 'color':
-					setMapStyleDefs(MapStyles.Colour);
-					break;
-				case 'wardley':
-					setMapStyleDefs(MapStyles.Wardley);
-					break;
-				case 'handwritten':
-					setMapStyleDefs(MapStyles.Handwritten);
-					break;
-				default:
-					setMapStyleDefs(MapStyles.Plain);
-			}
-
-			setMapEvolutionStates({
-				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
-				custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
-				product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
-				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
-			});
-		} catch (err) {
-			console.log('Invalid markup, could not render.');
+	React.useEffect(() => {
+		switch (mapStyle) {
+			case 'colour':
+			case 'color':
+				setMapStyleDefs(MapStyles.Colour);
+				break;
+			case 'wardley':
+				setMapStyleDefs(MapStyles.Wardley);
+				break;
+			case 'handwritten':
+				setMapStyleDefs(MapStyles.Handwritten);
+				break;
+			default:
+				setMapStyleDefs(MapStyles.Plain);
 		}
+	}, [mapStyle]);
+
+	function debounce(fn, ms) {
+		let timer;
+		return () => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				timer = null;
+				fn.apply(this, arguments);
+			}, ms);
+		};
 	}
 
 	React.useEffect(() => {
@@ -151,18 +167,23 @@ function OfflineApp() {
 		ipcRenderer.on('loaded-file', handleFileLoad);
 		ipcRenderer.on('save-file-changed', handleFileChanged);
 
-		window.addEventListener('resize', () =>
-			setMapDimensions({ width: getWidth(), height: getHeight() })
-		);
+		const debouncedHandleResize = debounce(() => {
+			setMapDimensions({ width: getWidth(), height: getHeight() });
+		}, 1000);
+
+		const initialLoad = () => {
+			setMapDimensions({ width: getWidth(), height: getHeight() });
+		};
+
+		window.addEventListener('resize', debouncedHandleResize);
+		window.addEventListener('load', initialLoad);
 
 		return function cleanup() {
 			ipcRenderer.removeListener('appCommand', handleAppCommand);
 			ipcRenderer.removeListener('loaded-file', handleFileLoad);
 			ipcRenderer.removeListener('save-file-changed', handleFileChanged);
-
-			window.removeEventListener('resize', () =>
-				setMapDimensions({ width: getWidth(), height: getHeight() })
-			);
+			window.removeEventListener('resize', debouncedHandleResize);
+			window.removeEventListener('load', initialLoad);
 		};
 	});
 
@@ -174,8 +195,9 @@ function OfflineApp() {
 						<Editor
 							operatingMode={OPERATING_MODE}
 							mapText={mapText}
+							invalid={invalid}
 							mutateMapText={mutateMapText}
-							mapObject={mapObject}
+							mapComponents={mapComponents}
 							mapDimensions={mapDimensions}
 						/>
 						<div className="form-group">
@@ -185,13 +207,15 @@ function OfflineApp() {
 
 					<MapView
 						mapTitle={mapTitle}
-						mapObject={mapObject}
 						mapComponents={mapComponents}
+						mapLinks={mapLinks}
+						mapAnnotations={mapAnnotations}
+						mapAnnotationsPresentation={mapAnnotationsPresentation}
+						mapMethods={mapMethods}
 						mapStyleDefs={mapStyleDefs}
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}
 						mapEvolutionStates={mapEvolutionStates}
-						mapStyle={mapStyle}
 						mapRef={mapRef}
 						mapText={mapText}
 						mutateMapText={mutateMapText}

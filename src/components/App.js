@@ -20,6 +20,7 @@ function App() {
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
+	const [invalid, setInvalid] = useState(false);
 	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
 		[]
 	);
@@ -131,6 +132,7 @@ function App() {
 
 	React.useEffect(() => {
 		try {
+			setInvalid(false);
 			var r = new Convert().parse(mapText);
 			setMapTitle(r.title);
 			setMapAnnotations(r.annotations);
@@ -147,6 +149,7 @@ function App() {
 				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
 			});
 		} catch (err) {
+			setInvalid(true);
 			console.log('Invalid markup, could not render.');
 		}
 	}, [mapText]);
@@ -221,6 +224,7 @@ function App() {
 						<Editor
 							operatingMode={OPERATING_MODE}
 							mapText={mapText}
+							invalid={invalid}
 							mutateMapText={mutateMapText}
 							mapComponents={mapComponents}
 							mapDimensions={mapDimensions}

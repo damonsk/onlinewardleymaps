@@ -91,7 +91,7 @@ class Editor extends Component {
 
 	render() {
 		return (
-			<div id="htmPane">
+			<div id="htmPane" className={this.props.invalid ? ' invalid' : ''}>
 				<AceEditor
 					mode="owm"
 					theme={'eclipse'}
