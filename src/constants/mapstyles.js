@@ -1,4 +1,5 @@
 export const Plain = {
+	className: 'plain',
 	fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
 	stroke: 'black',
 	evolutionSeparationStroke: 'black',
@@ -36,6 +37,7 @@ export const Plain = {
 };
 
 export const Handwritten = {
+	className: 'handwritten',
 	fontFamily: '"Gloria Hallelujah", cursive',
 	stroke: 'black',
 	evolutionSeparationStroke: 'black',
@@ -73,6 +75,7 @@ export const Handwritten = {
 };
 
 export const Wardley = {
+	className: 'wardley',
 	fontFamily: 'Consolas, Lucida Console, monospace',
 	stroke: 'black',
 	evolutionSeparationStroke: '#b8b8b8',
@@ -110,6 +113,7 @@ export const Wardley = {
 };
 
 export const Colour = {
+	className: 'colour',
 	fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
 	stroke: '#c23667',
 	evolutionSeparationStroke: '#b8b8b8',

@@ -81,7 +81,6 @@ function AnnotationElement(props) {
 		props.position.maturity,
 		props.position.visibility,
 		props.mapDimensions,
-		props.mapStyle,
 		props.mapStyleDefs,
 		props.annotations,
 	]);

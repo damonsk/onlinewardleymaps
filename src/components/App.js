@@ -12,15 +12,10 @@ import * as Defaults from '../constants/defaults';
 
 function App() {
 	const OPERATING_MODE = 'browser';
-	const PAGE_TITLE =
-		'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
-	const apiEndpoint =
-		'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
-
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
@@ -52,15 +47,10 @@ function App() {
 	const mutateMapText = newText => {
 		setMapText(newText);
 		setSaveOutstanding(true);
-		updateMap(newText, metaText);
-	};
-
-	const updateMap = (newText, newMeta) => {
-		generateMap(newText, newMeta);
 	};
 
 	const saveToRemoteStorage = function(hash) {
-		fetch(apiEndpoint + 'save', {
+		fetch(Defaults.ApiEndpoint + 'save', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json; charset=utf-8' },
 			body: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
@@ -78,8 +68,6 @@ function App() {
 	};
 
 	const loadFromRemoteStorage = function() {
-		setCurrentUrl('(unsaved)');
-		generateMap('', '');
 		if (window.location.hash.length > 0) {
 			var mapId = window.location.hash.replace('#', '');
 
@@ -87,7 +75,7 @@ function App() {
 				mapId = window.location.hash.replace('#clone:', '');
 
 			setCurrentUrl('(loading...)');
-			var fetchUrl = apiEndpoint + 'fetch?id=' + mapId;
+			var fetchUrl = Defaults.ApiEndpoint + 'fetch?id=' + mapId;
 
 			fetch(fetchUrl)
 				.then(resp => resp.json())
@@ -98,7 +86,6 @@ function App() {
 					setSaveOutstanding(false);
 					setMapText(d.text);
 					setMetaText(d.meta);
-					updateMap(d.text, d.meta);
 					setCurrentUrl(window.location.href);
 					if (window.location.hash.indexOf('#clone:') == 0) {
 						setCurrentUrl('(unsaved)');
@@ -108,11 +95,21 @@ function App() {
 		}
 	};
 
+	function debounce(fn, ms) {
+		let timer;
+		return () => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				timer = null;
+				fn.apply(this, arguments);
+			}, ms);
+		};
+	}
+
 	function newMap() {
+		window.location.hash = '';
 		setMapText('');
 		setMetaText('');
-		updateMap('', '');
-		window.location.hash = '';
 		setCurrentUrl('(unsaved)');
 		setSaveOutstanding(false);
 	}
@@ -132,37 +129,17 @@ function App() {
 		});
 	}
 
-	function generateMap(txt) {
+	React.useEffect(() => {
 		try {
-			var r = new Convert().parse(txt);
+			var r = new Convert().parse(mapText);
 			setMapTitle(r.title);
-			document.title = r.title + ' - ' + PAGE_TITLE;
-
 			setMapAnnotations(r.annotations);
-			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapComponents(r.elements);
 			setMapLinks(r.links);
 			setMapMethods(r.methods);
-
-			setMapDimensions({ width: getWidth(), height: getHeight() });
 			setMapStyle(r.presentation.style);
 			setMapYAxis(r.presentation.yAxis);
-
-			switch (r.presentation.style) {
-				case 'colour':
-				case 'color':
-					setMapStyleDefs(MapStyles.Colour);
-					break;
-				case 'wardley':
-					setMapStyleDefs(MapStyles.Wardley);
-					break;
-				case 'handwritten':
-					setMapStyleDefs(MapStyles.Handwritten);
-					break;
-				default:
-					setMapStyleDefs(MapStyles.Plain);
-			}
-
+			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
 				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
 				custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
@@ -172,19 +149,45 @@ function App() {
 		} catch (err) {
 			console.log('Invalid markup, could not render.');
 		}
-	}
+	}, [mapText]);
 
 	React.useEffect(() => {
-		window.addEventListener('resize', () =>
-			setMapDimensions({ width: getWidth(), height: getHeight() })
-		);
-		window.addEventListener('load', loadFromRemoteStorage);
+		document.title = mapTitle + ' - ' + Defaults.PageTitle;
+	}, [mapTitle]);
+
+	React.useEffect(() => {
+		switch (mapStyle) {
+			case 'colour':
+			case 'color':
+				setMapStyleDefs(MapStyles.Colour);
+				break;
+			case 'wardley':
+				setMapStyleDefs(MapStyles.Wardley);
+				break;
+			case 'handwritten':
+				setMapStyleDefs(MapStyles.Handwritten);
+				break;
+			default:
+				setMapStyleDefs(MapStyles.Plain);
+		}
+	}, [mapStyle]);
+
+	React.useEffect(() => {
+		const debouncedHandleResize = debounce(() => {
+			setMapDimensions({ width: getWidth(), height: getHeight() });
+		}, 1000);
+
+		const initialLoad = () => {
+			loadFromRemoteStorage();
+			setMapDimensions({ width: getWidth(), height: getHeight() });
+		};
+
+		window.addEventListener('resize', debouncedHandleResize);
+		window.addEventListener('load', initialLoad);
 
 		return function cleanup() {
-			window.removeEventListener('resize', () =>
-				setMapDimensions({ width: getWidth(), height: getHeight() })
-			);
-			window.removeEventListener('load', loadFromRemoteStorage);
+			window.removeEventListener('resize', debouncedHandleResize);
+			window.removeEventListener('load', initialLoad);
 		};
 	});
 
@@ -239,7 +242,6 @@ function App() {
 						mapYAxis={mapYAxis}
 						mapDimensions={mapDimensions}
 						mapEvolutionStates={mapEvolutionStates}
-						mapStyle={mapStyle}
 						mapRef={mapRef}
 						mapText={mapText}
 						mutateMapText={mutateMapText}
