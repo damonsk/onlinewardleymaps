@@ -27,7 +27,9 @@ function Controls(props) {
 
 	return (
 		<React.Fragment>
-			<small id="owm-build">v{owmBuild}</small>
+			<small className="d-none d-sm-inline" id="owm-build">
+				v{owmBuild}
+			</small>
 			<Button id="new-map" variant="secondary" onClick={props.newMapClick}>
 				New Map
 			</Button>

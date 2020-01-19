@@ -255,7 +255,7 @@ function App() {
 					/>
 				</div>
 			</div>
-			<div className="row no-gutters">
+			<div className="row usage no-gutters">
 				<div className="col">
 					<Usage mapText={mapText} mutateMapText={mutateMapText} />
 				</div>
