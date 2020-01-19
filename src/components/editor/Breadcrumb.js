@@ -2,7 +2,7 @@ import React from 'react';
 
 const Breadcrumb = ({ currentUrl }) => {
 	return (
-		<nav aria-label="breadcrumb">
+		<nav aria-label="breadcrumb" className="bc">
 			<ol className="breadcrumb" data-testid="breadcrumb-list">
 				<li className="breadcrumb-item" data-testid="breadcrumb-list-item">
 					Your Map:{' '}

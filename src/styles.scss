@@ -34,7 +34,6 @@
 .breadcrumb {
 	padding: 2px 1rem;
 	font-size: 0.85rem;
-	margin-bottom: 0.8rem;
 	border-bottom: 1px solid #6c757d;
 }
 
@@ -44,6 +43,7 @@
 
 #title {
 	margin-bottom: 0;
+	margin-top: 5px;
 }
 
 #svgMap {
@@ -58,6 +58,13 @@
 			#c4c4c4 99%
 		);
 	}
+}
+
+ol.breadcrumb {
+	margin-bottom: 0;
+}
+nav.bc {
+	overflow: hidden;
 }
 
 nav.navbar {
@@ -81,11 +88,19 @@ nav.navbar {
 #htmPane {
 	background: #e9ecef;
 	padding: 5px;
-
+	border-right: 1px solid #6c757d;
+	border-bottom: 1px solid #6c757d;
 	.jumbotron {
 		height: 682px;
 		padding: 5px;
 		margin-bottom: 2px;
+	}
+}
+
+.col {
+	&.resizeable {
+		resize: horizontal;
+		overflow: auto;
 	}
 }
 

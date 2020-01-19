@@ -8,7 +8,7 @@ class MapView extends Component {
 
 	render() {
 		return (
-			<div className="col-8 map-view">
+			<>
 				{/* Wrapping div required to ensure that images aren't generated with a ton of whitespace */}
 				<div ref={this.props.mapRef}>
 					<h5 id="title">{this.props.mapTitle}</h5>
@@ -34,7 +34,7 @@ class MapView extends Component {
 						/>
 					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 }

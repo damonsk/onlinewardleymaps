@@ -218,23 +218,23 @@ function App() {
 
 				<Breadcrumb currentUrl={currentUrl} />
 			</div>
-			<div className="container-fluid">
-				<div className="row">
-					<div className="col editor">
-						<Editor
-							operatingMode={OPERATING_MODE}
-							mapText={mapText}
-							invalid={invalid}
-							mutateMapText={mutateMapText}
-							mapComponents={mapComponents}
-							mapDimensions={mapDimensions}
-						/>
-						<div className="form-group">
-							<Meta metaText={metaText} />
-							<Usage mapText={mapText} mutateMapText={mutateMapText} />
-						</div>
+			{/* <div className="container-fluid"> */}
+			<div className="row no-gutters">
+				<div className="col-sm h-100 editor">
+					<Editor
+						operatingMode={OPERATING_MODE}
+						mapText={mapText}
+						invalid={invalid}
+						mutateMapText={mutateMapText}
+						mapComponents={mapComponents}
+						mapDimensions={mapDimensions}
+					/>
+					<div className="form-group">
+						<Meta metaText={metaText} />
 					</div>
+				</div>
 
+				<div className="col-md-8 map-view">
 					<MapView
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
@@ -255,6 +255,12 @@ function App() {
 					/>
 				</div>
 			</div>
+			<div className="row no-gutters">
+				<div className="col">
+					<Usage mapText={mapText} mutateMapText={mutateMapText} />
+				</div>
+			</div>
+			{/* </div> */}
 			<footer className="bd-footer text-muted">
 				<div className="container-fluid p-3 p-md-5">
 					<p>
