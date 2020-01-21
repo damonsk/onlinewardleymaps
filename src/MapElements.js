@@ -1,6 +1,7 @@
 export default class MapElements {
 	constructor(components) {
 		this.mapComponents = components;
+		console.log(components);
 	}
 
 	getEvolvedElements() {

@@ -17,6 +17,7 @@ function App() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapAnchors, setMapAnchors] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
@@ -136,6 +137,7 @@ function App() {
 			var r = new Convert().parse(mapText);
 			setMapTitle(r.title);
 			setMapAnnotations(r.annotations);
+			setMapAnchors(r.anchors);
 			setMapComponents(r.elements);
 			setMapLinks(r.links);
 			setMapMethods(r.methods);
@@ -238,6 +240,7 @@ function App() {
 					<MapView
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
+						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
 						mapAnnotations={mapAnnotations}
 						mapAnnotationsPresentation={mapAnnotationsPresentation}

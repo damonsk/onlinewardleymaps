@@ -190,9 +190,9 @@ describe('Convert test suite', function() {
 		let actual = 'anchor Foo []';
 		let result = new Convert().parse(actual);
 
-		expect(result.anchor.length).toEqual(1);
-		expect(result.anchor[0].visibility).toEqual(0.95);
-		expect(result.anchor[0].maturity).toEqual(0.05);
+		expect(result.anchors.length).toEqual(1);
+		expect(result.anchors[0].visibility).toEqual(0.95);
+		expect(result.anchors[0].maturity).toEqual(0.05);
 	});
 
 	test('component with little info is still made available to the map', function() {

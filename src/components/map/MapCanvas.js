@@ -8,6 +8,7 @@ import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
 import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
+import Anchor from './Anchor';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(props.mapComponents);
@@ -93,6 +94,16 @@ function MapCanvas(props) {
 					mapElements.getEvolvedElements().find(i => i.name == li.end)
 			),
 		[props.mapLinks, props.mapComponents]
+	);
+
+	const anchorsToComponents = useMemo(
+		() =>
+			props.mapLinks.filter(
+				li =>
+					props.mapAnchors.find(i => i.name == li.start) &&
+					mapElements.getMergedElements(i => i.name == li.end)
+			),
+		[props.mapLinks, props.mapComponents, props.mapAnchors]
 	);
 
 	return (
@@ -224,6 +235,12 @@ function MapCanvas(props) {
 							startElements: mapElements.getEvolveElements(),
 							endElements: mapElements.getEvolvedElements(),
 						},
+						{
+							id: 'anchors',
+							links: anchorsToComponents,
+							startElements: props.mapAnchors,
+							endElements: mapElements.getMergedElements(),
+						},
 					].map(current => {
 						return (
 							<g id={current.id} key={current.id}>
@@ -271,6 +288,18 @@ function MapCanvas(props) {
 							/>
 						))}
 						;
+					</g>
+					<g id="anchors">
+						{props.mapAnchors.map((el, i) => (
+							<Anchor
+								key={i}
+								mapDimensions={props.mapDimensions}
+								anchor={el}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+								mapStyleDefs={props.mapStyleDefs}
+							/>
+						))}
 					</g>
 					<g id="elements">
 						{mapElements.getMergedElements().map((el, i) => (
