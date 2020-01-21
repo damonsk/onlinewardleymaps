@@ -5,7 +5,7 @@ function MapGrid(props) {
 		<g
 			id="valueChain"
 			transform={'translate(0,' + props.mapDimensions.height + ') rotate(270)'}
-			fontFamily="Arial"
+			fontFamily='"Helvetica Neue",Helvetica,Arial,sans-serif'
 			fontSize="13px"
 		>
 			<line

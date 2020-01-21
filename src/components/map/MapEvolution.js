@@ -11,7 +11,7 @@ function MapEvolution(props) {
 	return (
 		<g
 			id="Evolution"
-			fontFamily="Arial"
+			fontFamily='"Helvetica Neue",Helvetica,Arial,sans-serif'
 			fontSize="13px"
 			fontStyle="italic"
 			transform={'translate(0,' + props.mapDimensions.height + ')'}
@@ -34,16 +34,18 @@ function MapEvolution(props) {
 						textAnchor="start"
 						fontStyle="normal"
 						fontSize="11px"
+						fontWeight="bold"
 					>
 						Unchartered
 					</text>
 
 					<text
-						x={props.mapDimensions.width - 15}
+						x={props.mapDimensions.width - 10}
 						y={-props.mapDimensions.height + 15}
 						textAnchor="end"
 						fontStyle="normal"
 						fontSize="11px"
+						fontWeight="bold"
 					>
 						Industrialised
 					</text>

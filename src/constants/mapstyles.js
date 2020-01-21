@@ -1,6 +1,6 @@
 export const Plain = {
 	className: 'plain',
-	fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
+	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	stroke: 'black',
 	evolutionSeparationStroke: 'black',
 	strokeWidth: '1',
@@ -114,7 +114,7 @@ export const Wardley = {
 
 export const Colour = {
 	className: 'colour',
-	fontFamily: 'Arial,"Helvetica Neue",Helvetica,sans-serif',
+	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	stroke: '#c23667',
 	evolutionSeparationStroke: '#b8b8b8',
 	strokeWidth: '3',
