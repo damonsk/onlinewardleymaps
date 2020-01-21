@@ -16,6 +16,7 @@ function OfflineApp() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapAnchors, setMapAnchors] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
@@ -106,6 +107,7 @@ function OfflineApp() {
 			var r = new Convert().parse(mapText);
 			setMapTitle(r.title);
 			setMapAnnotations(r.annotations);
+			setMapAnchors(r.anchors);
 			setMapComponents(r.elements);
 			setMapLinks(r.links);
 			setMapMethods(r.methods);
@@ -198,6 +200,7 @@ function OfflineApp() {
 							invalid={invalid}
 							mutateMapText={mutateMapText}
 							mapComponents={mapComponents}
+							mapAnchors={mapAnchors}
 							mapDimensions={mapDimensions}
 						/>
 						<div className="form-group">
@@ -208,6 +211,7 @@ function OfflineApp() {
 					<MapView
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
+						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
 						mapAnnotations={mapAnnotations}
 						mapAnnotationsPresentation={mapAnnotationsPresentation}
