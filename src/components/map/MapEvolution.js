@@ -25,6 +25,31 @@ function MapEvolution(props) {
 				strokeWidth={props.mapStyleDefs.strokeWidth}
 				markerEnd="url(#graphArrow)"
 			/>
+
+			{props.mapStyleDefs.className == 'wardley' ? (
+				<>
+					<text
+						x="10"
+						y={-props.mapDimensions.height + 15}
+						textAnchor="start"
+						fontStyle="normal"
+						fontSize="11px"
+					>
+						Unchartered
+					</text>
+
+					<text
+						x={props.mapDimensions.width - 15}
+						y={-props.mapDimensions.height + 15}
+						textAnchor="end"
+						fontStyle="normal"
+						fontSize="11px"
+					>
+						Industrialised
+					</text>
+				</>
+			) : null}
+
 			<text x="0" y="1em" textAnchor="start">
 				{props.mapEvolutionStates.genesis.l1}
 			</text>
@@ -54,6 +79,7 @@ function MapEvolution(props) {
 				y="1.8em"
 				textAnchor="end"
 				fontWeight="bold"
+				fontStyle="normal"
 			>
 				Evolution
 			</text>
