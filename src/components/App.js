@@ -229,6 +229,7 @@ function App() {
 						invalid={invalid}
 						mutateMapText={mutateMapText}
 						mapComponents={mapComponents}
+						mapAnchors={mapAnchors}
 						mapDimensions={mapDimensions}
 					/>
 					<div className="form-group">

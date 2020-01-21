@@ -35,7 +35,7 @@ class Editor extends Component {
 		};
 
 		this.expressionSuggester = this.createExpressionSuggester(
-			props.mapComponents
+			props.mapComponents.concat(this.props.mapAnchors)
 		);
 	}
 
@@ -52,6 +52,7 @@ class Editor extends Component {
 				'component',
 				'component <name>',
 				'component <name> [<visility>, <maturity>]',
+				'anchor',
 				'annotation',
 				'annotations',
 				'style',
@@ -74,7 +75,7 @@ class Editor extends Component {
 
 	componentDidUpdate() {
 		this.expressionSuggester = this.createExpressionSuggester(
-			this.props.mapComponents
+			this.props.mapComponents.concat(this.props.mapAnchors)
 		);
 	}
 
