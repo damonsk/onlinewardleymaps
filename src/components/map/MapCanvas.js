@@ -128,6 +128,23 @@ function MapCanvas(props) {
 				xmlnsXlink="http://www.w3.org/1999/xlink"
 			>
 				<defs>
+					<linearGradient
+						gradientunits="objectBoundingBox"
+						id="wardleyGradient"
+						spreadmethod="pad"
+						x1="0%"
+						x2="100%"
+						y1="0%"
+						y2="0%"
+					>
+						<stop
+							offset="0%"
+							style={{ stopColor: 'rgb(196, 196, 196)', stopOpacity: 1 }}
+						/>
+						<stop offset="0.3" style={{ stopColor: 'white', stopOpacity: 1 }} />
+						<stop offset="0.7" style={{ stopColor: 'white' }} />
+						<stop offset={1} style={{ stopColor: 'rgb(196, 196, 196)' }} />
+					</linearGradient>
 					<marker
 						id="arrow"
 						markerWidth="12"
@@ -156,6 +173,18 @@ function MapCanvas(props) {
 					</marker>
 				</defs>
 				<g id="grid">
+					<rect
+						x="0"
+						width={props.mapDimensions.width}
+						y="0"
+						height={props.mapDimensions.height}
+						id="fillArea"
+						fill={
+							props.mapStyleDefs.className == 'wardley'
+								? 'url(#wardleyGradient)'
+								: 'none'
+						}
+					></rect>
 					<MapGrid
 						mapYAxis={props.mapYAxis}
 						mapDimensions={props.mapDimensions}

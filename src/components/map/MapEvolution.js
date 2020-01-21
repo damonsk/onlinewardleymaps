@@ -11,6 +11,9 @@ function MapEvolution(props) {
 	return (
 		<g
 			id="Evolution"
+			fontFamily="Arial"
+			fontSize="13px"
+			fontStyle="italic"
 			transform={'translate(0,' + props.mapDimensions.height + ')'}
 		>
 			<line
