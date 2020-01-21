@@ -35,9 +35,9 @@ export const MapDimensions = {
 export const ExampleMap =
 	'title Tea Shop' +
 	'\r\n' +
-	'component Business [0.95, 0.63]' +
+	'anchor Business [0.95, 0.63]' +
 	'\r\n' +
-	'component Public [0.95, 0.78]' +
+	'anchor Public [0.95, 0.78]' +
 	'\r\n' +
 	'component Cup of Tea [0.79, 0.61]' +
 	'\r\n' +
