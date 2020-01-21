@@ -4,6 +4,7 @@ export default class Convert {
 		let jobj = {
 			title: this.title(cleanedData),
 			elements: this.elements(cleanedData),
+			anchors: this.anchors(cleanedData),
 			links: this.links(cleanedData),
 			evolution: this.evolution(cleanedData),
 			presentation: this.presentation(cleanedData),
@@ -266,6 +267,45 @@ export default class Convert {
 		return elementsToReturn;
 	}
 
+	anchors(input) {
+		let trimmed = input.trim();
+		let elementsAsArray = trimmed.split('\n');
+
+		let anchorsToReturn = [];
+
+		for (let i = 0; i < elementsAsArray.length; i++) {
+			const element = elementsAsArray[i];
+			if (element.trim().indexOf('anchor') == 0) {
+				let name = element
+					.split('anchor ')[1]
+					.trim()
+					.split(' [')[0]
+					.trim();
+
+				let positionData = [0.95, 0.05];
+				if (element.trim().indexOf('[') > -1) {
+					positionData = element
+						.split('[')[1]
+						.trim()
+						.split(']')[0]
+						.trim()
+						.split(',');
+				}
+
+				anchorsToReturn.push({
+					name: name,
+					maturity: isNaN(parseFloat(positionData[1])) ? 0.05 : positionData[1],
+					visibility: isNaN(parseFloat(positionData[0]))
+						? 0.95
+						: positionData[0],
+					id: 1 + i,
+				});
+			}
+		}
+
+		return anchorsToReturn;
+	}
+
 	links(input) {
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
@@ -277,6 +317,7 @@ export default class Convert {
 			if (
 				element.trim().length > 0 &&
 				element.trim().indexOf('evolution') == -1 &&
+				element.trim().indexOf('anchor') == -1 &&
 				element.trim().indexOf('component') == -1 &&
 				element.trim().indexOf('style') == -1 &&
 				element.trim().indexOf('build') == -1 &&
