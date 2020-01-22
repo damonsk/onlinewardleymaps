@@ -2,6 +2,7 @@ import React from 'react';
 import ComponentText from './ComponentText';
 import MapPositionCalculator from '../../MapPositionCalculator';
 import Movable from './Movable';
+import Inertia from './Inertia';
 
 function MapComponent(props) {
 	var _mapHelper = new MapPositionCalculator();
@@ -12,6 +13,8 @@ function MapComponent(props) {
 			props.element.visibility,
 			props.mapDimensions.height
 		);
+
+	console.log(props.element);
 
 	function endDrag(moved) {
 		props.mutateMapText(
@@ -96,6 +99,15 @@ function MapComponent(props) {
 					}
 				/>
 			</Movable>
+			{(props.element.evolved == undefined || props.element.evolved == false) &&
+			props.element.evolving == false &&
+			props.element.inertia == true ? (
+				<Inertia
+					maturity={parseFloat(props.element.maturity) + 0.05}
+					visibility={props.element.visibility}
+					mapDimensions={props.mapDimensions}
+				/>
+			) : null}
 			<g transform={'translate(' + x() + ',' + y() + ')'}>
 				<ComponentText
 					key={'component_text_' + props.element.id}

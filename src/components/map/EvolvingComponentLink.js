@@ -1,5 +1,6 @@
 import React from 'react';
 import MapPositionCalculator from '../../MapPositionCalculator';
+import Inertia from './Inertia';
 
 function EvolvingComponentLink(props) {
 	const mapCalc = new MapPositionCalculator();
@@ -55,7 +56,6 @@ function EvolvingComponentLink(props) {
 				props.mapDimensions.width
 			);
 		}
-		var boundaryX = mapCalc.maturityToX(boundary, props.mapDimensions.width);
 	}
 
 	return (
@@ -71,13 +71,10 @@ function EvolvingComponentLink(props) {
 				strokeWidth={props.mapStyleDefs.link.evolvedStrokeWidth}
 			/>
 			{props.endElement.inertia == false ? null : (
-				<line
-					x1={boundaryX}
-					y1={y2() - 10}
-					x2={boundaryX}
-					y2={y2() + 10}
-					stroke="black"
-					strokeWidth="6"
+				<Inertia
+					maturity={boundary}
+					visibility={props.endElement.visibility}
+					mapDimensions={props.mapDimensions}
 				/>
 			)}
 		</g>

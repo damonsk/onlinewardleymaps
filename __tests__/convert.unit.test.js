@@ -27,6 +27,19 @@ describe('Convert test suite', function() {
 		expect(result.elements[1].maturity).toContain('0.1');
 	});
 
+	test('component has inertia tag set to true', function() {
+		let actual = 'component Customer [1, 0.4] inertia\n';
+
+		let obj = new Convert();
+		let result = obj.parse(actual);
+
+		expect(result.elements[0].id).toEqual(1);
+		expect(result.elements[0].name).toEqual('Customer');
+		expect(result.elements[0].visibility).toEqual('1');
+		expect(result.elements[0].maturity).toContain('0.4');
+		expect(result.elements[0].inertia).toEqual(true);
+	});
+
 	test('should create links from string', function() {
 		let actual =
 			'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]\nCustomer->Customer2';
