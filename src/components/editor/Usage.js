@@ -17,8 +17,17 @@ function Usage(props) {
 			<UsageDefinition
 				title={'To create a component:'}
 				summary={'component Name [Visibility (Y Axis), Maturity (X Axis)]'}
-				example={'component Customer [1, 0.5]'}
+				example={'component Customer [0.9, 0.5]'}
 				example2={'component Cup of Tea [0.9, 0.5]'}
+				addOnClick={addOnClick}
+			/>
+			<UsageDefinition
+				title={'Inertia - component likely to face resistance to change.'}
+				summary={
+					'component Name [Visibility (Y Axis), Maturity (X Axis)] inertia'
+				}
+				example={'component Customer [0.95, 0.5] inertia'}
+				example2={'component Cup of Tea [0.9, 0.5] inertia'}
 				addOnClick={addOnClick}
 			/>
 			<UsageDefinition
@@ -26,7 +35,7 @@ function Usage(props) {
 				summary={
 					'component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis)'
 				}
-				example={'component Customer [1, 0.5] evolve 0.8'}
+				example={'component Customer [0.95, 0.5] evolve 0.8'}
 				example2={'component Cup of Tea [0.9, 0.5] evolve 0.8'}
 				addOnClick={addOnClick}
 			/>
@@ -35,7 +44,7 @@ function Usage(props) {
 				summary={
 					'component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis) inertia'
 				}
-				example={'component Customer [1, 0.5] evolve 0.8 inertia'}
+				example={'component Customer [0.95, 0.5] evolve 0.8 inertia'}
 				example2={'component Cup of Tea [0.9, 0.5] evolve 0.8 inertia'}
 				addOnClick={addOnClick}
 			/>
