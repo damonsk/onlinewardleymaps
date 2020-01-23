@@ -1,0 +1,453 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots Breadcrumb  default 1`] = `
+<nav
+  aria-label="breadcrumb"
+  className="bc"
+>
+  <ol
+    className="breadcrumb"
+    data-testid="breadcrumb-list"
+  >
+    <li
+      className="breadcrumb-item"
+      data-testid="breadcrumb-list-item"
+    >
+      Your Map:
+       
+      <a
+        data-testid="breadcrumb-list-item-your-map"
+        href="#"
+        id="url"
+      >
+        (unsaved)
+      </a>
+    </li>
+  </ol>
+</nav>
+`;
+
+exports[`Storyshots Controls  default 1`] = `
+Array [
+  <small
+    className="d-none d-sm-inline"
+    id="owm-build"
+  >
+    v
+    0.0000
+  </small>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
+    id="new-map"
+    onClick={[Function]}
+    type="button"
+  >
+    New Map
+  </button>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
+    id="example-map"
+    onClick={[Function]}
+    type="button"
+  >
+    Example Map
+  </button>,
+  <button
+    className="btn btn-success"
+    disabled={false}
+    id="save-map"
+    onClick={[Function]}
+    type="button"
+  >
+    Save
+  </button>,
+  <div
+    className="dropdown btn-group"
+    onKeyDown={[Function]}
+    role="group"
+  >
+    <button
+      aria-expanded={false}
+      aria-haspopup={true}
+      className="dropdown-toggle btn btn-info"
+      disabled={false}
+      id="bg-nested-dropdown"
+      onClick={[Function]}
+      type="button"
+    >
+      Share
+    </button>
+  </div>,
+]
+`;
+
+exports[`Storyshots Meta  default 1`] = `
+<div
+  className="alert alert-warning"
+  id="meta-alert"
+  role="alert"
+>
+  Your map has meta data -
+   
+  <a
+    id="showMeta"
+    onClick={[Function]}
+  >
+    Show
+  </a>
+</div>
+`;
+
+exports[`Storyshots Usage  default 1`] = `
+<p
+  className="small"
+  id="usage"
+>
+  Usage:
+  <br />
+  <br />
+  <strong>
+    To create a component:
+  </strong>
+  <br />
+   
+  component Name [Visibility (Y Axis), Maturity (X Axis)]
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [1, 0.5]
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Cup of Tea [0.9, 0.5]
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To evolve a component:
+  </strong>
+  <br />
+   
+  component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis)
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [1, 0.5] evolve 0.8
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Cup of Tea [0.9, 0.5] evolve 0.8
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To evolve a component with inertia:
+  </strong>
+  <br />
+   
+  component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis) inertia
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [1, 0.5] evolve 0.8 inertia
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Cup of Tea [0.9, 0.5] evolve 0.8 inertia
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To link components:
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component-&gt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Customer-&gt;Cup of Tea
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To indicate flow:
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component+&lt;&gt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Customer+&lt;&gt;Cup of Tea
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To indicate flow - past components only:
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component+&lt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Hot Water+&lt;Kettle
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To indicate flow - future components only:
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component+&gt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Hot Water+&gt;Kettle
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To indicate flow - with label:
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component+'insert text'&gt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Hot Water+'$0.10'&gt;Kettle
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    Stages of Evolution:
+  </strong>
+  <br />
+   
+  Change the stages of evolution labels on the map
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    evolution First-&gt;Second-&gt;Third-&gt;Fourth
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    evolution Novel-&gt;Emerging-&gt;Good-&gt;Best
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    Y-Axis Labels:
+  </strong>
+  <br />
+   
+  Change the text of the y-axis labels
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    y-axis Label-&gt;Min-&gt;Max
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    y-axis Value Chain-&gt;Invisible-&gt;Visible
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    Available styles:
+  </strong>
+  <br />
+   
+  Change the look and feel of a map
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    style wardley
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    style handwritten
+  </a>
+   
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    style colour
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+</p>
+`;
