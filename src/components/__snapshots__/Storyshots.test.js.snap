@@ -26,3 +26,59 @@ exports[`Storyshots Breadcrumb  default 1`] = `
   </ol>
 </nav>
 `;
+
+exports[`Storyshots Controls  default 1`] = `
+Array [
+  <small
+    className="d-none d-sm-inline"
+    id="owm-build"
+  >
+    v
+    0.0000
+  </small>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
+    id="new-map"
+    onClick={[Function]}
+    type="button"
+  >
+    New Map
+  </button>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
+    id="example-map"
+    onClick={[Function]}
+    type="button"
+  >
+    Example Map
+  </button>,
+  <button
+    className="btn btn-success"
+    disabled={false}
+    id="save-map"
+    onClick={[Function]}
+    type="button"
+  >
+    Save
+  </button>,
+  <div
+    className="dropdown btn-group"
+    onKeyDown={[Function]}
+    role="group"
+  >
+    <button
+      aria-expanded={false}
+      aria-haspopup={true}
+      className="dropdown-toggle btn btn-info"
+      disabled={false}
+      id="bg-nested-dropdown"
+      onClick={[Function]}
+      type="button"
+    >
+      Share
+    </button>
+  </div>,
+]
+`;
