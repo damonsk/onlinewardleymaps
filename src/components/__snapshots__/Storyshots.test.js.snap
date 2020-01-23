@@ -82,3 +82,20 @@ Array [
   </div>,
 ]
 `;
+
+exports[`Storyshots Meta  default 1`] = `
+<div
+  className="alert alert-warning"
+  id="meta-alert"
+  role="alert"
+>
+  Your map has meta data -
+   
+  <a
+    id="showMeta"
+    onClick={[Function]}
+  >
+    Show
+  </a>
+</div>
+`;
