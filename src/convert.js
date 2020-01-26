@@ -252,10 +252,12 @@ export default class Convert {
 
 				elementsToReturn.push({
 					name: name,
-					maturity: isNaN(parseFloat(positionData[1])) ? 0.05 : positionData[1],
+					maturity: isNaN(parseFloat(positionData[1]))
+						? 0.05
+						: parseFloat(positionData[1]),
 					visibility: isNaN(parseFloat(positionData[0]))
 						? 0.95
-						: positionData[0],
+						: parseFloat(positionData[0]),
 					id: 1 + i,
 					evolving: newPoint != null && newPoint != undefined,
 					evolveMaturity: newPoint,

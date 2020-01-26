@@ -18,13 +18,13 @@ describe('Convert test suite', function() {
 
 		expect(result.elements[0].id).toEqual(1);
 		expect(result.elements[0].name).toEqual('Customer');
-		expect(result.elements[0].visibility).toEqual('1');
-		expect(result.elements[0].maturity).toContain('0.4');
+		expect(result.elements[0].visibility).toEqual(1);
+		expect(result.elements[0].maturity).toEqual(0.4);
 
 		expect(result.elements[1].id).toEqual(2);
 		expect(result.elements[1].name).toEqual('Customer2');
-		expect(result.elements[1].visibility).toEqual('0');
-		expect(result.elements[1].maturity).toContain('0.1');
+		expect(result.elements[1].visibility).toEqual(0);
+		expect(result.elements[1].maturity).toEqual(0.1);
 	});
 
 	test('component has inertia tag set to true', function() {
@@ -35,8 +35,8 @@ describe('Convert test suite', function() {
 
 		expect(result.elements[0].id).toEqual(1);
 		expect(result.elements[0].name).toEqual('Customer');
-		expect(result.elements[0].visibility).toEqual('1');
-		expect(result.elements[0].maturity).toContain('0.4');
+		expect(result.elements[0].visibility).toEqual(1);
+		expect(result.elements[0].maturity).toEqual(0.4);
 		expect(result.elements[0].inertia).toEqual(true);
 	});
 

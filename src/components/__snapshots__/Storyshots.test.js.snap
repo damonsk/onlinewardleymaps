@@ -125,7 +125,7 @@ exports[`Storyshots Usage  default 1`] = `
     href="#"
     onClick={[Function]}
   >
-    component Customer [1, 0.5]
+    component Customer [0.9, 0.5]
   </a>
   <br />
   <a
@@ -134,6 +134,38 @@ exports[`Storyshots Usage  default 1`] = `
     onClick={[Function]}
   >
     component Cup of Tea [0.9, 0.5]
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    Inertia - component likely to face resistance to change.
+  </strong>
+  <br />
+   
+  component Name [Visibility (Y Axis), Maturity (X Axis)] inertia
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [0.95, 0.5] inertia
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    component Cup of Tea [0.9, 0.5] inertia
   </a>
    
   <br />
@@ -157,7 +189,7 @@ exports[`Storyshots Usage  default 1`] = `
     href="#"
     onClick={[Function]}
   >
-    component Customer [1, 0.5] evolve 0.8
+    component Customer [0.95, 0.5] evolve 0.8
   </a>
   <br />
   <a
@@ -189,7 +221,7 @@ exports[`Storyshots Usage  default 1`] = `
     href="#"
     onClick={[Function]}
   >
-    component Customer [1, 0.5] evolve 0.8 inertia
+    component Customer [0.95, 0.5] evolve 0.8 inertia
   </a>
   <br />
   <a
