@@ -18,15 +18,19 @@ export default class Convert {
 
 	extractLocation(input, defaultValue) {
 		if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
-			let annotations = input
+			let loc = input
 				.split('[')[1]
 				.trim()
 				.split(']')[0]
 				.replace(/\s/g, '')
 				.split(',');
 			return {
-				visibility: parseFloat(annotations[0]),
-				maturity: parseFloat(annotations[1]),
+				visibility: isNaN(parseFloat(loc[0]))
+					? defaultValue.visibility
+					: parseFloat(loc[0]),
+				maturity: isNaN(parseFloat(loc[1]))
+					? defaultValue.maturity
+					: parseFloat(loc[1]),
 			};
 		} else return defaultValue;
 	}
@@ -206,30 +210,23 @@ export default class Convert {
 				);
 				let positionData = [];
 				if (element.replace(/\s/g, '').indexOf('[[') > -1) {
-					var extractedOccurances = element
-						.replace(/\s/g, '')
-						.split('[[')[1]
-						.split(']]')[0]
-						.split('],[');
-					extractedOccurances.forEach(e => {
-						let splitString = e.split(',');
-						positionData.push({
-							maturity: parseFloat(splitString[1]),
-							visibility: parseFloat(splitString[0]),
-						});
+					let justOccurances =
+						'[' +
+						element
+							.replace(/\s/g, '')
+							.split('[[')[1]
+							.split(']]')[0] +
+						']';
+					let occurancesAsArray = justOccurances
+						.replace(/\],\[/g, ']|[')
+						.split('|');
+					occurancesAsArray.forEach(e => {
+						positionData.push(this.extractLocation(e));
 					});
 				} else if (element.indexOf('[') > -1 && element.indexOf(']') > -1) {
-					let pos = element
-						.split('[')[1]
-						.trim()
-						.split(']')[0]
-						.trim()
-						.split(',');
-					var occurance = {
-						maturity: parseFloat(pos[1]),
-						visibility: parseFloat(pos[0]),
-					};
-					positionData.push(occurance);
+					positionData.push(
+						this.extractLocation(element, { visibility: 0.9, maturity: 0.1 })
+					);
 				}
 				let text = '';
 				if (
@@ -259,9 +256,7 @@ export default class Convert {
 	elements(input) {
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
-
 		let elementsToReturn = [];
-
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			const element = elementsAsArray[i];
 			if (element.trim().indexOf('component') == 0) {
@@ -271,31 +266,21 @@ export default class Convert {
 					.split(' [')[0]
 					.trim();
 
-				let positionData = [0.95, 0.05];
-				if (element.trim().indexOf('[') > -1) {
-					positionData = element
-						.split('[')[1]
-						.trim()
-						.split(']')[0]
-						.trim()
-						.split(',');
-				}
-
 				let newPoint;
-
 				if (element.indexOf('evolve ') > -1) {
 					newPoint = element.split('evolve ')[1].trim();
 					newPoint = newPoint.replace('inertia', '').trim();
 				}
 
+				let positionData = this.extractLocation(element, {
+					visibility: 0.95,
+					maturity: 0.05,
+				});
+
 				elementsToReturn.push({
 					name: name,
-					maturity: isNaN(parseFloat(positionData[1]))
-						? 0.05
-						: parseFloat(positionData[1]),
-					visibility: isNaN(parseFloat(positionData[0]))
-						? 0.95
-						: parseFloat(positionData[0]),
+					maturity: positionData.maturity,
+					visibility: positionData.visibility,
 					id: 1 + i,
 					evolving: newPoint != null && newPoint != undefined,
 					evolveMaturity: newPoint,
@@ -322,22 +307,15 @@ export default class Convert {
 					.split(' [')[0]
 					.trim();
 
-				let positionData = [0.95, 0.05];
-				if (element.trim().indexOf('[') > -1) {
-					positionData = element
-						.split('[')[1]
-						.trim()
-						.split(']')[0]
-						.trim()
-						.split(',');
-				}
+				let positionData = this.extractLocation(element, {
+					visibility: 0.95,
+					maturity: 0.05,
+				});
 
 				anchorsToReturn.push({
 					name: name,
-					maturity: isNaN(parseFloat(positionData[1])) ? 0.05 : positionData[1],
-					visibility: isNaN(parseFloat(positionData[0]))
-						? 0.95
-						: positionData[0],
+					maturity: positionData.maturity,
+					visibility: positionData.visibility,
 					id: 1 + i,
 				});
 			}
