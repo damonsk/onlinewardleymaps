@@ -77,6 +77,8 @@ export const ExampleMap =
 	'\r\n' +
 	'annotations [0.97, 0.02]' +
 	'\r\n' +
-	'' +
+	'\r\n' +
+	'note +a generic note appeared [0.23, 0.33]' +
+	'\r\n' +
 	'\r\n' +
 	'style colour';
