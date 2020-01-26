@@ -174,7 +174,7 @@ export default class Convert {
 			const element = elementsAsArray[i];
 			if (element.trim().indexOf('note ') == 0) {
 				let noteText = element
-					.split('note ')[1]
+					.substr('note '.length, element.length - 'note '.length)
 					.trim()
 					.split(' [')[0]
 					.trim();

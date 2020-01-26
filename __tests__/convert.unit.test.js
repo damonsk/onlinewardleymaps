@@ -236,6 +236,16 @@ describe('Convert test suite', function() {
 		expect(result.notes[0].maturity).toEqual(0.1);
 	});
 
+	test('notes with note in the text still works', function() {
+		let actual = 'note a generic note appeard [0.9, 0.1]';
+		let result = new Convert().parse(actual);
+
+		expect(result.notes.length).toEqual(1);
+		expect(result.notes[0].text).toEqual('a generic note appeard');
+		expect(result.notes[0].visibility).toEqual(0.9);
+		expect(result.notes[0].maturity).toEqual(0.1);
+	});
+
 	test('notes with little info is still made available to the map', function() {
 		let actual = 'note Foo []';
 		let result = new Convert().parse(actual);
