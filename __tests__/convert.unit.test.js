@@ -225,4 +225,14 @@ describe('Convert test suite', function() {
 		expect(result.presentation.yAxis.max).toEqual('Max label');
 		expect(result.presentation.yAxis.min).toEqual('Min label');
 	});
+
+	test('notes are extracted and made available to the map', function() {
+		let actual = 'note some text [0.9, 0.1]';
+		let result = new Convert().parse(actual);
+
+		expect(result.notes.length).toEqual(1);
+		expect(result.notes[0].text).toEqual('some text');
+		expect(result.notes[0].visibility).toEqual(0.9);
+		expect(result.notes[0].maturity).toEqual(0.1);
+	});
 });

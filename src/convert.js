@@ -10,9 +10,25 @@ export default class Convert {
 			presentation: this.presentation(cleanedData),
 			methods: this.method(cleanedData),
 			annotations: this.annotations(cleanedData),
+			notes: this.notes(cleanedData),
 		};
 
 		return jobj;
+	}
+
+	extractLocation(input, defaultValue) {
+		if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
+			let annotations = input
+				.split('[')[1]
+				.trim()
+				.split(']')[0]
+				.replace(/\s/g, '')
+				.split(',');
+			return {
+				visibility: parseFloat(annotations[0]),
+				maturity: parseFloat(annotations[1]),
+			};
+		} else return defaultValue;
 	}
 
 	stripComments(data) {
@@ -86,16 +102,10 @@ export default class Convert {
 			}
 
 			if (element.trim().indexOf('annotations ') == 0) {
-				let annotations = element
-					.split('[')[1]
-					.trim()
-					.split(']')[0]
-					.replace(/\s/g, '')
-					.split(',');
-				presentationObject.annotations = {
-					visibility: parseFloat(annotations[0]),
-					maturity: parseFloat(annotations[1]),
-				};
+				presentationObject.annotations = this.extractLocation(element, {
+					visibility: 0.9,
+					maturity: 0.1,
+				});
 			}
 
 			if (element.trim().indexOf('y-axis ') == 0) {
@@ -149,6 +159,34 @@ export default class Convert {
 		}
 
 		return 'Untitled Map';
+	}
+
+	notes(input) {
+		if (input.trim().length < 1) return [];
+		let trimmed = input.trim();
+		let elementsAsArray = trimmed.split('\n');
+		var notesArray = [];
+		for (let i = 0; i < elementsAsArray.length; i++) {
+			const element = elementsAsArray[i];
+			if (element.trim().indexOf('note ') == 0) {
+				let noteText = element
+					.split('note ')[1]
+					.trim()
+					.split(' [')[0]
+					.trim();
+
+				let notePosition = this.extractLocation(element, {
+					visibility: 0.9,
+					maturity: 0.1,
+				});
+				notesArray.push({
+					text: noteText,
+					visibility: notePosition.visibility,
+					maturity: notePosition.maturity,
+				});
+			}
+		}
+		return notesArray;
 	}
 
 	annotations(input) {
@@ -328,7 +366,8 @@ export default class Convert {
 				element.trim().indexOf('title') == -1 &&
 				element.trim().indexOf('annotation') == -1 &&
 				element.trim().indexOf('annotations') == -1 &&
-				element.trim().indexOf('y-axis') == -1
+				element.trim().indexOf('y-axis') == -1 &&
+				element.trim().indexOf('note') == -1
 			) {
 				if (element.indexOf('+>') > -1) {
 					let name = element.split('+>');
