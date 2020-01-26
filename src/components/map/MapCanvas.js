@@ -9,6 +9,7 @@ import MapComponent from './MapComponent';
 import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
 import Anchor from './Anchor';
+import Note from './Note';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(props.mapComponents);
@@ -340,6 +341,19 @@ function MapCanvas(props) {
 								mutateMapText={props.mutateMapText}
 								setMetaText={props.setMetaText}
 								metaText={props.metaText}
+								mapStyleDefs={props.mapStyleDefs}
+							/>
+						))}
+					</g>
+
+					<g id="notes">
+						{props.mapNotes.map((el, i) => (
+							<Note
+								key={i}
+								mapDimensions={props.mapDimensions}
+								note={el}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
 							/>
 						))}

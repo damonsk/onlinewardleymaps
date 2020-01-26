@@ -441,6 +441,38 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
+    Add notes:
+  </strong>
+  <br />
+   
+  Add text to any part of the map
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    note Note Text [0.9, 0.5]
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    note +future development [0.9, 0.5]
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
     Available styles:
   </strong>
   <br />

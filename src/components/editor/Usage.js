@@ -98,6 +98,13 @@ function Usage(props) {
 				addOnClick={addOnClick}
 			/>
 			<UsageDefinition
+				title={'Add notes:'}
+				summary={'Add text to any part of the map'}
+				example={'note Note Text [0.9, 0.5]'}
+				example2={'note +future development [0.9, 0.5]'}
+				addOnClick={addOnClick}
+			/>
+			<UsageDefinition
 				title={'Available styles:'}
 				summary={'Change the look and feel of a map'}
 				example={'style wardley'}

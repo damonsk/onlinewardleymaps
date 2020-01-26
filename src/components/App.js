@@ -18,6 +18,7 @@ function App() {
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
+	const [mapNotes, setMapNotes] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
@@ -138,6 +139,7 @@ function App() {
 			setMapTitle(r.title);
 			setMapAnnotations(r.annotations);
 			setMapAnchors(r.anchors);
+			setMapNotes(r.notes);
 			setMapComponents(r.elements);
 			setMapLinks(r.links);
 			setMapMethods(r.methods);
@@ -243,6 +245,7 @@ function App() {
 						mapComponents={mapComponents}
 						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
+						mapNotes={mapNotes}
 						mapAnnotations={mapAnnotations}
 						mapAnnotationsPresentation={mapAnnotationsPresentation}
 						mapMethods={mapMethods}
