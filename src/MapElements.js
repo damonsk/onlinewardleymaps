@@ -1,6 +1,7 @@
 export default class MapElements {
-	constructor(components) {
+	constructor(components, evolved) {
 		this.mapComponents = components;
+		this.evolved = evolved;
 	}
 
 	getEvolvedElements() {
@@ -17,7 +18,19 @@ export default class MapElements {
 	}
 
 	getEvolveElements() {
-		return this.mapComponents.filter(el => el.evolving);
+		if (this.evolved == undefined) return [];
+		let evolving = this.evolved
+			.map(e => {
+				return this.mapComponents
+					.filter(el => el.name == e.name)
+					.map(i => {
+						i.evolveMaturity = e.maturity;
+						i.evolving = true;
+						return i;
+					});
+			})
+			.flat();
+		return evolving;
 	}
 
 	getNoneEvolvingElements() {

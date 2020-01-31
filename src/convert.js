@@ -1,6 +1,6 @@
 export default class Convert {
 	parse(data) {
-		var cleanedData = this.stripComments(data);
+		let cleanedData = this.stripComments(data);
 		let jobj = {
 			title: this.title(cleanedData),
 			elements: this.elements(cleanedData),
@@ -11,6 +11,7 @@ export default class Convert {
 			methods: this.method(cleanedData),
 			annotations: this.annotations(cleanedData),
 			notes: this.notes(cleanedData),
+			evolved: this.evolved(cleanedData),
 		};
 
 		return jobj;
@@ -292,6 +293,32 @@ export default class Convert {
 		return elementsToReturn;
 	}
 
+	evolved(input) {
+		let trimmed = input.trim();
+		let elementsAsArray = trimmed.split('\n');
+		let elementsToReturn = [];
+		for (let i = 0; i < elementsAsArray.length; i++) {
+			const element = elementsAsArray[i];
+			if (element.trim().indexOf('evolve ') == 0) {
+				let name = element.split('evolve ')[1].trim();
+
+				let evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
+				let newPoint = 0.85;
+				if (evolveMaturity.length > 0) {
+					newPoint = parseFloat(evolveMaturity[0]);
+					name = name.split(newPoint)[0].trim();
+				}
+
+				elementsToReturn.push({
+					name: name,
+					maturity: newPoint,
+				});
+			}
+		}
+
+		return elementsToReturn;
+	}
+
 	anchors(input) {
 		let trimmed = input.trim();
 		let elementsAsArray = trimmed.split('\n');
@@ -336,6 +363,7 @@ export default class Convert {
 				element.trim().length > 0 &&
 				element.trim().indexOf('evolution') == -1 &&
 				element.trim().indexOf('anchor') == -1 &&
+				element.trim().indexOf('evolve') == -1 &&
 				element.trim().indexOf('component') == -1 &&
 				element.trim().indexOf('style') == -1 &&
 				element.trim().indexOf('build') == -1 &&

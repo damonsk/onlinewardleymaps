@@ -12,7 +12,7 @@ import Anchor from './Anchor';
 import Note from './Note';
 
 function MapCanvas(props) {
-	const mapElements = new MapElements(props.mapComponents);
+	const mapElements = new MapElements(props.mapComponents, props.mapEvolved);
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
 			return element.name === name;
@@ -130,9 +130,9 @@ function MapCanvas(props) {
 			>
 				<defs>
 					<linearGradient
-						gradientunits="objectBoundingBox"
+						gradientUnits="objectBoundingBox"
 						id="wardleyGradient"
-						spreadmethod="pad"
+						spreadMethod="pad"
 						x1="0%"
 						x2="100%"
 						y1="0%"

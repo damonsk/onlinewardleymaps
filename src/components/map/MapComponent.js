@@ -14,29 +14,29 @@ function MapComponent(props) {
 			props.mapDimensions.height
 		);
 
-	console.log(props.element);
-
 	function endDrag(moved) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
 				.map(line => {
 					if (
+						props.element.evolved == undefined &&
 						line
 							.replace(/\s/g, '')
 							.indexOf(
 								'component' + props.element.name.replace(/\s/g, '') + '['
 							) !== -1
 					) {
-						if (props.element.evolved) {
-							return line.replace(
-								/\] evolve\s([.0-9])+/g,
-								`] evolve ${_mapHelper.xToMaturity(
-									moved.x,
-									props.mapDimensions.width
-								)}`
-							);
-						} else {
+						// if (props.element.evolved) {
+						// 	return line.replace(
+						// 		/\] evolve\s([.0-9])+/g,
+						// 		`] evolve ${_mapHelper.xToMaturity(
+						// 			moved.x,
+						// 			props.mapDimensions.width
+						// 		)}`
+						// 	);
+						// } else
+						{
 							return line.replace(
 								/\[(.?|.+?)\]/g,
 								`[${_mapHelper.yToVisibility(
@@ -49,8 +49,9 @@ function MapComponent(props) {
 							);
 						}
 					} else if (
+						props.element.evolved == undefined &&
 						line.replace(/\s/g, '') ===
-						'component' + props.element.name.replace(/\s/g, '')
+							'component' + props.element.name.replace(/\s/g, '')
 					) {
 						return (
 							line.trim() +
@@ -62,6 +63,16 @@ function MapComponent(props) {
 								moved.x,
 								props.mapDimensions.width
 							)}]`
+						);
+					} else if (
+						props.element.evolved &&
+						line
+							.replace(/\s/g, '')
+							.indexOf('evolve' + props.element.name.replace(/\s/g, '')) !== -1
+					) {
+						return line.replace(
+							/\s([0-9]?\.[0-9]+[0-9]?)+/g,
+							` ${_mapHelper.xToMaturity(moved.x, props.mapDimensions.width)}`
 						);
 					} else {
 						return line;

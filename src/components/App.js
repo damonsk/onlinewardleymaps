@@ -7,8 +7,10 @@ import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Convert from '../convert';
+import Migrations from '../Migrations';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
+import MigrationsModal from './MigrationModal';
 
 function App() {
 	const OPERATING_MODE = 'browser';
@@ -17,6 +19,7 @@ function App() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapEvolved, setMapEvolved] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
 	const [mapNotes, setMapNotes] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
@@ -36,6 +39,13 @@ function App() {
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
 	const mapRef = useRef(null);
+
+	const [migrations, setMigrations] = useState({
+		original: '',
+		changed: false,
+		result: '',
+		changeSets: [],
+	});
 
 	const getHeight = () => {
 		var winHeight = window.innerHeight;
@@ -85,6 +95,10 @@ function App() {
 				.then(d => {
 					if (d.meta == undefined || d.meta == null) {
 						d.meta = '';
+					}
+					let mms = new Migrations(d.text).apply();
+					if (mms.changed) {
+						setMigrations(mms);
 					}
 					setSaveOutstanding(false);
 					setMapText(d.text);
@@ -141,6 +155,7 @@ function App() {
 			setMapAnchors(r.anchors);
 			setMapNotes(r.notes);
 			setMapComponents(r.elements);
+			setMapEvolved(r.evolved);
 			setMapLinks(r.links);
 			setMapMethods(r.methods);
 			setMapStyle(r.presentation.style);
@@ -243,6 +258,7 @@ function App() {
 					<MapView
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
+						mapEvolved={mapEvolved}
 						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
 						mapNotes={mapNotes}
@@ -304,6 +320,8 @@ function App() {
 					</p>
 				</div>
 			</footer>
+
+			<MigrationsModal mutateMapText={mutateMapText} migrations={migrations} />
 		</React.Fragment>
 	);
 }
