@@ -79,7 +79,26 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 				{
 					token: ['keyword', 'variable.parameter.function.asp'],
 					regex:
-						'(y-axis|evolution|note|anchor|annotations|annotation|component|title|style|outsource|build|product|buy)(\\s*[a-zA-Z0-9\\s*]+)',
+						'(y-axis|evolution|note|anchor|annotations|annotation|component|title|style|outsource|build|product|buy)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
+				},
+				{
+					token: [
+						'keyword',
+						'variable.parameter.function.asp',
+						'constant.numeric',
+					],
+					regex: '(evolve)(\\s*[a-zA-Z0-9\\s*]+)(\\d+(?:\\.\\d{1,})*)',
+				},
+				{
+					token: [
+						'keyword',
+						'punctuation',
+						'constant.numeric',
+						'punctuation',
+						'constant.numeric',
+						'punctuation',
+					],
+					regex: '(label)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
 				},
 				{
 					token: 'keyword',
@@ -97,14 +116,6 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 					],
 					regex:
 						'(\\[*)(\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])(\\]*)',
-				},
-				{
-					token: ['keyword', 'constant.numeric'],
-					regex: '(evolve)(\\s*\\d+(?:\\.\\d{1,})*)',
-				},
-				{
-					token: ['keyword', 'constant.numeric'],
-					regex: '(evolve)(\\s*(?:\\.\\d{1,})*)',
 				},
 				{
 					token: [

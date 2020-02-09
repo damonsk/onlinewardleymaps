@@ -278,7 +278,7 @@ export default class Convert {
 					maturity: 0.05,
 				});
 
-				let labelOffset = { x: 10, y: 30 };
+				let labelOffset = { x: 5, y: -10 };
 
 				if (element.indexOf('label ') > -1) {
 					let findPos = element.split('label [');
