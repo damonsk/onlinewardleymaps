@@ -32,20 +32,9 @@ function Usage(props) {
 			/>
 			<UsageDefinition
 				title={'To evolve a component:'}
-				summary={
-					'component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis)'
-				}
-				example={'component Customer [0.95, 0.5] evolve 0.8'}
-				example2={'component Cup of Tea [0.9, 0.5] evolve 0.8'}
-				addOnClick={addOnClick}
-			/>
-			<UsageDefinition
-				title={'To evolve a component with inertia:'}
-				summary={
-					'component Name [Visibility (Y Axis), Maturity (X Axis)] evole (X Axis) inertia'
-				}
-				example={'component Customer [0.95, 0.5] evolve 0.8 inertia'}
-				example2={'component Cup of Tea [0.9, 0.5] evolve 0.8 inertia'}
+				summary={'evole Name (X Axis)'}
+				example={'evolve Customer 0.8'}
+				example2={'evolve Cup of Tea evolve 0.8'}
 				addOnClick={addOnClick}
 			/>
 			<UsageDefinition
