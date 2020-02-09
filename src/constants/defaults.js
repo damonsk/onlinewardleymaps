@@ -49,9 +49,13 @@ export const ExampleMap =
 	'\r\n' +
 	'component Water [0.38, 0.82]' +
 	'\r\n' +
-	'component Kettle [0.43, 0.35] evolve 0.62' +
+	'component Kettle [0.43, 0.35]' +
 	'\r\n' +
-	'component Power [0.1, 0.7] evolve 0.89' +
+	'evolve Kettle 0.62' +
+	'\r\n' +
+	'component Power [0.1, 0.7]' +
+	'\r\n' +
+	'evolve Power 0.89' +
 	'\r\n' +
 	'Business->Cup of Tea' +
 	'\r\n' +
@@ -69,7 +73,6 @@ export const ExampleMap =
 	'\r\n' +
 	'Kettle->Power' +
 	'\r\n' +
-	'' +
 	'\r\n' +
 	'annotation 1 [[0.43,0.49],[0.08,0.79]] Standardising power allows Kettles to evolve faster' +
 	'\r\n' +
