@@ -254,4 +254,15 @@ describe('Convert test suite', function() {
 		expect(result.notes[0].visibility).toEqual(0.9);
 		expect(result.notes[0].maturity).toEqual(0.1);
 	});
+
+	test('component with label position then position is available to map', function() {
+		let actual = 'component Foo [0.9, 0.1] label [66,99] inertia evolve 0.9';
+		let result = new Convert().parse(actual);
+
+		expect(result.elements.length).toEqual(1);
+		expect(result.elements[0].visibility).toEqual(0.9);
+		expect(result.elements[0].maturity).toEqual(0.1);
+		expect(result.elements[0].label.x).toEqual(66);
+		expect(result.elements[0].label.y).toEqual(99);
+	});
 });

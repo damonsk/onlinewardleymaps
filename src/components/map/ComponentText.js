@@ -1,21 +1,35 @@
 import React from 'react';
 import RelativeMovable from './RelativeMovable';
-import MetaPositioner from '../../MetaPositioner';
 
 function ComponentText(props) {
-	const metaPosition = new MetaPositioner();
 	const elementId = 'element_text_' + props.element.id;
-	const getMetaPosition = () => {
-		const defaultOffset = {
-			x: props.mapStyleDefs.component.textOffset,
-			y: -props.mapStyleDefs.component.textOffset,
-		};
-		return metaPosition.for(elementId, props.metaText, defaultOffset);
-	};
-
-	const endDrag = moved => {
-		props.setMetaText(metaPosition.update(elementId, props.metaText, moved));
-	};
+	function endDrag(moved) {
+		props.mutateMapText(
+			props.mapText
+				.split('\n')
+				.map(line => {
+					if (
+						line
+							.replace(/\s/g, '')
+							.indexOf(
+								'component' + props.element.name.replace(/\s/g, '') + '['
+							) == 0
+					) {
+						if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+							return line.replace(
+								/\slabel\s\[(.?|.+?)\]+/g,
+								` label [${moved.x}, ${moved.y}]`
+							);
+						} else {
+							return line.trim() + ` label [${moved.x}, ${moved.y}]`;
+						}
+					} else {
+						return line;
+					}
+				})
+				.join('\n')
+		);
+	}
 
 	return (
 		<React.Fragment>
@@ -24,8 +38,8 @@ function ComponentText(props) {
 				fixedY={false}
 				fixedX={false}
 				onMove={endDrag}
-				x={getMetaPosition().x}
-				y={getMetaPosition().y}
+				x={props.element.label.x}
+				y={props.element.label.y}
 			>
 				{props.element.name.length < 15 ? (
 					<text

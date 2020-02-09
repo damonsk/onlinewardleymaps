@@ -52,6 +52,7 @@ export default class MapElements {
 				visibility: el.visibility,
 				evolving: false,
 				evolved: true,
+				label: el.label,
 			};
 		});
 

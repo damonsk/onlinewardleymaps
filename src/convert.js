@@ -278,6 +278,17 @@ export default class Convert {
 					maturity: 0.05,
 				});
 
+				let labelOffset = { x: 10, y: 30 };
+
+				if (element.indexOf('label ') > -1) {
+					let findPos = element.split('label [');
+					if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
+						let extractedPos = findPos[1].split(']')[0].split(',');
+						labelOffset.x = parseFloat(extractedPos[0].trim());
+						labelOffset.y = parseFloat(extractedPos[1].trim());
+					}
+				}
+
 				elementsToReturn.push({
 					name: name,
 					maturity: positionData.maturity,
@@ -286,6 +297,7 @@ export default class Convert {
 					evolving: newPoint != null && newPoint != undefined,
 					evolveMaturity: newPoint,
 					inertia: element.indexOf('inertia') > -1,
+					label: labelOffset,
 				});
 			}
 		}

@@ -27,16 +27,20 @@ function MapComponent(props) {
 								'component' + props.element.name.replace(/\s/g, '') + '['
 							) !== -1
 					) {
-						// if (props.element.evolved) {
-						// 	return line.replace(
-						// 		/\] evolve\s([.0-9])+/g,
-						// 		`] evolve ${_mapHelper.xToMaturity(
-						// 			moved.x,
-						// 			props.mapDimensions.width
-						// 		)}`
-						// 	);
-						// } else
-						{
+						if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+							let parts = line.split('label');
+							let newPart = parts[0].replace(
+								/\[(.?|.+?)\]/g,
+								`[${_mapHelper.yToVisibility(
+									moved.y,
+									props.mapDimensions.height
+								)}, ${_mapHelper.xToMaturity(
+									moved.x,
+									props.mapDimensions.width
+								)}]`
+							);
+							return newPart + 'label' + parts[1];
+						} else {
 							return line.replace(
 								/\[(.?|.+?)\]/g,
 								`[${_mapHelper.yToVisibility(
