@@ -8,23 +8,46 @@ function ComponentText(props) {
 			props.mapText
 				.split('\n')
 				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'component' + props.element.name.replace(/\s/g, '') + '['
-							) == 0
-					) {
-						if (line.replace(/\s/g, '').indexOf('label[') > -1) {
-							return line.replace(
-								/\slabel\s\[(.?|.+?)\]+/g,
-								` label [${moved.x}, ${moved.y}]`
-							);
+					if (props.element.evolved) {
+						if (
+							line
+								.replace(/\s/g, '')
+								.indexOf(
+									'evolve' +
+										props.element.name.replace(/\s/g, '') +
+										props.element.maturity
+								) == 0
+						) {
+							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+								return line.replace(
+									/\slabel\s\[(.?|.+?)\]+/g,
+									` label [${moved.x}, ${moved.y}]`
+								);
+							} else {
+								return line.trim() + ` label [${moved.x}, ${moved.y}]`;
+							}
 						} else {
-							return line.trim() + ` label [${moved.x}, ${moved.y}]`;
+							return line;
 						}
 					} else {
-						return line;
+						if (
+							line
+								.replace(/\s/g, '')
+								.indexOf(
+									'component' + props.element.name.replace(/\s/g, '') + '['
+								) == 0
+						) {
+							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+								return line.replace(
+									/\slabel\s\[(.?|.+?)\]+/g,
+									` label [${moved.x}, ${moved.y}]`
+								);
+							} else {
+								return line.trim() + ` label [${moved.x}, ${moved.y}]`;
+							}
+						} else {
+							return line;
+						}
 					}
 				})
 				.join('\n')

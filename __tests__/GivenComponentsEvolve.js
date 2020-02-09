@@ -26,6 +26,26 @@ describe('Given Components Evolve', function() {
 		expect(evolved[0].evolveMaturity).toEqual(0.9);
 	});
 
+	test('When evolve text with label is supplied then convert output is correct', function() {
+		let actual =
+			'component Foo [0.1, 0.1] label [66,99]' +
+			'\n' +
+			'evolve Foo 0.9 label [-33, -55]';
+		let result = new Convert().parse(actual);
+		let me = new MapElements(result.elements, result.evolved);
+		let evolving = me.getEvolveElements();
+		let evolved = me.getEvolvedElements();
+
+		expect(result.evolved.length).toEqual(1);
+		expect(evolving.length).toEqual(1);
+		expect(evolving[0].evolving).toEqual(true);
+		expect(evolving[0].evolveMaturity).toEqual(0.9);
+		expect(evolved[0].label.x).toEqual(-33);
+		expect(evolved[0].label.y).toEqual(-55);
+		expect(evolving[0].label.x).toEqual(66);
+		expect(evolving[0].label.y).toEqual(99);
+	});
+
 	test('When evolve text is merged with component then migrations handles the conversion', function() {
 		let actual = 'component Foo [0.9, 0.1] evolve 0.9';
 		let migrations = new Migrations(actual).apply();
