@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { owmBuild } from '../../version';
 import { ExampleMap } from '../../constants/defaults';
 import {
@@ -13,6 +13,22 @@ import {
 } from 'react-bootstrap';
 
 function Controls(props) {
+	const [toggleAutoSave, setToggleAutoSave] = useState(false);
+
+	useEffect(() => {
+		if (toggleAutoSave === true) {
+			if (props.saveOutstanding === true) {
+				props.saveMapClick();
+			}
+		}
+	}, [props.saveOutstanding, toggleAutoSave]);
+
+	const clickAutoSave = () => {
+		{
+			toggleAutoSave ? setToggleAutoSave(false) : setToggleAutoSave(true);
+		}
+	};
+
 	const example = () => {
 		props.mutateMapText(ExampleMap);
 		props.setMetaText('');
@@ -48,6 +64,13 @@ function Controls(props) {
 				variant={props.saveOutstanding ? 'danger' : 'success'}
 			>
 				Save
+			</Button>
+			<Button
+				variant={toggleAutoSave ? 'success' : 'danger'}
+				onClick={clickAutoSave}
+				type="button"
+			>
+				{toggleAutoSave ? 'AutoSave On' : 'AutoSave Off'}
 			</Button>
 
 			<DropdownButton
