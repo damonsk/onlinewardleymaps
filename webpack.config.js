@@ -6,7 +6,7 @@ const { HotModuleReplacementPlugin } = require('webpack');
 
 const PAGE_TITLE =
 	'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
-const HTML_LOCATION = 'src/online/index.html';
+const HTML_LOCATION = 'src/index.html';
 
 function getRules(isProduction) {
 	let rules = [
@@ -94,7 +94,7 @@ function webpackBuilder({ isProduction }) {
 	process.env.BABEL_ENV = mode;
 
 	return {
-		entry: './src/online/index.js',
+		entry: './src/index.js',
 		mode,
 		devtool,
 		watch,

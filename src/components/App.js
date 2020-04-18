@@ -13,7 +13,6 @@ import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
 
 function App() {
-	const OPERATING_MODE = 'browser';
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
@@ -241,7 +240,6 @@ function App() {
 			<div className="row no-gutters">
 				<div className="col-sm h-100 editor">
 					<Editor
-						operatingMode={OPERATING_MODE}
 						mapText={mapText}
 						invalid={invalid}
 						mutateMapText={mutateMapText}
