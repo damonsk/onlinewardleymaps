@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
+import MapPipelines from '../../MapPipelines';
 import MapGrid from './MapGrid';
 import MapEvolution from './MapEvolution';
+import Pipeline from './Pipeline';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
@@ -13,6 +15,10 @@ import Note from './Note';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(props.mapComponents, props.mapEvolved);
+	const mapPipelines = new MapPipelines(
+		props.mapComponents,
+		props.mapPipelines
+	);
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
 			return element.name === name;
@@ -337,6 +343,21 @@ function MapCanvas(props) {
 								key={i}
 								mapDimensions={props.mapDimensions}
 								element={el}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+								setMetaText={props.setMetaText}
+								metaText={props.metaText}
+								mapStyleDefs={props.mapStyleDefs}
+							/>
+						))}
+					</g>
+
+					<g id="pipelines">
+						{mapPipelines.getMapPipelines().map((p, i) => (
+							<Pipeline
+								key={i}
+								mapDimensions={props.mapDimensions}
+								pipeline={p}
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								setMetaText={props.setMetaText}
