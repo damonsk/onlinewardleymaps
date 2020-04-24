@@ -2,15 +2,17 @@ import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
-import Breadcrumb from './editor/Breadcrumb';
+import Subnav from './editor/Subnav';
 import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
+import Toolbar from './editor/Toolbar';
 import Convert from '../convert';
 import Migrations from '../Migrations';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
+import { Collapse } from 'react-bootstrap';
 
 function App() {
 	const [currentUrl, setCurrentUrl] = useState('');
@@ -37,6 +39,8 @@ function App() {
 	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
+	const [toggleToolbar, setToggleToolbar] = useState(true);
+
 	const mapRef = useRef(null);
 
 	const [migrations, setMigrations] = useState({
@@ -233,8 +237,13 @@ function App() {
 						</div>
 					</div>
 				</nav>
-
-				<Breadcrumb currentUrl={currentUrl} />
+				<div className="navbar subnav">
+					<Subnav
+						currentUrl={currentUrl}
+						toggleToolbar={toggleToolbar}
+						setToggleToolbar={setToggleToolbar}
+					/>
+				</div>
 			</div>
 			{/* <div className="container-fluid"> */}
 			<div className="row no-gutters">
@@ -275,6 +284,13 @@ function App() {
 						evolutionOffsets={Defaults.EvoOffsets}
 					/>
 				</div>
+				<Collapse in={toggleToolbar} dimension={'width'}>
+					<div className="col-sm tool-bar">
+						<div className="contents">
+							<Toolbar mapText={mapText} mutateMapText={mutateMapText} />
+						</div>
+					</div>
+				</Collapse>
 			</div>
 			<div className="row usage no-gutters">
 				<div className="col">
