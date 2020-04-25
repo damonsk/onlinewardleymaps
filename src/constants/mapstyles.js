@@ -4,8 +4,8 @@ export const Plain = {
 	stroke: 'black',
 	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: 'black',
-	pipelineArrowHeight: '8',
-	pipelineArrowWidth: '8',
+	pipelineArrowHeight: '5',
+	pipelineArrowWidth: '5',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	component: {
@@ -46,8 +46,8 @@ export const Handwritten = {
 	stroke: 'black',
 	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: 'black',
-	pipelineArrowHeight: '8',
-	pipelineArrowWidth: '8',
+	pipelineArrowHeight: '5',
+	pipelineArrowWidth: '5',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	component: {
@@ -88,8 +88,8 @@ export const Wardley = {
 	stroke: 'black',
 	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: '#b8b8b8',
-	pipelineArrowHeight: '8',
-	pipelineArrowWidth: '8',
+	pipelineArrowHeight: '5',
+	pipelineArrowWidth: '5',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	component: {
@@ -130,8 +130,8 @@ export const Colour = {
 	stroke: '#c23667',
 	pipelineArrowStroke: '#8cb358',
 	evolutionSeparationStroke: '#b8b8b8',
-	pipelineArrowHeight: '8',
-	pipelineArrowWidth: '8',
+	pipelineArrowHeight: '5',
+	pipelineArrowWidth: '5',
 	strokeWidth: '3',
 	strokeDasharray: '2,2',
 	component: {

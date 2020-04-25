@@ -133,7 +133,7 @@ function Pipeline(props) {
 					<line
 						x1={10}
 						y1={12}
-						x2={x2() - x1() - 25}
+						x2={x2() - x1() - 22}
 						y2={12}
 						strokeWidth={1}
 						stroke={props.mapStyleDefs.component.stroke}
