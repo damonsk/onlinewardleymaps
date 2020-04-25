@@ -98,23 +98,47 @@ function Pipeline(props) {
 				fixedX={true}
 			>
 				<g x={x1()} y={y()}>
-					<rect
-						width={x2() - x1()}
-						height="25"
-						x="0"
-						y="0"
+					<line
+						x1={0}
+						y1={0}
+						x2={x2() - x1()}
+						y2={0}
+						strokeWidth={1}
 						stroke={props.mapStyleDefs.component.stroke}
-						fill={props.mapStyleDefs.component.fill}
+					/>
+					<line
+						x1={x2() - x1()}
+						y1={0}
+						x2={x2() - x1()}
+						y2={22}
+						strokeWidth={1}
+						stroke={props.mapStyleDefs.component.stroke}
+					/>
+					<line
+						x1={x2() - x1()}
+						y1={22}
+						x2={0}
+						y2={22}
+						strokeWidth={1}
+						stroke={props.mapStyleDefs.component.stroke}
+					/>
+					<line
+						x1={0}
+						y1={22}
+						x2={0}
+						y2={0}
+						strokeWidth={1}
+						stroke={props.mapStyleDefs.component.stroke}
 					/>
 					<line
 						x1={10}
 						y1={12}
-						x2={x2() - x1() - 15}
+						x2={x2() - x1() - 25}
 						y2={12}
 						strokeWidth={1}
 						stroke={props.mapStyleDefs.component.stroke}
 						strokeDasharray="2 2"
-						markerEnd="url(#graphArrow)"
+						markerEnd="url(#pipelineArrow)"
 					/>
 					<circle
 						id={'pipeline_circle_' + props.pipeline.id}

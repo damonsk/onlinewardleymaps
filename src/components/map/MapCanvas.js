@@ -178,6 +178,18 @@ function MapCanvas(props) {
 					>
 						<path d="M0,-5L10,0L0,5" fill={props.mapStyleDefs.stroke} />
 					</marker>
+
+					<marker
+						id="pipelineArrow"
+						markerWidth={8 / props.mapStyleDefs.strokeWidth}
+						markerHeight={8 / props.mapStyleDefs.strokeWidth}
+						refX="9"
+						refY="0"
+						viewBox="0 -5 10 10"
+						orient="0"
+					>
+						<path d="M0,-5L10,0L0,5" fill={props.mapStyleDefs.stroke} />
+					</marker>
 				</defs>
 				<g id="grid">
 					<rect
