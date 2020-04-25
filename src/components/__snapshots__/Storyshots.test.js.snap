@@ -63,6 +63,14 @@ Array [
   >
     Save
   </button>,
+  <button
+    className="btn btn-danger"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    AutoSave Off
+  </button>,
   <div
     className="dropdown btn-group"
     onKeyDown={[Function]}
