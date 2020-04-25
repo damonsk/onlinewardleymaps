@@ -14,7 +14,7 @@ function Pipeline(props) {
 			props.mapDimensions.height
 		) + 2;
 
-	function endDragX1(moved) {
+	function endDrag(x1, x2) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
@@ -26,13 +26,7 @@ function Pipeline(props) {
 								'pipeline' + props.pipeline.name.replace(/\s/g, '') + '['
 							) !== -1
 					) {
-						return line.replace(
-							/\[(.?|.+?)\]/g,
-							`[${_mapHelper.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}, ${props.pipeline.maturity2}]`
-						);
+						return line.replace(/\[(.?|.+?)\]/g, `[${x1}, ${x2}]`);
 					} else {
 						return line;
 					}
@@ -41,44 +35,22 @@ function Pipeline(props) {
 		);
 	}
 
+	function endDragX1(moved) {
+		endDrag(
+			_mapHelper.xToMaturity(moved.x, props.mapDimensions.width),
+			props.pipeline.maturity2
+		);
+	}
+
 	function endDragX2(moved) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'pipeline' + props.pipeline.name.replace(/\s/g, '') + '['
-							) !== -1
-					) {
-						return line.replace(
-							/\[(.?|.+?)\]/g,
-							`[${props.pipeline.maturity1}, ${_mapHelper.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
+		endDrag(
+			props.pipeline.maturity1,
+			_mapHelper.xToMaturity(moved.x, props.mapDimensions.width)
 		);
 	}
 
 	return (
 		<>
-			{/* <Movable
-				id={'pipeline_' + props.pipeline.id}
-				onMove={endDrag}
-				x={x1()}
-				y={y()}
-				fixedY={true}
-				fixedX={true}
-			> */}
-
 			<g transform={'translate(' + x1() + ',' + y() + ')'}>
 				<line
 					x1={0}
@@ -161,7 +133,6 @@ function Pipeline(props) {
 					fill={props.mapStyleDefs.component.fill}
 				/>
 			</Movable>
-			{/* </Movable> */}
 		</>
 	);
 }
