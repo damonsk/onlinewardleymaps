@@ -2,7 +2,10 @@ export const Plain = {
 	className: 'plain',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	stroke: 'black',
+	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: 'black',
+	pipelineArrowHeight: '8',
+	pipelineArrowWidth: '8',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	component: {
@@ -41,7 +44,10 @@ export const Handwritten = {
 	className: 'handwritten',
 	fontFamily: '"Gloria Hallelujah", cursive',
 	stroke: 'black',
+	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: 'black',
+	pipelineArrowHeight: '8',
+	pipelineArrowWidth: '8',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	component: {
@@ -80,7 +86,10 @@ export const Wardley = {
 	className: 'wardley',
 	fontFamily: 'Consolas, Lucida Console, monospace',
 	stroke: 'black',
+	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: '#b8b8b8',
+	pipelineArrowHeight: '8',
+	pipelineArrowWidth: '8',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	component: {
@@ -119,7 +128,10 @@ export const Colour = {
 	className: 'colour',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	stroke: '#c23667',
+	pipelineArrowStroke: '#8cb358',
 	evolutionSeparationStroke: '#b8b8b8',
+	pipelineArrowHeight: '8',
+	pipelineArrowWidth: '8',
 	strokeWidth: '3',
 	strokeDasharray: '2,2',
 	component: {
