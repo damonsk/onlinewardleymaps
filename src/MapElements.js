@@ -8,6 +8,7 @@ export default class MapElements {
 	getMapPipelines() {
 		if (this.pipelines == undefined) return [];
 		let pipeline = this.pipelines
+			.filter(e => e.hidden == false)
 			.map(e => {
 				let component = this.mapComponents.find(el => el.name == e.name);
 				e.visibility = component.visibility;
