@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
-import MapPipelines from '../../MapPipelines';
 import MapGrid from './MapGrid';
 import MapEvolution from './MapEvolution';
 import Pipeline from './Pipeline';
@@ -14,9 +13,9 @@ import Anchor from './Anchor';
 import Note from './Note';
 
 function MapCanvas(props) {
-	const mapElements = new MapElements(props.mapComponents, props.mapEvolved);
-	const mapPipelines = new MapPipelines(
+	const mapElements = new MapElements(
 		props.mapComponents,
+		props.mapEvolved,
 		props.mapPipelines
 	);
 	var getElementByName = function(elements, name) {
@@ -349,12 +348,12 @@ function MapCanvas(props) {
 							/>
 						))}
 					</g>
-					<g id="elements">
-						{mapElements.getMergedElements().map((el, i) => (
-							<MapComponent
+					<g id="pipelines">
+						{mapElements.getMapPipelines().map((p, i) => (
+							<Pipeline
 								key={i}
 								mapDimensions={props.mapDimensions}
-								element={el}
+								pipeline={p}
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								setMetaText={props.setMetaText}
@@ -363,13 +362,12 @@ function MapCanvas(props) {
 							/>
 						))}
 					</g>
-
-					<g id="pipelines">
-						{mapPipelines.getMapPipelines().map((p, i) => (
-							<Pipeline
+					<g id="elements">
+						{mapElements.getMergedElements().map((el, i) => (
+							<MapComponent
 								key={i}
 								mapDimensions={props.mapDimensions}
-								pipeline={p}
+								element={el}
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								setMetaText={props.setMetaText}

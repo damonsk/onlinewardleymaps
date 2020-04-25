@@ -13,7 +13,7 @@ function Pipeline(props) {
 		_mapHelper.visibilityToY(
 			props.pipeline.visibility,
 			props.mapDimensions.height
-		) + 8;
+		) + 2;
 
 	function endDrag() {
 		// props.mutateMapText(
