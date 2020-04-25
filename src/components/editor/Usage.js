@@ -38,6 +38,13 @@ function Usage(props) {
 				addOnClick={addOnClick}
 			/>
 			<UsageDefinition
+				title={'To set component as pipeline:'}
+				summary={'pipeline Component Name [X Axis (start), X Axis (end)]'}
+				example={'pipeline Customer [0.15, 0.9]'}
+				example2={'pipeline Customer'}
+				addOnClick={addOnClick}
+			/>
+			<UsageDefinition
 				title={'To link components:'}
 				summary={''}
 				example={'Start Component->End Component'}
