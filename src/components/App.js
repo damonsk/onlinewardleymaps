@@ -106,6 +106,7 @@ function App() {
 					setCurrentUrl(window.location.href);
 					if (window.location.hash.indexOf('#clone:') == 0) {
 						setCurrentUrl('(unsaved)');
+						setSaveOutstanding(true);
 						window.location.hash = '';
 					}
 				});
