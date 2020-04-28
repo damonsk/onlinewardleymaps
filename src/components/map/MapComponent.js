@@ -1,4 +1,5 @@
 import React from 'react';
+import ComponentSymbol from '../symbols/ComponentSymbol';
 import ComponentText from './ComponentText';
 import MapPositionCalculator from '../../MapPositionCalculator';
 import Movable from './Movable';
@@ -96,22 +97,10 @@ function MapComponent(props) {
 				fixedY={props.element.evolved}
 				fixedX={false}
 			>
-				<circle
+				<ComponentSymbol
 					id={'element_circle_' + props.element.id}
-					cx="0"
-					cy="0"
-					strokeWidth={props.mapStyleDefs.component.strokeWidth}
-					r={props.mapStyleDefs.component.radius}
-					stroke={
-						props.element.evolved
-							? props.mapStyleDefs.component.evolved
-							: props.mapStyleDefs.component.stroke
-					}
-					fill={
-						props.element.evolved
-							? props.mapStyleDefs.component.evolvedFill
-							: props.mapStyleDefs.component.fill
-					}
+					mapStyleDefs={props.mapStyleDefs}
+					evolved={props.element.evolved}
 				/>
 			</Movable>
 			{(props.element.evolved == undefined || props.element.evolved == false) &&
@@ -125,7 +114,7 @@ function MapComponent(props) {
 			) : null}
 			<g transform={'translate(' + x() + ',' + y() + ')'}>
 				<ComponentText
-					key={'component_text_' + props.element.id}
+					id={'component_text_' + props.element.id}
 					mapStyleDefs={props.mapStyleDefs}
 					element={props.element}
 					mapText={props.mapText}
