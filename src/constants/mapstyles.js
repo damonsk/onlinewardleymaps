@@ -1,6 +1,10 @@
+// use an override model with the default style in case some style options are missing
+const mergeIntoDefault = style => Object.assign({}, Plain, style);
+
 export const Plain = {
 	className: 'plain',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+	fontSize: '13px',
 	stroke: 'black',
 	evolutionSeparationStroke: 'black',
 	strokeWidth: '1',
@@ -36,7 +40,7 @@ export const Plain = {
 	},
 };
 
-export const Handwritten = {
+export const Handwritten = mergeIntoDefault({
 	className: 'handwritten',
 	fontFamily: '"Gloria Hallelujah", cursive',
 	stroke: 'black',
@@ -72,9 +76,9 @@ export const Handwritten = {
 		boxFill: '#FFFFFF',
 		boxTextColour: 'black',
 	},
-};
+});
 
-export const Wardley = {
+export const Wardley = mergeIntoDefault({
 	className: 'wardley',
 	fontFamily: 'Consolas, Lucida Console, monospace',
 	stroke: 'black',
@@ -110,9 +114,9 @@ export const Wardley = {
 		boxFill: '#FFFFFF',
 		boxTextColour: 'black',
 	},
-};
+});
 
-export const Colour = {
+export const Colour = mergeIntoDefault({
 	className: 'colour',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	stroke: '#c23667',
@@ -148,4 +152,4 @@ export const Colour = {
 		boxFill: '#99c5ee',
 		boxTextColour: 'black',
 	},
-};
+});
