@@ -63,6 +63,14 @@ Array [
   >
     Save
   </button>,
+  <button
+    className="btn btn-danger"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    AutoSave Off
+  </button>,
   <div
     className="dropdown btn-group"
     onKeyDown={[Function]}
@@ -109,7 +117,7 @@ exports[`Storyshots Usage  default 1`] = `
   <br />
   <br />
   <strong>
-    To create a component:
+    To create a component
   </strong>
   <br />
    
@@ -173,7 +181,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    To evolve a component:
+    To evolve a component
   </strong>
   <br />
    
@@ -205,7 +213,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    To link components:
+    To link components
   </strong>
   <br />
   <strong>
@@ -233,7 +241,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    To indicate flow:
+    To indicate flow
   </strong>
   <br />
   <strong>
@@ -261,7 +269,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    To indicate flow - past components only:
+    To indicate flow - past components only
   </strong>
   <br />
   <strong>
@@ -289,7 +297,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    To indicate flow - future components only:
+    To indicate flow - future components only
   </strong>
   <br />
   <strong>
@@ -317,7 +325,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    To indicate flow - with label:
+    To indicate flow - with label
   </strong>
   <br />
   <strong>
@@ -345,7 +353,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    Stages of Evolution:
+    Stages of Evolution
   </strong>
   <br />
    
@@ -377,7 +385,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    Y-Axis Labels:
+    Y-Axis Labels
   </strong>
   <br />
    
@@ -409,7 +417,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    Add notes:
+    Add notes
   </strong>
   <br />
    
@@ -441,7 +449,7 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    Available styles:
+    Available styles
   </strong>
   <br />
    
@@ -466,15 +474,6 @@ exports[`Storyshots Usage  default 1`] = `
     onClick={[Function]}
   >
     style handwritten
-  </a>
-   
-  <br />
-  <a
-    className="add"
-    href="#"
-    onClick={[Function]}
-  >
-    style colour
   </a>
    
   <br />

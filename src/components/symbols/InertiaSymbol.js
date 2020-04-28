@@ -19,8 +19,8 @@ const InertiaSymbol = memo(function InertiaSymbol(props) {
 
 InertiaSymbol.propTypes = {
 	id: PropTypes.string,
-	x: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
-	y: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+	x: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	y: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.strokeWidth,
 };
