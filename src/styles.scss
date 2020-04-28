@@ -50,12 +50,12 @@
 	transition: height 0.35s;
 
 	&.width {
-		flex-grow: 0;
-		min-width: 0;
-		//   transform: translate(100%);
-		width: 0;
+		// flex-grow: 0;
+		// min-width: 0;
+		transform: translate(100%);
+		// width: 0;
 		height: auto;
-		transition: all 0.3s;
+		transition: all 1s;
 	}
 
 	// &> .contents{

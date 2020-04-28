@@ -291,7 +291,11 @@ function App() {
 				<Collapse in={toggleToolbar} dimension={'width'}>
 					<div className="col-sm tool-bar">
 						<div className="contents">
-							<Toolbar mapText={mapText} mutateMapText={mutateMapText} />
+							<Toolbar
+								mapText={mapText}
+								mutateMapText={mutateMapText}
+								mapStyleDefs={mapStyleDefs}
+							/>
 						</div>
 					</div>
 				</Collapse>

@@ -1,4 +1,7 @@
 import React from 'react';
+import ComponentSymbol from '../symbols/ComponentSymbol';
+import PipelineSymbol from '../symbols/ComponentSymbol';
+
 import ComponentText from './ComponentText';
 import MapPositionCalculator from '../../MapPositionCalculator';
 import Movable from './Movable';
@@ -96,42 +99,17 @@ function MapComponent(props) {
 				fixedY={props.element.evolved}
 				fixedX={false}
 			>
-				{props.element.pipeline == false ? (
-					<circle
-						id={'element_circle_' + props.element.id}
-						cx="0"
-						cy="0"
-						strokeWidth={props.mapStyleDefs.component.strokeWidth}
-						r={props.mapStyleDefs.component.radius}
-						stroke={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolved
-								: props.mapStyleDefs.component.stroke
-						}
-						fill={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolvedFill
-								: props.mapStyleDefs.component.fill
-						}
+				{props.element.pipeline ? (
+					<PipelineSymbol
+						id={'element_square_' + props.element.id}
+						mapStyleDefs={props.mapStyleDefs}
+						evolved={props.element.evolved}
 					/>
 				) : (
-					<rect
-						id={'element_square_' + props.element.id}
-						x="-5"
-						y="-5"
-						width="10"
-						height="10"
-						strokeWidth={props.mapStyleDefs.component.pipelineStrokeWidth}
-						stroke={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolved
-								: props.mapStyleDefs.component.stroke
-						}
-						fill={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolvedFill
-								: props.mapStyleDefs.component.fill
-						}
+					<ComponentSymbol
+						id={'element_circle_' + props.element.id}
+						mapStyleDefs={props.mapStyleDefs}
+						evolved={props.element.evolved}
 					/>
 				)}
 			</Movable>
@@ -146,7 +124,7 @@ function MapComponent(props) {
 			) : null}
 			<g transform={'translate(' + x() + ',' + y() + ')'}>
 				<ComponentText
-					key={'component_text_' + props.element.id}
+					id={'component_text_' + props.element.id}
 					mapStyleDefs={props.mapStyleDefs}
 					element={props.element}
 					mapText={props.mapText}
