@@ -1,6 +1,13 @@
+import {
+	ComponentIcon,
+	InertiaIcon,
+	ComponentEvolvedIcon,
+} from '../symbols/icons';
+
 const usages = [
 	{
 		toolbarButtonText: 'Create Component',
+		Icon: ComponentIcon,
 		title: 'To create a component',
 		summary: 'component Name [Visibility (Y Axis), Maturity (X Axis)]',
 		example: 'component Customer [0.9, 0.5]',
@@ -8,12 +15,14 @@ const usages = [
 	},
 	{
 		toolbarButtonText: 'Inertia',
+		Icon: InertiaIcon,
 		title: 'Inertia - component likely to face resistance to change.',
 		summary: 'component Name [Visibility (Y Axis), Maturity (X Axis)] inertia',
 		example: 'component Customer [0.95, 0.5] inertia',
 		example2: 'component Cup of Tea [0.9, 0.5] inertia',
 	},
 	{
+		Icon: ComponentEvolvedIcon,
 		title: 'To evolve a component',
 		summary: 'evole Name (X Axis)',
 		example: 'evolve Customer 0.8',

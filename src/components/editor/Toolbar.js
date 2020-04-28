@@ -12,33 +12,38 @@ const Toolbar = props => {
 			before + (props.mapText.trim().length > 0 ? '\n' : '') + txt.trim();
 		props.mutateMapText(before);
 	};
-	const [openIcons, setOpenIcon] = useState(Array(usages.length).fill(false));
+	const [openInfos, setOpenInfo] = useState(Array(usages.length).fill(false));
 
 	return (
 		<>
-			{props.children}
-			<br />
-			<br />
 			{usages.map((usage, idx) => {
-				const open = openIcons[idx];
+				const { Icon } = usage;
+				const open = openInfos[idx];
 				const InfoIcon = open ? BsInfoCircleFill : BsInfoCircle;
 				return (
-					<div key={idx}>
-						<Button
-							variant={props.toggleToolbar ? 'primary' : 'outline-primary'}
-							onClick={() => addOnClick(usage.example)}
-						>
-							{usage.toolbarButtonText || usage.title}
-						</Button>
-						<InfoIcon
-							onClick={() =>
-								setOpenIcon(openIcons.map((val, i) => idx === i && !val))
-							}
-						/>
-						<Collapse in={open}>
+					<div key={idx} style={{ padding: '5px' }}>
+						<div style={{ display: 'flex' }}>
+							<Button
+								variant={'light'}
+								onClick={() => addOnClick(usage.example)}
+							>
+								{Icon ? (
+									<Icon mapStyleDefs={props.mapStyleDefs} />
+								) : (
+									usage.toolbarButtonText || usage.title
+								)}
+							</Button>
 							<div>
+								<InfoIcon
+									onClick={() =>
+										setOpenInfo(openInfos.map((val, i) => idx === i && !val))
+									}
+								/>
+							</div>
+						</div>
+						<Collapse in={open}>
+							<div className="small" style={{ margin: '10px 0px 0px 15px' }}>
 								<UsageDefinition
-									key={usage.key || idx}
 									title={usage.title}
 									summary={usage.summary}
 									example={usage.example}
