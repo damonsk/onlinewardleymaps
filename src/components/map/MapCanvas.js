@@ -3,6 +3,7 @@ import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
 import MapGrid from './MapGrid';
 import MapEvolution from './MapEvolution';
+import Pipeline from './Pipeline';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
@@ -12,7 +13,11 @@ import Anchor from './Anchor';
 import Note from './Note';
 
 function MapCanvas(props) {
-	const mapElements = new MapElements(props.mapComponents, props.mapEvolved);
+	const mapElements = new MapElements(
+		props.mapComponents,
+		props.mapEvolved,
+		props.mapPipelines
+	);
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
 			return element.name === name;
@@ -172,6 +177,21 @@ function MapCanvas(props) {
 					>
 						<path d="M0,-5L10,0L0,5" fill={props.mapStyleDefs.stroke} />
 					</marker>
+
+					<marker
+						id="pipelineArrow"
+						markerWidth={props.mapStyleDefs.pipelineArrowWidth}
+						markerHeight={props.mapStyleDefs.pipelineArrowHeight}
+						refX="9"
+						refY="0"
+						viewBox="0 -5 10 10"
+						orient="0"
+					>
+						<path
+							d="M0,-5L10,0L0,5"
+							fill={props.mapStyleDefs.pipelineArrowStroke}
+						/>
+					</marker>
 				</defs>
 				<g id="grid">
 					<rect
@@ -327,6 +347,20 @@ function MapCanvas(props) {
 								anchor={el}
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
+								mapStyleDefs={props.mapStyleDefs}
+							/>
+						))}
+					</g>
+					<g id="pipelines">
+						{mapElements.getMapPipelines().map((p, i) => (
+							<Pipeline
+								key={i}
+								mapDimensions={props.mapDimensions}
+								pipeline={p}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+								setMetaText={props.setMetaText}
+								metaText={props.metaText}
 								mapStyleDefs={props.mapStyleDefs}
 							/>
 						))}

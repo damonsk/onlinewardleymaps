@@ -265,4 +265,26 @@ describe('Convert test suite', function() {
 		expect(result.elements[0].label.x).toEqual(66);
 		expect(result.elements[0].label.y).toEqual(99);
 	});
+
+	test('pipelines made available to the map', function() {
+		let actual = 'pipeline Foo [0.05, 0.95]';
+		let result = new Convert().parse(actual);
+
+		expect(result.pipelines.length).toEqual(1);
+		expect(result.pipelines[0].name).toEqual('Foo');
+		expect(result.pipelines[0].maturity1).toEqual(0.05);
+		expect(result.pipelines[0].maturity2).toEqual(0.95);
+		expect(result.pipelines[0].hidden).toEqual(false);
+	});
+
+	test('pipelines made available to the map but set to hidden', function() {
+		let actual = 'pipeline Foo';
+		let result = new Convert().parse(actual);
+
+		expect(result.pipelines.length).toEqual(1);
+		expect(result.pipelines[0].name).toEqual('Foo');
+		expect(result.pipelines[0].maturity1).toEqual(0.2);
+		expect(result.pipelines[0].maturity2).toEqual(0.8);
+		expect(result.pipelines[0].hidden).toEqual(true);
+	});
 });

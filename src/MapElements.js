@@ -1,7 +1,25 @@
 export default class MapElements {
-	constructor(components, evolved) {
+	constructor(components, evolved, pipelines) {
 		this.mapComponents = components;
 		this.evolved = evolved;
+		this.pipelines = pipelines;
+	}
+
+	getMapPipelines() {
+		if (this.pipelines == undefined) return [];
+		let pipeline = this.pipelines
+			.map(e => {
+				let component = this.mapComponents.find(el => el.name == e.name);
+				if (component != null && component != undefined) {
+					e.visibility = component.visibility;
+				} else {
+					e.hidden = true;
+				}
+				return e;
+			})
+			.filter(e => e.hidden == false)
+			.flat();
+		return pipeline;
 	}
 
 	getEvolvedElements() {
@@ -44,9 +62,19 @@ export default class MapElements {
 	}
 
 	getMergedElements() {
-		var evolveElements = this.getEvolveElements();
-		var noneEvolving = this.getNoneEvolvingElements();
-		var evolvedElements = this.getEvolvedElements();
-		return noneEvolving.concat(evolvedElements).concat(evolveElements);
+		let evolveElements = this.getEvolveElements();
+		let noneEvolving = this.getNoneEvolvingElements();
+		let evolvedElements = this.getEvolvedElements();
+		let collection = noneEvolving
+			.concat(evolvedElements)
+			.concat(evolveElements);
+		if (this.pipelines == undefined) return collection;
+		return collection
+			.map(e => {
+				let component = this.pipelines.find(el => el.name == e.name);
+				e.pipeline = component != null && component != undefined ? true : false;
+				return e;
+			})
+			.flat();
 	}
 }

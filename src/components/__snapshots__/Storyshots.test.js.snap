@@ -63,6 +63,14 @@ Array [
   >
     Save
   </button>,
+  <button
+    className="btn btn-danger"
+    disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    AutoSave Off
+  </button>,
   <div
     className="dropdown btn-group"
     onKeyDown={[Function]}
@@ -198,6 +206,38 @@ exports[`Storyshots Usage  default 1`] = `
     onClick={[Function]}
   >
     evolve Cup of Tea evolve 0.8
+  </a>
+   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To set component as pipeline:
+  </strong>
+  <br />
+   
+  pipeline Component Name [X Axis (start), X Axis (end)]
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    pipeline Customer [0.15, 0.9]
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    pipeline Customer
   </a>
    
   <br />

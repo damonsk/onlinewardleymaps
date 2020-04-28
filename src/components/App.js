@@ -21,6 +21,7 @@ function App() {
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapEvolved, setMapEvolved] = useState([]);
+	const [mapPipelines, setMapPipelines] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
 	const [mapNotes, setMapNotes] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
@@ -109,6 +110,7 @@ function App() {
 					setCurrentUrl(window.location.href);
 					if (window.location.hash.indexOf('#clone:') == 0) {
 						setCurrentUrl('(unsaved)');
+						setSaveOutstanding(true);
 						window.location.hash = '';
 					}
 				});
@@ -159,6 +161,7 @@ function App() {
 			setMapNotes(r.notes);
 			setMapComponents(r.elements);
 			setMapEvolved(r.evolved);
+			setMapPipelines(r.pipelines);
 			setMapLinks(r.links);
 			setMapMethods(r.methods);
 			setMapStyle(r.presentation.style);
@@ -266,6 +269,7 @@ function App() {
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
 						mapEvolved={mapEvolved}
+						mapPipelines={mapPipelines}
 						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
 						mapNotes={mapNotes}

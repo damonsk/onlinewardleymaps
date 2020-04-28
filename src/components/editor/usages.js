@@ -32,6 +32,12 @@ const usages = [
 		example2: 'Customer+<>Cup of Tea',
 	},
 	{
+		title: 'To set component as pipeline:',
+		summary: 'pipeline Component Name [X Axis (start), X Axis (end)]',
+		example: 'pipeline Customer [0.15, 0.9]',
+		example2: 'pipeline Customer',
+	},
+	{
 		title: 'To indicate flow - past components only',
 		summary: '',
 		example: 'Start Component+<End Component',
