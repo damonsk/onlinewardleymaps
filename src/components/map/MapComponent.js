@@ -1,6 +1,6 @@
 import React from 'react';
 import ComponentSymbol from '../symbols/ComponentSymbol';
-import PipelineSymbol from '../symbols/ComponentSymbol';
+import PipelineSymbol from '../symbols/PipelineSymbol';
 
 import ComponentText from './ComponentText';
 import MapPositionCalculator from '../../MapPositionCalculator';
