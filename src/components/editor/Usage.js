@@ -19,8 +19,7 @@ function Usage(props) {
 					key={usage.key || idx}
 					title={usage.title}
 					summary={usage.summary}
-					example={usage.example}
-					example2={usage.example2}
+					examples={usage.examples}
 					addOnClick={addOnClick}
 				/>
 			))}
@@ -38,26 +37,13 @@ const UsageDefinition = props => (
 		) : null}
 		<br />
 		<strong>Example:</strong>
-		<br />
-		<UsageExample addOnClick={props.addOnClick} example={props.example} />
-		{props.example2.length > 0 ? (
-			<>
-				<br />
-				<UsageExample
-					addOnClick={props.addOnClick}
-					example={props.example2}
-				/>{' '}
-			</>
-		) : null}
-		{props.example3 != undefined && props.example3.length > 0 ? (
-			<>
-				<br />
-				<UsageExample
-					addOnClick={props.addOnClick}
-					example={props.example3}
-				/>{' '}
-			</>
-		) : null}
+		{props.examples &&
+			props.examples.map((example, idx) => (
+				<React.Fragment key={idx}>
+					<br />
+					<UsageExample addOnClick={props.addOnClick} example={example} />
+				</React.Fragment>
+			))}
 		<br />
 		<br />
 		------------------------
