@@ -362,6 +362,7 @@ function MapCanvas(props) {
 								setMetaText={props.setMetaText}
 								metaText={props.metaText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>
@@ -376,6 +377,7 @@ function MapCanvas(props) {
 								setMetaText={props.setMetaText}
 								metaText={props.metaText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>

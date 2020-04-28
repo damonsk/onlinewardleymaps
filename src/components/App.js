@@ -38,6 +38,7 @@ function App() {
 	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
+	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
 
 	const [migrations, setMigrations] = useState({
@@ -171,7 +172,7 @@ function App() {
 			});
 		} catch (err) {
 			setInvalid(true);
-			console.log('Invalid markup, could not render.');
+			console.log(`Invalid markup on line ${1 + err.line}, could not render.`);
 		}
 	}, [mapText]);
 
@@ -243,6 +244,7 @@ function App() {
 			<div className="row no-gutters">
 				<div className="col-sm h-100 editor">
 					<Editor
+						highlightLine={highlightLine}
 						mapText={mapText}
 						invalid={invalid}
 						mutateMapText={mutateMapText}
@@ -277,6 +279,7 @@ function App() {
 						setMetaText={setMetaText}
 						metaText={metaText}
 						evolutionOffsets={Defaults.EvoOffsets}
+						setHighlightLine={setHighlightLine}
 					/>
 				</div>
 			</div>

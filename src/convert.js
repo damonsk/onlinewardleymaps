@@ -70,22 +70,30 @@ export default class Convert {
 		let methodElements = [];
 
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('outsource ') == 0) {
-				let name = element.split('outsource ')[1].trim();
-				if (name.length > 0) {
-					methodElements.push({ name: name, method: 'outsource' });
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('outsource ') == 0) {
+					let name = element.split('outsource ')[1].trim();
+					if (name.length > 0) {
+						methodElements.push({
+							name: name,
+							method: 'outsource',
+							line: 1 + i,
+						});
+					}
+				} else if (element.trim().indexOf('build ') == 0) {
+					let name = element.split('build ')[1].trim();
+					if (name.length > 0) {
+						methodElements.push({ name: name, method: 'build', line: 1 + i });
+					}
+				} else if (element.trim().indexOf('buy ') == 0) {
+					let name = element.split('buy ')[1].trim();
+					if (name.length > 0) {
+						methodElements.push({ name: name, method: 'buy', line: 1 + i });
+					}
 				}
-			} else if (element.trim().indexOf('build ') == 0) {
-				let name = element.split('build ')[1].trim();
-				if (name.length > 0) {
-					methodElements.push({ name: name, method: 'build' });
-				}
-			} else if (element.trim().indexOf('buy ') == 0) {
-				let name = element.split('buy ')[1].trim();
-				if (name.length > 0) {
-					methodElements.push({ name: name, method: 'buy' });
-				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 
@@ -134,17 +142,21 @@ export default class Convert {
 		let elementsAsArray = trimmed.split('\n');
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			const element = elementsAsArray[i];
-			if (element.trim().indexOf('evolution') == 0) {
-				let name = element
-					.split('evolution ')[1]
-					.trim()
-					.split('->');
-				return [
-					{ line1: name[0], line2: '' },
-					{ line1: name[1], line2: '' },
-					{ line1: name[2], line2: '' },
-					{ line1: name[3], line2: '' },
-				];
+			try {
+				if (element.trim().indexOf('evolution') == 0) {
+					let name = element
+						.split('evolution ')[1]
+						.trim()
+						.split('->');
+					return [
+						{ line1: name[0], line2: '' },
+						{ line1: name[1], line2: '' },
+						{ line1: name[2], line2: '' },
+						{ line1: name[3], line2: '' },
+					];
+				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 		return [
@@ -173,23 +185,28 @@ export default class Convert {
 		let elementsAsArray = trimmed.split('\n');
 		var notesArray = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('note ') == 0) {
-				let noteText = element
-					.substr('note '.length, element.length - 'note '.length)
-					.trim()
-					.split(' [')[0]
-					.trim();
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('note ') == 0) {
+					let noteText = element
+						.substr('note '.length, element.length - 'note '.length)
+						.trim()
+						.split(' [')[0]
+						.trim();
 
-				let notePosition = this.extractLocation(element, {
-					visibility: 0.9,
-					maturity: 0.1,
-				});
-				notesArray.push({
-					text: noteText,
-					visibility: notePosition.visibility,
-					maturity: notePosition.maturity,
-				});
+					let notePosition = this.extractLocation(element, {
+						visibility: 0.9,
+						maturity: 0.1,
+					});
+					notesArray.push({
+						text: noteText,
+						visibility: notePosition.visibility,
+						maturity: notePosition.maturity,
+						line: 1 + i,
+					});
+				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 		return notesArray;
@@ -201,55 +218,60 @@ export default class Convert {
 		let elementsAsArray = trimmed.split('\n');
 		var annotationsArray = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('annotation ') == 0) {
-				let number = parseInt(
-					element
-						.split('annotation ')[1]
-						.trim()
-						.split(' [')[0]
-						.trim()
-				);
-				let positionData = [];
-				if (element.replace(/\s/g, '').indexOf('[[') > -1) {
-					let justOccurances =
-						'[' +
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('annotation ') == 0) {
+					let number = parseInt(
 						element
-							.replace(/\s/g, '')
-							.split('[[')[1]
-							.split(']]')[0] +
-						']';
-					let occurancesAsArray = justOccurances
-						.replace(/\],\[/g, ']|[')
-						.split('|');
-					occurancesAsArray.forEach(e => {
-						positionData.push(this.extractLocation(e));
-					});
-				} else if (element.indexOf('[') > -1 && element.indexOf(']') > -1) {
-					positionData.push(
-						this.extractLocation(element, { visibility: 0.9, maturity: 0.1 })
+							.split('annotation ')[1]
+							.trim()
+							.split(' [')[0]
+							.trim()
 					);
-				}
-				let text = '';
-				if (
-					element.trim().indexOf(']') > -1 &&
-					element.trim().indexOf(']') != element.trim().length - 1
-				) {
-					if (element.replace(/\s/g, '').indexOf(']]') === -1) {
-						text = element.split(']')[1].trim();
+					let positionData = [];
+					if (element.replace(/\s/g, '').indexOf('[[') > -1) {
+						let justOccurances =
+							'[' +
+							element
+								.replace(/\s/g, '')
+								.split('[[')[1]
+								.split(']]')[0] +
+							']';
+						let occurancesAsArray = justOccurances
+							.replace(/\],\[/g, ']|[')
+							.split('|');
+						occurancesAsArray.forEach(e => {
+							positionData.push(this.extractLocation(e));
+						});
+					} else if (element.indexOf('[') > -1 && element.indexOf(']') > -1) {
+						positionData.push(
+							this.extractLocation(element, { visibility: 0.9, maturity: 0.1 })
+						);
 					}
-					if (element.replace(/\s/g, '').indexOf(']]') > -1) {
-						var pos = element.lastIndexOf(']');
-						text = element.substr(pos + 1, element.length - 1).trim();
+					let text = '';
+					if (
+						element.trim().indexOf(']') > -1 &&
+						element.trim().indexOf(']') != element.trim().length - 1
+					) {
+						if (element.replace(/\s/g, '').indexOf(']]') === -1) {
+							text = element.split(']')[1].trim();
+						}
+						if (element.replace(/\s/g, '').indexOf(']]') > -1) {
+							var pos = element.lastIndexOf(']');
+							text = element.substr(pos + 1, element.length - 1).trim();
+						}
+					}
+					if (positionData.length > 0) {
+						annotationsArray.push({
+							number: parseInt(number),
+							occurances: positionData,
+							text: text,
+							line: 1 + i,
+						});
 					}
 				}
-				if (positionData.length > 0) {
-					annotationsArray.push({
-						number: parseInt(number),
-						occurances: positionData,
-						text: text,
-					});
-				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 		return annotationsArray;
@@ -260,46 +282,51 @@ export default class Convert {
 		let elementsAsArray = trimmed.split('\n');
 		let elementsToReturn = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('component') == 0) {
-				let name = element
-					.split('component ')[1]
-					.trim()
-					.split(' [')[0]
-					.trim();
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('component') == 0) {
+					let name = element
+						.split('component ')[1]
+						.trim()
+						.split(' [')[0]
+						.trim();
 
-				let newPoint;
-				if (element.indexOf('evolve ') > -1) {
-					newPoint = element.split('evolve ')[1].trim();
-					newPoint = newPoint.replace('inertia', '').trim();
-				}
-
-				let positionData = this.extractLocation(element, {
-					visibility: 0.95,
-					maturity: 0.05,
-				});
-
-				let labelOffset = { x: 5, y: -10 };
-
-				if (element.indexOf('label ') > -1) {
-					let findPos = element.split('label [');
-					if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
-						let extractedPos = findPos[1].split(']')[0].split(',');
-						labelOffset.x = parseFloat(extractedPos[0].trim());
-						labelOffset.y = parseFloat(extractedPos[1].trim());
+					let newPoint;
+					if (element.indexOf('evolve ') > -1) {
+						newPoint = element.split('evolve ')[1].trim();
+						newPoint = newPoint.replace('inertia', '').trim();
 					}
-				}
 
-				elementsToReturn.push({
-					name: name,
-					maturity: positionData.maturity,
-					visibility: positionData.visibility,
-					id: 1 + i,
-					evolving: newPoint != null && newPoint != undefined,
-					evolveMaturity: newPoint,
-					inertia: element.indexOf('inertia') > -1,
-					label: labelOffset,
-				});
+					let positionData = this.extractLocation(element, {
+						visibility: 0.95,
+						maturity: 0.05,
+					});
+
+					let labelOffset = { x: 5, y: -10 };
+
+					if (element.indexOf('label ') > -1) {
+						let findPos = element.split('label [');
+						if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
+							let extractedPos = findPos[1].split(']')[0].split(',');
+							labelOffset.x = parseFloat(extractedPos[0].trim());
+							labelOffset.y = parseFloat(extractedPos[1].trim());
+						}
+					}
+
+					elementsToReturn.push({
+						name: name,
+						maturity: positionData.maturity,
+						visibility: positionData.visibility,
+						id: 1 + i,
+						line: 1 + i,
+						evolving: newPoint != null && newPoint != undefined,
+						evolveMaturity: newPoint,
+						inertia: element.indexOf('inertia') > -1,
+						label: labelOffset,
+					});
+				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 
@@ -311,35 +338,40 @@ export default class Convert {
 		let elementsAsArray = trimmed.split('\n');
 		let elementsToReturn = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('pipeline ') == 0) {
-				let name = element.split('pipeline ')[1].trim();
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('pipeline ') == 0) {
+					let name = element.split('pipeline ')[1].trim();
 
-				if (name.indexOf('[') > -1) {
-					name = name.split('[')[0].trim();
+					if (name.indexOf('[') > -1) {
+						name = name.split('[')[0].trim();
+					}
+
+					let pipelineHidden = true;
+					let pieplinePos = { maturity1: 0.2, maturity2: 0.8 };
+					let findPos = element.split('[');
+					if (
+						element.indexOf('[') > -1 &&
+						element.indexOf(']') > -1 &&
+						findPos.length > 1 &&
+						findPos[1].indexOf(']') > -1
+					) {
+						let extractedPos = findPos[1].split(']')[0].split(',');
+						pieplinePos.maturity1 = parseFloat(extractedPos[0].trim());
+						pieplinePos.maturity2 = parseFloat(extractedPos[1].trim());
+						pipelineHidden = false;
+					}
+
+					elementsToReturn.push({
+						name: name,
+						maturity1: pieplinePos.maturity1,
+						maturity2: pieplinePos.maturity2,
+						hidden: pipelineHidden,
+						line: 1 + i,
+					});
 				}
-
-				let pipelineHidden = true;
-				let pieplinePos = { maturity1: 0.2, maturity2: 0.8 };
-				let findPos = element.split('[');
-				if (
-					element.indexOf('[') > -1 &&
-					element.indexOf(']') > -1 &&
-					findPos.length > 1 &&
-					findPos[1].indexOf(']') > -1
-				) {
-					let extractedPos = findPos[1].split(']')[0].split(',');
-					pieplinePos.maturity1 = parseFloat(extractedPos[0].trim());
-					pieplinePos.maturity2 = parseFloat(extractedPos[1].trim());
-					pipelineHidden = false;
-				}
-
-				elementsToReturn.push({
-					name: name,
-					maturity1: pieplinePos.maturity1,
-					maturity2: pieplinePos.maturity2,
-					hidden: pipelineHidden,
-				});
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 
@@ -351,33 +383,38 @@ export default class Convert {
 		let elementsAsArray = trimmed.split('\n');
 		let elementsToReturn = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('evolve ') == 0) {
-				let name = element.split('evolve ')[1].trim();
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('evolve ') == 0) {
+					let name = element.split('evolve ')[1].trim();
 
-				let evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
-				let newPoint = 0.85;
-				if (evolveMaturity.length > 0) {
-					newPoint = parseFloat(evolveMaturity[0]);
-					name = name.split(newPoint)[0].trim();
-				}
-
-				let labelOffset = { x: 5, y: -10 };
-
-				if (element.indexOf('label ') > -1) {
-					let findPos = element.split('label [');
-					if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
-						let extractedPos = findPos[1].split(']')[0].split(',');
-						labelOffset.x = parseFloat(extractedPos[0].trim());
-						labelOffset.y = parseFloat(extractedPos[1].trim());
+					let evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
+					let newPoint = 0.85;
+					if (evolveMaturity.length > 0) {
+						newPoint = parseFloat(evolveMaturity[0]);
+						name = name.split(newPoint)[0].trim();
 					}
-				}
 
-				elementsToReturn.push({
-					name: name,
-					maturity: newPoint,
-					label: labelOffset,
-				});
+					let labelOffset = { x: 5, y: -10 };
+
+					if (element.indexOf('label ') > -1) {
+						let findPos = element.split('label [');
+						if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
+							let extractedPos = findPos[1].split(']')[0].split(',');
+							labelOffset.x = parseFloat(extractedPos[0].trim());
+							labelOffset.y = parseFloat(extractedPos[1].trim());
+						}
+					}
+
+					elementsToReturn.push({
+						name: name,
+						maturity: newPoint,
+						label: labelOffset,
+						line: 1 + i,
+					});
+				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 
@@ -391,25 +428,30 @@ export default class Convert {
 		let anchorsToReturn = [];
 
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('anchor') == 0) {
-				let name = element
-					.split('anchor ')[1]
-					.trim()
-					.split(' [')[0]
-					.trim();
+			try {
+				const element = elementsAsArray[i];
+				if (element.trim().indexOf('anchor') == 0) {
+					let name = element
+						.split('anchor ')[1]
+						.trim()
+						.split(' [')[0]
+						.trim();
 
-				let positionData = this.extractLocation(element, {
-					visibility: 0.95,
-					maturity: 0.05,
-				});
+					let positionData = this.extractLocation(element, {
+						visibility: 0.95,
+						maturity: 0.05,
+					});
 
-				anchorsToReturn.push({
-					name: name,
-					maturity: positionData.maturity,
-					visibility: positionData.visibility,
-					id: 1 + i,
-				});
+					anchorsToReturn.push({
+						name: name,
+						maturity: positionData.maturity,
+						visibility: positionData.visibility,
+						id: 1 + i,
+						line: 1 + i,
+					});
+				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 
@@ -423,88 +465,92 @@ export default class Convert {
 		let linksToReturn = [];
 
 		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (
-				element.trim().length > 0 &&
-				element.trim().indexOf('evolution') == -1 &&
-				element.trim().indexOf('anchor') == -1 &&
-				element.trim().indexOf('evolve') == -1 &&
-				element.trim().indexOf('component') == -1 &&
-				element.trim().indexOf('style') == -1 &&
-				element.trim().indexOf('build') == -1 &&
-				element.trim().indexOf('buy') == -1 &&
-				element.trim().indexOf('outsource') == -1 &&
-				element.trim().indexOf('title') == -1 &&
-				element.trim().indexOf('annotation') == -1 &&
-				element.trim().indexOf('annotations') == -1 &&
-				element.trim().indexOf('y-axis') == -1 &&
-				element.trim().indexOf('pipeline') == -1 &&
-				element.trim().indexOf('note') == -1
-			) {
-				if (element.indexOf('+>') > -1) {
-					let name = element.split('+>');
-					linksToReturn.push({
-						start: name[0].trim(),
-						end: name[1].trim(),
-						flow: true,
-						future: true,
-						past: false,
-					});
-				} else if (element.indexOf('+<>') > -1) {
-					let name = element.split('+<>');
-					linksToReturn.push({
-						start: name[0].trim(),
-						end: name[1].trim(),
-						flow: true,
-						future: true,
-						past: true,
-					});
-				} else if (element.indexOf('+<') > -1) {
-					let name = element.split('+<');
-					linksToReturn.push({
-						start: name[0].trim(),
-						end: name[1].trim(),
-						flow: true,
-						future: false,
-						past: true,
-					});
-				} else if (element.indexOf("+'") > -1) {
-					let flowValue;
-					let endName;
-					let isFuture = false;
-					let isPast = false;
-					if (element.indexOf("'>") > -1) {
-						flowValue = element.split("+'")[1].split("'>")[0];
-						endName = element.split("'>");
-						isFuture = true;
-					} else if (element.indexOf("'<>") > -1) {
-						flowValue = element.split("+'")[1].split("'<>")[0];
-						endName = element.split("'<>");
-						isPast = true;
-						isFuture = true;
-					} else if (element.indexOf("'<") > -1) {
-						flowValue = element.split("+'")[1].split("'<")[0];
-						endName = element.split("'<");
-						isPast = true;
-					}
+			try {
+				const element = elementsAsArray[i];
+				if (
+					element.trim().length > 0 &&
+					element.trim().indexOf('evolution') == -1 &&
+					element.trim().indexOf('anchor') == -1 &&
+					element.trim().indexOf('evolve') == -1 &&
+					element.trim().indexOf('component') == -1 &&
+					element.trim().indexOf('style') == -1 &&
+					element.trim().indexOf('build') == -1 &&
+					element.trim().indexOf('buy') == -1 &&
+					element.trim().indexOf('outsource') == -1 &&
+					element.trim().indexOf('title') == -1 &&
+					element.trim().indexOf('annotation') == -1 &&
+					element.trim().indexOf('annotations') == -1 &&
+					element.trim().indexOf('y-axis') == -1 &&
+					element.trim().indexOf('pipeline') == -1 &&
+					element.trim().indexOf('note') == -1
+				) {
+					if (element.indexOf('+>') > -1) {
+						let name = element.split('+>');
+						linksToReturn.push({
+							start: name[0].trim(),
+							end: name[1].trim(),
+							flow: true,
+							future: true,
+							past: false,
+						});
+					} else if (element.indexOf('+<>') > -1) {
+						let name = element.split('+<>');
+						linksToReturn.push({
+							start: name[0].trim(),
+							end: name[1].trim(),
+							flow: true,
+							future: true,
+							past: true,
+						});
+					} else if (element.indexOf('+<') > -1) {
+						let name = element.split('+<');
+						linksToReturn.push({
+							start: name[0].trim(),
+							end: name[1].trim(),
+							flow: true,
+							future: false,
+							past: true,
+						});
+					} else if (element.indexOf("+'") > -1) {
+						let flowValue;
+						let endName;
+						let isFuture = false;
+						let isPast = false;
+						if (element.indexOf("'>") > -1) {
+							flowValue = element.split("+'")[1].split("'>")[0];
+							endName = element.split("'>");
+							isFuture = true;
+						} else if (element.indexOf("'<>") > -1) {
+							flowValue = element.split("+'")[1].split("'<>")[0];
+							endName = element.split("'<>");
+							isPast = true;
+							isFuture = true;
+						} else if (element.indexOf("'<") > -1) {
+							flowValue = element.split("+'")[1].split("'<")[0];
+							endName = element.split("'<");
+							isPast = true;
+						}
 
-					let startName = element.split("+'");
-					linksToReturn.push({
-						start: startName[0].trim(),
-						end: endName[1].trim(),
-						flow: true,
-						flowValue: flowValue,
-						future: isFuture,
-						past: isPast,
-					});
-				} else {
-					let name = element.split('->');
-					linksToReturn.push({
-						start: name[0].trim(),
-						end: name[1].trim(),
-						flow: false,
-					});
+						let startName = element.split("+'");
+						linksToReturn.push({
+							start: startName[0].trim(),
+							end: endName[1].trim(),
+							flow: true,
+							flowValue: flowValue,
+							future: isFuture,
+							past: isPast,
+						});
+					} else {
+						let name = element.split('->');
+						linksToReturn.push({
+							start: name[0].trim(),
+							end: name[1].trim(),
+							flow: false,
+						});
+					}
 				}
+			} catch (err) {
+				throw { line: i, err };
 			}
 		}
 

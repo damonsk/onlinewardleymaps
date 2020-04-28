@@ -32,6 +32,8 @@ class Editor extends Component {
 			height: 500,
 		};
 
+		this.gotoLine = this.gotoLine.bind(this);
+		this.aceEditor = React.createRef();
 		this.expressionSuggester = this.createExpressionSuggester(
 			props.mapComponents.concat(this.props.mapAnchors)
 		);
@@ -60,6 +62,7 @@ class Editor extends Component {
 				'style plain',
 				'evolve',
 				'inertia',
+				'pipeline',
 				'note',
 				'note <note text>',
 				'note <note text> [<visility>, <maturity>]',
@@ -74,10 +77,14 @@ class Editor extends Component {
 		this.setState({ height: this.getHeight() });
 	};
 
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		this.expressionSuggester = this.createExpressionSuggester(
 			this.props.mapComponents.concat(this.props.mapAnchors)
 		);
+
+		if (prevProps.highlightLine != this.props.highlightLine) {
+			this.gotoLine(this.props.highlightLine);
+		}
 	}
 
 	componentWillUnmount() {
@@ -91,10 +98,17 @@ class Editor extends Component {
 		}
 	}
 
+	gotoLine(line) {
+		const reactAceComponent = this.aceEditor.current;
+		const editor = reactAceComponent.editor;
+		editor.gotoLine(parseInt(line));
+	}
+
 	render() {
 		return (
 			<div id="htmPane" className={this.props.invalid ? ' invalid' : ''}>
 				<AceEditor
+					ref={this.aceEditor}
 					mode="owm"
 					theme={'eclipse'}
 					onChange={this.props.mutateMapText}

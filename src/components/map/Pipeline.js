@@ -112,6 +112,7 @@ function Pipeline(props) {
 					r={props.mapStyleDefs.component.radius}
 					stroke={props.mapStyleDefs.component.stroke}
 					fill={props.mapStyleDefs.component.fill}
+					onClick={() => props.setHighlightLine(props.pipeline.line)}
 				/>
 			</Movable>
 
@@ -131,6 +132,7 @@ function Pipeline(props) {
 					r={props.mapStyleDefs.component.radius}
 					stroke={props.mapStyleDefs.component.stroke}
 					fill={props.mapStyleDefs.component.fill}
+					onClick={() => props.setHighlightLine(props.pipeline.line)}
 				/>
 			</Movable>
 		</>

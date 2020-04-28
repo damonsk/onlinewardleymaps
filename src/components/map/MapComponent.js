@@ -101,6 +101,7 @@ function MapComponent(props) {
 						id={'element_circle_' + props.element.id}
 						cx="0"
 						cy="0"
+						onClick={() => props.setHighlightLine(props.element.line)}
 						strokeWidth={props.mapStyleDefs.component.strokeWidth}
 						r={props.mapStyleDefs.component.radius}
 						stroke={
@@ -121,6 +122,7 @@ function MapComponent(props) {
 						y="-5"
 						width="10"
 						height="10"
+						onClick={() => props.setHighlightLine(props.element.line)}
 						strokeWidth={props.mapStyleDefs.component.pipelineStrokeWidth}
 						stroke={
 							props.element.evolved
