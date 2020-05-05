@@ -2,7 +2,6 @@ import TitleExtractionStrategy from './TitleExtractionStrategy';
 import MethodExtractionStrategy from './MethodExtractionStrategy';
 import XAxisLabelsExtractionStrategy from './XAxisLabelsExtractionStrategy';
 import PresentationExtractionStrategy from './PresentationExtractionStrategy';
-import ExtractLocation from './ExtractLocation';
 import NoteExtractionStrategy from './NoteExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
 import ComponentExtractionStrategy from './ComponentExtractionStrategy';
@@ -33,10 +32,6 @@ export default class Converter {
 			converted = Object.assign(converted, s.apply());
 		});
 		return converted;
-	}
-
-	extractLocation(input, defaultValue) {
-		return new ExtractLocation().extract(input, defaultValue);
 	}
 
 	stripComments(data) {
