@@ -3,7 +3,7 @@ export default class TitleExtractionStrategy {
 		this.data = data;
 	}
 	apply() {
-		if (this.data.trim().length < 1) return 'Untitled Map';
+		if (this.data.trim().length < 1) return { title: 'Untitled Map' };
 		let trimmed = this.data.trim();
 		let firstLine = trimmed.split('\n')[0];
 		if (firstLine.indexOf('title') == 0) {
