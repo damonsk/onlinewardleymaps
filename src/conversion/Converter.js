@@ -1,6 +1,8 @@
 import TitleExtractionStrategy from './TitleExtractionStrategy';
 import MethodExtractionStrategy from './MethodExtractionStrategy';
-import EvolutionExtractionStrategy from './EvolutionExtractionStrategy';
+import XAxisLabelsExtractionStrategy from './XAxisLabelsExtractionStrategy';
+import PresentationExtractionStrategy from './PresentationExtractionStrategy';
+import ExtractLocation from './ExtractLocation';
 
 export default class Converter {
 	parse(data) {
@@ -9,14 +11,14 @@ export default class Converter {
 		let strategies = [
 			new TitleExtractionStrategy(cleanedData),
 			new MethodExtractionStrategy(cleanedData),
-			new EvolutionExtractionStrategy(cleanedData),
+			new XAxisLabelsExtractionStrategy(cleanedData),
+			new PresentationExtractionStrategy(cleanedData),
 		];
 
 		let jobj = {
 			elements: this.elements(cleanedData),
 			anchors: this.anchors(cleanedData),
 			links: this.links(cleanedData),
-			presentation: this.presentation(cleanedData),
 			annotations: this.annotations(cleanedData),
 			notes: this.notes(cleanedData),
 			evolved: this.evolved(cleanedData),
@@ -31,22 +33,7 @@ export default class Converter {
 	}
 
 	extractLocation(input, defaultValue) {
-		if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
-			let loc = input
-				.split('[')[1]
-				.trim()
-				.split(']')[0]
-				.replace(/\s/g, '')
-				.split(',');
-			return {
-				visibility: isNaN(parseFloat(loc[0]))
-					? defaultValue.visibility
-					: parseFloat(loc[0]),
-				maturity: isNaN(parseFloat(loc[1]))
-					? defaultValue.maturity
-					: parseFloat(loc[1]),
-			};
-		} else return defaultValue;
+		return new ExtractLocation().extract(input, defaultValue);
 	}
 
 	stripComments(data) {
@@ -74,43 +61,6 @@ export default class Converter {
 		}
 
 		return linesToKeep.join('\n');
-	}
-
-	presentation(input) {
-		let presentationObject = {
-			style: 'plain',
-			annotations: { visibility: 0.9, maturity: 0.1 },
-			yAxis: { label: 'Value Chain', max: 'Visible', min: 'Invisible' },
-		};
-		let trimmed = input.trim();
-		let elementsAsArray = trimmed.split('\n');
-		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			if (element.trim().indexOf('style') == 0) {
-				let name = element.split('style ')[1].trim();
-				presentationObject.style = name;
-			}
-
-			if (element.trim().indexOf('annotations ') == 0) {
-				presentationObject.annotations = this.extractLocation(element, {
-					visibility: 0.9,
-					maturity: 0.1,
-				});
-			}
-
-			if (element.trim().indexOf('y-axis ') == 0) {
-				let yAxis = element
-					.trim()
-					.split('y-axis ')[1]
-					.split('->');
-				if (yAxis.length == 3) {
-					presentationObject.yAxis.label = yAxis[0].trim();
-					presentationObject.yAxis.min = yAxis[1].trim();
-					presentationObject.yAxis.max = yAxis[2].trim();
-				}
-			}
-		}
-		return presentationObject;
 	}
 
 	notes(input) {

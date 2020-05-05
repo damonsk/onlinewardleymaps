@@ -1,4 +1,4 @@
-export default class EvolutionExtractionStrategy {
+export default class XAxisLabelsExtractionStrategy {
 	constructor(data) {
 		this.data = data;
 	}
