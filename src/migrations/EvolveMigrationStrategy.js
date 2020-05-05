@@ -1,10 +1,8 @@
-import Convert from './convert';
-
-export default class Migrations {
+import Convert from '../convert';
+export default class EvolveMigrationStrategy {
 	constructor(mapText) {
 		this.mapText = mapText;
 	}
-
 	apply() {
 		let converter = new Convert();
 		let trimmed = this.mapText.trim();
@@ -12,7 +10,6 @@ export default class Migrations {
 		let rebuild = [];
 		let changed = false;
 		let changeSets = [];
-
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			let currentLine = elementsAsArray[i];
 			if (currentLine.indexOf('component ') == 0) {

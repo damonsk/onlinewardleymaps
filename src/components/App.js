@@ -7,7 +7,7 @@ import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Convert from '../convert';
-import Migrations from '../Migrations';
+import Migrations from '../Migrations/Migrations';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
