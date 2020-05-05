@@ -1,5 +1,6 @@
 import TitleExtractionStrategy from './TitleExtractionStrategy';
 import MethodExtractionStrategy from './MethodExtractionStrategy';
+import EvolutionExtractionStrategy from './EvolutionExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
@@ -8,13 +9,13 @@ export default class Converter {
 		let strategies = [
 			new TitleExtractionStrategy(cleanedData),
 			new MethodExtractionStrategy(cleanedData),
+			new EvolutionExtractionStrategy(cleanedData),
 		];
 
 		let jobj = {
 			elements: this.elements(cleanedData),
 			anchors: this.anchors(cleanedData),
 			links: this.links(cleanedData),
-			evolution: this.evolution(cleanedData),
 			presentation: this.presentation(cleanedData),
 			annotations: this.annotations(cleanedData),
 			notes: this.notes(cleanedData),
@@ -110,36 +111,6 @@ export default class Converter {
 			}
 		}
 		return presentationObject;
-	}
-
-	evolution(input) {
-		let trimmed = input.trim();
-		let elementsAsArray = trimmed.split('\n');
-		for (let i = 0; i < elementsAsArray.length; i++) {
-			const element = elementsAsArray[i];
-			try {
-				if (element.trim().indexOf('evolution') == 0) {
-					let name = element
-						.split('evolution ')[1]
-						.trim()
-						.split('->');
-					return [
-						{ line1: name[0], line2: '' },
-						{ line1: name[1], line2: '' },
-						{ line1: name[2], line2: '' },
-						{ line1: name[3], line2: '' },
-					];
-				}
-			} catch (err) {
-				throw { line: i, err };
-			}
-		}
-		return [
-			{ line1: 'Genesis', line2: '' },
-			{ line1: 'Custom-Built', line2: '' },
-			{ line1: 'Product', line2: '(+rental)' },
-			{ line1: 'Commodity', line2: '(+utility)' },
-		];
 	}
 
 	notes(input) {
