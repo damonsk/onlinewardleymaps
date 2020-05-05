@@ -27,7 +27,19 @@ export default class Converter {
 			new LinksExtractionStrategy(t),
 		];
 
-		let converted = {};
+		let converted = {
+			links: [],
+			anchors: [],
+			evolved: [],
+			pipelines: [],
+			elements: [],
+			annotations: [],
+			notes: [],
+			presentation: {},
+			evolution: [],
+			methods: [],
+			title: '',
+		};
 		strategies.forEach(s => {
 			converted = Object.assign(converted, s.apply());
 		});
