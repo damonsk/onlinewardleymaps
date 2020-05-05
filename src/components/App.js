@@ -6,7 +6,7 @@ import Breadcrumb from './editor/Breadcrumb';
 import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
-import Convert from '../convert';
+import Converter from '../conversion/Converter';
 import Migrations from '../Migrations/Migrations';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
@@ -151,7 +151,7 @@ function App() {
 	React.useEffect(() => {
 		try {
 			setInvalid(false);
-			var r = new Convert().parse(mapText);
+			var r = new Converter().parse(mapText);
 			setMapTitle(r.title);
 			setMapAnnotations(r.annotations);
 			setMapAnchors(r.anchors);
