@@ -108,6 +108,19 @@ nav.navbar {
 }
 
 footer {
-	background-color: #f7f7f7;
+	background-color: #24292e;
 	font-size: 86%;
+	p {
+		color: #b5b5b5;
+	}
+	a {
+		color: white;
+		&:hover {
+			color: hsla(0, 0%, 100%, 0.7);
+			text-decoration: none;
+		}
+	}
+	.gh-icon {
+		fill: white;
+	}
 }
