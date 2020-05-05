@@ -12,8 +12,8 @@ import LinksExtractionStrategy from './LinksExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
-		let t = this.stripComments(data);
-		let strategies = [
+		const t = this.stripComments(data);
+		const strategies = [
 			new TitleExtractionStrategy(t),
 			new MethodExtractionStrategy(t),
 			new XAxisLabelsExtractionStrategy(t),
