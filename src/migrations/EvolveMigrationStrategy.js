@@ -1,10 +1,10 @@
-import Convert from '../convert';
+import Converter from '../conversion/Converter';
 export default class EvolveMigrationStrategy {
 	constructor(mapText) {
 		this.mapText = mapText;
 	}
 	apply() {
-		let converter = new Convert();
+		let converter = new Converter();
 		let trimmed = this.mapText.trim();
 		let elementsAsArray = trimmed.split('\n');
 		let rebuild = [];

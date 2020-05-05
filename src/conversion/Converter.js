@@ -1,10 +1,14 @@
 import TitleExtractionStrategy from './TitleExtractionStrategy';
+import MethodExtractionStrategy from './MethodExtractionStrategy';
 
-export default class Convert {
+export default class Converter {
 	parse(data) {
 		let cleanedData = this.stripComments(data);
 
-		let strategies = [new TitleExtractionStrategy(cleanedData)];
+		let strategies = [
+			new TitleExtractionStrategy(cleanedData),
+			new MethodExtractionStrategy(cleanedData),
+		];
 
 		let jobj = {
 			elements: this.elements(cleanedData),
@@ -12,7 +16,6 @@ export default class Convert {
 			links: this.links(cleanedData),
 			evolution: this.evolution(cleanedData),
 			presentation: this.presentation(cleanedData),
-			methods: this.method(cleanedData),
 			annotations: this.annotations(cleanedData),
 			notes: this.notes(cleanedData),
 			evolved: this.evolved(cleanedData),
@@ -70,42 +73,6 @@ export default class Convert {
 		}
 
 		return linesToKeep.join('\n');
-	}
-
-	method(input) {
-		let trimmed = input.trim();
-		let elementsAsArray = trimmed.split('\n');
-		let methodElements = [];
-
-		for (let i = 0; i < elementsAsArray.length; i++) {
-			try {
-				const element = elementsAsArray[i];
-				if (element.trim().indexOf('outsource ') == 0) {
-					let name = element.split('outsource ')[1].trim();
-					if (name.length > 0) {
-						methodElements.push({
-							name: name,
-							method: 'outsource',
-							line: 1 + i,
-						});
-					}
-				} else if (element.trim().indexOf('build ') == 0) {
-					let name = element.split('build ')[1].trim();
-					if (name.length > 0) {
-						methodElements.push({ name: name, method: 'build', line: 1 + i });
-					}
-				} else if (element.trim().indexOf('buy ') == 0) {
-					let name = element.split('buy ')[1].trim();
-					if (name.length > 0) {
-						methodElements.push({ name: name, method: 'buy', line: 1 + i });
-					}
-				}
-			} catch (err) {
-				throw { line: i, err };
-			}
-		}
-
-		return methodElements;
 	}
 
 	presentation(input) {

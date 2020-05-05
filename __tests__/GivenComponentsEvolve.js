@@ -1,12 +1,12 @@
 import MapElements from '@/MapElements';
-import Convert from '@/Convert';
+import Converter from '@/conversion/Converter';
 import Migrations from '@/Migrations/Migrations';
 
 describe('Given Components Evolve', function() {
 	test('When getEvolveElements invoked then elements set to evolve are returned', function() {
 		let actual = 'component Foo [0.9, 0.1] evolve 0.9';
 		let migrations = new Migrations(actual).apply();
-		let result = new Convert().parse(migrations.result);
+		let result = new Converter().parse(migrations.result);
 
 		let me = new MapElements(result.elements, result.evolved, []);
 		let evolved = me.getEvolveElements();
@@ -16,7 +16,7 @@ describe('Given Components Evolve', function() {
 
 	test('When evolve text is supplied then convert output is correct', function() {
 		let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo 0.9';
-		let result = new Convert().parse(actual);
+		let result = new Converter().parse(actual);
 		let me = new MapElements(result.elements, result.evolved, []);
 		let evolved = me.getEvolveElements();
 
@@ -31,7 +31,7 @@ describe('Given Components Evolve', function() {
 			'component Foo [0.1, 0.1] label [66,99]' +
 			'\n' +
 			'evolve Foo 0.9 label [-33, -55]';
-		let result = new Convert().parse(actual);
+		let result = new Converter().parse(actual);
 		let me = new MapElements(result.elements, result.evolved, []);
 		let evolving = me.getEvolveElements();
 		let evolved = me.getEvolvedElements();
