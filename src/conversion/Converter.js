@@ -3,26 +3,28 @@ import MethodExtractionStrategy from './MethodExtractionStrategy';
 import XAxisLabelsExtractionStrategy from './XAxisLabelsExtractionStrategy';
 import PresentationExtractionStrategy from './PresentationExtractionStrategy';
 import ExtractLocation from './ExtractLocation';
+import NoteExtractionStrategy from './NoteExtractionStrategy';
+import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
+import ComponentExtractionStrategy from './ComponentExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
-		let cleanedData = this.stripComments(data);
-
+		let t = this.stripComments(data);
 		let strategies = [
-			new TitleExtractionStrategy(cleanedData),
-			new MethodExtractionStrategy(cleanedData),
-			new XAxisLabelsExtractionStrategy(cleanedData),
-			new PresentationExtractionStrategy(cleanedData),
+			new TitleExtractionStrategy(t),
+			new MethodExtractionStrategy(t),
+			new XAxisLabelsExtractionStrategy(t),
+			new PresentationExtractionStrategy(t),
+			new NoteExtractionStrategy(t),
+			new AnnotationExtractionStrategy(t),
+			new ComponentExtractionStrategy(t),
 		];
 
 		let jobj = {
-			elements: this.elements(cleanedData),
-			anchors: this.anchors(cleanedData),
-			links: this.links(cleanedData),
-			annotations: this.annotations(cleanedData),
-			notes: this.notes(cleanedData),
-			evolved: this.evolved(cleanedData),
-			pipelines: this.pipelines(cleanedData),
+			anchors: this.anchors(t),
+			links: this.links(t),
+			evolved: this.evolved(t),
+			pipelines: this.pipelines(t),
 		};
 
 		strategies.forEach(s => {
@@ -61,160 +63,6 @@ export default class Converter {
 		}
 
 		return linesToKeep.join('\n');
-	}
-
-	notes(input) {
-		if (input.trim().length < 1) return [];
-		let trimmed = input.trim();
-		let elementsAsArray = trimmed.split('\n');
-		var notesArray = [];
-		for (let i = 0; i < elementsAsArray.length; i++) {
-			try {
-				const element = elementsAsArray[i];
-				if (element.trim().indexOf('note ') == 0) {
-					let noteText = element
-						.substr('note '.length, element.length - 'note '.length)
-						.trim()
-						.split(' [')[0]
-						.trim();
-
-					let notePosition = this.extractLocation(element, {
-						visibility: 0.9,
-						maturity: 0.1,
-					});
-					notesArray.push({
-						text: noteText,
-						visibility: notePosition.visibility,
-						maturity: notePosition.maturity,
-						line: 1 + i,
-					});
-				}
-			} catch (err) {
-				throw { line: i, err };
-			}
-		}
-		return notesArray;
-	}
-
-	annotations(input) {
-		if (input.trim().length < 1) return [];
-		let trimmed = input.trim();
-		let elementsAsArray = trimmed.split('\n');
-		var annotationsArray = [];
-		for (let i = 0; i < elementsAsArray.length; i++) {
-			try {
-				const element = elementsAsArray[i];
-				if (element.trim().indexOf('annotation ') == 0) {
-					let number = parseInt(
-						element
-							.split('annotation ')[1]
-							.trim()
-							.split(' [')[0]
-							.trim()
-					);
-					let positionData = [];
-					if (element.replace(/\s/g, '').indexOf('[[') > -1) {
-						let justOccurances =
-							'[' +
-							element
-								.replace(/\s/g, '')
-								.split('[[')[1]
-								.split(']]')[0] +
-							']';
-						let occurancesAsArray = justOccurances
-							.replace(/\],\[/g, ']|[')
-							.split('|');
-						occurancesAsArray.forEach(e => {
-							positionData.push(this.extractLocation(e));
-						});
-					} else if (element.indexOf('[') > -1 && element.indexOf(']') > -1) {
-						positionData.push(
-							this.extractLocation(element, { visibility: 0.9, maturity: 0.1 })
-						);
-					}
-					let text = '';
-					if (
-						element.trim().indexOf(']') > -1 &&
-						element.trim().indexOf(']') != element.trim().length - 1
-					) {
-						if (element.replace(/\s/g, '').indexOf(']]') === -1) {
-							text = element.split(']')[1].trim();
-						}
-						if (element.replace(/\s/g, '').indexOf(']]') > -1) {
-							var pos = element.lastIndexOf(']');
-							text = element.substr(pos + 1, element.length - 1).trim();
-						}
-					}
-					if (positionData.length > 0) {
-						annotationsArray.push({
-							number: parseInt(number),
-							occurances: positionData,
-							text: text,
-							line: 1 + i,
-						});
-					}
-				}
-			} catch (err) {
-				throw { line: i, err };
-			}
-		}
-		return annotationsArray;
-	}
-
-	elements(input) {
-		let trimmed = input.trim();
-		let elementsAsArray = trimmed.split('\n');
-		let elementsToReturn = [];
-		for (let i = 0; i < elementsAsArray.length; i++) {
-			try {
-				const element = elementsAsArray[i];
-				if (element.trim().indexOf('component') == 0) {
-					let name = element
-						.split('component ')[1]
-						.trim()
-						.split(' [')[0]
-						.trim();
-
-					let newPoint;
-					if (element.indexOf('evolve ') > -1) {
-						newPoint = element.split('evolve ')[1].trim();
-						newPoint = newPoint.replace('inertia', '').trim();
-					}
-
-					let positionData = this.extractLocation(element, {
-						visibility: 0.95,
-						maturity: 0.05,
-					});
-
-					let labelOffset = { x: 5, y: -10 };
-
-					if (element.indexOf('label ') > -1) {
-						let findPos = element.split('label [');
-						if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
-							let extractedPos = findPos[1].split(']')[0].split(',');
-							labelOffset.x = parseFloat(extractedPos[0].trim());
-							labelOffset.y = parseFloat(extractedPos[1].trim());
-						}
-					}
-
-					elementsToReturn.push({
-						name: name,
-						maturity: positionData.maturity,
-						visibility: positionData.visibility,
-						id: 1 + i,
-						line: 1 + i,
-						evolving: newPoint != null && newPoint != undefined,
-						evolveMaturity: newPoint,
-						inertia: element.indexOf('inertia') > -1,
-						label: labelOffset,
-					});
-				}
-			} catch (err) {
-				throw { line: i, err };
-			}
-		}
-
-		return elementsToReturn;
 	}
 
 	pipelines(input) {
