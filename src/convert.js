@@ -1,8 +1,12 @@
+import TitleExtractionStrategy from './TitleExtractionStrategy';
+
 export default class Convert {
 	parse(data) {
 		let cleanedData = this.stripComments(data);
+
+		let strategies = [new TitleExtractionStrategy(cleanedData)];
+
 		let jobj = {
-			title: this.title(cleanedData),
 			elements: this.elements(cleanedData),
 			anchors: this.anchors(cleanedData),
 			links: this.links(cleanedData),
@@ -14,6 +18,10 @@ export default class Convert {
 			evolved: this.evolved(cleanedData),
 			pipelines: this.pipelines(cleanedData),
 		};
+
+		strategies.forEach(s => {
+			jobj = Object.assign(jobj, s.apply());
+		});
 
 		return jobj;
 	}
@@ -165,18 +173,6 @@ export default class Convert {
 			{ line1: 'Product', line2: '(+rental)' },
 			{ line1: 'Commodity', line2: '(+utility)' },
 		];
-	}
-
-	title(input) {
-		if (input.trim().length < 1) return 'Untitled Map';
-		let trimmed = input.trim();
-		let firstLine = trimmed.split('\n')[0];
-
-		if (firstLine.indexOf('title') == 0) {
-			return firstLine.split('title ')[1].trim();
-		}
-
-		return 'Untitled Map';
 	}
 
 	notes(input) {
