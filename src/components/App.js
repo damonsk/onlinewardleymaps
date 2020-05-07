@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { hot } from 'react-hot-loader/root';
+
 import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
@@ -348,4 +350,4 @@ function App() {
 	);
 }
 
-export default App;
+export default hot(App);
