@@ -40,6 +40,7 @@ function App() {
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
 	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
+	const [mainViewHeight, setMainViewHeight] = useState(100);
 
 	const [migrations, setMigrations] = useState({
 		original: '',
@@ -200,11 +201,13 @@ function App() {
 	React.useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
 			setMapDimensions({ width: getWidth(), height: getHeight() });
+			setMainViewHeight(105 + getHeight());
 		}, 1000);
 
 		const initialLoad = () => {
 			loadFromRemoteStorage();
 			setMapDimensions({ width: getWidth(), height: getHeight() });
+			setMainViewHeight(105 + getHeight());
 		};
 
 		window.addEventListener('resize', debouncedHandleResize);
@@ -241,7 +244,10 @@ function App() {
 				<Breadcrumb currentUrl={currentUrl} />
 			</div>
 			{/* <div className="container-fluid"> */}
-			<div className="row no-gutters">
+			<div
+				className="row no-gutters main"
+				style={{ height: mainViewHeight + 'px' }}
+			>
 				<div className="col-sm h-100 editor">
 					<Editor
 						highlightLine={highlightLine}

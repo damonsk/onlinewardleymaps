@@ -31,6 +31,12 @@
 	}
 }
 
+div.main {
+	background-color: white;
+	overflow: hidden;
+	border-bottom: 1px solid #6c757d;
+}
+
 .breadcrumb {
 	padding: 2px 1rem;
 	font-size: 0.85rem;
@@ -86,7 +92,7 @@ nav.navbar {
 	background: #e9ecef;
 	padding: 5px;
 	border-right: 1px solid #6c757d;
-	border-bottom: 1px solid #6c757d;
+
 	.jumbotron {
 		height: 682px;
 		padding: 5px;
@@ -122,5 +128,42 @@ footer {
 	}
 	.gh-icon {
 		fill: white;
+	}
+}
+
+body.dark {
+	color: #9da5b4;
+	background-color: #282c34;
+	nav.navbar {
+		background-color: #2f333d;
+		#owm-build {
+			color: #fff;
+		}
+	}
+	h5#title {
+		color: black;
+	}
+	nav.bc {
+		ol.breadcrumb {
+			background-color: #21252b;
+			color: #9da5b4;
+			a#url {
+				color: #fff;
+			}
+		}
+	}
+
+	div.main {
+		background-color: white;
+		overflow: hidden;
+		border-bottom: 1px solid #6c757d;
+	}
+
+	div.map-view {
+		background-color: white;
+	}
+
+	#htmPane {
+		//background: #282c34;
 	}
 }
