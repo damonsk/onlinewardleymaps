@@ -113,11 +113,11 @@ function Anchor(props) {
 }
 
 Anchor.propTypes = {
-	anchor: PropTypes.object,
-	mapDimensions: PropTypes.object,
-	mapText: PropTypes.string,
-	mutateMapText: PropTypes.func,
-	mapStyleDefs: PropTypes.object,
+	anchor: PropTypes.object.isRequired,
+	mapDimensions: PropTypes.object.isRequired,
+	mapText: PropTypes.string.isRequired,
+	mutateMapText: PropTypes.func.isRequired,
+	mapStyleDefs: PropTypes.object.isRequired,
 };
 
 export default Anchor;
