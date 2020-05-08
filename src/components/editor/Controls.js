@@ -46,9 +46,6 @@ function Controls(props) {
 			<small className="d-none d-sm-inline" id="owm-build">
 				v{owmBuild}
 			</small>
-			<Button id="new-map" variant="secondary" onClick={props.newMapClick}>
-				New Map
-			</Button>
 			<Button
 				id="example-map"
 				onClick={example}
@@ -56,6 +53,9 @@ function Controls(props) {
 				variant="secondary"
 			>
 				Example Map
+			</Button>
+			<Button id="new-map" variant="secondary" onClick={props.newMapClick}>
+				New Map
 			</Button>
 			<Button
 				id="save-map"
