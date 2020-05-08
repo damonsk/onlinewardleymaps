@@ -4,6 +4,14 @@ import Movable from './Movable';
 import PropTypes from 'prop-types';
 
 const Anchor = props => {
+	const elementKey = (prefix, suffix) => {
+		return (
+			'anchor_' +
+			(prefix != undefined ? prefix + '_' : '') +
+			props.anchor.id +
+			(suffix != undefined ? '_' + suffix : '')
+		);
+	};
 	const positionCalc = new PositionCalculator();
 	const x = () =>
 		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
@@ -61,7 +69,7 @@ const Anchor = props => {
 	return (
 		<>
 			<Movable
-				id={'anchor_' + props.anchor.id}
+				id={elementKey()}
 				onMove={endDrag}
 				x={x()}
 				y={y()}
@@ -70,9 +78,9 @@ const Anchor = props => {
 			>
 				{props.anchor.name.length < 15 ? (
 					<text
-						key={'anchor_text_' + props.anchor.id}
-						id={'anchor_text_' + props.anchor.id}
-						data-testid={'anchor_text_' + props.anchor.id}
+						key={elementKey('text')}
+						id={elementKey('text')}
+						data-testid={elementKey('text')}
 						className="label"
 						x="0"
 						y="-10"
@@ -84,8 +92,9 @@ const Anchor = props => {
 					</text>
 				) : (
 					<text
-						id={'anchor_text_' + props.anchor.id}
-						key={'anchor_text_' + props.anchor.id}
+						id={elementKey('text')}
+						key={elementKey('text')}
+						data-testid={elementKey('text')}
 						x="0"
 						y="0"
 						transform="translate(0, 0)"
@@ -97,8 +106,8 @@ const Anchor = props => {
 							.split(' ')
 							.map((text, i) => (
 								<tspan
-									key={'anchor_text_span_' + props.anchor.id + '_' + i}
-									id={'anchor_text_span_' + props.anchor.id + '_' + i}
+									key={elementKey('text_span', i)}
+									id={elementKey('text_span', i)}
 									x={0}
 									dy={i > 0 ? 15 : 0}
 									textAnchor="middle"
