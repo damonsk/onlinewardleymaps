@@ -1,6 +1,7 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
+import PropTypes from 'prop-types';
 
 function Anchor(props) {
 	const positionCalc = new PositionCalculator();
@@ -110,5 +111,13 @@ function Anchor(props) {
 		</>
 	);
 }
+
+Anchor.propTypes = {
+	anchor: PropTypes.object,
+	mapDimensions: PropTypes.object,
+	mapText: PropTypes.string,
+	mutateMapText: PropTypes.func,
+	mapStyleDefs: PropTypes.object,
+};
 
 export default Anchor;
