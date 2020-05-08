@@ -1,13 +1,13 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 
 function Anchor(props) {
-	var _mapHelper = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(props.anchor.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
 	const y = () =>
-		_mapHelper.visibilityToY(
+		positionCalc.visibilityToY(
 			props.anchor.visibility,
 			props.mapDimensions.height
 		);
@@ -26,10 +26,10 @@ function Anchor(props) {
 					) {
 						return line.replace(
 							/\[(.?|.+?)\]/g,
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`
@@ -41,10 +41,10 @@ function Anchor(props) {
 						return (
 							line.trim() +
 							' ' +
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`

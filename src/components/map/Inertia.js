@@ -1,12 +1,12 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 
 function Inertia(props) {
-	const mapCalc = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x = () =>
-		mapCalc.maturityToX(props.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(props.maturity, props.mapDimensions.width);
 	const y = () =>
-		mapCalc.visibilityToY(props.visibility, props.mapDimensions.height);
+		positionCalc.visibilityToY(props.visibility, props.mapDimensions.height);
 
 	//    React.useEffect(()xZ)
 

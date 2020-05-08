@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import AnnotationText from './AnnotationText';
 import Movable from './Movable';
 
 function AnnotationElement(props) {
-	var _mapHelper = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(props.position.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.position.maturity,
+			props.mapDimensions.width
+		);
 	const y = () =>
-		_mapHelper.visibilityToY(
+		positionCalc.visibilityToY(
 			props.position.visibility,
 			props.mapDimensions.height
 		);
@@ -22,10 +25,10 @@ function AnnotationElement(props) {
 						if (line.replace(/\s/g, '').indexOf('annotations') !== -1) {
 							return line.replace(
 								/\[(.+?)\]/g,
-								`[${_mapHelper.yToVisibility(
+								`[${positionCalc.yToVisibility(
 									moved.y,
 									props.mapDimensions.height
-								)}, ${_mapHelper.xToMaturity(
+								)}, ${positionCalc.xToMaturity(
 									moved.x,
 									props.mapDimensions.width
 								)}]`
@@ -41,9 +44,9 @@ function AnnotationElement(props) {
 				props.mapText +
 					'\n' +
 					'annotations [' +
-					_mapHelper.yToVisibility(moved.y, props.mapDimensions.height) +
+					positionCalc.yToVisibility(moved.y, props.mapDimensions.height) +
 					', ' +
-					_mapHelper.xToMaturity(moved.x, props.mapDimensions.width) +
+					positionCalc.xToMaturity(moved.x, props.mapDimensions.width) +
 					']'
 			);
 		}

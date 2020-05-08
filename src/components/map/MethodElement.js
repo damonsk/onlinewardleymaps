@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 
 function MethodElement({ element, mapDimensions, method }) {
-	const mapCalc = new MapPositionCalculator();
-	const x = () => mapCalc.maturityToX(element.maturity, mapDimensions.width);
+	const positionCalc = new PositionCalculator();
+	const x = () =>
+		positionCalc.maturityToX(element.maturity, mapDimensions.width);
 	const y = () =>
-		mapCalc.visibilityToY(element.visibility, mapDimensions.height);
+		positionCalc.visibilityToY(element.visibility, mapDimensions.height);
 
 	const defineStoke = function() {
 		switch (method.method) {

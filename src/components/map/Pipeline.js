@@ -1,15 +1,21 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 
 function Pipeline(props) {
-	var _mapHelper = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x1 = () =>
-		_mapHelper.maturityToX(props.pipeline.maturity1, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.pipeline.maturity1,
+			props.mapDimensions.width
+		);
 	const x2 = () =>
-		_mapHelper.maturityToX(props.pipeline.maturity2, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.pipeline.maturity2,
+			props.mapDimensions.width
+		);
 	const y = () =>
-		_mapHelper.visibilityToY(
+		positionCalc.visibilityToY(
 			props.pipeline.visibility,
 			props.mapDimensions.height
 		) + 2;
@@ -37,7 +43,7 @@ function Pipeline(props) {
 
 	function endDragX1(moved) {
 		endDrag(
-			_mapHelper.xToMaturity(moved.x, props.mapDimensions.width),
+			positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
 			props.pipeline.maturity2
 		);
 	}
@@ -45,7 +51,7 @@ function Pipeline(props) {
 	function endDragX2(moved) {
 		endDrag(
 			props.pipeline.maturity1,
-			_mapHelper.xToMaturity(moved.x, props.mapDimensions.width)
+			positionCalc.xToMaturity(moved.x, props.mapDimensions.width)
 		);
 	}
 

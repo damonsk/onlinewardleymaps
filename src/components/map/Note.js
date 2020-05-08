@@ -1,13 +1,16 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 
 function Note(props) {
-	var _mapHelper = new MapPositionCalculator();
+	var positionCalc = new PositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(props.note.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(props.note.maturity, props.mapDimensions.width);
 	const y = () =>
-		_mapHelper.visibilityToY(props.note.visibility, props.mapDimensions.height);
+		positionCalc.visibilityToY(
+			props.note.visibility,
+			props.mapDimensions.height
+		);
 
 	function endDrag(moved) {
 		props.mutateMapText(
@@ -21,10 +24,10 @@ function Note(props) {
 					) {
 						return line.replace(
 							/\[(.?|.+?)\]/g,
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`
@@ -36,10 +39,10 @@ function Note(props) {
 						return (
 							line.trim() +
 							' ' +
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`

@@ -1,15 +1,15 @@
 import React from 'react';
 import ComponentText from './ComponentText';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import Inertia from './Inertia';
 
 function MapComponent(props) {
-	var _mapHelper = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(props.element.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(props.element.maturity, props.mapDimensions.width);
 	const y = () =>
-		_mapHelper.visibilityToY(
+		positionCalc.visibilityToY(
 			props.element.visibility,
 			props.mapDimensions.height
 		);
@@ -31,10 +31,10 @@ function MapComponent(props) {
 							let parts = line.split('label');
 							let newPart = parts[0].replace(
 								/\[(.?|.+?)\]/g,
-								`[${_mapHelper.yToVisibility(
+								`[${positionCalc.yToVisibility(
 									moved.y,
 									props.mapDimensions.height
-								)}, ${_mapHelper.xToMaturity(
+								)}, ${positionCalc.xToMaturity(
 									moved.x,
 									props.mapDimensions.width
 								)}]`
@@ -43,10 +43,10 @@ function MapComponent(props) {
 						} else {
 							return line.replace(
 								/\[(.?|.+?)\]/g,
-								`[${_mapHelper.yToVisibility(
+								`[${positionCalc.yToVisibility(
 									moved.y,
 									props.mapDimensions.height
-								)}, ${_mapHelper.xToMaturity(
+								)}, ${positionCalc.xToMaturity(
 									moved.x,
 									props.mapDimensions.width
 								)}]`
@@ -60,10 +60,10 @@ function MapComponent(props) {
 						return (
 							line.trim() +
 							' ' +
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`
@@ -76,7 +76,7 @@ function MapComponent(props) {
 					) {
 						return line.replace(
 							/\s([0-9]?\.[0-9]+[0-9]?)+/g,
-							` ${_mapHelper.xToMaturity(moved.x, props.mapDimensions.width)}`
+							` ${positionCalc.xToMaturity(moved.x, props.mapDimensions.width)}`
 						);
 					} else {
 						return line;
