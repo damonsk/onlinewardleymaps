@@ -3,7 +3,7 @@ import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
 
-function Anchor(props) {
+const Anchor = props => {
 	const positionCalc = new PositionCalculator();
 	const x = () =>
 		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
@@ -72,6 +72,7 @@ function Anchor(props) {
 					<text
 						key={'anchor_text_' + props.anchor.id}
 						id={'anchor_text_' + props.anchor.id}
+						data-testid={'anchor_text_' + props.anchor.id}
 						className="label"
 						x="0"
 						y="-10"
@@ -110,7 +111,7 @@ function Anchor(props) {
 			</Movable>
 		</>
 	);
-}
+};
 
 Anchor.propTypes = {
 	anchor: PropTypes.object.isRequired,
