@@ -5,12 +5,9 @@ import PropTypes from 'prop-types';
 
 const Anchor = props => {
 	const elementKey = (prefix, suffix) => {
-		return (
-			'anchor_' +
-			(prefix != undefined ? prefix + '_' : '') +
-			props.anchor.id +
-			(suffix != undefined ? '_' + suffix : '')
-		);
+		return `anchor_${prefix != undefined ? prefix + '_' : ''}${
+			props.anchor.id
+		}${suffix != undefined ? '_' + suffix : ''}`;
 	};
 	const positionCalc = new PositionCalculator();
 	const x = () =>
