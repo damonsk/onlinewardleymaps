@@ -39,20 +39,20 @@ Array [
   <button
     className="btn btn-secondary"
     disabled={false}
-    id="new-map"
-    onClick={[Function]}
-    type="button"
-  >
-    New Map
-  </button>,
-  <button
-    className="btn btn-secondary"
-    disabled={false}
     id="example-map"
     onClick={[Function]}
     type="button"
   >
     Example Map
+  </button>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
+    id="new-map"
+    onClick={[Function]}
+    type="button"
+  >
+    New Map
   </button>,
   <button
     className="btn btn-success"
