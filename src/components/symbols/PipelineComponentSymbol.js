@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const PipelineSymbol = props => {
+const PipelineComponentSymbol = props => {
 	const {
 		id,
 		x = '-5',
@@ -30,7 +30,7 @@ const PipelineSymbol = props => {
 	);
 };
 
-PipelineSymbol.propTypes = {
+PipelineComponentSymbol.propTypes = {
 	id: PropTypes.string,
 	x: PropTypes.string,
 	y: PropTypes.string,
@@ -41,4 +41,4 @@ PipelineSymbol.propTypes = {
 	onClick: PropTypes.func,
 };
 
-export default memo(PipelineSymbol);
+export default memo(PipelineComponentSymbol);

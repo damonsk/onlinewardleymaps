@@ -26,17 +26,19 @@ const ComponentTextSymbol = props => {
 		className = 'label',
 		fontWeight = '14px',
 		textAnchor,
+		styles = {},
 	} = props;
-	const { component = {} } = props.mapStyleDefs || {};
-	const fill = evolved ? component.evolvedTextColor : component.textColor;
+	const fill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
 	const displayText = isLong ? trimText(id, text) : text;
 	const transform = isLong ? 'translate(30, 10)' : '';
+	const fontSize = styles.fontSize || '14px';
 	return (
 		<text
 			id={id}
 			data-testid={id}
 			fontWeight={fontWeight}
+			fontSize={fontSize}
 			className={className}
 			textAnchor={textAnchor}
 			x={x}

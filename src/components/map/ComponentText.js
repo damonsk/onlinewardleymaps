@@ -69,7 +69,7 @@ function ComponentText(props) {
 					id={elementId}
 					text={props.element.name}
 					evolved={props.element.evolved}
-					mapStyleDefs={props.mapStyleDefs}
+					styles={props?.mapStyleDefs?.component}
 				/>
 			</RelativeMovable>
 		</React.Fragment>

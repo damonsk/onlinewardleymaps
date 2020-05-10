@@ -1,6 +1,6 @@
 import React from 'react';
 import ComponentSymbol from '../symbols/ComponentSymbol';
-import PipelineSymbol from '../symbols/PipelineSymbol';
+import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 
 import ComponentText from './ComponentText';
 import PositionCalculator from './PositionCalculator';
@@ -99,7 +99,7 @@ function MapComponent(props) {
 				fixedX={false}
 			>
 				{props.element.pipeline ? (
-					<PipelineSymbol
+					<PipelineComponentSymbol
 						id={'element_square_' + props.element.id}
 						mapStyleDefs={props.mapStyleDefs}
 						evolved={props.element.evolved}
@@ -126,7 +126,7 @@ function MapComponent(props) {
 			<g transform={'translate(' + x() + ',' + y() + ')'}>
 				<ComponentText
 					id={'component_text_' + props.element.id}
-					mapStyleDefs={props.mapStyleDefs}
+					styles={props.mapStyleDefs.component}
 					element={props.element}
 					mapText={props.mapText}
 					mutateMapText={props.mutateMapText}

@@ -63,6 +63,7 @@ const Anchor = props => {
 					evolved={props.anchor.evolved}
 					mapStyleDefs={props.mapStyleDefs}
 					fontSize={props.mapStyleDefs.anchor.fontSize}
+					styles={props?.mapStyleDefs?.anchor}
 				/>
 			</Movable>
 		</>

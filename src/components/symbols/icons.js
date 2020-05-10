@@ -42,7 +42,7 @@ export const ComponentIcon = props => (
 		mapStyleDefs={props.mapStyleDefs}
 	>
 		<ComponentTextSymbol
-			mapStyleDefs={props.mapStyleDefs}
+			styles={props.mapStyleDefs.component}
 			text={props.text || 'Component'}
 			x="8"
 			y="15"
@@ -68,7 +68,7 @@ export const InertiaIcon = props => (
 		mapStyleDefs={props.mapStyleDefs}
 	>
 		<ComponentTextSymbol
-			mapStyleDefs={props.mapStyleDefs}
+			styles={props.mapStyleDefs.component}
 			text="Inertia"
 			x="8"
 			y="15"

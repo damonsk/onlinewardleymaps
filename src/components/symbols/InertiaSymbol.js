@@ -22,7 +22,7 @@ InertiaSymbol.propTypes = {
 	x: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	y: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	stroke: PropTypes.string,
-	strokeWidth: PropTypes.strokeWidth,
+	strokeWidth: PropTypes.number,
 };
 
 export default InertiaSymbol;
