@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import PositionCalculator from './PositionCalculator';
 import AnnotationText from './AnnotationText';
 import Movable from './Movable';
-import DefaultPositionUpdater from './DefaultPositionUpdater';
-import SingletonPositionUpdater from './SingletonPositionUpdater';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();

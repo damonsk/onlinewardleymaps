@@ -2,7 +2,7 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
-import DefaultPositionUpdater from './DefaultPositionUpdater';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 
 const Anchor = props => {
 	const elementKey = (prefix, suffix) => {
