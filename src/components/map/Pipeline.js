@@ -1,9 +1,16 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
+import DoubleXAxisPositionUpdater from './DoubleXAxisPositionUpdater';
 
 function Pipeline(props) {
 	const positionCalc = new PositionCalculator();
+	const positionUpdater = new DoubleXAxisPositionUpdater(
+		'pipeline',
+		positionCalc,
+		props.mapText,
+		props.mutateMapText
+	);
 	const x1 = () =>
 		positionCalc.maturityToX(
 			props.pipeline.maturity1,
@@ -20,38 +27,19 @@ function Pipeline(props) {
 			props.mapDimensions.height
 		) + 2;
 
-	function endDrag(x1, x2) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'pipeline' + props.pipeline.name.replace(/\s/g, '') + '['
-							) !== -1
-					) {
-						return line.replace(/\[(.?|.+?)\]/g, `[${x1}, ${x2}]`);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
-		);
-	}
-
 	function endDragX1(moved) {
-		endDrag(
-			positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
-			props.pipeline.maturity2
+		positionUpdater.update(
+			{ x1: moved.x, x2: x2() },
+			props.pipeline.name,
+			props.mapDimensions
 		);
 	}
 
 	function endDragX2(moved) {
-		endDrag(
-			props.pipeline.maturity1,
-			positionCalc.xToMaturity(moved.x, props.mapDimensions.width)
+		positionUpdater.update(
+			{ x1: x1(), x2: moved.x },
+			props.pipeline.name,
+			props.mapDimensions
 		);
 	}
 
