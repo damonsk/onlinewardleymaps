@@ -11,7 +11,7 @@ import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
 import Anchor from './Anchor';
 import Note from './Note';
-import LinksBuilder from './LinkStrategies/LinksBuilder';
+import LinksBuilder from '../../linkStrategies/LinksBuilder';
 import MapGraphics from './foundation/MapGraphics';
 import MapBackground from './foundation/MapBackground';
 
