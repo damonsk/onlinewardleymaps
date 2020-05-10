@@ -5,6 +5,7 @@ export default class AllLinksStrategy {
 	}
 	getLinks() {
 		return {
+			name: 'links',
 			links: this.links,
 			startElements: this.mapElements.getMergedElements(),
 			endElements: this.mapElements.getMergedElements(),

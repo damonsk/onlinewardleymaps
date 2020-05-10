@@ -11,45 +11,15 @@ import AnchorLinksStrategy from './AnchorLinksStrategy';
 export default class LinksBuilder {
 	constructor(mapLinks, mapElements, mapAnchors) {
 		this.linkStrategies = [
-			{
-				name: 'links',
-				strategy: new AllLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'evolvingEndLinks',
-				strategy: new EvolvingEndLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'evolvingToNoneEvolvingEndLinks',
-				strategy: new EvolvingToNoneEvolvingEndLinksStrategy(
-					mapLinks,
-					mapElements
-				),
-			},
-			{
-				name: 'evolvedToEvolving',
-				strategy: new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'bothEvolved',
-				strategy: new BothEvolvedLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'evolveStartLinks',
-				strategy: new EvolvedToNoneEvolvingLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'bothEvolving',
-				strategy: new EvolveingToEvolvingLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'evolveToEvolved',
-				strategy: new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
-			},
-			{
-				name: 'anchorLinks',
-				strategy: new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
-			},
+			new AllLinksStrategy(mapLinks, mapElements),
+			new EvolvingEndLinksStrategy(mapLinks, mapElements),
+			new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, mapElements),
+			new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
+			new BothEvolvedLinksStrategy(mapLinks, mapElements),
+			new EvolvedToNoneEvolvingLinksStrategy(mapLinks, mapElements),
+			new EvolveingToEvolvingLinksStrategy(mapLinks, mapElements),
+			new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
+			new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
 		];
 	}
 
@@ -70,7 +40,7 @@ export default class LinksBuilder {
 	build() {
 		let allLinks = [];
 		this.linkStrategies.forEach(s => {
-			const r = s.strategy.getLinks();
+			const r = s.getLinks();
 			let currentLinks = [];
 			r.links.forEach((l, i) => {
 				if (this.canSatisfyLink(l, r.startElements, r.endElements)) {
@@ -83,7 +53,7 @@ export default class LinksBuilder {
 					currentLinks.push(item);
 				}
 			});
-			allLinks.push({ name: s.name, links: currentLinks });
+			allLinks.push({ name: r.name, links: currentLinks });
 		});
 		return allLinks;
 	}

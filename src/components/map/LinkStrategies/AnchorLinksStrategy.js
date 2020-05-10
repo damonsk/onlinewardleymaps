@@ -11,6 +11,7 @@ export default class AllLinksStrategy {
 				this.mapElements.getMergedElements(i => i.name == li.end)
 		);
 		return {
+			name: 'anchorLinks',
 			links: links,
 			startElements: this.anchors,
 			endElements: this.mapElements.getMergedElements(),

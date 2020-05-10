@@ -11,6 +11,7 @@ export default class EvolvingEndLinksStrategy {
 				this.mapElements.getNoneEvolvingElements().find(i => i.name == li.start)
 		);
 		return {
+			name: 'evolvingEndLinks',
 			links: links,
 			startElements: this.mapElements.getNoneEvolvingElements(),
 			endElements: this.mapElements.getEvolveElements(),

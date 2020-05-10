@@ -11,6 +11,7 @@ export default class BothEvolvedLinksStrategy {
 		);
 
 		return {
+			name: 'bothEvolved',
 			links: links,
 			startElements: this.mapElements.getEvolvedElements(),
 			endElements: this.mapElements.getEvolvedElements(),

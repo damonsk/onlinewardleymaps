@@ -10,6 +10,7 @@ export default class EvolveingToEvolvingLinksStrategy {
 				this.mapElements.getEvolveElements().find(i => i.name == li.end)
 		);
 		return {
+			name: 'bothEvolving',
 			links: links,
 			startElements: this.mapElements.getEvolveElements(),
 			endElements: this.mapElements.getEvolveElements(),
