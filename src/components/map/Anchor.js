@@ -3,6 +3,8 @@ import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 const Anchor = props => {
 	const identity = 'anchor';
@@ -15,7 +17,8 @@ const Anchor = props => {
 	const positionUpdater = new DefaultPositionUpdater(
 		identity,
 		props.mapText,
-		props.mutateMapText
+		props.mutateMapText,
+		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
 	);
 	const x = () =>
 		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
@@ -34,7 +37,10 @@ const Anchor = props => {
 			moved.x,
 			props.mapDimensions.width
 		);
-		positionUpdater.update({ visibility, maturity }, props.anchor.name);
+		positionUpdater.update(
+			{ param1: visibility, param2: maturity },
+			props.anchor.name
+		);
 	}
 
 	return (
