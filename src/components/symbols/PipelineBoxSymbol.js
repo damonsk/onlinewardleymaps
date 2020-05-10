@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const PipelineBoxSymbol = memo(function InertiaSymbol(props) {
+const PipelineBoxSymbol = props => {
 	const { id, y, x1, x2, stroke, styles = {} } = props;
 
 	const str = stroke || styles.stroke;
@@ -30,7 +30,7 @@ const PipelineBoxSymbol = memo(function InertiaSymbol(props) {
 			/>
 		</g>
 	);
-});
+};
 
 PipelineBoxSymbol.propTypes = {
 	id: PropTypes.string,
@@ -41,4 +41,4 @@ PipelineBoxSymbol.propTypes = {
 	styles: PropTypes.object.isRequired,
 };
 
-export default PipelineBoxSymbol;
+export default memo(PipelineBoxSymbol);

@@ -1,89 +1,64 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Inertia from './Inertia';
+import LinkSymbol from '../symbols/LinkSymbol';
+
+const setBoundary = (
+	positionCalc,
+	{ mapDimensions, evolutionOffsets, startElement }
+) => {
+	const boundWidth = mapDimensions.width / 20;
+	const limits = [
+		evolutionOffsets.commodity,
+		evolutionOffsets.product,
+		evolutionOffsets.custom,
+	];
+	for (let i = 0; i < limits.length; i++) {
+		const edge = positionCalc.xToMaturity(
+			boundWidth * limits[i],
+			mapDimensions.width
+		);
+		if (startElement.maturity >= edge) {
+			return edge;
+		}
+	}
+	return null;
+};
 
 function EvolvingComponentLink(props) {
+	const { mapStyleDefs, mapDimensions, startElement, endElement } = props;
+	const { height, width } = mapDimensions;
 	const positionCalc = new PositionCalculator();
-	const x1 = () =>
-		positionCalc.maturityToX(
-			props.startElement.maturity,
-			props.mapDimensions.width
-		);
-	const x2 = () =>
-		positionCalc.maturityToX(
-			props.endElement.maturity,
-			props.mapDimensions.width
-		);
-	const y1 = () =>
-		positionCalc.visibilityToY(
-			props.startElement.visibility,
-			props.mapDimensions.height
-		);
-	const y2 = () =>
-		positionCalc.visibilityToY(
-			props.endElement.visibility,
-			props.mapDimensions.height
-		);
-	if (props.endElement.inertia) {
-		var boundary = x1;
-		if (
-			props.startElement.maturity >=
-			positionCalc.xToMaturity(
-				(props.mapDimensions.width / 20) * props.evolutionOffsets.custom,
-				props.mapDimensions.width
-			)
-		) {
-			boundary = positionCalc.xToMaturity(
-				(props.mapDimensions.width / 20) * props.evolutionOffsets.custom,
-				props.mapDimensions.width
-			);
-		}
-		if (
-			props.startElement.maturity >=
-			positionCalc.xToMaturity(
-				(props.mapDimensions.width / 20) * props.evolutionOffsets.product,
-				props.mapDimensions.width
-			)
-		) {
-			boundary = positionCalc.xToMaturity(
-				(props.mapDimensions.width / 20) * props.evolutionOffsets.product,
-				props.mapDimensions.width
-			);
-		}
-		if (
-			props.startElement.maturity >=
-			positionCalc.xToMaturity(
-				(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity,
-				props.mapDimensions.width
-			)
-		) {
-			boundary = positionCalc.xToMaturity(
-				(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity,
-				props.mapDimensions.width
-			);
-		}
+	const x1 = positionCalc.maturityToX(startElement.maturity, width);
+	const x2 = positionCalc.maturityToX(endElement.maturity, width);
+	const y1 = positionCalc.visibilityToY(startElement.visibility, height);
+	const y2 = positionCalc.visibilityToY(endElement.visibility, height);
+	let boundary;
+
+	if (endElement.inertia) {
+		boundary = setBoundary(positionCalc, props) || x1;
 	}
 
 	return (
-		<g>
-			<line
-				x1={x1()}
-				y1={y1()}
-				x2={x2()}
-				y2={y2()}
+		<>
+			<LinkSymbol
+				x1={x1}
+				y1={y1}
+				x2={x2}
+				y2={y2}
 				strokeDasharray="5 5"
 				markerStart="url(#arrow)"
-				stroke={props.mapStyleDefs.link.evolvedStroke}
-				strokeWidth={props.mapStyleDefs.link.evolvedStrokeWidth}
+				styles={mapStyleDefs.link}
+				evolved
 			/>
-			{props.endElement.inertia == false ? null : (
+			{endElement.inertia && (
 				<Inertia
 					maturity={boundary}
-					visibility={props.endElement.visibility}
-					mapDimensions={props.mapDimensions}
+					visibility={endElement.visibility}
+					mapDimensions={mapDimensions}
 				/>
 			)}
-		</g>
+		</>
 	);
 }
 

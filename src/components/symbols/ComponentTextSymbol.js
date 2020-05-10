@@ -26,11 +26,12 @@ const ComponentTextSymbol = props => {
 		className = 'label',
 		note,
 		fontSize,
+		fill,
 		fontWeight,
 		textAnchor,
 		styles = {},
 	} = props;
-	const fill = evolved ? styles.evolvedTextColor : styles.textColor;
+	const displayFill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
 	const trimmedTex = isLong ? trimText(id, text) : text;
 	const transform = isLong ? 'translate(30, 10)' : '';
@@ -45,7 +46,7 @@ const ComponentTextSymbol = props => {
 			x={x}
 			y={y}
 			transform={transform}
-			fill={fill}
+			fill={fill || displayFill}
 		>
 			{note || trimmedTex}
 		</text>
@@ -58,6 +59,7 @@ ComponentTextSymbol.propTypes = {
 	y: PropTypes.string,
 	text: PropTypes.string,
 	styles: PropTypes.object.isRequired,
+	fill: PropTypes.string,
 	fontSize: PropTypes.string,
 	fontWeight: PropTypes.string,
 	className: PropTypes.string,
