@@ -19,7 +19,7 @@ export default class SingletonPositionUpdater {
 				this.mapText +
 					'\n' +
 					this.type +
-					`[${moved.visibility}, ${moved.maturity}]`
+					` [${moved.visibility}, ${moved.maturity}]`
 			);
 		}
 	}
