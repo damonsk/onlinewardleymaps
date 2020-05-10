@@ -1,4 +1,4 @@
-export default class EvolveingToEvolvingLinksStrategy {
+export default class EvolvingToEvolvingLinksStrategy {
 	constructor(links, mapElements) {
 		this.links = links;
 		this.mapElements = mapElements;

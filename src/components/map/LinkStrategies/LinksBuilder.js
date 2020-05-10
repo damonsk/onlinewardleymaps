@@ -4,7 +4,7 @@ import EvolvingToNoneEvolvingEndLinksStrategy from './EvolvingToNoneEvolvingEndL
 import EvolvedToEvolvingLinksStrategy from './EvolvedToEvolvingLinksStrategy';
 import BothEvolvedLinksStrategy from './BothEvolvedLinksStrategy';
 import EvolvedToNoneEvolvingLinksStrategy from './EvolvedToNoneEvolvingLinksStrategy';
-import EvolveingToEvolvingLinksStrategy from './EvolveingToEvolvingLinksStrategy';
+import EvolvingToEvolvingLinksStrategy from './EvolvingToEvolvingLinksStrategy';
 import EvolveToEvolvedLinksStrategy from './EvolveToEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
 
@@ -17,7 +17,7 @@ export default class LinksBuilder {
 			new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
 			new BothEvolvedLinksStrategy(mapLinks, mapElements),
 			new EvolvedToNoneEvolvingLinksStrategy(mapLinks, mapElements),
-			new EvolveingToEvolvingLinksStrategy(mapLinks, mapElements),
+			new EvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
 			new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
 			new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
 		];
