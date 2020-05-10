@@ -1,13 +1,12 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
-import DoubleXAxisPositionUpdater from './DoubleXAxisPositionUpdater';
+import DoubleMaturityPositionUpdater from './positionUpdaters/DoubleMaturityPositionUpdater';
 
 function Pipeline(props) {
 	const positionCalc = new PositionCalculator();
-	const positionUpdater = new DoubleXAxisPositionUpdater(
+	const positionUpdater = new DoubleMaturityPositionUpdater(
 		'pipeline',
-		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
@@ -29,17 +28,21 @@ function Pipeline(props) {
 
 	function endDragX1(moved) {
 		positionUpdater.update(
-			{ x1: moved.x, x2: x2() },
-			props.pipeline.name,
-			props.mapDimensions
+			{
+				maturity1: positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
+				maturity2: props.pipeline.maturity2,
+			},
+			props.pipeline.name
 		);
 	}
 
 	function endDragX2(moved) {
 		positionUpdater.update(
-			{ x1: x1(), x2: moved.x },
-			props.pipeline.name,
-			props.mapDimensions
+			{
+				maturity1: x1(),
+				maturity2: positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
+			},
+			props.pipeline.name
 		);
 	}
 

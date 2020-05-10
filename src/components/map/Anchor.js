@@ -13,7 +13,6 @@ const Anchor = props => {
 	const positionCalc = new PositionCalculator();
 	const positionUpdater = new DefaultPositionUpdater(
 		'anchor',
-		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
@@ -26,7 +25,15 @@ const Anchor = props => {
 		);
 
 	function endDrag(moved) {
-		positionUpdater.update(moved, props.anchor.name, props.mapDimensions);
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update({ visibility, maturity }, props.anchor.name);
 	}
 
 	return (

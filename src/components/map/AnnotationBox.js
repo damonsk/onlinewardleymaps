@@ -11,13 +11,11 @@ function AnnotationElement(props) {
 
 	const defaultPositionUpdater = new DefaultPositionUpdater(
 		identifier,
-		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
 	const positionUpdater = new SingletonPositionUpdater(
 		identifier,
-		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
@@ -35,7 +33,15 @@ function AnnotationElement(props) {
 		);
 
 	function endDrag(moved) {
-		positionUpdater.update(moved, '', props.mapDimensions);
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update({ visibility, maturity }, '');
 	}
 
 	var redraw = function() {

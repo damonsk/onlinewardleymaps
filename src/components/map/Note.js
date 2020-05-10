@@ -1,13 +1,12 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
-import DefaultPositionUpdater from './DefaultPositionUpdater';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 
 function Note(props) {
 	const positionCalc = new PositionCalculator();
 	const positionUpdater = new DefaultPositionUpdater(
 		'note',
-		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
@@ -21,7 +20,15 @@ function Note(props) {
 		);
 
 	function endDrag(moved) {
-		positionUpdater.update(moved, props.note.text, props.mapDimensions);
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update({ visibility, maturity }, props.note.text);
 	}
 
 	return (

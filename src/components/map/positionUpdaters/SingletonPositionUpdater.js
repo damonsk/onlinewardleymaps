@@ -1,7 +1,6 @@
 export default class SingletonPositionUpdater {
-	constructor(type, positionCalc, mapText, mutator) {
+	constructor(type, mapText, mutator) {
 		this.type = type;
-		this.calc = positionCalc;
 		this.mutator = mutator;
 		this.mapText = mapText;
 		this.positionUpdater = null;
@@ -9,22 +8,18 @@ export default class SingletonPositionUpdater {
 	setSuccessor(positionUpdater) {
 		this.positionUpdater = positionUpdater;
 	}
-	update(moved, identifier, mapDimensions) {
+	update(moved, identifier) {
 		if (
 			this.mapText.indexOf(this.type + ' ') > -1 &&
 			this.positionUpdater != null
 		) {
-			this.positionUpdater.update(moved, identifier, mapDimensions);
+			this.positionUpdater.update(moved, identifier);
 		} else {
 			this.mutator(
 				this.mapText +
 					'\n' +
 					this.type +
-					' [' +
-					this.calc.yToVisibility(moved.y, mapDimensions.height) +
-					', ' +
-					this.calc.xToMaturity(moved.x, mapDimensions.width) +
-					']'
+					`[${moved.visibility}, ${moved.maturity}]`
 			);
 		}
 	}

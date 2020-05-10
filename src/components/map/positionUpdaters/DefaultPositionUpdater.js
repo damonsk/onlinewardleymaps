@@ -1,11 +1,10 @@
 export default class DefaultPositionUpdater {
-	constructor(type, positionCalc, mapText, mutator) {
+	constructor(type, mapText, mutator) {
 		this.type = type;
-		this.calc = positionCalc;
 		this.mutator = mutator;
 		this.mapText = mapText;
 	}
-	update(moved, identifier, mapDimensions) {
+	update(moved, identifier) {
 		this.mutator(
 			this.mapText
 				.split('\n')
@@ -17,22 +16,14 @@ export default class DefaultPositionUpdater {
 					) {
 						return line.replace(
 							/\[(.?|.+?)\]/g,
-							`[${this.calc.yToVisibility(
-								moved.y,
-								mapDimensions.height
-							)}, ${this.calc.xToMaturity(moved.x, mapDimensions.width)}]`
+							`[${moved.visibility}, ${moved.maturity}]`
 						);
 					} else if (
 						line.replace(/\s/g, '') ===
 						this.type + identifier.replace(/\s/g, '')
 					) {
 						return (
-							line.trim() +
-							' ' +
-							`[${this.calc.yToVisibility(
-								moved.y,
-								mapDimensions.height
-							)}, ${this.calc.xToMaturity(moved.x, mapDimensions.width)}]`
+							line.trim() + ' ' + `[${moved.visibility}, ${moved.maturity}]`
 						);
 					} else {
 						return line;

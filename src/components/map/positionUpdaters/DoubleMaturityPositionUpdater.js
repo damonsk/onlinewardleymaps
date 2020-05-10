@@ -1,11 +1,10 @@
-export default class DoubleXAxisPositionUpdater {
-	constructor(type, positionCalc, mapText, mutator) {
+export default class DoubleMaturityPositionUpdater {
+	constructor(type, mapText, mutator) {
 		this.type = type;
-		this.calc = positionCalc;
 		this.mutator = mutator;
 		this.mapText = mapText;
 	}
-	update(moved, identifier, mapDimensions) {
+	update(moved, identifier) {
 		this.mutator(
 			this.mapText
 				.split('\n')
@@ -17,22 +16,14 @@ export default class DoubleXAxisPositionUpdater {
 					) {
 						return line.replace(
 							/\[(.?|.+?)\]/g,
-							`[${this.calc.xToMaturity(
-								moved.x1,
-								mapDimensions.width
-							)}, ${this.calc.xToMaturity(moved.x2, mapDimensions.width)}]`
+							`[${moved.maturity1}, ${moved.maturity2}]`
 						);
 					} else if (
 						line.replace(/\s/g, '') ===
 						this.type + identifier.replace(/\s/g, '')
 					) {
 						return (
-							line.trim() +
-							' ' +
-							`[${this.calc.xToMaturity(
-								moved.x1,
-								mapDimensions.height
-							)}, ${this.calc.xToMaturity(moved.x2, mapDimensions.width)}]`
+							line.trim() + ' ' + `[${moved.maturity1}, ${moved.maturity2}]`
 						);
 					} else {
 						return line;
