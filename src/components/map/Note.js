@@ -2,13 +2,16 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 function Note(props) {
 	const positionCalc = new PositionCalculator();
 	const positionUpdater = new DefaultPositionUpdater(
 		'note',
 		props.mapText,
-		props.mutateMapText
+		props.mutateMapText,
+		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
 	);
 
 	const x = () =>
@@ -28,7 +31,10 @@ function Note(props) {
 			moved.x,
 			props.mapDimensions.width
 		);
-		positionUpdater.update({ visibility, maturity }, props.note.text);
+		positionUpdater.update(
+			{ param1: visibility, param2: maturity },
+			props.note.text
+		);
 	}
 
 	return (

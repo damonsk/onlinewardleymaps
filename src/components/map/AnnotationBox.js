@@ -4,6 +4,7 @@ import AnnotationText from './AnnotationText';
 import Movable from './Movable';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
@@ -12,7 +13,8 @@ function AnnotationElement(props) {
 	const defaultPositionUpdater = new DefaultPositionUpdater(
 		identifier,
 		props.mapText,
-		props.mutateMapText
+		props.mutateMapText,
+		[ExistingCoordsMatcher]
 	);
 	const positionUpdater = new SingletonPositionUpdater(
 		identifier,
@@ -41,7 +43,7 @@ function AnnotationElement(props) {
 			moved.x,
 			props.mapDimensions.width
 		);
-		positionUpdater.update({ visibility, maturity }, '');
+		positionUpdater.update({ param1: visibility, param2: maturity }, '');
 	}
 
 	var redraw = function() {

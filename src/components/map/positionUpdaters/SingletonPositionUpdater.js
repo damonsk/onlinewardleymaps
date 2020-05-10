@@ -16,10 +16,7 @@ export default class SingletonPositionUpdater {
 			this.positionUpdater.update(moved, identifier);
 		} else {
 			this.mutator(
-				this.mapText +
-					'\n' +
-					this.type +
-					` [${moved.visibility}, ${moved.maturity}]`
+				this.mapText + '\n' + this.type + ` [${moved.param1}, ${moved.param2}]`
 			);
 		}
 	}

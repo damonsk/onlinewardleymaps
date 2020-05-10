@@ -5,14 +5,15 @@ import PropTypes from 'prop-types';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 
 const Anchor = props => {
+	const identity = 'anchor';
 	const elementKey = (prefix, suffix) => {
-		return `anchor_${prefix != undefined ? prefix + '_' : ''}${
+		return `${identity}_${prefix != undefined ? prefix + '_' : ''}${
 			props.anchor.id
 		}${suffix != undefined ? '_' + suffix : ''}`;
 	};
 	const positionCalc = new PositionCalculator();
 	const positionUpdater = new DefaultPositionUpdater(
-		'anchor',
+		identity,
 		props.mapText,
 		props.mutateMapText
 	);
