@@ -12,6 +12,9 @@ export const Plain = {
 	pipelineArrowWidth: '5',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
+	anchor: {
+		fontSize: '14px',
+	},
 	component: {
 		fill: 'white',
 		stroke: 'black',
