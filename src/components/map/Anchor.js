@@ -1,13 +1,19 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
+import PropTypes from 'prop-types';
 
-function Anchor(props) {
-	var _mapHelper = new MapPositionCalculator();
+const Anchor = props => {
+	const elementKey = (prefix, suffix) => {
+		return `anchor_${prefix != undefined ? prefix + '_' : ''}${
+			props.anchor.id
+		}${suffix != undefined ? '_' + suffix : ''}`;
+	};
+	const positionCalc = new PositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(props.anchor.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
 	const y = () =>
-		_mapHelper.visibilityToY(
+		positionCalc.visibilityToY(
 			props.anchor.visibility,
 			props.mapDimensions.height
 		);
@@ -26,10 +32,10 @@ function Anchor(props) {
 					) {
 						return line.replace(
 							/\[(.?|.+?)\]/g,
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`
@@ -41,10 +47,10 @@ function Anchor(props) {
 						return (
 							line.trim() +
 							' ' +
-							`[${_mapHelper.yToVisibility(
+							`[${positionCalc.yToVisibility(
 								moved.y,
 								props.mapDimensions.height
-							)}, ${_mapHelper.xToMaturity(
+							)}, ${positionCalc.xToMaturity(
 								moved.x,
 								props.mapDimensions.width
 							)}]`
@@ -60,7 +66,7 @@ function Anchor(props) {
 	return (
 		<>
 			<Movable
-				id={'anchor_' + props.anchor.id}
+				id={elementKey()}
 				onMove={endDrag}
 				x={x()}
 				y={y()}
@@ -69,8 +75,9 @@ function Anchor(props) {
 			>
 				{props.anchor.name.length < 15 ? (
 					<text
-						key={'anchor_text_' + props.anchor.id}
-						id={'anchor_text_' + props.anchor.id}
+						key={elementKey('text')}
+						id={elementKey('text')}
+						data-testid={elementKey('text')}
 						className="label"
 						x="0"
 						y="-10"
@@ -82,8 +89,9 @@ function Anchor(props) {
 					</text>
 				) : (
 					<text
-						id={'anchor_text_' + props.anchor.id}
-						key={'anchor_text_' + props.anchor.id}
+						id={elementKey('text')}
+						key={elementKey('text')}
+						data-testid={elementKey('text')}
 						x="0"
 						y="0"
 						transform="translate(0, 0)"
@@ -95,8 +103,8 @@ function Anchor(props) {
 							.split(' ')
 							.map((text, i) => (
 								<tspan
-									key={'anchor_text_span_' + props.anchor.id + '_' + i}
-									id={'anchor_text_span_' + props.anchor.id + '_' + i}
+									key={elementKey('text_span', i)}
+									id={elementKey('text_span', i)}
 									x={0}
 									dy={i > 0 ? 15 : 0}
 									textAnchor="middle"
@@ -109,6 +117,14 @@ function Anchor(props) {
 			</Movable>
 		</>
 	);
-}
+};
+
+Anchor.propTypes = {
+	anchor: PropTypes.object.isRequired,
+	mapDimensions: PropTypes.object.isRequired,
+	mapText: PropTypes.string.isRequired,
+	mutateMapText: PropTypes.func.isRequired,
+	mapStyleDefs: PropTypes.object.isRequired,
+};
 
 export default Anchor;

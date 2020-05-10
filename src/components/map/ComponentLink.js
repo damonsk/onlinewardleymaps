@@ -1,22 +1,28 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import RelativeMovable from './RelativeMovable';
 import MetaPositioner from '../../MetaPositioner';
 var createReactClass = require('create-react-class');
 
 function ComponentLink(props) {
-	const mapCalc = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x1 = () =>
-		mapCalc.maturityToX(props.startElement.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.startElement.maturity,
+			props.mapDimensions.width
+		);
 	const x2 = () =>
-		mapCalc.maturityToX(props.endElement.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.endElement.maturity,
+			props.mapDimensions.width
+		);
 	const y1 = () =>
-		mapCalc.visibilityToY(
+		positionCalc.visibilityToY(
 			props.startElement.visibility,
 			props.mapDimensions.height
 		);
 	const y2 = () =>
-		mapCalc.visibilityToY(
+		positionCalc.visibilityToY(
 			props.endElement.visibility,
 			props.mapDimensions.height
 		);

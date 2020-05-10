@@ -1,11 +1,11 @@
 import MapElements from '@/MapElements';
-import Convert from '@/Convert';
+import Converter from '@/conversion/Converter';
 
 describe('Given Components Have Pipelines', function() {
 	test('When pipeline is specificed then convert output is correct', function() {
 		let actual =
 			'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo [0.15, 0.65]';
-		let result = new Convert().parse(actual);
+		let result = new Converter().parse(actual);
 		let me = new MapElements(result.elements, [], result.pipelines);
 		let pipelines = me.getMapPipelines();
 		let components = me.getMergedElements();

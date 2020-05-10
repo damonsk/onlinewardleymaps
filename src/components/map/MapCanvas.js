@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
-import MapGrid from './MapGrid';
-import MapEvolution from './MapEvolution';
+import MapGrid from './foundation/MapGrid';
+import MapEvolution from './foundation/MapEvolution';
 import Pipeline from './Pipeline';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
@@ -11,6 +11,9 @@ import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
 import Anchor from './Anchor';
 import Note from './Note';
+import LinksBuilder from '../../linkStrategies/LinksBuilder';
+import MapGraphics from './foundation/MapGraphics';
+import MapBackground from './foundation/MapBackground';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(
@@ -25,92 +28,15 @@ function MapCanvas(props) {
 		return elements.find(hasName);
 	};
 
-	const canSatisfyLink = function(l, startElements, endElements) {
-		return (
-			getElementByName(startElements, l.start) != undefined &&
-			getElementByName(endElements, l.end) != undefined
-		);
-	};
-
-	const evolvingEndLinks = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.end) &&
-					mapElements.getNoneEvolvingElements().find(i => i.name == li.start)
-			),
-		[props.mapLinks, props.mapComponents]
+	const linksBuilder = new LinksBuilder(
+		props.mapLinks,
+		mapElements,
+		props.mapAnchors
 	);
-
-	const evolvingToNoneEvolvingEndLinks = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolveElements().find(i => i.name == li.start) &&
-					mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const evolvedToEvolving = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.start) &&
-					mapElements.getEvolveElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const bothEvolved = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.start) &&
-					mapElements.getEvolvedElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const evolveStartLinks = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.start) &&
-					mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const bothEvolving = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolveElements().find(i => i.name == li.start) &&
-					mapElements.getEvolveElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const evolveToEvolved = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolveElements().find(i => i.name == li.start) &&
-					mapElements.getEvolvedElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const anchorsToComponents = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					props.mapAnchors.find(i => i.name == li.start) &&
-					mapElements.getMergedElements(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents, props.mapAnchors]
-	);
+	const links = useMemo(() => linksBuilder.build(), [
+		props.mapLinks,
+		props.mapComponents,
+	]);
 
 	return (
 		<React.Fragment>
@@ -133,79 +59,12 @@ function MapCanvas(props) {
 				xmlns="http://www.w3.org/2000/svg"
 				xmlnsXlink="http://www.w3.org/1999/xlink"
 			>
-				<defs>
-					<linearGradient
-						gradientUnits="objectBoundingBox"
-						id="wardleyGradient"
-						spreadMethod="pad"
-						x1="0%"
-						x2="100%"
-						y1="0%"
-						y2="0%"
-					>
-						<stop
-							offset="0%"
-							style={{ stopColor: 'rgb(196, 196, 196)', stopOpacity: 1 }}
-						/>
-						<stop offset="0.3" style={{ stopColor: 'white', stopOpacity: 1 }} />
-						<stop offset="0.7" style={{ stopColor: 'white' }} />
-						<stop offset={1} style={{ stopColor: 'rgb(196, 196, 196)' }} />
-					</linearGradient>
-					<marker
-						id="arrow"
-						markerWidth="12"
-						markerHeight="12"
-						refX="15"
-						refY="0"
-						viewBox="0 -5 10 10"
-						orient="0"
-					>
-						<path
-							d="M0,-5L10,0L0,5"
-							fill={props.mapStyleDefs.link.evolvedStroke}
-						/>
-					</marker>
-
-					<marker
-						id="graphArrow"
-						markerWidth={12 / props.mapStyleDefs.strokeWidth}
-						markerHeight={12 / props.mapStyleDefs.strokeWidth}
-						refX="9"
-						refY="0"
-						viewBox="0 -5 10 10"
-						orient="0"
-					>
-						<path d="M0,-5L10,0L0,5" fill={props.mapStyleDefs.stroke} />
-					</marker>
-
-					<marker
-						id="pipelineArrow"
-						markerWidth={props.mapStyleDefs.pipelineArrowWidth}
-						markerHeight={props.mapStyleDefs.pipelineArrowHeight}
-						refX="9"
-						refY="0"
-						viewBox="0 -5 10 10"
-						orient="0"
-					>
-						<path
-							d="M0,-5L10,0L0,5"
-							fill={props.mapStyleDefs.pipelineArrowStroke}
-						/>
-					</marker>
-				</defs>
+				<MapGraphics mapStyleDefs={props.mapStyleDefs} />
 				<g id="grid">
-					<rect
-						x="0"
-						width={props.mapDimensions.width}
-						y="0"
-						height={props.mapDimensions.height}
-						id="fillArea"
-						fill={
-							props.mapStyleDefs.className == 'wardley'
-								? 'url(#wardleyGradient)'
-								: 'none'
-						}
-					></rect>
+					<MapBackground
+						mapDimensions={props.mapDimensions}
+						mapStyleClass={props.mapStyleDefs.className}
+					/>
 					<MapGrid
 						mapYAxis={props.mapYAxis}
 						mapDimensions={props.mapDimensions}
@@ -236,85 +95,22 @@ function MapCanvas(props) {
 							)
 						)}
 					</g>
-					{[
-						{
-							id: 'links',
-							links: props.mapLinks,
-							startElements: mapElements.getMergedElements(),
-							endElements: mapElements.getMergedElements(),
-						},
-						{
-							id: 'evolvingToEvolveEndLinks',
-							links: evolvingToNoneEvolvingEndLinks,
-							startElements: mapElements.getEvolveElements(),
-							endElements: mapElements.getNoneEvolvingElements(),
-						},
-						{
-							id: 'evolvingEndLinks',
-							links: evolvingEndLinks,
-							startElements: mapElements.getNoneEvolvingElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvingBothLinks',
-							links: bothEvolved,
-							startElements: mapElements.getEvolvedElements(),
-							endElements: mapElements.getEvolvedElements(),
-						},
-						{
-							id: 'evolvedToEvolvingLinks',
-							links: evolvedToEvolving,
-							startElements: mapElements.getEvolvedElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvingStartLinks',
-							links: evolveStartLinks,
-							startElements: mapElements.getNoneEvolvingElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvingStartEvolvingEndLinks',
-							links: bothEvolving,
-							startElements: mapElements.getEvolveElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvedStartEvolvingEndLinks',
-							links: evolveToEvolved,
-							startElements: mapElements.getEvolveElements(),
-							endElements: mapElements.getEvolvedElements(),
-						},
-						{
-							id: 'anchors',
-							links: anchorsToComponents,
-							startElements: props.mapAnchors,
-							endElements: mapElements.getMergedElements(),
-						},
-					].map(current => {
+
+					{links.map(current => {
 						return (
-							<g id={current.id} key={current.id}>
-								{current.links.map((l, i) =>
-									canSatisfyLink(
-										l,
-										current.startElements,
-										current.endElements
-									) == false ? null : (
-										<ComponentLink
-											setMetaText={props.setMetaText}
-											metaText={props.metaText}
-											mapStyleDefs={props.mapStyleDefs}
-											key={i}
-											mapDimensions={props.mapDimensions}
-											startElement={getElementByName(
-												current.startElements,
-												l.start
-											)}
-											endElement={getElementByName(current.endElements, l.end)}
-											link={l}
-										/>
-									)
-								)}
+							<g id={current.name} key={current.name}>
+								{current.links.map((l, i) => (
+									<ComponentLink
+										setMetaText={props.setMetaText}
+										metaText={props.metaText}
+										mapStyleDefs={props.mapStyleDefs}
+										key={i}
+										mapDimensions={props.mapDimensions}
+										startElement={l.startElement}
+										endElement={l.endElement}
+										link={l.link}
+									/>
+								))}
 							</g>
 						);
 					})}
@@ -362,6 +158,7 @@ function MapCanvas(props) {
 								setMetaText={props.setMetaText}
 								metaText={props.metaText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>
@@ -376,6 +173,7 @@ function MapCanvas(props) {
 								setMetaText={props.setMetaText}
 								metaText={props.metaText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>

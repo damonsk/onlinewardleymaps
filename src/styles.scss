@@ -30,12 +30,27 @@
 		background-color: #e9ecef;
 	}
 }
+div.main {
+	background-color: white;
+	overflow: hidden;
+	border-bottom: 1px solid #6c757d;
+}
+
+.breadcrumb {
+	padding: 2px 1rem;
+	font-size: 0.85rem;
+	border-bottom: 1px solid #6c757d;
+	.jumbotron {
+		height: 682px;
+		padding: 5px;
+		margin-bottom: 2px;
+	}
+}
 
 .tool-bar {
 	background: #e9ecef;
 	padding: 5px;
 	border-left: 1px solid #6c757d;
-	border-bottom: 1px solid #6c757d;
 	.jumbotron {
 		height: 682px;
 		padding: 5px;
@@ -132,7 +147,7 @@ nav.navbar {
 	background: #e9ecef;
 	padding: 5px;
 	border-right: 1px solid #6c757d;
-	border-bottom: 1px solid #6c757d;
+
 	.jumbotron {
 		height: 682px;
 		padding: 5px;
@@ -154,6 +169,56 @@ nav.navbar {
 }
 
 footer {
-	background-color: #f7f7f7;
+	background-color: #24292e;
 	font-size: 86%;
+	p {
+		color: #b5b5b5;
+	}
+	a {
+		color: white;
+		&:hover {
+			color: hsla(0, 0%, 100%, 0.7);
+			text-decoration: none;
+		}
+	}
+	.gh-icon {
+		fill: white;
+	}
+}
+
+body.dark {
+	color: #9da5b4;
+	background-color: #282c34;
+	nav.navbar {
+		background-color: #2f333d;
+		#owm-build {
+			color: #9da5b4;
+		}
+	}
+	h5#title {
+		color: black;
+	}
+	nav.bc {
+		ol.breadcrumb {
+			background-color: #21252b;
+			color: #9da5b4;
+			a#url {
+				color: #d7dae0;
+			}
+		}
+	}
+
+	div.main {
+		background-color: white;
+		overflow: hidden;
+		border-bottom: 1px solid #6c757d;
+	}
+
+	div.map-view {
+		background-color: white;
+	}
+
+	#htmPane {
+		//background: #282c34;
+	}
 }

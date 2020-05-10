@@ -39,7 +39,7 @@ export const ExampleMap =
 	'\r\n' +
 	'anchor Public [0.95, 0.78]' +
 	'\r\n' +
-	'component Cup of Tea [0.79, 0.61]' +
+	'component Cup of Tea [0.79, 0.61] label [19, -4]' +
 	'\r\n' +
 	'component Cup [0.73, 0.78]' +
 	'\r\n' +
@@ -49,7 +49,7 @@ export const ExampleMap =
 	'\r\n' +
 	'component Water [0.38, 0.82]' +
 	'\r\n' +
-	'component Kettle [0.43, 0.35] label [-49, 3]' +
+	'component Kettle [0.43, 0.35] label [-57, 4]' +
 	'\r\n' +
 	'evolve Kettle 0.62 label [16, 7]' +
 	'\r\n' +
@@ -78,10 +78,10 @@ export const ExampleMap =
 	'\r\n' +
 	'annotation 2 [0.48, 0.85] Hot water is obvious and well known' +
 	'\r\n' +
-	'annotations [0.97, 0.02]' +
+	'annotations [0.60, 0.02]' +
 	'\r\n' +
 	'\r\n' +
 	'note +a generic note appeared [0.23, 0.33]' +
 	'\r\n' +
 	'\r\n' +
-	'style colour';
+	'style wardley';
