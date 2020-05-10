@@ -3,6 +3,10 @@ import ComponentText from './ComponentText';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import Inertia from './Inertia';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoordMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 
 function MapComponent(props) {
 	const positionCalc = new PositionCalculator();
@@ -14,75 +18,70 @@ function MapComponent(props) {
 			props.mapDimensions.height
 		);
 
+	const notEvolvedNoLabelMatcher = {
+		matcher: (line, identifier, type) => {
+			return (
+				props.element.evolved == undefined &&
+				ExistingCoordsMatcher.matcher(line, identifier, type) &&
+				!ExistingCoordsMatcher.matcher(line, '', 'label')
+			);
+		},
+		action: (line, moved) => {
+			return ExistingCoordsMatcher.action(line, moved);
+		},
+	};
+
+	const notEvolvedWithLabelMatcher = {
+		matcher: (line, identifier, type) => {
+			return (
+				props.element.evolved == undefined &&
+				ExistingCoordsMatcher.matcher(line, identifier, type) &&
+				ExistingCoordsMatcher.matcher(line, '', 'label')
+			);
+		},
+		action: (line, moved) => {
+			const parts = line.split('label');
+			const newPart = ExistingCoordsMatcher.action(parts[0], moved);
+			return newPart + 'label' + parts[1];
+		},
+	};
+
+	const evolvedMatcher = {
+		matcher: (line, identifier) => {
+			return (
+				props.element.evolved &&
+				ExistingSingleCoordMatcher.matcher(line, identifier, 'evolve')
+			);
+		},
+		action: (line, moved) => {
+			return ExistingSingleCoordMatcher.action(line, moved);
+		},
+	};
+
+	const positionUpdater = new DefaultPositionUpdater(
+		'component',
+		props.mapText,
+		props.mutateMapText,
+		[
+			notEvolvedNoLabelMatcher,
+			notEvolvedWithLabelMatcher,
+			evolvedMatcher,
+			NotDefinedCoordsMatcher,
+		]
+	);
+
 	function endDrag(moved) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						props.element.evolved == undefined &&
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'component' + props.element.name.replace(/\s/g, '') + '['
-							) !== -1
-					) {
-						if (line.replace(/\s/g, '').indexOf('label[') > -1) {
-							let parts = line.split('label');
-							let newPart = parts[0].replace(
-								/\[(.?|.+?)\]/g,
-								`[${positionCalc.yToVisibility(
-									moved.y,
-									props.mapDimensions.height
-								)}, ${positionCalc.xToMaturity(
-									moved.x,
-									props.mapDimensions.width
-								)}]`
-							);
-							return newPart + 'label' + parts[1];
-						} else {
-							return line.replace(
-								/\[(.?|.+?)\]/g,
-								`[${positionCalc.yToVisibility(
-									moved.y,
-									props.mapDimensions.height
-								)}, ${positionCalc.xToMaturity(
-									moved.x,
-									props.mapDimensions.width
-								)}]`
-							);
-						}
-					} else if (
-						props.element.evolved == undefined &&
-						line.replace(/\s/g, '') ===
-							'component' + props.element.name.replace(/\s/g, '')
-					) {
-						return (
-							line.trim() +
-							' ' +
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else if (
-						props.element.evolved &&
-						line
-							.replace(/\s/g, '')
-							.indexOf('evolve' + props.element.name.replace(/\s/g, '')) !== -1
-					) {
-						return line.replace(
-							/\s([0-9]?\.[0-9]+[0-9]?)+/g,
-							` ${positionCalc.xToMaturity(moved.x, props.mapDimensions.width)}`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update(
+			{ param1: visibility, param2: maturity },
+			props.element.name
 		);
 	}
 
