@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import PositionCalculator from './PositionCalculator';
-import AnnotationText from './AnnotationText';
+import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
 import Movable from './Movable';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
@@ -91,28 +92,21 @@ function AnnotationElement(props) {
 			x={x()}
 			y={y()}
 		>
-			<text id={'annotationsBoxTextContainer'}>
-				<tspan
-					className="label draggable"
-					textAnchor="start"
-					dy={0}
-					x={2}
-					fill={props.mapStyleDefs.annotations.boxTextColour}
-					textDecoration="underline"
-				>
-					Annotations:
-				</tspan>
-				{props.annotations.map((a, i) => {
-					return (
-						<AnnotationText
-							annotation={a}
-							key={i}
-							parentIndex={i}
-							mapStyleDefs={props.mapStyleDefs}
-						/>
-					);
-				})}
-			</text>
+			<AnnotationBoxSymbol
+				id={'annotationsBoxTextContainer'}
+				dy={0}
+				x={2}
+				fill={props.mapStyleDefs.annotations.boxTextColour}
+			>
+				{props.annotations.map((a, i) => (
+					<AnnotationTextSymbol
+						key={i}
+						annotation={a}
+						parentIndex={i}
+						mapStyleDefs={props.mapStyleDefs}
+					/>
+				))}
+			</AnnotationBoxSymbol>
 		</Movable>
 	);
 }

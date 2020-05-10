@@ -1,6 +1,7 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
+import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
@@ -80,24 +81,10 @@ function AnnotationElement(props) {
 			fixedY={false}
 			fixedX={false}
 		>
-			<circle
-				cx="-0"
-				cy="0"
-				className="draggable"
-				r="15"
-				fill={props.mapStyleDefs.annotations.fill}
-				stroke={props.mapStyleDefs.annotations.stroke}
-				strokeWidth={props.mapStyleDefs.annotations.strokeWidth}
+			<AnnotationElementSymbol
+				annotation={props.annotation}
+				styles={props.mapStyleDefs.annotations}
 			/>
-			<text
-				x="-5"
-				y="5"
-				className="label draggable"
-				textAnchor="start"
-				fill={props.mapStyleDefs.annotations.text}
-			>
-				{props.annotation.number}
-			</text>
 		</Movable>
 	);
 }

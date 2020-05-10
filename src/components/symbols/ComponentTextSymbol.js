@@ -24,21 +24,22 @@ const ComponentTextSymbol = props => {
 		text,
 		evolved,
 		className = 'label',
-		fontWeight = '14px',
+		note,
+		fontSize,
+		fontWeight,
 		textAnchor,
 		styles = {},
 	} = props;
 	const fill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
-	const displayText = isLong ? trimText(id, text) : text;
+	const trimmedTex = isLong ? trimText(id, text) : text;
 	const transform = isLong ? 'translate(30, 10)' : '';
-	const fontSize = styles.fontSize || '14px';
 	return (
 		<text
 			id={id}
 			data-testid={id}
-			fontWeight={fontWeight}
-			fontSize={fontSize}
+			fontWeight={fontWeight || styles.fontWeight || '14px'}
+			fontSize={fontSize || styles.fontSize || '14px'}
 			className={className}
 			textAnchor={textAnchor}
 			x={x}
@@ -46,7 +47,7 @@ const ComponentTextSymbol = props => {
 			transform={transform}
 			fill={fill}
 		>
-			{displayText}
+			{note || trimmedTex}
 		</text>
 	);
 };
@@ -55,8 +56,9 @@ ComponentTextSymbol.propTypes = {
 	id: PropTypes.string,
 	x: PropTypes.string,
 	y: PropTypes.string,
-	text: PropTypes.string.isRequired,
-	mapStyleDefs: PropTypes.object.isRequired,
+	text: PropTypes.string,
+	styles: PropTypes.object.isRequired,
+	fontSize: PropTypes.string,
 	fontWeight: PropTypes.string,
 	className: PropTypes.string,
 	evolved: PropTypes.bool,

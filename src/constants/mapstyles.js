@@ -45,6 +45,11 @@ export const Plain = {
 		boxFill: '#FFFFFF',
 		boxTextColour: 'black',
 	},
+	note: {
+		fontWeight: 'bold',
+		fontSize: '12px',
+		fill: 'black',
+	},
 };
 
 export const Handwritten = mergeIntoDefault({
