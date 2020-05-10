@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
-import MapGrid from './MapGrid';
-import MapEvolution from './MapEvolution';
+import MapGrid from './foundation/MapGrid';
+import MapEvolution from './foundation/MapEvolution';
 import Pipeline from './Pipeline';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
@@ -12,7 +12,8 @@ import AnnotationBox from './AnnotationBox';
 import Anchor from './Anchor';
 import Note from './Note';
 import LinksBuilder from './LinkStrategies/LinksBuilder';
-import MapGraphics from './MapGraphics';
+import MapGraphics from './foundation/MapGraphics';
+import MapBackground from './foundation/MapBackground';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(
@@ -60,18 +61,10 @@ function MapCanvas(props) {
 			>
 				<MapGraphics mapStyleDefs={props.mapStyleDefs} />
 				<g id="grid">
-					<rect
-						x="0"
-						width={props.mapDimensions.width}
-						y="0"
-						height={props.mapDimensions.height}
-						id="fillArea"
-						fill={
-							props.mapStyleDefs.className == 'wardley'
-								? 'url(#wardleyGradient)'
-								: 'none'
-						}
-					></rect>
+					<MapBackground
+						mapDimensions={props.mapDimensions}
+						mapStyleClass={props.mapStyleDefs.className}
+					/>
 					<MapGrid
 						mapYAxis={props.mapYAxis}
 						mapDimensions={props.mapDimensions}
