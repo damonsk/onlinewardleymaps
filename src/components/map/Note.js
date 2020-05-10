@@ -1,9 +1,17 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
+import DefaultPositionUpdater from './DefaultPositionUpdater';
 
 function Note(props) {
-	var positionCalc = new PositionCalculator();
+	const positionCalc = new PositionCalculator();
+	const positionUpdater = new DefaultPositionUpdater(
+		'note',
+		positionCalc,
+		props.mapText,
+		props.mutateMapText
+	);
+
 	const x = () =>
 		positionCalc.maturityToX(props.note.maturity, props.mapDimensions.width);
 	const y = () =>
@@ -13,46 +21,7 @@ function Note(props) {
 		);
 
 	function endDrag(moved) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf('note' + props.note.text.replace(/\s/g, '') + '[') !== -1
-					) {
-						return line.replace(
-							/\[(.?|.+?)\]/g,
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else if (
-						line.replace(/\s/g, '') ===
-						'note' + props.note.text.replace(/\s/g, '')
-					) {
-						return (
-							line.trim() +
-							' ' +
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
-		);
+		positionUpdater.update(moved, props.note.text, props.mapDimensions);
 	}
 
 	return (

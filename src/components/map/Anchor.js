@@ -2,6 +2,7 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
+import DefaultPositionUpdater from './DefaultPositionUpdater';
 
 const Anchor = props => {
 	const elementKey = (prefix, suffix) => {
@@ -10,6 +11,12 @@ const Anchor = props => {
 		}${suffix != undefined ? '_' + suffix : ''}`;
 	};
 	const positionCalc = new PositionCalculator();
+	const positionUpdater = new DefaultPositionUpdater(
+		'anchor',
+		positionCalc,
+		props.mapText,
+		props.mutateMapText
+	);
 	const x = () =>
 		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
 	const y = () =>
@@ -19,48 +26,7 @@ const Anchor = props => {
 		);
 
 	function endDrag(moved) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'anchor' + props.anchor.name.replace(/\s/g, '') + '['
-							) !== -1
-					) {
-						return line.replace(
-							/\[(.?|.+?)\]/g,
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else if (
-						line.replace(/\s/g, '') ===
-						'anchor' + props.anchor.name.replace(/\s/g, '')
-					) {
-						return (
-							line.trim() +
-							' ' +
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
-		);
+		positionUpdater.update(moved, props.anchor.name, props.mapDimensions);
 	}
 
 	return (

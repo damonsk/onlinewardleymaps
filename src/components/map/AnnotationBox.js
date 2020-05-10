@@ -2,9 +2,26 @@ import React, { useEffect } from 'react';
 import PositionCalculator from './PositionCalculator';
 import AnnotationText from './AnnotationText';
 import Movable from './Movable';
+import DefaultPositionUpdater from './DefaultPositionUpdater';
+import NotDefinedPositionUpdater from './NotDefinedPositionUpdater';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
+
+	const defaultPositionUpdater = new DefaultPositionUpdater(
+		'annotations',
+		positionCalc,
+		props.mapText,
+		props.mutateMapText
+	);
+	const notDefinedPositionUpdater = new NotDefinedPositionUpdater(
+		'annotations',
+		positionCalc,
+		props.mapText,
+		props.mutateMapText
+	);
+	notDefinedPositionUpdater.setSuccessor(defaultPositionUpdater);
+
 	const x = () =>
 		positionCalc.maturityToX(
 			props.position.maturity,
@@ -17,39 +34,7 @@ function AnnotationElement(props) {
 		);
 
 	function endDrag(moved) {
-		if (props.mapText.indexOf('annotations ') > -1) {
-			props.mutateMapText(
-				props.mapText
-					.split('\n')
-					.map(line => {
-						if (line.replace(/\s/g, '').indexOf('annotations') !== -1) {
-							return line.replace(
-								/\[(.+?)\]/g,
-								`[${positionCalc.yToVisibility(
-									moved.y,
-									props.mapDimensions.height
-								)}, ${positionCalc.xToMaturity(
-									moved.x,
-									props.mapDimensions.width
-								)}]`
-							);
-						} else {
-							return line;
-						}
-					})
-					.join('\n')
-			);
-		} else {
-			props.mutateMapText(
-				props.mapText +
-					'\n' +
-					'annotations [' +
-					positionCalc.yToVisibility(moved.y, props.mapDimensions.height) +
-					', ' +
-					positionCalc.xToMaturity(moved.x, props.mapDimensions.width) +
-					']'
-			);
-		}
+		notDefinedPositionUpdater.update(moved, '', props.mapDimensions);
 	}
 
 	var redraw = function() {
