@@ -1,4 +1,4 @@
-export default class NotDefinedPositionUpdater {
+export default class SingletonPositionUpdater {
 	constructor(type, positionCalc, mapText, mutator) {
 		this.type = type;
 		this.calc = positionCalc;

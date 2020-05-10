@@ -3,24 +3,25 @@ import PositionCalculator from './PositionCalculator';
 import AnnotationText from './AnnotationText';
 import Movable from './Movable';
 import DefaultPositionUpdater from './DefaultPositionUpdater';
-import NotDefinedPositionUpdater from './NotDefinedPositionUpdater';
+import SingletonPositionUpdater from './SingletonPositionUpdater';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
+	const identifier = 'annotations';
 
 	const defaultPositionUpdater = new DefaultPositionUpdater(
-		'annotations',
+		identifier,
 		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
-	const notDefinedPositionUpdater = new NotDefinedPositionUpdater(
-		'annotations',
+	const positionUpdater = new SingletonPositionUpdater(
+		identifier,
 		positionCalc,
 		props.mapText,
 		props.mutateMapText
 	);
-	notDefinedPositionUpdater.setSuccessor(defaultPositionUpdater);
+	positionUpdater.setSuccessor(defaultPositionUpdater);
 
 	const x = () =>
 		positionCalc.maturityToX(
@@ -34,7 +35,7 @@ function AnnotationElement(props) {
 		);
 
 	function endDrag(moved) {
-		notDefinedPositionUpdater.update(moved, '', props.mapDimensions);
+		positionUpdater.update(moved, '', props.mapDimensions);
 	}
 
 	var redraw = function() {
