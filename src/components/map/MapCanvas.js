@@ -11,6 +11,7 @@ import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
 import Anchor from './Anchor';
 import Note from './Note';
+import LinksBuilder from './LinkStrategies/LinksBuilder';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(
@@ -25,92 +26,15 @@ function MapCanvas(props) {
 		return elements.find(hasName);
 	};
 
-	const canSatisfyLink = function(l, startElements, endElements) {
-		return (
-			getElementByName(startElements, l.start) != undefined &&
-			getElementByName(endElements, l.end) != undefined
-		);
-	};
-
-	const evolvingEndLinks = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.end) &&
-					mapElements.getNoneEvolvingElements().find(i => i.name == li.start)
-			),
-		[props.mapLinks, props.mapComponents]
+	const linksBuilder = new LinksBuilder(
+		props.mapLinks,
+		mapElements,
+		props.mapAnchors
 	);
-
-	const evolvingToNoneEvolvingEndLinks = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolveElements().find(i => i.name == li.start) &&
-					mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const evolvedToEvolving = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.start) &&
-					mapElements.getEvolveElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const bothEvolved = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.start) &&
-					mapElements.getEvolvedElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const evolveStartLinks = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolvedElements().find(i => i.name == li.start) &&
-					mapElements.getNoneEvolvingElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const bothEvolving = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolveElements().find(i => i.name == li.start) &&
-					mapElements.getEvolveElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const evolveToEvolved = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					mapElements.getEvolveElements().find(i => i.name == li.start) &&
-					mapElements.getEvolvedElements().find(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents]
-	);
-
-	const anchorsToComponents = useMemo(
-		() =>
-			props.mapLinks.filter(
-				li =>
-					props.mapAnchors.find(i => i.name == li.start) &&
-					mapElements.getMergedElements(i => i.name == li.end)
-			),
-		[props.mapLinks, props.mapComponents, props.mapAnchors]
-	);
+	const links = useMemo(() => linksBuilder.build(), [
+		props.mapLinks,
+		props.mapComponents,
+	]);
 
 	return (
 		<React.Fragment>
@@ -236,85 +160,22 @@ function MapCanvas(props) {
 							)
 						)}
 					</g>
-					{[
-						{
-							id: 'links',
-							links: props.mapLinks,
-							startElements: mapElements.getMergedElements(),
-							endElements: mapElements.getMergedElements(),
-						},
-						{
-							id: 'evolvingToEvolveEndLinks',
-							links: evolvingToNoneEvolvingEndLinks,
-							startElements: mapElements.getEvolveElements(),
-							endElements: mapElements.getNoneEvolvingElements(),
-						},
-						{
-							id: 'evolvingEndLinks',
-							links: evolvingEndLinks,
-							startElements: mapElements.getNoneEvolvingElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvingBothLinks',
-							links: bothEvolved,
-							startElements: mapElements.getEvolvedElements(),
-							endElements: mapElements.getEvolvedElements(),
-						},
-						{
-							id: 'evolvedToEvolvingLinks',
-							links: evolvedToEvolving,
-							startElements: mapElements.getEvolvedElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvingStartLinks',
-							links: evolveStartLinks,
-							startElements: mapElements.getNoneEvolvingElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvingStartEvolvingEndLinks',
-							links: bothEvolving,
-							startElements: mapElements.getEvolveElements(),
-							endElements: mapElements.getEvolveElements(),
-						},
-						{
-							id: 'evolvedStartEvolvingEndLinks',
-							links: evolveToEvolved,
-							startElements: mapElements.getEvolveElements(),
-							endElements: mapElements.getEvolvedElements(),
-						},
-						{
-							id: 'anchors',
-							links: anchorsToComponents,
-							startElements: props.mapAnchors,
-							endElements: mapElements.getMergedElements(),
-						},
-					].map(current => {
+
+					{links.map(current => {
 						return (
-							<g id={current.id} key={current.id}>
-								{current.links.map((l, i) =>
-									canSatisfyLink(
-										l,
-										current.startElements,
-										current.endElements
-									) == false ? null : (
-										<ComponentLink
-											setMetaText={props.setMetaText}
-											metaText={props.metaText}
-											mapStyleDefs={props.mapStyleDefs}
-											key={i}
-											mapDimensions={props.mapDimensions}
-											startElement={getElementByName(
-												current.startElements,
-												l.start
-											)}
-											endElement={getElementByName(current.endElements, l.end)}
-											link={l}
-										/>
-									)
-								)}
+							<g id={current.name} key={current.name}>
+								{current.links.map((l, i) => (
+									<ComponentLink
+										setMetaText={props.setMetaText}
+										metaText={props.metaText}
+										mapStyleDefs={props.mapStyleDefs}
+										key={i}
+										mapDimensions={props.mapDimensions}
+										startElement={l.startElement}
+										endElement={l.endElement}
+										link={l.link}
+									/>
+								))}
 							</g>
 						);
 					})}
