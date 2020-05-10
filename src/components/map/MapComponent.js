@@ -101,14 +101,14 @@ function MapComponent(props) {
 				{props.element.pipeline ? (
 					<PipelineComponentSymbol
 						id={'element_square_' + props.element.id}
-						mapStyleDefs={props.mapStyleDefs}
+						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
 						onClick={() => props.setHighlightLine(props.element.line)}
 					/>
 				) : (
 					<ComponentSymbol
 						id={'element_circle_' + props.element.id}
-						mapStyleDefs={props.mapStyleDefs}
+						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
 						onClick={() => props.setHighlightLine(props.element.line)}
 					/>

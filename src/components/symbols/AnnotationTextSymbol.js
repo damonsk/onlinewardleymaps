@@ -2,15 +2,17 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
 function AnnotationTextSymbol(props) {
+	const { id, annotation, styles } = props;
 	return (
 		<tspan
+			id={id}
 			className="label"
 			textAnchor="start"
 			dy={18}
 			x={0}
-			fill={props.mapStyleDefs.annotations.boxTextColour}
+			fill={styles.boxTextColour}
 		>
-			&nbsp;{props.annotation.number}. {props.annotation.text}&nbsp;
+			&nbsp;{annotation.number}. {annotation.text}&nbsp;
 		</tspan>
 	);
 }
@@ -23,5 +25,5 @@ AnnotationTextSymbol.propTypes = {
 		number: PropTypes.number,
 		text: PropTypes.string,
 	}),
-	mapStyleDefs: PropTypes.object.isRequired,
+	styles: PropTypes.object.isRequired,
 };

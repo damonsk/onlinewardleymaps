@@ -61,12 +61,12 @@ function AnnotationElement(props) {
 		rect.setAttribute('class', 'draggable');
 		rect.setAttribute('width', SVGRect.width + 4);
 		rect.setAttribute('height', SVGRect.height + 4);
-		rect.setAttribute('stroke', props.mapStyleDefs.annotations.boxStroke);
+		rect.setAttribute('stroke', props.mapStyleDefs.annotation.boxStroke);
 		rect.setAttribute(
 			'stroke-width',
-			props.mapStyleDefs.annotations.boxStrokeWidth
+			props.mapStyleDefs.annotation.boxStrokeWidth
 		);
-		rect.setAttribute('fill', props.mapStyleDefs.annotations.boxFill);
+		rect.setAttribute('fill', props.mapStyleDefs.annotation.boxFill);
 		ctx.insertBefore(
 			rect,
 			document.getElementById('annotationsBoxTextContainer')
@@ -96,14 +96,14 @@ function AnnotationElement(props) {
 				id={'annotationsBoxTextContainer'}
 				dy={0}
 				x={2}
-				fill={props.mapStyleDefs.annotations.boxTextColour}
+				styles={props.mapStyleDefs.annotation}
 			>
 				{props.annotations.map((a, i) => (
 					<AnnotationTextSymbol
 						key={i}
 						annotation={a}
 						parentIndex={i}
-						mapStyleDefs={props.mapStyleDefs}
+						styles={props.mapStyleDefs.annotation}
 					/>
 				))}
 			</AnnotationBoxSymbol>

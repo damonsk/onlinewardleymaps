@@ -83,7 +83,7 @@ function AnnotationElement(props) {
 		>
 			<AnnotationElementSymbol
 				annotation={props.annotation}
-				styles={props.mapStyleDefs.annotations}
+				styles={props.mapStyleDefs.annotation}
 			/>
 		</Movable>
 	);

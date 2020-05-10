@@ -35,7 +35,7 @@ export const Plain = {
 		flow: '#99c5ee9e',
 		flowStrokeWidth: 10,
 	},
-	annotations: {
+	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
 		fill: 'white',
@@ -82,7 +82,7 @@ export const Handwritten = mergeIntoDefault({
 		flow: '#99c5ee9e',
 		flowStrokeWidth: 10,
 	},
-	annotations: {
+	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
 		fill: 'white',
@@ -124,7 +124,7 @@ export const Wardley = mergeIntoDefault({
 		flow: '#99c5ee9e',
 		flowStrokeWidth: 10,
 	},
-	annotations: {
+	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
 		fill: 'white',
@@ -166,7 +166,7 @@ export const Colour = mergeIntoDefault({
 		flow: '#99c5ee9e',
 		flowStrokeWidth: 10,
 	},
-	annotations: {
+	annotation: {
 		stroke: '#015fa5',
 		strokeWidth: 2,
 		fill: '#99c5ee',

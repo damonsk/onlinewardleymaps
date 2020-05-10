@@ -71,7 +71,6 @@ function Pipeline(props) {
 					id={'pipeline_circle_x1_' + props.pipeline.id}
 					cx="10"
 					cy="12"
-					mapStyleDefs={props.mapStyleDefs}
 					styles={props.mapStyleDefs.component}
 					onClick={() => props.setHighlightLine(props.pipeline.line)}
 				/>
@@ -88,7 +87,6 @@ function Pipeline(props) {
 					id={'pipeline_circle_x2_' + props.pipeline.id}
 					cx={'-10'}
 					cy="12"
-					mapStyleDefs={props.mapStyleDefs}
 					styles={props.mapStyleDefs.component}
 					onClick={() => props.setHighlightLine(props.pipeline.line)}
 				/>
