@@ -1,24 +1,22 @@
-import Convert from './convert';
+import ComponentExtractionStrategy from '../conversion/ComponentExtractionStrategy';
 
-export default class Migrations {
+export default class EvolveMigrationStrategy {
 	constructor(mapText) {
 		this.mapText = mapText;
 	}
-
 	apply() {
-		let converter = new Convert();
 		let trimmed = this.mapText.trim();
 		let elementsAsArray = trimmed.split('\n');
 		let rebuild = [];
 		let changed = false;
 		let changeSets = [];
-
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			let currentLine = elementsAsArray[i];
 			if (currentLine.indexOf('component ') == 0) {
 				if (currentLine.indexOf('evolve ') > -1) {
 					changed = true;
-					let parsed = converter.elements(currentLine)[0];
+					let parsed = new ComponentExtractionStrategy(currentLine).apply()
+						.elements[0];
 					let evolveLine =
 						'evolve ' + parsed.name + ' ' + parsed.evolveMaturity;
 					let afterLine = currentLine.replace(

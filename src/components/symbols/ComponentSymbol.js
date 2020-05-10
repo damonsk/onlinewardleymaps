@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
 const ComponentSymbol = props => {
-	const { id, cx, cy, evolved } = props;
+	const { id, cx, cy, evolved, onClick } = props;
 	const { component = {} } = props.mapStyleDefs || {};
 	const fill = evolved ? component.evolvedFill : component.fill;
 	const stroke = evolved ? component.evolved : component.stroke;
@@ -16,11 +16,13 @@ const ComponentSymbol = props => {
 			r={component.radius}
 			stroke={stroke}
 			fill={fill}
+			onClick={onClick}
 		/>
 	);
 };
 
 ComponentSymbol.propTypes = {
+	onClick: PropTypes.func,
 	id: PropTypes.string,
 	cx: PropTypes.string,
 	cy: PropTypes.string,

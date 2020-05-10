@@ -1,13 +1,16 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 
 function AnnotationElement(props) {
-	var _mapHelper = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x = () =>
-		_mapHelper.maturityToX(props.occurance.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.occurance.maturity,
+			props.mapDimensions.width
+		);
 	const y = () =>
-		_mapHelper.visibilityToY(
+		positionCalc.visibilityToY(
 			props.occurance.visibility,
 			props.mapDimensions.height
 		);
@@ -29,9 +32,12 @@ function AnnotationElement(props) {
 								.split(']]')[0]
 								.split('],[');
 							extractedOccurances[props.occuranceIndex] =
-								_mapHelper.yToVisibility(moved.y, props.mapDimensions.height) +
+								positionCalc.yToVisibility(
+									moved.y,
+									props.mapDimensions.height
+								) +
 								',' +
-								_mapHelper.xToMaturity(moved.x, props.mapDimensions.width);
+								positionCalc.xToMaturity(moved.x, props.mapDimensions.width);
 							var beforeCoords = line.split('[')[0].trim();
 							var afterCoords = line.substr(
 								line.lastIndexOf(']'),
@@ -48,10 +54,10 @@ function AnnotationElement(props) {
 						} else {
 							return line.replace(
 								/\[(.+?)\]/g,
-								`[${_mapHelper.yToVisibility(
+								`[${positionCalc.yToVisibility(
 									moved.y,
 									props.mapDimensions.height
-								)}, ${_mapHelper.xToMaturity(
+								)}, ${positionCalc.xToMaturity(
 									moved.x,
 									props.mapDimensions.width
 								)}]`

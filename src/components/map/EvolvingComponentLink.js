@@ -1,20 +1,26 @@
 import React from 'react';
-import MapPositionCalculator from '../../MapPositionCalculator';
+import PositionCalculator from './PositionCalculator';
 import Inertia from './Inertia';
 
 function EvolvingComponentLink(props) {
-	const mapCalc = new MapPositionCalculator();
+	const positionCalc = new PositionCalculator();
 	const x1 = () =>
-		mapCalc.maturityToX(props.startElement.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.startElement.maturity,
+			props.mapDimensions.width
+		);
 	const x2 = () =>
-		mapCalc.maturityToX(props.endElement.maturity, props.mapDimensions.width);
+		positionCalc.maturityToX(
+			props.endElement.maturity,
+			props.mapDimensions.width
+		);
 	const y1 = () =>
-		mapCalc.visibilityToY(
+		positionCalc.visibilityToY(
 			props.startElement.visibility,
 			props.mapDimensions.height
 		);
 	const y2 = () =>
-		mapCalc.visibilityToY(
+		positionCalc.visibilityToY(
 			props.endElement.visibility,
 			props.mapDimensions.height
 		);
@@ -22,36 +28,36 @@ function EvolvingComponentLink(props) {
 		var boundary = x1;
 		if (
 			props.startElement.maturity >=
-			mapCalc.xToMaturity(
+			positionCalc.xToMaturity(
 				(props.mapDimensions.width / 20) * props.evolutionOffsets.custom,
 				props.mapDimensions.width
 			)
 		) {
-			boundary = mapCalc.xToMaturity(
+			boundary = positionCalc.xToMaturity(
 				(props.mapDimensions.width / 20) * props.evolutionOffsets.custom,
 				props.mapDimensions.width
 			);
 		}
 		if (
 			props.startElement.maturity >=
-			mapCalc.xToMaturity(
+			positionCalc.xToMaturity(
 				(props.mapDimensions.width / 20) * props.evolutionOffsets.product,
 				props.mapDimensions.width
 			)
 		) {
-			boundary = mapCalc.xToMaturity(
+			boundary = positionCalc.xToMaturity(
 				(props.mapDimensions.width / 20) * props.evolutionOffsets.product,
 				props.mapDimensions.width
 			);
 		}
 		if (
 			props.startElement.maturity >=
-			mapCalc.xToMaturity(
+			positionCalc.xToMaturity(
 				(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity,
 				props.mapDimensions.width
 			)
 		) {
-			boundary = mapCalc.xToMaturity(
+			boundary = positionCalc.xToMaturity(
 				(props.mapDimensions.width / 20) * props.evolutionOffsets.commodity,
 				props.mapDimensions.width
 			);

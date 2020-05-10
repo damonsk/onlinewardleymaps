@@ -35,6 +35,7 @@ class MapView extends Component {
 							setMetaText={this.props.setMetaText}
 							metaText={this.props.metaText}
 							evolutionOffsets={this.props.evolutionOffsets}
+							setHighlightLine={this.props.setHighlightLine}
 						/>
 					</div>
 				</div>

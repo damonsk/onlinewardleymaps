@@ -1,4 +1,4 @@
-export default class MapPositionCalculator {
+export default class PositionCalculator {
 	visibilityToY(visibility, mapHeight) {
 		return (1 - visibility) * mapHeight;
 	}

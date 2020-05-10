@@ -9,6 +9,7 @@ const PipelineSymbol = props => {
 		width = '10',
 		height = '10',
 		evolved,
+		onClick,
 	} = props;
 	const { component = {} } = props.mapStyleDefs || {};
 	const fill = evolved ? component.evolvedFill : component.fill;
@@ -16,6 +17,7 @@ const PipelineSymbol = props => {
 
 	return (
 		<rect
+			onClick={onClick}
 			id={id}
 			x={x}
 			y={y}
@@ -36,6 +38,7 @@ PipelineSymbol.propTypes = {
 	height: PropTypes.string,
 	mapStyleDefs: PropTypes.object.isRequired,
 	evolved: PropTypes.bool,
+	onClick: PropTypes.func,
 };
 
 export default memo(PipelineSymbol);
