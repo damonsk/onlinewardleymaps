@@ -55,7 +55,7 @@ ComponentTextSymbol.propTypes = {
 	y: PropTypes.string,
 	text: PropTypes.string.isRequired,
 	mapStyleDefs: PropTypes.object.isRequired,
-	fontWeight: PropTypes.string.isRequired,
+	fontWeight: PropTypes.string,
 	className: PropTypes.string,
 	evolved: PropTypes.bool,
 };
