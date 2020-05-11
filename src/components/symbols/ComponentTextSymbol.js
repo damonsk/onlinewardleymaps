@@ -33,23 +33,25 @@ const ComponentTextSymbol = props => {
 	} = props;
 	const displayFill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
-	const trimmedTex = isLong ? trimText(id, text) : text;
+	const trimmedText = isLong ? trimText(id, text) : text;
 	const transform = isLong ? 'translate(30, 10)' : '';
 	return (
-		<text
-			id={id}
-			data-testid={id}
-			fontWeight={fontWeight || styles.fontWeight || '14px'}
-			fontSize={fontSize || styles.fontSize || '14px'}
-			className={className}
-			textAnchor={textAnchor}
-			x={x}
-			y={y}
-			transform={transform}
-			fill={fill || displayFill}
-		>
-			{note || trimmedTex}
-		</text>
+		<>
+			<text
+				id={id}
+				data-testid={id}
+				fontWeight={fontWeight || styles.fontWeight || '14px'}
+				fontSize={fontSize || styles.fontSize || '14px'}
+				className={className}
+				textAnchor={textAnchor}
+				x={x}
+				y={y}
+				transform={transform}
+				fill={fill || displayFill}
+			>
+				{note || trimmedText}
+			</text>
+		</>
 	);
 };
 

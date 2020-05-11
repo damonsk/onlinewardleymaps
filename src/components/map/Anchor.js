@@ -61,9 +61,8 @@ const Anchor = props => {
 					y="-10"
 					textAnchor="middle"
 					evolved={props.anchor.evolved}
-					mapStyleDefs={props.mapStyleDefs}
 					fontSize={props.mapStyleDefs.anchor.fontSize}
-					styles={props?.mapStyleDefs?.anchor}
+					styles={props.mapStyleDefs.component}
 				/>
 			</Movable>
 		</>

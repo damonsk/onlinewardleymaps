@@ -126,12 +126,10 @@ function MapComponent(props) {
 			<g transform={'translate(' + x() + ',' + y() + ')'}>
 				<ComponentText
 					id={'component_text_' + props.element.id}
-					styles={props.mapStyleDefs.component}
+					mapStyleDefs={props.mapStyleDefs}
 					element={props.element}
 					mapText={props.mapText}
 					mutateMapText={props.mutateMapText}
-					setMetaText={props.setMetaText}
-					metaText={props.metaText}
 				/>
 			</g>
 		</>
