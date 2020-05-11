@@ -2,9 +2,27 @@ import React, { useEffect } from 'react';
 import PositionCalculator from './PositionCalculator';
 import AnnotationText from './AnnotationText';
 import Movable from './Movable';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
+	const identifier = 'annotations';
+
+	const defaultPositionUpdater = new DefaultPositionUpdater(
+		identifier,
+		props.mapText,
+		props.mutateMapText,
+		[ExistingCoordsMatcher]
+	);
+	const positionUpdater = new SingletonPositionUpdater(
+		identifier,
+		props.mapText,
+		props.mutateMapText
+	);
+	positionUpdater.setSuccessor(defaultPositionUpdater);
+
 	const x = () =>
 		positionCalc.maturityToX(
 			props.position.maturity,
@@ -17,39 +35,15 @@ function AnnotationElement(props) {
 		);
 
 	function endDrag(moved) {
-		if (props.mapText.indexOf('annotations ') > -1) {
-			props.mutateMapText(
-				props.mapText
-					.split('\n')
-					.map(line => {
-						if (line.replace(/\s/g, '').indexOf('annotations') !== -1) {
-							return line.replace(
-								/\[(.+?)\]/g,
-								`[${positionCalc.yToVisibility(
-									moved.y,
-									props.mapDimensions.height
-								)}, ${positionCalc.xToMaturity(
-									moved.x,
-									props.mapDimensions.width
-								)}]`
-							);
-						} else {
-							return line;
-						}
-					})
-					.join('\n')
-			);
-		} else {
-			props.mutateMapText(
-				props.mapText +
-					'\n' +
-					'annotations [' +
-					positionCalc.yToVisibility(moved.y, props.mapDimensions.height) +
-					', ' +
-					positionCalc.xToMaturity(moved.x, props.mapDimensions.width) +
-					']'
-			);
-		}
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update({ param1: visibility, param2: maturity }, '');
 	}
 
 	var redraw = function() {

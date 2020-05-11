@@ -1,9 +1,19 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 function Note(props) {
-	var positionCalc = new PositionCalculator();
+	const positionCalc = new PositionCalculator();
+	const positionUpdater = new DefaultPositionUpdater(
+		'note',
+		props.mapText,
+		props.mutateMapText,
+		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
+	);
+
 	const x = () =>
 		positionCalc.maturityToX(props.note.maturity, props.mapDimensions.width);
 	const y = () =>
@@ -13,45 +23,17 @@ function Note(props) {
 		);
 
 	function endDrag(moved) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf('note' + props.note.text.replace(/\s/g, '') + '[') !== -1
-					) {
-						return line.replace(
-							/\[(.?|.+?)\]/g,
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else if (
-						line.replace(/\s/g, '') ===
-						'note' + props.note.text.replace(/\s/g, '')
-					) {
-						return (
-							line.trim() +
-							' ' +
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update(
+			{ param1: visibility, param2: maturity },
+			props.note.text
 		);
 	}
 
