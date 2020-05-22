@@ -4,4 +4,4 @@ import 'bootstrap/scss/bootstrap.scss';
 import './styles.scss';
 import App from './components/App';
 
-render(<App />, document.getElementById('app'));
+render(<App />, document.getElementById('root'));

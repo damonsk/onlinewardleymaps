@@ -1,4 +1,7 @@
 import React from 'react';
+import ComponentSymbol from '../symbols/ComponentSymbol';
+import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
+
 import ComponentText from './ComponentText';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
@@ -95,44 +98,19 @@ function MapComponent(props) {
 				fixedY={props.element.evolved}
 				fixedX={false}
 			>
-				{props.element.pipeline == false ? (
-					<circle
-						id={'element_circle_' + props.element.id}
-						cx="0"
-						cy="0"
+				{props.element.pipeline ? (
+					<PipelineComponentSymbol
+						id={'element_square_' + props.element.id}
+						styles={props.mapStyleDefs.component}
+						evolved={props.element.evolved}
 						onClick={() => props.setHighlightLine(props.element.line)}
-						strokeWidth={props.mapStyleDefs.component.strokeWidth}
-						r={props.mapStyleDefs.component.radius}
-						stroke={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolved
-								: props.mapStyleDefs.component.stroke
-						}
-						fill={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolvedFill
-								: props.mapStyleDefs.component.fill
-						}
 					/>
 				) : (
-					<rect
-						id={'element_square_' + props.element.id}
-						x="-5"
-						y="-5"
-						width="10"
-						height="10"
+					<ComponentSymbol
+						id={'element_circle_' + props.element.id}
+						styles={props.mapStyleDefs.component}
+						evolved={props.element.evolved}
 						onClick={() => props.setHighlightLine(props.element.line)}
-						strokeWidth={props.mapStyleDefs.component.pipelineStrokeWidth}
-						stroke={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolved
-								: props.mapStyleDefs.component.stroke
-						}
-						fill={
-							props.element.evolved
-								? props.mapStyleDefs.component.evolvedFill
-								: props.mapStyleDefs.component.fill
-						}
 					/>
 				)}
 			</Movable>
@@ -147,13 +125,11 @@ function MapComponent(props) {
 			) : null}
 			<g transform={'translate(' + x() + ',' + y() + ')'}>
 				<ComponentText
-					key={'component_text_' + props.element.id}
+					id={'component_text_' + props.element.id}
 					mapStyleDefs={props.mapStyleDefs}
 					element={props.element}
 					mapText={props.mapText}
 					mutateMapText={props.mutateMapText}
-					setMetaText={props.setMetaText}
-					metaText={props.metaText}
 				/>
 			</g>
 		</>

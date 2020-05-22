@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-var createReactClass = require('create-react-class');
 
 function Meta(props) {
 	const [showMeta, setShowMeta] = useState(false);
@@ -15,36 +14,28 @@ function Meta(props) {
 	);
 }
 
-var Alert = createReactClass({
-	render: function() {
-		return (
-			<>
-				<div id="meta-alert" className="alert alert-warning" role="alert">
-					Your map has meta data -{' '}
-					<a onClick={() => this.props.toggleMeta(true)} id="showMeta">
-						Show
-					</a>
-				</div>
-			</>
-		);
-	},
-});
+var Alert = props => (
+	<>
+		<div id="meta-alert" className="alert alert-warning" role="alert">
+			Your map has meta data -{' '}
+			<a onClick={() => props.toggleMeta(true)} id="showMeta">
+				Show
+			</a>
+		</div>
+	</>
+);
 
-var MetaText = createReactClass({
-	render: function() {
-		return (
-			<>
-				<div id="meta-container">
-					<textarea
-						readOnly
-						className="form-control"
-						id="meta"
-						value={this.props.metaText}
-					></textarea>
-				</div>
-			</>
-		);
-	},
-});
+var MetaText = props => (
+	<>
+		<div id="meta-container">
+			<textarea
+				readOnly
+				className="form-control"
+				id="meta"
+				value={props.metaText}
+			></textarea>
+		</div>
+	</>
+);
 
 export default Meta;

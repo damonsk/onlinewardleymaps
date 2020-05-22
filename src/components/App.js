@@ -1,16 +1,26 @@
 import React, { useState, useRef } from 'react';
+import { hot } from 'react-hot-loader/root';
+
 import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
-import Breadcrumb from './editor/Breadcrumb';
+import Subnav from './editor/Subnav';
 import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
+import Toolbar from './editor/Toolbar';
+import Breadcrumb from './editor/Breadcrumb';
+
 import Converter from '../conversion/Converter';
 import Migrations from '../migrations/Migrations';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
+import { Collapse } from 'react-bootstrap';
+
+// only use toolbar if set
+const useToolbar = false;
+// const isDev = process.env.NODE_ENV === 'development';
 
 function App() {
 	const [currentUrl, setCurrentUrl] = useState('');
@@ -38,6 +48,8 @@ function App() {
 	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
+	const [toggleToolbar, setToggleToolbar] = useState(true);
+
 	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
 	const [mainViewHeight, setMainViewHeight] = useState(100);
@@ -240,8 +252,17 @@ function App() {
 						</div>
 					</div>
 				</nav>
-
-				<Breadcrumb currentUrl={currentUrl} />
+				{useToolbar ? (
+					<div className="navbar subnav">
+						<Subnav
+							currentUrl={currentUrl}
+							toggleToolbar={toggleToolbar}
+							setToggleToolbar={setToggleToolbar}
+						/>
+					</div>
+				) : (
+					<Breadcrumb currentUrl={currentUrl} />
+				)}
 			</div>
 			{/* <div className="container-fluid"> */}
 			<div
@@ -288,6 +309,19 @@ function App() {
 						setHighlightLine={setHighlightLine}
 					/>
 				</div>
+				{useToolbar && (
+					<Collapse in={toggleToolbar} dimension={'width'}>
+						<div className="col-sm tool-bar">
+							<div className="contents">
+								<Toolbar
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									mapStyleDefs={mapStyleDefs}
+								/>
+							</div>
+						</div>
+					</Collapse>
+				)}
 			</div>
 			<div className="row usage no-gutters">
 				<div className="col">
@@ -367,4 +401,4 @@ function App() {
 	);
 }
 
-export default App;
+export default hot(App);

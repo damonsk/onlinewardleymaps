@@ -30,7 +30,6 @@
 		background-color: #e9ecef;
 	}
 }
-
 div.main {
 	background-color: white;
 	overflow: hidden;
@@ -41,6 +40,43 @@ div.main {
 	padding: 2px 1rem;
 	font-size: 0.85rem;
 	border-bottom: 1px solid #6c757d;
+	.jumbotron {
+		height: 682px;
+		padding: 5px;
+		margin-bottom: 2px;
+	}
+}
+
+.tool-bar {
+	background: #e9ecef;
+	padding: 5px;
+	border-left: 1px solid #6c757d;
+	.jumbotron {
+		height: 682px;
+		padding: 5px;
+		margin-bottom: 2px;
+	}
+}
+
+.collapsing {
+	position: relative;
+	height: 0;
+	overflow: hidden;
+	transition: height 0.35s;
+
+	&.width {
+		// flex-grow: 0;
+		// min-width: 0;
+		transform: translate(100%);
+		// width: 0;
+		height: auto;
+		transition: all 1s;
+	}
+
+	// &> .contents{
+	// 	width: 500px;
+	// 	overflow: hidden;
+	// }
 }
 
 #controlsMenuControl button {
@@ -61,6 +97,25 @@ div.main {
 #svgMap {
 	padding: 10px;
 	user-select: none;
+}
+
+.subnav {
+	display: flex;
+	flex-wrap: wrap;
+	list-style: none;
+	padding: 0;
+	background-color: #e9ecef;
+	border-bottom: 1px solid #6c757d;
+	border-radius: 0.25rem;
+}
+
+.subnav button {
+	margin: 0 2px;
+}
+
+.breadcrumb {
+	padding: 2px 1rem;
+	font-size: 0.85rem;
 }
 
 ol.breadcrumb {
@@ -145,10 +200,10 @@ body.dark {
 	}
 	nav.bc {
 		ol.breadcrumb {
-			background-color: #21252B;
+			background-color: #21252b;
 			color: #9da5b4;
 			a#url {
-				color: #D7DAE0;
+				color: #d7dae0;
 			}
 		}
 	}

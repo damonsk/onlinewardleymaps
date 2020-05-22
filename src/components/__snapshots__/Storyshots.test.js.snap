@@ -39,20 +39,20 @@ Array [
   <button
     className="btn btn-secondary"
     disabled={false}
-    id="new-map"
-    onClick={[Function]}
-    type="button"
-  >
-    New Map
-  </button>,
-  <button
-    className="btn btn-secondary"
-    disabled={false}
     id="example-map"
     onClick={[Function]}
     type="button"
   >
     Example Map
+  </button>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
+    id="new-map"
+    onClick={[Function]}
+    type="button"
+  >
+    New Map
   </button>,
   <button
     className="btn btn-success"
@@ -117,7 +117,7 @@ exports[`Storyshots Usage  default 1`] = `
   <br />
   <br />
   <strong>
-    To create a component:
+    To create a component
   </strong>
   <br />
    
@@ -143,7 +143,6 @@ exports[`Storyshots Usage  default 1`] = `
   >
     component Cup of Tea [0.9, 0.5]
   </a>
-   
   <br />
   <br />
   ------------------------
@@ -175,13 +174,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     component Cup of Tea [0.9, 0.5] inertia
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    To evolve a component:
+    To evolve a component
   </strong>
   <br />
    
@@ -207,7 +205,60 @@ exports[`Storyshots Usage  default 1`] = `
   >
     evolve Cup of Tea evolve 0.8
   </a>
-   
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To link components
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component-&gt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Customer-&gt;Cup of Tea
+  </a>
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    To indicate flow
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Start Component+&lt;&gt;End Component
+  </a>
+  <br />
+  <a
+    className="add"
+    href="#"
+    onClick={[Function]}
+  >
+    Customer+&lt;&gt;Cup of Tea
+  </a>
   <br />
   <br />
   ------------------------
@@ -239,69 +290,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     pipeline Customer
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    To link components:
-  </strong>
-  <br />
-  <strong>
-    Example:
-  </strong>
-  <br />
-  <a
-    className="add"
-    href="#"
-    onClick={[Function]}
-  >
-    Start Component-&gt;End Component
-  </a>
-  <br />
-  <a
-    className="add"
-    href="#"
-    onClick={[Function]}
-  >
-    Customer-&gt;Cup of Tea
-  </a>
-   
-  <br />
-  <br />
-  ------------------------
-  <br />
-  <strong>
-    To indicate flow:
-  </strong>
-  <br />
-  <strong>
-    Example:
-  </strong>
-  <br />
-  <a
-    className="add"
-    href="#"
-    onClick={[Function]}
-  >
-    Start Component+&lt;&gt;End Component
-  </a>
-  <br />
-  <a
-    className="add"
-    href="#"
-    onClick={[Function]}
-  >
-    Customer+&lt;&gt;Cup of Tea
-  </a>
-   
-  <br />
-  <br />
-  ------------------------
-  <br />
-  <strong>
-    To indicate flow - past components only:
+    To indicate flow - past components only
   </strong>
   <br />
   <strong>
@@ -323,13 +317,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     Hot Water+&lt;Kettle
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    To indicate flow - future components only:
+    To indicate flow - future components only
   </strong>
   <br />
   <strong>
@@ -351,13 +344,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     Hot Water+&gt;Kettle
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    To indicate flow - with label:
+    To indicate flow - with label
   </strong>
   <br />
   <strong>
@@ -379,13 +371,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     Hot Water+'$0.10'&gt;Kettle
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    Stages of Evolution:
+    Stages of Evolution
   </strong>
   <br />
    
@@ -411,13 +402,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     evolution Novel-&gt;Emerging-&gt;Good-&gt;Best
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    Y-Axis Labels:
+    Y-Axis Labels
   </strong>
   <br />
    
@@ -443,13 +433,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     y-axis Value Chain-&gt;Invisible-&gt;Visible
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    Add notes:
+    Add notes
   </strong>
   <br />
    
@@ -475,13 +464,12 @@ exports[`Storyshots Usage  default 1`] = `
   >
     note +future development [0.9, 0.5]
   </a>
-   
   <br />
   <br />
   ------------------------
   <br />
   <strong>
-    Available styles:
+    Available styles
   </strong>
   <br />
    
@@ -507,7 +495,6 @@ exports[`Storyshots Usage  default 1`] = `
   >
     style handwritten
   </a>
-   
   <br />
   <a
     className="add"
@@ -516,7 +503,6 @@ exports[`Storyshots Usage  default 1`] = `
   >
     style colour
   </a>
-   
   <br />
   <br />
   ------------------------

@@ -1,4 +1,5 @@
 import React from 'react';
+import InertiaSymbol from '../symbols/InertiaSymbol';
 import PositionCalculator from './PositionCalculator';
 
 function Inertia(props) {
@@ -10,16 +11,7 @@ function Inertia(props) {
 
 	//    React.useEffect(()xZ)
 
-	return (
-		<line
-			x1={x()}
-			y1={y() - 10}
-			x2={x()}
-			y2={y() + 10}
-			stroke="black"
-			strokeWidth="6"
-		/>
-	);
+	return <InertiaSymbol x={x()} y={y()} />;
 }
 
 export default Inertia;

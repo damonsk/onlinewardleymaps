@@ -42,7 +42,7 @@ function MapCanvas(props) {
 		<React.Fragment>
 			<svg
 				fontFamily={props.mapStyleDefs.fontFamily}
-				fontSize="13px"
+				fontSize={props.mapStyleDefs.fontSize}
 				className={props.mapStyleDefs.className}
 				id="svgMap"
 				width={props.mapDimensions.width + 2 * props.mapPadding}

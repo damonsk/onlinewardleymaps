@@ -4,41 +4,27 @@
 	"main": "index.js",
 	"license": "MIT",
 	"devDependencies": {
-		"@babel/cli": "^7.2.3",
-		"@babel/core": "^7.2.2",
-		"@babel/preset-env": "^7.2.3",
+		"@hot-loader/react-dom": "^16.13.0",
 		"@storybook/addon-storyshots": "^5.3.8",
 		"@storybook/react": "^5.3.8",
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.4.0",
-		"babel-core": "7.0.0-bridge.0",
-		"babel-eslint": "^10.0.3",
-		"babel-jest": "^23.6.0",
-		"babel-loader": "^8.0.5",
 		"babel-plugin-require-context-hook": "^1.0.0",
-		"copy-webpack-plugin": "^4.6.0",
-		"css-loader": "^2.1.0",
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.7.0",
 		"eslint-plugin-prettier": "^3.1.2",
 		"eslint-plugin-react": "^7.17.0",
 		"eslint-plugin-react-hooks": "^2.3.0",
-		"html-webpack-plugin": "^3.2.0",
 		"husky": "^3.1.0",
-		"jest": "^23.6.0",
 		"lint-staged": "^9.5.0",
-		"mini-css-extract-plugin": "^0.5.0",
 		"node-sass": "^4.11.0",
-		"optimize-css-assets-webpack-plugin": "^5.0.1",
 		"prettier": "^1.19.1",
 		"pretty-quick": "^2.0.1",
-		"react-test-renderer": "^16.12.0",
-		"regenerator-runtime": "^0.13.1",
-		"sass-loader": "^7.1.0",
-		"style-loader": "^0.23.1",
-		"webpack": "^4.28.3",
-		"webpack-cli": "^3.2.0",
-		"webpack-dev-server": "^3.1.14"
+		"react-app-rewire-hot-loader": "^2.0.1",
+		"react-app-rewired": "^2.1.6",
+		"react-hot-loader": "^4.12.21",
+		"react-scripts": "^3.4.1",
+		"react-test-renderer": "^16.12.0"
 	},
 	"env": {
 		"browser": true,
@@ -52,18 +38,18 @@
 		}
 	},
 	"dependencies": {
-		"@babel/polyfill": "^7.2.5",
 		"ace-builds": "^1.4.7",
-		"babel-preset-react-app": "^9.1.0",
 		"bootstrap": "^4.2.1",
 		"brace": "^0.11.1",
 		"create-react-class": "^15.6.3",
 		"html2canvas": "^1.0.0-rc.5",
+		"lodash.merge": "^4.6.2",
 		"prop-types": "^15.7.2",
 		"react": "^16.12.0",
 		"react-ace": "^8.0.0",
 		"react-bootstrap": "^1.0.0-beta.16",
-		"react-dom": "^16.12.0"
+		"react-dom": "^16.12.0",
+		"react-icons": "^3.10.0"
 	},
 	"lint-staged": {
 		"*.{js,jsx}": [
@@ -73,12 +59,25 @@
 		]
 	},
 	"scripts": {
-		"start": "webpack-dev-server --mode=development --env.isProduction=false",
-		"dist": "webpack --mode=production --env.isProduction=true",
-		"test": "jest --watchAll",
+		"start": "react-app-rewired start",
+		"build": "react-app-rewired build",
+		"test": "react-app-rewired test --env=jsdom",
+		"eject": "react-scripts eject",
 		"lint": "eslint src/",
 		"prettify": "pretty-quick",
 		"precommit": "lint-staged",
 		"storybook": "start-storybook -p 9001 -c .storybook"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
 	}
 }
