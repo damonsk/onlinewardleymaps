@@ -10,9 +10,9 @@ import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 const Anchor = props => {
 	const identity = 'anchor';
 	const elementKey = (prefix, suffix) => {
-		return `${identity}_${prefix != undefined ? prefix + '_' : ''}${
+		return `${identity}_${prefix !== undefined ? prefix + '_' : ''}${
 			props.anchor.id
-		}${suffix != undefined ? '_' + suffix : ''}`;
+		}${suffix !== undefined ? '_' + suffix : ''}`;
 	};
 	const positionCalc = new PositionCalculator();
 	const positionUpdater = new DefaultPositionUpdater(

@@ -24,7 +24,7 @@ function MapComponent(props) {
 	const notEvolvedNoLabelMatcher = {
 		matcher: (line, identifier, type) => {
 			return (
-				props.element.evolved == undefined &&
+				props.element.evolved === undefined &&
 				ExistingCoordsMatcher.matcher(line, identifier, type) &&
 				!ExistingCoordsMatcher.matcher(line, '', 'label')
 			);
@@ -37,7 +37,7 @@ function MapComponent(props) {
 	const notEvolvedWithLabelMatcher = {
 		matcher: (line, identifier, type) => {
 			return (
-				props.element.evolved == undefined &&
+				props.element.evolved === undefined &&
 				ExistingCoordsMatcher.matcher(line, identifier, type) &&
 				ExistingCoordsMatcher.matcher(line, '', 'label')
 			);
@@ -114,9 +114,10 @@ function MapComponent(props) {
 					/>
 				)}
 			</Movable>
-			{(props.element.evolved == undefined || props.element.evolved == false) &&
-			props.element.evolving == false &&
-			props.element.inertia == true ? (
+			{(props.element.evolved === undefined ||
+				props.element.evolved === false) &&
+			props.element.evolving === false &&
+			props.element.inertia === true ? (
 				<Inertia
 					maturity={parseFloat(props.element.maturity) + 0.05}
 					visibility={props.element.visibility}

@@ -3,9 +3,9 @@ export default class MetaPositioner {
 		if (metaText.length > 0) {
 			var meta = JSON.parse(metaText);
 			var itemToModify = meta.find(el => {
-				if (el.name == id) return el;
+				if (el.name === id) return el;
 			});
-			if (itemToModify != undefined) {
+			if (itemToModify !== undefined) {
 				return {
 					x: itemToModify.x,
 					y: itemToModify.y,
@@ -19,11 +19,11 @@ export default class MetaPositioner {
 	update(id, metaText, moved) {
 		if (metaText.length > 0) {
 			var meta = JSON.parse(metaText);
-			if (meta.find(el => el.name == id) == undefined) {
+			if (meta.find(el => el.name === id) === undefined) {
 				meta.push({ name: id, x: moved.x, y: moved.y });
 			}
 			var modifiedArray = meta.map(el => {
-				if (el.name == id) {
+				if (el.name === id) {
 					el.x = moved.x;
 					el.y = moved.y;
 				}

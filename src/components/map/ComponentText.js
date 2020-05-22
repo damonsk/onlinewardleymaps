@@ -17,7 +17,7 @@ function ComponentText(props) {
 									'evolve' +
 										props.element.name.replace(/\s/g, '') +
 										props.element.maturity
-								) == 0
+								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
@@ -36,7 +36,7 @@ function ComponentText(props) {
 								.replace(/\s/g, '')
 								.indexOf(
 									'component' + props.element.name.replace(/\s/g, '') + '['
-								) == 0
+								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(

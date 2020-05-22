@@ -63,7 +63,7 @@ function Movable(props) {
 			y: y(),
 			coords: {},
 		});
-		if (props.onEffects != undefined) props.onEffects();
+		if (props.onEffects !== undefined) props.onEffects();
 	}, [props.x, props.y]);
 
 	return (
