@@ -2,14 +2,24 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 const Anchor = props => {
+	const identity = 'anchor';
 	const elementKey = (prefix, suffix) => {
-		return `anchor_${prefix != undefined ? prefix + '_' : ''}${
+		return `${identity}_${prefix != undefined ? prefix + '_' : ''}${
 			props.anchor.id
 		}${suffix != undefined ? '_' + suffix : ''}`;
 	};
 	const positionCalc = new PositionCalculator();
+	const positionUpdater = new DefaultPositionUpdater(
+		identity,
+		props.mapText,
+		props.mutateMapText,
+		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
+	);
 	const x = () =>
 		positionCalc.maturityToX(props.anchor.maturity, props.mapDimensions.width);
 	const y = () =>
@@ -19,47 +29,17 @@ const Anchor = props => {
 		);
 
 	function endDrag(moved) {
-		props.mutateMapText(
-			props.mapText
-				.split('\n')
-				.map(line => {
-					if (
-						line
-							.replace(/\s/g, '')
-							.indexOf(
-								'anchor' + props.anchor.name.replace(/\s/g, '') + '['
-							) !== -1
-					) {
-						return line.replace(
-							/\[(.?|.+?)\]/g,
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else if (
-						line.replace(/\s/g, '') ===
-						'anchor' + props.anchor.name.replace(/\s/g, '')
-					) {
-						return (
-							line.trim() +
-							' ' +
-							`[${positionCalc.yToVisibility(
-								moved.y,
-								props.mapDimensions.height
-							)}, ${positionCalc.xToMaturity(
-								moved.x,
-								props.mapDimensions.width
-							)}]`
-						);
-					} else {
-						return line;
-					}
-				})
-				.join('\n')
+		const visibility = positionCalc.yToVisibility(
+			moved.y,
+			props.mapDimensions.height
+		);
+		const maturity = positionCalc.xToMaturity(
+			moved.x,
+			props.mapDimensions.width
+		);
+		positionUpdater.update(
+			{ param1: visibility, param2: maturity },
+			props.anchor.name
 		);
 	}
 
