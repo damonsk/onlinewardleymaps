@@ -26,7 +26,7 @@ function MapEvolution(props) {
 				markerEnd="url(#graphArrow)"
 			/>
 
-			{props.mapStyleDefs.className === 'wardley' ? (
+			{props.mapStyleDefs.className == 'wardley' ? (
 				<>
 					<text
 						x="10"

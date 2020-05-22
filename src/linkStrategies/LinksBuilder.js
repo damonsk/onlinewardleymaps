@@ -32,8 +32,8 @@ export default class LinksBuilder {
 
 	canSatisfyLink(l, startElements, endElements) {
 		return (
-			this.getElementByName(startElements, l.start) !== undefined &&
-			this.getElementByName(endElements, l.end) !== undefined
+			this.getElementByName(startElements, l.start) != undefined &&
+			this.getElementByName(endElements, l.end) != undefined
 		);
 	}
 

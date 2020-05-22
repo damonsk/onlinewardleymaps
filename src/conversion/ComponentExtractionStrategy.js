@@ -15,7 +15,7 @@ export default class ComponentExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('component') === 0) {
+				if (element.trim().indexOf('component') == 0) {
 					let name = element
 						.split('component ')[1]
 						.trim()
@@ -45,7 +45,7 @@ export default class ComponentExtractionStrategy {
 						visibility: positionData.visibility,
 						id: 1 + i,
 						line: 1 + i,
-						evolving: newPoint !== null && newPoint !== undefined,
+						evolving: newPoint != null && newPoint != undefined,
 						evolveMaturity: newPoint,
 						inertia: element.indexOf('inertia') > -1,
 						label: labelOffset,

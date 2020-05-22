@@ -12,7 +12,7 @@ export default class AnchorExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('anchor') === 0) {
+				if (element.trim().indexOf('anchor') == 0) {
 					let name = element
 						.split('anchor ')[1]
 						.trim()

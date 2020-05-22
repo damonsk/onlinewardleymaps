@@ -15,16 +15,16 @@ function ComponentLink(props) {
 	const isEvolved = startElement.evolved || endElement.evolved;
 	const isFlow =
 		link.flow &&
-		(link.future === link.past || // both
-			(link.past === true &&
-				endElement.evolving === false &&
-				startElement.evolving === true) ||
-			(link.past === true &&
-				endElement.evolving === true &&
-				startElement.evolving === false) ||
-			(link.future === true && startElement.evolving === true) ||
-			(link.future === true && startElement.evolved === true) ||
-			(link.future === true && endElement.evolved === true));
+		(link.future == link.past || // both
+			(link.past == true &&
+				endElement.evolving == false &&
+				startElement.evolving == true) ||
+			(link.past == true &&
+				endElement.evolving == true &&
+				startElement.evolving == false) ||
+			(link.future == true && startElement.evolving == true) ||
+			(link.future == true && startElement.evolved == true) ||
+			(link.future == true && endElement.evolved == true));
 
 	return (
 		<>

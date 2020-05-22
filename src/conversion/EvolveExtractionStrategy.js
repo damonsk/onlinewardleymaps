@@ -8,7 +8,7 @@ export default class EvolveExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('evolve ') === 0) {
+				if (element.trim().indexOf('evolve ') == 0) {
 					let name = element.split('evolve ')[1].trim();
 					let evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
 					let newPoint = 0.85;

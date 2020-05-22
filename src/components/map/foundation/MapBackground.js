@@ -8,7 +8,7 @@ const MapBackground = props => (
 		y="0"
 		height={props.mapDimensions.height}
 		id="fillArea"
-		fill={props.mapStyleClass === 'wardley' ? 'url(#wardleyGradient)' : 'none'}
+		fill={props.mapStyleClass == 'wardley' ? 'url(#wardleyGradient)' : 'none'}
 	></rect>
 );
 

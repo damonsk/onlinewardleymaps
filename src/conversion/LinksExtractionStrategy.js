@@ -10,20 +10,20 @@ export default class LinksExtractionStrategy {
 				const element = lines[i];
 				if (
 					element.trim().length > 0 &&
-					element.trim().indexOf('evolution') === -1 &&
-					element.trim().indexOf('anchor') === -1 &&
-					element.trim().indexOf('evolve') === -1 &&
-					element.trim().indexOf('component') === -1 &&
-					element.trim().indexOf('style') === -1 &&
-					element.trim().indexOf('build') === -1 &&
-					element.trim().indexOf('buy') === -1 &&
-					element.trim().indexOf('outsource') === -1 &&
-					element.trim().indexOf('title') === -1 &&
-					element.trim().indexOf('annotation') === -1 &&
-					element.trim().indexOf('annotations') === -1 &&
-					element.trim().indexOf('y-axis') === -1 &&
-					element.trim().indexOf('pipeline') === -1 &&
-					element.trim().indexOf('note') === -1
+					element.trim().indexOf('evolution') == -1 &&
+					element.trim().indexOf('anchor') == -1 &&
+					element.trim().indexOf('evolve') == -1 &&
+					element.trim().indexOf('component') == -1 &&
+					element.trim().indexOf('style') == -1 &&
+					element.trim().indexOf('build') == -1 &&
+					element.trim().indexOf('buy') == -1 &&
+					element.trim().indexOf('outsource') == -1 &&
+					element.trim().indexOf('title') == -1 &&
+					element.trim().indexOf('annotation') == -1 &&
+					element.trim().indexOf('annotations') == -1 &&
+					element.trim().indexOf('y-axis') == -1 &&
+					element.trim().indexOf('pipeline') == -1 &&
+					element.trim().indexOf('note') == -1
 				) {
 					if (element.indexOf('+>') > -1) {
 						let name = element.split('+>');

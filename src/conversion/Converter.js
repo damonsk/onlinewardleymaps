@@ -65,7 +65,7 @@ export default class Converter {
 					open = false;
 					linesToKeep.push(currentLine.split('*/')[1].trim());
 				}
-			} else if (open === false) {
+			} else if (open == false) {
 				linesToKeep.push(currentLine);
 			}
 		}

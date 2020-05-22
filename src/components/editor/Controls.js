@@ -106,7 +106,7 @@ function Controls(props) {
 						using this map as its initial state.
 					</p>
 					<p>Any changes made by others will not be reflected in this map.</p>
-					{props.currentUrl === '(unsaved)' ? (
+					{props.currentUrl == '(unsaved)' ? (
 						<Alert variant="danger">Please save your map first!</Alert>
 					) : (
 						<InputGroup className="mb-3">

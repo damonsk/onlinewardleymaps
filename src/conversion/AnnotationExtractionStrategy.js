@@ -16,7 +16,7 @@ export default class AnnotationExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('annotation ') === 0) {
+				if (element.trim().indexOf('annotation ') == 0) {
 					let number = parseInt(
 						element
 							.split('annotation ')[1]
@@ -47,7 +47,7 @@ export default class AnnotationExtractionStrategy {
 					let text = '';
 					if (
 						element.trim().indexOf(']') > -1 &&
-						element.trim().indexOf(']') !== element.trim().length - 1
+						element.trim().indexOf(']') != element.trim().length - 1
 					) {
 						if (element.replace(/\s/g, '').indexOf(']]') === -1) {
 							text = element.split(']')[1].trim();

@@ -81,7 +81,7 @@ class Editor extends Component {
 			this.props.mapComponents.concat(this.props.mapAnchors)
 		);
 
-		if (prevProps.highlightLine !== this.props.highlightLine) {
+		if (prevProps.highlightLine != this.props.highlightLine) {
 			this.gotoLine(this.props.highlightLine);
 		}
 	}

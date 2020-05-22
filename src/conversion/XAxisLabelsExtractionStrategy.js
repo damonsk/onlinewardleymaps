@@ -7,7 +7,7 @@ export default class XAxisLabelsExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			const element = lines[i];
 			try {
-				if (element.trim().indexOf('evolution') === 0) {
+				if (element.trim().indexOf('evolution') == 0) {
 					let name = element
 						.split('evolution ')[1]
 						.trim()

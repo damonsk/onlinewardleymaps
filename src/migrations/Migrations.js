@@ -12,7 +12,7 @@ export default class Migrations {
 
 		this.conversionStrategies.forEach(strategy => {
 			let output = strategy.apply();
-			changed = output.changed === true ? true : changed;
+			changed = output.changed == true ? true : changed;
 			changeSets = changeSets.concat(output.changeSets);
 			results = results.concat(output.result);
 		});
