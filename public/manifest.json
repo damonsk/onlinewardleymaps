@@ -1,5 +1,5 @@
 {
-	"short_name": "OnlineWardleyMaps,
+	"short_name": "OnlineWardleyMaps",
 	"name": "Online Wardley Maps",
 	"icons": [
 		{
@@ -8,12 +8,12 @@
 			"type": "image/x-icon"
 		},
 		{
-			"src": "logo192.png",
+			"src": "android-chrome-192x192.png",
 			"type": "image/png",
 			"sizes": "192x192"
 		},
 		{
-			"src": "logo512.png",
+			"src": "android-chrome-512x512",
 			"type": "image/png",
 			"sizes": "512x512"
 		}
@@ -21,5 +21,5 @@
 	"start_url": ".",
 	"display": "standalone",
 	"theme_color": "#000000",
-	"background_color": "#ffffff"
+	"background_color": "#282c34"
 }
