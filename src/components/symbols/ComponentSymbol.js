@@ -25,7 +25,7 @@ ComponentSymbol.propTypes = {
 	id: PropTypes.string,
 	cx: PropTypes.string,
 	cy: PropTypes.string,
-	mapStyleDefs: PropTypes.object.isRequired,
+	styles: PropTypes.object.isRequired,
 	evolved: PropTypes.bool,
 };
 

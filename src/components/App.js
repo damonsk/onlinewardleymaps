@@ -9,12 +9,18 @@ import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Toolbar from './editor/Toolbar';
+import Breadcrumb from './editor/Breadcrumb';
+
 import Converter from '../conversion/Converter';
 import Migrations from '../migrations/Migrations';
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
 import { Collapse } from 'react-bootstrap';
+
+// only use toolbar if set
+const useToolbar = false;
+// const isDev = process.env.NODE_ENV === 'development';
 
 function App() {
 	const [currentUrl, setCurrentUrl] = useState('');
@@ -246,13 +252,17 @@ function App() {
 						</div>
 					</div>
 				</nav>
-				<div className="navbar subnav">
-					<Subnav
-						currentUrl={currentUrl}
-						toggleToolbar={toggleToolbar}
-						setToggleToolbar={setToggleToolbar}
-					/>
-				</div>
+				{useToolbar ? (
+					<div className="navbar subnav">
+						<Subnav
+							currentUrl={currentUrl}
+							toggleToolbar={toggleToolbar}
+							setToggleToolbar={setToggleToolbar}
+						/>
+					</div>
+				) : (
+					<Breadcrumb currentUrl={currentUrl} />
+				)}
 			</div>
 			{/* <div className="container-fluid"> */}
 			<div
@@ -299,17 +309,19 @@ function App() {
 						setHighlightLine={setHighlightLine}
 					/>
 				</div>
-				<Collapse in={toggleToolbar} dimension={'width'}>
-					<div className="col-sm tool-bar">
-						<div className="contents">
-							<Toolbar
-								mapText={mapText}
-								mutateMapText={mutateMapText}
-								mapStyleDefs={mapStyleDefs}
-							/>
+				{useToolbar && (
+					<Collapse in={toggleToolbar} dimension={'width'}>
+						<div className="col-sm tool-bar">
+							<div className="contents">
+								<Toolbar
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									mapStyleDefs={mapStyleDefs}
+								/>
+							</div>
 						</div>
-					</div>
-				</Collapse>
+					</Collapse>
+				)}
 			</div>
 			<div className="row usage no-gutters">
 				<div className="col">
