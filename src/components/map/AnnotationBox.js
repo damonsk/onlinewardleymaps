@@ -49,7 +49,7 @@ function AnnotationElement(props) {
 
 	var redraw = function() {
 		let elem = document.getElementById('annotationsBoxWrap');
-		if (elem !== undefined && elem !== null) elem.parentNode.removeChild(elem);
+		if (elem !== undefined) elem.parentNode.removeChild(elem);
 
 		let ctx = document.getElementById('movable_annotationsBox'),
 			SVGRect = ctx.getBBox(),
