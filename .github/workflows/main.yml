@@ -17,6 +17,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
+      env:
+          CI: false
     - name: Write version number
       run: echo "export var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > src/version.js
     - run: yarn install
