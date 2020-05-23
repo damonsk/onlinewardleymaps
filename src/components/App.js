@@ -98,7 +98,7 @@ function App() {
 		if (window.location.hash.length > 0) {
 			var mapId = window.location.hash.replace('#', '');
 
-			if (window.location.hash.indexOf('#clone:') == 0)
+			if (window.location.hash.indexOf('#clone:') === 0)
 				mapId = window.location.hash.replace('#clone:', '');
 
 			setCurrentUrl('(loading...)');
@@ -107,7 +107,7 @@ function App() {
 			fetch(fetchUrl)
 				.then(resp => resp.json())
 				.then(d => {
-					if (d.meta == undefined || d.meta == null) {
+					if (d.meta === undefined || d.meta === null) {
 						d.meta = '';
 					}
 					let mms = new Migrations(d.text).apply();
@@ -118,7 +118,7 @@ function App() {
 					setMapText(d.text);
 					setMetaText(d.meta);
 					setCurrentUrl(window.location.href);
-					if (window.location.hash.indexOf('#clone:') == 0) {
+					if (window.location.hash.indexOf('#clone:') === 0) {
 						setCurrentUrl('(unsaved)');
 						setSaveOutstanding(true);
 						window.location.hash = '';
@@ -236,7 +236,7 @@ function App() {
 			<div id="top-nav-wrapper">
 				<nav className="navbar navbar-dark">
 					<div className="container-fluid">
-						<a className="navbar-brand" href="#">
+						<a className="navbar-brand" href="/">
 							<h3>Online Wardley Maps</h3>
 						</a>
 						<div id="controlsMenuControl">

@@ -6,8 +6,8 @@ export default class EvolveToEvolvedLinksStrategy {
 	getLinks() {
 		const links = this.links.filter(
 			li =>
-				this.mapElements.getEvolveElements().find(i => i.name == li.start) &&
-				this.mapElements.getEvolvedElements().find(i => i.name == li.end)
+				this.mapElements.getEvolveElements().find(i => i.name === li.start) &&
+				this.mapElements.getEvolvedElements().find(i => i.name === li.end)
 		);
 		return {
 			name: 'evolveToEvolved',
