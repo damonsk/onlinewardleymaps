@@ -1,14 +1,14 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 
 function Note(props) {
 	const positionCalc = new PositionCalculator();
-	const positionUpdater = new DefaultPositionUpdater(
+	const positionUpdater = new LineNumberPositionUpdater(
 		'note',
 		props.mapText,
 		props.mutateMapText,
@@ -24,6 +24,7 @@ function Note(props) {
 		);
 
 	function endDrag(moved) {
+		console.log(props.note);
 		const visibility = positionCalc.yToVisibility(
 			moved.y,
 			props.mapDimensions.height
@@ -34,7 +35,8 @@ function Note(props) {
 		);
 		positionUpdater.update(
 			{ param1: visibility, param2: maturity },
-			props.note.text
+			props.note.text,
+			props.note.line
 		);
 	}
 
