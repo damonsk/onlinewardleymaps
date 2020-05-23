@@ -30,8 +30,8 @@ describe('Given elements with line numbers', function() {
 			text => (changed = text),
 			updaters
 		);
-		lineNumberUpdater.update(moved, 'sometext', 1);
+		lineNumberUpdater.update(moved, 'sometext', 2);
 
-		expect(changed.split('\n')[0]).toEqual('note sometext [0.1, 0.9]');
+		expect(changed.split('\n')[1]).toEqual('note sometext [0.1, 0.9]');
 	});
 });
