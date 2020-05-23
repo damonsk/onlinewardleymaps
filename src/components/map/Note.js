@@ -24,7 +24,6 @@ function Note(props) {
 		);
 
 	function endDrag(moved) {
-		console.log(props.note);
 		const visibility = positionCalc.yToVisibility(
 			moved.y,
 			props.mapDimensions.height
