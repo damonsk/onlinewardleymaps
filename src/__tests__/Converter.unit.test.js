@@ -1,4 +1,4 @@
-import Converter from '@/conversion/Converter';
+import Converter from '../conversion/Converter';
 
 describe('Convert test suite', function() {
 	test('should create mapJson Object with title property', function() {

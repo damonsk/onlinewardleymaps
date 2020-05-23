@@ -1,5 +1,5 @@
-import MapElements from '@/MapElements';
-import Converter from '@/conversion/Converter';
+import MapElements from '../MapElements';
+import Converter from '../conversion/Converter';
 
 describe('Given Components Have Pipelines', function() {
 	test('When pipeline is specificed then convert output is correct', function() {
