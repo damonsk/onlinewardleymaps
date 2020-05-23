@@ -2,8 +2,8 @@ import LineNumberPositionUpdater from '../components/map/positionUpdaters/LineNu
 import { ExistingCoordsMatcher } from '../components/map/positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from '../components/map/positionUpdaters/NotDefinedCoordsMatcher';
 
-describe('Given elements with line numbers', function() {
-	test('When pipeline is specificed then convert output is correct', function() {
+describe('Given update mapText using line numbers', function() {
+	test('When element has updated coords then correct line is changed', function() {
 		let changed;
 		const updaters = [ExistingCoordsMatcher, NotDefinedCoordsMatcher];
 		const moved = { param1: 0.1, param2: 0.9 };
@@ -17,13 +17,14 @@ describe('Given elements with line numbers', function() {
 		lineNumberUpdater.update(moved, 'sometext', 1);
 
 		expect(changed.split('\n')[0]).toEqual('note sometext [0.1, 0.9]');
+		expect(changed.split('\n')[1]).toEqual('note sometext [0.1, 0.1]');
 	});
 
-	test('When pipeline is specificed then convert output is correct when note has exiting coords', function() {
+	test('When element has updated coords and has existing coords then correct line is changed', function() {
 		let changed;
 		const updaters = [ExistingCoordsMatcher, NotDefinedCoordsMatcher];
 		const moved = { param1: 0.1, param2: 0.9 };
-		let mapText = 'note sometext [0.3, 0.4]\nnote sometext [0.1, 0.1]';
+		let mapText = 'note sometext [0.3, 0.4]\nnote sometext [0.55, 0.44]';
 		const lineNumberUpdater = new LineNumberPositionUpdater(
 			'note',
 			mapText,
@@ -32,6 +33,7 @@ describe('Given elements with line numbers', function() {
 		);
 		lineNumberUpdater.update(moved, 'sometext', 2);
 
+		expect(changed.split('\n')[0]).toEqual('note sometext [0.3, 0.4]');
 		expect(changed.split('\n')[1]).toEqual('note sometext [0.1, 0.9]');
 	});
 });
