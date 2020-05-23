@@ -141,6 +141,7 @@ function MapCanvas(props) {
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>
@@ -184,6 +185,7 @@ function MapCanvas(props) {
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>

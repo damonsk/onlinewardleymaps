@@ -21,6 +21,8 @@ function MapComponent(props) {
 			props.mapDimensions.height
 		);
 
+	const onElementClick = () => props.setHighlightLine(props.element.line);
+
 	const notEvolvedNoLabelMatcher = {
 		matcher: (line, identifier, type) => {
 			return (
@@ -103,14 +105,14 @@ function MapComponent(props) {
 						id={'element_square_' + props.element.id}
 						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
-						onClick={() => props.setHighlightLine(props.element.line)}
+						onClick={onElementClick}
 					/>
 				) : (
 					<ComponentSymbol
 						id={'element_circle_' + props.element.id}
 						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
-						onClick={() => props.setHighlightLine(props.element.line)}
+						onClick={onElementClick}
 					/>
 				)}
 			</Movable>
@@ -131,6 +133,7 @@ function MapComponent(props) {
 					element={props.element}
 					mapText={props.mapText}
 					mutateMapText={props.mutateMapText}
+					onClick={onElementClick}
 				/>
 			</g>
 		</>

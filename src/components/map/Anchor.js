@@ -63,6 +63,7 @@ const Anchor = props => {
 					evolved={props.anchor.evolved}
 					fontSize={props.mapStyleDefs.anchor.fontSize}
 					styles={props.mapStyleDefs.component}
+					onClick={() => props.setHighlightLine(props.anchor.line)}
 				/>
 			</Movable>
 		</>

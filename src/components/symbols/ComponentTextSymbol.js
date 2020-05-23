@@ -30,6 +30,7 @@ const ComponentTextSymbol = props => {
 		fontWeight,
 		textAnchor,
 		styles = {},
+		onClick,
 	} = props;
 	const displayFill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
@@ -48,6 +49,7 @@ const ComponentTextSymbol = props => {
 				y={y}
 				transform={transform}
 				fill={fill || displayFill}
+				onClick={onClick ? onClick : null}
 			>
 				{note || trimmedText}
 			</text>
@@ -66,6 +68,7 @@ ComponentTextSymbol.propTypes = {
 	fontWeight: PropTypes.string,
 	className: PropTypes.string,
 	evolved: PropTypes.bool,
+	onClick: PropTypes.func,
 };
 
 export default memo(ComponentTextSymbol);

@@ -70,6 +70,7 @@ function ComponentText(props) {
 					text={props.element.name}
 					evolved={props.element.evolved}
 					styles={props.mapStyleDefs.component}
+					onClick={props.onClick}
 				/>
 			</RelativeMovable>
 		</React.Fragment>

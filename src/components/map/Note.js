@@ -52,6 +52,7 @@ function Note(props) {
 				id={'note_text_' + props.note.id}
 				note={props.note.text}
 				styles={props?.mapStyleDefs?.note}
+				onClick={() => props.setHighlightLine(props.note.line)}
 			/>
 		</Movable>
 	);
