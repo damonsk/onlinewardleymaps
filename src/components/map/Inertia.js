@@ -9,8 +9,6 @@ function Inertia(props) {
 	const y = () =>
 		positionCalc.visibilityToY(props.visibility, props.mapDimensions.height);
 
-	//    React.useEffect(()xZ)
-
 	return <InertiaSymbol x={x()} y={y()} />;
 }
 
