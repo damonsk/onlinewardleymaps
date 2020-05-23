@@ -12,7 +12,7 @@ export default class EvolveMigrationStrategy {
 		let changeSets = [];
 		for (let i = 0; i < elementsAsArray.length; i++) {
 			let currentLine = elementsAsArray[i];
-			if (currentLine.indexOf('component ') == 0) {
+			if (currentLine.indexOf('component ') === 0) {
 				if (currentLine.indexOf('evolve ') > -1) {
 					changed = true;
 					let parsed = new ComponentExtractionStrategy(currentLine).apply()

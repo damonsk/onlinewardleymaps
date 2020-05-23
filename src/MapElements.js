@@ -71,7 +71,7 @@ export default class MapElements {
 		if (this.pipelines === undefined) return collection;
 		return collection
 			.map(e => {
-				let component = this.pipelines.find(el => el.name == e.name);
+				let component = this.pipelines.find(el => el.name === e.name);
 				e.pipeline =
 					component != null && component !== undefined ? true : false;
 				return e;

@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import MapCanvas from './MapCanvas';
 
 class MapView extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
 			<>

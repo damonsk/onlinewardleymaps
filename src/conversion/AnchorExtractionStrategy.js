@@ -1,4 +1,6 @@
 import ExtractLocation from './ExtractLocation';
+import ParseError from './ParseError';
+
 export default class AnchorExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -31,7 +33,7 @@ export default class AnchorExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { anchors: anchorsToReturn };

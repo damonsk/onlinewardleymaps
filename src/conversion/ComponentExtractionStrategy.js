@@ -1,4 +1,5 @@
 import ExtractLocation from './ExtractLocation';
+import ParseError from './ParseError';
 
 export default class ComponentExtractionStrategy {
 	constructor(data) {
@@ -52,7 +53,7 @@ export default class ComponentExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { elements: elementsToReturn };

@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class LinksExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -90,7 +92,7 @@ export default class LinksExtractionStrategy {
 					}
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { links: linksToReturn };

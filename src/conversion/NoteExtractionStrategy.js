@@ -1,4 +1,5 @@
 import ExtractLocation from './ExtractLocation';
+import ParseError from './ParseError';
 
 export default class NoteExtractionStrategy {
 	constructor(data) {
@@ -34,7 +35,7 @@ export default class NoteExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { notes: notesArray };

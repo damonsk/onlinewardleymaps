@@ -33,10 +33,7 @@ function MapCanvas(props) {
 		mapElements,
 		props.mapAnchors
 	);
-	const links = useMemo(() => linksBuilder.build(), [
-		props.mapLinks,
-		props.mapComponents,
-	]);
+	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
 	return (
 		<React.Fragment>

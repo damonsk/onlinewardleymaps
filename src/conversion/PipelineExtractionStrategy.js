@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class PipelineExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -36,7 +38,7 @@ export default class PipelineExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { pipelines: elementsToReturn };

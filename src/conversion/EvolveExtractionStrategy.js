@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class EvolveExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -33,7 +35,7 @@ export default class EvolveExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { evolved: elementsToReturn };

@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class MethodExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -29,7 +31,7 @@ export default class MethodExtractionStrategy {
 					}
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { methods: methodElements };

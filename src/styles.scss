@@ -3,6 +3,14 @@
 	font-size: 90%;
 }
 
+span.clickable {
+	color: #d7dae0;
+	cursor: pointer;
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 #owm-build {
 	color: #cbbde2;
 	margin-right: 10px;

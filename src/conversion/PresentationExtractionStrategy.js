@@ -33,7 +33,7 @@ export default class PresentationExtractionStrategy {
 					.trim()
 					.split('y-axis ')[1]
 					.split('->');
-				if (yAxis.length == 3) {
+				if (yAxis.length === 3) {
 					presentationObject.yAxis.label = yAxis[0].trim();
 					presentationObject.yAxis.min = yAxis[1].trim();
 					presentationObject.yAxis.max = yAxis[2].trim();

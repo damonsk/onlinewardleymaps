@@ -1,4 +1,5 @@
 import ExtractLocation from './ExtractLocation';
+import ParseError from './ParseError';
 
 export default class AnnotationExtractionStrategy {
 	constructor(data) {
@@ -67,7 +68,7 @@ export default class AnnotationExtractionStrategy {
 					}
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { annotations: annotationsArray };

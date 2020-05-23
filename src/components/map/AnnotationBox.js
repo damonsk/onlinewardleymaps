@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PositionCalculator from './PositionCalculator';
 import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
 import Movable from './Movable';
@@ -47,9 +47,9 @@ function AnnotationElement(props) {
 		positionUpdater.update({ param1: visibility, param2: maturity }, '');
 	}
 
-	var redraw = function() {
+	const redraw = useCallback(() => {
 		let elem = document.getElementById('annotationsBoxWrap');
-		if (elem !== undefined) elem.parentNode.removeChild(elem);
+		if (elem !== null) elem.parentNode.removeChild(elem);
 
 		let ctx = document.getElementById('movable_annotationsBox'),
 			SVGRect = ctx.getBBox(),
@@ -71,7 +71,7 @@ function AnnotationElement(props) {
 			rect,
 			document.getElementById('annotationsBoxTextContainer')
 		);
-	};
+	}, [props.mapStyleDefs]);
 
 	useEffect(() => {
 		redraw();
@@ -81,6 +81,7 @@ function AnnotationElement(props) {
 		props.mapDimensions,
 		props.mapStyleDefs,
 		props.annotations,
+		redraw,
 	]);
 
 	return (

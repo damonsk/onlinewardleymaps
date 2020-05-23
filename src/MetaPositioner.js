@@ -4,8 +4,9 @@ export default class MetaPositioner {
 			var meta = JSON.parse(metaText);
 			var itemToModify = meta.find(el => {
 				if (el.name === id) return el;
+				return null;
 			});
-			if (itemToModify !== undefined) {
+			if (itemToModify !== null) {
 				return {
 					x: itemToModify.x,
 					y: itemToModify.y,

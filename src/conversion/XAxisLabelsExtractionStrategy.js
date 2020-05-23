@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class XAxisLabelsExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -22,7 +24,7 @@ export default class XAxisLabelsExtractionStrategy {
 					};
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return {
