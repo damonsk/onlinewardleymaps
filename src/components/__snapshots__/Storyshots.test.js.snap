@@ -99,12 +99,13 @@ exports[`Storyshots Meta  default 1`] = `
 >
   Your map has meta data -
    
-  <a
+  <span
+    className="clickable"
     id="showMeta"
     onClick={[Function]}
   >
     Show
-  </a>
+  </span>
 </div>
 `;
 
@@ -128,21 +129,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     component Customer [0.9, 0.5]
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     component Cup of Tea [0.9, 0.5]
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -159,21 +160,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     component Customer [0.95, 0.5] inertia
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     component Cup of Tea [0.9, 0.5] inertia
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -190,21 +191,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     evolve Customer 0.8
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     evolve Cup of Tea evolve 0.8
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -217,21 +218,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Start Component-&gt;End Component
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Customer-&gt;Cup of Tea
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -244,21 +245,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Start Component+&lt;&gt;End Component
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Customer+&lt;&gt;Cup of Tea
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -275,21 +276,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     pipeline Customer [0.15, 0.9]
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     pipeline Customer
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -302,21 +303,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Start Component+&lt;End Component
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Hot Water+&lt;Kettle
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -329,21 +330,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Start Component+&gt;End Component
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Hot Water+&gt;Kettle
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -356,21 +357,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Start Component+'insert text'&gt;End Component
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     Hot Water+'$0.10'&gt;Kettle
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -387,21 +388,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     evolution First-&gt;Second-&gt;Third-&gt;Fourth
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     evolution Novel-&gt;Emerging-&gt;Good-&gt;Best
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -418,21 +419,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     y-axis Label-&gt;Min-&gt;Max
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     y-axis Value Chain-&gt;Invisible-&gt;Visible
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -449,21 +450,21 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     note Note Text [0.9, 0.5]
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     note +future development [0.9, 0.5]
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
@@ -480,29 +481,29 @@ exports[`Storyshots Usage  default 1`] = `
     Example:
   </strong>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     style wardley
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     style handwritten
-  </a>
+  </span>
   <br />
-  <a
-    className="add"
+  <span
+    className="add clickable"
     href="#"
     onClick={[Function]}
   >
     style colour
-  </a>
+  </span>
   <br />
   <br />
   ------------------------
