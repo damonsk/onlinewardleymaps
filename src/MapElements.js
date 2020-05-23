@@ -33,6 +33,7 @@ export default class MapElements {
 				evolving: false,
 				evolved: true,
 				label: v.label,
+				line: v.line,
 			};
 		});
 	}
