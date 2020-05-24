@@ -39,6 +39,7 @@ export default class Converter {
 			evolution: [],
 			methods: [],
 			title: '',
+			submaps: [''],
 		};
 		strategies.forEach(s => {
 			converted = Object.assign(converted, s.apply());
