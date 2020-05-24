@@ -62,7 +62,7 @@ export default class ExtendableComponentExtractionStrategy {
 	}
 
 	addDecorator(fn) {
-		this.BaseStrategyRunner.addDecorator(fn);
+		this.baseRunner.addDecorator(fn);
 	}
 
 	apply() {
