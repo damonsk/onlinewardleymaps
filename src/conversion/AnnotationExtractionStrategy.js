@@ -3,23 +3,17 @@ import * as ExtractionFunctions from '../constants/extractionFunctions';
 
 export default class AnnotationExtractionStrategy {
 	constructor(data) {
+		const config = { keyword: 'annotation', containerName: 'annotations' };
 		this.data = data;
-		this.keyword = 'annotation';
-		this.containerName = 'annotations';
+		this.keyword = config.keyword;
+		this.containerName = config.containerName;
 
 		const extractionFuncs = [
 			ExtractionFunctions.setNumber,
 			ExtractionFunctions.setOccurances,
 			ExtractionFunctions.setTextFromEnding,
 		];
-		this.baseRunner = new BaseStrategyRunner(
-			data,
-			{
-				keyword: this.keyword,
-				containerName: this.containerName,
-			},
-			extractionFuncs
-		);
+		this.baseRunner = new BaseStrategyRunner(data, config, extractionFuncs);
 	}
 
 	addDecorator(fn) {

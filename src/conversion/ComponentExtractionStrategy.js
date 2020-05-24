@@ -2,13 +2,17 @@ import ExtendableComponentExtractionStrategy from './ExtendableComponentExtracti
 
 export default class ComponentExtractionStrategy {
 	constructor(data) {
-		this.data = data;
-		this.keyword = 'component';
-		this.containerName = 'elements';
-		this.parentStrategy = new ExtendableComponentExtractionStrategy(data, {
+		const config = {
 			keyword: 'component',
 			containerName: 'elements',
-		});
+		};
+		this.data = data;
+		this.keyword = config.keyword;
+		this.containerName = config.containerName;
+		this.parentStrategy = new ExtendableComponentExtractionStrategy(
+			data,
+			config
+		);
 	}
 
 	apply() {

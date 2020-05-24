@@ -173,8 +173,6 @@ describe('Convert test suite', function() {
 		let actual = 'annotation 1';
 		let result = new Converter().parse(actual);
 
-		console.log(result.annotations);
-
 		expect(result.annotations.length).toEqual(0);
 	});
 
@@ -288,5 +286,14 @@ describe('Convert test suite', function() {
 		expect(result.pipelines[0].maturity1).toEqual(0.2);
 		expect(result.pipelines[0].maturity2).toEqual(0.8);
 		expect(result.pipelines[0].hidden).toEqual(true);
+	});
+
+	test.each(['build', 'buy', 'outsource'])('methods are extracted', k => {
+		let actual = `${k} Foo Bar`;
+		let result = new Converter().parse(actual);
+
+		expect(result.methods.length).toEqual(1);
+		expect(result.methods[0].name).toEqual('Foo Bar');
+		expect(result.methods[0].method).toEqual(k);
 	});
 });

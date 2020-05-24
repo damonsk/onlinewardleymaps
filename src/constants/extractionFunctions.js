@@ -76,6 +76,22 @@ export const setPipelineMaturity = (o, line) => {
 	);
 };
 
+export const setMethod = (o, line, config) => {
+	let name = line.split(`${config.keyword} `)[1].trim();
+	return Object.assign(o, { name: name }, { method: config.keyword });
+};
+
+export const setNameWithMaturity = (o, line) => {
+	let name = line.split('evolve ')[1].trim();
+	const evolveMaturity = line.match(/\s[0-9]?\.[0-9]+[0-9]?/);
+	let newPoint = 0.85;
+	if (evolveMaturity.length > 0) {
+		newPoint = parseFloat(evolveMaturity[0]);
+		name = name.split(newPoint)[0].trim();
+	}
+	return Object.assign(o, { name: name }, { maturity: newPoint });
+};
+
 export const setCoords = (o, line) => {
 	const positionData = new ExtractLocation().extract(line, {
 		visibility: 0.9,
