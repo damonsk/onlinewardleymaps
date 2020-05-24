@@ -52,9 +52,13 @@ const UsageDefinition = props => (
 );
 
 const UsageExample = props => (
-	<a onClick={() => props.addOnClick(props.example)} href="#" className="add">
+	<span
+		onClick={() => props.addOnClick(props.example)}
+		href="#"
+		className="add clickable"
+	>
 		{props.example}
-	</a>
+	</span>
 );
 
 export default Usage;

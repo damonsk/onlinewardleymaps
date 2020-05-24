@@ -1,6 +1,25 @@
+import ParseError from './ParseError';
+
 export default class LinksExtractionStrategy {
 	constructor(data) {
 		this.data = data;
+		this.notLinks = [
+			'evolution',
+			'anchor',
+			'evolve',
+			'component',
+			'style',
+			'build',
+			'buy',
+			'outsource',
+			'title',
+			'annotation',
+			'annotations',
+			'y-axis',
+			'pipeline',
+			'note',
+			'submap',
+		];
 	}
 	apply() {
 		let lines = this.data.trim().split('\n');
@@ -8,23 +27,7 @@ export default class LinksExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (
-					element.trim().length > 0 &&
-					element.trim().indexOf('evolution') == -1 &&
-					element.trim().indexOf('anchor') == -1 &&
-					element.trim().indexOf('evolve') == -1 &&
-					element.trim().indexOf('component') == -1 &&
-					element.trim().indexOf('style') == -1 &&
-					element.trim().indexOf('build') == -1 &&
-					element.trim().indexOf('buy') == -1 &&
-					element.trim().indexOf('outsource') == -1 &&
-					element.trim().indexOf('title') == -1 &&
-					element.trim().indexOf('annotation') == -1 &&
-					element.trim().indexOf('annotations') == -1 &&
-					element.trim().indexOf('y-axis') == -1 &&
-					element.trim().indexOf('pipeline') == -1 &&
-					element.trim().indexOf('note') == -1
-				) {
+				if (this.canProcessLine(element)) {
 					if (element.indexOf('+>') > -1) {
 						let name = element.split('+>');
 						linksToReturn.push({
@@ -90,9 +93,21 @@ export default class LinksExtractionStrategy {
 					}
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { links: linksToReturn };
+	}
+
+	canProcessLine(element) {
+		if (element.trim().length === 0) return false;
+		let shouldProcess = true;
+		for (let j = 0; j < this.notLinks.length; j++) {
+			const shouldIgnore = this.notLinks[j];
+			if (element.trim().indexOf(shouldIgnore) !== -1) {
+				shouldProcess = false;
+			}
+		}
+		return shouldProcess;
 	}
 }

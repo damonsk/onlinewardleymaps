@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class PipelineExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -8,7 +10,7 @@ export default class PipelineExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('pipeline ') == 0) {
+				if (element.trim().indexOf('pipeline ') === 0) {
 					let name = element.split('pipeline ')[1].trim();
 					if (name.indexOf('[') > -1) {
 						name = name.split('[')[0].trim();
@@ -36,7 +38,7 @@ export default class PipelineExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { pipelines: elementsToReturn };

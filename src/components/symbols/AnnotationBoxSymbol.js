@@ -1,0 +1,44 @@
+import React, { memo } from 'react';
+import PropTypes from 'prop-types';
+
+const InertiaSymbol = memo(function InertiaSymbol(props) {
+	const {
+		id,
+		dy = '0',
+		x = '2',
+		fill,
+		textAnchor = 'start',
+		textDecoration = 'underline',
+		className = 'label draggable',
+		children,
+	} = props;
+
+	return (
+		<text id={id}>
+			<tspan
+				className={className}
+				textAnchor={textAnchor}
+				dy={dy}
+				x={x}
+				fill={fill}
+				textDecoration={textDecoration}
+			>
+				Annotations:
+			</tspan>
+			{children}
+		</text>
+	);
+});
+
+InertiaSymbol.propTypes = {
+	id: PropTypes.string,
+	x: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	dy: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	fill: PropTypes.string,
+	textAnchor: PropTypes.string,
+	textDecoration: PropTypes.string,
+	className: PropTypes.string,
+	children: PropTypes.node,
+};
+
+export default InertiaSymbol;

@@ -14,24 +14,30 @@ import {
 
 function Controls(props) {
 	const [toggleAutoSave, setToggleAutoSave] = useState(false);
-
+	const {
+		saveOutstanding,
+		saveMapClick,
+		mutateMapText,
+		setMetaText,
+		newMapClick,
+		downloadMapImage,
+		currentUrl,
+	} = props;
 	useEffect(() => {
 		if (toggleAutoSave === true) {
-			if (props.saveOutstanding === true) {
-				props.saveMapClick();
+			if (saveOutstanding === true) {
+				saveMapClick();
 			}
 		}
-	}, [props.saveOutstanding, toggleAutoSave]);
+	}, [saveOutstanding, saveMapClick, toggleAutoSave]);
 
 	const clickAutoSave = () => {
-		{
-			toggleAutoSave ? setToggleAutoSave(false) : setToggleAutoSave(true);
-		}
+		toggleAutoSave ? setToggleAutoSave(false) : setToggleAutoSave(true);
 	};
 
 	const example = () => {
-		props.mutateMapText(ExampleMap);
-		props.setMetaText('');
+		mutateMapText(ExampleMap);
+		setMetaText('');
 	};
 
 	const [modalShow, setModalShow] = React.useState(false);
@@ -54,14 +60,14 @@ function Controls(props) {
 			>
 				Example Map
 			</Button>
-			<Button id="new-map" variant="secondary" onClick={props.newMapClick}>
+			<Button id="new-map" variant="secondary" onClick={newMapClick}>
 				New Map
 			</Button>
 			<Button
 				id="save-map"
-				onClick={props.saveMapClick}
+				onClick={saveMapClick}
 				type="button"
-				variant={props.saveOutstanding ? 'danger' : 'success'}
+				variant={saveOutstanding ? 'danger' : 'success'}
 			>
 				Save
 			</Button>
@@ -80,7 +86,7 @@ function Controls(props) {
 				alignRight
 				variant="info"
 			>
-				<Dropdown.Item eventKey="1" onClick={props.downloadMapImage}>
+				<Dropdown.Item eventKey="1" onClick={downloadMapImage}>
 					Download as PNG
 				</Dropdown.Item>
 				<Dropdown.Item eventKey="2" onClick={() => setModalShow(true)}>
@@ -106,7 +112,7 @@ function Controls(props) {
 						using this map as its initial state.
 					</p>
 					<p>Any changes made by others will not be reflected in this map.</p>
-					{props.currentUrl == '(unsaved)' ? (
+					{currentUrl === '(unsaved)' ? (
 						<Alert variant="danger">Please save your map first!</Alert>
 					) : (
 						<InputGroup className="mb-3">
@@ -114,7 +120,7 @@ function Controls(props) {
 								ref={textArea}
 								onChange={function() {}}
 								aria-describedby="basic-addon1"
-								value={props.currentUrl.replace('#', '#clone:')}
+								value={currentUrl.replace('#', '#clone:')}
 							/>
 							<InputGroup.Append>
 								<Button
@@ -129,8 +135,8 @@ function Controls(props) {
 				</Modal.Body>
 				<Modal.Footer>
 					<Button
-						variant={props.saveOutstanding ? 'danger' : 'success'}
-						onClick={props.saveMapClick}
+						variant={saveOutstanding ? 'danger' : 'success'}
+						onClick={saveMapClick}
 					>
 						Save Map
 					</Button>

@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import MapCanvas from './MapCanvas';
 
 class MapView extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
 			<>
@@ -22,6 +18,7 @@ class MapView extends Component {
 							mapStyle={this.props.mapStyle}
 							mapObject={this.props.mapObject}
 							mapComponents={this.props.mapComponents}
+							mapSubMaps={this.props.mapSubMaps}
 							mapEvolved={this.props.mapEvolved}
 							mapPipelines={this.props.mapPipelines}
 							mapAnchors={this.props.mapAnchors}

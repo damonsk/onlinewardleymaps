@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PositionCalculator from './PositionCalculator';
-import AnnotationText from './AnnotationText';
+import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
 import Movable from './Movable';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 
 function AnnotationElement(props) {
 	const positionCalc = new PositionCalculator();
@@ -46,9 +47,9 @@ function AnnotationElement(props) {
 		positionUpdater.update({ param1: visibility, param2: maturity }, '');
 	}
 
-	var redraw = function() {
+	const redraw = useCallback(() => {
 		let elem = document.getElementById('annotationsBoxWrap');
-		if (elem != undefined) elem.parentNode.removeChild(elem);
+		if (elem !== null) elem.parentNode.removeChild(elem);
 
 		let ctx = document.getElementById('movable_annotationsBox'),
 			SVGRect = ctx.getBBox(),
@@ -60,17 +61,17 @@ function AnnotationElement(props) {
 		rect.setAttribute('class', 'draggable');
 		rect.setAttribute('width', SVGRect.width + 4);
 		rect.setAttribute('height', SVGRect.height + 4);
-		rect.setAttribute('stroke', props.mapStyleDefs.annotations.boxStroke);
+		rect.setAttribute('stroke', props.mapStyleDefs.annotation.boxStroke);
 		rect.setAttribute(
 			'stroke-width',
-			props.mapStyleDefs.annotations.boxStrokeWidth
+			props.mapStyleDefs.annotation.boxStrokeWidth
 		);
-		rect.setAttribute('fill', props.mapStyleDefs.annotations.boxFill);
+		rect.setAttribute('fill', props.mapStyleDefs.annotation.boxFill);
 		ctx.insertBefore(
 			rect,
 			document.getElementById('annotationsBoxTextContainer')
 		);
-	};
+	}, [props.mapStyleDefs]);
 
 	useEffect(() => {
 		redraw();
@@ -80,6 +81,7 @@ function AnnotationElement(props) {
 		props.mapDimensions,
 		props.mapStyleDefs,
 		props.annotations,
+		redraw,
 	]);
 
 	return (
@@ -91,28 +93,21 @@ function AnnotationElement(props) {
 			x={x()}
 			y={y()}
 		>
-			<text id={'annotationsBoxTextContainer'}>
-				<tspan
-					className="label draggable"
-					textAnchor="start"
-					dy={0}
-					x={2}
-					fill={props.mapStyleDefs.annotations.boxTextColour}
-					textDecoration="underline"
-				>
-					Annotations:
-				</tspan>
-				{props.annotations.map((a, i) => {
-					return (
-						<AnnotationText
-							annotation={a}
-							key={i}
-							parentIndex={i}
-							mapStyleDefs={props.mapStyleDefs}
-						/>
-					);
-				})}
-			</text>
+			<AnnotationBoxSymbol
+				id={'annotationsBoxTextContainer'}
+				dy={0}
+				x={2}
+				styles={props.mapStyleDefs.annotation}
+			>
+				{props.annotations.map((a, i) => (
+					<AnnotationTextSymbol
+						key={i}
+						annotation={a}
+						parentIndex={i}
+						styles={props.mapStyleDefs.annotation}
+					/>
+				))}
+			</AnnotationBoxSymbol>
 		</Movable>
 	);
 }

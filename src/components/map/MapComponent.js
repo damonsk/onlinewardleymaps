@@ -1,6 +1,6 @@
 import React from 'react';
 import ComponentSymbol from '../symbols/ComponentSymbol';
-import PipelineSymbol from '../symbols/PipelineSymbol';
+import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 
 import ComponentText from './ComponentText';
 import PositionCalculator from './PositionCalculator';
@@ -21,10 +21,12 @@ function MapComponent(props) {
 			props.mapDimensions.height
 		);
 
+	const onElementClick = () => props.setHighlightLine(props.element.line);
+
 	const notEvolvedNoLabelMatcher = {
 		matcher: (line, identifier, type) => {
 			return (
-				props.element.evolved == undefined &&
+				props.element.evolved === undefined &&
 				ExistingCoordsMatcher.matcher(line, identifier, type) &&
 				!ExistingCoordsMatcher.matcher(line, '', 'label')
 			);
@@ -37,7 +39,7 @@ function MapComponent(props) {
 	const notEvolvedWithLabelMatcher = {
 		matcher: (line, identifier, type) => {
 			return (
-				props.element.evolved == undefined &&
+				props.element.evolved === undefined &&
 				ExistingCoordsMatcher.matcher(line, identifier, type) &&
 				ExistingCoordsMatcher.matcher(line, '', 'label')
 			);
@@ -99,24 +101,25 @@ function MapComponent(props) {
 				fixedX={false}
 			>
 				{props.element.pipeline ? (
-					<PipelineSymbol
+					<PipelineComponentSymbol
 						id={'element_square_' + props.element.id}
-						mapStyleDefs={props.mapStyleDefs}
+						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
-						onClick={() => props.setHighlightLine(props.element.line)}
+						onClick={onElementClick}
 					/>
 				) : (
 					<ComponentSymbol
 						id={'element_circle_' + props.element.id}
-						mapStyleDefs={props.mapStyleDefs}
+						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
-						onClick={() => props.setHighlightLine(props.element.line)}
+						onClick={onElementClick}
 					/>
 				)}
 			</Movable>
-			{(props.element.evolved == undefined || props.element.evolved == false) &&
-			props.element.evolving == false &&
-			props.element.inertia == true ? (
+			{(props.element.evolved === undefined ||
+				props.element.evolved === false) &&
+			props.element.evolving === false &&
+			props.element.inertia === true ? (
 				<Inertia
 					maturity={parseFloat(props.element.maturity) + 0.05}
 					visibility={props.element.visibility}
@@ -130,8 +133,7 @@ function MapComponent(props) {
 					element={props.element}
 					mapText={props.mapText}
 					mutateMapText={props.mutateMapText}
-					setMetaText={props.setMetaText}
-					metaText={props.metaText}
+					onClick={onElementClick}
 				/>
 			</g>
 		</>

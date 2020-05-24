@@ -1,3 +1,5 @@
+import ParseError from './ParseError';
+
 export default class EvolveExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -8,7 +10,7 @@ export default class EvolveExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('evolve ') == 0) {
+				if (element.trim().indexOf('evolve ') === 0) {
 					let name = element.split('evolve ')[1].trim();
 					let evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
 					let newPoint = 0.85;
@@ -33,7 +35,7 @@ export default class EvolveExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { evolved: elementsToReturn };

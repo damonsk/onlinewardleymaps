@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 function RelativeMovable(props) {
-	const x = () => props.x;
-	const y = () => props.y;
+	const x = useCallback(() => props.x, [props.x]);
+	const y = useCallback(() => props.y, [props.y]);
 	const [position, setPosition] = React.useState({
 		x: x(),
 		y: y(),
@@ -63,7 +63,7 @@ function RelativeMovable(props) {
 			y: y(),
 			coords: {},
 		});
-	}, [props.x, props.y]);
+	}, [x, y]);
 
 	return (
 		<g

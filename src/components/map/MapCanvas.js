@@ -33,10 +33,7 @@ function MapCanvas(props) {
 		mapElements,
 		props.mapAnchors
 	);
-	const links = useMemo(() => linksBuilder.build(), [
-		props.mapLinks,
-		props.mapComponents,
-	]);
+	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
 	return (
 		<React.Fragment>
@@ -81,7 +78,7 @@ function MapCanvas(props) {
 				<g id="map">
 					<g id="methods">
 						{props.mapMethods.map((m, i) =>
-							getElementByName(mapElements.getNonEvolvedElements(), m.name) ==
+							getElementByName(mapElements.getNonEvolvedElements(), m.name) ===
 							undefined ? null : (
 								<MethodElement
 									key={i}
@@ -144,6 +141,7 @@ function MapCanvas(props) {
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>
@@ -187,6 +185,7 @@ function MapCanvas(props) {
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
+								setHighlightLine={props.setHighlightLine}
 							/>
 						))}
 					</g>
@@ -208,7 +207,7 @@ function MapCanvas(props) {
 								))}
 							</React.Fragment>
 						))}
-						{props.mapAnnotations.length == 0 ? null : (
+						{props.mapAnnotations.length === 0 ? null : (
 							<AnnotationBox
 								mapStyleDefs={props.mapStyleDefs}
 								mutateMapText={props.mutateMapText}

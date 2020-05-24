@@ -1,4 +1,6 @@
 import ExtractLocation from './ExtractLocation';
+import ParseError from './ParseError';
+
 export default class AnchorExtractionStrategy {
 	constructor(data) {
 		this.data = data;
@@ -12,7 +14,7 @@ export default class AnchorExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('anchor') == 0) {
+				if (element.trim().indexOf('anchor') === 0) {
 					let name = element
 						.split('anchor ')[1]
 						.trim()
@@ -31,7 +33,7 @@ export default class AnchorExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { anchors: anchorsToReturn };

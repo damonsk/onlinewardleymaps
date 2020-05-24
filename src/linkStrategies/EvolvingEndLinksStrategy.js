@@ -7,8 +7,10 @@ export default class EvolvingEndLinksStrategy {
 	getLinks() {
 		const links = this.links.filter(
 			li =>
-				this.mapElements.getEvolvedElements().find(i => i.name == li.end) &&
-				this.mapElements.getNoneEvolvingElements().find(i => i.name == li.start)
+				this.mapElements.getEvolvedElements().find(i => i.name === li.end) &&
+				this.mapElements
+					.getNoneEvolvingElements()
+					.find(i => i.name === li.start)
 		);
 		return {
 			name: 'evolvingEndLinks',

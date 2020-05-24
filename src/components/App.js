@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { hot } from 'react-hot-loader/root';
+
 import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
@@ -7,6 +9,8 @@ import MapView from './map/MapView';
 import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Toolbar from './editor/Toolbar';
+import Breadcrumb from './editor/Breadcrumb';
+
 import Converter from '../conversion/Converter';
 import Migrations from '../migrations/Migrations';
 import * as MapStyles from '../constants/mapstyles';
@@ -14,12 +18,17 @@ import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
 import { Collapse } from 'react-bootstrap';
 
+// only use toolbar if set
+const useToolbar = false;
+// const isDev = process.env.NODE_ENV === 'development';
+
 function App() {
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapSubMaps, setMapSubMaps] = useState([]);
 	const [mapEvolved, setMapEvolved] = useState([]);
 	const [mapPipelines, setMapPipelines] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
@@ -90,7 +99,7 @@ function App() {
 		if (window.location.hash.length > 0) {
 			var mapId = window.location.hash.replace('#', '');
 
-			if (window.location.hash.indexOf('#clone:') == 0)
+			if (window.location.hash.indexOf('#clone:') === 0)
 				mapId = window.location.hash.replace('#clone:', '');
 
 			setCurrentUrl('(loading...)');
@@ -99,7 +108,7 @@ function App() {
 			fetch(fetchUrl)
 				.then(resp => resp.json())
 				.then(d => {
-					if (d.meta == undefined || d.meta == null) {
+					if (d.meta === undefined || d.meta === null) {
 						d.meta = '';
 					}
 					let mms = new Migrations(d.text).apply();
@@ -110,7 +119,7 @@ function App() {
 					setMapText(d.text);
 					setMetaText(d.meta);
 					setCurrentUrl(window.location.href);
-					if (window.location.hash.indexOf('#clone:') == 0) {
+					if (window.location.hash.indexOf('#clone:') === 0) {
 						setCurrentUrl('(unsaved)');
 						setSaveOutstanding(true);
 						window.location.hash = '';
@@ -162,6 +171,7 @@ function App() {
 			setMapAnchors(r.anchors);
 			setMapNotes(r.notes);
 			setMapComponents(r.elements);
+			setMapSubMaps(r.submaps);
 			setMapEvolved(r.evolved);
 			setMapPipelines(r.pipelines);
 			setMapLinks(r.links);
@@ -228,7 +238,7 @@ function App() {
 			<div id="top-nav-wrapper">
 				<nav className="navbar navbar-dark">
 					<div className="container-fluid">
-						<a className="navbar-brand" href="#">
+						<a className="navbar-brand" href="/">
 							<h3>Online Wardley Maps</h3>
 						</a>
 						<div id="controlsMenuControl">
@@ -244,13 +254,17 @@ function App() {
 						</div>
 					</div>
 				</nav>
-				<div className="navbar subnav">
-					<Subnav
-						currentUrl={currentUrl}
-						toggleToolbar={toggleToolbar}
-						setToggleToolbar={setToggleToolbar}
-					/>
-				</div>
+				{useToolbar ? (
+					<div className="navbar subnav">
+						<Subnav
+							currentUrl={currentUrl}
+							toggleToolbar={toggleToolbar}
+							setToggleToolbar={setToggleToolbar}
+						/>
+					</div>
+				) : (
+					<Breadcrumb currentUrl={currentUrl} />
+				)}
 			</div>
 			{/* <div className="container-fluid"> */}
 			<div
@@ -276,6 +290,7 @@ function App() {
 					<MapView
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
+						mapSubMaps={mapSubMaps}
 						mapEvolved={mapEvolved}
 						mapPipelines={mapPipelines}
 						mapAnchors={mapAnchors}
@@ -297,17 +312,19 @@ function App() {
 						setHighlightLine={setHighlightLine}
 					/>
 				</div>
-				<Collapse in={toggleToolbar} dimension={'width'}>
-					<div className="col-sm tool-bar">
-						<div className="contents">
-							<Toolbar
-								mapText={mapText}
-								mutateMapText={mutateMapText}
-								mapStyleDefs={mapStyleDefs}
-							/>
+				{useToolbar && (
+					<Collapse in={toggleToolbar} dimension={'width'}>
+						<div className="col-sm tool-bar">
+							<div className="contents">
+								<Toolbar
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									mapStyleDefs={mapStyleDefs}
+								/>
+							</div>
 						</div>
-					</div>
-				</Collapse>
+					</Collapse>
+				)}
 			</div>
 			<div className="row usage no-gutters">
 				<div className="col">
@@ -387,4 +404,4 @@ function App() {
 	);
 }
 
-export default App;
+export default hot(App);

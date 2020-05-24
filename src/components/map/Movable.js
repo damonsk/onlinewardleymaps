@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 function Movable(props) {
-	const x = () => props.x;
-	const y = () => props.y;
+	const x = useCallback(() => props.x, [props.x]);
+	const y = useCallback(() => props.y, [props.y]);
 	const [position, setPosition] = React.useState({
 		x: x(),
 		y: y(),
@@ -63,8 +63,8 @@ function Movable(props) {
 			y: y(),
 			coords: {},
 		});
-		if (props.onEffects != undefined) props.onEffects();
-	}, [props.x, props.y]);
+		//if (props.onEffects !== undefined) props.onEffects();
+	}, [x, y]);
 
 	return (
 		<g

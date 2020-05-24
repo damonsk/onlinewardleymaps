@@ -1,8 +1,7 @@
 export const PageTitle =
 	'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
 
-export const ApiEndpoint =
-	'https://s7u91cjmdf.execute-api.eu-west-1.amazonaws.com/dev/maps/';
+export const ApiEndpoint = 'https://api.onlinewardleymaps.com/v1/maps/';
 
 export const EvoOffsets = {
 	custom: 3.5,

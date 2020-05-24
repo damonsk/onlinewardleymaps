@@ -17,7 +17,7 @@ function ComponentText(props) {
 									'evolve' +
 										props.element.name.replace(/\s/g, '') +
 										props.element.maturity
-								) == 0
+								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
@@ -36,7 +36,7 @@ function ComponentText(props) {
 								.replace(/\s/g, '')
 								.indexOf(
 									'component' + props.element.name.replace(/\s/g, '') + '['
-								) == 0
+								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
@@ -69,7 +69,8 @@ function ComponentText(props) {
 					id={elementId}
 					text={props.element.name}
 					evolved={props.element.evolved}
-					mapStyleDefs={props.mapStyleDefs}
+					styles={props.mapStyleDefs.component}
+					onClick={props.onClick}
 				/>
 			</RelativeMovable>
 		</React.Fragment>

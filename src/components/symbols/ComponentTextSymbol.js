@@ -17,24 +17,43 @@ const trimText = (id, longText) =>
 		));
 
 const ComponentTextSymbol = props => {
-	const { id, x, y, text, evolved, className = 'label' } = props;
-	const { component = {} } = props.mapStyleDefs || {};
-	const fill = evolved ? component.evolvedTextColor : component.textColor;
+	const {
+		id,
+		x,
+		y,
+		text,
+		evolved,
+		className = 'label',
+		note,
+		fontSize,
+		fill,
+		fontWeight,
+		textAnchor,
+		styles = {},
+		onClick,
+	} = props;
+	const displayFill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
-	const displayText = isLong ? trimText(id, text) : text;
+	const trimmedText = isLong ? trimText(id, text) : text;
 	const transform = isLong ? 'translate(30, 10)' : '';
 	return (
-		<text
-			id={id}
-			fontWeight="14px"
-			className={className}
-			x={x}
-			y={y}
-			transform={transform}
-			fill={fill}
-		>
-			{displayText}
-		</text>
+		<>
+			<text
+				id={id}
+				data-testid={id}
+				fontWeight={fontWeight || styles.fontWeight || '14px'}
+				fontSize={fontSize || styles.fontSize || '14px'}
+				className={className}
+				textAnchor={textAnchor}
+				x={x}
+				y={y}
+				transform={transform}
+				fill={fill || displayFill}
+				onClick={onClick ? onClick : null}
+			>
+				{note || trimmedText}
+			</text>
+		</>
 	);
 };
 
@@ -42,10 +61,14 @@ ComponentTextSymbol.propTypes = {
 	id: PropTypes.string,
 	x: PropTypes.string,
 	y: PropTypes.string,
-	text: PropTypes.string.isRequired,
-	mapStyleDefs: PropTypes.object.isRequired,
+	text: PropTypes.string,
+	styles: PropTypes.object.isRequired,
+	fill: PropTypes.string,
+	fontSize: PropTypes.string,
+	fontWeight: PropTypes.string,
 	className: PropTypes.string,
 	evolved: PropTypes.bool,
+	onClick: PropTypes.func,
 };
 
 export default memo(ComponentTextSymbol);

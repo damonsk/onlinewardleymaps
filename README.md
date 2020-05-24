@@ -26,7 +26,7 @@ To run locally, develop/edit. Open web browser @ http://localhost:8080
 
 To create minified scripts/styling.
 
-    yarn dist
+    yarn build
 
 To run all tests.
 

@@ -18,9 +18,13 @@ var Alert = props => (
 	<>
 		<div id="meta-alert" className="alert alert-warning" role="alert">
 			Your map has meta data -{' '}
-			<a onClick={() => props.toggleMeta(true)} id="showMeta">
+			<span
+				onClick={() => props.toggleMeta(true)}
+				id="showMeta"
+				className="clickable"
+			>
 				Show
-			</a>
+			</span>
 		</div>
 	</>
 );

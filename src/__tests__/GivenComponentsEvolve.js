@@ -1,6 +1,6 @@
-import MapElements from '@/MapElements';
-import Converter from '@/conversion/Converter';
-import Migrations from '@/Migrations/Migrations';
+import MapElements from '../MapElements';
+import Converter from '../conversion/Converter';
+import Migrations from '../Migrations/Migrations';
 
 describe('Given Components Evolve', function() {
 	test('When getEvolveElements invoked then elements set to evolve are returned', function() {

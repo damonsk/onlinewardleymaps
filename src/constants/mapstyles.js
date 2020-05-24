@@ -1,5 +1,7 @@
+import merge from 'lodash.merge';
+
 // use an override model with the default style in case some style options are missing
-const mergeIntoDefault = style => Object.assign({}, Plain, style);
+const mergeIntoDefault = style => merge({}, Plain, style);
 
 export const Plain = {
 	className: 'plain',
@@ -12,7 +14,11 @@ export const Plain = {
 	pipelineArrowWidth: '5',
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
+	anchor: {
+		fontSize: '14px',
+	},
 	component: {
+		fontSize: '13px',
 		fill: 'white',
 		stroke: 'black',
 		evolved: 'red',
@@ -31,8 +37,9 @@ export const Plain = {
 		evolvedStrokeWidth: 1,
 		flow: '#99c5ee9e',
 		flowStrokeWidth: 10,
+		flowText: '#03a9f4',
 	},
-	annotations: {
+	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
 		fill: 'white',
@@ -42,6 +49,11 @@ export const Plain = {
 		boxFill: '#FFFFFF',
 		boxTextColour: 'black',
 	},
+	note: {
+		fontWeight: 'bold',
+		fontSize: '12px',
+		fill: 'black',
+	},
 };
 
 export const Handwritten = mergeIntoDefault({
@@ -50,10 +62,6 @@ export const Handwritten = mergeIntoDefault({
 	stroke: 'black',
 	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: 'black',
-	pipelineArrowHeight: '5',
-	pipelineArrowWidth: '5',
-	strokeWidth: '1',
-	strokeDasharray: '2,2',
 	component: {
 		fill: 'white',
 		stroke: 'black',
@@ -62,23 +70,10 @@ export const Handwritten = mergeIntoDefault({
 		strokeWidth: '1',
 		pipelineStrokeWidth: '2',
 		radius: 5,
-		textColor: 'black',
-		textOffset: 8,
-		evolvedTextColor: 'red',
 	},
-	link: {
-		stroke: 'grey',
-		strokeWidth: 1,
-		evolvedStroke: 'red',
-		evolvedStrokeWidth: 1,
-		flow: '#99c5ee9e',
-		flowStrokeWidth: 10,
-	},
-	annotations: {
+	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
-		fill: 'white',
-		text: 'black',
 		boxStroke: '#595959',
 		boxStrokeWidth: 1,
 		boxFill: '#FFFFFF',
@@ -92,10 +87,6 @@ export const Wardley = mergeIntoDefault({
 	stroke: 'black',
 	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: '#b8b8b8',
-	pipelineArrowHeight: '5',
-	pipelineArrowWidth: '5',
-	strokeWidth: '1',
-	strokeDasharray: '2,2',
 	component: {
 		fill: 'white',
 		stroke: 'black',
@@ -104,23 +95,10 @@ export const Wardley = mergeIntoDefault({
 		strokeWidth: '1',
 		pipelineStrokeWidth: '2',
 		radius: 5,
-		textColor: 'black',
-		textOffset: 8,
-		evolvedTextColor: 'red',
 	},
-	link: {
-		stroke: 'grey',
-		strokeWidth: 1,
-		evolvedStroke: 'red',
-		evolvedStrokeWidth: 1,
-		flow: '#99c5ee9e',
-		flowStrokeWidth: 10,
-	},
-	annotations: {
+	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
-		fill: 'white',
-		text: 'black',
 		boxStroke: '#595959',
 		boxStrokeWidth: 1,
 		boxFill: '#FFFFFF',
@@ -130,14 +108,10 @@ export const Wardley = mergeIntoDefault({
 
 export const Colour = mergeIntoDefault({
 	className: 'colour',
-	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	stroke: '#c23667',
 	pipelineArrowStroke: '#8cb358',
 	evolutionSeparationStroke: '#b8b8b8',
-	pipelineArrowHeight: '5',
-	pipelineArrowWidth: '5',
 	strokeWidth: '3',
-	strokeDasharray: '2,2',
 	component: {
 		fill: 'white',
 		stroke: '#8cb358',
@@ -152,17 +126,13 @@ export const Colour = mergeIntoDefault({
 	},
 	link: {
 		stroke: '#5c5c5c',
-		strokeWidth: 1,
 		evolvedStroke: '#ea7f5b',
-		evolvedStrokeWidth: 1,
 		flow: '#99c5ee9e',
-		flowStrokeWidth: 10,
 	},
-	annotations: {
+	annotation: {
 		stroke: '#015fa5',
 		strokeWidth: 2,
 		fill: '#99c5ee',
-		text: 'black',
 		boxStroke: '#015fa5',
 		boxStrokeWidth: 2,
 		boxFill: '#99c5ee',

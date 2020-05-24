@@ -42,17 +42,17 @@ export const ComponentIcon = props => (
 		mapStyleDefs={props.mapStyleDefs}
 	>
 		<ComponentTextSymbol
-			mapStyleDefs={props.mapStyleDefs}
+			styles={props.mapStyleDefs.component}
 			text={props.text || 'Component'}
 			x="8"
 			y="15"
 			evolved={props.evolved}
 		/>
 		<ComponentSymbol
-			mapStyleDefs={props.mapStyleDefs}
 			cx="8px"
 			cy="25px"
 			evolved={props.evolved}
+			styles={props.mapStyleDefs.component}
 		/>
 	</IconWrapper>
 );
@@ -68,12 +68,12 @@ export const InertiaIcon = props => (
 		mapStyleDefs={props.mapStyleDefs}
 	>
 		<ComponentTextSymbol
-			mapStyleDefs={props.mapStyleDefs}
+			styles={props.mapStyleDefs.component}
 			text="Inertia"
 			x="8"
 			y="15"
 		/>
-		<ComponentSymbol mapStyleDefs={props.mapStyleDefs} cx="8px" cy="25px" />
+		<ComponentSymbol styles={props.mapStyleDefs.component} cx="8px" cy="25px" />
 		<InertiaSymbol x={50} y={25} />
 	</IconWrapper>
 );

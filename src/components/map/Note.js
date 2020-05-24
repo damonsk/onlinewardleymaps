@@ -1,13 +1,14 @@
 import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
+import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 
 function Note(props) {
 	const positionCalc = new PositionCalculator();
-	const positionUpdater = new DefaultPositionUpdater(
+	const positionUpdater = new LineNumberPositionUpdater(
 		'note',
 		props.mapText,
 		props.mutateMapText,
@@ -33,7 +34,8 @@ function Note(props) {
 		);
 		positionUpdater.update(
 			{ param1: visibility, param2: maturity },
-			props.note.text
+			props.note.text,
+			props.note.line
 		);
 	}
 
@@ -46,19 +48,12 @@ function Note(props) {
 			fixedY={false}
 			fixedX={false}
 		>
-			<text
-				key={'note_text_' + props.note.id}
+			<ComponentTextSymbol
 				id={'note_text_' + props.note.id}
-				className="label"
-				x="0"
-				y="0"
-				textAnchor="start"
-				fontWeight="bold"
-				fontSize="12px"
-				fill={'#000'}
-			>
-				{props.note.text}
-			</text>
+				note={props.note.text}
+				styles={props?.mapStyleDefs?.note}
+				onClick={() => props.setHighlightLine(props.note.line)}
+			/>
 		</Movable>
 	);
 }

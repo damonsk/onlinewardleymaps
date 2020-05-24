@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const PipelineSymbol = props => {
+const PipelineComponentSymbol = props => {
 	const {
 		id,
 		x = '-5',
@@ -10,10 +10,10 @@ const PipelineSymbol = props => {
 		height = '10',
 		evolved,
 		onClick,
+		styles = {},
 	} = props;
-	const { component = {} } = props.mapStyleDefs || {};
-	const fill = evolved ? component.evolvedFill : component.fill;
-	const stroke = evolved ? component.evolved : component.stroke;
+	const fill = evolved ? styles.evolvedFill : styles.fill;
+	const stroke = evolved ? styles.evolved : styles.stroke;
 
 	return (
 		<rect
@@ -25,20 +25,20 @@ const PipelineSymbol = props => {
 			stroke={stroke}
 			width={width}
 			height={height}
-			strokeWidth={component.pipelineStrokeWidth}
+			strokeWidth={styles.pipelineStrokeWidth}
 		/>
 	);
 };
 
-PipelineSymbol.propTypes = {
+PipelineComponentSymbol.propTypes = {
 	id: PropTypes.string,
 	x: PropTypes.string,
 	y: PropTypes.string,
 	width: PropTypes.string,
 	height: PropTypes.string,
-	mapStyleDefs: PropTypes.object.isRequired,
+	styles: PropTypes.object.isRequired,
 	evolved: PropTypes.bool,
 	onClick: PropTypes.func,
 };
 
-export default memo(PipelineSymbol);
+export default memo(PipelineComponentSymbol);

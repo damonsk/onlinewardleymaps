@@ -1,4 +1,5 @@
 import ExtractLocation from './ExtractLocation';
+import ParseError from './ParseError';
 
 export default class NoteExtractionStrategy {
 	constructor(data) {
@@ -16,7 +17,7 @@ export default class NoteExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('note ') == 0) {
+				if (element.trim().indexOf('note ') === 0) {
 					let noteText = element
 						.substr('note '.length, element.length - 'note '.length)
 						.trim()
@@ -34,7 +35,7 @@ export default class NoteExtractionStrategy {
 					});
 				}
 			} catch (err) {
-				throw { line: i, err };
+				throw new ParseError(i);
 			}
 		}
 		return { notes: notesArray };
