@@ -1,5 +1,58 @@
 import ExtractLocation from '../conversion/ExtractLocation';
 
+export const setNumber = (o, line, config) => {
+	let number = line
+		.split(`${config.keyword} `)[1]
+		.trim()
+		.split(' [')[0]
+		.trim();
+	return Object.assign(o, { number: parseInt(number) });
+};
+
+export const setTextFromEnding = (o, line) => {
+	let text = '';
+	if (
+		line.trim().indexOf(']') > -1 &&
+		line.trim().indexOf(']') !== line.trim().length - 1
+	) {
+		if (line.replace(/\s/g, '').indexOf(']]') === -1) {
+			text = line.split(']')[1].trim();
+		}
+		if (line.replace(/\s/g, '').indexOf(']]') > -1) {
+			var pos = line.lastIndexOf(']');
+			text = line.substr(pos + 1, line.length - 1).trim();
+		}
+	}
+	return Object.assign(o, { text: text });
+};
+
+export const setOccurances = (o, line) => {
+	const extractor = new ExtractLocation();
+	const defaultPosition = {
+		visibility: 0.9,
+		maturity: 0.1,
+	};
+	let positionData = [];
+	if (line.replace(/\s/g, '').indexOf('[[') > -1) {
+		const justOccurances =
+			'[' +
+			line
+				.replace(/\s/g, '')
+				.split('[[')[1]
+				.split(']]')[0] +
+			']';
+		const occurancesAsArray = justOccurances
+			.replace(/\],\[/g, ']|[')
+			.split('|');
+		occurancesAsArray.forEach(e => {
+			positionData.push(extractor.extract(e, defaultPosition));
+		});
+	} else if (line.indexOf('[') > -1 && line.indexOf(']') > -1) {
+		positionData.push(extractor.extract(line, defaultPosition));
+	}
+	return Object.assign(o, { occurances: positionData });
+};
+
 export const setPipelineMaturity = (o, line) => {
 	let pipelineHidden = true;
 	let pieplinePos = { maturity1: 0.2, maturity2: 0.8 };

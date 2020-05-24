@@ -173,6 +173,8 @@ describe('Convert test suite', function() {
 		let actual = 'annotation 1';
 		let result = new Converter().parse(actual);
 
+		console.log(result.annotations);
+
 		expect(result.annotations.length).toEqual(0);
 	});
 
