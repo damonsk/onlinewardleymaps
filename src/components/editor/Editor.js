@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
 import 'brace/ext/language_tools';
+import { EditorPrefixes } from '../../constants/editorPrefixes';
 
 class Editor extends Component {
 	customAceEditorCompleter = ref => {
@@ -44,31 +45,7 @@ class Editor extends Component {
 		});
 		return {
 			elements: c,
-			prefix: [
-				'outsource <component>',
-				'build <component>',
-				'buy <component>',
-				'component',
-				'component <name>',
-				'component <name> [<visility>, <maturity>]',
-				'anchor',
-				'annotation',
-				'annotations',
-				'style',
-				'style wardley',
-				'style colour',
-				'style handwritten',
-				'style plain',
-				'evolve',
-				'inertia',
-				'pipeline',
-				'note',
-				'note <note text>',
-				'note <note text> [<visility>, <maturity>]',
-				'title',
-				'evolution',
-				'y-axis Label->Min->Max',
-			],
+			prefix: EditorPrefixes,
 		};
 	};
 
