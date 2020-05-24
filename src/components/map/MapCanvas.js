@@ -19,7 +19,8 @@ function MapCanvas(props) {
 	const mapElements = new MapElements(
 		props.mapComponents,
 		props.mapEvolved,
-		props.mapPipelines
+		props.mapPipelines,
+		props.mapSubMaps
 	);
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
@@ -164,6 +165,7 @@ function MapCanvas(props) {
 						{mapElements.getMergedElements().map((el, i) => (
 							<MapComponent
 								key={i}
+								keyword={el.type}
 								mapDimensions={props.mapDimensions}
 								element={el}
 								mapText={props.mapText}

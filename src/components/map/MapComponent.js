@@ -64,7 +64,7 @@ function MapComponent(props) {
 	};
 
 	const positionUpdater = new DefaultPositionUpdater(
-		'component',
+		props.keyword,
 		props.mapText,
 		props.mutateMapText,
 		[

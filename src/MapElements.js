@@ -1,7 +1,9 @@
 export default class MapElements {
 	// this is a messs...
-	constructor(components, evolved, pipelines) {
-		this.mapComponents = components;
+	constructor(components, evolved, pipelines, subMaps) {
+		this.mapComponents = components
+			.map(c => Object.assign(c, { type: 'component' }))
+			.concat(subMaps.map(sm => Object.assign(sm, { type: 'submap' })));
 		this.evolved = evolved;
 		this.pipelines = pipelines;
 	}
