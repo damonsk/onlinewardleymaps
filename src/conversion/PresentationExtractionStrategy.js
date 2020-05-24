@@ -1,12 +1,8 @@
-import ExtractLocation from './ExtractLocation';
+import * as ExtractionFunctions from '../constants/extractionFunctions';
 
 export default class PresentationExtractionStrategy {
 	constructor(data) {
 		this.data = data;
-	}
-
-	extractLocation(input, defaultValue) {
-		return new ExtractLocation().extract(input, defaultValue);
 	}
 
 	apply() {
@@ -23,10 +19,13 @@ export default class PresentationExtractionStrategy {
 				presentationObject.style = name;
 			}
 			if (element.trim().indexOf('annotations ') === 0) {
-				presentationObject.annotations = this.extractLocation(element, {
-					visibility: 0.9,
-					maturity: 0.1,
-				});
+				presentationObject.annotations = ExtractionFunctions.extractLocation(
+					element,
+					{
+						visibility: 0.9,
+						maturity: 0.1,
+					}
+				);
 			}
 			if (element.trim().indexOf('y-axis ') === 0) {
 				let yAxis = element

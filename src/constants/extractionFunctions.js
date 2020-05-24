@@ -1,5 +1,3 @@
-import ExtractLocation from '../conversion/ExtractLocation';
-
 export const setNumber = (o, line, config) => {
 	let number = line
 		.split(`${config.keyword} `)[1]
@@ -27,7 +25,6 @@ export const setTextFromEnding = (o, line) => {
 };
 
 export const setOccurances = (o, line) => {
-	const extractor = new ExtractLocation();
 	const defaultPosition = {
 		visibility: 0.9,
 		maturity: 0.1,
@@ -45,10 +42,10 @@ export const setOccurances = (o, line) => {
 			.replace(/\],\[/g, ']|[')
 			.split('|');
 		occurancesAsArray.forEach(e => {
-			positionData.push(extractor.extract(e, defaultPosition));
+			positionData.push(extractLocation(e, defaultPosition));
 		});
 	} else if (line.indexOf('[') > -1 && line.indexOf(']') > -1) {
-		positionData.push(extractor.extract(line, defaultPosition));
+		positionData.push(extractLocation(line, defaultPosition));
 	}
 	return Object.assign(o, { occurances: positionData });
 };
@@ -76,6 +73,25 @@ export const setPipelineMaturity = (o, line) => {
 	);
 };
 
+export const extractLocation = (input, defaultValue) => {
+	if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
+		let loc = input
+			.split('[')[1]
+			.trim()
+			.split(']')[0]
+			.replace(/\s/g, '')
+			.split(',');
+		return {
+			visibility: isNaN(parseFloat(loc[0]))
+				? defaultValue.visibility
+				: parseFloat(loc[0]),
+			maturity: isNaN(parseFloat(loc[1]))
+				? defaultValue.maturity
+				: parseFloat(loc[1]),
+		};
+	} else return defaultValue;
+};
+
 export const setMethod = (o, line, config) => {
 	let name = line.split(`${config.keyword} `)[1].trim();
 	return Object.assign(o, { name: name }, { method: config.keyword });
@@ -93,7 +109,7 @@ export const setNameWithMaturity = (o, line) => {
 };
 
 export const setCoords = (o, line) => {
-	const positionData = new ExtractLocation().extract(line, {
+	const positionData = extractLocation(line, {
 		visibility: 0.9,
 		maturity: 0.1,
 	});
