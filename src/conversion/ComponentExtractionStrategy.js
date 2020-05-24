@@ -4,6 +4,8 @@ import ParseError from './ParseError';
 export default class ComponentExtractionStrategy {
 	constructor(data) {
 		this.data = data;
+		this.keyword = 'component';
+		this.containerName = 'elements';
 	}
 
 	extractLocation(input, defaultValue) {
@@ -16,9 +18,9 @@ export default class ComponentExtractionStrategy {
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
-				if (element.trim().indexOf('component') === 0) {
+				if (element.trim().indexOf(this.keyword) === 0) {
 					let name = element
-						.split('component ')[1]
+						.split(`${this.keyword} `)[1]
 						.trim()
 						.split(' [')[0]
 						.trim();
@@ -56,6 +58,6 @@ export default class ComponentExtractionStrategy {
 				throw new ParseError(i);
 			}
 		}
-		return { elements: elementsToReturn };
+		return { [this.containerName]: elementsToReturn };
 	}
 }

@@ -9,6 +9,7 @@ import PipelineExtractionStrategy from './PipelineExtractionStrategy';
 import EvolveExtractionStrategy from './EvolveExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import LinksExtractionStrategy from './LinksExtractionStrategy';
+import SubMapExtractionStrategy from './SubMapExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
@@ -25,6 +26,7 @@ export default class Converter {
 			new EvolveExtractionStrategy(t),
 			new AnchorExtractionStrategy(t),
 			new LinksExtractionStrategy(t),
+			new SubMapExtractionStrategy(t),
 		];
 
 		let converted = {
@@ -39,7 +41,7 @@ export default class Converter {
 			evolution: [],
 			methods: [],
 			title: '',
-			submaps: [''],
+			submaps: [],
 		};
 		strategies.forEach(s => {
 			converted = Object.assign(converted, s.apply());
