@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { BsLink45Deg } from 'react-icons/bs';
 
 const SubMapSymbol = props => {
 	const { id, cx, cy, evolved, onClick, styles = {} } = props;
@@ -7,16 +8,26 @@ const SubMapSymbol = props => {
 	const stroke = evolved ? styles.evolved : styles.stroke;
 
 	return (
-		<circle
-			id={id}
-			cx={cx}
-			cy={cy}
-			strokeWidth={styles.strokeWidth}
-			r={styles.radius}
-			stroke={stroke}
-			fill={fill}
-			onClick={onClick}
-		/>
+		<>
+			<g transform={'translate(-23, -8)'}>
+				<BsLink45Deg
+					color={'black'}
+					className="submapLink"
+					size={'1.2em'}
+					onClick={() => window.open('https://onlinewardleymaps.com')}
+				/>
+			</g>
+			<circle
+				id={id}
+				cx={cx}
+				cy={cy}
+				strokeWidth={styles.strokeWidth}
+				r={styles.radius}
+				stroke={stroke}
+				fill={fill}
+				onClick={onClick}
+			/>
+		</>
 	);
 };
 
