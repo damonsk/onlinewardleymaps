@@ -42,6 +42,7 @@ export default class MapElements {
 				evolved: true,
 				label: v.label,
 				line: v.line,
+				type: el.type,
 			};
 		});
 	}
