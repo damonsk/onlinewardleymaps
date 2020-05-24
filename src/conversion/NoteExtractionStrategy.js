@@ -1,43 +1,26 @@
-import ExtractLocation from './ExtractLocation';
-import ParseError from './ParseError';
+import BaseStrategyRunner from './BaseStrategyRunner';
+import * as ExtractionFunctions from '../constants/extractionFunctions';
 
 export default class NoteExtractionStrategy {
 	constructor(data) {
 		this.data = data;
+		this.keyword = 'note';
+		this.containerName = 'notes';
+		this.baseRunner = new BaseStrategyRunner(
+			data,
+			{
+				keyword: this.keyword,
+				containerName: this.containerName,
+			},
+			[ExtractionFunctions.setText, ExtractionFunctions.setCoords]
+		);
 	}
 
-	extractLocation(input, defaultValue) {
-		return new ExtractLocation().extract(input, defaultValue);
+	addDecorator(fn) {
+		this.baseRunner.addDecorator(fn);
 	}
 
 	apply() {
-		if (this.data.trim().length < 1) return [];
-		let lines = this.data.trim().split('\n');
-		var notesArray = [];
-		for (let i = 0; i < lines.length; i++) {
-			try {
-				const element = lines[i];
-				if (element.trim().indexOf('note ') === 0) {
-					let noteText = element
-						.substr('note '.length, element.length - 'note '.length)
-						.trim()
-						.split(' [')[0]
-						.trim();
-					let notePosition = this.extractLocation(element, {
-						visibility: 0.9,
-						maturity: 0.1,
-					});
-					notesArray.push({
-						text: noteText,
-						visibility: notePosition.visibility,
-						maturity: notePosition.maturity,
-						line: 1 + i,
-					});
-				}
-			} catch (err) {
-				throw new ParseError(i);
-			}
-		}
-		return { notes: notesArray };
+		return this.baseRunner.apply();
 	}
 }

@@ -1,15 +1,18 @@
 import ParseError from './ParseError';
 
 export default class BaseStrategyRunner {
-	constructor(data, config) {
+	constructor(data, config, decorators) {
 		this.data = data;
 		this.keyword = config.keyword;
 		this.containerName = config.containerName;
-		this.decorators = [];
+		this.decorators =
+			decorators !== null && decorators !== undefined ? decorators : [];
 	}
+
 	addDecorator(fn) {
 		this.decorators.push(fn);
 	}
+
 	apply() {
 		let lines = this.data.trim().split('\n');
 		let elementsToReturn = [];
@@ -21,7 +24,12 @@ export default class BaseStrategyRunner {
 						id: 1 + i,
 						line: 1 + i,
 					};
-					this.decorators.forEach(f => f(baseElement, element));
+					this.decorators.forEach(f =>
+						f(baseElement, element, {
+							keyword: this.keyword,
+							containerName: this.containerName,
+						})
+					);
 					elementsToReturn.push(baseElement);
 				}
 			} catch (err) {

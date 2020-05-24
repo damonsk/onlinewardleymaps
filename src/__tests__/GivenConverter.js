@@ -195,8 +195,8 @@ describe('Convert test suite', function() {
 		let result = new Converter().parse(actual);
 
 		expect(result.elements.length).toEqual(1);
-		expect(result.elements[0].visibility).toEqual(0.95);
-		expect(result.elements[0].maturity).toEqual(0.05);
+		expect(result.elements[0].visibility).toEqual(0.9);
+		expect(result.elements[0].maturity).toEqual(0.1);
 	});
 
 	test('anchor with little info is still made available to the map', function() {
@@ -204,8 +204,8 @@ describe('Convert test suite', function() {
 		let result = new Converter().parse(actual);
 
 		expect(result.anchors.length).toEqual(1);
-		expect(result.anchors[0].visibility).toEqual(0.95);
-		expect(result.anchors[0].maturity).toEqual(0.05);
+		expect(result.anchors[0].visibility).toEqual(0.9);
+		expect(result.anchors[0].maturity).toEqual(0.1);
 	});
 
 	test('component with little info is still made available to the map', function() {
@@ -213,8 +213,8 @@ describe('Convert test suite', function() {
 		let result = new Converter().parse(actual);
 
 		expect(result.elements.length).toEqual(1);
-		expect(result.elements[0].visibility).toEqual(0.95);
-		expect(result.elements[0].maturity).toEqual(0.05);
+		expect(result.elements[0].visibility).toEqual(0.9);
+		expect(result.elements[0].maturity).toEqual(0.1);
 	});
 
 	test('y-axis varible present and extracted', function() {
