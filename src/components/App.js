@@ -28,6 +28,7 @@ function App() {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
+	const [mapSubMaps, setMapSubMaps] = useState([]);
 	const [mapEvolved, setMapEvolved] = useState([]);
 	const [mapPipelines, setMapPipelines] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
@@ -170,6 +171,7 @@ function App() {
 			setMapAnchors(r.anchors);
 			setMapNotes(r.notes);
 			setMapComponents(r.elements);
+			setMapSubMaps(r.submaps);
 			setMapEvolved(r.evolved);
 			setMapPipelines(r.pipelines);
 			setMapLinks(r.links);
@@ -288,6 +290,7 @@ function App() {
 					<MapView
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
+						mapSubMaps={mapSubMaps}
 						mapEvolved={mapEvolved}
 						mapPipelines={mapPipelines}
 						mapAnchors={mapAnchors}

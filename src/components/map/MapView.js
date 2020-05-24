@@ -18,6 +18,7 @@ class MapView extends Component {
 							mapStyle={this.props.mapStyle}
 							mapObject={this.props.mapObject}
 							mapComponents={this.props.mapComponents}
+							mapSubMaps={this.props.mapSubMaps}
 							mapEvolved={this.props.mapEvolved}
 							mapPipelines={this.props.mapPipelines}
 							mapAnchors={this.props.mapAnchors}

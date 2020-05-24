@@ -1,4 +1,5 @@
 export default class MapElements {
+	// this is a messs...
 	constructor(components, evolved, pipelines) {
 		this.mapComponents = components;
 		this.evolved = evolved;
@@ -6,6 +7,11 @@ export default class MapElements {
 	}
 
 	getMapPipelines() {
+		// why is this doing this...
+		// since pipelines don't have defined visibility, they're
+		// getting it from the component itself.
+		// this behaviour could be pushed up to when the
+		// pipelines are extracted from text.
 		if (this.pipelines === undefined) return [];
 		let pipeline = this.pipelines
 			.map(e => {
