@@ -35,7 +35,9 @@ function ComponentText(props) {
 							line
 								.replace(/\s/g, '')
 								.indexOf(
-									'component' + props.element.name.replace(/\s/g, '') + '['
+									props.element.type +
+										props.element.name.replace(/\s/g, '') +
+										'['
 								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
