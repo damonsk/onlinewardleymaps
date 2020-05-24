@@ -1,13 +1,15 @@
-import ComponentExtractionStrategy from './ComponentExtractionStrategy';
+import ExtendableExtractionStrategy from './ExtendableExtractionStrategy';
 
-export default class SubMapExtractionStrategy extends ComponentExtractionStrategy {
+export default class SubMapExtractionStrategy {
 	constructor(data) {
-		super();
 		this.data = data;
-		this.keyword = 'submap';
-		this.containerName = 'submaps';
+		this.parentStrategy = new ExtendableExtractionStrategy(data, {
+			keyword: 'submap',
+			containerName: 'submaps',
+		});
 	}
+
 	apply() {
-		return super.apply();
+		return this.parentStrategy.apply();
 	}
 }
