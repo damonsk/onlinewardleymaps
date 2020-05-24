@@ -8,10 +8,6 @@ export default class ComponentExtractionStrategy {
 		this.containerName = 'elements';
 	}
 
-	extractLocation(input, defaultValue) {
-		return new ExtractLocation().extract(input, defaultValue);
-	}
-
 	apply() {
 		const setName = (o, line) => {
 			let name = line
@@ -35,7 +31,7 @@ export default class ComponentExtractionStrategy {
 		};
 
 		const setCoords = (o, line) => {
-			let positionData = this.extractLocation(line, {
+			const positionData = new ExtractLocation().extract(line, {
 				visibility: 0.95,
 				maturity: 0.05,
 			});
