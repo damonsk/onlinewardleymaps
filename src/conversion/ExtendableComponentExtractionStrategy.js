@@ -1,11 +1,13 @@
-import ParseError from './ParseError';
 import ExtractLocation from './ExtractLocation';
+import BaseStrategyRunner from './BaseStrategyRunner';
 
-export default class ExtendableExtractionStrategy {
+export default class ExtendableComponentExtractionStrategy {
 	constructor(data, config) {
 		this.data = data;
 		this.keyword = config.keyword;
 		this.containerName = config.containerName;
+		this.baseRunner = new BaseStrategyRunner(data, config);
+
 		const setName = (o, line) => {
 			let name = line
 				.split(`${this.keyword} `)[1]
@@ -52,29 +54,18 @@ export default class ExtendableExtractionStrategy {
 				{ evolving: newPoint !== null && newPoint !== undefined }
 			);
 		};
-		this.decorators = [setName, setLabel, setCoords, setInertia, setEvolve];
+		this.baseRunner.addDecorator(setName);
+		this.baseRunner.addDecorator(setLabel);
+		this.baseRunner.addDecorator(setCoords);
+		this.baseRunner.addDecorator(setInertia);
+		this.baseRunner.addDecorator(setEvolve);
 	}
+
 	addDecorator(fn) {
-		this.decorators.push(fn);
+		this.BaseStrategyRunner.addDecorator(fn);
 	}
+
 	apply() {
-		let lines = this.data.trim().split('\n');
-		let elementsToReturn = [];
-		for (let i = 0; i < lines.length; i++) {
-			try {
-				const element = lines[i];
-				if (element.trim().indexOf(this.keyword) === 0) {
-					let baseElement = {
-						id: 1 + i,
-						line: 1 + i,
-					};
-					this.decorators.forEach(f => f(baseElement, element));
-					elementsToReturn.push(baseElement);
-				}
-			} catch (err) {
-				throw new ParseError(i);
-			}
-		}
-		return { [this.containerName]: elementsToReturn };
+		return this.baseRunner.apply();
 	}
 }
