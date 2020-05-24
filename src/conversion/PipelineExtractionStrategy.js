@@ -16,10 +16,6 @@ export default class PipelineExtractionStrategy {
 		);
 	}
 
-	addDecorator(fn) {
-		this.baseRunner.addDecorator(fn);
-	}
-
 	apply() {
 		return this.baseRunner.apply();
 	}

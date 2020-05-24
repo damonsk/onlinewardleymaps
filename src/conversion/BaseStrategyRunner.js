@@ -9,10 +9,6 @@ export default class BaseStrategyRunner {
 			decorators !== null && decorators !== undefined ? decorators : [];
 	}
 
-	addDecorator(fn) {
-		this.decorators.push(fn);
-	}
-
 	apply() {
 		let lines = this.data.trim().split('\n');
 		let elementsToReturn = [];

@@ -16,10 +16,6 @@ export default class NoteExtractionStrategy {
 		);
 	}
 
-	addDecorator(fn) {
-		this.baseRunner.addDecorator(fn);
-	}
-
 	apply() {
 		return this.baseRunner.apply();
 	}

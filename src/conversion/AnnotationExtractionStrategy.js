@@ -16,10 +16,6 @@ export default class AnnotationExtractionStrategy {
 		this.baseRunner = new BaseStrategyRunner(data, config, extractionFuncs);
 	}
 
-	addDecorator(fn) {
-		this.baseRunner.addDecorator(fn);
-	}
-
 	apply() {
 		let result = this.baseRunner.apply();
 		let unpack = result[this.containerName];

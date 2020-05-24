@@ -17,10 +17,6 @@ export default class ExtendableComponentExtractionStrategy {
 		this.baseRunner = new BaseStrategyRunner(data, config, extractionFuncs);
 	}
 
-	addDecorator(fn) {
-		this.baseRunner.addDecorator(fn);
-	}
-
 	apply() {
 		return this.baseRunner.apply();
 	}
