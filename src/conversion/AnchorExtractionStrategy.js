@@ -1,41 +1,46 @@
 import ExtractLocation from './ExtractLocation';
-import ParseError from './ParseError';
+import BaseStrategyRunner from './BaseStrategyRunner';
 
 export default class AnchorExtractionStrategy {
 	constructor(data) {
 		this.data = data;
+		this.keyword = 'anchor';
+		this.containerName = 'anchors';
+		this.baseRunner = new BaseStrategyRunner(data, {
+			keyword: this.keyword,
+			containerName: this.containerName,
+		});
+
+		const setCoords = (o, line) => {
+			const positionData = new ExtractLocation().extract(line, {
+				visibility: 0.95,
+				maturity: 0.05,
+			});
+			return Object.assign(
+				o,
+				{ maturity: positionData.maturity },
+				{ visibility: positionData.visibility }
+			);
+		};
+
+		const setName = (o, line) => {
+			let name = line
+				.split(`${this.keyword} `)[1]
+				.trim()
+				.split(' [')[0]
+				.trim();
+			return Object.assign(o, { name: name });
+		};
+
+		this.baseRunner.addDecorator(setName);
+		this.baseRunner.addDecorator(setCoords);
 	}
-	extractLocation(input, defaultValue) {
-		return new ExtractLocation().extract(input, defaultValue);
+
+	addDecorator(fn) {
+		this.baseRunner.addDecorator(fn);
 	}
+
 	apply() {
-		let lines = this.data.trim().split('\n');
-		let anchorsToReturn = [];
-		for (let i = 0; i < lines.length; i++) {
-			try {
-				const element = lines[i];
-				if (element.trim().indexOf('anchor') === 0) {
-					let name = element
-						.split('anchor ')[1]
-						.trim()
-						.split(' [')[0]
-						.trim();
-					let positionData = this.extractLocation(element, {
-						visibility: 0.95,
-						maturity: 0.05,
-					});
-					anchorsToReturn.push({
-						name: name,
-						maturity: positionData.maturity,
-						visibility: positionData.visibility,
-						id: 1 + i,
-						line: 1 + i,
-					});
-				}
-			} catch (err) {
-				throw new ParseError(i);
-			}
-		}
-		return { anchors: anchorsToReturn };
+		return this.baseRunner.apply();
 	}
 }

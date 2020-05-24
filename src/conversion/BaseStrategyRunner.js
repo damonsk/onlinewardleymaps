@@ -25,6 +25,7 @@ export default class BaseStrategyRunner {
 					elementsToReturn.push(baseElement);
 				}
 			} catch (err) {
+				console.log(err);
 				throw new ParseError(i);
 			}
 		}
