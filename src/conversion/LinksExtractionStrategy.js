@@ -19,6 +19,7 @@ export default class LinksExtractionStrategy {
 			'pipeline',
 			'note',
 			'submap',
+			'url',
 		];
 	}
 	apply() {

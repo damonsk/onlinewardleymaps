@@ -28,13 +28,13 @@ describe('Given Submaps', function() {
 		const visility = 0.11;
 		const maturity = 0.31;
 		const name = 'Order';
-		let actual = `submap ${name} [${visility}, ${maturity}] ref(url1)`;
+		let actual = `submap ${name} [${visility}, ${maturity}] url(urlId)`;
 		let result = new Converter().parse(actual);
 		expect(result.submaps.length).toEqual(1);
 		expect(result.submaps[0].name).toEqual(name);
 		expect(result.submaps[0].maturity).toEqual(maturity);
 		expect(result.submaps[0].visibility).toEqual(visility);
-		expect(result.submaps[0].ref).toEqual('url1');
+		expect(result.submaps[0].url).toEqual('urlId');
 	});
 
 	test('When mapText contains submaps with coords and label then text is correctly parsed', () => {

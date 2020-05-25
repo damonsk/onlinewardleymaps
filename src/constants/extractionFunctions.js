@@ -8,12 +8,12 @@ export const setNumber = (o, line, config) => {
 };
 
 export const setRef = (o, line) => {
-	if (line.indexOf('ref(') !== -1) {
+	if (line.indexOf('url(') !== -1) {
 		const extractedRef = line
-			.split('ref(')[1]
+			.split('url(')[1]
 			.split(')')[0]
 			.trim();
-		return Object.assign(o, { ref: extractedRef });
+		return Object.assign(o, { url: extractedRef });
 	}
 };
 
@@ -179,4 +179,14 @@ export const setName = (o, line, config) => {
 		.split(' [')[0]
 		.trim();
 	return Object.assign(o, { name: name });
+};
+
+export const setUrl = (o, line) => {
+	console.log(line);
+	let path = line
+		.split('[')[1]
+		.trim()
+		.split(']')[0]
+		.trim();
+	return Object.assign(o, { url: path });
 };

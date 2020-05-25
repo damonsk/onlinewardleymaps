@@ -10,6 +10,7 @@ import EvolveExtractionStrategy from './EvolveExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import LinksExtractionStrategy from './LinksExtractionStrategy';
 import SubMapExtractionStrategy from './SubMapExtractionStrategy';
+import UrlExtractionStrategy from './UrlExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
@@ -27,6 +28,7 @@ export default class Converter {
 			new AnchorExtractionStrategy(t),
 			new LinksExtractionStrategy(t),
 			new SubMapExtractionStrategy(t),
+			new UrlExtractionStrategy(t),
 		];
 
 		let converted = {
@@ -42,6 +44,7 @@ export default class Converter {
 			methods: [],
 			title: '',
 			submaps: [],
+			urls: [],
 		};
 		strategies.forEach(s => {
 			converted = Object.assign(converted, s.apply());
@@ -51,6 +54,9 @@ export default class Converter {
 
 	stripComments(data) {
 		var doubleSlashRemoved = data.split('\n').map(line => {
+			if (line.trim().indexOf('url') === 0) {
+				return line;
+			}
 			return line.split('//')[0];
 		});
 

@@ -33,6 +33,7 @@ function App() {
 	const [mapPipelines, setMapPipelines] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
 	const [mapNotes, setMapNotes] = useState([]);
+	const [mapUrls, setMapUrls] = useState([]);
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
@@ -75,6 +76,13 @@ function App() {
 	const mutateMapText = newText => {
 		setMapText(newText);
 		setSaveOutstanding(true);
+	};
+
+	const launchUrl = urlId => {
+		if (mapUrls.find(u => u.name === urlId)) {
+			const urlToLaunch = mapUrls.find(u => u.name === urlId).url;
+			window.open(urlToLaunch);
+		}
 	};
 
 	const saveToRemoteStorage = function(hash) {
@@ -175,6 +183,7 @@ function App() {
 			setMapEvolved(r.evolved);
 			setMapPipelines(r.pipelines);
 			setMapLinks(r.links);
+			setMapUrls(r.urls);
 			setMapMethods(r.methods);
 			setMapStyle(r.presentation.style);
 			setMapYAxis(r.presentation.yAxis);
@@ -295,6 +304,7 @@ function App() {
 						mapPipelines={mapPipelines}
 						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
+						launchUrl={launchUrl}
 						mapNotes={mapNotes}
 						mapAnnotations={mapAnnotations}
 						mapAnnotationsPresentation={mapAnnotationsPresentation}

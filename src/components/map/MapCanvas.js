@@ -166,6 +166,7 @@ function MapCanvas(props) {
 							<MapComponent
 								key={i}
 								keyword={el.type}
+								launchUrl={props.launchUrl}
 								mapDimensions={props.mapDimensions}
 								element={el}
 								mapText={props.mapText}

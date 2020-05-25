@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { BsLink45Deg } from 'react-icons/bs';
 
 const SubMapSymbol = props => {
-	const { id, cx, cy, evolved, onClick, styles = {} } = props;
+	const { id, cx, cy, evolved, onClick, styles = {}, launchUrl } = props;
 	const fill = evolved ? styles.evolvedFill : styles.fill;
 	const stroke = evolved ? styles.evolved : styles.stroke;
 
@@ -14,7 +14,7 @@ const SubMapSymbol = props => {
 					color={'black'}
 					className="submapLink"
 					size={'1.2em'}
-					onClick={() => window.open('https://onlinewardleymaps.com')}
+					onClick={launchUrl}
 				/>
 			</g>
 			<circle
@@ -33,6 +33,7 @@ const SubMapSymbol = props => {
 
 SubMapSymbol.propTypes = {
 	onClick: PropTypes.func,
+	launchUrl: PropTypes.func,
 	id: PropTypes.string,
 	cx: PropTypes.string,
 	cy: PropTypes.string,

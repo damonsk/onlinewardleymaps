@@ -124,6 +124,7 @@ function MapComponent(props) {
 								styles={props.mapStyleDefs.submap}
 								evolved={props.element.evolved}
 								onClick={onElementClick}
+								launchUrl={() => props.launchUrl(props.element.url)}
 							/>
 						)}
 					</>
