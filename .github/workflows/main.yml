@@ -14,6 +14,15 @@ jobs:
           CI: true
       - run: yarn install
       - run: yarn test
+  
+  debug:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Output Vars
+        run: echo "${{ needs.test.result }}"
+        run: echo "${{ github.repository }}"
+        run: echo "${{ github.ref }}"
 
   build:
     runs-on: ubuntu-latest
