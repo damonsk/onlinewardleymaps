@@ -7,6 +7,16 @@ export const setNumber = (o, line, config) => {
 	return Object.assign(o, { number: parseInt(number) });
 };
 
+export const setRef = (o, line) => {
+	if (line.indexOf('ref(') !== -1) {
+		const extractedRef = line
+			.split('ref(')[1]
+			.split(')')[0]
+			.trim();
+		return Object.assign(o, { ref: extractedRef });
+	}
+};
+
 export const setTextFromEnding = (o, line) => {
 	let text = '';
 	if (
