@@ -182,7 +182,6 @@ export const setName = (o, line, config) => {
 };
 
 export const setUrl = (o, line) => {
-	console.log(line);
 	let path = line
 		.split('[')[1]
 		.trim()
