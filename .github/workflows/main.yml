@@ -22,7 +22,6 @@ jobs:
       - name: Output Vars
         run: | 
           echo "${{ needs.test.result }}"
-          echo "${{ success() }}"
           echo "${{ github.repository }}"
           echo "${{ github.ref }}"
 
