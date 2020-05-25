@@ -1,1 +1,38 @@
-theme: jekyll-theme-cayman
+# Site settings
+title:          OnlineWardleyMaps Docs
+description:    "Documentation and usage guide for OnlineWardleyMaps"
+baseurl:        "/"
+url:            "https://docs.onlinewardleymaps.com"
+
+# Author
+author:
+  name:         Damon Skelhorn
+  url:          https://onlinewardleymaps.com
+  email:        dskelly16@gmail.com
+
+# Build settings
+markdown:       kramdown
+include:
+  - _pages
+
+# Assets
+sass:
+  sass_dir:     _sass
+  style:        compressed
+
+# Gems
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-seo-tag
+  # - jemoji #Uncomment this to allow emoji in your post
+
+# Permalinks
+permalink:      /:year-:month-:day/:title
+paginate:       5
+
+# Excludes
+exclude: [ Gemfile, Gemfile.lock, tale.gemspec ]
+
+# Disqus (Set to your disqus id)
+disqus:         jekyll-tale
