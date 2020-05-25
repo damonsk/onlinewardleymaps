@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.repository == 'damonsk/onlinewardleymaps' && github.ref == 'master'
+    if: needs.test.result == 'success' && github.repository == 'damonsk/onlinewardleymaps' && github.ref == 'master'
     steps:
       - name: Generate build number
         id: buildnumber
