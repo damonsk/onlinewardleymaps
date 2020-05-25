@@ -8,7 +8,7 @@ export const EditorPrefixes = [
 	'submap',
 	'submap <name>',
 	'submap <name> [<visility>, <maturity>]',
-	'submap <name> [<visility>, <maturity>] <url>',
+	'submap <name> [<visility>, <maturity>] url(<url>)',
 	'anchor',
 	'annotation',
 	'annotations',

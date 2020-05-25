@@ -62,7 +62,9 @@ describe('Given Submaps', function() {
 			EditorPrefixes.includes('submap <name> [<visility>, <maturity>]')
 		).toEqual(true);
 		expect(
-			EditorPrefixes.includes('submap <name> [<visility>, <maturity>] <url>')
+			EditorPrefixes.includes(
+				'submap <name> [<visility>, <maturity>] url(<url>)'
+			)
 		).toEqual(true);
 	});
 });

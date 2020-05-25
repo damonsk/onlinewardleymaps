@@ -67,6 +67,26 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 		this.$rules = {
 			start: [
 				{
+					token: [
+						'keyword',
+						'variable.parameter.function.asp',
+						'punctuation',
+						'comment',
+						'punctuation',
+					],
+					regex:
+						'(url)(\\s*[a-zA-Z0-9\\s*]+)(\\s*\\[)(\\s*[-+\'"/;:a-zA-Z0-9\\s*]+)(\\])',
+				},
+				{
+					token: [
+						'keyword',
+						'punctuation',
+						'variable.parameter.function.asp',
+						'punctuation',
+					],
+					regex: '(url)(\\s*\\()(\\s*[-+\'"/;:a-zA-Z0-9\\s*]+)(\\))',
+				},
+				{
 					token: 'punctuation.definition.comment.asp',
 					regex: '(\\/\\/.*$)',
 				},
