@@ -9,6 +9,16 @@ const SubMapSymbol = props => {
 
 	return (
 		<>
+			<rect
+				x="-20"
+				y="-6"
+				stroke={'none'}
+				width={'10px'}
+				fillOpacity="0"
+				className="submapLink"
+				onClick={launchUrl}
+				height={'10px'}
+			/>
 			<g transform={'translate(-23, -8)'}>
 				<BsLink45Deg
 					color={'black'}
