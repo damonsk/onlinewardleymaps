@@ -75,7 +75,7 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 						'punctuation',
 					],
 					regex:
-						'(url)(\\s*[a-zA-Z0-9\\s*]+)(\\s*\\[)(\\s*[-+\'"/;:a-zA-Z0-9\\s*]+)(\\])',
+						'(url)(\\s*[a-zA-Z0-9\\s*]+)(\\s*\\[)(\\s*[-+\'"/;:.#a-zA-Z0-9\\s*]+)(\\])',
 				},
 				{
 					token: [
