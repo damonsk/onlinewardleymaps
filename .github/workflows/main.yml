@@ -20,10 +20,11 @@ jobs:
     needs: test
     steps:
       - name: Output Vars
-        run: echo "${{ needs.test.result }}"
-        run: echo "${{ success() }}"
-        run: echo "${{ github.repository }}"
-        run: echo "${{ github.ref }}"
+        run: | 
+          echo "${{ needs.test.result }}"
+          echo "${{ success() }}"
+          echo "${{ github.repository }}"
+          echo "${{ github.ref }}"
 
   build:
     runs-on: ubuntu-latest
