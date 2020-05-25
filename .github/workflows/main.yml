@@ -21,6 +21,7 @@ jobs:
     steps:
       - name: Output Vars
         run: echo "${{ needs.test.result }}"
+        run: echo "${{ success() }}"
         run: echo "${{ github.repository }}"
         run: echo "${{ github.ref }}"
 
