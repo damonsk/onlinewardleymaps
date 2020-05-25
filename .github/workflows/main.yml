@@ -34,7 +34,7 @@ jobs:
       - name: Write version number
         run: echo "export var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > src/version.js
       - name: Run build
-      - run: yarn build
+        run: yarn build
       - name: Upload build artifact for deploy stage
         uses: actions/upload-artifact@v1
         with:
