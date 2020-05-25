@@ -11,6 +11,28 @@ span.clickable {
 	}
 }
 
+.draggable {
+	.submapLink {
+		-webkit-transition: 2s;
+		-moz-transition: 2s;
+		-o-transition: 2s;
+		transition: 2s;
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	&:hover {
+		.submapLink {
+			-webkit-transition: 0.3s;
+			-moz-transition: 0.3s;
+			-o-transition: 0.3s;
+			transition: 0.3s;
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+}
+
 .submapLink {
 	cursor: pointer;
 }
