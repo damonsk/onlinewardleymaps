@@ -68,8 +68,8 @@ function Movable(props) {
 
 	return (
 		<g
-			key={'movable_' + props.id}
-			className={'draggable'}
+			is="custom"
+			class={'draggable'}
 			onMouseDown={e => handleMouseDown(e)}
 			onMouseUp={e => handleMouseUp(e)}
 			id={'movable_' + props.id}
