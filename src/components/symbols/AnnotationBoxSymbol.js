@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const InertiaSymbol = memo(function InertiaSymbol(props) {
+function AnnotationBoxSymbol(props) {
 	const {
 		id,
 		dy = '0',
@@ -28,9 +28,9 @@ const InertiaSymbol = memo(function InertiaSymbol(props) {
 			{children}
 		</text>
 	);
-});
+}
 
-InertiaSymbol.propTypes = {
+AnnotationBoxSymbol.propTypes = {
 	id: PropTypes.string,
 	x: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	dy: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -41,4 +41,4 @@ InertiaSymbol.propTypes = {
 	children: PropTypes.node,
 };
 
-export default InertiaSymbol;
+export default memo(AnnotationBoxSymbol);
