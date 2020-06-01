@@ -4,13 +4,13 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
+const defaultHeight = '100';
+const defaultWidth = '200';
 function AttitudeSymbol(props) {
 	const {
 		id,
-		x = '0',
-		y = '2',
-		height = '80',
-		width = '200',
+		height,
+		width,
 		fill,
 		stroke,
 		attitude,
@@ -21,12 +21,10 @@ function AttitudeSymbol(props) {
 	return (
 		<rect
 			id={id}
-			x={x}
-			y={y}
 			fill={fill || style.fill}
 			stroke={stroke || style.stroke}
-			height={height}
-			width={width}
+			height={height || defaultHeight}
+			width={width || defaultWidth}
 			strokeWidth={styles.strokeWidth}
 		/>
 	);
@@ -34,13 +32,9 @@ function AttitudeSymbol(props) {
 
 AttitudeSymbol.propTypes = {
 	id: PropTypes.string,
-	x: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	dy: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	fill: PropTypes.string,
-	textAnchor: PropTypes.string,
-	textDecoration: PropTypes.string,
-	className: PropTypes.string,
-	children: PropTypes.node,
+	stroke: PropTypes.string,
+	attitude: PropTypes.string,
 };
 
 export default memo(AttitudeSymbol);

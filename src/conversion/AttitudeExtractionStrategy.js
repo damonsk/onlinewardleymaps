@@ -1,5 +1,9 @@
 import BaseStrategyRunner from './BaseStrategyRunner';
-import * as ExtractionFunctions from '../constants/extractionFunctions';
+import {
+	setAttitude,
+	setCoords,
+	setHeightWidth,
+} from '../constants/extractionFunctions';
 
 export default class AttitudeExtractionStrategy {
 	constructor(data) {
@@ -11,7 +15,7 @@ export default class AttitudeExtractionStrategy {
 					new BaseStrategyRunner(
 						data,
 						{ keyword: e, containerName: 'attitudes' },
-						[ExtractionFunctions.setAttitude, ExtractionFunctions.setCoords]
+						[setAttitude, setCoords, setHeightWidth]
 					)
 			)
 			.flat();

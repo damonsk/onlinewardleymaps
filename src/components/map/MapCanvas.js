@@ -96,17 +96,16 @@ function MapCanvas(props) {
 					</g>
 
 					<g id="attitudes">
-						{props.mapAttitudes.map(
-							(a, i) =>
-								!console.log(a) && (
-									<Attitude
-										key={i}
-										mapDimensions={props.mapDimensions}
-										mapStyleDefs={props.mapStyleDefs}
-										{...a}
-									/>
-								)
-						)}
+						{props.mapAttitudes.map((a, i) => (
+							<Attitude
+								key={i}
+								mapDimensions={props.mapDimensions}
+								mapStyleDefs={props.mapStyleDefs}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+								attitude={a}
+							/>
+						))}
 					</g>
 
 					{links.map(current => {

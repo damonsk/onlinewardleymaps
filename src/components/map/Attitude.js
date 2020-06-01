@@ -2,42 +2,39 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 
 const Attitude = props => {
-	const { attitude } = props;
+	const { attitude, mapDimensions } = props;
+	const { height, width } = mapDimensions;
+	const type = attitude.attitude;
 	const positionCalc = new PositionCalculator();
-	const positionUpdater = new DefaultPositionUpdater(
-		attitude,
+	const positionUpdater = new LineNumberPositionUpdater(
+		type,
 		props.mapText,
 		props.mutateMapText,
 		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
 	);
-	const x = positionCalc.maturityToX(props.maturity, props.mapDimensions.width);
-	const y = positionCalc.visibilityToY(
-		props.visibility,
-		props.mapDimensions.height
-	);
+	const x = positionCalc.maturityToX(attitude.maturity, width);
+	const y = positionCalc.visibilityToY(attitude.visibility, height);
 
 	function endDrag(moved) {
-		const visibility = positionCalc.yToVisibility(
-			moved.y,
-			props.mapDimensions.height
+		const visibility = positionCalc.yToVisibility(moved.y, height);
+		const maturity = positionCalc.xToMaturity(moved.x, width);
+		positionUpdater.update(
+			{ param1: visibility, param2: maturity },
+			'',
+			attitude.line
 		);
-		const maturity = positionCalc.xToMaturity(
-			moved.x,
-			props.mapDimensions.width
-		);
-		positionUpdater.update({ param1: visibility, param2: maturity }, attitude);
 	}
 
 	return (
 		<>
 			<Movable
-				id={`attitude_${attitude}_movable`}
+				id={`attitude_${type}_movable`}
 				onMove={endDrag}
 				x={x}
 				y={y}
@@ -45,10 +42,10 @@ const Attitude = props => {
 				fixedX={false}
 			>
 				<AttitudeSymbol
-					id={`attitude_${attitude}`}
-					attitude={attitude}
-					x="0"
-					y="-10"
+					id={`attitude_${type}`}
+					attitude={type}
+					height={attitude.height}
+					width={attitude.width}
 					textAnchor="middle"
 					styles={props.mapStyleDefs.attitudes}
 				/>
@@ -58,7 +55,7 @@ const Attitude = props => {
 };
 
 Attitude.propTypes = {
-	anchor: PropTypes.object.isRequired,
+	attitude: PropTypes.object.isRequired,
 	mapDimensions: PropTypes.object.isRequired,
 	mapText: PropTypes.string.isRequired,
 	mutateMapText: PropTypes.func.isRequired,

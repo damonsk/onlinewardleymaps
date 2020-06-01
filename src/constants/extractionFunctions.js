@@ -111,6 +111,18 @@ export const setAttitude = (o, line, config) => {
 	return Object.assign(o, { attitude: config.keyword });
 };
 
+export const setHeightWidth = (o, line) => {
+	if (!line.includes(']')) {
+		return o;
+	}
+	const [width, height] = line
+		.split(']')[1]
+		.trim()
+		.split(' ');
+
+	return Object.assign(o, { width, height });
+};
+
 export const setNameWithMaturity = (o, line) => {
 	let name = line.split('evolve ')[1].trim();
 	const evolveMaturity = line.match(/\s[0-9]?\.[0-9]+[0-9]?/);
