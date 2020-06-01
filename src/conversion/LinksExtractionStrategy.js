@@ -18,6 +18,9 @@ export default class LinksExtractionStrategy {
 			'y-axis',
 			'pipeline',
 			'note',
+			'pioneers',
+			'settlers',
+			'townplanners',
 			'submap',
 			'url',
 		];

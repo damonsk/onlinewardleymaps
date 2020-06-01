@@ -107,6 +107,10 @@ export const setMethod = (o, line, config) => {
 	return Object.assign(o, { name: name }, { method: config.keyword });
 };
 
+export const setAttitude = (o, line, config) => {
+	return Object.assign(o, { attitude: config.keyword });
+};
+
 export const setNameWithMaturity = (o, line) => {
 	let name = line.split('evolve ')[1].trim();
 	const evolveMaturity = line.match(/\s[0-9]?\.[0-9]+[0-9]?/);

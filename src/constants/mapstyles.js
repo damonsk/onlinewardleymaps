@@ -17,6 +17,22 @@ export const Plain = {
 	anchor: {
 		fontSize: '14px',
 	},
+	attitudes: {
+		strokeWidth: '5px',
+		fontSize: '14px',
+		pioneers: {
+			stroke: '#3490dd',
+			fill: '#3ccaf8',
+		},
+		settlers: {
+			stroke: '#396dc0',
+			fill: '#599afa',
+		},
+		townplanners: {
+			stroke: '#4768c8',
+			fill: '#936ff9',
+		},
+	},
 	component: {
 		fontSize: '13px',
 		fill: 'white',

@@ -11,6 +11,7 @@ import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import LinksExtractionStrategy from './LinksExtractionStrategy';
 import SubMapExtractionStrategy from './SubMapExtractionStrategy';
 import UrlExtractionStrategy from './UrlExtractionStrategy';
+import AttitudeExtractionStrategy from './AttitudeExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
@@ -29,6 +30,7 @@ export default class Converter {
 			new LinksExtractionStrategy(t),
 			new SubMapExtractionStrategy(t),
 			new UrlExtractionStrategy(t),
+			new AttitudeExtractionStrategy(t),
 		];
 
 		let converted = {
@@ -45,6 +47,7 @@ export default class Converter {
 			title: '',
 			submaps: [],
 			urls: [],
+			attitudes: [],
 		};
 		strategies.forEach(s => {
 			converted = Object.assign(converted, s.apply());
