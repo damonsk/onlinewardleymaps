@@ -13,6 +13,8 @@ function AttitudeSymbol(props) {
 		width,
 		fill,
 		stroke,
+		fillOpacity,
+		strokeOpacity,
 		attitude,
 		// textAnchor = 'center',
 		styles,
@@ -23,6 +25,8 @@ function AttitudeSymbol(props) {
 			id={id}
 			fill={fill || style.fill}
 			stroke={stroke || style.stroke}
+			fillOpacity={fillOpacity || style.fillOpacity}
+			strokeOpacity={strokeOpacity || style.strokeOpacity}
 			height={height || defaultHeight}
 			width={width || defaultWidth}
 			strokeWidth={styles.strokeWidth}
@@ -35,6 +39,8 @@ AttitudeSymbol.propTypes = {
 	fill: PropTypes.string,
 	stroke: PropTypes.string,
 	attitude: PropTypes.string,
+	fillOpacity: PropTypes.number,
+	strokeOpacity: PropTypes.number,
 };
 
 export default memo(AttitudeSymbol);

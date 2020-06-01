@@ -23,14 +23,20 @@ export const Plain = {
 		pioneers: {
 			stroke: '#3490dd',
 			fill: '#3ccaf8',
+			fillOpacity: 0.4,
+			strokeOpacity: 0.7,
 		},
 		settlers: {
 			stroke: '#396dc0',
 			fill: '#599afa',
+			fillOpacity: 0.4,
+			strokeOpacity: 0.7,
 		},
 		townplanners: {
 			stroke: '#4768c8',
 			fill: '#936ff9',
+			fillOpacity: 0.4,
+			strokeOpacity: 0.7,
 		},
 	},
 	component: {
