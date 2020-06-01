@@ -1,8 +1,8 @@
 export default class LineNumberPositionUpdater {
 	constructor(type, mapText, mutator, replacers) {
 		this.type = type;
-		this.mutator = mutator;
 		this.mapText = mapText;
+		this.mutator = mutator;
 		this.replacers = replacers;
 	}
 	update(moved, identifier, line) {

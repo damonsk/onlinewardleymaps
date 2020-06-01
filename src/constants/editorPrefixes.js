@@ -1,14 +1,33 @@
+const iterationBuilder = optArray => {
+	const strings = [];
+	for (let i = 0; i < optArray.length; i++) {
+		strings.push(optArray.slice(0, i + 1).join(' '));
+	}
+	return strings;
+};
+
+const attitudes = ['pioneers', 'settlers', 'townplanners'].map(a => [
+	a,
+	'[<visibility>, <maturity>]',
+	'width',
+	'height',
+]);
+
+const iterations = [
+	...attitudes,
+	['note', '<note text>', '[<visibility>, <maturity>]'],
+	['component', '<name>', '[<visibility>, <maturity>]'],
+	['submap', '<name>', '[<visibility>, <maturity>]', 'url(<url>)'],
+	['url', '<name>', '[<address>]'],
+]
+	.map(iterationBuilder)
+	.flat();
+
 export const EditorPrefixes = [
 	'outsource <component>',
 	'build <component>',
 	'buy <component>',
-	'component',
-	'component <name>',
-	'component <name> [<visibility>, <maturity>]',
-	'submap',
-	'submap <name>',
-	'submap <name> [<visibility>, <maturity>]',
-	'submap <name> [<visibility>, <maturity>] url(<url>)',
+	...iterations,
 	'anchor',
 	'annotation',
 	'annotations',
@@ -20,12 +39,6 @@ export const EditorPrefixes = [
 	'evolve',
 	'inertia',
 	'pipeline',
-	'note',
-	'note <note text>',
-	'note <note text> [<visibility>, <maturity>]',
-	'url',
-	'url <name>',
-	'url <name> [<address>]',
 	'title',
 	'evolution',
 	'y-axis Label->Min->Max',

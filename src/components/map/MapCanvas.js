@@ -11,6 +11,7 @@ import AnnotationElement from './AnnotationElement';
 import AnnotationBox from './AnnotationBox';
 import Anchor from './Anchor';
 import Note from './Note';
+import Attitude from './Attitude';
 import LinksBuilder from '../../linkStrategies/LinksBuilder';
 import MapGraphics from './foundation/MapGraphics';
 import MapBackground from './foundation/MapBackground';
@@ -92,6 +93,19 @@ function MapCanvas(props) {
 								/>
 							)
 						)}
+					</g>
+
+					<g id="attitudes">
+						{props.mapAttitudes.map((a, i) => (
+							<Attitude
+								key={i}
+								mapDimensions={props.mapDimensions}
+								mapStyleDefs={props.mapStyleDefs}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+								attitude={a}
+							/>
+						))}
 					</g>
 
 					{links.map(current => {
