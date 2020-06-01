@@ -31,56 +31,31 @@ export const MapDimensions = {
 	height: 600,
 };
 
-export const ExampleMap =
-	'title Tea Shop' +
-	'\r\n' +
-	'anchor Business [0.95, 0.63]' +
-	'\r\n' +
-	'anchor Public [0.95, 0.78]' +
-	'\r\n' +
-	'component Cup of Tea [0.79, 0.61] label [19, -4]' +
-	'\r\n' +
-	'component Cup [0.73, 0.78]' +
-	'\r\n' +
-	'component Tea [0.63, 0.81]' +
-	'\r\n' +
-	'component Hot Water [0.52, 0.80]' +
-	'\r\n' +
-	'component Water [0.38, 0.82]' +
-	'\r\n' +
-	'component Kettle [0.43, 0.35] label [-57, 4]' +
-	'\r\n' +
-	'evolve Kettle 0.62 label [16, 7]' +
-	'\r\n' +
-	'component Power [0.1, 0.7] label [-27, 20]' +
-	'\r\n' +
-	'evolve Power 0.89 label [-12, 21]' +
-	'\r\n' +
-	'Business->Cup of Tea' +
-	'\r\n' +
-	'Public->Cup of Tea' +
-	'\r\n' +
-	'Cup of Tea->Cup' +
-	'\r\n' +
-	'Cup of Tea->Tea' +
-	'\r\n' +
-	'Cup of Tea->Hot Water' +
-	'\r\n' +
-	'Hot Water->Water' +
-	'\r\n' +
-	'Hot Water->Kettle ' +
-	'\r\n' +
-	'Kettle->Power' +
-	'\r\n' +
-	'\r\n' +
-	'annotation 1 [[0.43,0.49],[0.08,0.79]] Standardising power allows Kettles to evolve faster' +
-	'\r\n' +
-	'annotation 2 [0.48, 0.85] Hot water is obvious and well known' +
-	'\r\n' +
-	'annotations [0.60, 0.02]' +
-	'\r\n' +
-	'\r\n' +
-	'note +a generic note appeared [0.23, 0.33]' +
-	'\r\n' +
-	'\r\n' +
-	'style wardley';
+export const ExampleMap = `title Tea Shop
+anchor Business [0.95, 0.63]
+anchor Public [0.95, 0.78]
+component Cup of Tea [0.79, 0.61] label [19, -4]
+component Cup [0.73, 0.78]
+component Tea [0.63, 0.81]
+component Hot Water [0.52, 0.80]
+component Water [0.38, 0.82]
+component Kettle [0.43, 0.35] label [-57, 4]
+evolve Kettle 0.62 label [16, 7]
+component Power [0.1, 0.7] label [-27, 20]
+evolve Power 0.89 label [-12, 21]
+Business->Cup of Tea
+Public->Cup of Tea
+Cup of Tea->Cup
+Cup of Tea->Tea
+Cup of Tea->Hot Water
+Hot Water->Water
+Hot Water->Kettle 
+Kettle->Power
+
+annotation 1 [[0.43,0.49],[0.08,0.79]] Standardising power allows Kettles to evolve faster
+annotation 2 [0.48, 0.85] Hot water is obvious and well known
+annotations [0.60, 0.02]
+
+note +a generic note appeared [0.23, 0.33]
+
+style wardley`;

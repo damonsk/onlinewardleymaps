@@ -2,7 +2,7 @@ import {
 	ComponentIcon,
 	InertiaIcon,
 	ComponentEvolvedIcon,
-} from '../symbols/icons';
+} from '../components/symbols/icons';
 
 const usages = [
 	{

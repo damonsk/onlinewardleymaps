@@ -95,6 +95,7 @@ class Editor extends Component {
 					height={this.state.height + 'px'}
 					className="jumbotron"
 					showPrintMargin={false}
+					debounceChangePeriod={300}
 					editorProps={{ $blockScrolling: true }}
 					setOptions={{
 						enableBasicAutocompletion: [this.customAceEditorCompleter(this)],

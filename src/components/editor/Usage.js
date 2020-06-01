@@ -1,5 +1,5 @@
 import React from 'react';
-import usages from './usages';
+import usages from '../../constants/usages';
 
 function Usage(props) {
 	const addOnClick = txt => {

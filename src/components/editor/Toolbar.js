@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import usages from './usages';
+import usages from '../../constants/usages';
 
 import { Button, Collapse } from 'react-bootstrap';
 

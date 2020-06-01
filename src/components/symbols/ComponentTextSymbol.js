@@ -39,12 +39,13 @@ const ComponentTextSymbol = props => {
 	return (
 		<>
 			<text
+				is="custom"
 				id={id}
 				data-testid={id}
-				fontWeight={fontWeight || styles.fontWeight || '14px'}
-				fontSize={fontSize || styles.fontSize || '14px'}
-				className={className}
-				textAnchor={textAnchor}
+				font-weight={fontWeight || styles.fontWeight || '14px'}
+				font-size={fontSize || styles.fontSize || '14px'}
+				class={className}
+				text-anchor={textAnchor}
 				x={x}
 				y={y}
 				transform={transform}
