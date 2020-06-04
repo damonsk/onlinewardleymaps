@@ -58,7 +58,8 @@
 		"react-ace": "^8.0.0",
 		"react-bootstrap": "^1.0.0-beta.16",
 		"react-dom": "^16.12.0",
-		"react-icons": "^3.10.0"
+		"react-icons": "^3.10.0",
+		"store": "^2.0.12"
 	},
 	"lint-staged": {
 		"*.{js,jsx}": [

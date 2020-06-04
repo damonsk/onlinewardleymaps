@@ -18,6 +18,8 @@ import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
 import { Collapse } from 'react-bootstrap';
 
+import useLocalStorage from './useLocalStorage';
+
 // only use toolbar if set
 const useToolbar = false;
 // const isDev = process.env.NODE_ENV === 'development';
@@ -25,7 +27,7 @@ const useToolbar = false;
 function App() {
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
-	const [mapText, setMapText] = useState('');
+	const [mapText, setMapText] = useLocalStorage('unsaved', '');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapSubMaps, setMapSubMaps] = useState([]);
