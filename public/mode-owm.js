@@ -69,6 +69,20 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 				{
 					token: [
 						'keyword',
+						'punctuation',
+						'constant.numeric',
+						'punctuation',
+						'constant.numeric',
+						'punctuation',
+						'constant.numeric',
+						'constant.numeric',
+					],
+					regex:
+						'(pioneers|settlers|townplanners)(\\s*\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])(\\s*\\d{1,})(\\s*\\d{1,})',
+				},
+				{
+					token: [
+						'keyword',
 						'variable.parameter.function.asp',
 						'punctuation',
 						'comment',
