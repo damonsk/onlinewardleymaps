@@ -78,6 +78,19 @@ function MapCanvas(props) {
 					/>
 				</g>
 				<g id="map">
+					<g id="attitudes">
+						{props.mapAttitudes.map((a, i) => (
+							<Attitude
+								key={i}
+								mapDimensions={props.mapDimensions}
+								mapStyleDefs={props.mapStyleDefs}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+								attitude={a}
+							/>
+						))}
+					</g>
+
 					<g id="methods">
 						{props.mapMethods.map((m, i) =>
 							getElementByName(mapElements.getNonEvolvedElements(), m.name) ===
@@ -93,19 +106,6 @@ function MapCanvas(props) {
 								/>
 							)
 						)}
-					</g>
-
-					<g id="attitudes">
-						{props.mapAttitudes.map((a, i) => (
-							<Attitude
-								key={i}
-								mapDimensions={props.mapDimensions}
-								mapStyleDefs={props.mapStyleDefs}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								attitude={a}
-							/>
-						))}
 					</g>
 
 					{links.map(current => {
