@@ -50,7 +50,7 @@ function MethodElement({ element, mapDimensions, method }) {
 
 MethodElement.propTypes = {
 	element: PropTypes.shape({
-		id: PropTypes.string,
+		id: PropTypes.number,
 		maturity: PropTypes.number,
 		visibility: PropTypes.number,
 	}),
