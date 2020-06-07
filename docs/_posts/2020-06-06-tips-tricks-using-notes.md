@@ -25,7 +25,7 @@ note Room for improvement [0.01, 0.41]
 note Nailed it [0.035, 0.71]
 note A practice we've established [0.01, 0.71]
 
-note Unmoddled [0.06, 0.01]
+note Unmodeled [0.06, 0.01]
 note Divergent [0.06, 0.18]
 note Convergent [0.06, 0.41]
 note Modeled [0.06, 0.71]
