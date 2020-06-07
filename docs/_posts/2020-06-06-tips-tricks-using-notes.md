@@ -14,10 +14,7 @@ Here is an example of using adding additional context from <a href="https://matu
 
 ### Template (copy and paste into your map)
 ```
-title MaturityMapping
-style wardley
-
-/// Map setup.
+// Map setup.
 evolution Novel->Emerging->Good->Best
 note New to us [0.035, 0.01]
 note Not well understood [0.01, 0.01]
