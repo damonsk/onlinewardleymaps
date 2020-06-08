@@ -377,6 +377,92 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
+    Pioneers, Settlers, Townplanners area
+  </strong>
+  <br />
+   
+  Add areas indicating which type of working approach supports component development
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    pioneers [&lt;visibility&gt;, &lt;maturity&gt;] width height
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    settlers [0.59, 0.43] 180 130
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    townplanners [0.31, 0.74] 200 150
+  </span>
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    Link submap to a component
+  </strong>
+  <br />
+   
+  Add a reference link to a submap. A component becomes a link to an other Wardley Map
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    submap Component [&lt;visibility&gt;, &lt;maturity&gt;] url(urlName)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    url urlName [URL]
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    submap Website [0.83, 0.50] url(submapUrl)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]
+  </span>
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
     Stages of Evolution
   </strong>
   <br />
