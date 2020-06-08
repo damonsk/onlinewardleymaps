@@ -64,6 +64,25 @@ const usages = [
 			"Hot Water+'$0.10'>Kettle",
 		],
 	},
+	    {
+		title: 'Pioneers, Settlers, Townplanners area',
+		summary: 'Add areas indicating which type of working approach supports component development',
+		examples: [
+			'pioneers [<visibility>, <maturity>] width height',
+			'settlers [0.59, 0.43] 180 130',
+            		'townplanners [0.31, 0.74] 200 150',
+		],
+	},
+    	{
+		title: 'Link submap to a component',
+		summary: 'Add a reference link to a submap. A component becomes a link to an other Wardley Map',
+		examples: [
+            	'submap Component [<visibility>, <maturity>] url(urlName)',
+            	'url urlName [URL]',
+            	'submap Website [0.83, 0.50] url(submapUrl)',
+            	'url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]',
+		],
+	},
 	{
 		title: 'Stages of Evolution',
 		summary: 'Change the stages of evolution labels on the map',
