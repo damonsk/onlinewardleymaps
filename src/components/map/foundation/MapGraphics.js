@@ -1,5 +1,24 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+
+const ecosystemStripesPattern = () => (
+	<pattern
+		id="diagonalHatch"
+		patternUnits="userSpaceOnUse"
+		width="4"
+		height="4"
+	>
+		<path
+			d="M 3,-1 l 2,2
+			 M 0,0 l 4,4
+			 M -1,3 l 2,2
+			 "
+			stroke="grey"
+			strokeWidth="1"
+			opacity=".5"
+		/>
+	</pattern>
+);
 
 const MapGraphics = props => (
 	<defs>
@@ -20,6 +39,18 @@ const MapGraphics = props => (
 			<stop offset="0.7" style={{ stopColor: 'white' }} />
 			<stop offset={1} style={{ stopColor: 'rgb(196, 196, 196)' }} />
 		</linearGradient>
+		<linearGradient
+			spreadMethod="pad"
+			id="accelGradient"
+			x1="0%"
+			y1="64%"
+			x2="76%"
+			y2="0%"
+		>
+			<stop offset="0%" style={{ stopColor: 'white', stopOpacity: 1 }} />
+			<stop offset="100%" style={{ stopColor: '#8c8995', stopOpacity: 1 }} />
+		</linearGradient>
+		{ecosystemStripesPattern()}
 		<marker
 			id="arrow"
 			markerWidth="12"
@@ -62,4 +93,4 @@ MapGraphics.propTypes = {
 	mapStyleDefs: PropTypes.object.isRequired,
 };
 
-export default MapGraphics;
+export default memo(MapGraphics);

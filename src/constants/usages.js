@@ -64,23 +64,31 @@ const usages = [
 			"Hot Water+'$0.10'>Kettle",
 		],
 	},
-	    {
+	{
 		title: 'Pioneers, Settlers, Townplanners area',
-		summary: 'Add areas indicating which type of working approach supports component development',
+		summary:
+			'Add areas indicating which type of working approach supports component development',
 		examples: [
-			'pioneers [<visibility>, <maturity>] width height',
+			'pioneers [<visibility>, <maturity>] <width> <height>',
 			'settlers [0.59, 0.43] 180 130',
-            		'townplanners [0.31, 0.74] 200 150',
+			'townplanners [0.31, 0.74] 200 150',
 		],
 	},
-    	{
+	{
+		title: 'Build, buy, outsource components',
+		summary:
+			'Highlight a component with a build, buy, or outsource method of execution',
+		examples: ['build <component>', 'buy <component>', 'outsource <component>'],
+	},
+	{
 		title: 'Link submap to a component',
-		summary: 'Add a reference link to a submap. A component becomes a link to an other Wardley Map',
+		summary:
+			'Add a reference link to a submap. A component becomes a link to an other Wardley Map',
 		examples: [
-            	'submap Component [<visibility>, <maturity>] url(urlName)',
-            	'url urlName [URL]',
-            	'submap Website [0.83, 0.50] url(submapUrl)',
-            	'url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]',
+			'submap Component [<visibility>, <maturity>] url(urlName)',
+			'url urlName [URL]',
+			'submap Website [0.83, 0.50] url(submapUrl)',
+			'url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]',
 		],
 	},
 	{

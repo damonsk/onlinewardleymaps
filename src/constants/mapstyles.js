@@ -39,6 +39,24 @@ export const Plain = {
 			strokeOpacity: 0.7,
 		},
 	},
+	methods: {
+		buy: {
+			stroke: '#D6D6D6',
+			fill: '#AAA5A9',
+		},
+		build: {
+			stroke: '#000000',
+			fill: '#D6D6D6',
+		},
+		outsource: {
+			stroke: '#444444',
+			fill: '#444444',
+		},
+	},
+	market: {
+		stroke: 'red',
+		fill: 'white',
+	},
 	component: {
 		fontSize: '13px',
 		fill: 'white',

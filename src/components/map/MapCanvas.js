@@ -101,6 +101,7 @@ function MapCanvas(props) {
 										mapElements.getNonEvolvedElements(),
 										m.name
 									)}
+									mapStyleDefs={props.mapStyleDefs}
 									mapDimensions={props.mapDimensions}
 									method={m}
 								/>

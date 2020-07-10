@@ -1,50 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PositionCalculator from './PositionCalculator';
+import MethodSymbol from '../symbols/MethodSymbol';
 
-function MethodElement({ element, mapDimensions, method }) {
+function MethodElement({ element, mapDimensions, method, mapStyleDefs }) {
 	const positionCalc = new PositionCalculator();
-	const x = () =>
-		positionCalc.maturityToX(element.maturity, mapDimensions.width);
-	const y = () =>
-		positionCalc.visibilityToY(element.visibility, mapDimensions.height);
-
-	const defineStoke = function() {
-		switch (method.method) {
-			case 'outsource':
-				return '#444444';
-			case 'build':
-				return '#000000';
-			default:
-				return '#D6D6D6';
-		}
-	};
-
-	const defineFill = function() {
-		switch (method.method) {
-			case 'outsource':
-				return '#444444';
-			case 'build':
-				return '#D6D6D6';
-			default:
-				return '#AAA5A9';
-		}
-	};
+	const x = positionCalc.maturityToX(element.maturity, mapDimensions.width);
+	const y = positionCalc.visibilityToY(
+		element.visibility,
+		mapDimensions.height
+	);
 
 	return (
-		<g
+		<MethodSymbol
 			id={'method_' + element.id}
-			transform={'translate (' + x() + ',' + y() + ')'}
-		>
-			<circle
-				id={'element_circle_' + element.id}
-				cx="0"
-				cy="0"
-				r="20"
-				fill={defineFill()}
-				stroke={defineStoke()}
-			/>
-		</g>
+			x={x}
+			y={y}
+			method={method.method}
+			styles={mapStyleDefs.methods}
+		/>
 	);
 }
 

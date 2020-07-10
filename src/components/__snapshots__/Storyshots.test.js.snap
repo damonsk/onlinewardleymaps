@@ -393,7 +393,7 @@ exports[`Storyshots Usage  default 1`] = `
     href="#"
     onClick={[Function]}
   >
-    pioneers [&lt;visibility&gt;, &lt;maturity&gt;] width height
+    pioneers [&lt;visibility&gt;, &lt;maturity&gt;] &lt;width&gt; &lt;height&gt;
   </span>
   <br />
   <span
@@ -410,6 +410,45 @@ exports[`Storyshots Usage  default 1`] = `
     onClick={[Function]}
   >
     townplanners [0.31, 0.74] 200 150
+  </span>
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
+    Build, buy, outsource components
+  </strong>
+  <br />
+   
+  Highlight a component with a build, buy, or outsource method of execution
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    build &lt;component&gt;
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    buy &lt;component&gt;
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    outsource &lt;component&gt;
   </span>
   <br />
   <br />
