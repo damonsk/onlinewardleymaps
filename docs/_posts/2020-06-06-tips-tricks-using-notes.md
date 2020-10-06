@@ -6,7 +6,7 @@ author: "OnlineWardleyMaps"
 
 ## Maturity Mapping Example
 
-Notes are generic peices of text that you can place anywhere on a map.  They can be versatile and allow you to add more context.  
+Notes are generic pieces of text that you can place anywhere on a map.  They can be versatile and allow you to add more context.  
 
 Here is an example of using adding additional context from <a href="https://maturitymapping.com/" target="_blank">Maturity Mapping</a> onto the map.  The evolution axis has been changed to Novel, Emerging, Good and Best.
 
