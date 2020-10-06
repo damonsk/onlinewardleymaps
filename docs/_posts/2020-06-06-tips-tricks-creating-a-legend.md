@@ -6,7 +6,7 @@ author: "OnlineWardleyMaps"
 
 ## Pioneers, Settlers and Town Planners Example
 
-Notes are generic peices of text that you can place anywhere on a map.  They can be versatile and allow you to add more context.  
+Notes are generic pieces of text that you can place anywhere on a map.  They can be versatile and allow you to add more context.  
 
 Here is an example of using `note` elements combined with `pioneers`, `settlers` and `townplanners` elements to create a legend in the top right of the map.
 
