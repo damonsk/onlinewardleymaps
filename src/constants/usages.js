@@ -6,6 +6,13 @@ import {
 
 const usages = [
 	{
+        title: 'To set the title',
+        summary: '',
+        examples: [
+            'title My Wardley Map'
+        ],
+    },
+	{
 		toolbarButtonText: 'Create Component',
 		Icon: ComponentIcon,
 		title: 'To create a component',
