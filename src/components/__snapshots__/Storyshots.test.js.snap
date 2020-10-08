@@ -118,6 +118,25 @@ exports[`Storyshots Usage  default 1`] = `
   <br />
   <br />
   <strong>
+    To set the title
+  </strong>
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    title My Wardley Map
+  </span>
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
     To create a component
   </strong>
   <br />
