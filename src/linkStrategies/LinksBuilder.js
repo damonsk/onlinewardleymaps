@@ -7,6 +7,7 @@ import EvolvedToNoneEvolvingLinksStrategy from './EvolvedToNoneEvolvingLinksStra
 import EvolvingToEvolvingLinksStrategy from './EvolvingToEvolvingLinksStrategy';
 import EvolveToEvolvedLinksStrategy from './EvolveToEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
+import AnchorNoneEvolvedLinksStrategy from './AnchorNoneEvolvedLinksStrategy';
 
 export default class LinksBuilder {
 	constructor(mapLinks, mapElements, mapAnchors) {
@@ -20,6 +21,7 @@ export default class LinksBuilder {
 			new EvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
 			new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
 			new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
+			new AnchorNoneEvolvedLinksStrategy(mapLinks, mapElements, mapAnchors),
 		];
 	}
 
