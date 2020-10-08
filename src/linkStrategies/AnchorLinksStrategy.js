@@ -1,4 +1,4 @@
-export default class AllLinksStrategy {
+export default class AchorLinksStrategy {
 	constructor(links, mapElements, anchors) {
 		this.links = links;
 		this.mapElements = mapElements;
