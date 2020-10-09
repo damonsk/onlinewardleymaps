@@ -74,10 +74,16 @@ const usages = [
 		summary:
 			'Add areas indicating which type of working approach supports component development',
 		examples: [
-			'pioneers [<visibility>, <maturity>] width height',
+			'pioneers [<visibility>, <maturity>] <width> <height>',
 			'settlers [0.59, 0.43] 180 130',
 			'townplanners [0.31, 0.74] 200 150',
 		],
+	},
+	{
+		title: 'Build, buy, outsource components',
+		summary:
+			'Highlight a component with a build, buy, or outsource method of execution',
+		examples: ['build <component>', 'buy <component>', 'outsource <component>'],
 	},
 	{
 		title: 'Link submap to a component',

@@ -9,8 +9,8 @@ const iterationBuilder = optArray => {
 const attitudes = ['pioneers', 'settlers', 'townplanners'].map(a => [
 	a,
 	'[<visibility>, <maturity>]',
-	'width',
-	'height',
+	'<width>',
+	'<height>',
 ]);
 
 const iterations = [

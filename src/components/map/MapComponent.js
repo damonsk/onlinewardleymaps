@@ -13,13 +13,14 @@ import SubMapSymbol from '../symbols/SubMapSymbol';
 
 function MapComponent(props) {
 	const positionCalc = new PositionCalculator();
-	const x = () =>
-		positionCalc.maturityToX(props.element.maturity, props.mapDimensions.width);
-	const y = () =>
-		positionCalc.visibilityToY(
-			props.element.visibility,
-			props.mapDimensions.height
-		);
+	const x = positionCalc.maturityToX(
+		props.element.maturity,
+		props.mapDimensions.width
+	);
+	const y = positionCalc.visibilityToY(
+		props.element.visibility,
+		props.mapDimensions.height
+	);
 
 	const onElementClick = () => props.setHighlightLine(props.element.line);
 
@@ -95,8 +96,8 @@ function MapComponent(props) {
 			<Movable
 				id={'element_' + props.element.id}
 				onMove={endDrag}
-				x={x()}
-				y={y()}
+				x={x}
+				y={y}
 				fixedY={props.element.evolved}
 				fixedX={false}
 			>
@@ -140,7 +141,7 @@ function MapComponent(props) {
 					mapDimensions={props.mapDimensions}
 				/>
 			) : null}
-			<g transform={'translate(' + x() + ',' + y() + ')'}>
+			<g transform={'translate(' + x + ',' + y + ')'}>
 				<ComponentText
 					id={'component_text_' + props.element.id}
 					mapStyleDefs={props.mapStyleDefs}
