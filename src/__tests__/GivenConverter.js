@@ -293,8 +293,6 @@ describe('Convert test suite', function() {
 			let actual = `${x} [0.98, 0.5] 100 200`;
 			let result = new Converter().parse(actual);
 
-			console.log(result.attitudes);
-
 			expect(result.attitudes.length).toEqual(1);
 			expect(result.attitudes[0].maturity).toEqual(0.5);
 			expect(result.attitudes[0].visibility).toEqual(0.98);
@@ -308,8 +306,6 @@ describe('Convert test suite', function() {
 		function(x) {
 			let actual = `${x} [0.98, 0.5, 0.6, 0.7]`;
 			let result = new Converter().parse(actual);
-
-			console.log(result.attitudes);
 
 			expect(result.attitudes.length).toEqual(1);
 			expect(result.attitudes[0].maturity).toEqual(0.5);
