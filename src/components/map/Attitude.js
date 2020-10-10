@@ -3,8 +3,8 @@ import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
 import PropTypes from 'prop-types';
 import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
+import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoordsMatcher';
+import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 
 const Attitude = props => {
@@ -16,7 +16,7 @@ const Attitude = props => {
 		type,
 		props.mapText,
 		props.mutateMapText,
-		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
+		[ExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher]
 	);
 	const x = positionCalc.maturityToX(attitude.maturity, width);
 	const x2 = positionCalc.maturityToX(attitude.maturity2, width);
@@ -26,8 +26,28 @@ const Attitude = props => {
 	function endDrag(moved) {
 		const visibility = positionCalc.yToVisibility(moved.y, height);
 		const maturity = positionCalc.xToMaturity(moved.x, width);
+		let visibility2 = attitude.visibility2;
+		let maturity2 = attitude.maturity2;
+		if (attitude.visibility < visibility) {
+			visibility2 = visibility - attitude.visibility + attitude.visibility2;
+		}
+		if (attitude.visibility > visibility) {
+			visibility2 = visibility - attitude.visibility + attitude.visibility2;
+		}
+		if (attitude.maturity < maturity) {
+			maturity2 = maturity - attitude.maturity + attitude.maturity2;
+		}
+		if (attitude.maturity > maturity) {
+			maturity2 = maturity - attitude.maturity + attitude.maturity2;
+		}
+
 		positionUpdater.update(
-			{ param1: visibility, param2: maturity },
+			{
+				param1: parseFloat(visibility).toFixed(2),
+				param2: parseFloat(maturity).toFixed(2),
+				param3: parseFloat(visibility2).toFixed(2),
+				param4: parseFloat(maturity2).toFixed(2),
+			},
 			'',
 			attitude.line
 		);
