@@ -5,6 +5,7 @@ export default class BaseStrategyRunner {
 		this.data = data;
 		this.keyword = config.keyword;
 		this.containerName = config.containerName;
+		this.config = config;
 		this.decorators =
 			decorators !== null && decorators !== undefined ? decorators : [];
 	}
@@ -24,6 +25,7 @@ export default class BaseStrategyRunner {
 						f(baseElement, element, {
 							keyword: this.keyword,
 							containerName: this.containerName,
+							config: this.config,
 						})
 					);
 					elementsToReturn.push(baseElement);

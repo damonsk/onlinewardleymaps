@@ -23,6 +23,7 @@ export default class LinksExtractionStrategy {
 			'townplanners',
 			'submap',
 			'url',
+			'market',
 		];
 	}
 	apply() {

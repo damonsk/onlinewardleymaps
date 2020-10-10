@@ -168,6 +168,37 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
+    To create a market
+  </strong>
+  <br />
+   
+  market Name [Visibility (Y Axis), Maturity (X Axis)]
+   
+  <br />
+  <strong>
+    Example:
+  </strong>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    market Customer [0.9, 0.5]
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    market Cup of Tea [0.9, 0.5]
+  </span>
+  <br />
+  <br />
+  ------------------------
+  <br />
+  <strong>
     Inertia - component likely to face resistance to change.
   </strong>
   <br />
@@ -193,6 +224,14 @@ exports[`Storyshots Usage  default 1`] = `
     onClick={[Function]}
   >
     component Cup of Tea [0.9, 0.5] inertia
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    market Cup of Tea [0.9, 0.5] inertia
   </span>
   <br />
   <br />

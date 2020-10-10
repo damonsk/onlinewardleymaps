@@ -115,7 +115,7 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 				{
 					token: ['keyword', 'variable.parameter.function.asp'],
 					regex:
-						'(y-axis|evolution|note|anchor|annotations|annotation|component|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
+						'(y-axis|evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
 				},
 				{
 					token: [

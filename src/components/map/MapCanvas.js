@@ -17,13 +17,15 @@ import MapGraphics from './foundation/MapGraphics';
 import MapBackground from './foundation/MapBackground';
 import SubMapSymbol from '../symbols/SubMapSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
+import MarketSymbol from '../symbols/MarketSymbol';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(
 		props.mapComponents,
 		props.mapEvolved,
 		props.mapPipelines,
-		props.mapSubMaps
+		props.mapSubMaps,
+		props.mapMarkets
 	);
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
@@ -198,6 +200,14 @@ function MapCanvas(props) {
 										id={'element_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
 										evolved={el.evolved}
+										onClick={() => props.setHighlightLine(el.line)}
+									/>
+								)}
+
+								{el.type === 'market' && (
+									<MarketSymbol
+										id={'market_circle_' + el.id}
+										styles={props.mapStyleDefs.component}
 										onClick={() => props.setHighlightLine(el.line)}
 									/>
 								)}

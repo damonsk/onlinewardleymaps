@@ -21,6 +21,13 @@ const usages = [
 		],
 	},
 	{
+		toolbarButtonText: 'Create Market',
+		Icon: ComponentIcon,
+		title: 'To create a market',
+		summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
+		examples: ['market Customer [0.9, 0.5]', 'market Cup of Tea [0.9, 0.5]'],
+	},
+	{
 		toolbarButtonText: 'Inertia',
 		Icon: InertiaIcon,
 		title: 'Inertia - component likely to face resistance to change.',
@@ -28,6 +35,7 @@ const usages = [
 		examples: [
 			'component Customer [0.95, 0.5] inertia',
 			'component Cup of Tea [0.9, 0.5] inertia',
+			'market Cup of Tea [0.9, 0.5] inertia',
 		],
 	},
 	{

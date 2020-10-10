@@ -1,6 +1,11 @@
 import Converter from '../conversion/Converter';
 
 describe('Convert test suite', function() {
+	const genericMapComponents = [
+		{ keyword: 'component', container: 'elements' },
+		{ keyword: 'market', container: 'markets' },
+	];
+
 	test('should create mapJson Object with title property', function() {
 		let expected = 'This is an example map';
 		let actual = `title ${expected}`;
@@ -9,35 +14,39 @@ describe('Convert test suite', function() {
 		expect(result.title).toEqual(expected);
 	});
 
-	test('should create element from string', function() {
-		let actual = 'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]';
+	test.each(genericMapComponents)(
+		'should create map component from string',
+		e => {
+			let actual = `${e.keyword} Customer [1, 0.4]\n${e.keyword} Customer2 [0,0.1]`;
+			let obj = new Converter();
+			let result = obj.parse(actual);
+			expect(result[e.container][0].id).toEqual(1);
+			expect(result[e.container][0].name).toEqual('Customer');
+			expect(result[e.container][0].visibility).toEqual(1);
+			expect(result[e.container][0].maturity).toEqual(0.4);
 
-		let obj = new Converter();
-		let result = obj.parse(actual);
+			expect(result[e.container][1].id).toEqual(2);
+			expect(result[e.container][1].name).toEqual('Customer2');
+			expect(result[e.container][1].visibility).toEqual(0);
+			expect(result[e.container][1].maturity).toEqual(0.1);
+		}
+	);
 
-		expect(result.elements[0].id).toEqual(1);
-		expect(result.elements[0].name).toEqual('Customer');
-		expect(result.elements[0].visibility).toEqual(1);
-		expect(result.elements[0].maturity).toEqual(0.4);
+	test.each(genericMapComponents)(
+		'should create map component with inertia tag set to true',
+		e => {
+			let actual = `${e.keyword} Customer [1, 0.4] inertia\n`;
 
-		expect(result.elements[1].id).toEqual(2);
-		expect(result.elements[1].name).toEqual('Customer2');
-		expect(result.elements[1].visibility).toEqual(0);
-		expect(result.elements[1].maturity).toEqual(0.1);
-	});
+			let obj = new Converter();
+			let result = obj.parse(actual);
 
-	test('component has inertia tag set to true', function() {
-		let actual = 'component Customer [1, 0.4] inertia\n';
-
-		let obj = new Converter();
-		let result = obj.parse(actual);
-
-		expect(result.elements[0].id).toEqual(1);
-		expect(result.elements[0].name).toEqual('Customer');
-		expect(result.elements[0].visibility).toEqual(1);
-		expect(result.elements[0].maturity).toEqual(0.4);
-		expect(result.elements[0].inertia).toEqual(true);
-	});
+			expect(result[e.container][0].id).toEqual(1);
+			expect(result[e.container][0].name).toEqual('Customer');
+			expect(result[e.container][0].visibility).toEqual(1);
+			expect(result[e.container][0].maturity).toEqual(0.4);
+			expect(result[e.container][0].inertia).toEqual(true);
+		}
+	);
 
 	test('should create links from string', function() {
 		let actual =
@@ -189,14 +198,17 @@ describe('Convert test suite', function() {
 		expect(result.elements.length).toEqual(0);
 	});
 
-	test('component with little info is still made available to the map', function() {
-		let actual = 'component Foo []';
-		let result = new Converter().parse(actual);
+	test.each(genericMapComponents)(
+		'map component with little info is still made available to the map',
+		e => {
+			let actual = `${e.keyword} Foo []`;
+			let result = new Converter().parse(actual);
 
-		expect(result.elements.length).toEqual(1);
-		expect(result.elements[0].visibility).toEqual(0.9);
-		expect(result.elements[0].maturity).toEqual(0.1);
-	});
+			expect(result[e.container].length).toEqual(1);
+			expect(result[e.container][0].visibility).toEqual(0.9);
+			expect(result[e.container][0].maturity).toEqual(0.1);
+		}
+	);
 
 	test('anchor with little info is still made available to the map', function() {
 		let actual = 'anchor Foo []';
@@ -207,14 +219,17 @@ describe('Convert test suite', function() {
 		expect(result.anchors[0].maturity).toEqual(0.1);
 	});
 
-	test('component with little info is still made available to the map', function() {
-		let actual = 'component Foo';
-		let result = new Converter().parse(actual);
+	test.each(genericMapComponents)(
+		'map component with little info is still made available to the map',
+		e => {
+			let actual = `${e.keyword} Foo`;
+			let result = new Converter().parse(actual);
 
-		expect(result.elements.length).toEqual(1);
-		expect(result.elements[0].visibility).toEqual(0.9);
-		expect(result.elements[0].maturity).toEqual(0.1);
-	});
+			expect(result[e.container].length).toEqual(1);
+			expect(result[e.container][0].visibility).toEqual(0.9);
+			expect(result[e.container][0].maturity).toEqual(0.1);
+		}
+	);
 
 	test('y-axis varible present and extracted', function() {
 		let actual = 'y-axis Some label->Min label->Max label';
@@ -254,16 +269,19 @@ describe('Convert test suite', function() {
 		expect(result.notes[0].maturity).toEqual(0.1);
 	});
 
-	test('component with label position then position is available to map', function() {
-		let actual = 'component Foo [0.9, 0.1] label [66,99] inertia evolve 0.9';
-		let result = new Converter().parse(actual);
+	test.each(genericMapComponents)(
+		'map component with label position then position is available to map',
+		e => {
+			let actual = `${e.keyword} Foo [0.9, 0.1] label [66,99] inertia evolve 0.9`;
+			let result = new Converter().parse(actual);
 
-		expect(result.elements.length).toEqual(1);
-		expect(result.elements[0].visibility).toEqual(0.9);
-		expect(result.elements[0].maturity).toEqual(0.1);
-		expect(result.elements[0].label.x).toEqual(66);
-		expect(result.elements[0].label.y).toEqual(99);
-	});
+			expect(result[e.container].length).toEqual(1);
+			expect(result[e.container][0].visibility).toEqual(0.9);
+			expect(result[e.container][0].maturity).toEqual(0.1);
+			expect(result[e.container][0].label.x).toEqual(66);
+			expect(result[e.container][0].label.y).toEqual(99);
+		}
+	);
 
 	test('pipelines made available to the map', function() {
 		let actual = 'pipeline Foo [0.05, 0.95]';
