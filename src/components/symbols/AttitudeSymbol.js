@@ -16,7 +16,6 @@ function AttitudeSymbol(props) {
 		fillOpacity,
 		strokeOpacity,
 		attitude,
-		// textAnchor = 'center',
 		styles,
 	} = props;
 	const style = styles[attitude] || styles.pioneer || {};

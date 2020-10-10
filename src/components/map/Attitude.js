@@ -19,7 +19,9 @@ const Attitude = props => {
 		[ExistingCoordsMatcher, NotDefinedCoordsMatcher]
 	);
 	const x = positionCalc.maturityToX(attitude.maturity, width);
+	const x2 = positionCalc.maturityToX(attitude.maturity2, width);
 	const y = positionCalc.visibilityToY(attitude.visibility, height);
+	const y2 = positionCalc.visibilityToY(attitude.visibility2, height);
 
 	function endDrag(moved) {
 		const visibility = positionCalc.yToVisibility(moved.y, height);
@@ -44,8 +46,8 @@ const Attitude = props => {
 				<AttitudeSymbol
 					id={`attitude_${type}`}
 					attitude={type}
-					height={attitude.height}
-					width={attitude.width}
+					height={y2 - y}
+					width={x2 - x}
 					textAnchor="middle"
 					styles={props.mapStyleDefs.attitudes}
 				/>

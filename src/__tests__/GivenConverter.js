@@ -4,7 +4,6 @@ describe('Convert test suite', function() {
 	test('should create mapJson Object with title property', function() {
 		let expected = 'This is an example map';
 		let actual = `title ${expected}`;
-
 		let result = new Converter().parse(actual);
 
 		expect(result.title).toEqual(expected);
@@ -287,6 +286,38 @@ describe('Convert test suite', function() {
 		expect(result.pipelines[0].maturity2).toEqual(0.8);
 		expect(result.pipelines[0].hidden).toEqual(true);
 	});
+
+	test.each(['pioneers', 'settlers', 'townplanners'])(
+		'pioneers are extracted with width and height',
+		function(x) {
+			let actual = `${x} [0.98, 0.5] 100 200`;
+			let result = new Converter().parse(actual);
+
+			console.log(result.attitudes);
+
+			expect(result.attitudes.length).toEqual(1);
+			expect(result.attitudes[0].maturity).toEqual(0.5);
+			expect(result.attitudes[0].visibility).toEqual(0.98);
+			expect(result.attitudes[0].width).toEqual('100');
+			expect(result.attitudes[0].height).toEqual('200');
+		}
+	);
+
+	test.each(['pioneers', 'settlers', 'townplanners'])(
+		'pioneers are extracted with matruity and visibility for width height',
+		function(x) {
+			let actual = `${x} [0.98, 0.5, 0.6, 0.7]`;
+			let result = new Converter().parse(actual);
+
+			console.log(result.attitudes);
+
+			expect(result.attitudes.length).toEqual(1);
+			expect(result.attitudes[0].maturity).toEqual(0.5);
+			expect(result.attitudes[0].visibility).toEqual(0.98);
+			expect(result.attitudes[0].maturity2).toEqual(0.7);
+			expect(result.attitudes[0].visibility2).toEqual(0.6);
+		}
+	);
 
 	test.each(['build', 'buy', 'outsource'])('methods are extracted', k => {
 		let actual = `${k} Foo Bar`;

@@ -102,6 +102,31 @@ export const extractLocation = (input, defaultValue) => {
 	} else return defaultValue;
 };
 
+export const extractManyLocations = (input, defaultValue) => {
+	if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
+		let loc = input
+			.split('[')[1]
+			.trim()
+			.split(']')[0]
+			.replace(/\s/g, '')
+			.split(',');
+		return {
+			visibility: isNaN(parseFloat(loc[0]))
+				? defaultValue.visibility
+				: parseFloat(loc[0]),
+			maturity: isNaN(parseFloat(loc[1]))
+				? defaultValue.maturity
+				: parseFloat(loc[1]),
+			visibility2: isNaN(parseFloat(loc[2]))
+				? defaultValue.visibility2
+				: parseFloat(loc[2]),
+			maturity2: isNaN(parseFloat(loc[3]))
+				? defaultValue.maturity2
+				: parseFloat(loc[3]),
+		};
+	} else return defaultValue;
+};
+
 export const setMethod = (o, line, config) => {
 	let name = line.split(`${config.keyword} `)[1].trim();
 	return Object.assign(o, { name: name }, { method: config.keyword });
@@ -143,6 +168,22 @@ export const setCoords = (o, line) => {
 		o,
 		{ maturity: positionData.maturity },
 		{ visibility: positionData.visibility }
+	);
+};
+
+export const setManyCoords = (o, line) => {
+	const positionData = extractManyLocations(line, {
+		visibility: 0.9,
+		maturity: 0.1,
+		visibility2: 0.8,
+		maturity2: 0.2,
+	});
+	return Object.assign(
+		o,
+		{ maturity: positionData.maturity },
+		{ visibility: positionData.visibility },
+		{ maturity2: positionData.maturity2 },
+		{ visibility2: positionData.visibility2 }
 	);
 };
 

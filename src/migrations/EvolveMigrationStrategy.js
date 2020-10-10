@@ -1,11 +1,8 @@
 import ComponentExtractionStrategy from '../conversion/ComponentExtractionStrategy';
 
 export default class EvolveMigrationStrategy {
-	constructor(mapText) {
-		this.mapText = mapText;
-	}
-	apply() {
-		let trimmed = this.mapText.trim();
+	apply(mapText) {
+		let trimmed = mapText.trim();
 		let elementsAsArray = trimmed.split('\n');
 		let rebuild = [];
 		let changed = false;
@@ -37,7 +34,7 @@ export default class EvolveMigrationStrategy {
 			}
 		}
 		return {
-			original: this.mapText,
+			original: mapText,
 			changed,
 			result: rebuild.join('\n'),
 			changeSets,
