@@ -7,7 +7,6 @@ export const ExistingManyCoordsMatcher = {
 		);
 	},
 	action: (line, moved) => {
-		console.log(moved);
 		return line.replace(
 			/\[(.?|.+?)\]/g,
 			`[${moved.param1}, ${moved.param2}, ${moved.param3}, ${moved.param4}]`
