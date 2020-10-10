@@ -5,6 +5,7 @@ import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 function ComponentText(props) {
 	const elementId = 'element_text_' + props.element.id;
 	function endDrag(moved) {
+		console.log(props.element.label);
 		props.mutateMapText(
 			props.mapText
 				.split('\n')

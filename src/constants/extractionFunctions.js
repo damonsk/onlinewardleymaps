@@ -188,7 +188,9 @@ export const setManyCoords = (o, line) => {
 };
 
 export const setLabel = (o, line, c) => {
-	let labelOffset = c.config.labelOffset || { x: 5, y: -10 };
+	let labelOffset = { x: 5, y: -10 };
+	if (c.config.labelOffset) labelOffset = { ...c.config.labelOffset };
+
 	if (line.indexOf('label ') > -1) {
 		let findPos = line.split('label [');
 		if (findPos.length > 0 && findPos[1].indexOf(']') > -1) {
