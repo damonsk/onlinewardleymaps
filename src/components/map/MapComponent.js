@@ -23,6 +23,10 @@ function MapComponent(props) {
 	);
 
 	const onElementClick = () => props.setHighlightLine(props.element.line);
+	const canApplyInertia = () =>
+		(props.element.evolved === undefined || props.element.evolved === false) &&
+		props.element.evolving === false &&
+		props.element.inertia === true;
 
 	const notEvolvedNoLabelMatcher = {
 		matcher: (line, identifier, type) => {
@@ -131,16 +135,13 @@ function MapComponent(props) {
 					</>
 				)}
 			</Movable>
-			{(props.element.evolved === undefined ||
-				props.element.evolved === false) &&
-			props.element.evolving === false &&
-			props.element.inertia === true ? (
+			{canApplyInertia() && (
 				<Inertia
 					maturity={parseFloat(props.element.maturity) + 0.05}
 					visibility={props.element.visibility}
 					mapDimensions={props.mapDimensions}
 				/>
-			) : null}
+			)}
 			<g transform={'translate(' + x + ',' + y + ')'}>
 				<ComponentText
 					id={'component_text_' + props.element.id}
