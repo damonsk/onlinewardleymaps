@@ -35,7 +35,10 @@ class Editor extends Component {
 		this.gotoLine = this.gotoLine.bind(this);
 		this.aceEditor = React.createRef();
 		this.expressionSuggester = this.createExpressionSuggester(
-			props.mapComponents.concat(this.props.mapAnchors)
+			props.mapComponents
+				.concat(this.props.mapAnchors)
+				.concat(this.props.mapSubMaps)
+				.concat(this.props.mapMarkets)
 		);
 	}
 
@@ -55,7 +58,10 @@ class Editor extends Component {
 
 	componentDidUpdate(prevProps) {
 		this.expressionSuggester = this.createExpressionSuggester(
-			this.props.mapComponents.concat(this.props.mapAnchors)
+			this.props.mapComponents
+				.concat(this.props.mapAnchors)
+				.concat(this.props.mapSubMaps)
+				.concat(this.props.mapMarkets)
 		);
 
 		if (prevProps.highlightLine !== this.props.highlightLine) {

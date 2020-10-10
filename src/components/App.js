@@ -293,6 +293,8 @@ function App() {
 						mapComponents={mapComponents}
 						mapAnchors={mapAnchors}
 						mapDimensions={mapDimensions}
+						mapMarkets={mapMarkets}
+						mapSubMaps={mapSubMaps}
 					/>
 					<div className="form-group">
 						<Meta metaText={metaText} />
