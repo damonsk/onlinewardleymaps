@@ -20,12 +20,15 @@ import ComponentSymbol from '../symbols/ComponentSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
 
 function MapCanvas(props) {
+	const mergeables = [
+		{ collection: props.mapComponents, type: 'component' },
+		{ collection: props.mapSubMaps, type: 'submap' },
+		{ collection: props.mapMarkets, type: 'market' },
+	];
 	const mapElements = new MapElements(
-		props.mapComponents,
+		mergeables,
 		props.mapEvolved,
-		props.mapPipelines,
-		props.mapSubMaps,
-		props.mapMarkets
+		props.mapPipelines
 	);
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {

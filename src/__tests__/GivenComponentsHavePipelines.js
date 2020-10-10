@@ -6,7 +6,8 @@ describe('Given Components Have Pipelines', function() {
 		let actual =
 			'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo [0.15, 0.65]';
 		let result = new Converter().parse(actual);
-		let me = new MapElements(result.elements, [], result.pipelines, [], []);
+		const mergeables = [{ collection: result.elements, type: 'component' }];
+		let me = new MapElements(mergeables, result.evolved, result.pipelines);
 		let pipelines = me.getMapPipelines();
 		let components = me.getMergedElements();
 
