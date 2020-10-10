@@ -15,6 +15,8 @@ import Attitude from './Attitude';
 import LinksBuilder from '../../linkStrategies/LinksBuilder';
 import MapGraphics from './foundation/MapGraphics';
 import MapBackground from './foundation/MapBackground';
+import SubMapSymbol from '../symbols/SubMapSymbol';
+import ComponentSymbol from '../symbols/ComponentSymbol';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(
@@ -190,7 +192,26 @@ function MapCanvas(props) {
 								metaText={props.metaText}
 								mapStyleDefs={props.mapStyleDefs}
 								setHighlightLine={props.setHighlightLine}
-							/>
+							>
+								{el.type === 'component' && (
+									<ComponentSymbol
+										id={'element_circle_' + el.id}
+										styles={props.mapStyleDefs.component}
+										evolved={el.evolved}
+										onClick={() => props.setHighlightLine(el.line)}
+									/>
+								)}
+
+								{el.type === 'submap' && (
+									<SubMapSymbol
+										id={'element_circle_' + el.id}
+										styles={props.mapStyleDefs.submap}
+										evolved={el.evolved}
+										onClick={() => props.setHighlightLine(el.line)}
+										launchUrl={() => props.launchUrl(el.url)}
+									/>
+								)}
+							</MapComponent>
 						))}
 					</g>
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import ComponentSymbol from '../symbols/ComponentSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import ComponentText from './ComponentText';
 import PositionCalculator from './PositionCalculator';
@@ -9,7 +8,6 @@ import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher'
 import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoordMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import SubMapSymbol from '../symbols/SubMapSymbol';
 
 function MapComponent(props) {
 	const positionCalc = new PositionCalculator();
@@ -113,26 +111,7 @@ function MapComponent(props) {
 						onClick={onElementClick}
 					/>
 				) : (
-					<>
-						{props.keyword === 'component' && (
-							<ComponentSymbol
-								id={'element_circle_' + props.element.id}
-								styles={props.mapStyleDefs.component}
-								evolved={props.element.evolved}
-								onClick={onElementClick}
-							/>
-						)}
-
-						{props.keyword === 'submap' && (
-							<SubMapSymbol
-								id={'element_circle_' + props.element.id}
-								styles={props.mapStyleDefs.submap}
-								evolved={props.element.evolved}
-								onClick={onElementClick}
-								launchUrl={() => props.launchUrl(props.element.url)}
-							/>
-						)}
-					</>
+					<>{props.children}</>
 				)}
 			</Movable>
 			{canApplyInertia() && (
