@@ -43,6 +43,33 @@ function MapCanvas(props) {
 	);
 	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
+	const asMethod = m =>
+		Object.assign(
+			{},
+			{
+				name: m.name,
+				maturity: m.maturity,
+				visibility: m.visibility,
+				method: m.decorators.method,
+			}
+		);
+
+	const decoratedComponentsMethods = mapElements
+		.getMergedElements()
+		.filter(m => m.decorators && m.decorators.method)
+		.map(m => asMethod(m));
+
+	const methods = props.mapMethods
+		.filter(m => getElementByName(mapElements.getNonEvolvedElements(), m.name))
+		.map(m => {
+			const el = getElementByName(mapElements.getNonEvolvedElements(), m.name);
+			const toTransform = Object.assign(el, {
+				decorators: { method: m.method },
+			});
+			return asMethod(toTransform);
+		});
+	const allMeths = methods.concat(decoratedComponentsMethods);
+
 	return (
 		<React.Fragment>
 			<svg
@@ -98,21 +125,15 @@ function MapCanvas(props) {
 					</g>
 
 					<g id="methods">
-						{props.mapMethods.map((m, i) =>
-							getElementByName(mapElements.getNonEvolvedElements(), m.name) ===
-							undefined ? null : (
-								<MethodElement
-									key={i}
-									element={getElementByName(
-										mapElements.getNonEvolvedElements(),
-										m.name
-									)}
-									mapStyleDefs={props.mapStyleDefs}
-									mapDimensions={props.mapDimensions}
-									method={m}
-								/>
-							)
-						)}
+						{allMeths.map((m, i) => (
+							<MethodElement
+								key={i}
+								element={m}
+								mapStyleDefs={props.mapStyleDefs}
+								mapDimensions={props.mapDimensions}
+								method={m.method}
+							/>
+						))}
 					</g>
 
 					{links.map(current => {
@@ -197,6 +218,15 @@ function MapCanvas(props) {
 								mapStyleDefs={props.mapStyleDefs}
 								setHighlightLine={props.setHighlightLine}
 							>
+								{/* {el.decorators && el.decorators.method && (
+									<MethodSymbol
+										id={'method_' + el.id}
+										x={0}
+										y={0}
+										method={el.decorators.method}
+										styles={props.mapStyleDefs.methods}
+									/>
+								)} */}
 								{el.type === 'component' && (
 									<ComponentSymbol
 										id={'element_circle_' + el.id}

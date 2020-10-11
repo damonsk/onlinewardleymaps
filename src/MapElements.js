@@ -43,6 +43,7 @@ export default class MapElements {
 				label: v.label,
 				line: v.line,
 				type: el.type,
+				decorators: v.decorators,
 			};
 		});
 	}

@@ -10,13 +10,12 @@ function MethodElement({ element, mapDimensions, method, mapStyleDefs }) {
 		element.visibility,
 		mapDimensions.height
 	);
-
 	return (
 		<MethodSymbol
 			id={'method_' + element.id}
 			x={x}
 			y={y}
-			method={method.method}
+			method={method}
 			styles={mapStyleDefs.methods}
 		/>
 	);
@@ -32,9 +31,7 @@ MethodElement.propTypes = {
 		width: PropTypes.number,
 		height: PropTypes.number,
 	}),
-	method: PropTypes.shape({
-		method: PropTypes.string,
-	}),
+	method: PropTypes.string,
 };
 
 export default MethodElement;

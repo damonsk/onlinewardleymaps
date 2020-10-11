@@ -13,6 +13,7 @@ export default class ExtendableComponentExtractionStrategy {
 			ExtractionFunctions.setInertia,
 			ExtractionFunctions.setLabel,
 			ExtractionFunctions.setEvolve,
+			ExtractionFunctions.decorators,
 		];
 
 		if (

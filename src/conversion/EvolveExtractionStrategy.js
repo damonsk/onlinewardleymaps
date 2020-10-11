@@ -14,6 +14,7 @@ export default class EvolveExtractionStrategy {
 		const extractionFuncs = [
 			ExtractionFunctions.setLabel,
 			ExtractionFunctions.setNameWithMaturity,
+			ExtractionFunctions.decorators,
 		];
 		this.baseRunner = new BaseStrategyRunner(data, config, extractionFuncs);
 	}

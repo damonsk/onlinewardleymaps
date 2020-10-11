@@ -187,6 +187,22 @@ export const setManyCoords = (o, line) => {
 	);
 };
 
+export const decorators = (o, line) => {
+	const meths = ['build', 'buy', 'outsource'];
+	let decs = {};
+	for (let i = 0; i < meths.length; i++) {
+		const element = meths[i];
+		if (
+			line.indexOf(element) > -1 &&
+			line.indexOf('(') < line.indexOf(element) &&
+			line.indexOf(')') > line.indexOf(element)
+		) {
+			decs = Object.assign(decs, { method: element });
+		}
+	}
+	return Object.assign(o, { decorators: decs });
+};
+
 export const setLabel = (o, line, c) => {
 	let labelOffset = { x: 5, y: -10 };
 	if (c.config.labelOffset) labelOffset = { ...c.config.labelOffset };
