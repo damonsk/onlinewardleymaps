@@ -6,6 +6,7 @@ import NoteExtractionStrategy from './NoteExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
 import ComponentExtractionStrategy from './ComponentExtractionStrategy';
 import MarketExtractionStrategy from './MarketExtractionStrategy';
+import EcosystemExtractionStrategy from './EcosystemExtractionStrategy';
 import PipelineExtractionStrategy from './PipelineExtractionStrategy';
 import EvolveExtractionStrategy from './EvolveExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
@@ -26,6 +27,7 @@ export default class Converter {
 			new AnnotationExtractionStrategy(t),
 			new ComponentExtractionStrategy(t),
 			new MarketExtractionStrategy(t),
+			new EcosystemExtractionStrategy(t),
 			new PipelineExtractionStrategy(t),
 			new EvolveExtractionStrategy(t),
 			new AnchorExtractionStrategy(t),
@@ -49,6 +51,7 @@ export default class Converter {
 			title: '',
 			submaps: [],
 			markets: [],
+			ecosystems: [],
 			urls: [],
 			attitudes: [],
 		};

@@ -18,6 +18,7 @@ import MapBackground from './foundation/MapBackground';
 import SubMapSymbol from '../symbols/SubMapSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
+import EcosystemSymbol from '../symbols/EcosystemSymbol';
 
 function MapCanvas(props) {
 	const mapElements = new MapElements(
@@ -25,6 +26,7 @@ function MapCanvas(props) {
 			{ collection: props.mapComponents, type: 'component' },
 			{ collection: props.mapSubMaps, type: 'submap' },
 			{ collection: props.mapMarkets, type: 'market' },
+			{ collection: props.mapEcosystems, type: 'ecosystem' },
 		],
 		props.mapEvolved,
 		props.mapPipelines
@@ -226,6 +228,15 @@ function MapCanvas(props) {
 										onClick={() => props.setHighlightLine(el.line)}
 									/>
 								)}
+
+								{(el.decorators && el.decorators.ecosystem) ||
+								el.type === 'ecosystem' ? (
+									<EcosystemSymbol
+										id={'ecosystem_circle_' + el.id}
+										styles={props.mapStyleDefs.component}
+										onClick={() => props.setHighlightLine(el.line)}
+									/>
+								) : null}
 
 								{(el.decorators && el.decorators.market) ||
 								el.type === 'market' ? (
