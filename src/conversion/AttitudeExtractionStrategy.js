@@ -15,7 +15,11 @@ export default class AttitudeExtractionStrategy {
 				e =>
 					new BaseStrategyRunner(
 						data,
-						{ keyword: e, containerName: 'attitudes' },
+						{
+							keyword: e,
+							containerName: 'attitudes',
+							defaultAttributes: {},
+						},
 						[setAttitude, setCoords, setManyCoords, setHeightWidth]
 					)
 			)

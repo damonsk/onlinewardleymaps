@@ -11,6 +11,7 @@ export default class UrlExtractionStrategy {
 			{
 				keyword: this.keyword,
 				containerName: this.containerName,
+				defaultAttributes: {},
 			},
 			[ExtractionFunctions.setName, ExtractionFunctions.setUrl]
 		);

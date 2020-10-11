@@ -6,6 +6,7 @@ export default class AnchorExtractionStrategy {
 		const config = {
 			keyword: 'anchor',
 			containerName: 'anchors',
+			defaultAttributes: {},
 		};
 		this.data = data;
 		this.keyword = config.keyword;

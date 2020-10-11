@@ -1,5 +1,5 @@
 import ParseError from './ParseError';
-
+import merge from 'lodash.merge';
 export default class BaseStrategyRunner {
 	constructor(data, config, decorators) {
 		this.data = data;
@@ -17,10 +17,14 @@ export default class BaseStrategyRunner {
 			try {
 				const element = lines[i];
 				if (element.trim().indexOf(`${this.keyword} `) === 0) {
-					let baseElement = {
-						id: 1 + i,
-						line: 1 + i,
-					};
+					let baseElement = merge(
+						{
+							id: 1 + i,
+							line: 1 + i,
+						},
+						this.config.defaultAttributes
+					);
+
 					this.decorators.forEach(f =>
 						f(baseElement, element, {
 							keyword: this.keyword,

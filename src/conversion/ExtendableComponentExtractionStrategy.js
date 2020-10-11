@@ -8,12 +8,12 @@ export default class ExtendableComponentExtractionStrategy {
 		this.containerName = config.containerName;
 
 		let extractionFuncs = [
+			ExtractionFunctions.decorators,
 			ExtractionFunctions.setCoords,
 			ExtractionFunctions.setName,
 			ExtractionFunctions.setInertia,
 			ExtractionFunctions.setLabel,
 			ExtractionFunctions.setEvolve,
-			ExtractionFunctions.decorators,
 		];
 
 		if (

@@ -6,6 +6,7 @@ export default class EvolveExtractionStrategy {
 		const config = {
 			keyword: 'evolve',
 			containerName: 'evolved',
+			defaultAttributes: {},
 		};
 		this.data = data;
 		this.keyword = config.keyword;

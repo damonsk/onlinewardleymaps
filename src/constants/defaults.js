@@ -3,6 +3,9 @@ export const PageTitle =
 
 export const ApiEndpoint = 'https://api.onlinewardleymaps.com/v1/maps/';
 
+export const defaultLabelOffset = { x: 5, y: -10 };
+export const increasedLabelOffset = { x: 5, y: -20 };
+
 export const EvoOffsets = {
 	custom: 3.5,
 	product: 8,

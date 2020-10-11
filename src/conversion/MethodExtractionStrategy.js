@@ -10,7 +10,11 @@ export default class MethodExtractionStrategy {
 				e =>
 					new BaseStrategyRunner(
 						data,
-						{ keyword: e, containerName: 'methods' },
+						{
+							keyword: e,
+							containerName: 'methods',
+							defaultAttributes: {},
+						},
 						[ExtractionFunctions.setMethod]
 					)
 			)

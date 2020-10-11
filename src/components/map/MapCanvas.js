@@ -218,15 +218,6 @@ function MapCanvas(props) {
 								mapStyleDefs={props.mapStyleDefs}
 								setHighlightLine={props.setHighlightLine}
 							>
-								{/* {el.decorators && el.decorators.method && (
-									<MethodSymbol
-										id={'method_' + el.id}
-										x={0}
-										y={0}
-										method={el.decorators.method}
-										styles={props.mapStyleDefs.methods}
-									/>
-								)} */}
 								{el.type === 'component' && (
 									<ComponentSymbol
 										id={'element_circle_' + el.id}
@@ -236,13 +227,14 @@ function MapCanvas(props) {
 									/>
 								)}
 
-								{el.type === 'market' && (
+								{(el.decorators && el.decorators.market) ||
+								el.type === 'market' ? (
 									<MarketSymbol
 										id={'market_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
 										onClick={() => props.setHighlightLine(el.line)}
 									/>
-								)}
+								) : null}
 
 								{el.type === 'submap' && (
 									<SubMapSymbol

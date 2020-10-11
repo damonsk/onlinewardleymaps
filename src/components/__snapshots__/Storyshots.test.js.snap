@@ -195,6 +195,14 @@ exports[`Storyshots Usage  default 1`] = `
     market Cup of Tea [0.9, 0.5]
   </span>
   <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    evolve Customer 0.9 (market)
+  </span>
+  <br />
   <br />
   ------------------------
   <br />
@@ -507,6 +515,54 @@ exports[`Storyshots Usage  default 1`] = `
     onClick={[Function]}
   >
     outsource &lt;component&gt;
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [0.9, 0.2] (buy)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [0.9, 0.2] (build)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    component Customer [0.9, 0.2] (outsource)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    evolve Customer 0.9 (outsource)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    evolve Customer 0.9 (buy)
+  </span>
+  <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    evolve Customer 0.9 (build)
   </span>
   <br />
   <br />

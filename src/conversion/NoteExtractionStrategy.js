@@ -11,6 +11,7 @@ export default class NoteExtractionStrategy {
 			{
 				keyword: this.keyword,
 				containerName: this.containerName,
+				defaultAttributes: {},
 			},
 			[ExtractionFunctions.setText, ExtractionFunctions.setCoords]
 		);

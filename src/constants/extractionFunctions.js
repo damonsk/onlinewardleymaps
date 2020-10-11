@@ -1,3 +1,6 @@
+import merge from 'lodash.merge';
+import * as Defaults from './defaults';
+
 export const setNumber = (o, line, config) => {
 	let number = line
 		.split(`${config.keyword} `)[1]
@@ -187,9 +190,10 @@ export const setManyCoords = (o, line) => {
 	);
 };
 
-export const decorators = (o, line) => {
+const methodDecorator = (o, line) => {
 	const meths = ['build', 'buy', 'outsource'];
 	let decs = {};
+	let parentAttributes = {};
 	for (let i = 0; i < meths.length; i++) {
 		const element = meths[i];
 		if (
@@ -198,14 +202,43 @@ export const decorators = (o, line) => {
 			line.indexOf(')') > line.indexOf(element)
 		) {
 			decs = Object.assign(decs, { method: element });
+			parentAttributes = Object.assign(parentAttributes, {
+				increaseLabelSpacing: true,
+			});
 		}
 	}
-	return Object.assign(o, { decorators: decs });
+	return merge(o, { decorators: decs }, parentAttributes);
 };
 
-export const setLabel = (o, line, c) => {
-	let labelOffset = { x: 5, y: -10 };
-	if (c.config.labelOffset) labelOffset = { ...c.config.labelOffset };
+const marketDecorator = (o, line) => {
+	const meths = ['market'];
+	let decs = {};
+	let parentAttributes = {};
+	for (let i = 0; i < meths.length; i++) {
+		const element = meths[i];
+		if (
+			line.indexOf(element) > -1 &&
+			line.indexOf('(') < line.indexOf(element) &&
+			line.indexOf(')') > line.indexOf(element)
+		) {
+			decs = Object.assign(decs, { market: true });
+			parentAttributes = Object.assign(parentAttributes, {
+				increaseLabelSpacing: true,
+			});
+		}
+	}
+	return merge(o, { decorators: decs }, parentAttributes);
+};
+
+export const decorators = (o, line) => {
+	[methodDecorator, marketDecorator].forEach(d => merge(o, d(o, line)));
+	return o;
+};
+
+export const setLabel = (o, line) => {
+	let labelOffset = { ...Defaults.defaultLabelOffset };
+	if (o.increaseLabelSpacing)
+		labelOffset = { ...Defaults.increasedLabelOffset };
 
 	if (line.indexOf('label ') > -1) {
 		let findPos = line.split('label [');

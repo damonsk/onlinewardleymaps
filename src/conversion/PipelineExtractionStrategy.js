@@ -11,6 +11,7 @@ export default class PipelineExtractionStrategy {
 			{
 				keyword: this.keyword,
 				containerName: this.containerName,
+				defaultAttributes: {},
 			},
 			[ExtractionFunctions.setName, ExtractionFunctions.setPipelineMaturity]
 		);

@@ -5,7 +5,7 @@ export default class MarketExtractionStrategy {
 		const config = {
 			keyword: 'market',
 			containerName: 'markets',
-			labelOffset: { x: 5, y: -20 },
+			defaultAttributes: { increaseLabelSpacing: true },
 		};
 		this.data = data;
 		this.keyword = config.keyword;

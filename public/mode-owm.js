@@ -103,6 +103,10 @@ define('ace/mode/owm_highlight_rules', function(require, exports) {
 					regex: '(url)(\\s*\\()(\\s*[-+\'"/;:a-zA-Z0-9\\s*]+)(\\))',
 				},
 				{
+					token: ['punctuation', 'keyword', 'punctuation'],
+					regex: '(\\s*\\()([-+(build|buy|outsource|market)\\s*]+)(\\))',
+				},
+				{
 					token: 'punctuation.definition.comment.asp',
 					regex: '(\\/\\/.*$)',
 				},

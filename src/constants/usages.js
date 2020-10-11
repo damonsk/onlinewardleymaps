@@ -25,7 +25,11 @@ const usages = [
 		Icon: ComponentIcon,
 		title: 'To create a market',
 		summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
-		examples: ['market Customer [0.9, 0.5]', 'market Cup of Tea [0.9, 0.5]'],
+		examples: [
+			'market Customer [0.9, 0.5]',
+			'market Cup of Tea [0.9, 0.5]',
+			'evolve Customer 0.9 (market)',
+		],
 	},
 	{
 		toolbarButtonText: 'Inertia',
@@ -91,7 +95,17 @@ const usages = [
 		title: 'Build, buy, outsource components',
 		summary:
 			'Highlight a component with a build, buy, or outsource method of execution',
-		examples: ['build <component>', 'buy <component>', 'outsource <component>'],
+		examples: [
+			'build <component>',
+			'buy <component>',
+			'outsource <component>',
+			'component Customer [0.9, 0.2] (buy)',
+			'component Customer [0.9, 0.2] (build)',
+			'component Customer [0.9, 0.2] (outsource)',
+			'evolve Customer 0.9 (outsource)',
+			'evolve Customer 0.9 (buy)',
+			'evolve Customer 0.9 (build)',
+		],
 	},
 	{
 		title: 'Link submap to a component',

@@ -3,7 +3,11 @@ import * as ExtractionFunctions from '../constants/extractionFunctions';
 
 export default class AnnotationExtractionStrategy {
 	constructor(data) {
-		const config = { keyword: 'annotation', containerName: 'annotations' };
+		const config = {
+			keyword: 'annotation',
+			containerName: 'annotations',
+			defaultAttributes: {},
+		};
 		this.data = data;
 		this.keyword = config.keyword;
 		this.containerName = config.containerName;
