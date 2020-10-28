@@ -1,0 +1,17 @@
+{
+	"name": "wmlandscape",
+	"version": "1.0.2",
+	"description": "",
+	"main": "dist/index.js",
+	"files": ["dist"],
+	"peerDependencies": {
+		"bootstrap": "^4.5.3",
+		"core-js": "^3.6.5",
+		"lodash.merge": "^4.6.2",
+		"prop-types": "^15.7.2",
+		"react": "^17.0.1",
+		"react-bootstrap": "^1.4.0",
+		"react-dom": "^17.0.1",
+		"react-icons": "^3.11.0"
+	}
+}
