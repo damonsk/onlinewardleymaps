@@ -61,7 +61,7 @@ import AttitudeExtractionStrategy from '../conversion/AttitudeExtractionStrategy
 import BaseStrategyRunner from '../conversion/BaseStrategyRunner';
 import ComponentExtractionStrategy from '../conversion/ComponentExtractionStrategy';
 import Converter from '../conversion/Converter';
-//import EcosystemExtractionStrategy from '../conversion/EcosystemExtractionStrategy';
+import EcosystemExtractionStrategy from '../conversion/EcosystemExtractionStrategy';
 import EvolveExtractionStrategy from '../conversion/EvolveExtractionStrategy';
 import ExtendableComponentExtractionStrategy from '../conversion/ExtendableComponentExtractionStrategy';
 import LinksExtractionStrategy from '../conversion/LinksExtractionStrategy';
@@ -149,7 +149,7 @@ export {
 	BaseStrategyRunner,
 	ComponentExtractionStrategy,
 	Converter,
-	//EcosystemExtractionStrategy,
+	EcosystemExtractionStrategy,
 	EvolveExtractionStrategy,
 	ExtendableComponentExtractionStrategy,
 	LinksExtractionStrategy,
