@@ -19,8 +19,8 @@ describe('I want to decorate', function() {
 		funcs.forEach(f => Object.assign(o, f(o, `evolve foo 0.9 (market, buy)`)));
 		expect(o.decorators.method).toEqual('buy');
 		expect(o.decorators.market).toEqual(true);
-		expect(o.increaseLabelSpacing).toEqual(true);
-		expect(o.label.x).toEqual(5);
+		expect(o.increaseLabelSpacing).toEqual(2);
+		expect(o.label.x).toEqual(10);
 		expect(o.label.y).toEqual(-20);
 	});
 
@@ -32,8 +32,8 @@ describe('I want to decorate', function() {
 		];
 		funcs.forEach(f => Object.assign(o, f(o, `evolve foo 0.9 (buy)`)));
 		expect(o.decorators.method).toEqual('buy');
-		expect(o.increaseLabelSpacing).toEqual(true);
-		expect(o.label.x).toEqual(5);
+		expect(o.increaseLabelSpacing).toEqual(2);
+		expect(o.label.x).toEqual(10);
 		expect(o.label.y).toEqual(-20);
 	});
 

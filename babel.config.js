@@ -7,6 +7,7 @@ const presets = [
 		},
 		'react-app',
 	],
+	'@babel/preset-react',
 ];
 const env = {
 	test: {
