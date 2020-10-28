@@ -36,7 +36,7 @@ function MapEvolution(props) {
 						fontSize="11px"
 						fontWeight="bold"
 					>
-						Unchartered
+						Uncharted
 					</text>
 
 					<text
