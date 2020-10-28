@@ -203,7 +203,7 @@ const methodDecorator = (o, line) => {
 		) {
 			decs = Object.assign(decs, { method: element });
 			parentAttributes = Object.assign(parentAttributes, {
-				increaseLabelSpacing: true,
+				increaseLabelSpacing: 2,
 			});
 		}
 	}
@@ -223,7 +223,27 @@ const marketDecorator = (o, line) => {
 		) {
 			decs = Object.assign(decs, { market: true });
 			parentAttributes = Object.assign(parentAttributes, {
-				increaseLabelSpacing: true,
+				increaseLabelSpacing: 2,
+			});
+		}
+	}
+	return merge(o, { decorators: decs }, parentAttributes);
+};
+
+const ecosystemDecorator = (o, line) => {
+	const meths = ['ecosystem'];
+	let decs = {};
+	let parentAttributes = {};
+	for (let i = 0; i < meths.length; i++) {
+		const element = meths[i];
+		if (
+			line.indexOf(element) > -1 &&
+			line.indexOf('(') < line.indexOf(element) &&
+			line.indexOf(')') > line.indexOf(element)
+		) {
+			decs = Object.assign(decs, { ecosystem: true });
+			parentAttributes = Object.assign(parentAttributes, {
+				increaseLabelSpacing: 3,
 			});
 		}
 	}
@@ -231,14 +251,19 @@ const marketDecorator = (o, line) => {
 };
 
 export const decorators = (o, line) => {
-	[methodDecorator, marketDecorator].forEach(d => merge(o, d(o, line)));
+	[methodDecorator, marketDecorator, ecosystemDecorator].forEach(d =>
+		merge(o, d(o, line))
+	);
 	return o;
 };
 
 export const setLabel = (o, line) => {
 	let labelOffset = { ...Defaults.defaultLabelOffset };
 	if (o.increaseLabelSpacing)
-		labelOffset = { ...Defaults.increasedLabelOffset };
+		labelOffset = {
+			x: labelOffset.x * o.increaseLabelSpacing,
+			y: labelOffset.y * o.increaseLabelSpacing,
+		};
 
 	if (line.indexOf('label ') > -1) {
 		let findPos = line.split('label [');

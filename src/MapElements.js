@@ -44,6 +44,7 @@ export default class MapElements {
 				line: v.line,
 				type: el.type,
 				decorators: v.decorators,
+				increaseLabelSpacing: v.increaseLabelSpacing,
 			};
 		});
 	}
