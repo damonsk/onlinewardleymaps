@@ -1,11 +1,11 @@
 import sass from 'rollup-plugin-sass';
-import pkg from './package-landscape.json';
+import pkg from './package.json';
 import babel from '@rollup/plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-	input: 'src/wmlandscape/index.js',
+	input: 'src/index.js',
 	output: [
 		{
 			file: pkg.main,
