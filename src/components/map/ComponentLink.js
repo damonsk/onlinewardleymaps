@@ -7,35 +7,10 @@ function ComponentLink(props) {
 	const { mapStyleDefs, mapDimensions, startElement, endElement, link } = props;
 	const { height, width } = mapDimensions;
 	const positionCalc = new PositionCalculator();
-	let x1 = positionCalc.maturityToX(startElement.maturity, width);
-	let x2 = positionCalc.maturityToX(endElement.maturity, width);
-	let y1 = positionCalc.visibilityToY(startElement.visibility, height);
-	let y2 = positionCalc.visibilityToY(endElement.visibility, height);
-
-	if (endElement.increaseLabelSpacing) {
-		if (x1 > x2) {
-			x2 = x2 + 7 * endElement.increaseLabelSpacing;
-		} else if (x1 < x2) {
-			x2 = x2 - 7 * endElement.increaseLabelSpacing;
-		}
-		if (y1 > y2) {
-			y2 = y2 + 7 * endElement.increaseLabelSpacing;
-		} else if (y1 < y2) {
-			y2 = y2 - 7 * endElement.increaseLabelSpacing;
-		}
-	}
-	if (startElement.increaseLabelSpacing) {
-		if (x1 > x2) {
-			//x1 = x1 - (7 * startElement.increaseLabelSpacing);
-		} else if (x1 < x2) {
-			x1 = x1 + 7 * startElement.increaseLabelSpacing;
-		}
-		if (y1 > y2) {
-			y1 = y1 - 7 * startElement.increaseLabelSpacing;
-		} else if (y1 < y2) {
-			y1 = y1 + 7 * startElement.increaseLabelSpacing;
-		}
-	}
+	const x1 = positionCalc.maturityToX(startElement.maturity, width);
+	const x2 = positionCalc.maturityToX(endElement.maturity, width);
+	const y1 = positionCalc.visibilityToY(startElement.visibility, height);
+	const y2 = positionCalc.visibilityToY(endElement.visibility, height);
 
 	const isEvolved = startElement.evolved || endElement.evolved;
 	const isFlow =
