@@ -2,7 +2,9 @@
 
 [![Mentioned in Awesome Wardley Maps](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/wardley-maps-community/awesome-wardley-maps#apps)
 
-The source code that runs www.OnlineWardleyMaps.com.
+The source code that runs www.OnlineWardleyMaps.com.  
+
+Also available as a standalone Visual Studio Extension - [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps).
 
 Developed by [@damonsk](https://twitter.com/damonsk).
 
@@ -20,7 +22,7 @@ Install dependencies
 
 Commands:
 
-To run locally, develop/edit. Open web browser @ http://localhost:8080
+To run locally, develop/edit. Open web browser @ http://localhost:3000
 
      yarn start
 
@@ -35,3 +37,7 @@ To run all tests.
 To start storybook.
 
     yarn run storybook
+
+To create package for use in [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps).
+
+    yarn package

@@ -30,6 +30,7 @@ function App() {
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapSubMaps, setMapSubMaps] = useState([]);
 	const [mapMarkets, setMarkets] = useState([]);
+	const [mapEcosystems, setEcosystems] = useState([]);
 	const [mapEvolved, setMapEvolved] = useState([]);
 	const [mapPipelines, setMapPipelines] = useState([]);
 	const [mapAnchors, setMapAnchors] = useState([]);
@@ -183,6 +184,7 @@ function App() {
 			setMapComponents(r.elements);
 			setMapSubMaps(r.submaps);
 			setMarkets(r.markets);
+			setEcosystems(r.ecosystems);
 			setMapEvolved(r.evolved);
 			setMapPipelines(r.pipelines);
 			setMapLinks(r.links);
@@ -306,6 +308,7 @@ function App() {
 						mapTitle={mapTitle}
 						mapComponents={mapComponents}
 						mapMarkets={mapMarkets}
+						mapEcosystems={mapEcosystems}
 						mapSubMaps={mapSubMaps}
 						mapEvolved={mapEvolved}
 						mapPipelines={mapPipelines}

@@ -24,6 +24,7 @@ export default class LinksExtractionStrategy {
 			'submap',
 			'url',
 			'market',
+			'ecosystem',
 		];
 	}
 	apply() {
