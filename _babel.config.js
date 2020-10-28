@@ -6,7 +6,6 @@ const presets = [
 			corejs: 3,
 		},
 		'react-app',
-		'@babel/preset-react',
 	],
 ];
 const env = {
