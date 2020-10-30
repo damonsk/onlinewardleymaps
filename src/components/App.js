@@ -253,9 +253,20 @@ function App() {
 			<div id="top-nav-wrapper">
 				<nav className="navbar navbar-dark">
 					<div className="container-fluid">
-						<a className="navbar-brand" href="/">
+						<span className="navbar-brand">
 							<h3>Online Wardley Maps</h3>
-						</a>
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								href="https://marketplace.visualstudio.com/items?itemName=damonsk.vscode-wardley-maps"
+							>
+								<img
+									alt="Download Visual Studio Code Extension"
+									src="https://img.shields.io/visual-studio-marketplace/v/damonsk.vscode-wardley-maps?style=flat&amp;label=Download Visual%20Studio%20Code%20Extension&amp;logo=visual-studio-code"
+								/>
+							</a>
+						</span>
+
 						<div id="controlsMenuControl">
 							<Controls
 								currentUrl={currentUrl}
@@ -355,6 +366,18 @@ function App() {
 			{/* </div> */}
 			<footer className="bd-footer text-muted">
 				<div className="container-fluid p-3 p-md-5">
+					<p>
+						<a
+							target="_blank"
+							rel="noopener noreferrer"
+							href="https://marketplace.visualstudio.com/items?itemName=damonsk.vscode-wardley-maps"
+						>
+							<img
+								alt="Download Visual Studio Code Extension"
+								src="https://img.shields.io/visual-studio-marketplace/v/damonsk.vscode-wardley-maps?style=flat&amp;label=Download Visual%20Studio%20Code%20Extension&amp;logo=visual-studio-code"
+							/>
+						</a>
+					</p>
 					<p>
 						<a
 							href="https://github.com/damonsk/onlinewardleymaps"
