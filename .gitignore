@@ -7,3 +7,4 @@ build
 docs/_site
 docs/.sass-cache
 docs/Gemfile.lock
+wmlandscape/package-lock.json

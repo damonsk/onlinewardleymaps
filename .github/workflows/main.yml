@@ -23,7 +23,8 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
         env:
           CI: true
       - name: Generate build number
@@ -42,6 +43,15 @@ jobs:
         with:
           name: build
           path: build
+      - name: Publish wmlandscape
+        run: | 
+            cd wmlandscape/
+            npm version 1.${{ steps.buildnumber.outputs.build_number }}.0
+            yarn install
+            yarn build
+            npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
   deploy:
     runs-on: ubuntu-latest
