@@ -1,7 +1,7 @@
 {
 	"name": "wmlandscape",
 	"version": "1.0.7",
-	"description": "",
+	"description": "The engine that powers OnlineWardleyMaps and VSCode-Wardley-Maps",
 	"main": "dist/index.js",
 	"scripts": {
 		"build": "rollup -c",
@@ -11,8 +11,8 @@
 		"dist"
 	],
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"author": "Damon Skelhorn",
+	"license": "MIT",
 	"devDependencies": {
 		"@babel/cli": "^7.12.1",
 		"@babel/core": "^7.12.3",
