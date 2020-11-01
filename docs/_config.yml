@@ -1,7 +1,7 @@
 # Site settings
-title:          Mapping OnlineWardleyMaps
-description:    "Documentation and usage guide for OnlineWardleyMaps"
-baseurl:        "/"
+title:          Wardley Maps as Code
+description:    "Documentation and usage guide for Wardley Maps for Visual Studio Code and OnlineWardleyMaps"
+baseurl:        ""
 url:            "https://docs.onlinewardleymaps.com"
 
 # Author
