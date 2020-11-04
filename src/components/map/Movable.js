@@ -93,7 +93,7 @@ function Movable(props) {
 				width="24"
 				height="24"
 				fillOpacity={shouldShowMoving && moving ? 0.2 : 0}
-			></rect>
+			/>
 			{props.children}
 		</g>
 	);
