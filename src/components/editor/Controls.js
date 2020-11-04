@@ -71,17 +71,10 @@ function Controls(props) {
 			>
 				Save
 			</Button>
-			<Button
-				variant={toggleAutoSave ? 'success' : 'danger'}
-				onClick={clickAutoSave}
-				type="button"
-			>
-				{toggleAutoSave ? 'AutoSave On' : 'AutoSave Off'}
-			</Button>
 
 			<DropdownButton
 				as={ButtonGroup}
-				title="Share"
+				title="More"
 				id="bg-nested-dropdown"
 				alignRight
 				variant="info"
@@ -91,6 +84,13 @@ function Controls(props) {
 				</Dropdown.Item>
 				<Dropdown.Item eventKey="2" onClick={() => setModalShow(true)}>
 					Get Clone URL
+				</Dropdown.Item>
+				<Dropdown.Item
+					eventKey="3"
+					onClick={clickAutoSave}
+					variant={toggleAutoSave ? 'success' : 'danger'}
+				>
+					{toggleAutoSave ? 'AutoSave is On' : 'AutoSave is Off'}
 				</Dropdown.Item>
 			</DropdownButton>
 

@@ -3,6 +3,8 @@ import React, { useEffect, useCallback } from 'react';
 function Movable(props) {
 	const x = useCallback(() => props.x, [props.x]);
 	const y = useCallback(() => props.y, [props.y]);
+	const [moving, setMoving] = React.useState(false);
+	const shouldShowMoving = props.shouldShowMoving ?? false;
 	const [position, setPosition] = React.useState({
 		x: x(),
 		y: y(),
@@ -25,6 +27,7 @@ function Movable(props) {
 	});
 
 	const handleMouseDown = e => {
+		setMoving(true);
 		const pageX = e.pageX;
 		const pageY = e.pageY;
 
@@ -46,6 +49,7 @@ function Movable(props) {
 				coords: {},
 			})
 		);
+		setMoving(false);
 		endDrag();
 	};
 
@@ -81,6 +85,15 @@ function Movable(props) {
 				')'
 			}
 		>
+			<rect
+				x="-12"
+				y="-12"
+				rx="5"
+				ry="5"
+				width="24"
+				height="24"
+				fillOpacity={shouldShowMoving && moving ? 0.2 : 0}
+			></rect>
 			{props.children}
 		</g>
 	);

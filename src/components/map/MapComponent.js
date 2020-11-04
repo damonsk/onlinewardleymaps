@@ -102,6 +102,7 @@ function MapComponent(props) {
 				y={y}
 				fixedY={props.element.evolved}
 				fixedX={false}
+				shouldShowMoving={true}
 			>
 				{props.element.pipeline ? (
 					<PipelineComponentSymbol
