@@ -24,6 +24,14 @@ function RelativeMovable(props) {
 		});
 	});
 
+	const handleEscape = k => {
+		if (k.key === 'Escape') {
+			document.removeEventListener('mousemove', handleMouseMove.current);
+			document.removeEventListener('keyup', handleEscape);
+			setPosition({ x: x(), y: y() });
+		}
+	};
+
 	const handleMouseDown = e => {
 		const pageX = e.pageX;
 		const pageY = e.pageY;
@@ -37,6 +45,7 @@ function RelativeMovable(props) {
 			})
 		);
 		document.addEventListener('mousemove', handleMouseMove.current);
+		document.addEventListener('keyup', handleEscape);
 	};
 
 	const handleMouseUp = () => {
