@@ -40,6 +40,16 @@ function Movable(props) {
 			})
 		);
 		document.addEventListener('mousemove', handleMouseMove.current);
+		document.addEventListener('keyup', handleEscape);
+	};
+
+	const handleEscape = k => {
+		if (k.key === 'Escape') {
+			document.removeEventListener('mousemove', handleMouseMove.current);
+			document.removeEventListener('keyup', handleEscape);
+			setMoving(false);
+			setPosition({ x: x(), y: y() });
+		}
 	};
 
 	const handleMouseUp = () => {
