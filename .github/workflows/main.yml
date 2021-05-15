@@ -27,13 +27,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
         env:
           CI: true
-      - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v2
-        with:
-          token: ${{secrets.github_token}}
       - name: Write version number
-        run: echo "export var owmBuild = \"1.${{ steps.buildnumber.outputs.build_number }}\";" > src/version.js
+        run: echo "export var owmBuild = \"1.${{ GITHUB_RUN_NUMBER }}\";" > src/version.js
       - name: Run build
         run: | 
           yarn install
@@ -46,7 +41,7 @@ jobs:
       - name: Publish wmlandscape
         run: | 
             cd wmlandscape/
-            npm version 1.${{ steps.buildnumber.outputs.build_number }}.0
+            npm version 1.${{ GITHUB_RUN_NUMBER }}.0
             yarn install
             yarn build
             npm publish
