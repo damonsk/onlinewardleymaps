@@ -67,9 +67,17 @@ span.clickable {
 			font-size: 1.8em;
 			border: 0;
 			border-bottom: 1px solid blue;
+			background: #f6f6f6;
+			border-radius: 10px;
 			&:focus-visible {
 				outline: 0;
 			}
+		}
+
+		span {
+			margin-top: 12px;
+			display: block;
+			text-align: center;
 		}
 
 		#add {

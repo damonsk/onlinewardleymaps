@@ -176,6 +176,7 @@ function App() {
 	}, [showAdd]);
 
 	function addNewComponent() {
+		if (componentName.current.value.trim().length === 0) return;
 		setShowAdd(false);
 		mutateMapText(
 			mapText +
@@ -421,6 +422,7 @@ function App() {
 									if (e.key === 'Enter') addNewComponent();
 								}}
 							/>
+							<span>Press Enter to add, Escape to cancel.</span>
 							<div id="add" onClick={addNewComponent}>
 								<div id="done">
 									<svg className="svg-icon" viewBox="0 0 20 20">
