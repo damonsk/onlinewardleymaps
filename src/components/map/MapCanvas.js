@@ -22,6 +22,7 @@ import MarketSymbol from '../symbols/MarketSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
+import PositionCalculator from './PositionCalculator';
 
 function MapCanvas(props) {
 	const isModKeyPressed = useModKeyPressedConsumer();
@@ -36,6 +37,24 @@ function MapCanvas(props) {
 		props.mapEvolved,
 		props.mapPipelines
 	);
+
+	const newElementAt = function(e) {
+		var svg = document.getElementById('svgMap');
+		var pt = svg.createSVGPoint();
+
+		function getCursor(evt) {
+			pt.x = evt.clientX;
+			pt.y = evt.clientY;
+			return pt.matrixTransform(svg.getScreenCTM().inverse());
+		}
+
+		var loc = getCursor(e);
+
+		const positionCalc = new PositionCalculator();
+		const x = positionCalc.xToMaturity(loc.x, props.mapDimensions.width);
+		const y = positionCalc.yToVisibility(loc.y, props.mapDimensions.height);
+		props.setNewComponentContext({ x, y });
+	};
 
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
@@ -103,6 +122,7 @@ function MapCanvas(props) {
 	return (
 		<React.Fragment>
 			<svg
+				onDoubleClick={e => newElementAt(e)}
 				fontFamily={props.mapStyleDefs.fontFamily}
 				fontSize={props.mapStyleDefs.fontSize}
 				className={props.mapStyleDefs.className}

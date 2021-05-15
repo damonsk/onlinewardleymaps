@@ -11,6 +11,93 @@ span.clickable {
 	}
 }
 
+#create-element {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.95);
+	z-index: 1000;
+	animation: animationBgOverlay ease-out 0.2s;
+	animation-fill-mode: both;
+	animation-iteration-count: 1;
+
+	#close {
+		position: absolute;
+		top: 130px;
+		right: 80px;
+		animation-duration: 0.1s;
+		animation: animationFadeInDown ease-out 0.2s;
+		animation-fill-mode: backwards;
+		animation-iteration-count: 1;
+
+		#cross {
+			cursor: pointer;
+			.svg-icon {
+				width: 3em;
+				height: 3em;
+			}
+
+			.svg-icon path,
+			.svg-icon polygon,
+			.svg-icon rect {
+				fill: rgba(155, 153, 175, 1);
+			}
+		}
+	}
+
+	#create-entry {
+		position: absolute;
+		width: 400px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		left: 50%;
+		top: 40%;
+		margin-left: -185px;
+		animation-duration: 0.1s;
+		animation: animationFadeInDown ease-out 0.2s;
+		animation-fill-mode: backwards;
+		animation-iteration-count: 1;
+
+		input {
+			padding: 20px;
+			width: 100%;
+			font-size: 1.8em;
+			border: 0;
+			border-bottom: 1px solid blue;
+			&:focus-visible {
+				outline: 0;
+			}
+		}
+
+		#add {
+			position: absolute;
+			top: 20%;
+			cursor: pointer;
+			right: -15%;
+			animation-duration: 0.1s;
+			animation: animationFadeInDown ease-out 0.2s;
+			animation-fill-mode: backwards;
+			animation-iteration-count: 1;
+
+			#done {
+				.svg-icon {
+					width: 3em;
+					height: 3em;
+				}
+
+				.svg-icon path,
+				.svg-icon polygon,
+				.svg-icon rect {
+					fill: rgb(30, 177, 54);
+				}
+			}
+		}
+	}
+}
+
 .draggable {
 	.submapLink {
 		-webkit-transition: 2s;
