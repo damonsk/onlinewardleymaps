@@ -28,7 +28,7 @@ jobs:
         env:
           CI: true
       - name: Write version number
-        run: echo "export var owmBuild = \"1.${{ GITHUB_RUN_NUMBER }}\";" > src/version.js
+        run: echo "export var owmBuild = \"1.$GITHUB_RUN_NUMBER\";" > src/version.js
       - name: Run build
         run: | 
           yarn install
@@ -41,7 +41,7 @@ jobs:
       - name: Publish wmlandscape
         run: | 
             cd wmlandscape/
-            npm version 1.${{ GITHUB_RUN_NUMBER }}.0
+            npm version 1.$GITHUB_RUN_NUMBER.0
             yarn install
             yarn build
             npm publish
