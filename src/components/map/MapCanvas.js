@@ -58,7 +58,7 @@ function MapCanvas(props) {
 			...mapElementsClicked,
 			{ el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
 		];
-		if (s.length == 2) {
+		if (s.length === 2) {
 			props.mutateMapText(
 				props.mapText + '\r\n' + s.map(r => r.el.name).join('->')
 			);
