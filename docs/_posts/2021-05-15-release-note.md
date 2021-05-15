@@ -17,7 +17,7 @@ Until today, the only way to add new map components is via the editor.  This QoL
 
 ## Quick Linking Components
 
-Until today, the only way to link components was via the editor.  This QoL improvement will allow you to click and point to create a new link.  To do this, first press CTRL or CMD if MacOS.  You'll notice compoents that can be linked will have a blue drop shadow.  Whilst keeping CTRL/CMD pressed, Click the component and begin to move your mouse.  You'll notice a line will start to draw.  Next, go to the compoent you'd like to connect (whilst keeping CTRL/CMD pressed) and finally click to complete the link.
+Until today, the only way to link components was via the editor.  This QoL improvement will allow you to click and point to create a new link.  To do this, first press CTRL or CMD if MacOS.  You'll notice component that can be linked will have a blue drop shadow.  Whilst keeping CTRL/CMD pressed, Click the component and begin to move your mouse.  You'll notice a line will start to draw.  Next, go to the compoent you'd like to connect (whilst keeping CTRL/CMD pressed) and finally click to complete the link.
 
 1. Press and hold CTRL/CMD throughout the process.
 2. Click the start component.
