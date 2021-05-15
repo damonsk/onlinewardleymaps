@@ -17,10 +17,32 @@ import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
 import MigrationsModal from './MigrationModal';
 import { Collapse } from 'react-bootstrap';
+import { ModKeyPressedProvider } from './KeyPressContext';
 
 // only use toolbar if set
 const useToolbar = false;
 // const isDev = process.env.NODE_ENV === 'development';
+
+function debounce(fn, ms) {
+	let timer;
+	return () => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			timer = null;
+			fn.apply(this, arguments);
+		}, ms);
+	};
+}
+
+const getHeight = () => {
+	var winHeight = window.innerHeight;
+	var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+	var titleHeight = document.getElementById('title').clientHeight;
+	return winHeight - topNavHeight - titleHeight - 85;
+};
+const getWidth = () => {
+	return document.getElementById('map').clientWidth - 50;
+};
 
 function App() {
 	const [currentUrl, setCurrentUrl] = useState('');
@@ -65,16 +87,6 @@ function App() {
 		result: '',
 		changeSets: [],
 	});
-
-	const getHeight = () => {
-		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight - 85;
-	};
-	const getWidth = function() {
-		return document.getElementById('map').clientWidth - 50;
-	};
 
 	const mutateMapText = newText => {
 		setMapText(newText);
@@ -139,17 +151,6 @@ function App() {
 		}
 	};
 
-	function debounce(fn, ms) {
-		let timer;
-		return () => {
-			clearTimeout(timer);
-			timer = setTimeout(() => {
-				timer = null;
-				fn.apply(this, arguments);
-			}, ms);
-		};
-	}
-
 	function newMap() {
 		window.location.hash = '';
 		setMapText('');
@@ -209,7 +210,6 @@ function App() {
 	React.useEffect(() => {
 		document.title = mapTitle + ' - ' + Defaults.PageTitle;
 	}, [mapTitle]);
-
 	React.useEffect(() => {
 		switch (mapStyle) {
 			case 'colour':
@@ -315,34 +315,36 @@ function App() {
 				</div>
 
 				<div className="col-md-8 map-view">
-					<MapView
-						mapTitle={mapTitle}
-						mapComponents={mapComponents}
-						mapMarkets={mapMarkets}
-						mapEcosystems={mapEcosystems}
-						mapSubMaps={mapSubMaps}
-						mapEvolved={mapEvolved}
-						mapPipelines={mapPipelines}
-						mapAnchors={mapAnchors}
-						mapLinks={mapLinks}
-						mapAttitudes={mapAttitudes}
-						launchUrl={launchUrl}
-						mapNotes={mapNotes}
-						mapAnnotations={mapAnnotations}
-						mapAnnotationsPresentation={mapAnnotationsPresentation}
-						mapMethods={mapMethods}
-						mapStyleDefs={mapStyleDefs}
-						mapYAxis={mapYAxis}
-						mapDimensions={mapDimensions}
-						mapEvolutionStates={mapEvolutionStates}
-						mapRef={mapRef}
-						mapText={mapText}
-						mutateMapText={mutateMapText}
-						setMetaText={setMetaText}
-						metaText={metaText}
-						evolutionOffsets={Defaults.EvoOffsets}
-						setHighlightLine={setHighlightLine}
-					/>
+					<ModKeyPressedProvider>
+						<MapView
+							mapTitle={mapTitle}
+							mapComponents={mapComponents}
+							mapMarkets={mapMarkets}
+							mapEcosystems={mapEcosystems}
+							mapSubMaps={mapSubMaps}
+							mapEvolved={mapEvolved}
+							mapPipelines={mapPipelines}
+							mapAnchors={mapAnchors}
+							mapLinks={mapLinks}
+							mapAttitudes={mapAttitudes}
+							launchUrl={launchUrl}
+							mapNotes={mapNotes}
+							mapAnnotations={mapAnnotations}
+							mapAnnotationsPresentation={mapAnnotationsPresentation}
+							mapMethods={mapMethods}
+							mapStyleDefs={mapStyleDefs}
+							mapYAxis={mapYAxis}
+							mapDimensions={mapDimensions}
+							mapEvolutionStates={mapEvolutionStates}
+							mapRef={mapRef}
+							mapText={mapText}
+							mutateMapText={mutateMapText}
+							setMetaText={setMetaText}
+							metaText={metaText}
+							evolutionOffsets={Defaults.EvoOffsets}
+							setHighlightLine={setHighlightLine}
+						/>
+					</ModKeyPressedProvider>
 				</div>
 				{useToolbar && (
 					<Collapse in={toggleToolbar} dimension={'width'}>

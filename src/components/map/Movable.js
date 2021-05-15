@@ -1,5 +1,15 @@
 import React, { useEffect, useCallback } from 'react';
 
+const HIGHLIGHT_DEF = 'url(#ctrlHighlight)';
+
+// could check specific element type here
+const shouldHighlight = ({ isModKeyPressed }) => {
+	if (isModKeyPressed) {
+		return HIGHLIGHT_DEF;
+	}
+	return undefined;
+};
+
 function Movable(props) {
 	const x = useCallback(() => props.x, [props.x]);
 	const y = useCallback(() => props.y, [props.y]);
@@ -27,6 +37,7 @@ function Movable(props) {
 	});
 
 	const handleMouseDown = e => {
+		if (props.isModKeyPressed) return;
 		setMoving(true);
 		const pageX = e.pageX;
 		const pageY = e.pageY;
@@ -53,6 +64,7 @@ function Movable(props) {
 	};
 
 	const handleMouseUp = () => {
+		if (props.isModKeyPressed) return;
 		document.removeEventListener('mousemove', handleMouseMove.current);
 		setPosition(position =>
 			Object.assign({}, position, {
@@ -79,7 +91,7 @@ function Movable(props) {
 		});
 		//if (props.onEffects !== undefined) props.onEffects();
 	}, [x, y]);
-
+	const filter = shouldHighlight(props);
 	return (
 		<g
 			is="custom"
@@ -87,6 +99,7 @@ function Movable(props) {
 			onMouseDown={e => handleMouseDown(e)}
 			onMouseUp={e => handleMouseUp(e)}
 			id={'movable_' + props.id}
+			filter={filter}
 			transform={
 				'translate(' +
 				(props.fixedX ? x() : position.x) +

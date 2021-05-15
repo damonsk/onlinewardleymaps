@@ -9,7 +9,11 @@ import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoo
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 
+import { useModKeyPressedConsumer } from '../KeyPressContext';
+
 function MapComponent(props) {
+	const isModKeyPressed = useModKeyPressedConsumer();
+
 	const positionCalc = new PositionCalculator();
 	const x = positionCalc.maturityToX(
 		props.element.maturity,
@@ -103,6 +107,7 @@ function MapComponent(props) {
 				fixedY={props.element.evolved}
 				fixedX={false}
 				shouldShowMoving={true}
+				isModKeyPressed={isModKeyPressed}
 			>
 				{props.element.pipeline ? (
 					<PipelineComponentSymbol

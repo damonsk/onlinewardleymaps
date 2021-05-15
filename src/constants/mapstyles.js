@@ -92,6 +92,11 @@ export const Plain = {
 		flowStrokeWidth: 10,
 		flowText: '#03a9f4',
 	},
+	fluidLink: {
+		stroke: 'grey',
+		strokeDasharray: '2,2',
+		strokeWidth: 2,
+	},
 	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
