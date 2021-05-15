@@ -5,7 +5,7 @@ export default class XAxisLabelsExtractionStrategy {
 		this.data = data;
 	}
 	apply() {
-		let lines = this.data.trim().split('\n');
+		let lines = this.data.split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			const element = lines[i];
 			try {

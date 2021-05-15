@@ -28,7 +28,7 @@ export default class LinksExtractionStrategy {
 		];
 	}
 	apply() {
-		let lines = this.data.trim().split('\n');
+		let lines = this.data.split('\n');
 		let linksToReturn = [];
 		for (let i = 0; i < lines.length; i++) {
 			try {

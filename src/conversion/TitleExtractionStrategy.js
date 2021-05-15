@@ -4,7 +4,7 @@ export default class TitleExtractionStrategy {
 	}
 	apply() {
 		if (this.data.trim().length < 1) return { title: 'Untitled Map' };
-		let trimmed = this.data.trim();
+		let trimmed = this.data;
 		for (let index = 0; index < trimmed.split('\n').length; index++) {
 			const element = trimmed.split('\n')[index];
 			if (element.indexOf('title') === 0) {

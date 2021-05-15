@@ -11,7 +11,7 @@ export default class PresentationExtractionStrategy {
 			annotations: { visibility: 0.9, maturity: 0.1 },
 			yAxis: { label: 'Value Chain', max: 'Visible', min: 'Invisible' },
 		};
-		let lines = this.data.trim().split('\n');
+		let lines = this.data.split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			const element = lines[i];
 			if (element.trim().indexOf('style') === 0) {
