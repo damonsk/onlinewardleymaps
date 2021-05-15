@@ -13,6 +13,7 @@ const LinkSymbol = props => {
 		strokeDasharray,
 		markerStart,
 		styles,
+		filter,
 	} = props;
 	const stroke = evolved ? styles.evolvedStroke : styles.stroke;
 	const strokeWidth = evolved ? styles.evolvedStrokeWidth : styles.strokeWidth;
@@ -27,6 +28,7 @@ const LinkSymbol = props => {
 				stroke={stroke}
 				strokeWidth={strokeWidth}
 				markerStart={markerStart}
+				filter={filter}
 			/>
 			{flow && (
 				<line

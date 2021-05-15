@@ -37,6 +37,7 @@ function Movable(props) {
 	});
 
 	const handleMouseDown = e => {
+		if (props.isModKeyPressed) return;
 		setMoving(true);
 		const pageX = e.pageX;
 		const pageY = e.pageY;
@@ -53,6 +54,7 @@ function Movable(props) {
 	};
 
 	const handleMouseUp = () => {
+		if (props.isModKeyPressed) return;
 		document.removeEventListener('mousemove', handleMouseMove.current);
 		setPosition(position =>
 			Object.assign({}, position, {

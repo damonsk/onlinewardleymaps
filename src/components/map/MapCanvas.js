@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
 import MapGrid from './foundation/MapGrid';
 import MapEvolution from './foundation/MapEvolution';
 import Pipeline from './Pipeline';
 import ComponentLink from './ComponentLink';
+import FluidLink from './FluidLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import MapComponent from './MapComponent';
 import AnnotationElement from './AnnotationElement';
@@ -19,8 +20,11 @@ import SubMapSymbol from '../symbols/SubMapSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
+import { useModKeyPressedConsumer } from '../KeyPressContext';
 
 function MapCanvas(props) {
+	const isModKeyPressed = useModKeyPressedConsumer();
+	const [mapElementsClicked, setMapElementsClicked] = useState([]);
 	const mapElements = new MapElements(
 		[
 			{ collection: props.mapComponents, type: 'component' },
@@ -31,11 +35,34 @@ function MapCanvas(props) {
 		props.mapEvolved,
 		props.mapPipelines
 	);
+
 	var getElementByName = function(elements, name) {
 		var hasName = function(element) {
 			return element.name === name;
 		};
 		return elements.find(hasName);
+	};
+
+	useEffect(() => {
+		if (isModKeyPressed === false) {
+			setMapElementsClicked([]);
+		}
+	}, [isModKeyPressed]);
+
+	const clicked = function(ctx) {
+		props.setHighlightLine(ctx.el.line);
+		if (isModKeyPressed === false) return;
+
+		let s = [
+			...mapElementsClicked,
+			{ el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
+		];
+		if (s.length == 2) {
+			props.mutateMapText(
+				props.mapText + '\r\n' + s.map(r => r.el.name).join('->')
+			);
+			setMapElementsClicked([]);
+		} else setMapElementsClicked(s);
 	};
 
 	const linksBuilder = new LinksBuilder(
@@ -138,6 +165,20 @@ function MapCanvas(props) {
 						))}
 					</g>
 
+					<g id="fluids" key="fluids">
+						{mapElementsClicked.map((current, i) => {
+							return (
+								<FluidLink
+									key={i}
+									mapStyleDefs={props.mapStyleDefs}
+									mapDimensions={props.mapDimensions}
+									startElement={current.el}
+									origClick={current.e}
+								/>
+							);
+						})}
+					</g>
+
 					{links.map(current => {
 						return (
 							<g id={current.name} key={current.name}>
@@ -225,7 +266,7 @@ function MapCanvas(props) {
 										id={'element_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
 										evolved={el.evolved}
-										onClick={() => props.setHighlightLine(el.line)}
+										onClick={e => clicked({ el, e })}
 									/>
 								)}
 
