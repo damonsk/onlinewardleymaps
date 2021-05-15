@@ -30,10 +30,10 @@ const drawInsideCircles = (coords, styles) =>
 	));
 
 const MarketSymbol = props => {
-	const { id, styles = {} } = props;
+	const { id, styles = {}, onClick } = props;
 	const coords = rotatePoints();
 	return (
-		<g id={id}>
+		<g id={id} onClick={onClick}>
 			<circle
 				r={SM_CIRC_RADIUS * 1.8}
 				fill={styles.fill}

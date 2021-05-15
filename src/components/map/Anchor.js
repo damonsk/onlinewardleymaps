@@ -6,8 +6,10 @@ import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import { useModKeyPressedConsumer } from '../KeyPressContext';
 
 const Anchor = props => {
+	const isModKeyPressed = useModKeyPressedConsumer();
 	const identity = 'anchor';
 	const elementKey = (prefix, suffix) => {
 		return `${identity}_${prefix !== undefined ? prefix + '_' : ''}${
@@ -53,6 +55,7 @@ const Anchor = props => {
 				y={y()}
 				fixedY={false}
 				fixedX={false}
+				isModKeyPressed={isModKeyPressed}
 			>
 				<ComponentTextSymbol
 					id={elementKey('text')}
@@ -63,7 +66,7 @@ const Anchor = props => {
 					evolved={props.anchor.evolved}
 					fontSize={props.mapStyleDefs.anchor.fontSize}
 					styles={props.mapStyleDefs.component}
-					onClick={() => props.setHighlightLine(props.anchor.line)}
+					onClick={props.onClick}
 				/>
 			</Movable>
 		</>

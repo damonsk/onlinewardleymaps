@@ -1,5 +1,4 @@
 import React from 'react';
-import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import ComponentText from './ComponentText';
 import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
@@ -109,16 +108,15 @@ function MapComponent(props) {
 				shouldShowMoving={true}
 				isModKeyPressed={isModKeyPressed}
 			>
-				{props.element.pipeline ? (
+				{/* {props.element.pipeline ? (
 					<PipelineComponentSymbol
 						id={'element_square_' + props.element.id}
 						styles={props.mapStyleDefs.component}
 						evolved={props.element.evolved}
 						onClick={onElementClick}
 					/>
-				) : (
-					<>{props.children}</>
-				)}
+				) : ( */}
+				<>{props.children}</>
 			</Movable>
 			{canApplyInertia() && (
 				<Inertia

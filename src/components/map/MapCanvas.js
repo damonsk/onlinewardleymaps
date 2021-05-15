@@ -20,6 +20,7 @@ import SubMapSymbol from '../symbols/SubMapSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
+import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 
 function MapCanvas(props) {
@@ -50,6 +51,7 @@ function MapCanvas(props) {
 	}, [isModKeyPressed]);
 
 	const clicked = function(ctx) {
+		console.log(ctx);
 		props.setHighlightLine(ctx.el.line);
 		if (isModKeyPressed === false) return;
 
@@ -228,6 +230,7 @@ function MapCanvas(props) {
 								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
 								setHighlightLine={props.setHighlightLine}
+								onClick={e => clicked({ el, e })}
 							/>
 						))}
 					</g>
@@ -270,12 +273,21 @@ function MapCanvas(props) {
 									/>
 								)}
 
+								{el.pipeline && (
+									<PipelineComponentSymbol
+										id={'element_square_' + el.id}
+										styles={props.mapStyleDefs.component}
+										evolved={el.evolved}
+										onClick={e => clicked({ el, e })}
+									/>
+								)}
+
 								{(el.decorators && el.decorators.ecosystem) ||
 								el.type === 'ecosystem' ? (
 									<EcosystemSymbol
 										id={'ecosystem_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
-										onClick={() => props.setHighlightLine(el.line)}
+										onClick={e => clicked({ el, e })}
 									/>
 								) : null}
 
@@ -284,7 +296,7 @@ function MapCanvas(props) {
 									<MarketSymbol
 										id={'market_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
-										onClick={() => props.setHighlightLine(el.line)}
+										onClick={e => clicked({ el, e })}
 									/>
 								) : null}
 
@@ -293,7 +305,7 @@ function MapCanvas(props) {
 										id={'element_circle_' + el.id}
 										styles={props.mapStyleDefs.submap}
 										evolved={el.evolved}
-										onClick={() => props.setHighlightLine(el.line)}
+										onClick={e => clicked({ el, e })}
 										launchUrl={() => props.launchUrl(el.url)}
 									/>
 								)}
