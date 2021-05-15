@@ -1,17 +1,21 @@
 import React from 'react';
 import Anchor from './Anchor';
+import { ModKeyPressedProvider } from '../KeyPressContext';
 import { create } from 'react-test-renderer';
 import { render } from '@testing-library/react';
 import * as MapStyles from '../../constants/mapstyles';
 
 const CreateAnchor = () => (
-	<Anchor
-		anchor={{ name: 'AnchorName', maturity: 0.12, visibility: 0.67, id: 1 }}
-		mapStyleDefs={MapStyles.Plain}
-		mapDimensions={{ width: 600, height: 400 }}
-		mapText={''}
-		mutateMapText={() => {}}
-	/>
+	<ModKeyPressedProvider>
+		<Anchor
+			anchor={{ name: 'AnchorName', maturity: 0.12, visibility: 0.67, id: 1 }}
+			mapStyleDefs={MapStyles.Plain}
+			mapDimensions={{ width: 600, height: 400 }}
+			mapText={''}
+			mutateMapText={() => {}}
+			onClick={() => {}}
+		/>
+	</ModKeyPressedProvider>
 );
 
 describe('Anchor', () => {
