@@ -77,7 +77,6 @@ export const GenericNoteIcon = props => (
 			styles={props?.mapStyleDefs?.note}
 			x="1"
 			y="20"
-			evolved={props.evolved}
 		/>
 	</IconWrapper>
 );
@@ -146,6 +145,8 @@ export const MethodIcon = props => (
 			<MethodSymbol
 				method={props.method.toLowerCase()}
 				styles={props.mapStyleDefs.methods}
+				x="0"
+				y="0"
 			/>
 		</g>
 		<ComponentSymbol

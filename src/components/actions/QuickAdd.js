@@ -112,12 +112,7 @@ function QuickAdd(props) {
 				<div id="create-entry">
 					<Dropdown as={ButtonGroup}>
 						<CurrentIcon mapStyleDefs={mapStyleDefs} hideLabel={true} />
-						<Dropdown.Toggle
-							split
-							id="dropdown-split-basic"
-							alignBottom
-							variant="plain"
-						/>
+						<Dropdown.Toggle split id="dropdown-split-basic" variant="plain" />
 						<Dropdown.Menu>
 							{icons.map((available, idx) => {
 								const { Icon } = available;
