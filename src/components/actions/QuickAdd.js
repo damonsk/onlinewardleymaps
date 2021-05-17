@@ -1,14 +1,58 @@
 import React, { memo, useEffect, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import {
+	ComponentIcon,
+	InertiaIcon,
+	EcosystemIcon,
+	MarketIcon,
+	BuyMethodIcon,
+	BuildMethodIcon,
+	OutSourceMethodIcon,
+	GenericNoteIcon,
+} from '../symbols/icons';
+import { ButtonGroup, Dropdown } from 'react-bootstrap';
 
 function QuickAdd(props) {
+	let icons = [
+		{
+			Icon: ComponentIcon,
+			template: (val, y, x) => `component ${val} [${y}, ${x}]`,
+		},
+		{
+			Icon: InertiaIcon,
+			template: (val, y, x) => `component ${val} [${y}, ${x}] inertia`,
+		},
+		{ Icon: MarketIcon, template: (val, y, x) => `market ${val} [${y}, ${x}]` },
+		{
+			Icon: EcosystemIcon,
+			template: (val, y, x) => `ecosystem ${val} [${y}, ${x}]`,
+		},
+		{
+			Icon: BuyMethodIcon,
+			template: (val, y, x) => `component ${val} [${y}, ${x}] (buy)`,
+		},
+		{
+			Icon: BuildMethodIcon,
+			template: (val, y, x) => `component ${val} [${y}, ${x}] (build)`,
+		},
+		{
+			Icon: OutSourceMethodIcon,
+			template: (val, y, x) => `component ${val} [${y}, ${x}] (outsource)`,
+		},
+		{
+			Icon: GenericNoteIcon,
+			template: (val, y, x) => `note ${val} [${y}, ${x}]`,
+		},
+	];
 	const {
 		newComponentContext,
 		mutateMapText,
 		setNewComponentContext,
 		mapText,
+		mapStyleDefs,
 	} = props;
 	const [showAdd, setShowAdd] = useState(false);
+	const [typeToUse, setTypeToUse] = useState(0);
 	const componentName = useRef(null);
 	const cancelShowAdd = useCallback(() => {
 		setShowAdd(false);
@@ -39,11 +83,15 @@ function QuickAdd(props) {
 	function addNewComponent() {
 		if (componentName.current.value.trim().length === 0) return;
 		setShowAdd(false);
-		mutateMapText(
-			mapText +
-				`\r\ncomponent ${componentName.current.value} [${newComponentContext.y}, ${newComponentContext.x}]`
+		const componentString = icons[typeToUse].template(
+			componentName.current.value.trim(),
+			newComponentContext.y,
+			newComponentContext.x
 		);
+		mutateMapText(mapText + `\r\n${componentString}`);
 	}
+
+	const CurrentIcon = icons[typeToUse].Icon;
 
 	return (
 		showAdd && (
@@ -62,6 +110,31 @@ function QuickAdd(props) {
 					</div>
 				</span>
 				<div id="create-entry">
+					<Dropdown as={ButtonGroup}>
+						<CurrentIcon mapStyleDefs={mapStyleDefs} hideLabel={true} />
+						<Dropdown.Toggle
+							split
+							id="dropdown-split-basic"
+							alignBottom
+							variant="plain"
+						/>
+						<Dropdown.Menu>
+							{icons.map((available, idx) => {
+								const { Icon } = available;
+								return (
+									<Dropdown.Item
+										key={idx}
+										eventKey="1"
+										onClick={() => setTypeToUse(idx)}
+									>
+										<Icon mapStyleDefs={mapStyleDefs} hideLabel={false} />
+									</Dropdown.Item>
+								);
+							})}
+						</Dropdown.Menu>
+					</Dropdown>
+
+					<div id="add-component-type"></div>
 					<input
 						placeholder="Type to add"
 						ref={componentName}

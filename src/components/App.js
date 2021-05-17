@@ -370,6 +370,7 @@ function App() {
 				mutateMapText={mutateMapText}
 				setNewComponentContext={setNewComponentContext}
 				mapText={mapText}
+				mapStyleDefs={mapStyleDefs}
 			/>
 			<div className="row usage no-gutters">
 				<div className="col">

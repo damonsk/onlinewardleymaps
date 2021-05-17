@@ -61,6 +61,20 @@ span.clickable {
 		animation-fill-mode: backwards;
 		animation-iteration-count: 1;
 
+		.btn-group {
+			position: absolute;
+			top: 20%;
+			cursor: pointer;
+			left: -80px;
+		}
+
+		.dropdown-menu {
+			&.show {
+				overflow-y: scroll;
+				height: 300px;
+			}
+		}
+
 		input {
 			padding: 20px;
 			width: 100%;
