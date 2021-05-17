@@ -1,6 +1,6 @@
 {
 	"name": "wmlandscape",
-	"version": "1.0.8",
+	"version": "1.268.1",
 	"description": "The engine that powers OnlineWardleyMaps and VSCode-Wardley-Maps",
 	"main": "dist/index.js",
 	"scripts": {

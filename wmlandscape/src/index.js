@@ -88,6 +88,12 @@ import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/Evo
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
 import MapElements from '../../src/MapElements';
 import MetaPositioner from '../../src/MetaPositioner';
+import FluidLink from '../../src/components/map/FluidLink';
+import {
+	ModKeyPressedProvider,
+	useModKeyPressedConsumer,
+} from '../../src/components/KeyPressContext';
+import QuickAdd from '../../src/components/actions/QuickAdd';
 
 export {
 	MapBackground,
@@ -176,4 +182,8 @@ export {
 	LinksBuilder,
 	MapElements,
 	MetaPositioner,
+	FluidLink,
+	ModKeyPressedProvider,
+	useModKeyPressedConsumer,
+	QuickAdd,
 };
