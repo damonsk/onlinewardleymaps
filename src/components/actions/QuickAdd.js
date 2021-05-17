@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useRef } from 'react';
+import React, { memo, useEffect, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 function QuickAdd(props) {
@@ -10,6 +10,10 @@ function QuickAdd(props) {
 	} = props;
 	const [showAdd, setShowAdd] = useState(false);
 	const componentName = useRef(null);
+	const cancelShowAdd = useCallback(() => {
+		setShowAdd(false);
+		setNewComponentContext(null);
+	}, [setShowAdd, setNewComponentContext]);
 
 	useEffect(() => {
 		if (showAdd) componentName.current.focus();
@@ -30,12 +34,7 @@ function QuickAdd(props) {
 		return function cleanup() {
 			document.removeEventListener('keyup', handleEscape);
 		};
-	}, [newComponentContext]);
-
-	function cancelShowAdd() {
-		setShowAdd(false);
-		setNewComponentContext(null);
-	}
+	}, [newComponentContext, cancelShowAdd]);
 
 	function addNewComponent() {
 		if (componentName.current.value.trim().length === 0) return;
