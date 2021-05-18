@@ -60,6 +60,18 @@ describe('Convert test suite', function() {
 		expect(result.links[0].flow).toBeFalsy();
 	});
 
+	test('should create links even if components name contains keyword', function() {
+		let actual =
+			'component Sales marketing [1, 0.4]\ncomponent Sales ecosystem [0,0.1]\nSales marketing->Sales ecosystem';
+
+		let obj = new Converter();
+		let result = obj.parse(actual);
+
+		expect(result.links[0].start).toEqual('Sales marketing');
+		expect(result.links[0].end).toEqual('Sales ecosystem');
+		expect(result.links[0].flow).toBeFalsy();
+	});
+
 	test('links should have flow attribute set', function() {
 		let actual =
 			'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]\nCustomer+>Customer2';

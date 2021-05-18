@@ -110,7 +110,10 @@ export default class LinksExtractionStrategy {
 		let shouldProcess = true;
 		for (let j = 0; j < this.notLinks.length; j++) {
 			const shouldIgnore = this.notLinks[j];
-			if (element.trim().indexOf(shouldIgnore) !== -1) {
+			if (
+				element.trim().indexOf(shouldIgnore) == 0 ||
+				element.trim().indexOf('(' + shouldIgnore + ')') !== -1
+			) {
 				shouldProcess = false;
 			}
 		}
