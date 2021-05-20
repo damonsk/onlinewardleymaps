@@ -36,7 +36,7 @@ export default class Converter {
 			new UrlExtractionStrategy(t),
 			new AttitudeExtractionStrategy(t),
 		];
-
+		let errorContainer = { errors: [] };
 		let converted = {
 			links: [],
 			anchors: [],
@@ -56,9 +56,12 @@ export default class Converter {
 			attitudes: [],
 		};
 		strategies.forEach(s => {
-			converted = Object.assign(converted, s.apply());
+			const o = s.apply();
+			converted = Object.assign(converted, o);
+			if (o.errors && o.errors.length > 0)
+				errorContainer.errors = errorContainer.errors.concat(o.errors);
 		});
-		return converted;
+		return Object.assign(converted, errorContainer);
 	}
 
 	stripComments(data) {

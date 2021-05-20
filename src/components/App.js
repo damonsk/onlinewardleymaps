@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { hot } from 'react-hot-loader/root';
-
 import html2canvas from 'html2canvas';
 import Usage from './editor/Usage';
 import Controls from './editor/Controls';
@@ -10,7 +9,6 @@ import Meta from './editor/Meta';
 import Editor from './editor/Editor';
 import Toolbar from './editor/Toolbar';
 import Breadcrumb from './editor/Breadcrumb';
-
 import Converter from '../conversion/Converter';
 import Migrations from '../migrations/Migrations';
 import * as MapStyles from '../constants/mapstyles';
@@ -83,6 +81,8 @@ function App() {
 	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
 	const [mainViewHeight, setMainViewHeight] = useState(100);
+	const [errorLine, setErrorLine] = useState(-1);
+	const [showLineNumbers, setShowLineNumbers] = useState(false);
 
 	const [migrations, setMigrations] = useState({
 		original: '',
@@ -179,6 +179,7 @@ function App() {
 
 	React.useEffect(() => {
 		try {
+			setErrorLine([]);
 			setInvalid(false);
 			var r = new Converter().parse(mapText);
 			setMapTitle(r.title);
@@ -204,9 +205,11 @@ function App() {
 				product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
 				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
 			});
+			if (r.errors.length > 0) {
+				setErrorLine(r.errors.map(e => e.line));
+			}
 		} catch (err) {
-			setInvalid(true);
-			console.log(`Invalid markup on line ${1 + err.line}, could not render.`);
+			console.log(`Error:`, err);
 		}
 	}, [mapText]);
 
@@ -280,6 +283,8 @@ function App() {
 								newMapClick={newMap}
 								saveMapClick={saveMap}
 								downloadMapImage={downloadMap}
+								showLineNumbers={showLineNumbers}
+								setShowLineNumbers={setShowLineNumbers}
 							/>
 						</div>
 					</div>
@@ -296,7 +301,6 @@ function App() {
 					<Breadcrumb currentUrl={currentUrl} />
 				)}
 			</div>
-			{/* <div className="container-fluid"> */}
 			<div
 				className="row no-gutters main"
 				style={{ height: mainViewHeight + 'px' }}
@@ -312,13 +316,15 @@ function App() {
 						mapDimensions={mapDimensions}
 						mapMarkets={mapMarkets}
 						mapSubMaps={mapSubMaps}
+						errorLine={errorLine}
+						showLineNumbers={showLineNumbers}
 					/>
 					<div className="form-group">
 						<Meta metaText={metaText} />
 					</div>
 				</div>
 
-				<div className="col-md-8 map-view">
+				<div className="col-sm-8 map-view">
 					<ModKeyPressedProvider>
 						<MapView
 							mapTitle={mapTitle}

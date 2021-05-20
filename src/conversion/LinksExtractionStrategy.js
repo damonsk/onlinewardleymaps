@@ -30,6 +30,7 @@ export default class LinksExtractionStrategy {
 	apply() {
 		let lines = this.data.split('\n');
 		let linksToReturn = [];
+		let errors = [];
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
@@ -99,10 +100,10 @@ export default class LinksExtractionStrategy {
 					}
 				}
 			} catch (err) {
-				throw new ParseError(i);
+				errors.push(new ParseError(i));
 			}
 		}
-		return { links: linksToReturn };
+		return { links: linksToReturn, errors: errors };
 	}
 
 	canProcessLine(element) {

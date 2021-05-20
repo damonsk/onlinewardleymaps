@@ -6,6 +6,7 @@ export default class XAxisLabelsExtractionStrategy {
 	}
 	apply() {
 		let lines = this.data.split('\n');
+		let errors = [];
 		for (let i = 0; i < lines.length; i++) {
 			const element = lines[i];
 			try {
@@ -24,7 +25,7 @@ export default class XAxisLabelsExtractionStrategy {
 					};
 				}
 			} catch (err) {
-				throw new ParseError(i);
+				errors.push(ParseError(i));
 			}
 		}
 		return {
@@ -34,6 +35,7 @@ export default class XAxisLabelsExtractionStrategy {
 				{ line1: 'Product', line2: '(+rental)' },
 				{ line1: 'Commodity', line2: '(+utility)' },
 			],
+			errors: errors,
 		};
 	}
 }

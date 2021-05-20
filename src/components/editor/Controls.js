@@ -22,6 +22,8 @@ function Controls(props) {
 		newMapClick,
 		downloadMapImage,
 		currentUrl,
+		setShowLineNumbers,
+		showLineNumbers,
 	} = props;
 	useEffect(() => {
 		if (toggleAutoSave === true) {
@@ -91,6 +93,13 @@ function Controls(props) {
 					variant={toggleAutoSave ? 'success' : 'danger'}
 				>
 					{toggleAutoSave ? 'AutoSave is On' : 'AutoSave is Off'}
+				</Dropdown.Item>
+				<Dropdown.Item
+					eventKey="4"
+					onClick={() => setShowLineNumbers(!showLineNumbers)}
+					variant={'plain'}
+				>
+					{showLineNumbers ? 'Hide Line Numbers' : 'Show Line Numbers'}
 				</Dropdown.Item>
 			</DropdownButton>
 

@@ -13,6 +13,7 @@ export default class BaseStrategyRunner {
 	apply() {
 		let lines = this.data.split('\n');
 		let elementsToReturn = [];
+		let errors = [];
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
@@ -34,11 +35,11 @@ export default class BaseStrategyRunner {
 					);
 					elementsToReturn.push(baseElement);
 				}
-			} catch (err) {
-				console.log(err);
-				throw new ParseError(i);
+			} catch {
+				// eslint-disable-next-line no-unused-expressions
+				errors.push[new ParseError(i)];
 			}
 		}
-		return { [this.containerName]: elementsToReturn };
+		return { [this.containerName]: elementsToReturn, errors: errors };
 	}
 }

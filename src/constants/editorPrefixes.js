@@ -34,6 +34,8 @@ export const EditorPrefixes = [
 	'style colour',
 	'style handwritten',
 	'style plain',
+	'ecosystem',
+	'market',
 	'evolve',
 	'inertia',
 	'pipeline',
