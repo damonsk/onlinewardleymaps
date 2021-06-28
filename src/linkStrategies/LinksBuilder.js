@@ -8,11 +8,16 @@ import EvolvingToEvolvingLinksStrategy from './EvolvingToEvolvingLinksStrategy';
 import EvolveToEvolvedLinksStrategy from './EvolveToEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
 import AnchorNoneEvolvedLinksStrategy from './AnchorNoneEvolvedLinksStrategy';
+import AllNoneEvolvedLinksStrategy from './AllNoneEvolvedLinksStrategy';
 
 export default class LinksBuilder {
-	constructor(mapLinks, mapElements, mapAnchors) {
+	constructor(mapLinks, mapElements, mapAnchors, showLinkedEvolved) {
+		const allLinksStrategy = showLinkedEvolved
+			? new AllLinksStrategy(mapLinks, mapElements)
+			: new AllNoneEvolvedLinksStrategy(mapLinks, mapElements);
+
 		this.linkStrategies = [
-			new AllLinksStrategy(mapLinks, mapElements),
+			allLinksStrategy,
 			new EvolvingEndLinksStrategy(mapLinks, mapElements),
 			new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, mapElements),
 			new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),

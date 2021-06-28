@@ -88,7 +88,8 @@ function MapCanvas(props) {
 	const linksBuilder = new LinksBuilder(
 		props.mapLinks,
 		mapElements,
-		props.mapAnchors
+		props.mapAnchors,
+		props.showLinkedEvolved
 	);
 	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 

@@ -83,6 +83,7 @@ function App() {
 	const [mainViewHeight, setMainViewHeight] = useState(100);
 	const [errorLine, setErrorLine] = useState(-1);
 	const [showLineNumbers, setShowLineNumbers] = useState(false);
+	const [showLinkedEvolved, setShowLinkedEvolved] = useState(false);
 
 	const [migrations, setMigrations] = useState({
 		original: '',
@@ -285,6 +286,8 @@ function App() {
 								downloadMapImage={downloadMap}
 								showLineNumbers={showLineNumbers}
 								setShowLineNumbers={setShowLineNumbers}
+								showLinkedEvolved={showLinkedEvolved}
+								setShowLinkedEvolved={setShowLinkedEvolved}
 							/>
 						</div>
 					</div>
@@ -354,6 +357,7 @@ function App() {
 							evolutionOffsets={Defaults.EvoOffsets}
 							setHighlightLine={setHighlightLine}
 							setNewComponentContext={setNewComponentContext}
+							showLinkedEvolved={showLinkedEvolved}
 						/>
 					</ModKeyPressedProvider>
 				</div>

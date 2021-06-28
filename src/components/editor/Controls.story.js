@@ -13,5 +13,7 @@ storiesOf('Controls ', module).add('default', () => (
 		newMapClick={() => {}}
 		saveMapClick={() => {}}
 		downloadMapImage={() => {}}
+		setShowLinkedEvolved={() => {}}
+		showLinkedEvolved={() => {}}
 	/>
 ));
