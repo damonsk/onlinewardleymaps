@@ -44,7 +44,15 @@ export function useKeysPressed(allowedKeys) {
 	return pressedKeys;
 }
 
-const isDarwin = /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
+let onMac = null;
+
+if (typeof window === 'undefined') {
+	onMac = process.platform === 'darwin';
+} else {
+	onMac = /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
+}
+
+const isDarwin = onMac;
 const CTRL_OR_CMD = isDarwin ? 'Meta' : 'Control';
 
 // another custom hook composed from the useKeysPressed hook
