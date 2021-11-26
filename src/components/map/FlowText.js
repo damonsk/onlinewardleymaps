@@ -51,6 +51,7 @@ const FlowText = props => {
 					textAnchor="start"
 					fill={mapStyleDefs.link.flowText}
 					text={link.flowValue}
+					styles={mapStyleDefs}
 				/>
 			</RelativeMovable>
 		</g>
@@ -64,7 +65,6 @@ FlowText.propTypes = {
 	link: PropTypes.object.isRequired,
 	startElement: PropTypes.object.isRequired,
 	endElement: PropTypes.object.isRequired,
-	mapText: PropTypes.string.isRequired,
 	setMetaText: PropTypes.func.isRequired,
 	mapStyleDefs: PropTypes.object.isRequired,
 };

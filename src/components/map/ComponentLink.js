@@ -46,8 +46,8 @@ function ComponentLink(props) {
 					link={link}
 					metaText={props.metaText}
 					setMetaText={props.setMetaText}
-					x={x2}
-					y={y2}
+					x={x2.toString()}
+					y={y2.toString()}
 				/>
 			)}
 		</>
