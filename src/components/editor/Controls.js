@@ -24,6 +24,8 @@ function Controls(props) {
 		currentUrl,
 		setShowLineNumbers,
 		showLineNumbers,
+		setShowLinkedEvolved,
+		showLinkedEvolved,
 	} = props;
 	useEffect(() => {
 		if (toggleAutoSave === true) {
@@ -100,6 +102,13 @@ function Controls(props) {
 					variant={'plain'}
 				>
 					{showLineNumbers ? 'Hide Line Numbers' : 'Show Line Numbers'}
+				</Dropdown.Item>
+				<Dropdown.Item
+					eventKey="5"
+					onClick={() => setShowLinkedEvolved(!showLinkedEvolved)}
+					variant={'plain'}
+				>
+					{showLinkedEvolved ? 'Hide Evolved Links' : 'Show Evolved Links'}
 				</Dropdown.Item>
 			</DropdownButton>
 
