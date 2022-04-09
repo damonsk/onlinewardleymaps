@@ -96,6 +96,7 @@ function Controls(props) {
 				>
 					{toggleAutoSave ? 'AutoSave is On' : 'AutoSave is Off'}
 				</Dropdown.Item>
+				<Dropdown.Divider />
 				<Dropdown.Item
 					eventKey="4"
 					onClick={() => setShowLineNumbers(!showLineNumbers)}
@@ -109,6 +110,15 @@ function Controls(props) {
 					variant={'plain'}
 				>
 					{showLinkedEvolved ? 'Hide Evolved Links' : 'Show Evolved Links'}
+				</Dropdown.Item>
+				<Dropdown.Divider />
+				<Dropdown.Item
+					eventKey="1"
+					rel="noreferrer noopener"
+					href="https://www.patreon.com/mapsascode"
+					target="_blank"
+				>
+					Become a Patron
 				</Dropdown.Item>
 			</DropdownButton>
 
@@ -160,15 +170,6 @@ function Controls(props) {
 					</Button>
 					<Button onClick={() => setModalShow(false)}>Close</Button>
 				</Modal.Footer>
-				<Dropdown.Divider />
-				<Dropdown.Item
-					eventKey="1"
-					rel="noreferrer noopener"
-					href="https://www.patreon.com/mapsascode"
-					target="_blank"
-				>
-					Become a Patron
-				</Dropdown.Item>
 			</Modal>
 		</React.Fragment>
 	);

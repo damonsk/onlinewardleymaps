@@ -92,6 +92,8 @@ function App() {
 		changeSets: [],
 	});
 
+	const [showUsage, setShowUsage] = useState(false);
+
 	const mutateMapText = newText => {
 		setMapText(newText);
 		setSaveOutstanding(true);
@@ -382,14 +384,36 @@ function App() {
 				mapText={mapText}
 				mapStyleDefs={mapStyleDefs}
 			/>
-			<div className="row usage no-gutters">
-				<div className="col">
-					<Usage mapText={mapText} mutateMapText={mutateMapText} />
+			<div className="row usageContainer no-gutters p-3 p-md-3">
+				<div id="usageToggle" className="small">
+					<span onClick={() => setShowUsage(!showUsage)}>
+						Show Usage Instructions
+					</span>
 				</div>
+				<br />
+				{showUsage && (
+					<div className="col">
+						<Usage mapText={mapText} mutateMapText={mutateMapText} />
+					</div>
+				)}
 			</div>
 			{/* </div> */}
 			<footer className="bd-footer text-muted">
-				<div className="container-fluid p-3 p-md-5">
+				<div className="container-fluid p-3 p-md-3">
+					<p>
+						<a
+							href="https://www.patreon.com/mapsascode"
+							rel="noreferrer noopener"
+							target="_blank"
+						>
+							<img
+								alt="Patreon Button"
+								height="38"
+								src={process.env.PUBLIC_URL + '/become_a_patron_button.png'}
+								width="162"
+							/>
+						</a>
+					</p>
 					<p>
 						<a
 							target="_blank"
@@ -463,20 +487,6 @@ function App() {
 							Simon&apos;s book
 						</a>
 						.
-					</p>
-					<p>
-						<a
-							href="https://www.patreon.com/mapsascode"
-							rel="noreferrer noopener"
-							target="_blank"
-						>
-							<img
-								alt="Patreon Button"
-								height="38"
-								src={process.env.PUBLIC_URL + '/become_a_patron_button.png'}
-								width="162"
-							/>
-						</a>
 					</p>
 				</div>
 			</footer>
