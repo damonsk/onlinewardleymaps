@@ -160,6 +160,15 @@ function Controls(props) {
 					</Button>
 					<Button onClick={() => setModalShow(false)}>Close</Button>
 				</Modal.Footer>
+				<Dropdown.Divider />
+				<Dropdown.Item
+					eventKey="1"
+					rel="noreferrer noopener"
+					href="https://www.patreon.com/mapsascode"
+					target="_blank"
+				>
+					Become a Patron
+				</Dropdown.Item>
 			</Modal>
 		</React.Fragment>
 	);
