@@ -265,16 +265,6 @@ function App() {
 					<div className="container-fluid">
 						<span className="navbar-brand">
 							<h3>Online Wardley Maps</h3>
-							<a
-								target="_blank"
-								rel="noopener noreferrer"
-								href="https://marketplace.visualstudio.com/items?itemName=damonsk.vscode-wardley-maps"
-							>
-								<img
-									alt="Download Visual Studio Code Extension"
-									src="https://img.shields.io/visual-studio-marketplace/v/damonsk.vscode-wardley-maps?style=flat&amp;label=Download Visual%20Studio%20Code%20Extension&amp;logo=visual-studio-code"
-								/>
-							</a>
 						</span>
 
 						<div id="controlsMenuControl">

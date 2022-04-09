@@ -114,6 +114,7 @@ function Controls(props) {
 				<Dropdown.Divider />
 				<Dropdown.Item
 					eventKey="1"
+					className="patron"
 					rel="noreferrer noopener"
 					href="https://www.patreon.com/mapsascode"
 					target="_blank"
