@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "owm",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authowm48e969c9",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

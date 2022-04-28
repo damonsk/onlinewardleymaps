@@ -1,0 +1,17 @@
+{
+  "providers": [
+    "awscloudformation"
+  ],
+  "projectName": "owm",
+  "version": "3.1",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "react",
+    "config": {
+      "SourceDir": "frontend/",
+      "DistributionDir": "frontend/build",
+      "BuildCommand": "yarn build",
+      "StartCommand": "yarn start"
+    }
+  }
+}

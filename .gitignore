@@ -22,4 +22,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 .DS_Store
 yarn.lock
-amplify/
+amplify/team-provider-info.json
