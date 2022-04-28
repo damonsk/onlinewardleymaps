@@ -84,6 +84,7 @@ function Environment(props) {
 		setMapPersistenceStrategy,
 		shouldLoad,
 		currentId,
+		setCurrentId,
 		setShoudLoad
 	} = props;
 
@@ -354,12 +355,17 @@ function Environment(props) {
 	};
 
 	function newMap(mapPersistenceStrategy) {
-		window.location.hash = '';
 		setMapText('');
 		setMetaText('');
+		setCurrentId('');
 		setCurrentUrl('(unsaved)');
 		setSaveOutstanding(false);
 		setMapPersistenceStrategy(mapPersistenceStrategy);
+		Router.push(
+			{ pathname: '/' },
+			undefined, 
+			{shallow: true}
+		);
 	}
 
 	async function saveMap() {
