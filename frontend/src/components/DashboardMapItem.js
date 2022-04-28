@@ -41,7 +41,7 @@ const DashboardMapItem = props => {
 
 	const openLink = () =>
 		Router.push({
-			pathname: '/' + (isPrivate ? 'private' : 'user') + "/" + mapItem.id,
+			pathname: '/' + (isPrivate ? 'private' : 'user') + '/' + mapItem.id,
 		});
 	const deleteAction = () => {
 		isPrivate

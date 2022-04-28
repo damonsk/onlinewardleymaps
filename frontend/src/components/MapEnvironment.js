@@ -18,7 +18,7 @@ import { SaveMap } from '../repository/MapRepository';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Grid } from '@mui/material';
-import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { API, Storage } from 'aws-amplify';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import Router from 'next/router';
 
@@ -85,7 +85,7 @@ function Environment(props) {
 		shouldLoad,
 		currentId,
 		setCurrentId,
-		setShoudLoad
+		setShoudLoad,
 	} = props;
 
 	const mapRef = useRef(null);
@@ -173,11 +173,9 @@ function Environment(props) {
 			switch (mapPersistenceStrategy) {
 				case Defaults.MapPersistenceStrategy.Private:
 					//window.location.hash = '#private:' + id;
-					Router.push(
-						{ pathname: '/private' + "/" + id },
-						undefined, 
-						{shallow: true}
-					);
+					Router.push({ pathname: '/private' + '/' + id }, undefined, {
+						shallow: true,
+					});
 					break;
 				case Defaults.MapPersistenceStrategy.Legacy:
 					window.location.hash = '#' + id;
@@ -187,11 +185,9 @@ function Environment(props) {
 					break;
 				default:
 				case Defaults.MapPersistenceStrategy.PublicUnauthenticated:
-					Router.push(
-						{ pathname: '/public' + "/" + id },
-						undefined, 
-						{shallow: true}
-					);
+					Router.push({ pathname: '/public' + '/' + id }, undefined, {
+						shallow: true,
+					});
 					break;
 			}
 
@@ -228,10 +224,10 @@ function Environment(props) {
 	const loadFromRemoteStorage = async function() {
 		const privateDataStore = async (id, onceLoaded) => {
 			const r = await API.graphql({
-				query: getMap, 
+				query: getMap,
 				authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'getMap',
-				variables: { id: id }
+				variables: { id: id },
 			});
 			console.log('--- Loaded', r);
 			onceLoaded(r.data.getMap);
@@ -284,11 +280,11 @@ function Environment(props) {
 			setMapOwner(false);
 		};
 
-		const withCloneAction = () => {
-			setCurrentUrl('(unsaved)');
-			setSaveOutstanding(true);
-			window.location.hash = '';
-		};
+		// const withCloneAction = () => {
+		// 	setCurrentUrl('(unsaved)');
+		// 	setSaveOutstanding(true);
+		// 	window.location.hash = '';
+		// };
 
 		const finishLoad = function(map, finished) {
 			setShoudLoad(false);
@@ -312,10 +308,14 @@ function Environment(props) {
 		};
 
 		let loadStrategy = {};
-		loadStrategy[Defaults.MapPersistenceStrategy.Private] = id => privateDataStore(id, finishLoad);
-		loadStrategy[Defaults.MapPersistenceStrategy.Public] = id => publicDataStore(id, finishLoad);
-		loadStrategy[Defaults.MapPersistenceStrategy.PublicUnauthenticated] = id => publicUnauthDataStore(id, finishLoad);
-		loadStrategy[Defaults.MapPersistenceStrategy.Legacy] = id => legacyPublicDataStore(id, finishLoad);
+		loadStrategy[Defaults.MapPersistenceStrategy.Private] = id =>
+			privateDataStore(id, finishLoad);
+		loadStrategy[Defaults.MapPersistenceStrategy.Public] = id =>
+			publicDataStore(id, finishLoad);
+		loadStrategy[Defaults.MapPersistenceStrategy.PublicUnauthenticated] = id =>
+			publicUnauthDataStore(id, finishLoad);
+		loadStrategy[Defaults.MapPersistenceStrategy.Legacy] = id =>
+			legacyPublicDataStore(id, finishLoad);
 
 		// const loadStrategy = [
 		// 	{
@@ -331,26 +331,26 @@ function Environment(props) {
 
 		// if(shouldLoad){
 		// if (window.location.hash.length > 0) {
-			setActionInProgress(true);
-			
-			// let mapId = window.location.hash.replace('#', '');
-			// if (mapId.indexOf(':') > -1) {
-			// 	mapId = mapId.split(':')[1];
-			// }
-			// let expectedStrategy;
-			// if (window.location.hash.indexOf(':') === -1) expectedStrategy = 'legacy';
-			// else {
-			// 	expectedStrategy = window.location.hash.replace('#', '').split(':')[0];
-			// }
+		setActionInProgress(true);
 
-			// const loadedStrategy = loadStrategy.filter(
-			// 	s => s['key'] === expectedStrategy
-			// );
+		// let mapId = window.location.hash.replace('#', '');
+		// if (mapId.indexOf(':') > -1) {
+		// 	mapId = mapId.split(':')[1];
+		// }
+		// let expectedStrategy;
+		// if (window.location.hash.indexOf(':') === -1) expectedStrategy = 'legacy';
+		// else {
+		// 	expectedStrategy = window.location.hash.replace('#', '').split(':')[0];
+		// }
 
-			setCurrentUrl('(loading...)');
+		// const loadedStrategy = loadStrategy.filter(
+		// 	s => s['key'] === expectedStrategy
+		// );
 
-			console.log('--- Set Load Strategy: ', mapPersistenceStrategy);
-			await loadStrategy[mapPersistenceStrategy](currentId);
+		setCurrentUrl('(loading...)');
+
+		console.log('--- Set Load Strategy: ', mapPersistenceStrategy);
+		await loadStrategy[mapPersistenceStrategy](currentId);
 		// }
 	};
 
@@ -361,11 +361,7 @@ function Environment(props) {
 		setCurrentUrl('(unsaved)');
 		setSaveOutstanding(false);
 		setMapPersistenceStrategy(mapPersistenceStrategy);
-		Router.push(
-			{ pathname: '/' },
-			undefined, 
-			{shallow: true}
-		);
+		Router.push({ pathname: '/' }, undefined, { shallow: true });
 	}
 
 	async function saveMap() {
@@ -529,8 +525,8 @@ function Environment(props) {
 		}
 	}, [mapStyle]);
 
-	useEffect(()=>{
-		if(shouldLoad) loadFromRemoteStorage();
+	useEffect(() => {
+		if (shouldLoad) loadFromRemoteStorage();
 	}, [shouldLoad]);
 
 	useEffect(() => {

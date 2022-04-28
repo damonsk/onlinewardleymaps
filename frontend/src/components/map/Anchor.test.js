@@ -18,7 +18,6 @@ const CreateAnchor = () => (
 			/>
 		</ModKeyPressedProvider>
 	</svg>
-	
 );
 
 describe('Anchor', () => {

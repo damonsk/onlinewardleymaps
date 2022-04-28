@@ -2,7 +2,6 @@ import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
 
 describe('Given Components Evolve', function() {
-	
 	test('When evolve text is supplied then convert output is correct', function() {
 		let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo 0.9';
 		let result = new Converter().parse(actual);
@@ -36,6 +35,4 @@ describe('Given Components Evolve', function() {
 		expect(evolving[0].label.x).toEqual(66);
 		expect(evolving[0].label.y).toEqual(99);
 	});
-
-	
 });
