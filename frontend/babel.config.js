@@ -14,6 +14,8 @@ const env = {
 		plugins: ['require-context-hook'],
 	},
 };
-module.exports = { presets, env };
 
-///module.exports = {presets: ['@babel/preset-env']}
+module.exports = api => {
+	const isTest = api.env('test');
+	return isTest ? { presets, env } : {};
+};
