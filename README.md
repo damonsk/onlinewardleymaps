@@ -16,6 +16,10 @@ Dependancies for running locally. NodeJS and Yarn.
 
     npm install yarn -g
 
+Change directory to frontend.
+
+    cd frontend/
+
 Install dependencies
 
     yarn install
@@ -24,7 +28,7 @@ Commands:
 
 To run locally, develop/edit. Open web browser @ http://localhost:3000
 
-     yarn start
+     yarn dev
 
 To create minified scripts/styling.
 
