@@ -46,7 +46,13 @@ const usages = [
 		Icon: ComponentEvolvedIcon,
 		title: 'To evolve a component',
 		summary: 'evole Name (X Axis)',
-		examples: ['evolve Customer 0.8', 'evolve Cup of Tea evolve 0.8'],
+		examples: ['evolve Physical 0.8', 'evolve Cup of Tea evolve 0.8'],
+	},
+	{
+		Icon: ComponentEvolvedIcon,
+		title: 'To evolve a component with new name',
+		summary: 'evole Name->NewName (X Axis)',
+		examples: ['evolve Physical->Virtual 0.8'],
 	},
 	{
 		title: 'To link components',

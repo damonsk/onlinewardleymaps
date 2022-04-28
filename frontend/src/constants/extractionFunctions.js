@@ -153,13 +153,19 @@ export const setHeightWidth = (o, line) => {
 
 export const setNameWithMaturity = (o, line) => {
 	let name = line.split('evolve ')[1].trim();
+	let override = '';
 	const evolveMaturity = line.match(/\s[0-9]?\.[0-9]+[0-9]?/);
 	let newPoint = 0.85;
 	if (evolveMaturity.length > 0) {
 		newPoint = parseFloat(evolveMaturity[0]);
-		name = name.split(newPoint)[0].trim();
+		const unprocessedName = name.split(newPoint)[0].trim();
+		name = unprocessedName.split(newPoint)[0].trim();
+		if(name.indexOf('->') > -1){
+			override = unprocessedName.split('->')[1].trim();
+			name = unprocessedName.split('->')[0].trim();
+		}
 	}
-	return Object.assign(o, { name: name }, { maturity: newPoint });
+	return Object.assign(o, { name: name, override: override }, { maturity: newPoint });
 };
 
 export const setCoords = (o, line) => {

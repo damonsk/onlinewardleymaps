@@ -20,7 +20,7 @@ const Breadcrumb = ({ currentUrl, mapPersistenceStrategy, mapReadOnly }) => {
 				'.  There is attribution to your account';
 			break;
 		case MapPersistenceStrategy.Legacy:
-			typeIndicator = 'Legacy Map';
+			typeIndicator = 'v1 Map';
 			break;
 
 		default:

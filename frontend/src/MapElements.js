@@ -41,6 +41,7 @@ export default class MapElements {
 				evolving: false,
 				evolved: true,
 				label: v.label,
+				override: v.override,
 				line: v.line,
 				type: el.type,
 				decorators: v.decorators,
@@ -95,7 +96,7 @@ export default class MapElements {
 			.concat(evolvedElements)
 			.concat(evolveElements);
 		if (this.pipelines === undefined) return collection;
-		return collection
+		const e = collection
 			.map(e => {
 				let component = this.pipelines.find(el => el.name === e.name);
 				e.pipeline =
@@ -103,5 +104,7 @@ export default class MapElements {
 				return e;
 			})
 			.flat();
+		console.log(e);
+		return e;
 	}
 }
