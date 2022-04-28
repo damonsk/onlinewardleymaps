@@ -21,3 +21,4 @@ amplifytools.xcconfig
 **.sample
 #amplify-do-not-edit-end
 .DS_Store
+yarn.lock
