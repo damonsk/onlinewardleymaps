@@ -216,7 +216,12 @@ function Environment(props) {
 
 	const loadFromRemoteStorage = async function() {
 		const privateDataStore = async (id, onceLoaded) => {
-			const r = await API.graphql(graphqlOperation(getMap, { id: id }));
+			const r = await API.graphql({
+				query: getMap, 
+				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				operationName: 'getMap',
+				variables: { id: id }
+			});
 			console.log('--- Loaded', r);
 			onceLoaded(r.data.getMap);
 			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Private);

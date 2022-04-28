@@ -41,7 +41,7 @@ function Map(props) {
 			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Public);
 		}
 		if(slug[0] !== undefined && slug[0] === 'private'){
-			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Public);
+			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Private);
 		}
 		if(slug[1] !== undefined && slug[1] !== null){
 			setCurrentId(slug[1]);

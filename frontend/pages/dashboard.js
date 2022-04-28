@@ -58,7 +58,10 @@ const Dashboard = props => {
 
 	const reload = () => {
 		const getPrivateMaps = async () =>
-			await API.graphql(graphqlOperation(listMaps));
+			await API.graphql({query: listMaps, 
+				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				operationName: 'listMaps'
+			});
 		const getPublicMaps = async () =>
 			await API.graphql(graphqlOperation(listPublicMaps));
 		getPrivateMaps()
