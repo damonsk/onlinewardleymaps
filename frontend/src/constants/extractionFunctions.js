@@ -294,10 +294,11 @@ export const setInertia = (o, line) => {
 };
 
 export const setText = (o, line, config) => {
+	const start = line.indexOf(config.keyword);
 	let text = line
 		.substr(
-			`${config.keyword} `.length,
-			line.length - `${config.keyword} `.length
+			`${config.keyword} `.length + start,
+			line.length - `${config.keyword} `.length + start
 		)
 		.trim()
 		.split(' [')[0]
