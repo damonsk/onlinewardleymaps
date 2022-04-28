@@ -58,7 +58,7 @@ const privateSave = async (map, hash, callback) => {
 	if (hash.length > 0) {
 		const r = await API.graphql({
 			query: updateMap,
-			variables: { input: Object.assign(map, { id: hash.split(':')[1] }) },
+			variables: { input: Object.assign(map, { id: hash }) },
 			authMode: 'AMAZON_COGNITO_USER_POOLS',
 			operationName: 'updateMap',
 		});

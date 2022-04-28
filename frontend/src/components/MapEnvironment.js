@@ -20,6 +20,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Grid } from '@mui/material';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import Router from 'next/router';
 
 import {
 	getMap,
@@ -170,7 +171,12 @@ function Environment(props) {
 		const followOnActions = async function(id, resultFromAction) {
 			switch (mapPersistenceStrategy) {
 				case Defaults.MapPersistenceStrategy.Private:
-					window.location.hash = '#private:' + id;
+					//window.location.hash = '#private:' + id;
+					Router.push(
+						{ pathname: '/private' + "/" + id },
+						undefined, 
+						{shallow: true}
+					);
 					break;
 				case Defaults.MapPersistenceStrategy.Legacy:
 					window.location.hash = '#' + id;
@@ -180,7 +186,11 @@ function Environment(props) {
 					break;
 				default:
 				case Defaults.MapPersistenceStrategy.PublicUnauthenticated:
-					window.location.hash = '#anon:' + id;
+					Router.push(
+						{ pathname: '/public' + "/" + id },
+						undefined, 
+						{shallow: true}
+					);
 					break;
 			}
 
@@ -354,7 +364,7 @@ function Environment(props) {
 
 	async function saveMap() {
 		setCurrentUrl('(saving...)');
-		saveToUserDataStore(window.location.hash.replace('#', ''));
+		saveToUserDataStore(currentId);
 	}
 
 	function downloadMap() {
