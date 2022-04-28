@@ -1,0 +1,102 @@
+{
+	"name": "online-wardley-maps",
+	"version": "1.117.0",
+	"main": "index.js",
+	"license": "MIT",
+	"devDependencies": {
+		"@rollup/plugin-babel": "^5.2.1",
+		"@rollup/plugin-commonjs": "^16.0.0",
+		"@rollup/plugin-node-resolve": "^10.0.0",
+		"@storybook/addon-storyshots": "^5.3.8",
+		"@storybook/react": "^5.3.8",
+		"@testing-library/jest-dom": "^4.2.4",
+		"@testing-library/react": "^9.4.0",
+		"@types/node": "^14.14.33",
+		"@types/nprogress": "^0.2.0",
+		"@types/react": "^17.0.3",
+		"@types/styled-components": "^5.1.8",
+		"babel-plugin-require-context-hook": "^1.0.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.7.0",
+		"eslint-plugin-prettier": "^3.1.2",
+		"eslint-plugin-react": "^7.17.0",
+		"eslint-plugin-react-hooks": "^2.3.0",
+		"husky": "^3.1.0",
+		"lint-staged": "^9.5.0",
+		"node-sass": "^4.11.0",
+		"prettier": "^1.19.1",
+		"pretty-quick": "^2.0.1",
+		"react-scripts": "^3.4.1",
+		"react-test-renderer": "^16.12.0",
+		"rollup": "^2.32.1",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-node-resolve": "^5.2.0",
+		"rollup-plugin-peer-deps-external": "^2.2.4",
+		"rollup-plugin-sass": "^1.2.2",
+		"typescript": "^4.2.3"
+	},
+	"env": {
+		"browser": true,
+		"node": true,
+		"es6": true,
+		"jest": true
+	},
+	"build": {
+		"directories": {
+			"output": "release/"
+		}
+	},
+	"resolutions": {
+		"//": "See https://github.com/facebook/create-react-app/issues/11773",
+		"react-error-overlay": "6.0.9"
+	},
+	"dependencies": {
+		"@aws-amplify/ui-react": "^2.1.6",
+		"@emotion/react": "^11.9.0",
+		"@emotion/styled": "^11.8.1",
+		"@mui/icons-material": "^5.6.0",
+		"@mui/material": "5.2.7",
+		"@mui/styles": "5.4.1",
+		"ace-builds": "^1.4.7",
+		"amplify-material-ui": "^1.0.2",
+		"aws-amplify": "^4.3.12",
+		"core-js": "^3.6.5",
+		"html2canvas": "^1.0.0-rc.5",
+		"lodash.merge": "^4.6.2",
+		"next": "10.0.8",
+		"prop-types": "^15.7.2",
+		"react": "17.0.1",
+		"react-ace": "^9.5.0",
+		"react-dom": "17.0.1",
+		"styled-components": "5.3.3"
+	},
+	"lint-staged": {
+		"*.{js,jsx}": [
+			"yarn run prettify --staged",
+			"yarn run lint src/ --fix",
+			"git add"
+		]
+	},
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "eslint src/",
+		"prettify": "pretty-quick",
+		"precommit": "lint-staged",
+		"storybook": "start-storybook -p 9001 -c .storybook",
+		"package": "rollup -c"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}

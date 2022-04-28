@@ -1,0 +1,44 @@
+{
+	"name": "wmlandscape",
+	"version": "1.268.1",
+	"description": "The engine that powers OnlineWardleyMaps and VSCode-Wardley-Maps",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "rollup -c",
+		"start": "rollup -c -w"
+	},
+	"files": [
+		"dist"
+	],
+	"keywords": [],
+	"author": "Damon Skelhorn",
+	"license": "MIT",
+	"devDependencies": {
+		"@babel/cli": "^7.12.1",
+		"@babel/core": "^7.12.3",
+		"@babel/preset-env": "^7.12.1",
+		"@babel/preset-react": "^7.12.1",
+		"@rollup/plugin-babel": "^5.2.1",
+		"@rollup/plugin-commonjs": "^15.1.0",
+		"@rollup/plugin-node-resolve": "^9.0.0",
+		"autoprefixer": "^10.0.1",
+		"babel-core": "^6.26.3",
+		"babel-runtime": "^6.26.0",
+		"node-sass": "^4.14.1",
+		"rollup": "^2.32.1",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-node-resolve": "^5.2.0",
+		"rollup-plugin-peer-deps-external": "^2.2.4",
+		"rollup-plugin-postcss": "^3.1.8",
+		"rollup-plugin-sass": "^1.2.2"
+	},
+	"peerDependencies": {
+		"core-js": "^3.6.5",
+		"lodash.merge": "^4.6.2",
+		"prop-types": "^15.7.2",
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1",
+		"react-icons": "^3.11.0"
+	},
+	"dependencies": {}
+}
