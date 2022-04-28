@@ -6,23 +6,26 @@ import { render } from '@testing-library/react';
 import * as MapStyles from '../../constants/mapstyles';
 
 const CreateAnchor = () => (
-	<ModKeyPressedProvider>
-		<Anchor
-			anchor={{ name: 'AnchorName', maturity: 0.12, visibility: 0.67, id: 1 }}
-			mapStyleDefs={MapStyles.Plain}
-			mapDimensions={{ width: 600, height: 400 }}
-			mapText={''}
-			mutateMapText={() => {}}
-			onClick={() => {}}
-		/>
-	</ModKeyPressedProvider>
+	<svg>
+		<ModKeyPressedProvider>
+			<Anchor
+				anchor={{ name: 'AnchorName', maturity: 0.12, visibility: 0.67, id: 1 }}
+				mapStyleDefs={MapStyles.Plain}
+				mapDimensions={{ width: 600, height: 400 }}
+				mapText={''}
+				mutateMapText={() => {}}
+				onClick={() => {}}
+			/>
+		</ModKeyPressedProvider>
+	</svg>
+	
 );
 
 describe('Anchor', () => {
 	describe('init', () => {
 		it('should render as a svg element', () => {
 			const component = create(CreateAnchor()).toJSON();
-			expect(component.type).toBe('g');
+			expect(component.children[0].type).toBe('g');
 		});
 		it('should contain text element with name set', () => {
 			const component = render(CreateAnchor());

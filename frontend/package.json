@@ -60,6 +60,7 @@
 		"ace-builds": "^1.4.7",
 		"amplify-material-ui": "^1.0.2",
 		"aws-amplify": "^4.3.12",
+		"babel-jest": "^28.0.2",
 		"core-js": "^3.6.5",
 		"html2canvas": "^1.0.0-rc.5",
 		"lodash.merge": "^4.6.2",
@@ -85,7 +86,8 @@
 		"prettify": "pretty-quick",
 		"precommit": "lint-staged",
 		"storybook": "start-storybook -p 9001 -c .storybook",
-		"package": "rollup -c"
+		"package": "rollup -c",
+		"test": "jest --env=jsdom"
 	},
 	"browserslist": {
 		"production": [
