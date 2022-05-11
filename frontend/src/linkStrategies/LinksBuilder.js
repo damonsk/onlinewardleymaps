@@ -21,7 +21,6 @@ export default class LinksBuilder {
 						new NoneEvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
 						new BothEvolvedLinksStrategy(mapLinks, mapElements),
 						new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
-						new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, mapElements),
 						new AnchorEvolvedLinksStrategy(mapLinks, mapElements, mapAnchors),
 				  ]
 				: [];
@@ -32,6 +31,7 @@ export default class LinksBuilder {
 			new EvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
 			new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
 			new AnchorNoneEvolvedLinksStrategy(mapLinks, mapElements, mapAnchors),
+			new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, mapElements),
 		]);
 	}
 

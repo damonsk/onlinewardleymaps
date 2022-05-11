@@ -51,7 +51,7 @@ export function useModKeyPressed() {
 	useEffect(() => {
 		const test = /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
 		setCTRL_OR_CMD(test ? 'Meta' : 'Control');
-	}, []);
+	});
 
 	const [CTRL_OR_CMD, setCTRL_OR_CMD] = useState('Control');
 
