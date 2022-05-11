@@ -293,6 +293,7 @@ function Environment(props) {
 				setMapIterations(parsed);
 				if (parsed.length > 0) {
 					setCurrentIteration(0);
+					setMapText(parsed[0].mapText);
 				}
 			}
 			setCurrentUrl(window.location.href);
@@ -359,6 +360,9 @@ function Environment(props) {
 		setCurrentId('');
 		setCurrentUrl('(unsaved)');
 		setSaveOutstanding(false);
+		setCurrentIteration(-1);
+		setMapIterations([]);
+
 		setMapPersistenceStrategy(mapPersistenceStrategy);
 		Router.push({ pathname: '/' }, undefined, { shallow: true });
 	}

@@ -104,7 +104,6 @@ export default class MapElements {
 				return e;
 			})
 			.flat();
-		console.log(e);
 		return e;
 	}
 }
