@@ -149,7 +149,6 @@ function MapCanvas(props) {
 						mapStyleClass={props.mapStyleDefs.className}
 					/>
 					<MapGrid
-						mapYAxis={props.mapYAxis}
 						mapDimensions={props.mapDimensions}
 						mapStyleDefs={props.mapStyleDefs}
 						evolutionOffsets={props.evolutionOffsets}

@@ -15,7 +15,10 @@ function ComponentText(props) {
 								.replace(/\s/g, '')
 								.indexOf(
 									'evolve' +
-										props.element.name.replace(/\s/g, '') + (props.element.override.length > 0 ? '->' + props.element.override : '') +
+										props.element.name.replace(/\s/g, '') +
+										(props.element.override.length > 0
+											? '->' + props.element.override
+											: '') +
 										props.element.maturity
 								) === 0
 						) {
@@ -69,7 +72,9 @@ function ComponentText(props) {
 			>
 				<ComponentTextSymbol
 					id={elementId}
-					text={props.element.override ? props.element.override : props.element.name}
+					text={
+						props.element.override ? props.element.override : props.element.name
+					}
 					evolved={props.element.evolved}
 					styles={props.mapStyleDefs.component}
 					onClick={props.onClick}

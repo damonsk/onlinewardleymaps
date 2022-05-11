@@ -9,7 +9,6 @@ export default class PresentationExtractionStrategy {
 		let presentationObject = {
 			style: 'plain',
 			annotations: { visibility: 0.9, maturity: 0.1 },
-			yAxis: { label: 'Value Chain', max: 'Visible', min: 'Invisible' },
 		};
 		let lines = this.data.split('\n');
 		for (let i = 0; i < lines.length; i++) {
@@ -26,17 +25,6 @@ export default class PresentationExtractionStrategy {
 						maturity: 0.1,
 					}
 				);
-			}
-			if (element.trim().indexOf('y-axis ') === 0) {
-				let yAxis = element
-					.trim()
-					.split('y-axis ')[1]
-					.split('->');
-				if (yAxis.length === 3) {
-					presentationObject.yAxis.label = yAxis[0].trim();
-					presentationObject.yAxis.min = yAxis[1].trim();
-					presentationObject.yAxis.max = yAxis[2].trim();
-				}
 			}
 		}
 		return { presentation: presentationObject };

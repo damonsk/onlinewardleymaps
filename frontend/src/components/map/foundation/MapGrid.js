@@ -15,7 +15,7 @@ function MapGrid(props) {
 				y2="0"
 				stroke={props.mapStyleDefs.stroke}
 				strokeWidth={props.mapStyleDefs.strokeWidth}
-				markerEnd="url(#graphArrow)"
+				strokeDasharray={props.mapStyleDefs.strokeDasharray}
 			/>
 			<line
 				x1="-2em"
@@ -43,28 +43,12 @@ function MapGrid(props) {
 			/>
 			<text
 				fill={props.mapStyleDefs.mapGridTextColor}
-				x="0"
-				y="-0.4em"
-				textAnchor="start"
-			>
-				{props.mapYAxis.min}
-			</text>
-			<text
-				fill={props.mapStyleDefs.mapGridTextColor}
-				x={props.mapDimensions.height / 2}
-				y="-0.4em"
-				textAnchor="middle"
-				fontWeight="bold"
-			>
-				{props.mapYAxis.label}
-			</text>
-			<text
-				fill={props.mapStyleDefs.mapGridTextColor}
-				x={props.mapDimensions.height - 20}
+				x={props.mapDimensions.height - 2}
 				y="-0.4em"
 				textAnchor="end"
+				fontWeight="bold"
 			>
-				{props.mapYAxis.max}
+				Value Chain
 			</text>
 		</g>
 	);

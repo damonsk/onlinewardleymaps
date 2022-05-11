@@ -160,12 +160,16 @@ export const setNameWithMaturity = (o, line) => {
 		newPoint = parseFloat(evolveMaturity[0]);
 		const unprocessedName = name.split(newPoint)[0].trim();
 		name = unprocessedName.split(newPoint)[0].trim();
-		if(name.indexOf('->') > -1){
+		if (name.indexOf('->') > -1) {
 			override = unprocessedName.split('->')[1].trim();
 			name = unprocessedName.split('->')[0].trim();
 		}
 	}
-	return Object.assign(o, { name: name, override: override }, { maturity: newPoint });
+	return Object.assign(
+		o,
+		{ name: name, override: override },
+		{ maturity: newPoint }
+	);
 };
 
 export const setCoords = (o, line) => {
