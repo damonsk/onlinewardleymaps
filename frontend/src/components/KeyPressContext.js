@@ -43,15 +43,19 @@ export function useKeysPressed(allowedKeys) {
 	return pressedKeys;
 }
 
-// const isDarwin = /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
-// const CTRL_OR_CMD = isDarwin ? 'Meta' : 'Control';
-
-// another custom hook composed from the useKeysPressed hook
 export function useModKeyPressed() {
 	useEffect(() => {
-		const test = /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
-		setCTRL_OR_CMD(test ? 'Meta' : 'Control');
-	});
+		const initialLoad = () => {
+			const test = /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
+			setCTRL_OR_CMD(test ? 'Meta' : 'Control');
+		};
+
+		window.addEventListener('load', initialLoad);
+
+		return function cleanup() {
+			window.removeEventListener('load', initialLoad);
+		};
+	}, []);
 
 	const [CTRL_OR_CMD, setCTRL_OR_CMD] = useState('Control');
 

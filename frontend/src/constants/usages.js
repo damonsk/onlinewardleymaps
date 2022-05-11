@@ -143,7 +143,12 @@ const usages = [
 	{
 		title: 'Available styles',
 		summary: 'Change the look and feel of a map',
-		examples: ['style wardley', 'style handwritten', 'style colour'],
+		examples: [
+			'style wardley',
+			'style handwritten',
+			'style colour',
+			'style dark',
+		],
 	},
 ];
 
