@@ -169,27 +169,6 @@ function Environment(props) {
 		};
 
 		const followOnActions = async function(id, resultFromAction) {
-			switch (mapPersistenceStrategy) {
-				case Defaults.MapPersistenceStrategy.Private:
-					//window.location.hash = '#private:' + id;
-					Router.push({ pathname: '/private' + '/' + id }, undefined, {
-						shallow: true,
-					});
-					break;
-				case Defaults.MapPersistenceStrategy.Legacy:
-					window.location.hash = '#' + id;
-					break;
-				case Defaults.MapPersistenceStrategy.Public:
-					window.location.hash = '#public:' + id;
-					break;
-				default:
-				case Defaults.MapPersistenceStrategy.PublicUnauthenticated:
-					Router.push({ pathname: '/public' + '/' + id }, undefined, {
-						shallow: true,
-					});
-					break;
-			}
-
 			if (mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Private) {
 				const imageData = await makeSnapShot();
 				await createImage(imageData, 'private', id + '.png');
@@ -197,6 +176,28 @@ function Environment(props) {
 			if (mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Public) {
 				const imageData = await makeSnapShot();
 				await createImage(imageData, 'public', id + '.png');
+			}
+
+			if (currentId === null) {
+				switch (mapPersistenceStrategy) {
+					case Defaults.MapPersistenceStrategy.Private:
+						Router.push('/private' + '/' + id, undefined, {
+							shallow: true,
+						});
+						break;
+					case Defaults.MapPersistenceStrategy.Legacy:
+						window.location.hash = '#' + id;
+						break;
+					case Defaults.MapPersistenceStrategy.Public:
+						window.location.hash = '#public:' + id;
+						break;
+					default:
+					case Defaults.MapPersistenceStrategy.PublicUnauthenticated:
+						Router.push('/public' + '/' + id, undefined, {
+							shallow: true,
+						});
+						break;
+				}
 			}
 
 			setActionInProgress(false);
