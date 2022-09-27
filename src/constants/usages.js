@@ -124,6 +124,7 @@ const usages = [
 		examples: [
 			'evolution First->Second->Third->Fourth',
 			'evolution Novel->Emerging->Good->Best',
+			'evolution 🧪 Genesis  -> ⚒️ Custom ->  🛒 Product ->  ⛽ Commodity',
 		],
 	},
 	{
