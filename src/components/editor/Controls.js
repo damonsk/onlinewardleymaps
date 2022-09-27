@@ -21,6 +21,7 @@ function Controls(props) {
 		setMetaText,
 		newMapClick,
 		downloadMapImage,
+		downloadMapSvg,
 		currentUrl,
 		setShowLineNumbers,
 		showLineNumbers,
@@ -86,7 +87,10 @@ function Controls(props) {
 				<Dropdown.Item eventKey="1" onClick={downloadMapImage}>
 					Download as PNG
 				</Dropdown.Item>
-				<Dropdown.Item eventKey="2" onClick={() => setModalShow(true)}>
+				<Dropdown.Item eventKey="2" onClick={downloadMapSvg}>
+					Download as SVG
+				</Dropdown.Item>
+				<Dropdown.Item eventKey="3" onClick={() => setModalShow(true)}>
 					Get Clone URL
 				</Dropdown.Item>
 				<Dropdown.Item
