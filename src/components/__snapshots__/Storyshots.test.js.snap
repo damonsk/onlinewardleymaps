@@ -635,6 +635,14 @@ exports[`Storyshots Usage  default 1`] = `
     evolution Novel-&gt;Emerging-&gt;Good-&gt;Best
   </span>
   <br />
+  <span
+    className="add clickable"
+    href="#"
+    onClick={[Function]}
+  >
+    evolution 🧪 Genesis  -&gt; ⚒️ Custom -&gt;  🛒 Product -&gt;  ⛽ Commodity
+  </span>
+  <br />
   <br />
   ------------------------
   <br />
