@@ -6,7 +6,7 @@ builds
 build
 docs/_site
 docs/.sass-cache
-docs/Gemfile.lock 
+docs/Gemfile.lock
 wmlandscape/package-lock.json
 docs/.jekyll-metadata
 package-lock.json
