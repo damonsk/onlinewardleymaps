@@ -34,7 +34,7 @@
 	"peerDependencies": {
 		"bootstrap": "^4.5.3",
 		"core-js": "^3.6.5",
-		"lodash.merge": "^4.6.2",
+		"lodash.merge": "^4.6.2", 
 		"prop-types": "^15.7.2",
 		"react": "^17.0.1",
 		"react-bootstrap": "^1.4.0",
