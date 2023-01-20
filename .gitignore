@@ -9,3 +9,4 @@ docs/.sass-cache
 docs/Gemfile.lock
 wmlandscape/package-lock.json
 docs/.jekyll-metadata
+package-lock.json
