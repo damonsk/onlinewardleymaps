@@ -5,11 +5,6 @@ import { ThemeProvider as MaterialUIThemeProvider } from '@mui/material/styles';
 import StylesProvider from '@mui/styles/StylesProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme, lightTheme } from '../src/theme';
-// import { ToastContainer } from 'react-toastify'
-// import dynamic from 'next/dynamic'
-// import 'nprogress/nprogress.css'
-//import 'react-toastify/dist/ReactToastify.css'
-//import '@aws-amplify/ui/dist/style.css';
 import { AmplifyAuthProvider } from '../src/contexts/auth';
 import { configureAmplify } from '../src/lib/amplify/awsConfig';
 import Footer from '../src/components/page/Footer';
@@ -17,14 +12,6 @@ import { Authenticator, Greetings } from 'amplify-material-ui';
 import { Hub, Auth } from 'aws-amplify';
 import { Modal, Box } from '@mui/material';
 
-// const TopProgressBar = dynamic(
-//   () => {
-//     return import('../src/components/TopProgressBar')
-//   },
-//   { ssr: false }
-// )
-
-// NOTE: Move this to each pages component if you use getStaticProps
 configureAmplify();
 
 function MyApp({ Component, pageProps }) {
