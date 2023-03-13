@@ -202,6 +202,15 @@ div.main {
 		padding: 5px;
 		margin-bottom: 2px;
 	}
+
+	&-list-local {
+		margin-right: 8px;
+		cursor: pointer;
+	}
+
+	&-list-label {
+		margin-left: 8px;
+	}
 }
 
 .tool-bar {
