@@ -83,7 +83,6 @@
 		"start": "next start",
 		"lint": "eslint src/",
 		"prettify": "pretty-quick",
-		"precommit": "lint-staged",
 		"storybook": "start-storybook -p 9001 -c .storybook",
 		"package": "rollup -c",
 		"test": "jest --env=jsdom"
@@ -99,5 +98,10 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
 	}
 }
