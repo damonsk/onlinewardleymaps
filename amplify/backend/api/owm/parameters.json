@@ -2,12 +2,9 @@
   "AppSyncApiName": "owm",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "APIKeyExpirationEpoch": 1705786112,
+  "APIKeyExpirationEpoch": 1901717901,
   "AuthCognitoUserPoolId": {
-    "Fn::GetAtt": [
-      "authowm48e969c9",
-      "Outputs.UserPoolId"
-    ]
+    "Fn::GetAtt": ["authowm48e969c9", "Outputs.UserPoolId"]
   },
   "AuthModeLastUpdated": "2023-01-20T20:23:25.988Z"
 }
