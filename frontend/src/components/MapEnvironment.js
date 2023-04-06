@@ -178,7 +178,7 @@ function Environment(props) {
 				await createImage(imageData, 'public', id + '.png');
 			}
 
-			if (currentId === null) {
+			if (currentId === '') {
 				switch (mapPersistenceStrategy) {
 					case Defaults.MapPersistenceStrategy.Private:
 						Router.push('/private' + '/' + id, undefined, {
