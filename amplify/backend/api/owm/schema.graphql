@@ -7,7 +7,7 @@ type PublicMap @model @auth(rules: [{allow: public, operations: [read, update]},
   mapIterations: AWSJSON
 }
 
-type UnauthenticatedMap @model @auth(rules: [{allow: public, operations: [create, read, update]}]) {
+type UnauthenticatedMap @model @auth(rules: [{allow: public, provider: apiKey, operations: [create, read, update]}]) {
   id: ID!
   mapText: String
   name: String
