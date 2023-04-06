@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API } from 'aws-amplify';
 import { listMaps, listPublicMaps } from '../src/graphql/queries';
 import DashboardMapItem from '../src/components/DashboardMapItem';
 import LeftNavigation from '../src/components/page/LeftNavigation';
@@ -58,12 +58,17 @@ const Dashboard = props => {
 
 	const reload = () => {
 		const getPrivateMaps = async () =>
-			await API.graphql({query: listMaps, 
+			await API.graphql({
+				query: listMaps,
 				authMode: 'AMAZON_COGNITO_USER_POOLS',
-				operationName: 'listMaps'
+				operationName: 'listMaps',
 			});
 		const getPublicMaps = async () =>
-			await API.graphql(graphqlOperation(listPublicMaps));
+			await API.graphql({
+				query: listPublicMaps,
+				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				operationName: 'listMaps',
+			});
 		getPrivateMaps()
 			.then(r => {
 				console.log('setPrivateMaps', r.data);
