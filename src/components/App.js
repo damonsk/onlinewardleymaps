@@ -264,7 +264,7 @@ function App() {
 				<nav className="navbar navbar-dark">
 					<div className="container-fluid">
 						<span className="navbar-brand">
-							<h3>Online Wardley Maps</h3>
+							<h3>Wardley Maps AI</h3>
 						</span>
 
 						<div id="controlsMenuControl">
