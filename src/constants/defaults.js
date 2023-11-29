@@ -1,5 +1,5 @@
 export const PageTitle =
-	'Wardley Maps AI - Draw Wardley Maps in seconds using AI';
+	'Wardley Maps AI - Draw Wardley Maps in seconds using AI v2';
 
 export const ApiEndpoint = 'https://maps.wardleymaps.ai/v1/maps/';
 
