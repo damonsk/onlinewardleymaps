@@ -1,7 +1,7 @@
 export const PageTitle =
 	'Wardley Maps AI - Draw Wardley Maps in seconds using AI';
 
-export const ApiEndpoint = 'https://api.wardleymaps.ai/v1/maps/';
+export const ApiEndpoint = 'https://maps.wardleymaps.ai/v1/maps/';
 
 export const defaultLabelOffset = { x: 5, y: -10 };
 export const increasedLabelOffset = { x: 5, y: -20 };
