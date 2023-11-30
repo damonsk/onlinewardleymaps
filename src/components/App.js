@@ -107,7 +107,6 @@ function App() {
 	};
 
 	const saveToRemoteStorage = function(hash) {
-	    console.log('Saving to remote storage with hash:', hash); // Debugging: Log the hash
 	
 	    fetch(Defaults.ApiEndpoint + 'save', {
 	        method: 'POST',
@@ -115,21 +114,17 @@ function App() {
 	        body: JSON.stringify({ id: hash, text: mapText, meta: metaText }),
 	    })
 	    .then(resp => {
-	        console.log('Received response:', resp); // Debugging: Log the response
 	        return resp.json();
 	    })
 	    .then(data => {
-	        console.log('Response data:', data); // Debugging: Log the data received after parsing JSON
 	        window.location.hash = '#' + data.id;
 	        setCurrentUrl(window.location.href);
 	        setSaveOutstanding(false);
 	    })
 	    .catch(function(error) {
-	        console.log('Request failed', error); // This already logs the error
 	        setCurrentUrl('(could not save map, please try again)');
 	    });
 	};
-
 
 	const loadFromRemoteStorage = function() {
 		if (window.location.hash.length > 0) {
