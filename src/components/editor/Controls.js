@@ -111,16 +111,6 @@ function Controls(props) {
 				>
 					{showLinkedEvolved ? 'Hide Evolved Links' : 'Show Evolved Links'}
 				</Dropdown.Item>
-				<Dropdown.Divider />
-				<Dropdown.Item
-					eventKey="1"
-					className="patron"
-					rel="noreferrer noopener"
-					href="https://www.patreon.com/mapsascode"
-					target="_blank"
-				>
-					Become a Patron
-				</Dropdown.Item>
 			</DropdownButton>
 
 			<Modal
