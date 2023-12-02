@@ -399,7 +399,7 @@ function App() {
 							target="_blank" //eslint-disable-line react/jsx-no-target-blank
 							rel="noopener"
 						>
-							@damonsk
+							@damonsk. 
 						</a>
 						Modified for AI by{' '}
 						<a
