@@ -459,13 +459,12 @@ function App() {
 					<p>
 						Developed by{' '}
 						<a
-							href="https://twitter.com/damonsk"
+							href="https://www.linkedin.com/in/skels/"
 							target="_blank" //eslint-disable-line react/jsx-no-target-blank
 							rel="noopener"
 						>
-							@damonsk
+							Damon S.
 						</a>
-						.
 					</p>
 					<p>
 						Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn
