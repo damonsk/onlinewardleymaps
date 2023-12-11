@@ -1,20 +1,6 @@
 projects:
-  # onlinewardleymaps:
-  #   schemaPath: amplify/backend/api/onlinewardleymaps/build/schema.graphql
-  #   includes:
-  #     - src/graphql/**/*.js
-  #   excludes:
-  #     - ./amplify/**
-  #   extensions:
-  #     amplify:
-  #       codeGenTarget: javascript
-  #       generatedFileName: ''
-  #       docsFilePath: src/graphql
-  #       region: eu-west-1
-  #       apiId: null
-  #       maxDepth: 2
   owm:
-    schemaPath: frontend/graphql/schema.json
+    schemaPath: graphql/schema.json
     includes:
       - src/graphql/**/*.js
     excludes:
@@ -22,8 +8,19 @@ projects:
     extensions:
       amplify:
         codeGenTarget: javascript
-        generatedFileName: ''
-        docsFilePath: frontend/src/graphql
+        generatedFileName: ""
+        docsFilePath: src/graphql
+  betaowm:
+    schemaPath: graphql/schema.json
+    includes:
+      - src/graphql/**/*.js
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: javascript
+        generatedFileName: ""
+        docsFilePath: src/graphql
 extensions:
   amplify:
     version: 3
