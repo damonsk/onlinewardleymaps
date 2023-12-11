@@ -2,16 +2,16 @@ frontend/yarn.lock
 
 .DS_Store
 yarn.lock
-amplify/team-provider-info.json
+frontend/amplify/team-provider-info.json
 
 #amplify-do-not-edit-begin
-amplify/\#current-cloud-backend
-amplify/.config/local-*
-amplify/logs
-amplify/mock-data
-amplify/mock-api-resources
-amplify/backend/amplify-meta.json
-amplify/backend/.temp
+frontend/amplify/\#current-cloud-backend
+frontend/amplify/.config/local-*
+frontend/amplify/logs
+frontend/amplify/mock-data
+frontend/amplify/mock-api-resources
+frontend/amplify/backend/amplify-meta.json
+frontend/amplify/backend/.temp
 build/
 dist/
 node_modules/
