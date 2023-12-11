@@ -104,11 +104,11 @@ function Footer() {
 				<Typography>
 					Developed by{' '}
 					<Link
-						href="https://twitter.com/damonsk"
+						href="https://www.linkedin.com/in/skels/"
 						target="_blank" //eslint-disable-line react/jsx-no-target-blank
 						rel="noopener"
 					>
-						@damonsk
+						Damon S.
 					</Link>
 				</Typography>
 			</Grid>

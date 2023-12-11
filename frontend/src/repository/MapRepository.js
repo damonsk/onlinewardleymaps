@@ -42,7 +42,7 @@ const legacySave = async (map, hash, callback) => {
 		headers: { 'Content-Type': 'application/json; charset=utf-8' },
 		//body: JSON.stringify(Object.assign(map, { id: hash.split(':')[1] })),
 		body: JSON.stringify({
-			id: hash ? hash.split(':')[1] : '',
+			id: hash ? hash.split(':')[0] : '',
 			text: map.mapText,
 			mapIterations: JSON.stringify(map.mapIterations),
 		}),

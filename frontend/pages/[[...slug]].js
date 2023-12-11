@@ -20,11 +20,18 @@ function Map(props) {
 	);
 	const [shouldLoad, setShouldLoad] = useState(false);
 
-	// forcing build.
+	// forcing build. I'll fix it later.
 	useEffect(() => {
 		setMapOwner(false);
 		setMapReadOnly(false);
 	}, [canSaveMap]);
+
+	// async function makeSnapShot() {
+	// 	return await html2canvas(mapRef.current).then(canvas => {
+	// 		const base64image = canvas.toDataURL('image/png');
+	// 		return base64image;
+	// 	});
+	// }
 
 	useEffect(() => {
 		console.log('slug', slug);
@@ -60,13 +67,6 @@ function Map(props) {
 	useEffect(() => {
 		console.log('[slug::useEffect::currentId]', currentId);
 	}, [currentId]);
-
-	// async function makeSnapShot() {
-	// 	return await html2canvas(mapRef.current).then(canvas => {
-	// 		const base64image = canvas.toDataURL('image/png');
-	// 		return base64image;
-	// 	});
-	// }
 
 	useEffect(() => {
 		if (
