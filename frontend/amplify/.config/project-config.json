@@ -2,15 +2,15 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "owm",
+  "projectName": "betaowm",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
     "framework": "react",
     "config": {
-      "SourceDir": "frontend/",
-      "DistributionDir": "frontend/build",
-      "BuildCommand": "yarn build",
+      "SourceDir": ".",
+      "DistributionDir": "./build",
+      "BuildCommand": "yarn dev",
       "StartCommand": "yarn start"
     }
   }

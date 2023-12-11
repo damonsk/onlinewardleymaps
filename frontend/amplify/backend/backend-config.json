@@ -1,11 +1,13 @@
 {
   "api": {
-    "owm": {
+    "betaowm": {
       "dependsOn": [
         {
-          "attributes": ["UserPoolId"],
+          "attributes": [
+            "UserPoolId"
+          ],
           "category": "auth",
-          "resourceName": "owm48e969c9"
+          "resourceName": "betaowm27c84da6"
         }
       ],
       "output": {
@@ -14,13 +16,15 @@
             {
               "authenticationType": "AMAZON_COGNITO_USER_POOLS",
               "userPoolConfig": {
-                "userPoolId": "authowm48e969c9"
+                "userPoolId": "authbetaowm27c84da6"
               }
             }
           ],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
+              "apiKeyExpirationDate": "2024-12-10T14:50:58.880Z",
+              "apiKeyExpirationDays": 365,
+              "description": "betaowmapi"
             },
             "authenticationType": "API_KEY"
           }
@@ -31,27 +35,35 @@
     }
   },
   "auth": {
-    "owm48e969c9": {
+    "betaowm27c84da6": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
         "mfaConfiguration": "OFF",
-        "mfaTypes": ["SMS"],
+        "mfaTypes": [
+          "SMS"
+        ],
         "passwordProtectionSettings": {
           "passwordPolicyCharacters": [],
           "passwordPolicyMinLength": 8
         },
-        "signupAttributes": ["EMAIL"],
+        "signupAttributes": [
+          "EMAIL"
+        ],
         "socialProviders": [],
-        "usernameAttributes": ["EMAIL"],
-        "verificationMechanisms": ["EMAIL"]
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
     }
   },
   "storage": {
-    "s316e6c341": {
+    "s3b569f3d2": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "S3"

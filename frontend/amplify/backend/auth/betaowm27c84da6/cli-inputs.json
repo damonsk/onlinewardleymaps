@@ -1,13 +1,17 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "owm48e969c9_identitypool_48e969c9",
+    "identityPoolName": "betaowm27c84da6_identitypool_27c84da6",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "owm48e969c9",
-    "userPoolName": "owm48e969c9_userpool_48e969c9",
-    "autoVerifiedAttributes": ["email"],
+    "resourceNameTruncated": "betaow27c84da6",
+    "userPoolName": "betaowm27c84da6_userpool_27c84da6",
+    "autoVerifiedAttributes": [
+      "email"
+    ],
     "mfaConfiguration": "OFF",
-    "mfaTypes": ["SMS Text Message"],
+    "mfaTypes": [
+      "SMS Text Message"
+    ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
@@ -15,28 +19,43 @@
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
-    "requiredAttributes": ["email"],
+    "requiredAttributes": [
+      "email"
+    ],
     "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
-    "userpoolClientWriteAttributes": ["email"],
-    "userpoolClientReadAttributes": ["email"],
-    "userpoolClientLambdaRole": "owm48e48e969c9_userpoolclient_lambda_role",
+    "userpoolClientWriteAttributes": [
+      "email"
+    ],
+    "userpoolClientReadAttributes": [
+      "email"
+    ],
+    "userpoolClientLambdaRole": "betaow27c84da6_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "48e969c9",
-    "resourceName": "owm48e969c9",
+    "sharedId": "27c84da6",
+    "resourceName": "betaowm27c84da6",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
-    "usernameAttributes": ["email"],
+    "usernameAttributes": [
+      "email"
+    ],
+    "triggers": {},
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
     "authRoleArn": {
-      "Fn::GetAtt": ["AuthRole", "Arn"]
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
     },
     "unauthRoleArn": {
-      "Fn::GetAtt": ["UnauthRole", "Arn"]
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
     },
     "breakCircularDependency": true,
     "dependsOn": []

@@ -1,17 +1,19 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "owm",
+    "apiName": "betaowm",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/home/deck/src/owmpro/amplify/backend/api/owm/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "expirationTime": 7
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2024-12-10T14:53:42.965Z",
+      "keyDescription": "betaowmapi"
     },
+    "conflictResolution": {},
     "additionalAuthTypes": [
       {
         "mode": "AMAZON_COGNITO_USER_POOLS",
-        "cognitoUserPoolId": "authowm48e969c9"
+        "cognitoUserPoolId": "authbetaowm27c84da6"
       }
     ]
   }
