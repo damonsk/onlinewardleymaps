@@ -243,15 +243,6 @@ describe('Convert test suite', function() {
 		}
 	);
 
-	test('y-axis varible present and extracted', function() {
-		let actual = 'y-axis Some label->Min label->Max label';
-		let result = new Converter().parse(actual);
-
-		expect(result.presentation.yAxis.label).toEqual('Some label');
-		expect(result.presentation.yAxis.max).toEqual('Max label');
-		expect(result.presentation.yAxis.min).toEqual('Min label');
-	});
-
 	test('notes are extracted and made available to the map', function() {
 		let actual = 'note some text [0.9, 0.1]';
 		let result = new Converter().parse(actual);

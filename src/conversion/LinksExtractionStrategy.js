@@ -15,7 +15,6 @@ export default class LinksExtractionStrategy {
 			'title',
 			'annotation',
 			'annotations',
-			'y-axis',
 			'pipeline',
 			'note',
 			'pioneers',

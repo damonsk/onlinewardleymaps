@@ -73,7 +73,6 @@ function App() {
 		Defaults.EvolutionStages
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
-	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
 	const [toggleToolbar, setToggleToolbar] = useState(true);
@@ -214,7 +213,6 @@ function App() {
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
 			setMapStyle(r.presentation.style);
-			setMapYAxis(r.presentation.yAxis);
 			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
 				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
@@ -353,7 +351,6 @@ function App() {
 							mapAnnotationsPresentation={mapAnnotationsPresentation}
 							mapMethods={mapMethods}
 							mapStyleDefs={mapStyleDefs}
-							mapYAxis={mapYAxis}
 							mapDimensions={mapDimensions}
 							mapEvolutionStates={mapEvolutionStates}
 							mapRef={mapRef}

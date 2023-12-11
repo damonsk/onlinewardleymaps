@@ -128,14 +128,6 @@ const usages = [
 		],
 	},
 	{
-		title: 'Y-Axis Labels',
-		summary: 'Change the text of the y-axis labels',
-		examples: [
-			'y-axis Label->Min->Max',
-			'y-axis Value Chain->Invisible->Visible',
-		],
-	},
-	{
 		title: 'Add notes',
 		summary: 'Add text to any part of the map',
 		examples: [

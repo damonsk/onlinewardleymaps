@@ -41,5 +41,4 @@ export const EditorPrefixes = [
 	'pipeline',
 	'title',
 	'evolution',
-	'y-axis Label->Min->Max',
 ];
