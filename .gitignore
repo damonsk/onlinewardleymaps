@@ -14,3 +14,7 @@ yarn.lock
 wmlandscape/yarn.lock
 amplify/team-provider-info.json
 amplify/#current-cloud-backend
+amplify/.config
+amplify/backend/amplify-meta.json
+frontend/aws-exports.js
+frontend/.next
