@@ -118,6 +118,15 @@ function Controls(props) {
 				<Dropdown.Divider />
 				<Dropdown.Item
 					eventKey="1"
+					rel="noreferrer noopener"
+					href="https://docs.onlinewardleymaps.com"
+					target="_blank"
+				>
+					Usage Guide
+				</Dropdown.Item>
+				<Dropdown.Divider />
+				<Dropdown.Item
+					eventKey="1"
 					className="patron"
 					rel="noreferrer noopener"
 					href="https://www.patreon.com/mapsascode"

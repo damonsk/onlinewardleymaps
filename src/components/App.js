@@ -389,8 +389,17 @@ function App() {
 			/>
 			<div className="row usageContainer no-gutters p-3 p-md-3">
 				<div id="usageToggle" className="small">
+					<p>
+						<a
+							href="https://docs.onlinewardleymaps.com"
+							target="_blank" //eslint-disable-line react/jsx-no-target-blank
+							rel="noopener"
+						>
+							Documentation &amp; Usage Guides
+						</a>
+					</p>
 					<span onClick={() => setShowUsage(!showUsage)}>
-						Show Usage Instructions
+						Show Usage Quick Reference
 					</span>
 				</div>
 				<br />
