@@ -286,7 +286,7 @@ function Environment(props) {
 					Object.assign(newObj, {
 						id: d.id,
 						mapText: d.text,
-						mapIterations: JSON.parse(d.mapIterations),
+						mapIterations: d.mapIterations ? JSON.parse(d.mapIterations) : {},
 					});
 					onceLoaded(newObj);
 				});
