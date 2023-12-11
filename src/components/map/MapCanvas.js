@@ -128,6 +128,7 @@ function MapCanvas(props) {
 				fontSize={props.mapStyleDefs.fontSize}
 				className={props.mapStyleDefs.className}
 				id="svgMap"
+				ref={props.svgRef}
 				width={props.mapDimensions.width + 2 * props.mapPadding}
 				height={props.mapDimensions.height + 4 * props.mapPadding}
 				viewBox={

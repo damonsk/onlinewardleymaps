@@ -80,6 +80,7 @@ function App() {
 
 	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
+	const svgRef = useRef(null);
 	const [mainViewHeight, setMainViewHeight] = useState(100);
 	const [errorLine, setErrorLine] = useState(-1);
 	const [showLineNumbers, setShowLineNumbers] = useState(false);
@@ -180,6 +181,19 @@ function App() {
 		});
 	}
 
+	const downloadMapSvg = () => {
+		const svg = svgRef.current;
+		const svgData = new XMLSerializer().serializeToString(svg);
+		const svgBlob = new Blob([svgData], {
+			type: 'image/svg+xml;charset=utf-8',
+		});
+		const svgUrl = URL.createObjectURL(svgBlob);
+		const link = document.createElement('a');
+		link.download = mapTitle;
+		link.href = svgUrl;
+		link.click();
+	};
+
 	React.useEffect(() => {
 		try {
 			setErrorLine([]);
@@ -276,6 +290,7 @@ function App() {
 								newMapClick={newMap}
 								saveMapClick={saveMap}
 								downloadMapImage={downloadMap}
+								downloadMapSvg={downloadMapSvg}
 								showLineNumbers={showLineNumbers}
 								setShowLineNumbers={setShowLineNumbers}
 								showLinkedEvolved={showLinkedEvolved}
@@ -342,6 +357,7 @@ function App() {
 							mapDimensions={mapDimensions}
 							mapEvolutionStates={mapEvolutionStates}
 							mapRef={mapRef}
+							svgRef={svgRef}
 							mapText={mapText}
 							mutateMapText={mutateMapText}
 							setMetaText={setMetaText}
