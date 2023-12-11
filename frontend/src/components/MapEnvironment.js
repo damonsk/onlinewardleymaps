@@ -295,12 +295,6 @@ function Environment(props) {
 			setMapOwner(false);
 		};
 
-		// const withCloneAction = () => {
-		// 	setCurrentUrl('(unsaved)');
-		// 	setSaveOutstanding(true);
-		// 	window.location.hash = '';
-		// };
-
 		const finishLoad = function(map, finished) {
 			setShoudLoad(false);
 			setMapText(map.mapText);
