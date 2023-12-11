@@ -647,37 +647,6 @@ exports[`Storyshots Usage  default 1`] = `
   ------------------------
   <br />
   <strong>
-    Y-Axis Labels
-  </strong>
-  <br />
-   
-  Change the text of the y-axis labels
-   
-  <br />
-  <strong>
-    Example:
-  </strong>
-  <br />
-  <span
-    className="add clickable"
-    href="#"
-    onClick={[Function]}
-  >
-    y-axis Label-&gt;Min-&gt;Max
-  </span>
-  <br />
-  <span
-    className="add clickable"
-    href="#"
-    onClick={[Function]}
-  >
-    y-axis Value Chain-&gt;Invisible-&gt;Visible
-  </span>
-  <br />
-  <br />
-  ------------------------
-  <br />
-  <strong>
     Add notes
   </strong>
   <br />
