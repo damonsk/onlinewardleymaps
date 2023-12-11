@@ -12,3 +12,5 @@ docs/.jekyll-metadata
 package-lock.json
 yarn.lock
 wmlandscape/yarn.lock
+amplify/team-provider-info.json
+amplify/#current-cloud-backend
