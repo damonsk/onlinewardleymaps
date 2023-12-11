@@ -40,8 +40,12 @@ const legacySave = async (map, hash, callback) => {
 	fetch(Defaults.ApiEndpoint + 'save', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json; charset=utf-8' },
-		body: JSON.stringify(Object.assign(map, { id: hash.split(':')[1] })),
-		// body: JSON.stringify({ id: hash, text: mapText, meta: metaText, mapIterations: JSON.stringify(mapIterations) }),
+		//body: JSON.stringify(Object.assign(map, { id: hash.split(':')[1] })),
+		body: JSON.stringify({
+			id: hash ? hash.split(':')[1] : '',
+			text: map.mapText,
+			mapIterations: JSON.stringify(map.mapIterations),
+		}),
 	})
 		.then(resp => resp.json())
 		.then(data => {

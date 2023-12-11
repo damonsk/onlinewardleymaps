@@ -165,7 +165,7 @@ function Environment(props) {
 			mapText: mapText,
 			name: mapTitle,
 			imageData: '',
-			mapIterations: JSON.stringify(mapIterations),
+			mapIterations: mapIterations,
 		};
 
 		const followOnActions = async function(id, resultFromAction) {
@@ -179,6 +179,11 @@ function Environment(props) {
 			}
 
 			if (currentId === '') {
+				console.log('[followOnActions::switch]', {
+					mapPersistenceStrategy,
+					currentId,
+					id,
+				});
 				switch (mapPersistenceStrategy) {
 					case Defaults.MapPersistenceStrategy.Private:
 						Router.push('/private' + '/' + id, undefined, {
@@ -200,11 +205,15 @@ function Environment(props) {
 				}
 			}
 
+			setCurrentId(id);
 			setActionInProgress(false);
 			setCurrentUrl(window.location.href);
 			setSaveOutstanding(false);
 
-			console.log('saveToPrivateDataStore', resultFromAction);
+			console.log('saveToPrivateDataStore', {
+				mapPersistenceStrategy,
+				resultFromAction,
+			});
 
 			async function createImage(imageData, level, filename) {
 				return await Storage.put(
@@ -272,8 +281,14 @@ function Environment(props) {
 				.then(resp => resp.json())
 				.then(d => {
 					console.log(d);
+					let newObj = {};
 					d.mapText = d.text;
-					onceLoaded(d);
+					Object.assign(newObj, {
+						id: d.id,
+						mapText: d.text,
+						mapIterations: JSON.parse(d.mapIterations),
+					});
+					onceLoaded(newObj);
 				});
 			console.log('--- Need to migrate this map to PublicUnauthd');
 			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Legacy);
@@ -290,11 +305,14 @@ function Environment(props) {
 			setShoudLoad(false);
 			setMapText(map.mapText);
 			if (map.mapIterations) {
-				const parsed = JSON.parse(map.mapIterations);
-				setMapIterations(parsed);
-				if (parsed.length > 0) {
+				console.log(
+					'[finishLoad]::mapIterations::parsed.length',
+					map.mapIterations.length
+				);
+				if (map.mapIterations.length > 0) {
+					setMapIterations(map.mapIterations);
 					setCurrentIteration(0);
-					setMapText(parsed[0].mapText);
+					setMapText(map.mapIterations[0].mapText);
 				}
 			}
 			setCurrentUrl(window.location.href);
@@ -483,7 +501,8 @@ function Environment(props) {
 	useEffect(() => {
 		if (
 			mapPersistenceStrategy ===
-			Defaults.MapPersistenceStrategy.PublicUnauthenticated
+				Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
+			mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Legacy
 		)
 			setCanSaveMap(true);
 		if (mapOwner) {

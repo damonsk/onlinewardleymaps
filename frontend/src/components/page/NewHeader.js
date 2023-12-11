@@ -15,6 +15,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CoreHeader from './CoreHeader';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { featureSwitches } from '../../constants/featureswitches';
 
 const StyledMenu = styled(props => (
 	<Menu
@@ -173,7 +174,7 @@ function NewHeader(props) {
 			open={openMore}
 			onClose={handleMoreClose}
 		>
-			{isLoggedIn === false && (
+			{featureSwitches.enableDashboard && isLoggedIn === false && (
 				<MenuItem
 					sx={{ display: { xs: 'flex', sm: 'none' } }}
 					disableRipple
@@ -182,7 +183,7 @@ function NewHeader(props) {
 					Login
 				</MenuItem>
 			)}
-			{isLoggedIn && (
+			{featureSwitches.enableDashboard && isLoggedIn && (
 				<MenuItem
 					sx={{ display: { xs: 'flex', sm: 'none' } }}
 					disableRipple
@@ -247,7 +248,7 @@ function NewHeader(props) {
 				spacing={0.5}
 				divider={<Divider orientation="vertical" flexItem />}
 			>
-				{isLoggedIn === false && (
+				{featureSwitches.enableDashboard && isLoggedIn === false && (
 					<Button
 						sx={{ display: { xs: 'none', sm: 'block' } }}
 						color="inherit"
@@ -257,7 +258,7 @@ function NewHeader(props) {
 						Login
 					</Button>
 				)}
-				{isLoggedIn && (
+				{featureSwitches.enableDashboard && isLoggedIn && (
 					<Button
 						sx={{ display: { xs: 'none', sm: 'block' } }}
 						color="inherit"
@@ -280,19 +281,36 @@ function NewHeader(props) {
 					Example Map
 				</Button>
 
-				<Button
-					color="inherit"
-					size="small"
-					variant="text"
-					id="new-menu-button"
-					aria-controls={open ? 'new-menu' : undefined}
-					aria-haspopup="true"
-					aria-expanded={open ? 'true' : undefined}
-					onClick={handleClick}
-					endIcon={<KeyboardArrowDownIcon />}
-				>
-					New
-				</Button>
+				{featureSwitches.enableDashboard && (
+					<Button
+						color="inherit"
+						size="small"
+						variant="text"
+						id="new-menu-button"
+						aria-controls={open ? 'new-menu' : undefined}
+						aria-haspopup="true"
+						aria-expanded={open ? 'true' : undefined}
+						onClick={handleClick}
+						endIcon={<KeyboardArrowDownIcon />}
+					>
+						New
+					</Button>
+				)}
+
+				{featureSwitches.enableDashboard === false && (
+					<Button
+						color="inherit"
+						size="small"
+						variant="text"
+						id="new-menu-button"
+						aria-controls={open ? 'new-menu' : undefined}
+						aria-haspopup="true"
+						aria-expanded={open ? 'true' : undefined}
+						onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
+					>
+						New
+					</Button>
+				)}
 
 				<Button
 					color={saveOutstanding ? 'error' : 'inherit'}
@@ -325,7 +343,7 @@ function NewHeader(props) {
 
 			{moreMenu}
 
-			{newMenu}
+			{featureSwitches.enableDashboard && newMenu}
 
 			<Dialog open={modalShow} onClose={() => setModalShow(false)}>
 				<DialogTitle>Clone URL</DialogTitle>

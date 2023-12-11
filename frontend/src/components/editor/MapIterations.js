@@ -120,16 +120,21 @@ function NewMapIterations(props) {
 		}
 	}, [currentIteration]);
 
+	useEffect(() => {
+		console.log('mapIterations', mapIterations);
+	}, [mapIterations]);
+
 	return (
 		<StyledArea>
 			<Stepper nonLinear activeStep={currentIteration}>
-				{mapIterations.map((iteration, index) => (
-					<Step key={index}>
-						<StepButton color="inherit" onClick={handleStep(index)}>
-							{iteration.name}
-						</StepButton>
-					</Step>
-				))}
+				{Array.isArray(mapIterations) &&
+					mapIterations.map((iteration, index) => (
+						<Step key={index}>
+							<StepButton color="inherit" onClick={handleStep(index)}>
+								{iteration.name}
+							</StepButton>
+						</Step>
+					))}
 			</Stepper>
 			<div>
 				<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
