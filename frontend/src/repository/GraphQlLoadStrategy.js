@@ -2,9 +2,10 @@ import { API } from 'aws-amplify';
 import { LoadStrategy } from './LoadStrategy';
 
 export class GraphQlLoadStrategy extends LoadStrategy {
-	constructor(config) {
+	constructor(config, callback) {
 		super();
 		this.config = config;
+		this.callback = callback;
 	}
 
 	async load(id) {
@@ -12,8 +13,13 @@ export class GraphQlLoadStrategy extends LoadStrategy {
 			query: this.config.query,
 			variables: { id },
 			authMode: this.config.authMode,
-			operationName: this.config.authMode,
+			operationName: this.config.operationName,
 		});
-		this.callback(this.config.mapPersistenceStrategy, response.data.getMap);
+		const mapIterations =
+			response.data[this.config.operationName].mapIterations || [];
+		const map = Object.assign(response.data[this.config.operationName], {
+			mapIterations: JSON.parse(mapIterations),
+		});
+		this.callback(this.config.mapPersistenceStrategy, map);
 	}
 }
