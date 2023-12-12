@@ -12,7 +12,7 @@ import NewHeader from './page/NewHeader';
 import LeftNavigation from './page/LeftNavigation';
 import NewMapIterations from './editor/MapIterations';
 import UsageInfo from './page/UseageInfo';
-import { SaveMap } from '../repository/MapRepository';
+import { SaveMap } from '../repository/SaveMap';
 import { LoadMap } from '../repository/LoadMap';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';

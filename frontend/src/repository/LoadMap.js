@@ -3,60 +3,36 @@ import {
 	getPublicMap,
 	getUnauthenticatedMap,
 } from '../graphql/queries';
-import { API } from 'aws-amplify';
 import * as Defaults from '../constants/defaults';
+import { LegacyLoadStrategy } from './LegacyApiLoadStrategy';
+import { GraphQlLoadStrategy } from './GraphQlLoadStrategy';
 
-export const LoadMap = async (
-	mapPersistenceStrategy,
-	followOnActions,
-	currentId
-) => {
-	const fetchData = async (query, variables, onceLoaded, strategy) => {
-		const response = await API.graphql({
-			query,
-			variables,
-			authMode: strategy.authMode,
-			operationName: strategy.operationName,
-		});
-		console.log('--- Loaded', response);
-		onceLoaded(strategy.mapPersistenceStrategy, response.data[query.name]);
-	};
-
-	const legacyPublicDataStore = async (id, onceLoaded, strategy) => {
-		const fetchUrl = Defaults.ApiEndpoint + 'fetch?id=' + id;
-		const response = await fetch(fetchUrl);
-		const data = await response.json();
-		console.log(data);
-		const newObj = {
-			id: data.id,
-			mapText: data.text,
-			mapIterations: data.mapIterations ? JSON.parse(data.mapIterations) : {},
-		};
-		onceLoaded(strategy, newObj);
-	};
-
+export const LoadMap = async (mapPersistenceStrategy, followOnActions, id) => {
 	const loadStrategy = {
-		[Defaults.MapPersistenceStrategy.Private]: id =>
-			fetchData(getMap, { id }, followOnActions, {
+		[Defaults.MapPersistenceStrategy.Private]: () =>
+			new GraphQlLoadStrategy({
+				query: getMap,
 				authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'getMap',
 				mapPersistenceStrategy,
 			}),
-		[Defaults.MapPersistenceStrategy.Public]: id =>
-			fetchData(getPublicMap, { id }, followOnActions, {
+		[Defaults.MapPersistenceStrategy.Public]: () =>
+			new GraphQlLoadStrategy({
+				query: getPublicMap,
 				authMode: 'API_KEY',
 				operationName: 'getPublicMap',
 				mapPersistenceStrategy,
 			}),
-		[Defaults.MapPersistenceStrategy.PublicUnauthenticated]: id =>
-			fetchData(getUnauthenticatedMap, { id }, followOnActions, {
+		[Defaults.MapPersistenceStrategy.PublicUnauthenticated]: () =>
+			new GraphQlLoadStrategy({
+				query: getUnauthenticatedMap,
 				authMode: 'API_KEY',
 				operationName: 'getUnauthenticatedMap',
 				mapPersistenceStrategy,
 			}),
-		[Defaults.MapPersistenceStrategy.Legacy]: id =>
-			legacyPublicDataStore(id, followOnActions, mapPersistenceStrategy),
+		[Defaults.MapPersistenceStrategy.Legacy]: () =>
+			new LegacyLoadStrategy(followOnActions),
 	};
 
-	await loadStrategy[mapPersistenceStrategy](currentId);
+	await loadStrategy[mapPersistenceStrategy]().load(id);
 };
