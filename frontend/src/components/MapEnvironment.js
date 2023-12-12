@@ -1,8 +1,6 @@
 import * as MapStyles from '../constants/mapstyles';
 import * as Defaults from '../constants/defaults';
-
 import React, { useState, useRef, useEffect } from 'react';
-
 import html2canvas from 'html2canvas';
 import MapView from './map/MapView';
 import Editor from './editor/Editor';
