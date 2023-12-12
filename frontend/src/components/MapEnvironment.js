@@ -15,18 +15,13 @@ import LeftNavigation from './page/LeftNavigation';
 import NewMapIterations from './editor/MapIterations';
 import UsageInfo from './page/UseageInfo';
 import { SaveMap } from '../repository/MapRepository';
+import { LoadMap } from '../repository/LoadMap';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Grid } from '@mui/material';
-import { API, Storage } from 'aws-amplify';
+import { Storage } from 'aws-amplify';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import Router from 'next/router';
-
-import {
-	getMap,
-	getPublicMap,
-	getUnauthenticatedMap,
-} from '../graphql/queries';
 
 function debounce(fn, ms) {
 	let timer;
@@ -159,7 +154,7 @@ function Environment(props) {
 		setShowUsage(!showUsage);
 	};
 
-	const saveToUserDataStore = async function(hash) {
+	const saveToRemoteStorage = async function(hash) {
 		setActionInProgress(true);
 		const mapToPersist = {
 			mapText: mapText,
@@ -231,140 +226,43 @@ function Environment(props) {
 	};
 
 	const loadFromRemoteStorage = async function() {
-		const privateDataStore = async (id, onceLoaded) => {
-			const r = await API.graphql({
-				query: getMap,
-				authMode: 'AMAZON_COGNITO_USER_POOLS',
-				operationName: 'getMap',
-				variables: { id: id },
-			});
-			console.log('--- Loaded', r);
-			onceLoaded(r.data.getMap);
-			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Private);
-			setMapOwner(r.data.getMap.owner);
-			setMapReadOnly(false);
-		};
-
-		const publicDataStore = async (id, onceLoaded) => {
-			const r = await API.graphql({
-				query: getPublicMap,
-				operationName: 'getPublicMap',
-				variables: { id: id },
-				authMode: 'API_KEY',
-			});
-			console.log('--- Loaded', r);
-			onceLoaded(r.data.getPublicMap);
-			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Public);
-			setMapOwner(r.data.getPublicMap.owner);
-			setMapReadOnly(r.data.getPublicMap.readOnly);
-		};
-
-		const publicUnauthDataStore = async (id, onceLoaded) => {
-			const r = await API.graphql({
-				query: getUnauthenticatedMap,
-				operationName: 'getUnauthenticatedMap',
-				variables: { id: id },
-				authMode: 'API_KEY',
-			});
-			console.log('--- Loaded', r);
-			onceLoaded(r.data.getUnauthenticatedMap);
-			setMapPersistenceStrategy(
-				Defaults.MapPersistenceStrategy.PublicUnauthenticated
-			);
-			setMapOwner(false);
-			setMapReadOnly(false);
-		};
-
-		const legacyPublicDataStore = async (id, onceLoaded) => {
-			var fetchUrl = Defaults.ApiEndpoint + 'fetch?id=' + id;
-			await fetch(fetchUrl)
-				.then(resp => resp.json())
-				.then(d => {
-					console.log(d);
-					let newObj = {};
-					d.mapText = d.text;
-					Object.assign(newObj, {
-						id: d.id,
-						mapText: d.text,
-						mapIterations: d.mapIterations ? JSON.parse(d.mapIterations) : {},
-					});
-					onceLoaded(newObj);
-				});
-			console.log('--- Need to migrate this map to PublicUnauthd');
-			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Legacy);
-			setMapOwner(false);
-		};
-
-		const finishLoad = function(map, finished) {
+		const followOnActions = (mapPersistenceStrategy, map) => {
+			setMapPersistenceStrategy(mapPersistenceStrategy);
 			setShoudLoad(false);
 			setMapText(map.mapText);
-			if (map.mapIterations) {
-				console.log(
-					'[finishLoad]::mapIterations::parsed.length',
-					map.mapIterations.length
-				);
-				if (map.mapIterations.length > 0) {
-					setMapIterations(map.mapIterations);
-					setCurrentIteration(0);
-					setMapText(map.mapIterations[0].mapText);
-				}
+			if (map.mapIterations && map.mapIterations.length > 0) {
+				setMapIterations(map.mapIterations);
+				setCurrentIteration(0);
+				setMapText(map.mapIterations[0].mapText);
 			}
 			setCurrentUrl(window.location.href);
+
 			if (window.location.hash.indexOf('#clone:') === 0) {
 				setCurrentUrl('(unsaved)');
 				setSaveOutstanding(true);
 				window.location.hash = '';
 			}
+
 			setSaveOutstanding(false);
 			setActionInProgress(false);
-			if (finished !== undefined) finished();
+
+			switch (mapPersistenceStrategy) {
+				case Defaults.MapPersistenceStrategy.Legacy:
+					console.log('--- Need to migrate this map to PublicUnauthd');
+					setMapOwner(false);
+					break;
+				default:
+					setMapPersistenceStrategy(mapPersistenceStrategy);
+					setMapOwner(map.owner || false);
+					setMapReadOnly(map.readOnly || false);
+					break;
+			}
 		};
 
-		let loadStrategy = {};
-		loadStrategy[Defaults.MapPersistenceStrategy.Private] = id =>
-			privateDataStore(id, finishLoad);
-		loadStrategy[Defaults.MapPersistenceStrategy.Public] = id =>
-			publicDataStore(id, finishLoad);
-		loadStrategy[Defaults.MapPersistenceStrategy.PublicUnauthenticated] = id =>
-			publicUnauthDataStore(id, finishLoad);
-		loadStrategy[Defaults.MapPersistenceStrategy.Legacy] = id =>
-			legacyPublicDataStore(id, finishLoad);
-
-		// const loadStrategy = [
-		// 	{
-		// 		key: 'clone',
-		// 		method: id =>
-		// 			legacyPublicDataStore(id, m => finishLoad(m, withCloneAction)),
-		// 	},
-		// 	{ key: 'private', method: id => privateDataStore(id, finishLoad) },
-		// 	{ key: 'public', method: id => publicDataStore(id, finishLoad) },
-		// 	{ key: 'anon', method: id => publicUnauthDataStore(id, finishLoad) },
-		// 	{ key: 'legacy', method: id => legacyPublicDataStore(id, finishLoad) },
-		// ];
-
-		// if(shouldLoad){
-		// if (window.location.hash.length > 0) {
 		setActionInProgress(true);
-
-		// let mapId = window.location.hash.replace('#', '');
-		// if (mapId.indexOf(':') > -1) {
-		// 	mapId = mapId.split(':')[1];
-		// }
-		// let expectedStrategy;
-		// if (window.location.hash.indexOf(':') === -1) expectedStrategy = 'legacy';
-		// else {
-		// 	expectedStrategy = window.location.hash.replace('#', '').split(':')[0];
-		// }
-
-		// const loadedStrategy = loadStrategy.filter(
-		// 	s => s['key'] === expectedStrategy
-		// );
-
 		setCurrentUrl('(loading...)');
-
 		console.log('--- Set Load Strategy: ', mapPersistenceStrategy);
-		await loadStrategy[mapPersistenceStrategy](currentId);
-		// }
+		await LoadMap(mapPersistenceStrategy, followOnActions, currentId);
 	};
 
 	function newMap(mapPersistenceStrategy) {
@@ -382,7 +280,7 @@ function Environment(props) {
 
 	async function saveMap() {
 		setCurrentUrl('(saving...)');
-		saveToUserDataStore(currentId);
+		saveToRemoteStorage(currentId);
 	}
 
 	function downloadMap() {
