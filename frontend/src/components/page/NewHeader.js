@@ -98,8 +98,8 @@ function NewHeader(props) {
 
 	const textArea = useRef(null);
 	const copyCodeToClipboard = () => {
-		textArea.current.select();
-		document.execCommand('copy');
+		const copyUrl = currentUrl.replace('#', '#clone:');
+		navigator.clipboard.writeText(copyUrl);
 	};
 
 	const open = Boolean(anchorEl);
@@ -194,7 +194,7 @@ function NewHeader(props) {
 			)}
 
 			<MenuItem
-				disabled={!isLoggedIn}
+				//disabled={!isLoggedIn}
 				disableRipple
 				onClick={() => handleMoreClose(() => setModalShow(true))}
 			>
