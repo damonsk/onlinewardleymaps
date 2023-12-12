@@ -69,18 +69,26 @@ function Map(props) {
 		if (
 			mapPersistenceStrategy ===
 			Defaults.MapPersistenceStrategy.PublicUnauthenticated
-		) {
+		)
 			setCanSaveMap(true);
-		} else if (user !== null && mapOwner === user.username) {
-			setCanSaveMap(true);
-		} else if (
-			user !== null &&
-			mapOwner !== user.username &&
-			mapPersistenceStrategy !== Defaults.MapPersistenceStrategy.Private &&
-			!isMapReadOnly
-		) {
-			setCanSaveMap(true);
-		} else {
+		if (mapOwner) {
+			console.log('--- MapOwner: ' + mapOwner);
+			if (user !== null && mapOwner === user.username) {
+				setCanSaveMap(true);
+				console.log('--- Can Save Map (MapOwner)');
+				return;
+			}
+			if (
+				user !== null &&
+				mapOwner !== user.username &&
+				mapPersistenceStrategy !== Defaults.MapPersistenceStrategy.Private &&
+				!isMapReadOnly
+			) {
+				setCanSaveMap(true);
+				console.log('--- Can Save Map (Public, Logged In, Not Read Only)');
+				return;
+			}
+			console.log('--- Cannot Save Map');
 			setCanSaveMap(false);
 		}
 	}, [mapOwner, user, isMapReadOnly, mapPersistenceStrategy]);
