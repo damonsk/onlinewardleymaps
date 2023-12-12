@@ -172,7 +172,6 @@ function Environment(props) {
 				const imageData = await makeSnapShot();
 				await createImage(imageData, 'public', id + '.png');
 			}
-
 			if (currentId === '') {
 				console.log('[followOnActions::switch]', {
 					mapPersistenceStrategy,
@@ -240,6 +239,7 @@ function Environment(props) {
 			if (window.location.hash.indexOf('#clone:') === 0) {
 				setCurrentUrl('(unsaved)');
 				setSaveOutstanding(true);
+				setCurrentId('');
 				window.location.hash = '';
 			}
 
