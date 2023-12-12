@@ -9,118 +9,114 @@ import {
 	updateUnauthenticatedMap,
 } from '../graphql/mutations';
 
+class SaveStrategy {
+	constructor(callback) {
+		this.callback = callback;
+	}
+
+	// eslint-disable-next-line no-unused-vars
+	async save(map, hash) {
+		throw new Error('Save method must be implemented by subclasses');
+	}
+}
+
+class LegacySaveStrategy extends SaveStrategy {
+	async save(map, hash) {
+		const response = await fetch(Defaults.ApiEndpoint + 'save', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json; charset=utf-8' },
+			body: JSON.stringify({
+				id: hash
+					? hash.includes('clone:')
+						? hash.split('clone:')[1]
+						: hash
+					: '',
+				text: map.mapText,
+				mapIterations: JSON.stringify(map.mapIterations),
+			}),
+		});
+
+		const data = await response.json();
+		this.callback(data.id, data);
+	}
+}
+
+class PrivateSaveStrategy extends SaveStrategy {
+	async save(map, hash) {
+		const input = Object.assign(map, { id: hash });
+
+		const response = await API.graphql({
+			query: hash ? updateMap : createMap,
+			variables: { input },
+			authMode: 'AMAZON_COGNITO_USER_POOLS',
+			operationName: hash ? 'updateMap' : 'createMap',
+		});
+
+		const data = response.data[hash ? 'updateMap' : 'createMap'];
+		this.callback(data.id, response);
+	}
+}
+
+class PublicSaveStrategy extends SaveStrategy {
+	async save(map, hash) {
+		const input = Object.assign(map, { id: hash.split(':')[1] });
+
+		const response = await API.graphql({
+			query: hash ? updatePublicMap : createPublicMap,
+			variables: { input },
+			authMode: 'AMAZON_COGNITO_USER_POOLS',
+			operationName: hash ? 'updatePublicMap' : 'createPublicMap',
+		});
+
+		const data = response.data[hash ? 'updatePublicMap' : 'createPublicMap'];
+		this.callback(data.id, response);
+	}
+}
+
+class PublicUnauthedSaveStrategy extends SaveStrategy {
+	async save(map, hash) {
+		const input = Object.assign(map, { id: hash.split(':')[1] });
+
+		const response = await API.graphql({
+			query: hash ? updateUnauthenticatedMap : createUnauthenticatedMap,
+			variables: { input },
+			authMode: 'API_KEY',
+			operationName: hash
+				? 'updateUnauthenticatedMap'
+				: 'createUnauthenticatedMap',
+		});
+
+		const data =
+			response.data[
+				hash ? 'updateUnauthenticatedMap' : 'createUnauthenticatedMap'
+			];
+		this.callback(data.id, response);
+	}
+}
+
 export const SaveMap = async (
 	mapPersistenceStrategy,
 	mapToPersist,
 	hash,
 	callback
 ) => {
-	let loadedSaveStrategy = () => console.log('No save strategy loaded');
+	let loadedSaveStrategy = new SaveStrategy(callback); // Default
 
 	switch (mapPersistenceStrategy) {
 		case Defaults.MapPersistenceStrategy.Private:
-			loadedSaveStrategy = privateSave;
+			loadedSaveStrategy = new PrivateSaveStrategy(callback);
 			break;
 		case Defaults.MapPersistenceStrategy.Public:
-			loadedSaveStrategy = publicSave;
+			loadedSaveStrategy = new PublicSaveStrategy(callback);
 			break;
 		case Defaults.MapPersistenceStrategy.Legacy:
-			loadedSaveStrategy = legacySave;
+			loadedSaveStrategy = new LegacySaveStrategy(callback);
 			break;
 		default:
 		case Defaults.MapPersistenceStrategy.PublicUnauthenticated:
-			loadedSaveStrategy = publicUnauthedSave;
+			loadedSaveStrategy = new PublicUnauthedSaveStrategy(callback);
 			break;
 	}
 
-	await loadedSaveStrategy(mapToPersist, hash, callback);
-};
-
-const legacySave = async (map, hash, callback) => {
-	fetch(Defaults.ApiEndpoint + 'save', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json; charset=utf-8' },
-		//body: JSON.stringify(Object.assign(map, { id: hash.split(':')[1] })),
-		body: JSON.stringify({
-			id: hash
-				? hash.includes('clone:')
-					? hash.split('clone:')[1]
-					: hash
-				: '',
-			text: map.mapText,
-			mapIterations: JSON.stringify(map.mapIterations),
-		}),
-	})
-		.then(resp => resp.json())
-		.then(data => {
-			//window.location.hash = '#' + data.id;
-			callback(data.id, data);
-		})
-		.catch(function(error) {
-			console.log('Request failed', error);
-			// setCurrentUrl('(could not save map, please try again)');
-		});
-};
-
-const privateSave = async (map, hash, callback) => {
-	if (hash.length > 0) {
-		const r = await API.graphql({
-			query: updateMap,
-			variables: { input: Object.assign(map, { id: hash }) },
-			authMode: 'AMAZON_COGNITO_USER_POOLS',
-			operationName: 'updateMap',
-		});
-		callback(r.data.updateMap.id, r);
-	} else {
-		const r = await API.graphql({
-			query: createMap,
-			operationName: 'createMap',
-			variables: { input: map },
-			authMode: 'AMAZON_COGNITO_USER_POOLS',
-		});
-		callback(r.data.createMap.id, r);
-	}
-};
-
-const publicSave = async (map, hash, callback) => {
-	if (hash.length > 0) {
-		const r = await API.graphql({
-			query: updatePublicMap,
-			operationName: 'updatePublicMap',
-			variables: {
-				input: Object.assign(map, { id: hash.split(':')[1] }),
-			},
-			authMode: 'AMAZON_COGNITO_USER_POOLS',
-		});
-		callback(r.data.updatePublicMap.id, r);
-	} else {
-		const r = await API.graphql({
-			query: createPublicMap,
-			variables: { input: map },
-			authMode: 'AMAZON_COGNITO_USER_POOLS',
-		});
-		callback(r.data.createPublicMap.id, r);
-	}
-};
-
-const publicUnauthedSave = async (map, hash, callback) => {
-	if (hash.length > 0) {
-		const r = await API.graphql({
-			query: updateUnauthenticatedMap,
-			operationName: 'updateUnauthenticatedMap',
-			variables: {
-				input: Object.assign(map, { id: hash.split(':')[1] }),
-			},
-			authMode: 'API_KEY',
-		});
-		callback(r.data.updateUnauthenticatedMap.id, r);
-	} else {
-		const r = await API.graphql({
-			query: createUnauthenticatedMap,
-			operationName: 'createUnauthenticatedMap',
-			variables: { input: map },
-			authMode: 'API_KEY',
-		});
-		callback(r.data.createUnauthenticatedMap.id, r);
-	}
+	await loadedSaveStrategy.save(mapToPersist, hash);
 };

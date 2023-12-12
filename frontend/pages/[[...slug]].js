@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import MapEnvironment from '../src/components/MapEnvironment';
 import * as Defaults from '../src/constants/defaults';
 import { useRouter } from 'next/router';
-import MapEnvironment from '../src/components/MapEnvironment';
 import { featureSwitches } from '../src/constants/featureswitches';
 
 function Map(props) {
-	const { user } = props;
-
 	const router = useRouter();
+	const { user } = props;
 	const { slug } = router.query;
 	const [currentId, setCurrentId] = useState('');
 	const [mapOwner, setMapOwner] = useState();
