@@ -44,6 +44,7 @@ const getWidth = () => {
 };
 
 function App() {
+	const [mapOnlyView, setMapOnlyView] = useState(false);
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [metaText, setMetaText] = useState('');
 	const [mapText, setMapText] = useState('');
@@ -270,6 +271,11 @@ function App() {
 		};
 	});
 
+	React.useEffect(() => {
+		setMapDimensions({ width: getWidth(), height: getHeight() });
+		setMainViewHeight(106 + getHeight());
+	}, [mapOnlyView]);
+
 	return (
 		<React.Fragment>
 			<div id="top-nav-wrapper">
@@ -281,6 +287,8 @@ function App() {
 
 						<div id="controlsMenuControl">
 							<Controls
+								mapOnlyView={mapOnlyView}
+								setMapOnlyView={setMapOnlyView}
 								currentUrl={currentUrl}
 								saveOutstanding={saveOutstanding}
 								setMetaText={setMetaText}
@@ -313,26 +321,31 @@ function App() {
 				className="row no-gutters main"
 				style={{ height: mainViewHeight + 'px' }}
 			>
-				<div className="col-sm h-100 editor">
-					<Editor
-						highlightLine={highlightLine}
-						mapText={mapText}
-						invalid={invalid}
-						mutateMapText={mutateMapText}
-						mapComponents={mapComponents}
-						mapAnchors={mapAnchors}
-						mapDimensions={mapDimensions}
-						mapMarkets={mapMarkets}
-						mapSubMaps={mapSubMaps}
-						errorLine={errorLine}
-						showLineNumbers={showLineNumbers}
-					/>
-					<div className="form-group">
-						<Meta metaText={metaText} />
-					</div>
-				</div>
+				{mapOnlyView === false && (
+					<>
+						<div className="col-sm h-100 editor">
+							<Editor
+								mapOnlyView={mapOnlyView}
+								highlightLine={highlightLine}
+								mapText={mapText}
+								invalid={invalid}
+								mutateMapText={mutateMapText}
+								mapComponents={mapComponents}
+								mapAnchors={mapAnchors}
+								mapDimensions={mapDimensions}
+								mapMarkets={mapMarkets}
+								mapSubMaps={mapSubMaps}
+								errorLine={errorLine}
+								showLineNumbers={showLineNumbers}
+							/>
+							<div className="form-group">
+								<Meta metaText={metaText} />
+							</div>
+						</div>
+					</>
+				)}
 
-				<div className="col-sm-8 map-view">
+				<div className={'map-view ' + (mapOnlyView ? 'col-sm-12' : 'col-sm-8')}>
 					<ModKeyPressedProvider>
 						<MapView
 							mapTitle={mapTitle}

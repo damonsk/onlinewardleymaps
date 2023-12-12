@@ -39,6 +39,14 @@ Array [
   <button
     className="btn btn-secondary"
     disabled={false}
+    onClick={[Function]}
+    type="button"
+  >
+    Presentation Mode
+  </button>,
+  <button
+    className="btn btn-secondary"
+    disabled={false}
     id="example-map"
     onClick={[Function]}
     type="button"

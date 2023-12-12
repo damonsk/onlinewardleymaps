@@ -9,6 +9,7 @@ function Editor(props) {
 		prefix: EditorPrefixes,
 		elements: [],
 	});
+
 	const aceEditor = useRef(null);
 
 	const customAceEditorCompleter = ed => {
@@ -26,19 +27,22 @@ function Editor(props) {
 		};
 	};
 
+	const getHeight = () => {
+		var winHeight = window.innerHeight;
+		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+		var titleHeight = document.getElementById('title').clientHeight;
+		return winHeight - topNavHeight - titleHeight + 10;
+	};
+
+	const handleResize = () => {
+		setHeight(getHeight());
+	};
+
 	useEffect(() => {
-		const getHeight = () => {
-			var winHeight = window.innerHeight;
-			var topNavHeight = document.getElementById('top-nav-wrapper')
-				.clientHeight;
-			var titleHeight = document.getElementById('title').clientHeight;
-			return winHeight - topNavHeight - titleHeight + 10;
-		};
+		handleResize();
+	}, [props.mapOnlyView]);
 
-		const handleResize = () => {
-			setHeight(getHeight());
-		};
-
+	useEffect(() => {
 		window.addEventListener('load', handleResize);
 		window.addEventListener('resize', handleResize);
 		return function cleanup() {

@@ -27,6 +27,8 @@ function Controls(props) {
 		showLineNumbers,
 		setShowLinkedEvolved,
 		showLinkedEvolved,
+		setMapOnlyView,
+		mapOnlyView,
 	} = props;
 	useEffect(() => {
 		if (toggleAutoSave === true) {
@@ -57,6 +59,13 @@ function Controls(props) {
 			<small className="d-none d-sm-inline" id="owm-build">
 				v{owmBuild}
 			</small>
+			<Button
+				type="button"
+				variant="secondary"
+				onClick={() => setMapOnlyView(!mapOnlyView)}
+			>
+				{mapOnlyView ? 'Editor Mode' : 'Presentation Mode'}
+			</Button>
 			<Button
 				id="example-map"
 				onClick={example}
