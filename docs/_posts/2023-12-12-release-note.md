@@ -7,7 +7,7 @@ tags: "release"
 
 # December 2023 (version 1.354.0)
 
-Welcome to the May release of OnlineWardleyMaps.  Minor release to bring Quality of Life improvements.
+Welcome to the December release of OnlineWardleyMaps.  Minor release to bring Quality of Life improvements.
 
 # Quality of Life Improvements
 
