@@ -105,6 +105,16 @@ function Editor(props) {
 		const reactAceComponent = aceEditor.current;
 		if (reactAceComponent !== null) {
 			const editor = reactAceComponent.editor;
+			editor.setTheme(
+				'ace/theme/' + (props.isLightTheme ? 'eclipse' : 'dracula')
+			);
+		}
+	}, [props.isLightTheme, aceEditor]);
+
+	useEffect(() => {
+		const reactAceComponent = aceEditor.current;
+		if (reactAceComponent !== null) {
+			const editor = reactAceComponent.editor;
 			editor.completers = [customAceEditorCompleter(editorCompletions)];
 		}
 	}, [editorCompletions, aceEditor]);
@@ -124,7 +134,7 @@ function Editor(props) {
 			<ForwardedRefComponent
 				ref={aceEditor}
 				mode="owm"
-				theme="eclipse"
+				theme={props.isLightTheme ? 'eclipse' : 'dracula'}
 				onChange={props.mutateMapText}
 				name="htmEditor"
 				value={props.mapText}

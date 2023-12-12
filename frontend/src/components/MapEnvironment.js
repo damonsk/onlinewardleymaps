@@ -533,6 +533,7 @@ function Environment(props) {
 						}}
 					>
 						<Editor
+							isLightTheme={isLightTheme}
 							highlightLine={highlightLine}
 							mapText={mapText}
 							invalid={invalid}
