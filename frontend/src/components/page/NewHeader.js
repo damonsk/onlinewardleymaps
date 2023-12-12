@@ -200,6 +200,7 @@ function NewHeader(props) {
 			>
 				Get Clone URL
 			</MenuItem>
+			<Divider />
 			<MenuItem
 				onClick={() => handleMoreClose(() => downloadMapImage())}
 				disableRipple
@@ -212,6 +213,7 @@ function NewHeader(props) {
 			>
 				Download as SVG
 			</MenuItem>
+			<Divider />
 			<MenuItem
 				onClick={() =>
 					handleMoreClose(() => setShowLineNumbers(!showLineNumbers))
@@ -228,6 +230,18 @@ function NewHeader(props) {
 			>
 				{showLinkedEvolved ? 'Hide Evolved Links' : 'Show Evolved Links'}
 			</MenuItem>
+			<Divider />
+			<MenuItem
+				onClick={() =>
+					handleMoreClose(() =>
+						window.open('https://docs.onlinewardleymaps.com')
+					)
+				}
+				disableRipple
+			>
+				Usage Guide
+			</MenuItem>
+			<Divider />
 			<MenuItem
 				onClick={() =>
 					handleMoreClose(() =>
@@ -236,7 +250,7 @@ function NewHeader(props) {
 				}
 				disableRipple
 			>
-				Become a Patron
+				Become a Patron ❤️
 			</MenuItem>
 		</StyledMenu>
 	);
