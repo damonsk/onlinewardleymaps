@@ -39,17 +39,22 @@ function Map(props) {
 			}
 			return;
 		}
-		if (slug[0] !== undefined && slug[0] === 'public') {
-			setMapPersistenceStrategy(
-				Defaults.MapPersistenceStrategy.PublicUnauthenticated
-			);
+		if (slug[0] !== undefined) {
+			switch (slug[0]) {
+				case 'public':
+					setMapPersistenceStrategy(
+						Defaults.MapPersistenceStrategy.PublicUnauthenticated
+					);
+					break;
+				case 'user':
+					setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Public);
+					break;
+				case 'private':
+					setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Private);
+					break;
+			}
 		}
-		if (slug[0] !== undefined && slug[0] === 'user') {
-			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Public);
-		}
-		if (slug[0] !== undefined && slug[0] === 'private') {
-			setMapPersistenceStrategy(Defaults.MapPersistenceStrategy.Private);
-		}
+
 		if (slug[1] !== undefined && slug[1] !== null) {
 			setCurrentId(slug[1]);
 			setShouldLoad(true);
@@ -64,26 +69,18 @@ function Map(props) {
 		if (
 			mapPersistenceStrategy ===
 			Defaults.MapPersistenceStrategy.PublicUnauthenticated
-		)
+		) {
 			setCanSaveMap(true);
-		if (mapOwner) {
-			console.log('--- MapOwner: ' + mapOwner);
-			if (user !== null && mapOwner === user.username) {
-				setCanSaveMap(true);
-				console.log('--- Can Save Map (MapOwner)');
-				return;
-			}
-			if (
-				user !== null &&
-				mapOwner !== user.username &&
-				mapPersistenceStrategy !== Defaults.MapPersistenceStrategy.Private &&
-				!isMapReadOnly
-			) {
-				setCanSaveMap(true);
-				console.log('--- Can Save Map (Public, Logged In, Not Read Only)');
-				return;
-			}
-			console.log('--- Cannot Save Map');
+		} else if (user !== null && mapOwner === user.username) {
+			setCanSaveMap(true);
+		} else if (
+			user !== null &&
+			mapOwner !== user.username &&
+			mapPersistenceStrategy !== Defaults.MapPersistenceStrategy.Private &&
+			!isMapReadOnly
+		) {
+			setCanSaveMap(true);
+		} else {
 			setCanSaveMap(false);
 		}
 	}, [mapOwner, user, isMapReadOnly, mapPersistenceStrategy]);
