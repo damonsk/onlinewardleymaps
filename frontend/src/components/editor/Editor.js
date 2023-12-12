@@ -134,6 +134,7 @@ function Editor(props) {
 			<ForwardedRefComponent
 				ref={aceEditor}
 				mode="owm"
+				keyboardHandler="vscode"
 				theme={props.isLightTheme ? 'eclipse' : 'dracula'}
 				onChange={props.mutateMapText}
 				name="htmEditor"

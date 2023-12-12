@@ -5,6 +5,7 @@ require('ace-builds/src-noconflict/theme-eclipse');
 require('ace-builds/src-noconflict/theme-dracula');
 require('ace-builds/src-noconflict/ext-language_tools');
 require('ace-builds/src-noconflict/ext-searchbox');
+require('ace-builds/src-noconflict/keybinding-vscode');
 
 export default function WrappedEditor({ editorRef, ...props }) {
 	return <AceEditor {...props} ref={editorRef} />;
