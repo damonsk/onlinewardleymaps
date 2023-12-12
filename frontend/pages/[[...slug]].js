@@ -26,13 +26,6 @@ function Map(props) {
 		setMapReadOnly(false);
 	}, [canSaveMap]);
 
-	// async function makeSnapShot() {
-	// 	return await html2canvas(mapRef.current).then(canvas => {
-	// 		const base64image = canvas.toDataURL('image/png');
-	// 		return base64image;
-	// 	});
-	// }
-
 	useEffect(() => {
 		console.log('slug', slug);
 		if (slug === undefined) {
