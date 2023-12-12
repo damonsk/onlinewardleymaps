@@ -19,11 +19,6 @@ export const LoadMap = async (
 			operationName: strategy.operationName,
 		});
 		console.log('--- Loaded', response);
-		// const newObj = {
-		// 	id: data.id,
-		// 	mapText: data.text,
-		// 	mapIterations: data.mapIterations ? JSON.parse(data.mapIterations) : {},
-		// };
 		onceLoaded(strategy.mapPersistenceStrategy, response.data[query.name]);
 	};
 
