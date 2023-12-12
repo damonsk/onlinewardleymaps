@@ -27,22 +27,29 @@ function Editor(props) {
 		};
 	};
 
-	const getHeight = () => {
-		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight + 10;
-	};
-
-	const handleResize = () => {
-		setHeight(getHeight());
-	};
-
 	useEffect(() => {
-		handleResize();
+		const getHeight = () => {
+			var winHeight = window.innerHeight;
+			var topNavHeight = document.getElementById('top-nav-wrapper')
+				.clientHeight;
+			var titleHeight = document.getElementById('title').clientHeight;
+			return winHeight - topNavHeight - titleHeight + 10;
+		};
+		setHeight(getHeight());
 	}, [props.mapOnlyView]);
 
 	useEffect(() => {
+		const getHeight = () => {
+			var winHeight = window.innerHeight;
+			var topNavHeight = document.getElementById('top-nav-wrapper')
+				.clientHeight;
+			var titleHeight = document.getElementById('title').clientHeight;
+			return winHeight - topNavHeight - titleHeight + 10;
+		};
+		const handleResize = () => {
+			setHeight(getHeight());
+		};
+
 		window.addEventListener('load', handleResize);
 		window.addEventListener('resize', handleResize);
 		return function cleanup() {
