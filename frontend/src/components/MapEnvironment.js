@@ -528,8 +528,7 @@ function Environment(props) {
 						sm={4}
 						sx={{
 							paddingTop: '0!important',
-							backgroundColor: '#e9ecef',
-							borderRight: '1px solid #6c757d',
+							borderRight: '2px solid rgba(0, 0, 0, 0.12)',
 						}}
 					>
 						<Editor
