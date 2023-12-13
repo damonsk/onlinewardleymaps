@@ -86,6 +86,21 @@ export const setPipelineMaturity = (o, line) => {
 	);
 };
 
+export const setPipelineComponentMaturity = (o, line) => {
+	let pieplinePos = { maturity: 0.2 };
+	let findPos = line.split('[');
+	if (
+		line.indexOf('[') > -1 &&
+		line.indexOf(']') > -1 &&
+		findPos.length > 1 &&
+		findPos[1].indexOf(']') > -1
+	) {
+		let extractedPos = findPos[1].split(']')[0];
+		pieplinePos.maturity = parseFloat(extractedPos.trim());
+	}
+	return Object.assign(o, { maturity: pieplinePos.maturity });
+};
+
 export const extractLocation = (input, defaultValue) => {
 	if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
 		let loc = input
