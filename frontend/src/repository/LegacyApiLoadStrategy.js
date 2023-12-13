@@ -9,7 +9,7 @@ export class LegacyLoadStrategy extends LoadStrategy {
 		const newObj = {
 			id: data.id,
 			mapText: data.text,
-			mapIterations: data.mapIterations ? JSON.parse(data.mapIterations) : {},
+			mapIterations: data.mapIterations ? JSON.parse(data.mapIterations) : [],
 		};
 		this.callback(Defaults.MapPersistenceStrategy.Legacy, newObj);
 	}
