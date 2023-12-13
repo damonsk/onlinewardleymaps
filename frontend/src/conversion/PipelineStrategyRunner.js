@@ -94,7 +94,6 @@ export default class PipelineStrategyRunner {
 			} catch (l) {
 				// eslint-disable-next-line no-unused-expressions
 				errors.push[new ParseError(i)];
-				console.log(l);
 			}
 		}
 		return { [this.containerName]: elementsToReturn, errors: errors };

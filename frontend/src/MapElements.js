@@ -48,7 +48,7 @@ export default class MapElements {
 	}
 
 	getEvolvedElements() {
-		const x = this.getEvolveElements().map(el => {
+		return this.getEvolveElements().map(el => {
 			let v = this.evolved.find(evd => evd.name === el.name);
 			return {
 				name: el.name,
@@ -66,8 +66,6 @@ export default class MapElements {
 				increaseLabelSpacing: v.increaseLabelSpacing,
 			};
 		});
-		console.log('x', x);
-		return x;
 	}
 
 	getEvolveElements() {
@@ -116,7 +114,6 @@ export default class MapElements {
 			.concat(evolvedElements)
 			.concat(evolveElements)
 			.filter(c => !c.pseudoComponent == true);
-		console.log('getMergedElements', collection);
 		if (this.pipelines === undefined) return collection;
 		const e = collection
 			.map(e => {

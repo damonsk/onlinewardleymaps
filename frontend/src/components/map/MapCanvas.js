@@ -71,10 +71,6 @@ function MapCanvas(props) {
 		}
 	}, [isModKeyPressed]);
 
-	useEffect(() => {
-		console.log(mapElementsClicked);
-	}, [mapElementsClicked]);
-
 	const clicked = function(ctx) {
 		props.setHighlightLine(ctx.el.line);
 		if (isModKeyPressed === false) return;

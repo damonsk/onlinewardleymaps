@@ -5,7 +5,7 @@ import LinkSymbol from '../symbols/LinkSymbol';
 
 function ComponentLink(props) {
 	const { mapStyleDefs, mapDimensions, startElement, endElement, link } = props;
-	console.log('ComponentLink', { startElement, endElement });
+	// console.log('ComponentLink', { startElement, endElement });
 	const { height, width } = mapDimensions;
 	const positionCalc = new PositionCalculator();
 	const x1 = positionCalc.maturityToX(startElement.maturity, width);

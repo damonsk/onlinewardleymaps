@@ -133,7 +133,6 @@ function Environment(props) {
 		if (currentIteration !== null && currentIteration > -1) {
 			const newList = [...mapIterations];
 			const item = newList[currentIteration];
-			console.log(item);
 			item.mapText = newText;
 			newList.splice(currentIteration, 1);
 			newList.splice(currentIteration, 0, item);

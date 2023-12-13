@@ -37,7 +37,6 @@ function EvolvingComponentLink(props) {
 	const y2 =
 		positionCalc.visibilityToY(endElement.visibility, height) +
 		(endElement.offsetY ? endElement.offsetY : 0);
-	console.log('endElement', { endElement, startElement });
 	let boundary;
 
 	if (endElement.inertia) {
