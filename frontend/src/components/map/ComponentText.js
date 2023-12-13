@@ -66,7 +66,7 @@ function ComponentText(props) {
 				id={elementId}
 				fixedY={false}
 				fixedX={false}
-				onMove={endDrag}
+				onMove={props.overrideDrag ? props.overrideDrag : endDrag}
 				x={props.element.label.x}
 				y={props.element.label.y}
 			>

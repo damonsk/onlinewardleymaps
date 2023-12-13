@@ -17,6 +17,7 @@ export default class PipelineExtractionStrategy {
 			[
 				ExtractionFunctions.setName,
 				ExtractionFunctions.setPipelineComponentMaturity,
+				ExtractionFunctions.setLabel,
 			]
 		);
 	}

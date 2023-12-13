@@ -4,6 +4,7 @@ import MapElements from '../../MapElements';
 import MapGrid from './foundation/MapGrid';
 import MapEvolution from './foundation/MapEvolution';
 import Pipeline from './Pipeline';
+import PipelineVersion2 from './PipelineVersion2';
 import ComponentLink from './ComponentLink';
 import FluidLink from './FluidLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
@@ -23,6 +24,7 @@ import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
+import { featureSwitches } from '../../constants/featureswitches';
 
 function MapCanvas(props) {
 	const isModKeyPressed = useModKeyPressedConsumer();
@@ -254,19 +256,40 @@ function MapCanvas(props) {
 						))}
 					</g>
 					<g id="pipelines">
-						{mapElements.getMapPipelines().map((p, i) => (
-							<Pipeline
-								key={i}
-								mapDimensions={props.mapDimensions}
-								pipeline={p}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								setMetaText={props.setMetaText}
-								metaText={props.metaText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
-							/>
-						))}
+						{featureSwitches.enableNewPipelines &&
+							mapElements
+								.getMapPipelines()
+								.map((p, i) => (
+									<>
+										{featureSwitches.enableNewPipelines &&
+										p.components != undefined &&
+										p.components.length > 0 ? (
+											<PipelineVersion2
+												key={i}
+												mapDimensions={props.mapDimensions}
+												pipeline={p}
+												mapText={props.mapText}
+												mutateMapText={props.mutateMapText}
+												setMetaText={props.setMetaText}
+												metaText={props.metaText}
+												mapStyleDefs={props.mapStyleDefs}
+												setHighlightLine={props.setHighlightLine}
+											/>
+										) : (
+											<Pipeline
+												key={i}
+												mapDimensions={props.mapDimensions}
+												pipeline={p}
+												mapText={props.mapText}
+												mutateMapText={props.mutateMapText}
+												setMetaText={props.setMetaText}
+												metaText={props.metaText}
+												mapStyleDefs={props.mapStyleDefs}
+												setHighlightLine={props.setHighlightLine}
+											/>
+										)}
+									</>
+								))}
 					</g>
 					<g id="elements">
 						{mapElements.getMergedElements().map((el, i) => (
