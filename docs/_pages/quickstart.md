@@ -35,4 +35,6 @@ Without writing anything else, your map will display the following.
 
 ![Anchors](/assets/qs-anchor.png)
 
-You'll likely want to reposition that anchor somewhere else on the map.  OWM has a special syntax that is present on most elements.  This is ``[<visbility>, <maturity>]``.   They're a number between 0 and 1.  For example, 0.9, 0.15.  Visibility is the y-axis.
+You'll likely want to reposition that anchor somewhere else on the map.  OWM has a special syntax that is present on most elements.  This is ``[<visbility>, <maturity>]``.   They're a number between 0 and 1.  For example, 0.9, 0.15.  Visibility is the y-axis.  
+
+You can instead drag and drop the position and your map text will automatically be updated. 
