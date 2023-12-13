@@ -115,7 +115,7 @@ function Movable(props) {
 				ry="30"
 				width="30"
 				height="30"
-				fillOpacity={shouldShowMoving && moving ? 0.2 : 0.2}
+				fillOpacity={shouldShowMoving && moving ? 0.2 : 0.0}
 			/>
 			{props.children}
 		</g>

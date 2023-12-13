@@ -1,3 +1,5 @@
+import { featureSwitches } from './constants/featureswitches';
+
 export default class MapElements {
 	// this is a messs...
 	constructor(components, evolved, pipelines) {
@@ -5,19 +7,30 @@ export default class MapElements {
 			return i.collection.map(c => Object.assign(c, { type: i.type }));
 		});
 		this.evolved = evolved;
-		this.pipelines = pipelines;
+		this.pipelines = this.processPipelines(pipelines, this.mapComponents);
+		if (featureSwitches.enableNewPipelines) {
+			let getPipelineChildComponents = this.pipelines.flatMap(p =>
+				p.components.map(c => {
+					return {
+						...c,
+						type: 'component',
+						pseudoComponent: true,
+						visibility: p.visibility,
+						offsetY: 14,
+					};
+				})
+			);
+			this.mapComponents = this.mapComponents.concat(
+				getPipelineChildComponents
+			);
+		}
 	}
 
-	getMapPipelines() {
-		// why is this doing this...
-		// since pipelines don't have defined visibility, they're
-		// getting it from the component itself.
-		// this behaviour could be pushed up to when the
-		// pipelines are extracted from text.
-		if (this.pipelines === undefined) return [];
-		let pipeline = this.pipelines
+	processPipelines(pipelines, components) {
+		if (pipelines === undefined) return [];
+		let pipeline = pipelines
 			.map(e => {
-				let component = this.mapComponents.find(el => el.name === e.name);
+				let component = components.find(el => el.name === e.name);
 				if (component !== null && component !== undefined) {
 					e.visibility = component.visibility;
 				} else {
@@ -30,8 +43,12 @@ export default class MapElements {
 		return pipeline;
 	}
 
+	getMapPipelines() {
+		return this.pipelines;
+	}
+
 	getEvolvedElements() {
-		return this.getEvolveElements().map(el => {
+		const x = this.getEvolveElements().map(el => {
 			let v = this.evolved.find(evd => evd.name === el.name);
 			return {
 				name: el.name,
@@ -44,10 +61,13 @@ export default class MapElements {
 				override: v.override,
 				line: v.line,
 				type: el.type,
+				offsetY: el.offsetY,
 				decorators: v.decorators,
 				increaseLabelSpacing: v.increaseLabelSpacing,
 			};
 		});
+		console.log('x', x);
+		return x;
 	}
 
 	getEvolveElements() {
@@ -94,7 +114,9 @@ export default class MapElements {
 		let evolvedElements = this.getEvolvedElements();
 		let collection = noneEvolving
 			.concat(evolvedElements)
-			.concat(evolveElements);
+			.concat(evolveElements)
+			.filter(c => !c.pseudoComponent == true);
+		console.log('getMergedElements', collection);
 		if (this.pipelines === undefined) return collection;
 		const e = collection
 			.map(e => {

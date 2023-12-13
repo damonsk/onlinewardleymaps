@@ -12,7 +12,6 @@ import { useModKeyPressedConsumer } from '../KeyPressContext';
 function PipelineVersion2(props) {
 	const positionCalc = new PositionCalculator();
 	const isModKeyPressed = useModKeyPressedConsumer();
-
 	const noLabelMatcher = {
 		matcher: (line, identifier, type) => {
 			return (
@@ -104,6 +103,14 @@ function PipelineVersion2(props) {
 
 	const xCalc = mat => positionCalc.maturityToX(mat, props.mapDimensions.width);
 
+	const allowLinking = (component, e) => {
+		const supplementObjectWithVisibilitt = Object.assign(component, {
+			visibility: props.pipeline.visibility,
+			offsetY: 12,
+		});
+		props.linkingFunction({ el: supplementObjectWithVisibilitt, e });
+	};
+
 	const y =
 		positionCalc.visibilityToY(
 			props.pipeline.visibility,
@@ -111,49 +118,53 @@ function PipelineVersion2(props) {
 		) + 2;
 
 	return (
-		<>
+		<React.Fragment key={'pipeline_box_' + props.pipeline.id}>
 			<PipelineBoxSymbol
-				id={'pipeline_box_' + props.pipeline.id}
 				y={y}
+				id={'pipeline_box_' + props.pipeline.id}
 				x1={x1 - 10}
 				x2={x2 + 10}
 				styles={props.mapStyleDefs.component}
 			/>
 			{props.pipeline.components.map((component, i) => (
-				<>
-					<Movable
-						id={'pipeline_' + props.pipeline.id + '_' + i}
-						onMove={m => endDragX2(component, m)}
-						x={xCalc(component.maturity)}
-						y={y + 12}
-						fixedY={true}
-						fixedX={false}
-						isModKeyPressed={isModKeyPressed}
-					>
-						<ComponentSymbol
-							id={'pipeline_circle_' + props.pipeline.id + '_' + i}
-							cx={'0'}
-							cy="0"
-							styles={props.mapStyleDefs.component}
-							onClick={() => props.setHighlightLine(props.pipeline.line)}
-						/>
-					</Movable>
-					<g
-						transform={'translate(' + xCalc(component.maturity) + ',' + y + ')'}
-					>
-						<ComponentText
-							overrideDrag={m => endDragForLabel(component, m)}
-							id={'pipelinecomponent_text_' + component.id}
-							mapStyleDefs={props.mapStyleDefs}
-							element={component}
-							mapText={props.mapText}
-							mutateMapText={props.mutateMapText}
-							// onClick={onElementClick}
-						/>
-					</g>
-				</>
+				<React.Fragment key={i}>
+					<>
+						<Movable
+							id={'pipeline_' + props.pipeline.id + '_' + i}
+							onMove={m => endDragX2(component, m)}
+							x={xCalc(component.maturity)}
+							y={y + 12}
+							fixedY={true}
+							fixedX={false}
+							shouldShowMoving={true}
+							isModKeyPressed={isModKeyPressed}
+						>
+							<ComponentSymbol
+								id={'pipeline_circle_' + props.pipeline.id + '_' + i}
+								cx={'0'}
+								cy="0"
+								styles={props.mapStyleDefs.component}
+								onClick={e => allowLinking(component, e)}
+							/>
+						</Movable>
+						<g
+							transform={
+								'translate(' + xCalc(component.maturity) + ',' + y + ')'
+							}
+						>
+							<ComponentText
+								overrideDrag={m => endDragForLabel(component, m)}
+								id={'pipelinecomponent_text_' + component.id}
+								mapStyleDefs={props.mapStyleDefs}
+								element={component}
+								mapText={props.mapText}
+								mutateMapText={props.mutateMapText}
+							/>
+						</g>
+					</>
+				</React.Fragment>
 			))}
-		</>
+		</React.Fragment>
 	);
 }
 

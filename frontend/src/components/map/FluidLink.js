@@ -7,7 +7,9 @@ function FluidLink(props) {
 	const { height, width } = mapDimensions;
 	const positionCalc = new PositionCalculator();
 	const x1 = positionCalc.maturityToX(startElement.maturity, width);
-	const y1 = positionCalc.visibilityToY(startElement.visibility, height);
+	const y1 =
+		positionCalc.visibilityToY(startElement.visibility, height) +
+		(startElement.offsetY ? startElement.offsetY : 0);
 
 	const [position, setPosition] = React.useState({
 		x: x1,

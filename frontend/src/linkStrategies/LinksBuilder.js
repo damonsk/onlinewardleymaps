@@ -67,6 +67,7 @@ export default class LinksBuilder {
 			});
 			allLinks.push({ name: r.name, links: currentLinks });
 		});
+		console.log('allLinks', allLinks);
 		return allLinks;
 	}
 }

@@ -71,6 +71,10 @@ function MapCanvas(props) {
 		}
 	}, [isModKeyPressed]);
 
+	useEffect(() => {
+		console.log(mapElementsClicked);
+	}, [mapElementsClicked]);
+
 	const clicked = function(ctx) {
 		props.setHighlightLine(ctx.el.line);
 		if (isModKeyPressed === false) return;
@@ -260,12 +264,12 @@ function MapCanvas(props) {
 							mapElements
 								.getMapPipelines()
 								.map((p, i) => (
-									<>
+									<React.Fragment key={i}>
 										{featureSwitches.enableNewPipelines &&
 										p.components != undefined &&
 										p.components.length > 0 ? (
 											<PipelineVersion2
-												key={i}
+												key={'pipeline_' + i}
 												mapDimensions={props.mapDimensions}
 												pipeline={p}
 												mapText={props.mapText}
@@ -274,6 +278,7 @@ function MapCanvas(props) {
 												metaText={props.metaText}
 												mapStyleDefs={props.mapStyleDefs}
 												setHighlightLine={props.setHighlightLine}
+												linkingFunction={clicked}
 											/>
 										) : (
 											<Pipeline
@@ -288,7 +293,7 @@ function MapCanvas(props) {
 												setHighlightLine={props.setHighlightLine}
 											/>
 										)}
-									</>
+									</React.Fragment>
 								))}
 					</g>
 					<g id="elements">

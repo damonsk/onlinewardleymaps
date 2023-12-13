@@ -47,8 +47,13 @@ export default class PipelineStrategyRunner {
 								break; //we hit a new pipeline, stop extracting
 							}
 							if (allLines[j].trim().indexOf(`${this.childKeyword} `) === 0) {
-								let pipelineComponent = {};
-								console.log(decorators);
+								let pipelineComponent = merge(
+									{
+										id: 1 + i + '-' + j,
+										line: 1 + j,
+									},
+									this.config.defaultAttributes
+								);
 								decorators.forEach(f => {
 									f(pipelineComponent, allLines[j], {
 										keyword: this.childKeyword,
@@ -57,7 +62,6 @@ export default class PipelineStrategyRunner {
 								childComponents.push(pipelineComponent);
 							}
 						}
-						console.log('childs', childComponents);
 						elementToMutate = merge(elementToMutate, {
 							components: childComponents,
 						});
@@ -84,7 +88,6 @@ export default class PipelineStrategyRunner {
 						}
 						baseElement.maturity1 = mostLeft;
 						baseElement.maturity2 = mostRight;
-						console.log('baseElement', baseElement);
 					}
 					elementsToReturn.push(baseElement);
 				}

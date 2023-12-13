@@ -18,10 +18,11 @@ function MapComponent(props) {
 		props.element.maturity,
 		props.mapDimensions.width
 	);
-	const y = positionCalc.visibilityToY(
-		props.element.visibility,
-		props.mapDimensions.height
-	);
+	const y =
+		positionCalc.visibilityToY(
+			props.element.visibility,
+			props.mapDimensions.height
+		) + (props.element.offsetY ? props.element.offsetY : 0);
 
 	const onElementClick = () => props.setHighlightLine(props.element.line);
 	const canApplyInertia = () =>
@@ -108,14 +109,6 @@ function MapComponent(props) {
 				shouldShowMoving={true}
 				isModKeyPressed={isModKeyPressed}
 			>
-				{/* {props.element.pipeline ? (
-					<PipelineComponentSymbol
-						id={'element_square_' + props.element.id}
-						styles={props.mapStyleDefs.component}
-						evolved={props.element.evolved}
-						onClick={onElementClick}
-					/>
-				) : ( */}
 				<>{props.children}</>
 			</Movable>
 			{canApplyInertia() && (
