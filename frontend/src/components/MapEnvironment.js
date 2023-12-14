@@ -329,6 +329,17 @@ function Environment(props) {
 	}
 
 	useEffect(() => {
+		const handleBeforeUnload = event => {
+			if (saveOutstanding) {
+				event.preventDefault();
+				event.returnValue = '';
+			}
+		};
+
+		window.addEventListener('beforeunload', handleBeforeUnload);
+	});
+
+	useEffect(() => {
 		try {
 			setErrorLine([]);
 			setInvalid(false);

@@ -25,6 +25,7 @@ import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
 import { featureSwitches } from '../../constants/featureswitches';
+import styles from '../../styles/MapCanvas.module.css';
 
 function MapCanvas(props) {
 	const isModKeyPressed = useModKeyPressedConsumer();
@@ -128,7 +129,7 @@ function MapCanvas(props) {
 				onDoubleClick={e => newElementAt(e)}
 				fontFamily={props.mapStyleDefs.fontFamily}
 				fontSize={props.mapStyleDefs.fontSize}
-				className={props.mapStyleDefs.className}
+				className={[props.mapStyleDefs.className, styles.mapCanvas].join(' ')}
 				id="svgMap"
 				width={props.mapDimensions.width + 2 * props.mapPadding}
 				height={props.mapDimensions.height + 4 * props.mapPadding}
@@ -143,7 +144,6 @@ function MapCanvas(props) {
 				version="1.1"
 				xmlns="http://www.w3.org/2000/svg"
 				xmlnsXlink="http://www.w3.org/1999/xlink"
-				style={{ userSelect: 'none' }}
 			>
 				<MapGraphics mapStyleDefs={props.mapStyleDefs} />
 				<g id="grid">
