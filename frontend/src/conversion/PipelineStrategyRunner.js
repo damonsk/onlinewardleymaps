@@ -88,6 +88,7 @@ export default class PipelineStrategyRunner {
 						}
 						baseElement.maturity1 = mostLeft;
 						baseElement.maturity2 = mostRight;
+						baseElement.hidden = false;
 					}
 					elementsToReturn.push(baseElement);
 				}
