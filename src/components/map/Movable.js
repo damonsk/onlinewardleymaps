@@ -97,6 +97,7 @@ function Movable(props) {
 		<g
 			is="custom"
 			class={'draggable'}
+			style={{ cursor: moving ? 'grabbing' : 'grab' }}
 			onMouseDown={e => handleMouseDown(e)}
 			onMouseUp={e => handleMouseUp(e)}
 			id={'movable_' + props.id}

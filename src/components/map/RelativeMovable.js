@@ -83,6 +83,7 @@ function RelativeMovable(props) {
 		<g
 			key={'movable_' + props.id}
 			className={'draggable'}
+			style={{ cursor: moving ? 'grabbing' : 'grab' }}
 			onMouseDown={e => handleMouseDown(e)}
 			onMouseUp={e => handleMouseUp(e)}
 			id={'movable_' + props.id}
