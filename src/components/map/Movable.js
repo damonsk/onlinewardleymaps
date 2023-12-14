@@ -55,10 +55,11 @@ function Movable(props) {
 	};
 
 	const handleEscape = k => {
-		if (k.key === 'Escape') {
+		if (k.key === 'Escape' && moving) {
 			document.removeEventListener('mousemove', handleMouseMove.current);
 			document.removeEventListener('keyup', handleEscape);
 			setMoving(false);
+			endDrag();
 			setPosition({ x: x(), y: y() });
 		}
 	};
