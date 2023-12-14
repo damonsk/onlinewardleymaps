@@ -19,6 +19,21 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
+	test('When pipeline is specificed but boundaries are not defined, pipeline should be hidden and returns', function() {
+		let actual = 'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo';
+		let result = new Converter().parse(actual);
+		const mergeables = [{ collection: result.elements, type: 'component' }];
+		let me = new MapElements(mergeables, result.evolved, result.pipelines);
+		let pipelines = me.getMapPipelines();
+		let components = me.getMergedElements();
+
+		expect(result.pipelines.length).toEqual(1);
+		expect(pipelines.length).toEqual(1);
+		expect(pipelines[0].visibility).toEqual(0.9);
+		expect(pipelines[0].hidden).toEqual(true);
+		expect(components[0].pipeline).toEqual(true);
+	});
+
 	test('When a pipelinecomponent appears, associate to the preceeding pipeline', function() {
 		let actual =
 			'component Foo [0.9, 0.1]' +

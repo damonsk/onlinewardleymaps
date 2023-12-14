@@ -22,8 +22,6 @@ describe('Given Components Evolve', function() {
 		let me = new MapElements(mergeables, result.evolved);
 		let evolved = me.getEvolveElements();
 
-		console.log('evolved', result);
-
 		expect(result.evolved.length).toEqual(1);
 		expect(evolved.length).toEqual(1);
 		expect(evolved[0].evolving).toEqual(true);

@@ -38,7 +38,6 @@ export default class MapElements {
 				}
 				return e;
 			})
-			.filter(e => e.hidden === false)
 			.flat();
 		return pipeline;
 	}

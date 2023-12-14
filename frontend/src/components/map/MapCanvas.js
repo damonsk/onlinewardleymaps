@@ -259,6 +259,7 @@ function MapCanvas(props) {
 						{featureSwitches.enableNewPipelines &&
 							mapElements
 								.getMapPipelines()
+								.filter(p => p.hidden == false)
 								.map((p, i) => (
 									<React.Fragment key={i}>
 										{featureSwitches.enableNewPipelines &&
