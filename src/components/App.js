@@ -195,6 +195,17 @@ function App() {
 	};
 
 	React.useEffect(() => {
+		const handleBeforeUnload = event => {
+			if (saveOutstanding) {
+				event.preventDefault();
+				event.returnValue = '';
+			}
+		};
+
+		window.addEventListener('beforeunload', handleBeforeUnload);
+	});
+
+	React.useEffect(() => {
 		try {
 			setErrorLine([]);
 			setInvalid(false);
