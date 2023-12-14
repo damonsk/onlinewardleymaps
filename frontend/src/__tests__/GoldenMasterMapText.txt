@@ -65,11 +65,13 @@ pipeline foo [0.24, 0.39]
 
 //Pipelines V2
 component Power [0.21, 0.67] label [11, -13]
-pipeline Power 
-pipelinecomponent Wind [0.72] label [-13.00, 35.00]
-pipelinecomponent Batteries [0.58] label [-28.00, 35.00] 
+pipeline Power [0.1,0.1]
+{
+component Wind [0.72] label [-13.00, 35.00]
+component Batteries [0.58] label [-28.00, 35.00] 
 evolve Batteries 0.65 label [-46, -20]
-pipelinecomponent Nuclear [0.77] label [-15.00, 36.00]
+component Nuclear [0.77] label [-15.00, 36.00]
+}
 //EndPipelinesV2
 
 //SubMap

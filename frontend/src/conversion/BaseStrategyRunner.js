@@ -35,8 +35,9 @@ export default class BaseStrategyRunner {
 					);
 					elementsToReturn.push(baseElement);
 				}
-			} catch {
+			} catch (e) {
 				// eslint-disable-next-line no-unused-expressions
+				console.log(e);
 				errors.push[new ParseError(i)];
 			}
 		}

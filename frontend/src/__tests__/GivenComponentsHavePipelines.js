@@ -40,7 +40,11 @@ describe('Given Components Have Pipelines', function() {
 			'\n' +
 			'pipeline Foo' +
 			'\n' +
-			'pipelinecomponent FooBar [0.11]';
+			'{' +
+			'\n' +
+			'component FooBar [0.11]' +
+			'\n' +
+			'}';
 		let result = new Converter().parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
 		let me = new MapElements(mergeables, result.evolved, result.pipelines);
@@ -54,13 +58,17 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
-	test('When a pipelinecomponent appears, associate to the preceeding pipeline', function() {
+	test('V3 - When pipeline is specificed but boundaries are not defined yet it has child componets, pipeline should be not hidden and returns', function() {
 		let actual =
 			'component Foo [0.9, 0.1]' +
 			'\n' +
-			'pipeline Foo [0.15, 0.65]' +
+			'pipeline Foo' +
 			'\n' +
-			'pipelinecomponent Bar [0.65]';
+			'{' +
+			'\n' +
+			'component FooBar [0.11]' +
+			'\n' +
+			'}';
 		let result = new Converter().parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
 		let me = new MapElements(mergeables, result.evolved, result.pipelines);
@@ -69,10 +77,35 @@ describe('Given Components Have Pipelines', function() {
 
 		expect(result.pipelines.length).toEqual(1);
 		expect(pipelines.length).toEqual(1);
+		expect(pipelines[0].visibility).toEqual(0.9);
+		expect(pipelines[0].components.length).toEqual(1);
+		expect(pipelines[0].hidden).toEqual(false);
+		expect(components[0].pipeline).toEqual(true);
+	});
+
+	test('When a pipelinecomponent appears, associate to the preceeding pipeline', function() {
+		let actual =
+			'component Foo [0.9, 0.1]' +
+			'\n' +
+			'pipeline Foo [0.15, 0.65]' +
+			'\n' +
+			'{' +
+			'\n' +
+			'component Bar [0.65]' +
+			'\n' +
+			'}';
+		let result = new Converter().parse(actual);
+		const mergeables = [{ collection: result.elements, type: 'component' }];
+		let me = new MapElements(mergeables, result.evolved, result.pipelines);
+		let pipelines = me.getMapPipelines();
+		let components = me.getMergedElements();
+
+		expect(result.pipelines.length).toEqual(1);
+		expect(pipelines.length).toEqual(1);
+		expect(pipelines[0].components.length).toEqual(1);
 		expect(pipelines[0].maturity1).toEqual(0.65);
 		expect(pipelines[0].maturity2).toEqual(0.65);
 		expect(pipelines[0].visibility).toEqual(0.9);
-		expect(pipelines[0].components.length).toEqual(1);
 		expect(components[0].pipeline).toEqual(true);
 	});
 
@@ -82,9 +115,12 @@ describe('Given Components Have Pipelines', function() {
 			'\n' +
 			'pipeline Foo [0.15, 0.65]' +
 			'\n' +
-			'pipelinecomponent Bar [0.66]' +
+			'{' +
 			'\n' +
-			'pipelinecomponent FooBar [0.41]';
+			'component Bar [0.66]' +
+			'\n' +
+			'component FooBar [0.41]';
+		'\n' + '}';
 		let result = new Converter().parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
 		let me = new MapElements(mergeables, result.evolved, result.pipelines);

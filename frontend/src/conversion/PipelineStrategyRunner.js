@@ -4,7 +4,7 @@ export default class PipelineStrategyRunner {
 	constructor(data, config, decorators, childDecorators) {
 		this.data = data;
 		this.keyword = config.keyword;
-		this.childKeyword = 'pipelinecomponent';
+		this.childKeyword = 'component';
 		this.containerName = config.containerName;
 		this.config = config;
 		this.decorators =
@@ -42,30 +42,48 @@ export default class PipelineStrategyRunner {
 						decorators
 					) => {
 						let childComponents = [];
+						let hasPassedOpeningContainer = false;
+
 						for (let j = 1 + startingIndex; j < allLines.length; j++) {
-							if (allLines[j].trim().indexOf(`${this.keyword} `) === 0) {
-								break; //we hit a new pipeline, stop extracting
+							const currentLine = allLines[j].trim();
+
+							if (currentLine.indexOf('{') > -1 && !hasPassedOpeningContainer) {
+								hasPassedOpeningContainer = true;
 							}
-							if (allLines[j].trim().indexOf(`${this.childKeyword} `) === 0) {
+
+							if (
+								currentLine.indexOf(`${this.keyword} `) === 0 &&
+								!hasPassedOpeningContainer
+							) {
+								break;
+							}
+
+							if (hasPassedOpeningContainer && currentLine.indexOf('}') > -1) {
+								break; // We hit a new pipeline or the closing bracket, stop extracting
+							}
+
+							if (
+								hasPassedOpeningContainer &&
+								currentLine.indexOf(`${this.childKeyword} `) === 0
+							) {
 								let pipelineComponent = merge(
-									{
-										id: 1 + i + '-' + j,
-										line: 1 + j,
-									},
+									{ id: 1 + startingIndex + '-' + j, line: 1 + j },
 									this.config.defaultAttributes
 								);
-								decorators.forEach(f => {
-									f(pipelineComponent, allLines[j], {
+
+								decorators.forEach(decorator => {
+									decorator(pipelineComponent, currentLine, {
 										keyword: this.childKeyword,
 									});
 								});
+
 								childComponents.push(pipelineComponent);
 							}
 						}
-						elementToMutate = merge(elementToMutate, {
-							components: childComponents,
-						});
+
+						elementToMutate.components = childComponents;
 					};
+
 					scanForPipelineComponents(
 						lines,
 						i,

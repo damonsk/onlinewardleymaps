@@ -12,7 +12,7 @@ function loadFileContent(fileName) {
 // Reusable function to compare results
 function testResultEquality(result, fileName) {
 	const outputFileContent = loadFileContent(fileName);
-	//console.log(JSON.stringify(result));  // Uncomment for debugging
+	// console.log(JSON.stringify(result));  // Uncomment for debugging
 	expect(JSON.stringify(result)).toBe(outputFileContent);
 }
 
@@ -22,6 +22,7 @@ describe('So that large refactors can be done without breaking output of mapElem
 		const fileContent = loadFileContent(fileName);
 
 		let result = new Converter().parse(fileContent);
+		//console.log(JSON.stringify(result)); // Uncomment for debugging
 		testResultEquality(result, 'GoldenMasterConverterOutput.txt');
 
 		const mergeables = [{ collection: result.elements, type: 'component' }];
@@ -60,6 +61,7 @@ describe('So that large refactors can be done without breaking output of mapElem
 
 		testCases.forEach(testCase => {
 			const { fn, fileName } = testCase;
+			// console.log(testCase);
 			testResultEquality(fn(), fileName);
 		});
 	});

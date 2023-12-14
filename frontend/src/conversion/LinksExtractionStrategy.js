@@ -24,6 +24,8 @@ export default class LinksExtractionStrategy {
 			'url',
 			'market',
 			'ecosystem',
+			'{',
+			'}',
 		];
 	}
 	apply() {
