@@ -39,7 +39,7 @@ function PipelineVersion2(props) {
 	};
 
 	const positionUpdater = new DefaultPositionUpdater(
-		'pipelinecomponent',
+		'component',
 		props.mapText,
 		props.mutateMapText,
 		[noLabelMatcher, withLabelMatcher, NotDefinedMaturityMatcher]
@@ -55,9 +55,7 @@ function PipelineVersion2(props) {
 							line
 								.replace(/\s/g, '')
 								.indexOf(
-									'pipelinecomponent' +
-										pipelineComponent.name.replace(/\s/g, '') +
-										'['
+									'component' + pipelineComponent.name.replace(/\s/g, '') + '['
 								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
