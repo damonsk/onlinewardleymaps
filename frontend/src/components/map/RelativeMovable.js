@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 
 function RelativeMovable(props) {
+	const [moving, setMoving] = React.useState(false);
 	const x = useCallback(() => props.x, [props.x]);
 	const y = useCallback(() => props.y, [props.y]);
 	const [position, setPosition] = React.useState({
@@ -25,17 +26,20 @@ function RelativeMovable(props) {
 	});
 
 	const handleEscape = k => {
-		if (k.key === 'Escape') {
+		if (k.key === 'Escape' && moving) {
+			setMoving(false);
+			endDrag();
 			document.removeEventListener('mousemove', handleMouseMove.current);
 			document.removeEventListener('keyup', handleEscape);
 			setPosition({ x: x(), y: y() });
+			console.log('pressed');
 		}
 	};
 
 	const handleMouseDown = e => {
 		const pageX = e.pageX;
 		const pageY = e.pageY;
-
+		setMoving(true);
 		setPosition(position =>
 			Object.assign({}, position, {
 				coords: {
@@ -55,6 +59,7 @@ function RelativeMovable(props) {
 				coords: {},
 			})
 		);
+		setMoving(false);
 		endDrag();
 	};
 
@@ -78,6 +83,7 @@ function RelativeMovable(props) {
 		<g
 			key={'movable_' + props.id}
 			className={'draggable'}
+			style={{ cursor: moving ? 'grabbing' : 'grab' }}
 			onMouseDown={e => handleMouseDown(e)}
 			onMouseUp={e => handleMouseUp(e)}
 			id={'movable_' + props.id}
