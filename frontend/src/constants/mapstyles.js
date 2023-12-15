@@ -93,6 +93,7 @@ export const Plain = {
 		flow: '#99c5ee9e',
 		flowStrokeWidth: 10,
 		flowText: '#03a9f4',
+		contextFontSize: '11px',
 	},
 	fluidLink: {
 		stroke: 'grey',

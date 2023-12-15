@@ -331,6 +331,19 @@ export const setText = (o, line, config) => {
 	return Object.assign(o, { text: text });
 };
 
+export const setContext = (o, line, config) => {
+	const start = line.indexOf(config.keyword);
+	let text = line
+		.substr(
+			`${config.keyword} `.length + start,
+			line.length - `${config.keyword} `.length + start
+		)
+		.trim()
+		.split(';')[1]
+		.trim();
+	return Object.assign(o, { context: text });
+};
+
 export const setName = (o, line, config) => {
 	let name = line
 		.split(`${config.keyword} `)[1]

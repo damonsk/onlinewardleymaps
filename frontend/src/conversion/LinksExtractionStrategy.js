@@ -29,82 +29,84 @@ export default class LinksExtractionStrategy {
 		];
 	}
 	apply() {
-		let lines = this.data.split('\n');
-		let linksToReturn = [];
-		let errors = [];
+		const lines = this.data.split('\n');
+		const linksToReturn = [];
+		const errors = [];
+
 		for (let i = 0; i < lines.length; i++) {
 			try {
 				const element = lines[i];
 				if (this.canProcessLine(element)) {
-					if (element.indexOf('+>') > -1) {
-						let name = element.split('+>');
-						linksToReturn.push({
-							start: name[0].trim(),
-							end: name[1].trim(),
-							flow: true,
-							future: true,
-							past: false,
-						});
-					} else if (element.indexOf('+<>') > -1) {
-						let name = element.split('+<>');
-						linksToReturn.push({
-							start: name[0].trim(),
-							end: name[1].trim(),
-							flow: true,
-							future: true,
-							past: true,
-						});
-					} else if (element.indexOf('+<') > -1) {
-						let name = element.split('+<');
-						linksToReturn.push({
-							start: name[0].trim(),
-							end: name[1].trim(),
-							flow: true,
-							future: false,
-							past: true,
-						});
-					} else if (element.indexOf("+'") > -1) {
-						let flowValue;
-						let endName;
-						let isFuture = false;
-						let isPast = false;
-						if (element.indexOf("'>") > -1) {
-							flowValue = element.split("+'")[1].split("'>")[0];
-							endName = element.split("'>");
-							isFuture = true;
-						} else if (element.indexOf("'<>") > -1) {
-							flowValue = element.split("+'")[1].split("'<>")[0];
-							endName = element.split("'<>");
-							isPast = true;
-							isFuture = true;
-						} else if (element.indexOf("'<") > -1) {
-							flowValue = element.split("+'")[1].split("'<")[0];
-							endName = element.split("'<");
-							isPast = true;
+					let start,
+						end,
+						flow = true,
+						future = false,
+						past = false,
+						flowValue,
+						context;
+
+					if (element.includes('+>')) {
+						[start, end] = element.split('+>');
+					} else if (element.includes('+<>')) {
+						[start, end] = element.split('+<>');
+						past = true;
+					} else if (element.includes('+<')) {
+						[start, end] = element.split('+<');
+						future = true;
+					} else if (element.includes("+'")) {
+						const parts = element.split("+'");
+						start = parts[0].trim();
+
+						if (parts[1].includes("'>")) {
+							[flowValue, end] = parts[1].split("'>");
+							future = true;
+						} else if (parts[1].includes("'<>")) {
+							[flowValue, end] = parts[1].split("'<>");
+							past = true;
+							future = true;
+						} else if (parts[1].includes("'<")) {
+							[flowValue, end] = parts[1].split("'<");
+							past = true;
 						}
-						let startName = element.split("+'");
+
 						linksToReturn.push({
-							start: startName[0].trim(),
-							end: endName[1].trim(),
-							flow: true,
-							flowValue: flowValue,
-							future: isFuture,
-							past: isPast,
+							start,
+							end: end
+								.trim()
+								.split(';')[0]
+								.trim(),
+							flow,
+							flowValue,
+							future,
+							past,
 						});
-					} else {
-						let name = element.split('->');
-						linksToReturn.push({
-							start: name[0].trim(),
-							end: name[1].trim(),
-							flow: false,
-						});
+					} else if (element.includes('->')) {
+						[start, end] = element.split('->');
+						flow = false;
 					}
+
+					if (element.includes(';')) {
+						context = element.split(';')[1].trim();
+					}
+
+					linksToReturn.push({
+						start: start.trim(),
+						end: end
+							.trim()
+							.split(';')[0]
+							.trim(),
+						flow,
+						future,
+						past,
+						context,
+					});
 				}
 			} catch (err) {
 				errors.push(new ParseError(i));
 			}
 		}
-		return { links: linksToReturn, errors: errors };
+
+		return { links: linksToReturn, errors };
 	}
 
 	canProcessLine(element) {

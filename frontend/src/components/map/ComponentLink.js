@@ -2,10 +2,10 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import FlowText from './FlowText';
 import LinkSymbol from '../symbols/LinkSymbol';
+import { featureSwitches } from '../../constants/featureswitches';
 
 function ComponentLink(props) {
 	const { mapStyleDefs, mapDimensions, startElement, endElement, link } = props;
-	// console.log('ComponentLink', { startElement, endElement });
 	const { height, width } = mapDimensions;
 	const positionCalc = new PositionCalculator();
 	const x1 = positionCalc.maturityToX(startElement.maturity, width);
@@ -31,6 +31,17 @@ function ComponentLink(props) {
 			(link.future === true && startElement.evolved === true) ||
 			(link.future === true && endElement.evolved === true));
 
+	function getAngle(x1, y1, x2, y2) {
+		return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+	}
+
+	const centerX = (x1 + x2) / 2;
+	const centerY = (y1 + y2) / 2;
+	const buffer = 5;
+	const angle = getAngle(x1, y1, x2, y2);
+	const isUpsideDown = angle > 90 || angle < -90;
+	const adjustedAngle = isUpsideDown ? angle + 180 : angle;
+
 	return (
 		<>
 			<LinkSymbol
@@ -54,6 +65,18 @@ function ComponentLink(props) {
 					x={x2}
 					y={y2}
 				/>
+			)}
+			{featureSwitches.enableLinkContext && link.context && (
+				<text
+					is="custom"
+					font-size={mapStyleDefs.link.contextFontSize ?? '10px'}
+					text-anchor={'middle'}
+					x={centerX}
+					y={centerY - buffer}
+					transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}
+				>
+					{link.context}
+				</text>
 			)}
 		</>
 	);

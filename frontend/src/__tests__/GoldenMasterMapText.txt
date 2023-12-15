@@ -78,3 +78,5 @@ component Nuclear [0.77] label [-15.00, 36.00]
 submap Website [0.83, 0.50] url(submapUrl)
 url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]
 //EndSupMap
+
+FooWithCoords->InertiaComponent; Constraint
