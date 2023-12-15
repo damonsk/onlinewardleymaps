@@ -38,10 +38,6 @@ To run all tests.
 
     yarn test
 
-To start storybook.
-
-    yarn run storybook
-
 To create package for use in [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps).
 
     yarn package
