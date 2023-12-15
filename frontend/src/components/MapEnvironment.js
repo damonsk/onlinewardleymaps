@@ -58,7 +58,7 @@ const getHeight = () => {
 	var winHeight = window.innerHeight;
 	var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
 	var titleHeight = document.getElementById('title').clientHeight;
-	return winHeight - topNavHeight - titleHeight - 85;
+	return winHeight - topNavHeight - titleHeight - 139;
 };
 const getWidth = () => {
 	return document.getElementById('map').clientWidth - 50;
@@ -126,6 +126,7 @@ function Environment(props) {
 	const [mapOnlyView, setMapOnlyView] = useState(false);
 	const [currentIteration, setCurrentIteration] = useState(-1);
 	const [actionInProgress, setActionInProgress] = useState(false);
+	const [hideNav, setHideNav] = useState(false);
 
 	const mutateMapText = newText => {
 		setMapText(newText);
@@ -381,7 +382,7 @@ function Environment(props) {
 	useEffect(() => {
 		setMapDimensions({ width: getWidth(), height: getHeight() });
 		//setMainViewHeight(105 + getHeight());
-	}, [mapOnlyView]);
+	}, [mapOnlyView, hideNav]);
 
 	useEffect(() => {
 		console.log('[currentIteration, rawMapTitle, mapIterations]', [
@@ -480,6 +481,10 @@ function Environment(props) {
 		},
 	];
 
+	const shouldHideNav = () => {
+		setHideNav(!hideNav);
+	};
+
 	return (
 		<React.Fragment>
 			<LeftNavigation
@@ -491,7 +496,8 @@ function Environment(props) {
 				user={user}
 				setHideAuthModal={setHideAuthModal}
 			/>
-			<Box id="top-nav-wrapper">
+
+			<Box id="top-nav-wrapper" sx={{ display: hideNav ? 'none' : 'block' }}>
 				<NewHeader
 					mapOnlyView={mapOnlyView}
 					setMapOnlyView={setMapOnlyView}
@@ -542,6 +548,7 @@ function Environment(props) {
 						}}
 					>
 						<Editor
+							hideNav={hideNav}
 							isLightTheme={isLightTheme}
 							highlightLine={highlightLine}
 							mapText={mapText}
@@ -566,6 +573,8 @@ function Environment(props) {
 				>
 					<ModKeyPressedProvider>
 						<MapView
+							shouldHideNav={shouldHideNav}
+							hideNav={hideNav}
 							mapTitle={mapTitle}
 							mapComponents={mapComponents}
 							mapMarkets={mapMarkets}

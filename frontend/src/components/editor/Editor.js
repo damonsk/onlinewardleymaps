@@ -19,6 +19,7 @@ function Editor(props) {
 		elements: [],
 	});
 	const aceEditor = React.createRef();
+	const { hideNav } = props;
 
 	const customAceEditorCompleter = ed => {
 		return {
@@ -35,15 +36,14 @@ function Editor(props) {
 		};
 	};
 
-	useEffect(() => {
-		const getHeight = () => {
-			var winHeight = window.innerHeight;
-			var topNavHeight = document.getElementById('top-nav-wrapper')
-				.clientHeight;
-			var titleHeight = document.getElementById('title').clientHeight;
-			return winHeight - topNavHeight - titleHeight + 35;
-		};
+	const getHeight = () => {
+		var winHeight = window.innerHeight;
+		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+		var titleHeight = document.getElementById('title').clientHeight;
+		return winHeight - topNavHeight - titleHeight + 35;
+	};
 
+	useEffect(() => {
 		const handleResize = () => {
 			setHeight(getHeight());
 		};
@@ -58,6 +58,10 @@ function Editor(props) {
 			window.removeEventListener('load', handleResize);
 		};
 	}, []);
+
+	useEffect(() => {
+		setHeight(getHeight());
+	}, [hideNav]);
 
 	useEffect(() => {
 		const gotoLine = line => {
