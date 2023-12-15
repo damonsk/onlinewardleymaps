@@ -41,38 +41,53 @@ export const MapDimensions = {
 	height: 600,
 };
 
-export const ExampleMap = `title Tea Shop
+export const ExampleMap = `title Campfire Coffee Shop
 anchor Business [0.95, 0.63]
 anchor Public [0.95, 0.78]
-component Cup of Tea [0.79, 0.61] label [-76, 3]
+component Cup of Coffee [0.79, 0.61] label [-96, 3]
 component Cup [0.73, 0.78]
-component Tea [0.63, 0.81]
+component Coffee [0.63, 0.81]
 component Hot Water [0.52, 0.80]
 component Water [0.38, 0.82]
-component Kettle [0.43, 0.35] label [-57, 4] (inertia)
-evolve Kettle 0.62 label [16, 7]
-
-component Power [0.17, 0.79] label [-7, -15]
-pipeline Power
+component Kettle [0.45, 0.57] label [-33, -16]
+pipeline Kettle
 {
-  component Nuclear [0.89] label [-17.00, 35.00]
-  component Solar [0.73] label [-20.00, 35.00]
-  component Coal [0.81] label [-13.00, 35.00]
+  component Campfire Kettle [0.50] label [-29.00, 28.00]
+  component Electric Kettle [0.63] label [-30.00, 25.00]
 }
 
-Business->Cup of Tea
-Public->Cup of Tea
-Cup of Tea->Cup
-Cup of Tea->Tea
-Cup of Tea->Hot Water
+component Power [0.26, 0.80] label [-7, -15]
+pipeline Power
+{
+  component Nuclear [0.81] label [-17.00, 35.00]
+  component Solar [0.73] label [-20.00, 35.00]
+  component Coal [0.88] label [-13.00, 35.00]
+}
+
+component Campfire [0.35, 0.30] label [-52, -10]
+component Wood [0.10, 0.80] label [7, -7]
+component Flint & Steel [0.19, 0.45] label [-16, 21]
+component Trees [0.04, 0.82] label [10, -9]
+component Areopress [0.68, 0.51] label [-69, 5]
+
+Business->Cup of Coffee
+Public->Cup of Coffee
+Cup of Coffee->Cup
+Cup of Coffee->Coffee
+Cup of Coffee->Hot Water
 Hot Water->Water
 Hot Water->Kettle; limited by 
-Kettle->Power
+Electric Kettle->Power
+Wood->Campfire
+Flint & Steel->Campfire
+Campfire Kettle->Campfire
+Wood->Trees
+Cup of Coffee->Areopress
 
-annotation 1 [[0.43,0.49],[0.21,0.73] ] Standardising power allows Kettles to evolve faster
+annotation 1 [[0.51,0.62],[0.29,0.86] ] Standardising power allows Kettles to evolve faster
 annotation 2 [0.48, 0.85] Hot water is obvious and well known
-annotations [0.60, 0.02]
+annotations [0.68, 0.02]
 
-note +a generic note appeared [0.23, 0.33]
+note campfires give customers a warm feeling [0.41, 0.15]
 
 style wardley`;
