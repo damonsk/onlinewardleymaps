@@ -59,6 +59,13 @@ export default function LeftNavigation({
 			visible: true,
 		},
 		{
+			name: 'Use Classic Version',
+			icon: <MapIcon />,
+			action: () =>
+				complete(history.push('https://classic.onlinewardleymaps.com')),
+			visible: true,
+		},
+		{
 			name: user !== null ? 'Logout' : 'Login',
 			icon: <PersonIcon />,
 			action: () => complete(setHideAuthModal(false)),

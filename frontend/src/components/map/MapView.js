@@ -48,7 +48,6 @@ export default function MapView(props) {
 				</div>
 				<IconButton
 					onClick={props.shouldHideNav}
-					padding={'0'}
 					color={textColour[props.mapStyleDefs.className]}
 					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
 					sx={{ position: 'absolute', right: '10px', top: '0' }}
