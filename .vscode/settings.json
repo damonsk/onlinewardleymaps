@@ -1,4 +1,10 @@
 {
+  "editor.insertSpaces": false,
+	"typescript.tsc.autoDetect": "off",
+	"typescript.preferences.quoteStyle": "single",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
   "files.exclude": {
     "amplify/.config": true,
     "amplify/**/*-parameters.json": true,
