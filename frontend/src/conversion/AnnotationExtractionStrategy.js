@@ -23,7 +23,7 @@ export default class AnnotationExtractionStrategy {
 	apply() {
 		let result = this.baseRunner.apply();
 		let unpack = result[this.containerName];
-		let returnables = unpack.filter(a => a.occurances.length > 0);
+		let returnables = unpack.filter((a) => a.occurances.length > 0);
 		return { [this.containerName]: returnables };
 	}
 }

@@ -8,7 +8,7 @@ function ComponentText(props) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
-				.map(line => {
+				.map((line) => {
 					if (props.element.evolved) {
 						if (
 							line

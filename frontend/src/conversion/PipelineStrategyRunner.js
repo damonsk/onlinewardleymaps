@@ -27,7 +27,7 @@ export default class PipelineStrategyRunner {
 						},
 						this.config.defaultAttributes
 					);
-					this.decorators.forEach(f =>
+					this.decorators.forEach((f) =>
 						f(baseElement, element, {
 							keyword: this.keyword,
 							containerName: this.containerName,
@@ -71,7 +71,7 @@ export default class PipelineStrategyRunner {
 									this.config.defaultAttributes
 								);
 
-								decorators.forEach(decorator => {
+								decorators.forEach((decorator) => {
 									decorator(pipelineComponent, currentLine, {
 										keyword: this.childKeyword,
 									});

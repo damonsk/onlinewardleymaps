@@ -20,7 +20,7 @@ function AnnotationElement(props) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
-				.map(line => {
+				.map((line) => {
 					if (
 						line
 							.replace(/\s/g, '')
@@ -47,7 +47,7 @@ function AnnotationElement(props) {
 							var newCoords =
 								'[' +
 								extractedOccurances
-									.map(e => {
+									.map((e) => {
 										return '[' + e + ']';
 									})
 									.join(',');

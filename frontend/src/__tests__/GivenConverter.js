@@ -1,12 +1,12 @@
 import Converter from '../conversion/Converter';
 
-describe('Convert test suite', function() {
+describe('Convert test suite', function () {
 	const genericMapComponents = [
 		{ keyword: 'component', container: 'elements' },
 		{ keyword: 'market', container: 'markets' },
 	];
 
-	test('should create mapJson Object with title property', function() {
+	test('should create mapJson Object with title property', function () {
 		let expected = 'This is an example map';
 		let actual = `title ${expected}`;
 		let result = new Converter().parse(actual);
@@ -16,7 +16,7 @@ describe('Convert test suite', function() {
 
 	test.each(genericMapComponents)(
 		'should create map component from string',
-		e => {
+		(e) => {
 			let actual = `${e.keyword} Customer [1, 0.4]\n${e.keyword} Customer2 [0,0.1]`;
 			let obj = new Converter();
 			let result = obj.parse(actual);
@@ -34,7 +34,7 @@ describe('Convert test suite', function() {
 
 	test.each(genericMapComponents)(
 		'should create map component with inertia tag set to true',
-		e => {
+		(e) => {
 			let actual = `${e.keyword} Customer [1, 0.4] inertia\n`;
 
 			let obj = new Converter();
@@ -48,7 +48,7 @@ describe('Convert test suite', function() {
 		}
 	);
 
-	test('should create links from string', function() {
+	test('should create links from string', function () {
 		let actual =
 			'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]\nCustomer->Customer2';
 
@@ -60,7 +60,7 @@ describe('Convert test suite', function() {
 		expect(result.links[0].flow).toBeFalsy();
 	});
 
-	test('should create links even if components name contains keyword', function() {
+	test('should create links even if components name contains keyword', function () {
 		let actual =
 			'component Sales marketing [1, 0.4]\ncomponent Sales ecosystem [0,0.1]\nSales marketing->Sales ecosystem';
 
@@ -72,7 +72,7 @@ describe('Convert test suite', function() {
 		expect(result.links[0].flow).toBeFalsy();
 	});
 
-	test('links should have flow attribute set', function() {
+	test('links should have flow attribute set', function () {
 		let actual =
 			'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]\nCustomer+>Customer2';
 
@@ -84,7 +84,7 @@ describe('Convert test suite', function() {
 		expect(result.links[0].flow).toBeTruthy();
 	});
 
-	test('links should have flow value attribute set', function() {
+	test('links should have flow value attribute set', function () {
 		let actual = 'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]';
 		actual = actual + '\n';
 		actual = actual + "Customer+'5.88'>Customer2";
@@ -98,7 +98,7 @@ describe('Convert test suite', function() {
 		expect(result.links[0].flowValue).toEqual('5.88');
 	});
 
-	test('should ignore whitespace', function() {
+	test('should ignore whitespace', function () {
 		let actual = 'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]';
 		actual = actual + '\r\n ';
 		actual = actual + 'Customer->Customer2';
@@ -113,7 +113,7 @@ describe('Convert test suite', function() {
 		expect(result.links[0].end).toEqual('Customer2');
 	});
 
-	test('should set evolution', function() {
+	test('should set evolution', function () {
 		let actual = 'evolution Novel->Emerging->Good->Best';
 
 		let obj = new Converter();
@@ -125,7 +125,7 @@ describe('Convert test suite', function() {
 		expect(result.evolution[3].line1).toEqual('Best');
 	});
 
-	test('should create map object with annotations property with an annotation with a single occurance', function() {
+	test('should create map object with annotations property with an annotation with a single occurance', function () {
 		let actual =
 			'annotation 1 [.38,.4] Standardising power allows Kettles to evolve faster';
 		let result = new Converter().parse(actual);
@@ -139,7 +139,7 @@ describe('Convert test suite', function() {
 		);
 	});
 
-	test('should create map object with annotations property with an annotation with many occurances with no text', function() {
+	test('should create map object with annotations property with an annotation with many occurances with no text', function () {
 		let actual = 'annotation 1 [[.38, .4],[0.44, 0.33]]';
 		let result = new Converter().parse(actual);
 
@@ -150,7 +150,7 @@ describe('Convert test suite', function() {
 		expect(result.annotations[0].text).toEqual('');
 	});
 
-	test('should create map object with annotations property with an annotation with many occurances', function() {
+	test('should create map object with annotations property with an annotation with many occurances', function () {
 		let actual =
 			'annotation 1 [[.38, .4],[0.44, 0.33],[0.11, 0.22] ]    Standardising power allows Kettles to evolve faster';
 		let result = new Converter().parse(actual);
@@ -167,14 +167,14 @@ describe('Convert test suite', function() {
 		);
 	});
 
-	test('should create map object with map style data', function() {
+	test('should create map object with map style data', function () {
 		let actual = 'style wardley';
 		let result = new Converter().parse(actual);
 
 		expect(result.presentation.style).toEqual('wardley');
 	});
 
-	test('should create map object with annotations positional data', function() {
+	test('should create map object with annotations positional data', function () {
 		let actual = 'annotations [.38, .4]';
 		let result = new Converter().parse(actual);
 
@@ -182,28 +182,28 @@ describe('Convert test suite', function() {
 		expect(result.presentation.annotations.maturity).toEqual(0.4);
 	});
 
-	test('should not create map object with annotations when incomplete', function() {
+	test('should not create map object with annotations when incomplete', function () {
 		let actual = 'annotation ';
 		let result = new Converter().parse(actual);
 
 		expect(result.annotations.length).toEqual(0);
 	});
 
-	test('should not create map object with annotations when incomplete', function() {
+	test('should not create map object with annotations when incomplete', function () {
 		let actual = 'annotation 1';
 		let result = new Converter().parse(actual);
 
 		expect(result.annotations.length).toEqual(0);
 	});
 
-	test('comments are ignored', function() {
+	test('comments are ignored', function () {
 		let actual = '// hello world.';
 		let result = new Converter().parse(actual);
 
 		expect(result.elements.length).toEqual(0);
 	});
 
-	test('comments are ignored', function() {
+	test('comments are ignored', function () {
 		let actual = '/* hello world.\r\n* something\r\n*/';
 		let result = new Converter().parse(actual);
 
@@ -212,7 +212,7 @@ describe('Convert test suite', function() {
 
 	test.each(genericMapComponents)(
 		'map component with little info is still made available to the map',
-		e => {
+		(e) => {
 			let actual = `${e.keyword} Foo []`;
 			let result = new Converter().parse(actual);
 
@@ -222,7 +222,7 @@ describe('Convert test suite', function() {
 		}
 	);
 
-	test('anchor with little info is still made available to the map', function() {
+	test('anchor with little info is still made available to the map', function () {
 		let actual = 'anchor Foo []';
 		let result = new Converter().parse(actual);
 
@@ -233,7 +233,7 @@ describe('Convert test suite', function() {
 
 	test.each(genericMapComponents)(
 		'map component with little info is still made available to the map',
-		e => {
+		(e) => {
 			let actual = `${e.keyword} Foo`;
 			let result = new Converter().parse(actual);
 
@@ -243,7 +243,7 @@ describe('Convert test suite', function() {
 		}
 	);
 
-	test('notes are extracted and made available to the map', function() {
+	test('notes are extracted and made available to the map', function () {
 		let actual = 'note some text [0.9, 0.1]';
 		let result = new Converter().parse(actual);
 
@@ -253,7 +253,7 @@ describe('Convert test suite', function() {
 		expect(result.notes[0].maturity).toEqual(0.1);
 	});
 
-	test('notes with note in the text still works', function() {
+	test('notes with note in the text still works', function () {
 		let actual = 'note a generic note appeard [0.9, 0.1]';
 		let result = new Converter().parse(actual);
 
@@ -263,7 +263,7 @@ describe('Convert test suite', function() {
 		expect(result.notes[0].maturity).toEqual(0.1);
 	});
 
-	test('notes starting with space works correctly', function() {
+	test('notes starting with space works correctly', function () {
 		let actual = '   note a generic note appeard [0.9, 0.1]';
 		let result = new Converter().parse(actual);
 
@@ -273,7 +273,7 @@ describe('Convert test suite', function() {
 		expect(result.notes[0].maturity).toEqual(0.1);
 	});
 
-	test('notes with little info is still made available to the map', function() {
+	test('notes with little info is still made available to the map', function () {
 		let actual = 'note Foo []';
 		let result = new Converter().parse(actual);
 
@@ -284,7 +284,7 @@ describe('Convert test suite', function() {
 
 	test.each(genericMapComponents)(
 		'map component with label position then position is available to map',
-		e => {
+		(e) => {
 			let actual = `${e.keyword} Foo [0.9, 0.1] label [66,99] inertia evolve 0.9`;
 			let result = new Converter().parse(actual);
 
@@ -296,7 +296,7 @@ describe('Convert test suite', function() {
 		}
 	);
 
-	test('pipelines made available to the map', function() {
+	test('pipelines made available to the map', function () {
 		let actual = 'pipeline Foo [0.05, 0.95]';
 		let result = new Converter().parse(actual);
 
@@ -307,7 +307,7 @@ describe('Convert test suite', function() {
 		expect(result.pipelines[0].hidden).toEqual(false);
 	});
 
-	test('pipelines made available to the map but set to hidden', function() {
+	test('pipelines made available to the map but set to hidden', function () {
 		let actual = 'pipeline Foo';
 		let result = new Converter().parse(actual);
 
@@ -320,7 +320,7 @@ describe('Convert test suite', function() {
 
 	test.each(['pioneers', 'settlers', 'townplanners'])(
 		'pioneers are extracted with width and height',
-		function(x) {
+		function (x) {
 			let actual = `${x} [0.98, 0.5] 100 200`;
 			let result = new Converter().parse(actual);
 
@@ -334,7 +334,7 @@ describe('Convert test suite', function() {
 
 	test.each(['pioneers', 'settlers', 'townplanners'])(
 		'pioneers are extracted with matruity and visibility for width height',
-		function(x) {
+		function (x) {
 			let actual = `${x} [0.98, 0.5, 0.6, 0.7]`;
 			let result = new Converter().parse(actual);
 
@@ -346,7 +346,7 @@ describe('Convert test suite', function() {
 		}
 	);
 
-	test.each(['build', 'buy', 'outsource'])('methods are extracted', k => {
+	test.each(['build', 'buy', 'outsource'])('methods are extracted', (k) => {
 		let actual = `${k} Foo Bar`;
 		let result = new Converter().parse(actual);
 

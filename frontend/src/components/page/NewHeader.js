@@ -17,7 +17,7 @@ import CoreHeader from './CoreHeader';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { featureSwitches } from '../../constants/featureswitches';
 
-const StyledMenu = styled(props => (
+const StyledMenu = styled((props) => (
 	<Menu
 		elevation={0}
 		anchorOrigin={{
@@ -105,20 +105,20 @@ function NewHeader(props) {
 	const open = Boolean(anchorEl);
 	const openMore = Boolean(anchorMoreEl);
 
-	const handleClick = event => {
+	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleMoreClick = event => {
+	const handleMoreClick = (event) => {
 		setAnchorMoreEl(event.currentTarget);
 	};
 
-	const handleClose = preAction => {
+	const handleClose = (preAction) => {
 		if (typeof preAction === 'function') preAction();
 		setAnchorEl(null);
 	};
 
-	const handleMoreClose = preAction => {
+	const handleMoreClose = (preAction) => {
 		if (typeof preAction === 'function') preAction();
 		setAnchorMoreEl(null);
 	};

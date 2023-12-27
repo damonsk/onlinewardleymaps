@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const MapBackground = props => {
+const MapBackground = (props) => {
 	const fill = {
 		wardley: 'url(#wardleyGradient)',
 		colour: 'none',

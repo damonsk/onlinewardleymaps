@@ -55,7 +55,7 @@ export default class Converter {
 			urls: [],
 			attitudes: [],
 		};
-		strategies.forEach(s => {
+		strategies.forEach((s) => {
 			const o = s.apply();
 			converted = Object.assign(converted, o);
 			if (o.errors && o.errors.length > 0)
@@ -65,7 +65,7 @@ export default class Converter {
 	}
 
 	stripComments(data) {
-		var doubleSlashRemoved = data.split('\n').map(line => {
+		var doubleSlashRemoved = data.split('\n').map((line) => {
 			if (line.trim().indexOf('url') === 0) {
 				return line;
 			}

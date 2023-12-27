@@ -6,10 +6,10 @@ export default class AchorLinksStrategy {
 	}
 	getLinks() {
 		const links = this.links.filter(
-			li =>
-				this.anchors.find(i => i.name === li.start) &&
+			(li) =>
+				this.anchors.find((i) => i.name === li.start) &&
 				this.mapElements.getNoneEvolvedOrEvolvingElements(
-					i => i.name === li.end
+					(i) => i.name === li.end
 				)
 		);
 		return {

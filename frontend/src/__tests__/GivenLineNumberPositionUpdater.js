@@ -2,8 +2,8 @@ import LineNumberPositionUpdater from '../components/map/positionUpdaters/LineNu
 import { ExistingCoordsMatcher } from '../components/map/positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from '../components/map/positionUpdaters/NotDefinedCoordsMatcher';
 
-describe('Given update mapText using line numbers', function() {
-	test('When element has updated coords then correct line is changed', function() {
+describe('Given update mapText using line numbers', function () {
+	test('When element has updated coords then correct line is changed', function () {
 		let changed;
 		const updaters = [ExistingCoordsMatcher, NotDefinedCoordsMatcher];
 		const moved = { param1: 0.1, param2: 0.9 };
@@ -11,7 +11,7 @@ describe('Given update mapText using line numbers', function() {
 		const lineNumberUpdater = new LineNumberPositionUpdater(
 			'note',
 			mapText,
-			text => (changed = text),
+			(text) => (changed = text),
 			updaters
 		);
 		lineNumberUpdater.update(moved, 'sometext', 1);
@@ -20,7 +20,7 @@ describe('Given update mapText using line numbers', function() {
 		expect(changed.split('\n')[1]).toEqual('note sometext [0.1, 0.1]');
 	});
 
-	test('When element has updated coords and has existing coords then correct line is changed', function() {
+	test('When element has updated coords and has existing coords then correct line is changed', function () {
 		let changed;
 		const updaters = [ExistingCoordsMatcher, NotDefinedCoordsMatcher];
 		const moved = { param1: 0.1, param2: 0.9 };
@@ -28,7 +28,7 @@ describe('Given update mapText using line numbers', function() {
 		const lineNumberUpdater = new LineNumberPositionUpdater(
 			'note',
 			mapText,
-			text => (changed = text),
+			(text) => (changed = text),
 			updaters
 		);
 		lineNumberUpdater.update(moved, 'sometext', 2);

@@ -40,7 +40,7 @@ export const SVGWrapper = ({
 
 const IconWrapper = memo(SVGWrapper);
 
-export const ComponentIcon = props => (
+export const ComponentIcon = (props) => (
 	<IconWrapper
 		width={props.hideLabel ? hideLabelIconWidth : iconWidth}
 		height={iconHeight}
@@ -65,7 +65,7 @@ export const ComponentIcon = props => (
 	</IconWrapper>
 );
 
-export const GenericNoteIcon = props => (
+export const GenericNoteIcon = (props) => (
 	<IconWrapper
 		width={props.hideLabel ? hideLabelIconWidth : iconWidth}
 		height={iconHeight}
@@ -81,11 +81,11 @@ export const GenericNoteIcon = props => (
 	</IconWrapper>
 );
 
-export const ComponentEvolvedIcon = props => (
+export const ComponentEvolvedIcon = (props) => (
 	<ComponentIcon mapStyleDefs={props.mapStyleDefs} evolved text="Evolution" />
 );
 
-export const InertiaIcon = props => (
+export const InertiaIcon = (props) => (
 	<IconWrapper
 		width={props.hideLabel ? hideLabelIconWidth : iconWidth}
 		height={iconHeight}
@@ -105,7 +105,7 @@ export const InertiaIcon = props => (
 	</IconWrapper>
 );
 
-export const MarketIcon = props => (
+export const MarketIcon = (props) => (
 	<IconWrapper
 		width={props.hideLabel ? hideLabelIconWidth : iconWidth}
 		height={iconHeight}
@@ -126,7 +126,7 @@ export const MarketIcon = props => (
 	</IconWrapper>
 );
 
-export const MethodIcon = props => (
+export const MethodIcon = (props) => (
 	<IconWrapper
 		width={props.hideLabel ? hideLabelIconWidth : iconWidth}
 		height={iconHeight}
@@ -157,7 +157,7 @@ export const MethodIcon = props => (
 	</IconWrapper>
 );
 
-export const BuyMethodIcon = props => (
+export const BuyMethodIcon = (props) => (
 	<MethodIcon
 		method={'Buy'}
 		onClick={props.onClick}
@@ -166,7 +166,7 @@ export const BuyMethodIcon = props => (
 	/>
 );
 
-export const BuildMethodIcon = props => (
+export const BuildMethodIcon = (props) => (
 	<MethodIcon
 		method={'Build'}
 		onClick={props.onClick}
@@ -175,7 +175,7 @@ export const BuildMethodIcon = props => (
 	/>
 );
 
-export const OutSourceMethodIcon = props => (
+export const OutSourceMethodIcon = (props) => (
 	<MethodIcon
 		method={'Outsource'}
 		onClick={props.onClick}
@@ -184,7 +184,7 @@ export const OutSourceMethodIcon = props => (
 	/>
 );
 
-export const EcosystemIcon = props => (
+export const EcosystemIcon = (props) => (
 	<IconWrapper
 		width={props.hideLabel ? hideLabelIconWidth : iconWidth}
 		height={iconHeight}

@@ -42,19 +42,22 @@ function MyApp({ Component, pageProps }) {
 	}, [isLightTheme]);
 
 	useEffect(() => {
-		let updateUser = async authState => {
+		async function currentAuthenticatedUser() {
 			try {
-				async function currentAuthenticatedUser() {
-					try {
-						const { username, userId, signInDetails } = await getCurrentUser();
-						setUser({ username, userId, signInDetails });
-						console.log('[_app::useEffect]', { username, userId, signInDetails });
-					} catch (err) {
-						console.log(err);
-						setUser(null);
-					}
-				}
-
+				const { username, userId, signInDetails } = await getCurrentUser();
+				setUser({ username, userId, signInDetails });
+				console.log('[_app::useEffect]', {
+					username,
+					userId,
+					signInDetails,
+				});
+			} catch (err) {
+				console.log(err);
+				setUser(null);
+			}
+		}
+		let updateUser = async (authState) => {
+			try {
 				await currentAuthenticatedUser();
 
 				if (authState !== undefined && authState.payload.event === 'signIn') {

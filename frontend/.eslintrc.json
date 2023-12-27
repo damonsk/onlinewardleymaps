@@ -1,28 +1,36 @@
 {
+	"parser": "@babel/eslint-parser",
 	"parserOptions": {
-		"ecmaVersion": 2017,
+		"requireConfigFile": false,
+		"ecmaVersion": 2021,
 		"sourceType": "module",
 		"ecmaFeatures": {
-			"jsx": true
+		  "jsx": true
 		}
-	},
-	"parser": "babel-eslint",
+	  },
 	"env": {
 		"browser": true,
 		"node": true,
 		"es6": true,
-		"jest": true,
-		"amd": true
+		"jest": true
 	},
-	"plugins": ["react", "prettier"],
 	"extends": [
 		"eslint:recommended",
 		"plugin:react/recommended",
-		"prettier"
+		"plugin:prettier/recommended",
+		"plugin:@next/next/recommended"
 	],
+	"plugins": ["react"],
+	"ignorePatterns": ["models", "src/ui-components"],
 	"rules": {
 		"prettier/prettier": "error",
 		"linebreak-style": ["error", "unix"],
-		"react/prop-types": 0
+		"react/prop-types": 0,
+		"@next/next/no-img-element": 0
+	},
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
 	}
 }

@@ -22,7 +22,7 @@ export default class LinksBuilder {
 						new BothEvolvedLinksStrategy(mapLinks, mapElements),
 						new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
 						new AnchorEvolvedLinksStrategy(mapLinks, mapElements, mapAnchors),
-				  ]
+					]
 				: [];
 
 		this.linkStrategies = linksThatAreEvolvingOfAnyKind.concat([
@@ -36,7 +36,7 @@ export default class LinksBuilder {
 	}
 
 	getElementByName(elements, name) {
-		var hasName = function(element) {
+		var hasName = function (element) {
 			return element.name === name;
 		};
 		return elements.find(hasName);
@@ -51,7 +51,7 @@ export default class LinksBuilder {
 
 	build() {
 		let allLinks = [];
-		this.linkStrategies.forEach(s => {
+		this.linkStrategies.forEach((s) => {
 			const r = s.getLinks();
 			let currentLinks = [];
 			r.links.forEach((l, i) => {

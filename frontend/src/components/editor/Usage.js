@@ -2,7 +2,7 @@ import React from 'react';
 import usages from '../../constants/usages';
 
 function Usage(props) {
-	const addOnClick = txt => {
+	const addOnClick = (txt) => {
 		let before = props.mapText;
 		before =
 			before + (props.mapText.trim().length > 0 ? '\n' : '') + txt.trim();
@@ -27,7 +27,7 @@ function Usage(props) {
 	);
 }
 
-const UsageDefinition = props => (
+const UsageDefinition = (props) => (
 	<>
 		<strong>{props.title}</strong>
 		{props.summary.length > 0 ? (
@@ -51,7 +51,7 @@ const UsageDefinition = props => (
 	</>
 );
 
-const UsageExample = props => (
+const UsageExample = (props) => (
 	<span
 		onClick={() => props.addOnClick(props.example)}
 		href="#"

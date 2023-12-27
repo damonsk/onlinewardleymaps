@@ -3,14 +3,14 @@ import { featureSwitches } from './constants/featureswitches';
 export default class MapElements {
 	// this is a messs...
 	constructor(components, evolved, pipelines) {
-		this.mapComponents = components.flatMap(i => {
-			return i.collection.map(c => Object.assign(c, { type: i.type }));
+		this.mapComponents = components.flatMap((i) => {
+			return i.collection.map((c) => Object.assign(c, { type: i.type }));
 		});
 		this.evolved = evolved;
 		this.pipelines = this.processPipelines(pipelines, this.mapComponents);
 		if (featureSwitches.enableNewPipelines) {
-			let getPipelineChildComponents = this.pipelines.flatMap(p =>
-				p.components.map(c => {
+			let getPipelineChildComponents = this.pipelines.flatMap((p) =>
+				p.components.map((c) => {
 					return {
 						...c,
 						type: 'component',
@@ -29,8 +29,8 @@ export default class MapElements {
 	processPipelines(pipelines, components) {
 		if (pipelines === undefined) return [];
 		let pipeline = pipelines
-			.map(e => {
-				let component = components.find(el => el.name === e.name);
+			.map((e) => {
+				let component = components.find((el) => el.name === e.name);
 				if (component !== null && component !== undefined) {
 					e.visibility = component.visibility;
 				} else {
@@ -47,8 +47,8 @@ export default class MapElements {
 	}
 
 	getEvolvedElements() {
-		return this.getEvolveElements().map(el => {
-			let v = this.evolved.find(evd => evd.name === el.name);
+		return this.getEvolveElements().map((el) => {
+			let v = this.evolved.find((evd) => evd.name === el.name);
 			return {
 				name: el.name,
 				id: el.id + 'ev',
@@ -70,10 +70,10 @@ export default class MapElements {
 	getEvolveElements() {
 		if (this.evolved === undefined) return [];
 		let evolving = this.evolved
-			.map(e => {
+			.map((e) => {
 				return this.mapComponents
-					.filter(el => el.name === e.name)
-					.map(i => {
+					.filter((el) => el.name === e.name)
+					.map((i) => {
 						i.evolveMaturity = e.maturity;
 						i.evolving = true;
 						return i;
@@ -84,12 +84,12 @@ export default class MapElements {
 	}
 
 	getNoneEvolvingElements() {
-		return this.mapComponents.filter(el => el.evolving === false);
+		return this.mapComponents.filter((el) => el.evolving === false);
 	}
 
 	getNoneEvolvedOrEvolvingElements() {
 		return this.mapComponents.filter(
-			el =>
+			(el) =>
 				(el.evolving === undefined || el.evolving === false) &&
 				(el.evolved === undefined || el.evolved === false)
 		);
@@ -97,7 +97,7 @@ export default class MapElements {
 
 	geEvolvedOrEvolvingElements() {
 		return this.mapComponents.filter(
-			el => el.evolving === true || el.evolved === true
+			(el) => el.evolving === true || el.evolved === true
 		);
 	}
 
@@ -112,11 +112,11 @@ export default class MapElements {
 		let collection = noneEvolving
 			.concat(evolvedElements)
 			.concat(evolveElements)
-			.filter(c => !c.pseudoComponent == true);
+			.filter((c) => !c.pseudoComponent == true);
 		if (this.pipelines === undefined) return collection;
 		const e = collection
-			.map(e => {
-				let component = this.pipelines.find(el => el.name === e.name);
+			.map((e) => {
+				let component = this.pipelines.find((el) => el.name === e.name);
 				e.pipeline =
 					component != null && component !== undefined ? true : false;
 				return e;

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const MethodSymbol = props => {
+const MethodSymbol = (props) => {
 	const { id, x, y, method, styles = {} } = props;
 	const style = styles[method] || {};
 	return (

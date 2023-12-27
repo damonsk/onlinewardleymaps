@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import DashboardHeader from '../src/components/page/DashboardHeader';
 
-const Dashboard = props => {
+const Dashboard = (props) => {
 	const client = generateClient();
 	const [privateMaps, setPrivateMaps] = useState([]);
 	const [publicMaps, setPublicMaps] = useState([]);
@@ -29,7 +29,7 @@ const Dashboard = props => {
 	} = props;
 
 	const struturePublic = useCallback(() => {
-		return publicMaps.map(m => {
+		return publicMaps.map((m) => {
 			return {
 				id: m.id,
 				isPrivate: false,
@@ -39,7 +39,7 @@ const Dashboard = props => {
 	}, [publicMaps]);
 
 	const structurePrivate = useCallback(() => {
-		return privateMaps.map(m => {
+		return privateMaps.map((m) => {
 			return {
 				id: m.id,
 				isPrivate: true,
@@ -71,20 +71,20 @@ const Dashboard = props => {
 				operationName: 'listMaps',
 			});
 		getPrivateMaps()
-			.then(r => {
+			.then((r) => {
 				console.log('setPrivateMaps', r.data);
 				setPrivateMaps(r.data.listMaps.items);
 			})
-			.catch(e => {
+			.catch((e) => {
 				console.log('error', e);
 				setPrivateMaps([]);
 			});
 		getPublicMaps()
-			.then(r => {
+			.then((r) => {
 				console.log('setPublicMaps', r.data);
 				setPublicMaps(r.data.listPublicMaps.items);
 			})
-			.catch(e => {
+			.catch((e) => {
 				console.log('error', e);
 				setPublicMaps([]);
 			});

@@ -7,7 +7,7 @@ import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoords
 import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 
-const Attitude = props => {
+const Attitude = (props) => {
 	const { attitude, mapDimensions } = props;
 	const { height, width } = mapDimensions;
 	const type = attitude.attitude;

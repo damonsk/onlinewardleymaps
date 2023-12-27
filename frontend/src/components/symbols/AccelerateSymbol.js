@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const deaccelTransform = 'scale(-1,1) translate(-150)';
 
-const AccelerateSymbol = props => {
+const AccelerateSymbol = (props) => {
 	const { id, styles = {}, deaccel } = props;
 	return (
 		<polygon

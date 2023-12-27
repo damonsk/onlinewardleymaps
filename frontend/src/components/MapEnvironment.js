@@ -128,7 +128,7 @@ function Environment(props) {
 	const [actionInProgress, setActionInProgress] = useState(false);
 	const [hideNav, setHideNav] = useState(false);
 
-	const mutateMapText = newText => {
+	const mutateMapText = (newText) => {
 		setMapText(newText);
 		setSaveOutstanding(true);
 		if (currentIteration !== null && currentIteration > -1) {
@@ -141,9 +141,9 @@ function Environment(props) {
 		}
 	};
 
-	const launchUrl = urlId => {
-		if (mapUrls.find(u => u.name === urlId)) {
-			const urlToLaunch = mapUrls.find(u => u.name === urlId).url;
+	const launchUrl = (urlId) => {
+		if (mapUrls.find((u) => u.name === urlId)) {
+			const urlToLaunch = mapUrls.find((u) => u.name === urlId).url;
 			window.open(urlToLaunch);
 		}
 	};
@@ -152,7 +152,7 @@ function Environment(props) {
 		setShowUsage(!showUsage);
 	};
 
-	const saveToRemoteStorage = async function(hash) {
+	const saveToRemoteStorage = async function (hash) {
 		setActionInProgress(true);
 		const mapToPersist = {
 			mapText: mapText,
@@ -161,7 +161,7 @@ function Environment(props) {
 			mapIterations: mapIterations,
 		};
 
-		const followOnActions = async function(id, resultFromAction) {
+		const followOnActions = async function (id, resultFromAction) {
 			if (mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Private) {
 				const imageData = await makeSnapShot();
 				await createImage(imageData, 'private', id + '.png');
@@ -214,7 +214,7 @@ function Environment(props) {
 					options: {
 						level: level,
 						contentType: 'image/png',
-					}
+					},
 				});
 			}
 		};
@@ -222,7 +222,7 @@ function Environment(props) {
 		await SaveMap(mapPersistenceStrategy, mapToPersist, hash, followOnActions);
 	};
 
-	const loadFromRemoteStorage = async function() {
+	const loadFromRemoteStorage = async function () {
 		const followOnActions = (mapPersistenceStrategy, map) => {
 			setMapPersistenceStrategy(mapPersistenceStrategy);
 			setShoudLoad(false);
@@ -282,7 +282,7 @@ function Environment(props) {
 	}
 
 	function downloadMap() {
-		html2canvas(mapRef.current).then(canvas => {
+		html2canvas(mapRef.current).then((canvas) => {
 			const base64image = canvas.toDataURL('image/png');
 			const link = document.createElement('a');
 			link.download = mapTitle;
@@ -323,14 +323,14 @@ function Environment(props) {
 	};
 
 	async function makeSnapShot() {
-		return await html2canvas(mapRef.current).then(canvas => {
+		return await html2canvas(mapRef.current).then((canvas) => {
 			const base64image = canvas.toDataURL('image/png');
 			return base64image;
 		});
 	}
 
 	useEffect(() => {
-		const handleBeforeUnload = event => {
+		const handleBeforeUnload = (event) => {
 			if (saveOutstanding) {
 				event.preventDefault();
 				event.returnValue = '';
@@ -368,7 +368,7 @@ function Environment(props) {
 				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
 			});
 			if (r.errors.length > 0) {
-				setErrorLine(r.errors.map(e => e.line));
+				setErrorLine(r.errors.map((e) => e.line));
 			}
 		} catch (err) {
 			console.log(`Error:`, err);
@@ -620,7 +620,7 @@ function Environment(props) {
 			/>
 
 			<Backdrop
-				sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
+				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={actionInProgress}
 			>
 				<CircularProgress color="inherit" />

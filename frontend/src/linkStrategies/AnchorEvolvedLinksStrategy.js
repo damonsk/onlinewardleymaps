@@ -6,9 +6,9 @@ export default class AchorEvolvedLinksStrategy {
 	}
 	getLinks() {
 		const links = this.links.filter(
-			li =>
-				this.anchors.find(i => i.name === li.start) &&
-				this.mapElements.getEvolvedElements(i => i.name === li.end)
+			(li) =>
+				this.anchors.find((i) => i.name === li.start) &&
+				this.mapElements.getEvolvedElements((i) => i.name === li.end)
 		);
 		return {
 			name: 'anchorEvolvedLinks',

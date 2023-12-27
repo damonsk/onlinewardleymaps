@@ -16,7 +16,7 @@ const trimText = (id, longText) =>
 			</tspan>
 		));
 
-const ComponentTextSymbol = props => {
+const ComponentTextSymbol = (props) => {
 	const {
 		id,
 		x,

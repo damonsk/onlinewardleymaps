@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const LinkSymbol = props => {
+const LinkSymbol = (props) => {
 	const {
 		id,
 		x1,

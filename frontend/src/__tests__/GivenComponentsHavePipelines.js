@@ -1,8 +1,8 @@
 import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
 
-describe('Given Components Have Pipelines', function() {
-	test('When pipeline is specificed then convert output is correct', function() {
+describe('Given Components Have Pipelines', function () {
+	test('When pipeline is specificed then convert output is correct', function () {
 		let actual =
 			'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo [0.15, 0.65]';
 		let result = new Converter().parse(actual);
@@ -19,7 +19,7 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
-	test('When pipeline is specificed but boundaries are not defined, pipeline should be hidden and returns', function() {
+	test('When pipeline is specificed but boundaries are not defined, pipeline should be hidden and returns', function () {
 		let actual = 'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo';
 		let result = new Converter().parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
@@ -34,7 +34,7 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
-	test('When pipeline is specificed but boundaries are not defined yet it has child componets, pipeline should be not hidden and returns', function() {
+	test('When pipeline is specificed but boundaries are not defined yet it has child componets, pipeline should be not hidden and returns', function () {
 		let actual =
 			'component Foo [0.9, 0.1]' +
 			'\n' +
@@ -58,7 +58,7 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
-	test('V3 - When pipeline is specificed but boundaries are not defined yet it has child componets, pipeline should be not hidden and returns', function() {
+	test('V3 - When pipeline is specificed but boundaries are not defined yet it has child componets, pipeline should be not hidden and returns', function () {
 		let actual =
 			'component Foo [0.9, 0.1]' +
 			'\n' +
@@ -83,7 +83,7 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
-	test('When a pipelinecomponent appears, associate to the preceeding pipeline', function() {
+	test('When a pipelinecomponent appears, associate to the preceeding pipeline', function () {
 		let actual =
 			'component Foo [0.9, 0.1]' +
 			'\n' +
@@ -109,7 +109,7 @@ describe('Given Components Have Pipelines', function() {
 		expect(components[0].pipeline).toEqual(true);
 	});
 
-	test('When a pipelinecomponent appears, extract required attributes and pipeline maturity is overwritten', function() {
+	test('When a pipelinecomponent appears, extract required attributes and pipeline maturity is overwritten', function () {
 		let actual =
 			'component Foo [0.9, 0.1]' +
 			'\n' +

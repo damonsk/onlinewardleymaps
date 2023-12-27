@@ -41,7 +41,7 @@ function MapCanvas(props) {
 		props.mapPipelines
 	);
 
-	const newElementAt = function(e) {
+	const newElementAt = function (e) {
 		var svg = document.getElementById('svgMap');
 		var pt = svg.createSVGPoint();
 
@@ -59,8 +59,8 @@ function MapCanvas(props) {
 		props.setNewComponentContext({ x, y });
 	};
 
-	var getElementByName = function(elements, name) {
-		var hasName = function(element) {
+	var getElementByName = function (elements, name) {
+		var hasName = function (element) {
 			return element.name === name;
 		};
 		return elements.find(hasName);
@@ -72,7 +72,7 @@ function MapCanvas(props) {
 		}
 	}, [isModKeyPressed]);
 
-	const clicked = function(ctx) {
+	const clicked = function (ctx) {
 		props.setHighlightLine(ctx.el.line);
 		if (isModKeyPressed === false) return;
 
@@ -82,7 +82,7 @@ function MapCanvas(props) {
 		];
 		if (s.length === 2) {
 			props.mutateMapText(
-				props.mapText + '\r\n' + s.map(r => r.el.name).join('->')
+				props.mapText + '\r\n' + s.map((r) => r.el.name).join('->')
 			);
 			setMapElementsClicked([]);
 		} else setMapElementsClicked(s);
@@ -96,7 +96,7 @@ function MapCanvas(props) {
 	);
 	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
-	const asMethod = m =>
+	const asMethod = (m) =>
 		Object.assign(
 			{},
 			{
@@ -109,12 +109,14 @@ function MapCanvas(props) {
 
 	const decoratedComponentsMethods = mapElements
 		.getMergedElements()
-		.filter(m => m.decorators && m.decorators.method)
-		.map(m => asMethod(m));
+		.filter((m) => m.decorators && m.decorators.method)
+		.map((m) => asMethod(m));
 
 	const methods = props.mapMethods
-		.filter(m => getElementByName(mapElements.getNonEvolvedElements(), m.name))
-		.map(m => {
+		.filter((m) =>
+			getElementByName(mapElements.getNonEvolvedElements(), m.name)
+		)
+		.map((m) => {
 			const el = getElementByName(mapElements.getNonEvolvedElements(), m.name);
 			const toTransform = Object.assign(el, {
 				decorators: { method: m.method },
@@ -126,7 +128,7 @@ function MapCanvas(props) {
 	return (
 		<React.Fragment>
 			<svg
-				onDoubleClick={e => newElementAt(e)}
+				onDoubleClick={(e) => newElementAt(e)}
 				fontFamily={props.mapStyleDefs.fontFamily}
 				fontSize={props.mapStyleDefs.fontSize}
 				className={[props.mapStyleDefs.className, styles.mapCanvas].join(' ')}
@@ -204,7 +206,7 @@ function MapCanvas(props) {
 						})}
 					</g>
 
-					{links.map(current => {
+					{links.map((current) => {
 						return (
 							<g id={current.name} key={current.name}>
 								{current.links.map((l, i) => (
@@ -253,7 +255,7 @@ function MapCanvas(props) {
 								mutateMapText={props.mutateMapText}
 								mapStyleDefs={props.mapStyleDefs}
 								setHighlightLine={props.setHighlightLine}
-								onClick={e => clicked({ el, e })}
+								onClick={(e) => clicked({ el, e })}
 							/>
 						))}
 					</g>
@@ -261,7 +263,7 @@ function MapCanvas(props) {
 						{featureSwitches.enableNewPipelines &&
 							mapElements
 								.getMapPipelines()
-								.filter(p => p.hidden == false)
+								.filter((p) => p.hidden == false)
 								.map((p, i) => (
 									<React.Fragment key={i}>
 										{featureSwitches.enableNewPipelines &&
@@ -315,7 +317,7 @@ function MapCanvas(props) {
 										id={'element_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
 										evolved={el.evolved}
-										onClick={e => clicked({ el, e })}
+										onClick={(e) => clicked({ el, e })}
 									/>
 								)}
 
@@ -324,7 +326,7 @@ function MapCanvas(props) {
 										id={'element_square_' + el.id}
 										styles={props.mapStyleDefs.component}
 										evolved={el.evolved}
-										onClick={e => clicked({ el, e })}
+										onClick={(e) => clicked({ el, e })}
 									/>
 								)}
 
@@ -333,7 +335,7 @@ function MapCanvas(props) {
 									<EcosystemSymbol
 										id={'ecosystem_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
-										onClick={e => clicked({ el, e })}
+										onClick={(e) => clicked({ el, e })}
 									/>
 								) : null}
 
@@ -342,7 +344,7 @@ function MapCanvas(props) {
 									<MarketSymbol
 										id={'market_circle_' + el.id}
 										styles={props.mapStyleDefs.component}
-										onClick={e => clicked({ el, e })}
+										onClick={(e) => clicked({ el, e })}
 									/>
 								) : null}
 
@@ -351,7 +353,7 @@ function MapCanvas(props) {
 										id={'element_circle_' + el.id}
 										styles={props.mapStyleDefs.submap}
 										evolved={el.evolved}
-										onClick={e => clicked({ el, e })}
+										onClick={(e) => clicked({ el, e })}
 										launchUrl={() => props.launchUrl(el.url)}
 									/>
 								)}

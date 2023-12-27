@@ -6,9 +6,11 @@ export default class EvolvingToNoneEvolvingEndLinksStrategy {
 
 	getLinks() {
 		const links = this.links.filter(
-			li =>
-				this.mapElements.getEvolveElements().find(i => i.name === li.start) &&
-				this.mapElements.getNoneEvolvingElements().find(i => i.name === li.end)
+			(li) =>
+				this.mapElements.getEvolveElements().find((i) => i.name === li.start) &&
+				this.mapElements
+					.getNoneEvolvingElements()
+					.find((i) => i.name === li.end)
 		);
 		return {
 			name: 'evolvingToNoneEvolvingEndLinks',

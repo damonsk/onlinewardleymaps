@@ -5,9 +5,11 @@ export default class BothEvolvedLinksStrategy {
 	}
 	getLinks() {
 		const links = this.links.filter(
-			li =>
-				this.mapElements.getEvolvedElements().find(i => i.name === li.start) &&
-				this.mapElements.getEvolvedElements().find(i => i.name === li.end)
+			(li) =>
+				this.mapElements
+					.getEvolvedElements()
+					.find((i) => i.name === li.start) &&
+				this.mapElements.getEvolvedElements().find((i) => i.name === li.end)
 		);
 
 		return {

@@ -17,8 +17,8 @@ function FluidLink(props) {
 		coords: {},
 	});
 
-	const handleMouseMove = e => {
-		setPosition(position => {
+	const handleMouseMove = (e) => {
+		setPosition((position) => {
 			const xDiff = position.coords.x - e.pageX;
 			const yDiff = position.coords.y - e.pageY;
 			return {
@@ -36,7 +36,7 @@ function FluidLink(props) {
 		const pageX = origClick.pageX;
 		const pageY = origClick.pageY;
 
-		setPosition(position =>
+		setPosition((position) =>
 			Object.assign({}, position, {
 				coords: {
 					x: pageX,

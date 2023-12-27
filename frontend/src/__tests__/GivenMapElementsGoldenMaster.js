@@ -16,8 +16,8 @@ function testResultEquality(result, fileName) {
 	expect(JSON.stringify(result)).toBe(outputFileContent);
 }
 
-describe('So that large refactors can be done without breaking output of mapElements', function() {
-	test('When all possible map components are specified, ensure the output is as expected', function() {
+describe('So that large refactors can be done without breaking output of mapElements', function () {
+	test('When all possible map components are specified, ensure the output is as expected', function () {
 		const fileName = 'GoldenMasterMapText.txt';
 		const fileContent = loadFileContent(fileName);
 
@@ -59,7 +59,7 @@ describe('So that large refactors can be done without breaking output of mapElem
 			},
 		];
 
-		testCases.forEach(testCase => {
+		testCases.forEach((testCase) => {
 			const { fn, fileName } = testCase;
 			// console.log(testCase);
 			testResultEquality(fn(), fileName);

@@ -9,7 +9,7 @@ export default class DefaultPositionUpdater {
 		this.mutator(
 			this.mapText
 				.split('\n')
-				.map(line => {
+				.map((line) => {
 					for (let i = 0; i < this.replacers.length; i++) {
 						const r = this.replacers[i];
 						if (r.matcher(line, identifier, this.type)) {

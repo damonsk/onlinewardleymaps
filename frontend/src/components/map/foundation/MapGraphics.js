@@ -20,7 +20,7 @@ const ecosystemStripesPattern = () => (
 	</pattern>
 );
 
-const MapGraphics = props => (
+const MapGraphics = (props) => (
 	<defs>
 		<filter id="ctrlHighlight">
 			<feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="blue" />

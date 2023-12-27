@@ -15,18 +15,18 @@ export function useKeysPressed(allowedKeys) {
 	}
 
 	useEffect(() => {
-		const onKeyDown = event => {
+		const onKeyDown = (event) => {
 			const { key } = event;
 			if (allowAll || allowedKeys.includes(key)) {
-				setPressedKeys(previousPressedKeys => [...previousPressedKeys, key]);
+				setPressedKeys((previousPressedKeys) => [...previousPressedKeys, key]);
 			}
 		};
 
-		const onKeyUp = event => {
+		const onKeyUp = (event) => {
 			const { key } = event;
 			if (allowAll || allowedKeys.includes(key)) {
-				setPressedKeys(previousPressedKeys =>
-					previousPressedKeys.filter(k => k !== key)
+				setPressedKeys((previousPressedKeys) =>
+					previousPressedKeys.filter((k) => k !== key)
 				);
 			}
 		};

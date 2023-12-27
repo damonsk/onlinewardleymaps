@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const EcosystemSymbol = props => {
+const EcosystemSymbol = (props) => {
 	const { id, cx, cy, onClick, styles = {} } = props;
 	return (
 		<g id={id} onClick={onClick}>

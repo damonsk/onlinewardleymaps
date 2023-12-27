@@ -7,7 +7,7 @@ export default class MethodExtractionStrategy {
 		this.containerName = 'methods';
 		this.baseStrategies = ['buy', 'outsource', 'build']
 			.map(
-				e =>
+				(e) =>
 					new BaseStrategyRunner(
 						data,
 						{
@@ -21,7 +21,7 @@ export default class MethodExtractionStrategy {
 			.flat();
 	}
 	apply() {
-		const output = this.baseStrategies.map(bs => bs.apply()).flat();
-		return { [this.containerName]: output.map(o => o.methods).flat() };
+		const output = this.baseStrategies.map((bs) => bs.apply()).flat();
+		return { [this.containerName]: output.map((o) => o.methods).flat() };
 	}
 }

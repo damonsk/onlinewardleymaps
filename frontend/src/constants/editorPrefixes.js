@@ -1,4 +1,4 @@
-const iterationBuilder = optArray => {
+const iterationBuilder = (optArray) => {
 	const strings = [];
 	for (let i = 0; i < optArray.length; i++) {
 		strings.push(optArray.slice(0, i + 1).join(' '));
@@ -6,7 +6,7 @@ const iterationBuilder = optArray => {
 	return strings;
 };
 
-const attitudes = ['pioneers', 'settlers', 'townplanners'].map(a => [
+const attitudes = ['pioneers', 'settlers', 'townplanners'].map((a) => [
 	a,
 	'[<visibility>, <maturity>, <visibility2>, <maturity2>]',
 ]);

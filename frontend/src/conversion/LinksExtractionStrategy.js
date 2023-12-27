@@ -71,10 +71,7 @@ export default class LinksExtractionStrategy {
 
 						linksToReturn.push({
 							start,
-							end: end
-								.trim()
-								.split(';')[0]
-								.trim(),
+							end: end.trim().split(';')[0].trim(),
 							flow,
 							flowValue,
 							future,
@@ -91,10 +88,7 @@ export default class LinksExtractionStrategy {
 
 					linksToReturn.push({
 						start: start.trim(),
-						end: end
-							.trim()
-							.split(';')[0]
-							.trim(),
+						end: end.trim().split(';')[0].trim(),
 						flow,
 						future,
 						past,

@@ -11,10 +11,7 @@ export default class XAxisLabelsExtractionStrategy {
 			const element = lines[i];
 			try {
 				if (element.trim().indexOf('evolution') === 0) {
-					let name = element
-						.split('evolution ')[1]
-						.trim()
-						.split('->');
+					let name = element.split('evolution ')[1].trim().split('->');
 					return {
 						evolution: [
 							{ line1: name[0], line2: '' },

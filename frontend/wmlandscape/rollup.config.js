@@ -23,11 +23,5 @@ export default {
 		resolve(),
 		commonjs(),
 	],
-	external: [
-		'react',
-		'react-dom',
-		'core-js',
-		'lodash.merge',
-		'prop-types',
-	],
+	external: ['react', 'react-dom', 'core-js', 'lodash.merge', 'prop-types'],
 };

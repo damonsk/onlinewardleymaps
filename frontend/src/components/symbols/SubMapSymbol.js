@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const SubMapSymbol = props => {
+const SubMapSymbol = (props) => {
 	const { id, cx, cy, evolved, onClick, styles = {}, launchUrl } = props;
 	const fill = evolved ? styles.evolvedFill : styles.fill;
 	const stroke = evolved ? styles.evolved : styles.stroke;

@@ -1,7 +1,7 @@
 import merge from 'lodash.merge';
 
 // use an override model with the default style in case some style options are missing
-const mergeIntoDefault = style => merge({}, Plain, style);
+const mergeIntoDefault = (style) => merge({}, Plain, style);
 
 export const Plain = {
 	className: 'plain',
