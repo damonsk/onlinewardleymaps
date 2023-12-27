@@ -41,7 +41,7 @@ function MapAccelerator(props) {
 				y={y}
 				fixedY={element.evolved}
 				fixedX={false}
-				shouldShowMoving={true}
+				shouldShowMoving={false}
 				isModKeyPressed={false}
 			>
 				<>{children}</>
