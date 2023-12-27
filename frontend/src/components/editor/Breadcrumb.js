@@ -51,3 +51,4 @@ const Breadcrumb = ({ currentUrl, mapPersistenceStrategy, mapReadOnly }) => {
 };
 
 export default Breadcrumb;
+
