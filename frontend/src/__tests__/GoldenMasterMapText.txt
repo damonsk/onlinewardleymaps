@@ -1,0 +1,82 @@
+title Golden Master
+note A Map that contains all possible elements on a map. [0.97, 0.01]
+evolution one->two->three->four
+
+component FooWithNoCoords
+component FooWithCoords [0.91, 0.23] label [15, 4]
+
+//Methods
+//Build
+component BuildComponent [0.70, 0.09] 
+build BuildComponent
+//Buy
+component BuyComponent [0.59, 0.09] 
+buy BuyComponent
+//Outsource
+component OutsourceComponent [0.51, 0.09] label [37, -23]
+outsource OutsourceComponent
+//End Methods
+
+//Styles
+style colour
+style wardley
+style dark
+style handwritten
+style plain
+//EndStyles
+
+//Annotations
+annotation 1 [[0.85,0.64],[0.85,0.68] ] Standardising power allows Kettles to evolve faster
+annotation 2 [0.78, 0.64] Hot water is obvious and well known
+annotations [0.97, 0.64]
+//EndAnnotations
+
+//PST
+// PST Legend Top Right
+pioneers [0.74, 0.83, 0.68, 0.98]
+settlers [0.88, 0.83, 0.82, 0.98] 
+townplanners [0.81, 0.83, 0.75, 0.98]
+//EndPST
+
+//Eco
+ecosystem EcoSystemNoCoords
+ecosystem EcoSystemWithCoords [0.1,0.9] label [-9, -41]
+//EndEco
+
+//Market
+market MarketNoCoords
+market MarketWithCoords [0.3,0.9] label [-21, 18]
+//EndMarket
+
+//Evolve 
+component EvolveComponennt [0.07, 0.27] label [-56, -23] 
+evolve EvolveComponennt 0.7 label [5, -23]
+//EndEvolve
+
+//Inertia 
+component InertiaComponent [0.20, 0.22] inertia label [-97, -9]
+component Inertia Alternative [0.15, 0.22] (inertia) label [-74, -18]
+//EndInertia 
+
+//Pipelines (Legacy)
+component foo [0.73, 0.32] label [13, -10]
+pipeline foo [0.24, 0.39]
+//EndPipelines 
+
+//Pipelines V2
+component Power [0.21, 0.67] label [11, -13]
+pipeline Power [0.1,0.1]
+{
+component Wind [0.72] label [-13.00, 35.00]
+component Batteries [0.58] label [-28.00, 35.00] 
+evolve Batteries 0.65 label [-46, -20]
+component Nuclear [0.77] label [-15.00, 36.00]
+}
+//EndPipelinesV2
+
+//SubMap
+submap Website [0.83, 0.50] url(submapUrl)
+url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]
+//EndSupMap
+
+FooWithCoords->InertiaComponent; Constraint

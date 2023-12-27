@@ -1,0 +1,26 @@
+type PublicMap @model @auth(rules: [{allow: public, operations: [read, update]}, {allow: owner}]) {
+  id: ID!
+  mapText: String
+  readOnly: String
+  name: String
+  imageData: String
+  mapIterations: AWSJSON
+}
+
+type UnauthenticatedMap @model @auth(rules: [{allow: public, provider: apiKey, operations: [create, read, update]}]) {
+  id: ID!
+  mapText: String
+  name: String
+  imageData: String
+  mapIterations: AWSJSON
+}
+
+type Map @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  mapText: String
+  private: Boolean
+  name: String
+  imageData: String
+  mapIterations: AWSJSON
+}
+  
