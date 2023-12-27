@@ -28,17 +28,18 @@ import { featureSwitches } from '../../constants/featureswitches';
 import styles from '../../styles/MapCanvas.module.css';
 
 function MapCanvas(props) {
+	const { mapComponents, mapSubMaps, mapMarkets, mapEcosystems, mapEvolved, mapPipelines, setNewComponentContext, mapLinks, showLinkedEvolved, mapMethods, svgRef, mapEvolutionStates, mapAttitudes, setMetaText, metaText, launchUrl, mapNotes, mapAnnotations, mapAnnotationsPresentation, mapDimensions, mapText, mutateMapText, mapStyleDefs, setHighlightLine, mapAnchors, evolutionOffsets, mapPadding } = props;
 	const isModKeyPressed = useModKeyPressedConsumer();
 	const [mapElementsClicked, setMapElementsClicked] = useState([]);
 	const mapElements = new MapElements(
 		[
-			{ collection: props.mapComponents, type: 'component' },
-			{ collection: props.mapSubMaps, type: 'submap' },
-			{ collection: props.mapMarkets, type: 'market' },
-			{ collection: props.mapEcosystems, type: 'ecosystem' },
+			{ collection: mapComponents, type: 'component' },
+			{ collection: mapSubMaps, type: 'submap' },
+			{ collection: mapMarkets, type: 'market' },
+			{ collection: mapEcosystems, type: 'ecosystem' },
 		],
-		props.mapEvolved,
-		props.mapPipelines
+		mapEvolved,
+		mapPipelines
 	);
 
 	const newElementAt = function (e) {
@@ -54,9 +55,9 @@ function MapCanvas(props) {
 		var loc = getCursor(e);
 
 		const positionCalc = new PositionCalculator();
-		const x = positionCalc.xToMaturity(loc.x, props.mapDimensions.width);
-		const y = positionCalc.yToVisibility(loc.y, props.mapDimensions.height);
-		props.setNewComponentContext({ x, y });
+		const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
+		const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
+		setNewComponentContext({ x, y });
 	};
 
 	var getElementByName = function (elements, name) {
@@ -73,7 +74,7 @@ function MapCanvas(props) {
 	}, [isModKeyPressed]);
 
 	const clicked = function (ctx) {
-		props.setHighlightLine(ctx.el.line);
+		setHighlightLine(ctx.el.line);
 		if (isModKeyPressed === false) return;
 
 		let s = [
@@ -81,18 +82,18 @@ function MapCanvas(props) {
 			{ el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
 		];
 		if (s.length === 2) {
-			props.mutateMapText(
-				props.mapText + '\r\n' + s.map((r) => r.el.name).join('->')
+			mutateMapText(
+				mapText + '\r\n' + s.map((r) => r.el.name).join('->')
 			);
 			setMapElementsClicked([]);
 		} else setMapElementsClicked(s);
 	};
 
 	const linksBuilder = new LinksBuilder(
-		props.mapLinks,
+		mapLinks,
 		mapElements,
-		props.mapAnchors,
-		props.showLinkedEvolved
+		mapAnchors,
+		showLinkedEvolved
 	);
 	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
@@ -112,7 +113,7 @@ function MapCanvas(props) {
 		.filter((m) => m.decorators && m.decorators.method)
 		.map((m) => asMethod(m));
 
-	const methods = props.mapMethods
+	const methods = mapMethods
 		.filter((m) =>
 			getElementByName(mapElements.getNonEvolvedElements(), m.name)
 		)
@@ -129,52 +130,52 @@ function MapCanvas(props) {
 		<React.Fragment>
 			<svg
 				onDoubleClick={(e) => newElementAt(e)}
-				fontFamily={props.mapStyleDefs.fontFamily}
-				fontSize={props.mapStyleDefs.fontSize}
-				className={[props.mapStyleDefs.className, styles.mapCanvas].join(' ')}
+				fontFamily={mapStyleDefs.fontFamily}
+				fontSize={mapStyleDefs.fontSize}
+				className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
 				id="svgMap"
-				ref={props.svgRef}
-				width={props.mapDimensions.width + 2 * props.mapPadding}
-				height={props.mapDimensions.height + 4 * props.mapPadding}
+				ref={svgRef}
+				width={mapDimensions.width + 2 * mapPadding}
+				height={mapDimensions.height + 4 * mapPadding}
 				viewBox={
 					'-' +
-					props.mapPadding +
+					mapPadding +
 					' 0 ' +
-					(props.mapDimensions.width + props.mapPadding) +
+					(mapDimensions.width + mapPadding) +
 					' ' +
-					(props.mapDimensions.height + props.mapPadding)
+					(mapDimensions.height + mapPadding)
 				}
 				version="1.1"
 				xmlns="http://www.w3.org/2000/svg"
 				xmlnsXlink="http://www.w3.org/1999/xlink"
 			>
-				<MapGraphics mapStyleDefs={props.mapStyleDefs} />
+				<MapGraphics mapStyleDefs={mapStyleDefs} />
 				<g id="grid">
 					<MapBackground
-						mapDimensions={props.mapDimensions}
-						mapStyleClass={props.mapStyleDefs.className}
+						mapDimensions={mapDimensions}
+						mapStyleClass={mapStyleDefs.className}
 					/>
 					<MapGrid
-						mapDimensions={props.mapDimensions}
-						mapStyleDefs={props.mapStyleDefs}
-						evolutionOffsets={props.evolutionOffsets}
+						mapDimensions={mapDimensions}
+						mapStyleDefs={mapStyleDefs}
+						evolutionOffsets={evolutionOffsets}
 					/>
 					<MapEvolution
-						mapDimensions={props.mapDimensions}
-						mapEvolutionStates={props.mapEvolutionStates}
-						mapStyleDefs={props.mapStyleDefs}
-						evolutionOffsets={props.evolutionOffsets}
+						mapDimensions={mapDimensions}
+						mapEvolutionStates={mapEvolutionStates}
+						mapStyleDefs={mapStyleDefs}
+						evolutionOffsets={evolutionOffsets}
 					/>
 				</g>
 				<g id="map">
 					<g id="attitudes">
-						{props.mapAttitudes.map((a, i) => (
+						{mapAttitudes.map((a, i) => (
 							<Attitude
 								key={i}
-								mapDimensions={props.mapDimensions}
-								mapStyleDefs={props.mapStyleDefs}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
+								mapDimensions={mapDimensions}
+								mapStyleDefs={mapStyleDefs}
+								mapText={mapText}
+								mutateMapText={mutateMapText}
 								attitude={a}
 							/>
 						))}
@@ -185,8 +186,8 @@ function MapCanvas(props) {
 							<MethodElement
 								key={i}
 								element={m}
-								mapStyleDefs={props.mapStyleDefs}
-								mapDimensions={props.mapDimensions}
+								mapStyleDefs={mapStyleDefs}
+								mapDimensions={mapDimensions}
 								method={m.method}
 							/>
 						))}
@@ -197,8 +198,8 @@ function MapCanvas(props) {
 							return (
 								<FluidLink
 									key={i}
-									mapStyleDefs={props.mapStyleDefs}
-									mapDimensions={props.mapDimensions}
+									mapStyleDefs={mapStyleDefs}
+									mapDimensions={mapDimensions}
 									startElement={current.el}
 									origClick={current.e}
 								/>
@@ -211,11 +212,11 @@ function MapCanvas(props) {
 							<g id={current.name} key={current.name}>
 								{current.links.map((l, i) => (
 									<ComponentLink
-										setMetaText={props.setMetaText}
-										metaText={props.metaText}
-										mapStyleDefs={props.mapStyleDefs}
+										setMetaText={setMetaText}
+										metaText={metaText}
+										mapStyleDefs={mapStyleDefs}
 										key={i}
-										mapDimensions={props.mapDimensions}
+										mapDimensions={mapDimensions}
 										startElement={l.startElement}
 										endElement={l.endElement}
 										link={l.link}
@@ -228,9 +229,9 @@ function MapCanvas(props) {
 					<g id="evolvedLinks">
 						{mapElements.getEvolveElements().map((e, i) => (
 							<EvolvingComponentLink
-								mapStyleDefs={props.mapStyleDefs}
+								mapStyleDefs={mapStyleDefs}
 								key={i}
-								mapDimensions={props.mapDimensions}
+								mapDimensions={mapDimensions}
 								startElement={getElementByName(
 									mapElements.getEvolvedElements(),
 									e.name
@@ -240,21 +241,21 @@ function MapCanvas(props) {
 									e.name
 								)}
 								link={e}
-								evolutionOffsets={props.evolutionOffsets}
+								evolutionOffsets={evolutionOffsets}
 							/>
 						))}
 						;
 					</g>
 					<g id="anchors">
-						{props.mapAnchors.map((el, i) => (
+						{mapAnchors.map((el, i) => (
 							<Anchor
 								key={i}
-								mapDimensions={props.mapDimensions}
+								mapDimensions={mapDimensions}
 								anchor={el}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
+								mapText={mapText}
+								mutateMapText={mutateMapText}
+								mapStyleDefs={mapStyleDefs}
+								setHighlightLine={setHighlightLine}
 								onClick={(e) => clicked({ el, e })}
 							/>
 						))}
@@ -271,27 +272,27 @@ function MapCanvas(props) {
 										p.components.length > 0 ? (
 											<PipelineVersion2
 												key={'pipeline_' + i}
-												mapDimensions={props.mapDimensions}
+												mapDimensions={mapDimensions}
 												pipeline={p}
-												mapText={props.mapText}
-												mutateMapText={props.mutateMapText}
-												setMetaText={props.setMetaText}
-												metaText={props.metaText}
-												mapStyleDefs={props.mapStyleDefs}
-												setHighlightLine={props.setHighlightLine}
+												mapText={mapText}
+												mutateMapText={mutateMapText}
+												setMetaText={setMetaText}
+												metaText={metaText}
+												mapStyleDefs={mapStyleDefs}
+												setHighlightLine={setHighlightLine}
 												linkingFunction={clicked}
 											/>
 										) : (
 											<Pipeline
 												key={i}
-												mapDimensions={props.mapDimensions}
+												mapDimensions={mapDimensions}
 												pipeline={p}
-												mapText={props.mapText}
-												mutateMapText={props.mutateMapText}
-												setMetaText={props.setMetaText}
-												metaText={props.metaText}
-												mapStyleDefs={props.mapStyleDefs}
-												setHighlightLine={props.setHighlightLine}
+												mapText={mapText}
+												mutateMapText={mutateMapText}
+												setMetaText={setMetaText}
+												metaText={metaText}
+												mapStyleDefs={mapStyleDefs}
+												setHighlightLine={setHighlightLine}
 											/>
 										)}
 									</React.Fragment>
@@ -302,20 +303,20 @@ function MapCanvas(props) {
 							<MapComponent
 								key={i}
 								keyword={el.type}
-								launchUrl={props.launchUrl}
-								mapDimensions={props.mapDimensions}
+								launchUrl={launchUrl}
+								mapDimensions={mapDimensions}
 								element={el}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								setMetaText={props.setMetaText}
-								metaText={props.metaText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
+								mapText={mapText}
+								mutateMapText={mutateMapText}
+								setMetaText={setMetaText}
+								metaText={metaText}
+								mapStyleDefs={mapStyleDefs}
+								setHighlightLine={setHighlightLine}
 							>
 								{el.type === 'component' && (
 									<ComponentSymbol
 										id={'element_circle_' + el.id}
-										styles={props.mapStyleDefs.component}
+										styles={mapStyleDefs.component}
 										evolved={el.evolved}
 										onClick={(e) => clicked({ el, e })}
 									/>
@@ -324,7 +325,7 @@ function MapCanvas(props) {
 								{el.pipeline && (
 									<PipelineComponentSymbol
 										id={'element_square_' + el.id}
-										styles={props.mapStyleDefs.component}
+										styles={mapStyleDefs.component}
 										evolved={el.evolved}
 										onClick={(e) => clicked({ el, e })}
 									/>
@@ -334,7 +335,7 @@ function MapCanvas(props) {
 								el.type === 'ecosystem' ? (
 									<EcosystemSymbol
 										id={'ecosystem_circle_' + el.id}
-										styles={props.mapStyleDefs.component}
+										styles={mapStyleDefs.component}
 										onClick={(e) => clicked({ el, e })}
 									/>
 								) : null}
@@ -343,7 +344,7 @@ function MapCanvas(props) {
 								el.type === 'market' ? (
 									<MarketSymbol
 										id={'market_circle_' + el.id}
-										styles={props.mapStyleDefs.component}
+										styles={mapStyleDefs.component}
 										onClick={(e) => clicked({ el, e })}
 									/>
 								) : null}
@@ -351,10 +352,10 @@ function MapCanvas(props) {
 								{el.type === 'submap' && (
 									<SubMapSymbol
 										id={'element_circle_' + el.id}
-										styles={props.mapStyleDefs.submap}
+										styles={mapStyleDefs.submap}
 										evolved={el.evolved}
 										onClick={(e) => clicked({ el, e })}
-										launchUrl={() => props.launchUrl(el.url)}
+										launchUrl={() => launchUrl(el.url)}
 									/>
 								)}
 							</MapComponent>
@@ -362,44 +363,44 @@ function MapCanvas(props) {
 					</g>
 
 					<g id="notes">
-						{props.mapNotes.map((el, i) => (
+						{mapNotes.map((el, i) => (
 							<Note
 								key={i}
-								mapDimensions={props.mapDimensions}
+								mapDimensions={mapDimensions}
 								note={el}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
+								mapText={mapText}
+								mutateMapText={mutateMapText}
+								mapStyleDefs={mapStyleDefs}
+								setHighlightLine={setHighlightLine}
 							/>
 						))}
 					</g>
 
 					<g id="annotations">
-						{props.mapAnnotations.map((a, i) => (
+						{mapAnnotations.map((a, i) => (
 							<React.Fragment key={i}>
 								{a.occurances.map((o, i1) => (
 									<AnnotationElement
-										mapStyleDefs={props.mapStyleDefs}
+										mapStyleDefs={mapStyleDefs}
 										key={i1 + '_' + i}
 										annotation={a}
 										occurance={o}
 										occuranceIndex={i1}
-										mapDimensions={props.mapDimensions}
-										mutateMapText={props.mutateMapText}
-										mapText={props.mapText}
+										mapDimensions={mapDimensions}
+										mutateMapText={mutateMapText}
+										mapText={mapText}
 									/>
 								))}
 							</React.Fragment>
 						))}
-						{props.mapAnnotations.length === 0 ? null : (
+						{mapAnnotations.length === 0 ? null : (
 							<AnnotationBox
-								mapStyleDefs={props.mapStyleDefs}
-								mutateMapText={props.mutateMapText}
-								mapText={props.mapText}
-								annotations={props.mapAnnotations}
-								position={props.mapAnnotationsPresentation}
-								mapDimensions={props.mapDimensions}
+								mapStyleDefs={mapStyleDefs}
+								mutateMapText={mutateMapText}
+								mapText={mapText}
+								annotations={mapAnnotations}
+								position={mapAnnotationsPresentation}
+								mapDimensions={mapDimensions}
 							/>
 						)}
 					</g>
