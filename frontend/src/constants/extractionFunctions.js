@@ -185,10 +185,9 @@ export const setCoords = (o, line) => {
 };
 
 export const isDeAccelerator = (o, line) => {
-	return Object.assign(
-		o,
-		{ deaccelerator: line.indexOf("deaccelerator") == 0 }
-	);
+	return Object.assign(o, {
+		deaccelerator: line.indexOf('deaccelerator') == 0,
+	});
 };
 
 export const setManyCoords = (o, line) => {

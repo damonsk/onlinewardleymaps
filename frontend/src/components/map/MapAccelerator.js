@@ -14,7 +14,7 @@ function MapAccelerator(props) {
 		(element.offsetY ? element.offsetY : 0);
 
 	const positionUpdater = new DefaultPositionUpdater(
-		element.deaccelerator ? 'deaccelerator':'accelerator',
+		element.deaccelerator ? 'deaccelerator' : 'accelerator',
 		mapText,
 		mutateMapText,
 		[NotDefinedCoordsMatcher, ExistingCoordsMatcher]

@@ -1,5 +1,9 @@
 import BaseStrategyRunner from './BaseStrategyRunner';
-import { setCoords, setName, isDeAccelerator } from '../constants/extractionFunctions';
+import {
+	setCoords,
+	setName,
+	isDeAccelerator,
+} from '../constants/extractionFunctions';
 
 export default class AcceleratorExtractionStrategy {
 	constructor(data) {
