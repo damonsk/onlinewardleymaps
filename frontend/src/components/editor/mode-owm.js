@@ -140,7 +140,7 @@ ace.define(
 					{
 						token: ['keyword', 'variable.parameter.function.asp'],
 						regex:
-							'(evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
+							'(deaccelerator|accelerator|evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
 					},
 					{
 						token: [

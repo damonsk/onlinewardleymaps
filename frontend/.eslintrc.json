@@ -20,7 +20,7 @@
 		"plugin:prettier/recommended",
 		"plugin:@next/next/recommended"
 	],
-	"plugins": ["react"],
+	"plugins": ["react", "jsx"],
 	"ignorePatterns": ["models", "src/ui-components"],
 	"rules": {
 		"prettier/prettier": "error",

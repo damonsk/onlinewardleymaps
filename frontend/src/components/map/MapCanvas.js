@@ -26,9 +26,40 @@ import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
 import { featureSwitches } from '../../constants/featureswitches';
 import styles from '../../styles/MapCanvas.module.css';
+import MapAccelerator from './MapAccelerator';
+import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 
 function MapCanvas(props) {
-	const { mapComponents, mapSubMaps, mapMarkets, mapEcosystems, mapEvolved, mapPipelines, setNewComponentContext, mapLinks, showLinkedEvolved, mapMethods, svgRef, mapEvolutionStates, mapAttitudes, setMetaText, metaText, launchUrl, mapNotes, mapAnnotations, mapAnnotationsPresentation, mapDimensions, mapText, mutateMapText, mapStyleDefs, setHighlightLine, mapAnchors, evolutionOffsets, mapPadding } = props;
+	const {
+		mapComponents,
+		mapSubMaps,
+		mapMarkets,
+		mapEcosystems,
+		mapEvolved,
+		mapPipelines,
+		setNewComponentContext,
+		mapLinks,
+		showLinkedEvolved,
+		mapMethods,
+		svgRef,
+		mapEvolutionStates,
+		mapAttitudes,
+		setMetaText,
+		metaText,
+		launchUrl,
+		mapNotes,
+		mapAnnotations,
+		mapAnnotationsPresentation,
+		mapDimensions,
+		mapText,
+		mutateMapText,
+		mapStyleDefs,
+		setHighlightLine,
+		mapAnchors,
+		evolutionOffsets,
+		mapPadding,
+		mapAccelerators,
+	} = props;
 	const isModKeyPressed = useModKeyPressedConsumer();
 	const [mapElementsClicked, setMapElementsClicked] = useState([]);
 	const mapElements = new MapElements(
@@ -82,9 +113,7 @@ function MapCanvas(props) {
 			{ el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
 		];
 		if (s.length === 2) {
-			mutateMapText(
-				mapText + '\r\n' + s.map((r) => r.el.name).join('->')
-			);
+			mutateMapText(mapText + '\r\n' + s.map((r) => r.el.name).join('->'));
 			setMapElementsClicked([]);
 		} else setMapElementsClicked(s);
 	};
@@ -259,6 +288,24 @@ function MapCanvas(props) {
 								onClick={(e) => clicked({ el, e })}
 							/>
 						))}
+					</g>
+					<g id="accelerators">
+						{featureSwitches.enableAccelerators &&
+							mapAccelerators.map((el, l) => (
+								<MapAccelerator
+									key={l}
+									element={el}
+									mapDimensions={mapDimensions}
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+								>
+									<AcceleratorSymbol
+										id={'market_circle_' + el.id}
+										isDeAccelerator={el.deaccelerator}
+										onClick={() => setHighlightLine(el.line)}
+									/>
+								</MapAccelerator>
+							))}
 					</g>
 					<g id="pipelines">
 						{featureSwitches.enableNewPipelines &&

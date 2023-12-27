@@ -22,6 +22,11 @@ const ecosystemStripesPattern = () => (
 
 const MapGraphics = (props) => (
 	<defs>
+		<linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style={{ stopColor: '#ffffff', stopOpacity: 1 }} />
+			<stop offset="40%" style={{ stopColor: '#808080', stopOpacity: 1 }} />
+			<stop offset="100%" style={{ stopColor: '#808080', stopOpacity: 1 }} />
+		</linearGradient>
 		<filter id="ctrlHighlight">
 			<feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="blue" />
 		</filter>

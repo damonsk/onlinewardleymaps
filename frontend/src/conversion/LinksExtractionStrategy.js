@@ -26,6 +26,8 @@ export default class LinksExtractionStrategy {
 			'ecosystem',
 			'{',
 			'}',
+			'accelerator',
+			'deaccelerator',
 		];
 	}
 	apply() {

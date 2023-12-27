@@ -101,6 +101,7 @@ function Environment(props) {
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAttitudes, setMapAttitudes] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
+	const [mapAccelerators, setMapAccelerators] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
 	const [invalid, setInvalid] = useState(false);
 	const [newComponentContext, setNewComponentContext] = useState(null);
@@ -360,6 +361,7 @@ function Environment(props) {
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
 			setMapStyle(r.presentation.style);
+			setMapAccelerators(r.accelerators);
 			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
 				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
@@ -585,6 +587,7 @@ function Environment(props) {
 							mapAnchors={mapAnchors}
 							mapLinks={mapLinks}
 							mapAttitudes={mapAttitudes}
+							mapAccelerators={mapAccelerators}
 							launchUrl={launchUrl}
 							mapNotes={mapNotes}
 							mapAnnotations={mapAnnotations}

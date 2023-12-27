@@ -3827,6 +3827,15 @@ eslint-config-prettier@^9.1.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-9.1.0.tgz#31af3d94578645966c082fcb71a5846d3c94867f"
   integrity sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==
 
+eslint-plugin-jsx@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx/-/eslint-plugin-jsx-0.1.0.tgz#6d0dc2a519d7102b17a9774a231b3548077f2a52"
+  integrity sha512-278HIClJgb3Gp1b89wbva7AGS7cxQzBNgKFysy6aEB44Acso2M8ARdoaLUnN7VTWf0vnSvtwugCmc/B8MSzY5g==
+  dependencies:
+    eslint-plugin-react "3.4.2"
+    html-tags "1"
+    svg-tags "1"
+
 eslint-plugin-prettier@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-5.1.2.tgz#584c94d4bf31329b2d4cbeb10fd600d17d6de742"
@@ -3834,6 +3843,11 @@ eslint-plugin-prettier@^5.1.2:
   dependencies:
     prettier-linter-helpers "^1.0.0"
     synckit "^0.8.6"
+
+eslint-plugin-react@3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-3.4.2.tgz#9e6ef8a8054f8ac3b87b97236e7b849e5835dc6c"
+  integrity sha512-rIhweRuQMLxNOOHHl9pEkQR+6QiKt9wUHpBvjSefSzUg5qdhC08jc2rxsSm1TAXii9rxabhzK5MUu+YBJxn6sA==
 
 eslint-plugin-react@^7.33.2:
   version "7.33.2"
@@ -4349,6 +4363,11 @@ hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
   dependencies:
     react-is "^16.7.0"
+
+html-tags@1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/html-tags/-/html-tags-1.2.0.tgz#c78de65b5663aa597989dd2b7ab49200d7e4db98"
+  integrity sha512-uVteDXUCs08M7QJx0eY6ue7qQztwIfknap81vAtNob2sdEPKa8PjPinx0vxbs2JONPamovZjMvKZWNW44/PBKg==
 
 html2canvas@^1.4.1:
   version "1.4.1"
@@ -5990,6 +6009,11 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+svg-tags@1:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
+  integrity sha512-ovssysQTa+luh7A5Weu3Rta6FJlFBBbInjOh722LIt6klpU2/HtdUbszju/G4devcvk8PGt7FCLv5wftu3THUA==
 
 synckit@^0.8.6:
   version "0.8.8"

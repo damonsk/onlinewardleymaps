@@ -14,6 +14,7 @@ import LinksExtractionStrategy from './LinksExtractionStrategy';
 import SubMapExtractionStrategy from './SubMapExtractionStrategy';
 import UrlExtractionStrategy from './UrlExtractionStrategy';
 import AttitudeExtractionStrategy from './AttitudeExtractionStrategy';
+import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 
 export default class Converter {
 	parse(data) {
@@ -35,6 +36,7 @@ export default class Converter {
 			new SubMapExtractionStrategy(t),
 			new UrlExtractionStrategy(t),
 			new AttitudeExtractionStrategy(t),
+			new AcceleratorExtractionStrategy(t),
 		];
 		let errorContainer = { errors: [] };
 		let converted = {
@@ -54,6 +56,7 @@ export default class Converter {
 			ecosystems: [],
 			urls: [],
 			attitudes: [],
+			accelerators: [],
 		};
 		strategies.forEach((s) => {
 			const o = s.apply();

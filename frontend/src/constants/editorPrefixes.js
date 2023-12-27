@@ -15,6 +15,8 @@ const iterations = [
 	...attitudes,
 	['note', '<note text>', '[<visibility>, <maturity>]'],
 	['component', '<name>', '[<visibility>, <maturity>]'],
+	['accelerator', '<name>', '[<visibility>, <maturity>]'],
+	['deaccelerator', '<name>', '[<visibility>, <maturity>]'],
 	['submap', '<name>', '[<visibility>, <maturity>]', 'url(<url>)'],
 	['url', '<name>', '[<address>]'],
 ]
@@ -34,6 +36,7 @@ export const EditorPrefixes = [
 	'style colour',
 	'style handwritten',
 	'style plain',
+	'style dark',
 	'ecosystem',
 	'market',
 	'evolve',
@@ -41,4 +44,6 @@ export const EditorPrefixes = [
 	'pipeline',
 	'title',
 	'evolution',
+	'accelerator',
+	'deaccelerator',
 ];
