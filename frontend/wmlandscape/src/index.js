@@ -9,6 +9,8 @@ import { ExistingSingleCoordMatcher } from '../../src/components/map/positionUpd
 import LineNumberPositionUpdater from '../../src/components/map/positionUpdaters/LineNumberPositionUpdater';
 import { NotDefinedCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedCoordsMatcher';
 import { NotDefinedManyCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedManyCoordsMatcher';
+import { ExistingMaturityMatcher } from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
+import { NotDefinedMaturityMatcher } from '../../src/components/map/positionUpdaters/NotDefinedMaturityMatcher';
 import SingletonPositionUpdater from '../../src/components/map/positionUpdaters/SingletonPositionUpdater';
 
 import Anchor from '../../src/components/map/Anchor';
@@ -70,6 +72,7 @@ import MethodExtractionStrategy from '../../src/conversion/MethodExtractionStrat
 import NoteExtractionStrategy from '../../src/conversion/NoteExtractionStrategy';
 import ParseError from '../../src/conversion/ParseError';
 import PipelineExtractionStrategy from '../../src/conversion/PipelineExtractionStrategy';
+import PipelineExtractionRunner from '../../src/conversion/PipelineExtractionRunner';
 import PresentationExtractionStrategy from '../../src/conversion/PresentationExtractionStrategy';
 import SubMapExtractionStrategy from '../../src/conversion/SubMapExtractionStrategy';
 import TitleExtractionStrategy from '../../src/conversion/TitleExtractionStrategy';
@@ -94,6 +97,7 @@ import {
 	useModKeyPressedConsumer,
 } from '../../src/components/KeyPressContext';
 import QuickAdd from '../../src/components/actions/QuickAdd';
+import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
 
 export {
 	MapBackground,
@@ -107,6 +111,8 @@ export {
 	LineNumberPositionUpdater,
 	NotDefinedCoordsMatcher,
 	NotDefinedManyCoordsMatcher,
+	ExistingMaturityMatcher,
+	NotDefinedMaturityMatcher,
 	SingletonPositionUpdater,
 	Anchor,
 	AnnotationBox,
@@ -164,6 +170,7 @@ export {
 	NoteExtractionStrategy,
 	ParseError,
 	PipelineExtractionStrategy,
+	PipelineExtractionRunner,
 	PresentationExtractionStrategy,
 	SubMapExtractionStrategy,
 	TitleExtractionStrategy,
@@ -186,4 +193,5 @@ export {
 	ModKeyPressedProvider,
 	useModKeyPressedConsumer,
 	QuickAdd,
+	PipelineVersion2,
 };

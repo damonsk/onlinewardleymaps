@@ -1,7 +1,4 @@
-frontend/yarn.lock
-
 .DS_Store
-yarn.lock
 frontend/amplify/team-provider-info.json
 
 #amplify-do-not-edit-begin
@@ -25,4 +22,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-package-lock.json

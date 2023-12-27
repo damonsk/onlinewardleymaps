@@ -1,0 +1,21 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Frontend",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "yarn",
+			"args": [
+				"start"
+			],
+			"cwd": "${workspaceFolder}/frontend",
+			"protocol": "inspector",
+			"runtimeArgs": [
+				"--inspect-brk"
+			],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen"
+		}
+	]
+}
