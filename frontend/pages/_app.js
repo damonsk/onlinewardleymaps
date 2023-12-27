@@ -42,9 +42,19 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		let updateUser = async authState => {
 			try {
-				let user = await getCurrentUser();
-				setUser(user);
-				console.log('[_app::useEffect]', user);
+				async function currentAuthenticatedUser() {
+					try {
+						const { username, userId, signInDetails } = await getCurrentUser();
+						setUser({ username, userId, signInDetails });
+						console.log('[_app::useEffect]', { username, userId, signInDetails });
+					} catch (err) {
+						console.log(err);
+						setUser(null);
+					}
+				}
+
+				await currentAuthenticatedUser();
+
 				if (authState !== undefined && authState.payload.event === 'signIn') {
 					setHideAuthModal(true);
 				}

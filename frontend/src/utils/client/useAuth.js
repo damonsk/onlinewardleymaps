@@ -26,7 +26,7 @@ export default function useAuth() {
 
 	const checkUserAuth = useCallback(async () => {
 		try {
-			const cognitoUser = getCurrentUser();
+			const cognitoUser = await getCurrentUser();
 			setUser(cognitoUser);
 		} catch (err) {
 			setUser(null);
