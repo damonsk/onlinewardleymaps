@@ -17,7 +17,7 @@ import { LoadMap } from '../repository/LoadMap';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Grid } from '@mui/material';
-import { Storage } from 'aws-amplify';
+import { uploadData } from 'aws-amplify/storage';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import Router from 'next/router';
 
@@ -208,7 +208,7 @@ function Environment(props) {
 			});
 
 			async function createImage(imageData, level, filename) {
-				return await Storage.put(
+				return await uploadData(
 					filename,
 					convertToImage(imageData, 'image/png'),
 					{

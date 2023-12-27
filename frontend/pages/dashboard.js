@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { API } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
 import { listMaps, listPublicMaps } from '../src/graphql/queries';
 import DashboardMapItem from '../src/components/DashboardMapItem';
 import LeftNavigation from '../src/components/page/LeftNavigation';
@@ -15,6 +15,7 @@ import {
 import DashboardHeader from '../src/components/page/DashboardHeader';
 
 const Dashboard = props => {
+	const client = generateClient();
 	const [privateMaps, setPrivateMaps] = useState([]);
 	const [publicMaps, setPublicMaps] = useState([]);
 	const [concatenatedMaps, setConcatenatedMaps] = useState([]);
@@ -58,13 +59,13 @@ const Dashboard = props => {
 
 	const reload = () => {
 		const getPrivateMaps = async () =>
-			await API.graphql({
+			await client.graphql({
 				query: listMaps,
 				authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'listMaps',
 			});
 		const getPublicMaps = async () =>
-			await API.graphql({
+			await client.graphql({
 				query: listPublicMaps,
 				authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'listMaps',

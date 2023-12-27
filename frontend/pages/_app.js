@@ -8,8 +8,8 @@ import { theme, lightTheme } from '../src/theme';
 import { AmplifyAuthProvider } from '../src/contexts/auth';
 import { configureAmplify } from '../src/lib/amplify/awsConfig';
 import Footer from '../src/components/page/Footer';
-import { Authenticator, Greetings } from 'amplify-material-ui';
-import { Hub, Auth } from 'aws-amplify';
+import { Hub } from 'aws-amplify/utils';
+import { getCurrentUser, signOut as awsSignOut } from 'aws-amplify/auth';
 import { Modal, Box } from '@mui/material';
 
 configureAmplify();
@@ -42,7 +42,7 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		let updateUser = async authState => {
 			try {
-				let user = await Auth.currentAuthenticatedUser();
+				let user = await getCurrentUser();
 				setUser(user);
 				console.log('[_app::useEffect]', user);
 				if (authState !== undefined && authState.payload.event === 'signIn') {
@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }) {
 
 	async function signOut() {
 		try {
-			await Auth.signOut();
+			await awsSignOut();
 		} catch (error) {
 			console.log('error signing out: ', error);
 		}
@@ -124,13 +124,13 @@ function MyApp({ Component, pageProps }) {
 								aria-describedby="modal-modal-description"
 							>
 								<Box>
-									<Authenticator
+									{/* <Authenticator
 										signUpConfig={signUpConfig}
 										theme={currentTheme}
 										{...{
 											hide: [Greetings],
 										}}
-									></Authenticator>
+									></Authenticator> */}
 								</Box>
 							</Modal>
 							<Footer />

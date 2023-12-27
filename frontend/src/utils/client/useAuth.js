@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Auth, Hub } from 'aws-amplify';
+import { getCurrentUser } from 'aws-amplify/auth';
+import { Hub } from 'aws-amplify/utils';
 
 export default function useAuth() {
 	const [user, setUser] = useState(null);
@@ -25,7 +26,7 @@ export default function useAuth() {
 
 	const checkUserAuth = useCallback(async () => {
 		try {
-			const cognitoUser = await Auth.currentAuthenticatedUser();
+			const cognitoUser = getCurrentUser();
 			setUser(cognitoUser);
 		} catch (err) {
 			setUser(null);
