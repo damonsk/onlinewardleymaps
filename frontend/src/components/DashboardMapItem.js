@@ -99,25 +99,31 @@ const DashboardMapItem = props => {
 	};
 
 	const createMapInPrivateDataStore = async function(map) {
-		return await client.graphql({createMap, input: map, operationName: 'createMap' });
+		return await client.graphql({query: createMap, variables: map, operationName: 'createMap' });
 	};
 
 	const createMapInPublicDataStore = async function(map) {
-		return await client.graphql({createPublicMap, input: map, operationName: 'createPublicMap' });
+		return await client.graphql({query: createPublicMap, variables: map, operationName: 'createPublicMap' });
 	};
 
 	const deleteMapFromPrivateDataStore = async function() {
-		await client.graphql({deleteMap, input: { id: mapItem.id }, operationName: 'deleteMap' });
+		await client.graphql({query: deleteMap, variables: {input: { id: mapItem.id }}, operationName: 'deleteMap' });
 	};
 
 	const deleteMapFromPublicDataStore = async function() {
-		await client.graphql({deletePublicMap, input: { id: mapItem.id }, operationName: 'deletePublicMap' });
+		await client.graphql({query: deletePublicMap, variables: {input: { id: mapItem.id }}, operationName: 'deletePublicMap' });
 	};
 
 	const getImageUrl = async function(id, privateState) {
-		return await getUrl(id + '.png', {
-			level: privateState ? 'private' : 'public',
+		
+		const e = await getUrl({
+			key: (id + '.png'), 
+			options: {
+				accessLevel: privateState ? 'private' : 'public',
+			}
 		});
+		console.log("image", {img: e.url.toString(), id, privateState});
+		return e.url.toString();
 	};
 
 	useEffect(() => {

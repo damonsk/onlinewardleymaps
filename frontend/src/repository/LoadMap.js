@@ -13,7 +13,7 @@ export const LoadMap = async (mapPersistenceStrategy, followOnActions, id) => {
 			new GraphQlLoadStrategy(
 				{
 					query: getMap,
-					authMode: 'AMAZON_COGNITO_USER_POOLS',
+					// authMode: 'AMAZON_COGNITO_USER_POOLS',
 					operationName: 'getMap',
 					mapPersistenceStrategy,
 				},
@@ -23,7 +23,7 @@ export const LoadMap = async (mapPersistenceStrategy, followOnActions, id) => {
 			new GraphQlLoadStrategy(
 				{
 					query: getPublicMap,
-					authMode: 'API_KEY',
+					// authMode: 'API_KEY',
 					operationName: 'getPublicMap',
 					mapPersistenceStrategy,
 				},
@@ -33,7 +33,7 @@ export const LoadMap = async (mapPersistenceStrategy, followOnActions, id) => {
 			new GraphQlLoadStrategy(
 				{
 					query: getUnauthenticatedMap,
-					authMode: 'API_KEY',
+					// authMode: 'API_KEY',
 					operationName: 'getUnauthenticatedMap',
 					mapPersistenceStrategy,
 				},

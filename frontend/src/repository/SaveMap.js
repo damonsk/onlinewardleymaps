@@ -26,7 +26,7 @@ export const SaveMap = async (
 				{
 					query: hash ? updateMap : createMap,
 					opeerationName: hash ? 'updateMap' : 'createMap',
-					authMode: 'AMAZON_COGNITO_USER_POOLS',
+					// authMode: 'AMAZON_COGNITO_USER_POOLS',
 				},
 				callback
 			);
@@ -35,7 +35,7 @@ export const SaveMap = async (
 			loadedSaveStrategy = new GraphQlSaveStrategy(
 				{
 					query: hash ? updatePublicMap : createPublicMap,
-					authMode: 'AMAZON_COGNITO_USER_POOLS',
+					// authMode: 'AMAZON_COGNITO_USER_POOLS',
 					operationName: hash ? 'updatePublicMap' : 'createPublicMap',
 				},
 				callback
@@ -49,7 +49,7 @@ export const SaveMap = async (
 			loadedSaveStrategy = new GraphQlSaveStrategy(
 				{
 					query: hash ? updateUnauthenticatedMap : createUnauthenticatedMap,
-					authMode: 'API_KEY',
+					// authMode: 'API_KEY',
 					operationName: hash
 						? 'updateUnauthenticatedMap'
 						: 'createUnauthenticatedMap',

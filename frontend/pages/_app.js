@@ -9,8 +9,10 @@ import { AmplifyAuthProvider } from '../src/contexts/auth';
 import { configureAmplify } from '../src/lib/amplify/awsConfig';
 import Footer from '../src/components/page/Footer';
 import { Hub } from 'aws-amplify/utils';
+import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser, signOut as awsSignOut } from 'aws-amplify/auth';
 import { Modal, Box } from '@mui/material';
+import '@aws-amplify/ui-react/styles.css';
 
 configureAmplify();
 
@@ -134,13 +136,10 @@ function MyApp({ Component, pageProps }) {
 								aria-describedby="modal-modal-description"
 							>
 								<Box>
-									{/* <Authenticator
+									<Authenticator
 										signUpConfig={signUpConfig}
 										theme={currentTheme}
-										{...{
-											hide: [Greetings],
-										}}
-									></Authenticator> */}
+									></Authenticator>
 								</Box>
 							</Modal>
 							<Footer />

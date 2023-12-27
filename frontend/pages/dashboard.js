@@ -61,13 +61,13 @@ const Dashboard = props => {
 		const getPrivateMaps = async () =>
 			await client.graphql({
 				query: listMaps,
-				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				//authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'listMaps',
 			});
 		const getPublicMaps = async () =>
 			await client.graphql({
 				query: listPublicMaps,
-				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				//authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'listMaps',
 			});
 		getPrivateMaps()

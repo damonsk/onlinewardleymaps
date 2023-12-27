@@ -208,14 +208,14 @@ function Environment(props) {
 			});
 
 			async function createImage(imageData, level, filename) {
-				return await uploadData(
-					filename,
-					convertToImage(imageData, 'image/png'),
-					{
+				return await uploadData({
+					key: filename,
+					data: convertToImage(imageData, 'image/png'),
+					options: {
 						level: level,
 						contentType: 'image/png',
 					}
-				);
+				});
 			}
 		};
 
