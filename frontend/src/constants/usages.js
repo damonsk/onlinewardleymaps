@@ -150,6 +150,14 @@ const usages = [
 			'style dark',
 		],
 	},
+	{
+		title: 'Accelerator/Deaccelerator',
+		summary: 'An attempt to alter the map',
+		examples: [
+			'accelerator foobar [0.1, 0.8]',
+			'deaccelerator barbaz [0.2, 0.7]',
+		],
+	},
 ];
 
 export default usages;
