@@ -410,7 +410,7 @@ function Environment(props) {
 	useEffect(() => {
 		if (
 			mapPersistenceStrategy ===
-			Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
+				Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
 			mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Legacy
 		)
 			setCanSaveMap(true);
@@ -616,7 +616,6 @@ function Environment(props) {
 				</Grid>
 			</Grid>
 
-
 			<Dialog
 				maxWidth={'lg'}
 				fullWidth={'lg'}
@@ -626,10 +625,15 @@ function Environment(props) {
 				<DialogTitle>Usage</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Quick reference of all available map elements.  You can add an example to your map by clicking the available links.
+						Quick reference of all available map elements. You can add an
+						example to your map by clicking the available links.
 					</DialogContentText>
 					<Box marginTop={2}>
-						<UsageInfo mapStyleDefs={mapStyleDefs} mutateMapText={mutateMapText} mapText={mapText} />
+						<UsageInfo
+							mapStyleDefs={mapStyleDefs}
+							mutateMapText={mutateMapText}
+							mapText={mapText}
+						/>
 					</Box>
 				</DialogContent>
 				<DialogActions>

@@ -27,31 +27,33 @@ function Usage(props) {
 	);
 }
 
-const UsageDefinition = (props) => { 
+const UsageDefinition = (props) => {
 	const { Icon, mapStyleDefs } = props;
 	return (
-	<>
-		<Typography variant='h3'>{props.title}</Typography>
-		{props.summary.length > 0 ? (
-			
-				<Typography variant='body1'>{props.summary}{' '}</Typography>
-		) : null}
-		<Typography variant='h5'>Example</Typography>
-		{props.examples &&
-			props.examples.map((example, idx) => (
-				<React.Fragment key={idx}>
-					<UsageExample addOnClick={props.addOnClick} example={example} />
-				</React.Fragment>
-			))}
-			{false == true && Icon ? <Icon mapStyleDefs={mapStyleDefs} hideLabel={false} /> : null}
-		<Divider sx={{marginTop: 2, marginBottom: 2}} />
-	</>
-)};
+		<>
+			<Typography variant="h3">{props.title}</Typography>
+			{props.summary.length > 0 ? (
+				<Typography variant="body1">{props.summary} </Typography>
+			) : null}
+			<Typography variant="h5">Example</Typography>
+			{props.examples &&
+				props.examples.map((example, idx) => (
+					<React.Fragment key={idx}>
+						<UsageExample addOnClick={props.addOnClick} example={example} />
+					</React.Fragment>
+				))}
+			{false == true && Icon ? (
+				<Icon mapStyleDefs={mapStyleDefs} hideLabel={false} />
+			) : null}
+			<Divider sx={{ marginTop: 2, marginBottom: 2 }} />
+		</>
+	);
+};
 
 const UsageExample = (props) => (
 	<Typography>
 		<Link
-			sx={{cursor: 'pointer'}}
+			sx={{ cursor: 'pointer' }}
 			onClick={() => props.addOnClick(props.example)}
 			className="add clickable"
 		>
