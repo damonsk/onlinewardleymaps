@@ -126,6 +126,7 @@ function ComponentText(props) {
 							autoComplete="off"
 							size="small"
 							sx={{
+								position: 'fixed',
 								boxSizing: 'border-box',
 								flex: 1,
 								'& input': {

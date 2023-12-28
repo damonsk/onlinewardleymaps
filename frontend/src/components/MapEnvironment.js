@@ -618,7 +618,6 @@ function Environment(props) {
 
 			<Dialog
 				maxWidth={'lg'}
-				fullWidth={'lg'}
 				open={showUsage}
 				onClose={() => setShowUsage(false)}
 			>
