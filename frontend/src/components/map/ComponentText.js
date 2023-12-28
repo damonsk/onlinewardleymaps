@@ -1,25 +1,45 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import RelativeMovable from './RelativeMovable';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import TextField from '@mui/material/TextField';
+import { rename } from '../../constants/rename';
+import { featureSwitches } from '../../constants/featureswitches';
 
 function ComponentText(props) {
-	const elementId = 'element_text_' + props.element.id;
+	const {
+		mutateMapText,
+		mapText,
+		overrideDrag,
+		element,
+		mapStyleDefs,
+		onClick,
+	} = props;
+
+	const [showTextField, setShowTextField] = React.useState(false);
+	const renameField = useRef();
+
+	useEffect(() => {
+		if (featureSwitches.enableDoubleClickRename && showTextField) {
+			renameField.current.select();
+		}
+	}, [showTextField]);
+
 	function endDrag(moved) {
-		props.mutateMapText(
-			props.mapText
+		mutateMapText(
+			mapText
 				.split('\n')
 				.map((line) => {
-					if (props.element.evolved) {
+					if (element.evolved) {
 						if (
 							line
 								.replace(/\s/g, '')
 								.indexOf(
 									'evolve' +
-										props.element.name.replace(/\s/g, '') +
-										(props.element.override.length > 0
-											? '->' + props.element.override
+										element.name.replace(/\s/g, '') +
+										(element.override.length > 0
+											? '->' + element.override
 											: '') +
-										props.element.maturity
+										element.maturity
 								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
@@ -38,9 +58,7 @@ function ComponentText(props) {
 							line
 								.replace(/\s/g, '')
 								.indexOf(
-									props.element.type +
-										props.element.name.replace(/\s/g, '') +
-										'['
+									element.type + element.name.replace(/\s/g, '') + '['
 								) === 0
 						) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
@@ -60,25 +78,74 @@ function ComponentText(props) {
 		);
 	}
 
+	const handleKeyUp = (event) => {
+		if (event.key === 'Enter') {
+			console.log('Enter key pressed!');
+			rename(
+				element.line,
+				element.name,
+				renameField.current.value,
+				mapText,
+				mutateMapText
+			);
+			setShowTextField(false);
+		}
+		if (event.key === 'Escape') {
+			setShowTextField(false);
+		}
+	};
+
 	return (
 		<React.Fragment>
 			<RelativeMovable
-				id={elementId}
+				id={'rm_element_text_' + element.id}
 				fixedY={false}
 				fixedX={false}
-				onMove={props.overrideDrag ? props.overrideDrag : endDrag}
-				x={props.element.label.x}
-				y={props.element.label.y}
+				onMove={overrideDrag ? overrideDrag : endDrag}
+				x={element.label.x}
+				y={element.label.y}
 			>
-				<ComponentTextSymbol
-					id={elementId}
-					text={
-						props.element.override ? props.element.override : props.element.name
-					}
-					evolved={props.element.evolved}
-					styles={props.mapStyleDefs.component}
-					onClick={props.onClick}
-				/>
+				{showTextField === false && (
+					<ComponentTextSymbol
+						id={'element_text_' + element.id}
+						text={element.override ? element.override : element.name}
+						evolved={element.evolved}
+						styles={mapStyleDefs.component}
+						onClick={onClick}
+						setShowTextField={
+							featureSwitches.enableDoubleClickRename ? setShowTextField : null
+						}
+					/>
+				)}
+				{featureSwitches.enableDoubleClickRename && showTextField && (
+					<foreignObject x="0" y="-15" width={100} height={50}>
+						<TextField
+							variant="filled"
+							inputRef={renameField}
+							color="primary"
+							autoComplete="off"
+							size="small"
+							sx={{
+								boxSizing: 'border-box',
+								flex: 1,
+								'& input': {
+									boxSizing: 'border-box',
+									flex: 1,
+									fontSize: '14px',
+									fontFamily: 'Consolas, "Lucida Console", monospace',
+									padding: 0,
+									margin: 0,
+
+									color: 'black',
+								},
+							}}
+							margin="0"
+							onKeyUp={(e) => handleKeyUp(e)}
+							defaultValue={element.name}
+							onDoubleClick={(e) => e.stopPropagation()}
+						/>
+					</foreignObject>
+				)}
 			</RelativeMovable>
 		</React.Fragment>
 	);

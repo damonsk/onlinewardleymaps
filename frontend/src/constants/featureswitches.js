@@ -3,4 +3,5 @@ export const featureSwitches = {
 	enableNewPipelines: true,
 	enableLinkContext: true,
 	enableAccelerators: true,
+	enableDoubleClickRename: true,
 };
