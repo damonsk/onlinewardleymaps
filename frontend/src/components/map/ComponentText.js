@@ -144,6 +144,7 @@ function ComponentText(props) {
 							onKeyUp={(e) => handleKeyUp(e)}
 							defaultValue={element.name}
 							onDoubleClick={(e) => e.stopPropagation()}
+							onClick={(e) => e.stopPropagation()}
 						/>
 					</foreignObject>
 				)}
