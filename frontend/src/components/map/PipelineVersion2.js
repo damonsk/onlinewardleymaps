@@ -61,16 +61,16 @@ function PipelineVersion2(props) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
 									/\slabel\s\[(.?|.+?)\]+/g,
-									` label [${parseFloat(moved.x).toFixed(2)}, ${parseFloat(
+									` label [${parseFloat(moved.x).toFixed(0)}, ${parseFloat(
 										moved.y
-									).toFixed(2)}]`
+									).toFixed(0)}]`
 								);
 							} else {
 								return (
 									line.trim() +
-									` label [${parseFloat(moved.x).toFixed(2)}, ${parseFloat(
+									` label [${parseFloat(moved.x).toFixed(0)}, ${parseFloat(
 										moved.y
-									).toFixed(2)}]`
+									).toFixed(0)}]`
 								);
 							}
 						} else {

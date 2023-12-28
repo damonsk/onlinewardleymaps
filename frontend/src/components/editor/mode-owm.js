@@ -140,7 +140,7 @@ ace.define(
 					{
 						token: ['keyword', 'variable.parameter.function.asp'],
 						regex:
-							'(deaccelerator|accelerator|evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
+							'(deaccelerator|accelerator|evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
 					},
 					{
 						token: [
@@ -149,6 +149,16 @@ ace.define(
 							'constant.numeric',
 						],
 						regex: '(evolve)(\\s*[a-zA-Z0-9\\s*]+)(\\d+(?:\\.\\d{1,})*)',
+					},
+					{
+						token: [
+							
+							'punctuation',
+							'constant.numeric',
+							'punctuation',
+						],
+						regex:
+							'(\\[)(\\d+(?:\\.\\d{1,})*)(\\])',
 					},
 					{
 						token: [
@@ -184,7 +194,7 @@ ace.define(
 							'punctuation',
 							'variable.parameter.function.asp',
 						],
-						regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[a-zA-Z0-9\\s*]+)',
+						regex: '(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)',
 					},
 					{
 						token: [
