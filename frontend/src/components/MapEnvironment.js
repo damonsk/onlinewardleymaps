@@ -20,6 +20,12 @@ import { Box, Grid } from '@mui/material';
 import { uploadData } from 'aws-amplify/storage';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import Router from 'next/router';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 function debounce(fn, ms) {
 	let timer;
@@ -404,7 +410,7 @@ function Environment(props) {
 	useEffect(() => {
 		if (
 			mapPersistenceStrategy ===
-				Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
+			Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
 			mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Legacy
 		)
 			setCanSaveMap(true);
@@ -610,9 +616,26 @@ function Environment(props) {
 				</Grid>
 			</Grid>
 
-			{showUsage && (
-				<UsageInfo mutateMapText={mutateMapText} mapText={mapText} />
-			)}
+
+			<Dialog
+				maxWidth={'lg'}
+				fullWidth={'lg'}
+				open={showUsage}
+				onClose={() => setShowUsage(false)}
+			>
+				<DialogTitle>Usage</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						You can set my maximum width and whether to adapt or not.
+					</DialogContentText>
+					
+						<UsageInfo mutateMapText={mutateMapText} mapText={mapText} />
+					
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setShowUsage(false)}>Close</Button>
+				</DialogActions>
+			</Dialog>
 
 			<QuickAdd
 				newComponentContext={newComponentContext}
