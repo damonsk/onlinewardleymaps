@@ -119,7 +119,7 @@ function ComponentText(props) {
 					/>
 				)}
 				{featureSwitches.enableDoubleClickRename && showTextField && (
-					<foreignObject x="0" y="-15" width={120} height={50}>
+					<foreignObject x="0" y="-20" width={120} height={50}>
 						<TextField
 							variant="filled"
 							inputRef={renameField}
