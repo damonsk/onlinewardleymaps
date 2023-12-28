@@ -116,7 +116,7 @@ const usages = [
 	{
 		title: 'Link submap to a component',
 		summary:
-			'Add a reference link to a submap. A component becomes a link to an other Wardley Map',
+			'Add a reference link to a submap. A component becomes a link to another Wardley Map',
 		examples: [
 			'submap Component [<visibility>, <maturity>] url(urlName)',
 			'url urlName [URL]',

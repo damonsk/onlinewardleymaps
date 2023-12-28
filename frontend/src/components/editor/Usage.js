@@ -1,5 +1,6 @@
 import React from 'react';
 import usages from '../../constants/usages';
+import { Divider, Link, Typography } from '@mui/material';
 
 function Usage(props) {
 	const addOnClick = (txt) => {
@@ -10,55 +11,53 @@ function Usage(props) {
 	};
 
 	return (
-		<p id="usage" className="small">
-			Usage:
-			<br />
-			<br />
+		<>
 			{usages.map((usage, idx) => (
 				<UsageDefinition
 					key={usage.key || idx}
 					title={usage.title}
+					Icon={usage.Icon}
+					mapStyleDefs={props.mapStyleDefs}
 					summary={usage.summary}
 					examples={usage.examples}
 					addOnClick={addOnClick}
 				/>
 			))}
-		</p>
+		</>
 	);
 }
 
-const UsageDefinition = (props) => (
+const UsageDefinition = (props) => { 
+	const { Icon, mapStyleDefs } = props;
+	return (
 	<>
-		<strong>{props.title}</strong>
+		<Typography variant='h3'>{props.title}</Typography>
 		{props.summary.length > 0 ? (
-			<>
-				<br /> {props.summary}{' '}
-			</>
+			
+				<Typography variant='body1'>{props.summary}{' '}</Typography>
 		) : null}
-		<br />
-		<strong>Example:</strong>
+		<Typography variant='h5'>Example</Typography>
 		{props.examples &&
 			props.examples.map((example, idx) => (
 				<React.Fragment key={idx}>
-					<br />
 					<UsageExample addOnClick={props.addOnClick} example={example} />
 				</React.Fragment>
 			))}
-		<br />
-		<br />
-		------------------------
-		<br />
+			{false == true && Icon ? <Icon mapStyleDefs={mapStyleDefs} hideLabel={false} /> : null}
+		<Divider sx={{marginTop: 2, marginBottom: 2}} />
 	</>
-);
+)};
 
 const UsageExample = (props) => (
-	<span
-		onClick={() => props.addOnClick(props.example)}
-		href="#"
-		className="add clickable"
-	>
-		{props.example}
-	</span>
+	<Typography>
+		<Link
+			sx={{cursor: 'pointer'}}
+			onClick={() => props.addOnClick(props.example)}
+			className="add clickable"
+		>
+			{props.example}
+		</Link>
+	</Typography>
 );
 
 export default Usage;

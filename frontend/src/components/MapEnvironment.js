@@ -626,11 +626,11 @@ function Environment(props) {
 				<DialogTitle>Usage</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						You can set my maximum width and whether to adapt or not.
+						Quick reference of all available map elements.  You can add an example to your map by clicking the available links.
 					</DialogContentText>
-					
-						<UsageInfo mutateMapText={mutateMapText} mapText={mapText} />
-					
+					<Box marginTop={2}>
+						<UsageInfo mapStyleDefs={mapStyleDefs} mutateMapText={mutateMapText} mapText={mapText} />
+					</Box>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={() => setShowUsage(false)}>Close</Button>
