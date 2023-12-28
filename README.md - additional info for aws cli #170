@@ -18,6 +18,8 @@ The infrastructure that will be created is defined here: https://github.com/damo
 
 The costs will be minimal as it's based on serverless offerings and likely covered under the Free Tier if you have a new account. For reference, it's approximately $1 a month for the current live site.
 
+The documentation for getting started with the amplify cli can be found @ https://docs.amplify.aws/javascript/start/getting-started/installation/
+
 Dependencies for running locally: Node.js, Yarn, and Amplify.
 
     npm install yarn -g
