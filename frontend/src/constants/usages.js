@@ -21,17 +21,6 @@ const usages = [
 		],
 	},
 	{
-		toolbarButtonText: 'Create Market',
-		Icon: ComponentIcon,
-		title: 'To create a market',
-		summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
-		examples: [
-			'market Customer [0.9, 0.5]',
-			'market Cup of Tea [0.9, 0.5]',
-			'evolve Customer 0.9 (market)',
-		],
-	},
-	{
 		toolbarButtonText: 'Inertia',
 		Icon: InertiaIcon,
 		title: 'Inertia - component likely to face resistance to change.',
@@ -63,6 +52,17 @@ const usages = [
 		title: 'To indicate flow',
 		summary: '',
 		examples: ['Start Component+<>End Component', 'Customer+<>Cup of Tea'],
+	},
+	{
+		toolbarButtonText: 'Create Market',
+		Icon: ComponentIcon,
+		title: 'To create a market',
+		summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
+		examples: [
+			'market Customer [0.9, 0.5]',
+			'market Cup of Tea [0.9, 0.5]',
+			'evolve Customer 0.9 (market)',
+		],
 	},
 	{
 		title: 'To set component as pipeline:',
