@@ -79,6 +79,7 @@ function ComponentText(props) {
 	}
 
 	const handleKeyUp = (event) => {
+		event.stopPropagation();
 		if (event.key === 'Enter') {
 			console.log('Enter key pressed!');
 			rename(
@@ -118,7 +119,7 @@ function ComponentText(props) {
 					/>
 				)}
 				{featureSwitches.enableDoubleClickRename && showTextField && (
-					<foreignObject x="0" y="-15" width={100} height={50}>
+					<foreignObject x="0" y="-15" width={120} height={50}>
 						<TextField
 							variant="filled"
 							inputRef={renameField}
@@ -127,20 +128,22 @@ function ComponentText(props) {
 							size="small"
 							sx={{
 								position: 'fixed',
+								zIndex: 10000,
 								boxSizing: 'border-box',
 								flex: 1,
 								'& input': {
 									boxSizing: 'border-box',
+									zIndex: 10001,
+									position: 'relative',
 									flex: 1,
 									fontSize: '14px',
 									fontFamily: 'Consolas, "Lucida Console", monospace',
 									padding: 0,
-									margin: 0,
-
+									margin: '0',
 									color: 'black',
 								},
 							}}
-							margin="0"
+							margin="dense"
 							onKeyUp={(e) => handleKeyUp(e)}
 							defaultValue={element.name}
 							onDoubleClick={(e) => e.stopPropagation()}
