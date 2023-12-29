@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import RelativeMovable from './RelativeMovable';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
-import TextField from '@mui/material/TextField';
+// import TextField from '@mui/material/TextField';
 import { rename } from '../../constants/rename';
 import { featureSwitches } from '../../constants/featureswitches';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 function ComponentText(props) {
 	const {
@@ -15,12 +16,31 @@ function ComponentText(props) {
 		onClick,
 	} = props;
 
+	const [sizing, setSizing] = React.useState({ rows: 0, cols: 0 });
+	const [renameVal, setRenameVal] = React.useState('');
 	const [showTextField, setShowTextField] = React.useState(false);
 	const renameField = useRef();
+	const charWidth = 8; // Adjust based on your font and size
+	const charHeight = 16; // Adjust based on your font and size
+
+	useEffect(() => {
+		const splits = renameVal.split('\n');
+		const rows = splits.length + 1;
+
+		const longestRowLength = Math.max(
+			...renameVal.split('\n').map((row) => row.length)
+		);
+
+		setSizing({
+			rows: rows < 1 ? 1 : rows,
+			cols: longestRowLength < 5 ? 5 : longestRowLength,
+		});
+	}, [renameVal]);
 
 	useEffect(() => {
 		if (featureSwitches.enableDoubleClickRename && showTextField) {
 			renameField.current.select();
+			setRenameVal(element.name);
 		}
 	}, [showTextField]);
 
@@ -85,7 +105,7 @@ function ComponentText(props) {
 			rename(
 				element.line,
 				element.name,
-				renameField.current.value,
+				renameVal.replace('\n', ''),
 				mapText,
 				mutateMapText
 			);
@@ -119,19 +139,31 @@ function ComponentText(props) {
 					/>
 				)}
 				{featureSwitches.enableDoubleClickRename && showTextField && (
-					<foreignObject x="0" y="-20" width={120} height={50}>
-						<TextField
+					<foreignObject
+						x="0"
+						y="-20"
+						width={sizing.cols * charWidth + 10}
+						height={sizing.rows * charHeight}
+					>
+						<TextareaAutosize
 							variant="filled"
-							inputRef={renameField}
+							ref={renameField}
 							color="primary"
 							autoComplete="off"
 							size="small"
+							cols={sizing.cols}
+							onChange={(e) => setRenameVal(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									e.preventDefault();
+								}
+							}}
 							sx={{
 								position: 'fixed',
 								zIndex: 10000,
 								boxSizing: 'border-box',
 								flex: 1,
-								'& input': {
+								'& textarea': {
 									boxSizing: 'border-box',
 									zIndex: 10001,
 									position: 'relative',
