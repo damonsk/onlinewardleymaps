@@ -1,0 +1,25 @@
+name: Publish
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+        env:
+          CI: true
+      - name: Publish wmlandscape
+        run: | 
+            cd frontend/wmlandscape/
+            npm version 1.$GITHUB_RUN_NUMBER.0
+            yarn install
+            yarn build
+            npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
