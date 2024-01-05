@@ -99,7 +99,6 @@ import {
 } from '../../src/components/KeyPressContext';
 import QuickAdd from '../../src/components/actions/QuickAdd';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
-import AccelerateSymbol from '../../src/components/symbols/AccelerateSymbol';
 import AcceleratorExtractionStrategy from '../../src/conversion/AcceleratorExtractionStrategy';
 import MapAccelerator from '../../src/components/map/MapAccelerator';
 
@@ -200,5 +199,5 @@ export {
 	QuickAdd,
 	PipelineVersion2,
 	AcceleratorExtractionStrategy,
-	MapAccelerator
+	MapAccelerator,
 };
