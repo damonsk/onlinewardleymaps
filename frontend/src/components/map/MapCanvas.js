@@ -25,11 +25,18 @@ import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
 import { featureSwitches } from '../../constants/featureswitches';
-import styles from '../../styles/MapCanvas.module.css';
 import MapAccelerator from './MapAccelerator';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(() => ({
+	mapCanvas: {
+		userSelect: 'none',
+	},
+}));
 
 function MapCanvas(props) {
+	const styles = useStyles();
 	const {
 		mapComponents,
 		mapSubMaps,
