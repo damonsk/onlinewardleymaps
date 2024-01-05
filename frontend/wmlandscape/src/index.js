@@ -99,8 +99,10 @@ import {
 } from '../../src/components/KeyPressContext';
 import QuickAdd from '../../src/components/actions/QuickAdd';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
+import styles from '../../src/styles/MapCanvas.module.css';
 
 export {
+	styles,
 	MapBackground,
 	MapEvolution,
 	MapGraphics,
