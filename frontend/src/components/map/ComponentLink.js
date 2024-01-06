@@ -2,9 +2,10 @@ import React from 'react';
 import PositionCalculator from './PositionCalculator';
 import FlowText from './FlowText';
 import LinkSymbol from '../symbols/LinkSymbol';
-import { featureSwitches } from '../../constants/featureswitches';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 function ComponentLink(props) {
+	const { enableLinkContext } = useFeatureSwitches();
 	const { mapStyleDefs, mapDimensions, startElement, endElement, link } = props;
 	const { height, width } = mapDimensions;
 	const positionCalc = new PositionCalculator();
@@ -66,7 +67,7 @@ function ComponentLink(props) {
 					y={y2}
 				/>
 			)}
-			{featureSwitches.enableLinkContext && link.context && (
+			{enableLinkContext && link.context && (
 				<text
 					is="custom"
 					font-size={mapStyleDefs.link.contextFontSize ?? '10px'}

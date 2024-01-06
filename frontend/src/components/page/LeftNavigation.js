@@ -12,7 +12,7 @@ import MapIcon from '@mui/icons-material/Map';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import PersonIcon from '@mui/icons-material/Person';
-import { featureSwitches } from '../../constants/featureswitches';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 export default function LeftNavigation({
 	menuVisible,
@@ -23,6 +23,7 @@ export default function LeftNavigation({
 	setHideAuthModal,
 	user,
 }) {
+	const { enableDashboard } = useFeatureSwitches();
 	const history = {
 		push: (url) => {
 			Router.push({
@@ -50,7 +51,7 @@ export default function LeftNavigation({
 			name: 'Dashboard',
 			icon: <DashboardIcon />,
 			action: () => complete(history.push('/dashboard')),
-			visible: featureSwitches.enableDashboard,
+			visible: enableDashboard,
 		},
 		{
 			name: 'Editor',
@@ -69,7 +70,7 @@ export default function LeftNavigation({
 			name: user !== null ? 'Logout' : 'Login',
 			icon: <PersonIcon />,
 			action: () => complete(setHideAuthModal(false)),
-			visible: featureSwitches.enableDashboard,
+			visible: enableDashboard,
 		},
 	];
 

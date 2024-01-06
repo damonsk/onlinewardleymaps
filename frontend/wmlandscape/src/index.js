@@ -101,7 +101,10 @@ import QuickAdd from '../../src/components/actions/QuickAdd';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
 import AcceleratorExtractionStrategy from '../../src/conversion/AcceleratorExtractionStrategy';
 import MapAccelerator from '../../src/components/map/MapAccelerator';
-
+import {
+	FeatureSwitchesProvider,
+	useFeatureSwitches,
+} from '../../src/components/FeatureSwitchesContext';
 export {
 	MapBackground,
 	MapEvolution,
@@ -196,6 +199,8 @@ export {
 	FluidLink,
 	ModKeyPressedProvider,
 	useModKeyPressedConsumer,
+	FeatureSwitchesProvider,
+	useFeatureSwitches,
 	QuickAdd,
 	PipelineVersion2,
 	AcceleratorExtractionStrategy,

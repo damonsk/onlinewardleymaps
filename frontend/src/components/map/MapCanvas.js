@@ -24,7 +24,7 @@ import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
-import { featureSwitches } from '../../constants/featureswitches';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import MapAccelerator from './MapAccelerator';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import { makeStyles } from '@mui/styles';
@@ -36,6 +36,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function MapCanvas(props) {
+	const { enableAccelerators, enableNewPipelines } = useFeatureSwitches();
 	const styles = useStyles();
 	const {
 		mapComponents,
@@ -297,7 +298,7 @@ function MapCanvas(props) {
 						))}
 					</g>
 					<g id="accelerators">
-						{featureSwitches.enableAccelerators &&
+						{enableAccelerators &&
 							mapAccelerators.map((el, l) => (
 								<MapAccelerator
 									key={l}
@@ -315,13 +316,13 @@ function MapCanvas(props) {
 							))}
 					</g>
 					<g id="pipelines">
-						{featureSwitches.enableNewPipelines &&
+						{enableNewPipelines &&
 							mapElements
 								.getMapPipelines()
 								.filter((p) => p.hidden == false)
 								.map((p, i) => (
 									<React.Fragment key={i}>
-										{featureSwitches.enableNewPipelines &&
+										{enableNewPipelines &&
 										p.components != undefined &&
 										p.components.length > 0 ? (
 											<PipelineVersion2

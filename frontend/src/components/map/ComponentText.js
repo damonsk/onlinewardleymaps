@@ -1,12 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import RelativeMovable from './RelativeMovable';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
-// import TextField from '@mui/material/TextField';
 import { rename } from '../../constants/rename';
-import { featureSwitches } from '../../constants/featureswitches';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 function ComponentText(props) {
+	const { enableDoubleClickRename } = useFeatureSwitches();
 	const {
 		mutateMapText,
 		mapText,
@@ -38,7 +38,7 @@ function ComponentText(props) {
 	}, [renameVal]);
 
 	useEffect(() => {
-		if (featureSwitches.enableDoubleClickRename && showTextField) {
+		if (enableDoubleClickRename && showTextField) {
 			renameField.current.select();
 			setRenameVal(element.name);
 		}
@@ -133,12 +133,10 @@ function ComponentText(props) {
 						evolved={element.evolved}
 						styles={mapStyleDefs.component}
 						onClick={onClick}
-						setShowTextField={
-							featureSwitches.enableDoubleClickRename ? setShowTextField : null
-						}
+						setShowTextField={enableDoubleClickRename ? setShowTextField : null}
 					/>
 				)}
-				{featureSwitches.enableDoubleClickRename && showTextField && (
+				{enableDoubleClickRename && showTextField && (
 					<foreignObject
 						x="0"
 						y="-20"
