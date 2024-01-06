@@ -1,4 +1,12 @@
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({});
 
 describe('Given Links can support context', function () {
 	test('When link is established, additional context can be supplied to be made visible on the map.', function () {

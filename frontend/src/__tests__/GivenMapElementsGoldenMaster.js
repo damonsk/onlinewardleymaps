@@ -2,6 +2,20 @@ const fs = require('fs');
 const path = require('path');
 import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({
+	enableDashboard: false,
+	enableNewPipelines: true,
+	enableLinkContext: true,
+	enableAccelerators: true,
+	enableDoubleClickRename: true,
+});
 
 // Function to load the content of a file
 function loadFileContent(fileName) {

@@ -1,4 +1,12 @@
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({});
 
 describe('Convert test suite', function () {
 	const genericMapComponents = [

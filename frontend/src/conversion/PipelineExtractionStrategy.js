@@ -1,7 +1,7 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 import PipelineStrategyRunner from './PipelineStrategyRunner';
 import BaseStrategyRunner from './BaseStrategyRunner';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import { useFeatureSwitches } from '../components/FeatureSwitchesContext';
 
 export default class PipelineExtractionStrategy {
 	constructor(data) {

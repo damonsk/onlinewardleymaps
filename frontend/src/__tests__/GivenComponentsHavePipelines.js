@@ -1,5 +1,15 @@
 import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({
+	enableNewPipelines: true,
+});
 
 describe('Given Components Have Pipelines', function () {
 	test('When pipeline is specificed then convert output is correct', function () {

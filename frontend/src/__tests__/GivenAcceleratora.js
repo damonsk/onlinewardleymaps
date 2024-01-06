@@ -1,4 +1,12 @@
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({});
 
 describe('Given Accelerator components', function () {
 	test('When accelerator is specificed then convert output is correct', function () {

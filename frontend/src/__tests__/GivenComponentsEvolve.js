@@ -1,5 +1,13 @@
 import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({});
 
 describe('Given Components Evolve', function () {
 	test('When evolve text is supplied then convert output is correct', function () {

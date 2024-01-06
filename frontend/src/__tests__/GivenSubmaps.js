@@ -1,5 +1,13 @@
 import Converter from '../conversion/Converter';
 import { EditorPrefixes } from '../constants/editorPrefixes';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({});
 
 describe('Given Submaps', function () {
 	test.each(['Foo', 'Bar', 'Bleh'])(
