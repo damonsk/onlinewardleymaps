@@ -3,8 +3,9 @@ import React from 'react';
 import MapCanvas from './MapCanvas';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 export default function MapView(props) {
+	const featureSwitches = useFeatureSwitches();
 	const fill = {
 		wardley: 'url(#wardleyGradient)',
 		colour: 'none',
@@ -46,22 +47,24 @@ export default function MapView(props) {
 				<div id="map">
 					<MapCanvas mapPadding={20} {...props} />
 				</div>
-				<IconButton
-					onClick={props.shouldHideNav}
-					color={textColour[props.mapStyleDefs.className]}
-					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
-					sx={{ position: 'absolute', right: '10px', top: '0' }}
-				>
-					{props.hideNav ? (
-						<FullscreenExitIcon
-							sx={{ color: textColour[props.mapStyleDefs.className] }}
-						/>
-					) : (
-						<FullscreenIcon
-							sx={{ color: textColour[props.mapStyleDefs.className] }}
-						/>
-					)}
-				</IconButton>
+				{featureSwitches.showToggleFullscreen && (
+					<IconButton
+						onClick={props.shouldHideNav}
+						color={textColour[props.mapStyleDefs.className]}
+						aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
+						sx={{ position: 'absolute', right: '10px', top: '0' }}
+					>
+						{props.hideNav ? (
+							<FullscreenExitIcon
+								sx={{ color: textColour[props.mapStyleDefs.className] }}
+							/>
+						) : (
+							<FullscreenIcon
+								sx={{ color: textColour[props.mapStyleDefs.className] }}
+							/>
+						)}
+					</IconButton>
+				)}
 			</div>
 		</>
 	);

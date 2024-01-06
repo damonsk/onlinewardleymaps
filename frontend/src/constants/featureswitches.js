@@ -4,4 +4,5 @@ export const featureSwitches = {
 	enableLinkContext: true,
 	enableAccelerators: true,
 	enableDoubleClickRename: true,
+	showToggleFullscreen: true,
 };
