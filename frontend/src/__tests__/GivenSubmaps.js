@@ -7,14 +7,15 @@ jest.mock('react', () => ({
 	useContext: jest.fn(),
 }));
 
-useContext.mockReturnValue({});
+useContext.mockReturnValue({ enableNewPipelines: false });
 
 describe('Given Submaps', function () {
+	const mockContextValue = useContext();
 	test.each(['Foo', 'Bar', 'Bleh'])(
 		'When mapText contains submaps then text is correctly parsed',
 		(name) => {
 			let actual = `submap ${name}`;
-			let result = new Converter().parse(actual);
+			let result = new Converter(mockContextValue).parse(actual);
 			expect(result.submaps.length).toEqual(1);
 			expect(result.submaps[0].name).toEqual(name);
 		}
@@ -25,7 +26,7 @@ describe('Given Submaps', function () {
 		const maturity = 0.31;
 		const name = 'Order';
 		let actual = `submap ${name} [${visibility}, ${maturity}]`;
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 		expect(result.submaps.length).toEqual(1);
 		expect(result.submaps[0].name).toEqual(name);
 		expect(result.submaps[0].maturity).toEqual(maturity);
@@ -37,7 +38,7 @@ describe('Given Submaps', function () {
 		const maturity = 0.31;
 		const name = 'Order';
 		let actual = `submap ${name} [${visibility}, ${maturity}] url(urlId)`;
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 		expect(result.submaps.length).toEqual(1);
 		expect(result.submaps[0].name).toEqual(name);
 		expect(result.submaps[0].maturity).toEqual(maturity);
@@ -54,7 +55,7 @@ describe('Given Submaps', function () {
 
 		const name = 'Order';
 		let actual = `submap ${name} [${visibility}, ${maturity}] label [${offsetX}, ${offsetY}]`;
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 		expect(result.submaps.length).toEqual(1);
 		expect(result.submaps[0].name).toEqual(name);
 		expect(result.submaps[0].maturity).toEqual(maturity);

@@ -9,6 +9,8 @@ jest.mock('react', () => ({
 useContext.mockReturnValue({});
 
 describe('Convert test suite', function () {
+	const mockContextValue = useContext();
+
 	const genericMapComponents = [
 		{ keyword: 'component', container: 'elements' },
 		{ keyword: 'market', container: 'markets' },
@@ -17,7 +19,7 @@ describe('Convert test suite', function () {
 	test('should create mapJson Object with title property', function () {
 		let expected = 'This is an example map';
 		let actual = `title ${expected}`;
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.title).toEqual(expected);
 	});
@@ -26,7 +28,7 @@ describe('Convert test suite', function () {
 		'should create map component from string',
 		(e) => {
 			let actual = `${e.keyword} Customer [1, 0.4]\n${e.keyword} Customer2 [0,0.1]`;
-			let obj = new Converter();
+			let obj = new Converter(mockContextValue);
 			let result = obj.parse(actual);
 			expect(result[e.container][0].id).toEqual(1);
 			expect(result[e.container][0].name).toEqual('Customer');
@@ -45,7 +47,7 @@ describe('Convert test suite', function () {
 		(e) => {
 			let actual = `${e.keyword} Customer [1, 0.4] inertia\n`;
 
-			let obj = new Converter();
+			let obj = new Converter(mockContextValue);
 			let result = obj.parse(actual);
 
 			expect(result[e.container][0].id).toEqual(1);
@@ -60,7 +62,7 @@ describe('Convert test suite', function () {
 		let actual =
 			'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]\nCustomer->Customer2';
 
-		let obj = new Converter();
+		let obj = new Converter(mockContextValue);
 		let result = obj.parse(actual);
 
 		expect(result.links[0].start).toEqual('Customer');
@@ -72,7 +74,7 @@ describe('Convert test suite', function () {
 		let actual =
 			'component Sales marketing [1, 0.4]\ncomponent Sales ecosystem [0,0.1]\nSales marketing->Sales ecosystem';
 
-		let obj = new Converter();
+		let obj = new Converter(mockContextValue);
 		let result = obj.parse(actual);
 
 		expect(result.links[0].start).toEqual('Sales marketing');
@@ -84,7 +86,7 @@ describe('Convert test suite', function () {
 		let actual =
 			'component Customer [1, 0.4]\ncomponent Customer2 [0,0.1]\nCustomer+>Customer2';
 
-		let obj = new Converter();
+		let obj = new Converter(mockContextValue);
 		let result = obj.parse(actual);
 
 		expect(result.links[0].start).toEqual('Customer');
@@ -97,7 +99,7 @@ describe('Convert test suite', function () {
 		actual = actual + '\n';
 		actual = actual + "Customer+'5.88'>Customer2";
 
-		let obj = new Converter();
+		let obj = new Converter(mockContextValue);
 		let result = obj.parse(actual);
 
 		expect(result.links[0].start).toEqual('Customer');
@@ -114,7 +116,7 @@ describe('Convert test suite', function () {
 		actual = actual + '\r\n ';
 		actual = actual + '\r\n ';
 
-		let obj = new Converter();
+		let obj = new Converter(mockContextValue);
 		let result = obj.parse(actual);
 
 		expect(result.links[0].start).toEqual('Customer');
@@ -124,7 +126,7 @@ describe('Convert test suite', function () {
 	test('should set evolution', function () {
 		let actual = 'evolution Novel->Emerging->Good->Best';
 
-		let obj = new Converter();
+		let obj = new Converter(mockContextValue);
 		let result = obj.parse(actual);
 
 		expect(result.evolution[0].line1).toEqual('Novel');
@@ -136,7 +138,7 @@ describe('Convert test suite', function () {
 	test('should create map object with annotations property with an annotation with a single occurance', function () {
 		let actual =
 			'annotation 1 [.38,.4] Standardising power allows Kettles to evolve faster';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.annotations.length).toEqual(1);
 		expect(result.annotations[0].number).toEqual(1);
@@ -149,7 +151,7 @@ describe('Convert test suite', function () {
 
 	test('should create map object with annotations property with an annotation with many occurances with no text', function () {
 		let actual = 'annotation 1 [[.38, .4],[0.44, 0.33]]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.annotations.length).toEqual(1);
 		expect(result.annotations[0].number).toEqual(1);
@@ -161,7 +163,7 @@ describe('Convert test suite', function () {
 	test('should create map object with annotations property with an annotation with many occurances', function () {
 		let actual =
 			'annotation 1 [[.38, .4],[0.44, 0.33],[0.11, 0.22] ]    Standardising power allows Kettles to evolve faster';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.annotations.length).toEqual(1);
 		expect(result.annotations[0].number).toEqual(1);
@@ -177,14 +179,14 @@ describe('Convert test suite', function () {
 
 	test('should create map object with map style data', function () {
 		let actual = 'style wardley';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.presentation.style).toEqual('wardley');
 	});
 
 	test('should create map object with annotations positional data', function () {
 		let actual = 'annotations [.38, .4]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.presentation.annotations.visibility).toEqual(0.38);
 		expect(result.presentation.annotations.maturity).toEqual(0.4);
@@ -192,28 +194,28 @@ describe('Convert test suite', function () {
 
 	test('should not create map object with annotations when incomplete', function () {
 		let actual = 'annotation ';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.annotations.length).toEqual(0);
 	});
 
 	test('should not create map object with annotations when incomplete', function () {
 		let actual = 'annotation 1';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.annotations.length).toEqual(0);
 	});
 
 	test('comments are ignored', function () {
 		let actual = '// hello world.';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.elements.length).toEqual(0);
 	});
 
 	test('comments are ignored', function () {
 		let actual = '/* hello world.\r\n* something\r\n*/';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.elements.length).toEqual(0);
 	});
@@ -222,7 +224,7 @@ describe('Convert test suite', function () {
 		'map component with little info is still made available to the map',
 		(e) => {
 			let actual = `${e.keyword} Foo []`;
-			let result = new Converter().parse(actual);
+			let result = new Converter(mockContextValue).parse(actual);
 
 			expect(result[e.container].length).toEqual(1);
 			expect(result[e.container][0].visibility).toEqual(0.9);
@@ -232,7 +234,7 @@ describe('Convert test suite', function () {
 
 	test('anchor with little info is still made available to the map', function () {
 		let actual = 'anchor Foo []';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.anchors.length).toEqual(1);
 		expect(result.anchors[0].visibility).toEqual(0.9);
@@ -243,7 +245,7 @@ describe('Convert test suite', function () {
 		'map component with little info is still made available to the map',
 		(e) => {
 			let actual = `${e.keyword} Foo`;
-			let result = new Converter().parse(actual);
+			let result = new Converter(mockContextValue).parse(actual);
 
 			expect(result[e.container].length).toEqual(1);
 			expect(result[e.container][0].visibility).toEqual(0.9);
@@ -253,7 +255,7 @@ describe('Convert test suite', function () {
 
 	test('notes are extracted and made available to the map', function () {
 		let actual = 'note some text [0.9, 0.1]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.notes.length).toEqual(1);
 		expect(result.notes[0].text).toEqual('some text');
@@ -263,7 +265,7 @@ describe('Convert test suite', function () {
 
 	test('notes with note in the text still works', function () {
 		let actual = 'note a generic note appeard [0.9, 0.1]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.notes.length).toEqual(1);
 		expect(result.notes[0].text).toEqual('a generic note appeard');
@@ -273,7 +275,7 @@ describe('Convert test suite', function () {
 
 	test('notes starting with space works correctly', function () {
 		let actual = '   note a generic note appeard [0.9, 0.1]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.notes.length).toEqual(1);
 		expect(result.notes[0].text).toEqual('a generic note appeard');
@@ -283,7 +285,7 @@ describe('Convert test suite', function () {
 
 	test('notes with little info is still made available to the map', function () {
 		let actual = 'note Foo []';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.notes.length).toEqual(1);
 		expect(result.notes[0].visibility).toEqual(0.9);
@@ -294,7 +296,7 @@ describe('Convert test suite', function () {
 		'map component with label position then position is available to map',
 		(e) => {
 			let actual = `${e.keyword} Foo [0.9, 0.1] label [66,99] inertia evolve 0.9`;
-			let result = new Converter().parse(actual);
+			let result = new Converter(mockContextValue).parse(actual);
 
 			expect(result[e.container].length).toEqual(1);
 			expect(result[e.container][0].visibility).toEqual(0.9);
@@ -306,7 +308,7 @@ describe('Convert test suite', function () {
 
 	test('pipelines made available to the map', function () {
 		let actual = 'pipeline Foo [0.05, 0.95]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.pipelines.length).toEqual(1);
 		expect(result.pipelines[0].name).toEqual('Foo');
@@ -317,7 +319,7 @@ describe('Convert test suite', function () {
 
 	test('pipelines made available to the map but set to hidden', function () {
 		let actual = 'pipeline Foo';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.pipelines.length).toEqual(1);
 		expect(result.pipelines[0].name).toEqual('Foo');
@@ -330,7 +332,7 @@ describe('Convert test suite', function () {
 		'pioneers are extracted with width and height',
 		function (x) {
 			let actual = `${x} [0.98, 0.5] 100 200`;
-			let result = new Converter().parse(actual);
+			let result = new Converter(mockContextValue).parse(actual);
 
 			expect(result.attitudes.length).toEqual(1);
 			expect(result.attitudes[0].maturity).toEqual(0.5);
@@ -344,7 +346,7 @@ describe('Convert test suite', function () {
 		'pioneers are extracted with matruity and visibility for width height',
 		function (x) {
 			let actual = `${x} [0.98, 0.5, 0.6, 0.7]`;
-			let result = new Converter().parse(actual);
+			let result = new Converter(mockContextValue).parse(actual);
 
 			expect(result.attitudes.length).toEqual(1);
 			expect(result.attitudes[0].maturity).toEqual(0.5);
@@ -356,7 +358,7 @@ describe('Convert test suite', function () {
 
 	test.each(['build', 'buy', 'outsource'])('methods are extracted', (k) => {
 		let actual = `${k} Foo Bar`;
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 
 		expect(result.methods.length).toEqual(1);
 		expect(result.methods[0].name).toEqual('Foo Bar');

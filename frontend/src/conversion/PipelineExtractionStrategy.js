@@ -1,15 +1,14 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 import PipelineStrategyRunner from './PipelineStrategyRunner';
 import BaseStrategyRunner from './BaseStrategyRunner';
-import { useFeatureSwitches } from '../components/FeatureSwitchesContext';
 
 export default class PipelineExtractionStrategy {
-	constructor(data) {
-		const { enableNewPipelines } = useFeatureSwitches();
+	constructor(data, featureSwitches) {
 		this.data = data;
 		this.keyword = 'pipeline';
 		this.containerName = 'pipelines';
-		if (enableNewPipelines) {
+
+		if (featureSwitches.enableNewPipelines) {
 			this.baseRunner = new PipelineStrategyRunner(
 				data,
 				{

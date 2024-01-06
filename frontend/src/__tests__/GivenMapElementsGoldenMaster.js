@@ -31,11 +31,13 @@ function testResultEquality(result, fileName) {
 }
 
 describe('So that large refactors can be done without breaking output of mapElements', function () {
+	const mockContextValue = useContext();
+
 	test('When all possible map components are specified, ensure the output is as expected', function () {
 		const fileName = 'GoldenMasterMapText.txt';
 		const fileContent = loadFileContent(fileName);
 
-		let result = new Converter().parse(fileContent);
+		let result = new Converter(mockContextValue).parse(fileContent);
 		//console.log(JSON.stringify(result)); // Uncomment for debugging
 		testResultEquality(result, 'GoldenMasterConverterOutput.txt');
 

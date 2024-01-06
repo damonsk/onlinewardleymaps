@@ -26,6 +26,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import { useFeatureSwitches } from './FeatureSwitchesContext';
 
 function debounce(fn, ms) {
 	let timer;
@@ -71,6 +72,7 @@ const getWidth = () => {
 };
 
 function Environment(props) {
+	const featureSwitches = useFeatureSwitches();
 	const {
 		toggleMenu,
 		menuVisible,
@@ -351,7 +353,7 @@ function Environment(props) {
 		try {
 			setErrorLine([]);
 			setInvalid(false);
-			var r = new Converter().parse(mapText);
+			var r = new Converter(featureSwitches).parse(mapText);
 			setRawMapTitle(r.title);
 			setMapAnnotations(r.annotations);
 			setMapAnchors(r.anchors);
