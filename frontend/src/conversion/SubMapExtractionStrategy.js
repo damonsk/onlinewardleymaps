@@ -2,22 +2,22 @@ import ExtendableComponentExtractionStrategy from './ExtendableComponentExtracti
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 
 export default class SubMapExtractionStrategy {
-	constructor(data) {
-		this.data = data;
+  constructor(data) {
+    this.data = data;
 
-		const additionalExtractions = [ExtractionFunctions.setRef];
+    const additionalExtractions = [ExtractionFunctions.setRef];
 
-		this.parentStrategy = new ExtendableComponentExtractionStrategy(
-			data,
-			{
-				keyword: 'submap',
-				containerName: 'submaps',
-			},
-			additionalExtractions
-		);
-	}
+    this.parentStrategy = new ExtendableComponentExtractionStrategy(
+      data,
+      {
+        keyword: 'submap',
+        containerName: 'submaps',
+      },
+      additionalExtractions,
+    );
+  }
 
-	apply() {
-		return this.parentStrategy.apply();
-	}
+  apply() {
+    return this.parentStrategy.apply();
+  }
 }

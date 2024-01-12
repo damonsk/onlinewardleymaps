@@ -1,5 +1,5 @@
 export const PageTitle =
-	'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
+  'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
 
 export const ApiEndpoint = 'https://api.onlinewardleymaps.com/v1/maps/';
 
@@ -7,38 +7,38 @@ export const defaultLabelOffset = { x: 5, y: -10 };
 export const increasedLabelOffset = { x: 5, y: -20 };
 
 export const MapPersistenceStrategy = {
-	Legacy: 'Legacy',
-	Private: 'Private',
-	Public: 'Public',
-	PublicUnauthenticated: 'PublicUnauthenticated',
+  Legacy: 'Legacy',
+  Private: 'Private',
+  Public: 'Public',
+  PublicUnauthenticated: 'PublicUnauthenticated',
 };
 
 export const EvoOffsets = {
-	custom: 3.5,
-	product: 8,
-	commodity: 14,
+  custom: 3.5,
+  product: 8,
+  commodity: 14,
 };
 
 export const DefaultMapObject = {
-	title: '',
-	elements: [],
-	links: [],
-	evolution: [],
-	presentation: { style: 'plain' },
-	methods: [],
-	annotations: [],
+  title: '',
+  elements: [],
+  links: [],
+  evolution: [],
+  presentation: { style: 'plain' },
+  methods: [],
+  annotations: [],
 };
 
 export const EvolutionStages = {
-	genesis: { l1: 'Genesis', l2: '' },
-	custom: { l1: 'Custom Built', l2: '' },
-	product: { l1: 'Product', l2: '(+rental)' },
-	commodity: { l1: 'Commodity', l2: '(+utility)' },
+  genesis: { l1: 'Genesis', l2: '' },
+  custom: { l1: 'Custom Built', l2: '' },
+  product: { l1: 'Product', l2: '(+rental)' },
+  commodity: { l1: 'Commodity', l2: '(+utility)' },
 };
 
 export const MapDimensions = {
-	width: 500,
-	height: 600,
+  width: 500,
+  height: 600,
 };
 
 export const ExampleMap = `title Campfire Coffee Shop

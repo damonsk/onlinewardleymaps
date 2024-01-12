@@ -8,5 +8,5 @@ require('ace-builds/src-noconflict/ext-searchbox');
 require('ace-builds/src-noconflict/keybinding-vscode');
 
 export default function WrappedEditor({ editorRef, ...props }) {
-	return <AceEditor {...props} ref={editorRef} />;
+  return <AceEditor {...props} ref={editorRef} />;
 }

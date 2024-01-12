@@ -15,119 +15,119 @@ import PersonIcon from '@mui/icons-material/Person';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 export default function LeftNavigation({
-	menuVisible,
-	toggleMenu,
-	submenu,
-	toggleTheme,
-	isLightTheme,
-	setHideAuthModal,
-	user,
+  menuVisible,
+  toggleMenu,
+  submenu,
+  toggleTheme,
+  isLightTheme,
+  setHideAuthModal,
+  user,
 }) {
-	const { enableDashboard } = useFeatureSwitches();
-	const history = {
-		push: (url) => {
-			Router.push({
-				pathname: url,
-			});
-		},
-	};
-	const toggleDrawer = () => (event) => {
-		if (
-			event.type === 'keydown' &&
-			(event.key === 'Tab' || event.key === 'Shift')
-		) {
-			return;
-		}
-		toggleMenu();
-	};
+  const { enableDashboard } = useFeatureSwitches();
+  const history = {
+    push: (url) => {
+      Router.push({
+        pathname: url,
+      });
+    },
+  };
+  const toggleDrawer = () => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+    toggleMenu();
+  };
 
-	const complete = (followAction) => {
-		toggleMenu();
-		if (typeof followAction === 'function') followAction();
-	};
+  const complete = (followAction) => {
+    toggleMenu();
+    if (typeof followAction === 'function') followAction();
+  };
 
-	const siteLinks = [
-		{
-			name: 'Dashboard',
-			icon: <DashboardIcon />,
-			action: () => complete(history.push('/dashboard')),
-			visible: enableDashboard,
-		},
-		{
-			name: 'Editor',
-			icon: <MapIcon />,
-			action: () => complete(history.push('/')),
-			visible: true,
-		},
-		{
-			name: 'Use Classic Version',
-			icon: <MapIcon />,
-			action: () =>
-				complete(history.push('https://classic.onlinewardleymaps.com')),
-			visible: true,
-		},
-		{
-			name: user !== null ? 'Logout' : 'Login',
-			icon: <PersonIcon />,
-			action: () => complete(setHideAuthModal(false)),
-			visible: enableDashboard,
-		},
-	];
+  const siteLinks = [
+    {
+      name: 'Dashboard',
+      icon: <DashboardIcon />,
+      action: () => complete(history.push('/dashboard')),
+      visible: enableDashboard,
+    },
+    {
+      name: 'Editor',
+      icon: <MapIcon />,
+      action: () => complete(history.push('/')),
+      visible: true,
+    },
+    {
+      name: 'Use Classic Version',
+      icon: <MapIcon />,
+      action: () =>
+        complete(history.push('https://classic.onlinewardleymaps.com')),
+      visible: true,
+    },
+    {
+      name: user !== null ? 'Logout' : 'Login',
+      icon: <PersonIcon />,
+      action: () => complete(setHideAuthModal(false)),
+      visible: enableDashboard,
+    },
+  ];
 
-	const list = (
-		<Box
-			sx={{ width: '285px' }}
-			role="presentation"
-			onClick={() => toggleDrawer()}
-			onKeyDown={() => toggleDrawer()}
-		>
-			<List>
-				{siteLinks
-					.filter((i) => i.visible === true)
-					.map((l) => (
-						<ListItem button key={l.name} onClick={l.action}>
-							<ListItemIcon>{l.icon}</ListItemIcon>
-							<ListItemText primary={l.name} />
-						</ListItem>
-					))}
-			</List>
-			<Divider />
-			<List>
-				{submenu &&
-					submenu.map((l) => (
-						<ListItem
-							button
-							key={l.name}
-							onClick={() => complete(() => l.action())}
-						>
-							<ListItemIcon>{l.icon}</ListItemIcon>
-							<ListItemText primary={l.name} />
-						</ListItem>
-					))}
-			</List>
-			<Divider />
-			<List>
-				<ListItem
-					button
-					key={'toggleTheme'}
-					onClick={() => complete(toggleTheme())}
-				>
-					<ListItemIcon>
-						{isLightTheme ? <DarkModeIcon /> : <LightModeIcon />}
-					</ListItemIcon>
-					<ListItemText
-						primary={isLightTheme ? 'Enable Dark Theme' : 'Enable Light Theme'}
-					/>
-				</ListItem>
-			</List>
-		</Box>
-	);
+  const list = (
+    <Box
+      sx={{ width: '285px' }}
+      role="presentation"
+      onClick={() => toggleDrawer()}
+      onKeyDown={() => toggleDrawer()}
+    >
+      <List>
+        {siteLinks
+          .filter((i) => i.visible === true)
+          .map((l) => (
+            <ListItem button key={l.name} onClick={l.action}>
+              <ListItemIcon>{l.icon}</ListItemIcon>
+              <ListItemText primary={l.name} />
+            </ListItem>
+          ))}
+      </List>
+      <Divider />
+      <List>
+        {submenu &&
+          submenu.map((l) => (
+            <ListItem
+              button
+              key={l.name}
+              onClick={() => complete(() => l.action())}
+            >
+              <ListItemIcon>{l.icon}</ListItemIcon>
+              <ListItemText primary={l.name} />
+            </ListItem>
+          ))}
+      </List>
+      <Divider />
+      <List>
+        <ListItem
+          button
+          key={'toggleTheme'}
+          onClick={() => complete(toggleTheme())}
+        >
+          <ListItemIcon>
+            {isLightTheme ? <DarkModeIcon /> : <LightModeIcon />}
+          </ListItemIcon>
+          <ListItemText
+            primary={isLightTheme ? 'Enable Dark Theme' : 'Enable Light Theme'}
+          />
+        </ListItem>
+      </List>
+    </Box>
+  );
 
-	return (
-		<div>
-			<Drawer anchor={'left'} open={menuVisible} onClose={toggleMenu}>
-				{list}
-			</Drawer>
-		</div>
-	);
+  return (
+    <div>
+      <Drawer anchor={'left'} open={menuVisible} onClose={toggleMenu}>
+        {list}
+      </Drawer>
+    </div>
+  );
 }

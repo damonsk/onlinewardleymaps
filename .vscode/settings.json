@@ -1,10 +1,13 @@
 {
   "editor.insertSpaces": false,
-	"typescript.tsc.autoDetect": "off",
-	"typescript.preferences.quoteStyle": "single",
-	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "explicit"
-	},
+  "editor.formatOnSave": true,
+  "typescript.tsc.autoDetect": "off",
+  "typescript.preferences.quoteStyle": "single",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll": true,
+    "source.organizeImports": "explicit",
+  },
   "files.exclude": {
     "amplify/.config": true,
     "amplify/**/*-parameters.json": true,
@@ -20,5 +23,6 @@
   "eslint.run": "onSave",
   "eslint.workingDirectories": [
     "frontend/"
-  ]
+  ],
+  "eslint.debug": true
 }
