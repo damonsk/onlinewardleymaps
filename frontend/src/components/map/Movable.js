@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react';
 
 const HIGHLIGHT_DEF = 'url(#ctrlHighlight)';
 
-// could check specific element type here
 const shouldHighlight = ({ isModKeyPressed }) => {
 	if (isModKeyPressed) {
 		return HIGHLIGHT_DEF;
