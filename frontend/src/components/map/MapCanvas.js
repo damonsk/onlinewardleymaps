@@ -59,6 +59,7 @@ function MapCanvas(props) {
 		evolutionOffsets,
 		mapPadding,
 		mapAccelerators,
+		handleMapCanvasClick,
 	} = props;
 	const isModKeyPressed = useModKeyPressedConsumer();
 	const [mapElementsClicked, setMapElementsClicked] = useState([]);
@@ -72,6 +73,27 @@ function MapCanvas(props) {
 		mapEvolved,
 		mapPipelines
 	);
+
+	const quickAddAt = function (e) {
+		if (featureSwitches.enableQuickAdd == false) return;
+		var svg = document.getElementById('svgMap');
+		var pt = svg.createSVGPoint();
+
+		function getCursor(evt) {
+			pt.x = evt.clientX;
+			pt.y = evt.clientY;
+			return pt.matrixTransform(svg.getScreenCTM().inverse());
+		}
+
+		var loc = getCursor(e);
+
+		const positionCalc = new PositionCalculator();
+		const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
+		const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
+
+		console.log('x: ' + x + ' y: ' + y);
+		handleMapCanvasClick({ x, y });
+	};
 
 	const newElementAt = function (e) {
 		var svg = document.getElementById('svgMap');
@@ -158,6 +180,7 @@ function MapCanvas(props) {
 	return (
 		<React.Fragment>
 			<svg
+				onClick={(e) => quickAddAt(e)}
 				onDoubleClick={(e) => newElementAt(e)}
 				fontFamily={mapStyleDefs.fontFamily}
 				fontSize={mapStyleDefs.fontSize}

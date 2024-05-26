@@ -57,8 +57,8 @@ export const ComponentIcon = (props) => (
 			/>
 		)}
 		<ComponentSymbol
-			cx="8px"
-			cy="25px"
+			cx={props.cx ? props.cx : '8px'}
+			cy={props.cy ? props.cy : '25px'}
 			evolved={props.evolved}
 			styles={props.mapStyleDefs.component}
 		/>
