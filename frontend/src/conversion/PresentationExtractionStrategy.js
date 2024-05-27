@@ -9,6 +9,7 @@ export default class PresentationExtractionStrategy {
 		let presentationObject = {
 			style: 'plain',
 			annotations: { visibility: 0.9, maturity: 0.1 },
+			size: { width: 0, height: 0 },
 		};
 		let lines = this.data.split('\n');
 		for (let i = 0; i < lines.length; i++) {
@@ -25,6 +26,12 @@ export default class PresentationExtractionStrategy {
 						maturity: 0.1,
 					}
 				);
+			}
+			if (element.trim().indexOf('size ') === 0) {
+				presentationObject.size = ExtractionFunctions.extractSize(element, {
+					width: 0,
+					height: 0,
+				});
 			}
 		}
 		return { presentation: presentationObject };

@@ -28,6 +28,7 @@ export default class LinksExtractionStrategy {
 			'}',
 			'accelerator',
 			'deaccelerator',
+			'size',
 		];
 	}
 	apply() {

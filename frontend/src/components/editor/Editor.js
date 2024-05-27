@@ -147,7 +147,7 @@ function Editor(props) {
 				width={''}
 				height={height + 'px'}
 				showPrintMargin={false}
-				debounceChangePeriod={500}
+				debounceChangePeriod={1000}
 				editorProps={{ $blockScrolling: true }}
 				setOptions={{
 					showLineNumbers: props.showLineNumbers,

@@ -120,6 +120,7 @@ function Environment(props) {
 		Defaults.EvolutionStages
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
+	const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
 	const [highlightLine, setHighlightLine] = useState(0);
@@ -136,6 +137,7 @@ function Environment(props) {
 	const [hideNav, setHideNav] = useState(false);
 
 	const mutateMapText = (newText) => {
+		console.log('mutate');
 		setMapText(newText);
 		setSaveOutstanding(true);
 		if (currentIteration !== null && currentIteration > -1) {
@@ -367,6 +369,7 @@ function Environment(props) {
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
 			setMapStyle(r.presentation.style);
+			setMapSize(r.presentation.size);
 			setMapAccelerators(r.accelerators);
 			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
@@ -388,9 +391,11 @@ function Environment(props) {
 	}, [mapTitle]);
 
 	useEffect(() => {
-		setMapDimensions({ width: getWidth(), height: getHeight() });
-		//setMainViewHeight(105 + getHeight());
-	}, [mapOnlyView, hideNav]);
+		setMapDimensions({
+			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			height: mapSize.height > 0 ? mapSize.height : getHeight(),
+		});
+	}, [mapOnlyView, hideNav, mapSize]);
 
 	useEffect(() => {
 		console.log('[currentIteration, rawMapTitle, mapIterations]', [
@@ -462,21 +467,31 @@ function Environment(props) {
 
 	useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
-			setMapDimensions({ width: getWidth(), height: getHeight() });
-		}, 1000);
+			setMapDimensions({
+				width: mapSize.width > 0 ? mapSize.width : getWidth(),
+				height: mapSize.height > 0 ? mapSize.height : getHeight(),
+			});
+		}, 0);
 
-		const initialLoad = () => {
-			//loadFromRemoteStorage();
-			setMapDimensions({ width: getWidth(), height: getHeight() });
-		};
-
-		window.addEventListener('resize', debouncedHandleResize);
-		window.addEventListener('load', initialLoad);
-
-		debouncedHandleResize();
+		if (mapSize.width === 0 || mapSize.height === 0) {
+			window.addEventListener('resize', debouncedHandleResize);
+			debouncedHandleResize();
+		}
 
 		return function cleanup() {
 			window.removeEventListener('resize', debouncedHandleResize);
+		};
+	}, [mapSize]);
+
+	useEffect(() => {
+		const initialLoad = () => {
+			setMapDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		};
+		window.addEventListener('load', initialLoad);
+		return function cleanup() {
 			window.removeEventListener('load', initialLoad);
 		};
 	}, []);

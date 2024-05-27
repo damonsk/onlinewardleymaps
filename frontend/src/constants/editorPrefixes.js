@@ -19,6 +19,7 @@ const iterations = [
 	['deaccelerator', '<name>', '[<visibility>, <maturity>]'],
 	['submap', '<name>', '[<visibility>, <maturity>]', 'url(<url>)'],
 	['url', '<name>', '[<address>]'],
+	['size', '[<width>, <height>]'],
 ]
 	.map(iterationBuilder)
 	.flat();
@@ -43,6 +44,7 @@ export const EditorPrefixes = [
 	'inertia',
 	'pipeline',
 	'title',
+	'size',
 	'evolution',
 	'accelerator',
 	'deaccelerator',

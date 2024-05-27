@@ -172,6 +172,17 @@ ace.define(
 						regex: '(label)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
 					},
 					{
+						token: [
+							'keyword',
+							'punctuation',
+							'constant.numeric',
+							'punctuation',
+							'constant.numeric',
+							'punctuation',
+						],
+						regex: '(size)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
+					},
+					{
 						token: 'keyword',
 						regex: '(inertia)',
 					},
