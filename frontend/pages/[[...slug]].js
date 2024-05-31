@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import MapEnvironment from '../src/components/MapEnvironment';
 import * as Defaults from '../src/constants/defaults';
 import { useRouter } from 'next/router';
-import { featureSwitches } from '../src/constants/featureswitches';
+import { useFeatureSwitches } from '../src/components/FeatureSwitchesContext';
 
 function Map(props) {
+	const { enableDashboard } = useFeatureSwitches();
 	const router = useRouter();
 	const { user } = props;
 	const { slug } = router.query;
@@ -13,7 +14,7 @@ function Map(props) {
 	const [isMapReadOnly, setMapReadOnly] = useState(false);
 	const [canSaveMap, setCanSaveMap] = useState(false);
 	const [mapPersistenceStrategy, setMapPersistenceStrategy] = useState(
-		featureSwitches.enableDashboard === true
+		enableDashboard === true
 			? Defaults.MapPersistenceStrategy.PublicUnauthenticated
 			: Defaults.MapPersistenceStrategy.Legacy
 	);

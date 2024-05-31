@@ -13,6 +13,8 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser, signOut as awsSignOut } from 'aws-amplify/auth';
 import { Modal, Box } from '@mui/material';
 import '@aws-amplify/ui-react/styles.css';
+import { FeatureSwitchesProvider } from '../src/components/FeatureSwitchesContext';
+import { featureSwitches } from '../src/constants/featureswitches';
 
 configureAmplify();
 
@@ -116,40 +118,42 @@ function MyApp({ Component, pageProps }) {
 					content="minimum-scale=1, initial-scale=1, width=device-width"
 				/>
 			</Head>
-			<AmplifyAuthProvider>
-				<StylesProvider injectFirst>
-					<MaterialUIThemeProvider theme={currentTheme}>
-						<StyledComponentsThemeProvider theme={currentTheme}>
-							<CssBaseline />
+			<FeatureSwitchesProvider value={featureSwitches}>
+				<AmplifyAuthProvider>
+					<StylesProvider injectFirst>
+						<MaterialUIThemeProvider theme={currentTheme}>
+							<StyledComponentsThemeProvider theme={currentTheme}>
+								<CssBaseline />
 
-							<Component
-								{...pageProps}
-								toggleTheme={toggleTheme}
-								toggleMenu={toggleMenu}
-								menuVisible={menuVisible}
-								user={user}
-								signOut={signOut}
-								setHideAuthModal={setHideAuthModal}
-								isLightTheme={isLightTheme}
-							/>
-							<Modal
-								open={!hideAuthModal}
-								onClose={() => setHideAuthModal(true)}
-								aria-labelledby="modal-modal-title"
-								aria-describedby="modal-modal-description"
-							>
-								<Box>
-									<Authenticator
-										signUpConfig={signUpConfig}
-										theme={currentTheme}
-									></Authenticator>
-								</Box>
-							</Modal>
-							<Footer />
-						</StyledComponentsThemeProvider>
-					</MaterialUIThemeProvider>
-				</StylesProvider>
-			</AmplifyAuthProvider>
+								<Component
+									{...pageProps}
+									toggleTheme={toggleTheme}
+									toggleMenu={toggleMenu}
+									menuVisible={menuVisible}
+									user={user}
+									signOut={signOut}
+									setHideAuthModal={setHideAuthModal}
+									isLightTheme={isLightTheme}
+								/>
+								<Modal
+									open={!hideAuthModal}
+									onClose={() => setHideAuthModal(true)}
+									aria-labelledby="modal-modal-title"
+									aria-describedby="modal-modal-description"
+								>
+									<Box>
+										<Authenticator
+											signUpConfig={signUpConfig}
+											theme={currentTheme}
+										></Authenticator>
+									</Box>
+								</Modal>
+								<Footer />
+							</StyledComponentsThemeProvider>
+						</MaterialUIThemeProvider>
+					</StylesProvider>
+				</AmplifyAuthProvider>
+			</FeatureSwitchesProvider>
 		</>
 	);
 }

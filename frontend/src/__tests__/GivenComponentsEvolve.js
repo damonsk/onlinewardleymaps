@@ -1,10 +1,19 @@
 import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
+import { useContext } from 'react';
+
+jest.mock('react', () => ({
+	...jest.requireActual('react'),
+	useContext: jest.fn(),
+}));
+
+useContext.mockReturnValue({ enableNewPipelines: false });
 
 describe('Given Components Evolve', function () {
+	const mockContextValue = useContext();
 	test('When evolve text is supplied then convert output is correct', function () {
 		let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo 0.9';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
 		let me = new MapElements(mergeables, result.evolved);
 		let evolved = me.getEvolveElements();
@@ -17,7 +26,7 @@ describe('Given Components Evolve', function () {
 
 	test('When evolve text is supplied with overriding label, ensure label is mutated', function () {
 		let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo->Bar 0.9';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
 		let me = new MapElements(mergeables, result.evolved);
 		let evolved = me.getEvolveElements();
@@ -34,7 +43,7 @@ describe('Given Components Evolve', function () {
 			'component Foo [0.1, 0.1] label [66,99]' +
 			'\n' +
 			'evolve Foo 0.9 label [-33, -55]';
-		let result = new Converter().parse(actual);
+		let result = new Converter(mockContextValue).parse(actual);
 		const mergeables = [{ collection: result.elements, type: 'component' }];
 		let me = new MapElements(mergeables, result.evolved);
 		let evolving = me.getEvolveElements();

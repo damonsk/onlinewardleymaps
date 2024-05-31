@@ -56,6 +56,7 @@ import * as Defaults from '../../src/constants/defaults';
 import * as EditorPrefixes from '../../src/constants/editorPrefixes';
 import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
+import * as FeatureSwitches from '../../src/constants/featureswitches';
 
 import AnchorExtractionStrategy from '../../src/conversion/AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from '../../src/conversion/AnnotationExtractionStrategy';
@@ -72,7 +73,7 @@ import MethodExtractionStrategy from '../../src/conversion/MethodExtractionStrat
 import NoteExtractionStrategy from '../../src/conversion/NoteExtractionStrategy';
 import ParseError from '../../src/conversion/ParseError';
 import PipelineExtractionStrategy from '../../src/conversion/PipelineExtractionStrategy';
-import PipelineExtractionRunner from '../../src/conversion/PipelineExtractionRunner';
+import PipelineStrategyRunner from '../../src/conversion/PipelineStrategyRunner';
 import PresentationExtractionStrategy from '../../src/conversion/PresentationExtractionStrategy';
 import SubMapExtractionStrategy from '../../src/conversion/SubMapExtractionStrategy';
 import TitleExtractionStrategy from '../../src/conversion/TitleExtractionStrategy';
@@ -98,7 +99,12 @@ import {
 } from '../../src/components/KeyPressContext';
 import QuickAdd from '../../src/components/actions/QuickAdd';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
-
+import AcceleratorExtractionStrategy from '../../src/conversion/AcceleratorExtractionStrategy';
+import MapAccelerator from '../../src/components/map/MapAccelerator';
+import {
+	FeatureSwitchesProvider,
+	useFeatureSwitches,
+} from '../../src/components/FeatureSwitchesContext';
 export {
 	MapBackground,
 	MapEvolution,
@@ -155,6 +161,7 @@ export {
 	EditorPrefixes,
 	MapStyles,
 	Usages,
+	FeatureSwitches,
 	AnchorExtractionStrategy,
 	AnnotationExtractionStrategy,
 	AttitudeExtractionStrategy,
@@ -170,7 +177,7 @@ export {
 	NoteExtractionStrategy,
 	ParseError,
 	PipelineExtractionStrategy,
-	PipelineExtractionRunner,
+	PipelineStrategyRunner,
 	PresentationExtractionStrategy,
 	SubMapExtractionStrategy,
 	TitleExtractionStrategy,
@@ -192,6 +199,10 @@ export {
 	FluidLink,
 	ModKeyPressedProvider,
 	useModKeyPressedConsumer,
+	FeatureSwitchesProvider,
+	useFeatureSwitches,
 	QuickAdd,
 	PipelineVersion2,
+	AcceleratorExtractionStrategy,
+	MapAccelerator,
 };

@@ -25,8 +25,7 @@ import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
-import { featureSwitches } from '../../constants/featureswitches';
-import styles from '../../styles/MapCanvas.module.css';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import MapAccelerator from './MapAccelerator';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
@@ -45,8 +44,18 @@ import {
 	TOOL_NONE,
 } from 'react-svg-pan-zoom';
 import { ButtonGroup, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(() => ({
+	mapCanvas: {
+		userSelect: 'none',
+	},
+}));
 
 function MapCanvas(props) {
+	const { enableAccelerators, enableNewPipelines, enableQuickAdd } =
+		useFeatureSwitches();
+	const styles = useStyles();
 	const {
 		mapComponents,
 		mapSubMaps,
@@ -135,7 +144,7 @@ function MapCanvas(props) {
 	);
 
 	const quickAddAt = function (e) {
-		if (featureSwitches.enableQuickAdd == false) return;
+		if (enableQuickAdd == false) return;
 		var svg = document.getElementById('svgMap');
 		var pt = svg.createSVGPoint();
 
@@ -395,12 +404,11 @@ function MapCanvas(props) {
 									mapStyleDefs={mapStyleDefs}
 									setHighlightLine={setHighlightLine}
 									onClick={(e) => clicked({ el, e })}
-									scaleFactor={scaleFactor}
 								/>
 							))}
 						</g>
 						<g id="accelerators">
-							{featureSwitches.enableAccelerators &&
+							{enableAccelerators &&
 								mapAccelerators.map((el, l) => (
 									<MapAccelerator
 										key={l}
@@ -408,7 +416,6 @@ function MapCanvas(props) {
 										mapDimensions={mapDimensions}
 										mapText={mapText}
 										mutateMapText={mutateMapText}
-										scaleFactor={scaleFactor}
 									>
 										<AcceleratorSymbol
 											id={'market_circle_' + el.id}
@@ -419,13 +426,13 @@ function MapCanvas(props) {
 								))}
 						</g>
 						<g id="pipelines">
-							{featureSwitches.enableNewPipelines &&
+							{enableNewPipelines &&
 								mapElements
 									.getMapPipelines()
 									.filter((p) => p.hidden == false)
 									.map((p, i) => (
 										<React.Fragment key={i}>
-											{featureSwitches.enableNewPipelines &&
+											{enableNewPipelines &&
 											p.components != undefined &&
 											p.components.length > 0 ? (
 												<PipelineVersion2
@@ -439,7 +446,6 @@ function MapCanvas(props) {
 													mapStyleDefs={mapStyleDefs}
 													setHighlightLine={setHighlightLine}
 													linkingFunction={clicked}
-													scaleFactor={scaleFactor}
 												/>
 											) : (
 												<Pipeline
@@ -452,7 +458,6 @@ function MapCanvas(props) {
 													metaText={metaText}
 													mapStyleDefs={mapStyleDefs}
 													setHighlightLine={setHighlightLine}
-													scaleFactor={scaleFactor}
 												/>
 											)}
 										</React.Fragment>
@@ -472,7 +477,6 @@ function MapCanvas(props) {
 									metaText={metaText}
 									mapStyleDefs={mapStyleDefs}
 									setHighlightLine={setHighlightLine}
-									scaleFactor={scaleFactor}
 								>
 									{el.type === 'component' && (
 										<ComponentSymbol

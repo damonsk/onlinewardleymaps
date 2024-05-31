@@ -1,14 +1,15 @@
-import { featureSwitches } from './constants/featureswitches';
+import { useFeatureSwitches } from './components/FeatureSwitchesContext';
 
 export default class MapElements {
 	// this is a messs...
 	constructor(components, evolved, pipelines) {
+		const { enableNewPipelines } = useFeatureSwitches();
 		this.mapComponents = components.flatMap((i) => {
 			return i.collection.map((c) => Object.assign(c, { type: i.type }));
 		});
 		this.evolved = evolved;
 		this.pipelines = this.processPipelines(pipelines, this.mapComponents);
-		if (featureSwitches.enableNewPipelines) {
+		if (enableNewPipelines) {
 			let getPipelineChildComponents = this.pipelines.flatMap((p) =>
 				p.components.map((c) => {
 					return {

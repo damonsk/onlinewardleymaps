@@ -17,6 +17,10 @@ import AttitudeExtractionStrategy from './AttitudeExtractionStrategy';
 import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 
 export default class Converter {
+	constructor(featureSwitches) {
+		this.featureSwitches = featureSwitches;
+	}
+
 	parse(data) {
 		const t = this.stripComments(data);
 		const strategies = [
@@ -29,7 +33,7 @@ export default class Converter {
 			new ComponentExtractionStrategy(t),
 			new MarketExtractionStrategy(t),
 			new EcosystemExtractionStrategy(t),
-			new PipelineExtractionStrategy(t),
+			new PipelineExtractionStrategy(t, this.featureSwitches),
 			new EvolveExtractionStrategy(t),
 			new AnchorExtractionStrategy(t),
 			new LinksExtractionStrategy(t),

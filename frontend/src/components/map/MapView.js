@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import MapCanvas from './MapCanvas';
 import CanvasSpeedDial from './CanvasSpeedDial';
-import { featureSwitches } from '../../constants/featureswitches';
 import ReactDOMServer from 'react-dom/server';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 export default function MapView(props) {
+	const featureSwitches = useFeatureSwitches();
 	const [quickAddCursor, setQuickAddCursor] = useState('default');
 	const [quickAddTemplate, setQuickAddTemplate] = useState(
 		() => () => console.log('nullTemplate')

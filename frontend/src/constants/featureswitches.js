@@ -5,4 +5,5 @@ export const featureSwitches = {
 	enableAccelerators: true,
 	enableDoubleClickRename: true,
 	enableQuickAdd: false,
+	showToggleFullscreen: true,
 };
