@@ -447,6 +447,7 @@ function MapCanvas(props) {
 													mapStyleDefs={mapStyleDefs}
 													setHighlightLine={setHighlightLine}
 													linkingFunction={clicked}
+													scaleFactor={scaleFactor}
 												/>
 											) : (
 												<Pipeline
@@ -459,6 +460,7 @@ function MapCanvas(props) {
 													metaText={metaText}
 													mapStyleDefs={mapStyleDefs}
 													setHighlightLine={setHighlightLine}
+													scaleFactor={scaleFactor}
 												/>
 											)}
 										</React.Fragment>
@@ -619,7 +621,6 @@ function MapCanvas(props) {
 					onClick={props.shouldHideNav}
 					color={textColour[props.mapStyleDefs.className]}
 					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
-					// sx={{ position: 'absolute', right: '10px', top: '0' }}
 				>
 					{props.hideNav ? (
 						<FullscreenExitIcon sx={IconButtonStyle} />
