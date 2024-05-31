@@ -14,6 +14,7 @@ function ComponentText(props) {
 		element,
 		mapStyleDefs,
 		onClick,
+		scaleFactor,
 	} = props;
 
 	const [sizing, setSizing] = React.useState({ rows: 0, cols: 0 });
@@ -125,7 +126,7 @@ function ComponentText(props) {
 				onMove={overrideDrag ? overrideDrag : endDrag}
 				x={element.label.x}
 				y={element.label.y}
-				scaleFactor={props.scaleFactor}
+				scaleFactor={scaleFactor}
 			>
 				{showTextField === false && (
 					<ComponentTextSymbol

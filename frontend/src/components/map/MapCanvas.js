@@ -404,6 +404,7 @@ function MapCanvas(props) {
 									mapStyleDefs={mapStyleDefs}
 									setHighlightLine={setHighlightLine}
 									onClick={(e) => clicked({ el, e })}
+									scaleFactor={scaleFactor}
 								/>
 							))}
 						</g>
@@ -477,6 +478,7 @@ function MapCanvas(props) {
 									metaText={metaText}
 									mapStyleDefs={mapStyleDefs}
 									setHighlightLine={setHighlightLine}
+									scaleFactor={scaleFactor}
 								>
 									{el.type === 'component' && (
 										<ComponentSymbol
