@@ -1,8 +1,5 @@
-import { IconButton, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import MapCanvas from './MapCanvas';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import { featureSwitches } from '../../constants/featureswitches';
 import ReactDOMServer from 'react-dom/server';
@@ -20,14 +17,6 @@ export default function MapView(props) {
 		plain: 'none',
 		handwritten: 'none',
 		dark: '#353347',
-	};
-
-	const textColour = {
-		wardley: 'black',
-		colour: 'black',
-		plain: 'black',
-		handwritten: 'black',
-		dark: 'white',
 	};
 
 	const setQuickAdd = (quickAdd) => {
@@ -67,7 +56,6 @@ export default function MapView(props) {
 
 	return (
 		<>
-			{/* Wrapping div required to ensure that images aren't generated with a ton of whitespace */}
 			<div
 				ref={props.mapRef}
 				className={props.mapStyleDefs.className}
@@ -80,40 +68,9 @@ export default function MapView(props) {
 				{featureSwitches.enableQuickAdd && (
 					<CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
 				)}
-				<Typography
-					padding={'5px'}
-					sx={{
-						textAlign: 'center',
-						color: textColour[props.mapStyleDefs.className],
-					}}
-					variant="h5"
-					id="title"
-				>
-					{props.mapTitle}
-				</Typography>
 				<div id="map">
-					<MapCanvas
-						handleMapCanvasClick={handleMapCanvasClick}
-						mapPadding={20}
-						{...props}
-					/>
+					<MapCanvas handleMapCanvasClick={handleMapCanvasClick} {...props} />
 				</div>
-				<IconButton
-					onClick={props.shouldHideNav}
-					color={textColour[props.mapStyleDefs.className]}
-					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
-					sx={{ position: 'absolute', right: '10px', top: '0' }}
-				>
-					{props.hideNav ? (
-						<FullscreenExitIcon
-							sx={{ color: textColour[props.mapStyleDefs.className] }}
-						/>
-					) : (
-						<FullscreenIcon
-							sx={{ color: textColour[props.mapStyleDefs.className] }}
-						/>
-					)}
-				</IconButton>
 			</div>
 		</>
 	);

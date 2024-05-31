@@ -66,6 +66,7 @@ function Pipeline(props) {
 				y={y}
 				fixedY={true}
 				fixedX={false}
+				scaleFactor={props.scaleFactor}
 			>
 				<ComponentSymbol
 					id={'pipeline_circle_x1_' + props.pipeline.id}
@@ -82,6 +83,7 @@ function Pipeline(props) {
 				y={y}
 				fixedY={true}
 				fixedX={false}
+				scaleFactor={props.scaleFactor}
 			>
 				<ComponentSymbol
 					id={'pipeline_circle_x2_' + props.pipeline.id}

@@ -56,6 +56,7 @@ const Anchor = (props) => {
 				fixedY={false}
 				fixedX={false}
 				isModKeyPressed={isModKeyPressed}
+				scaleFactor={props.scaleFactor}
 			>
 				<ComponentTextSymbol
 					id={elementKey('text')}

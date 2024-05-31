@@ -42,6 +42,7 @@ const FlowText = (props) => {
 				onMove={flowLabelEndDrag}
 				y={flowLabelPosition.y}
 				x={flowLabelPosition.x}
+				scaleFactor={props.scaleFactor}
 			>
 				<ComponentTextSymbol
 					className="draggable label"

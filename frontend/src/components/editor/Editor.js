@@ -37,10 +37,10 @@ function Editor(props) {
 	};
 
 	const getHeight = () => {
-		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight + 35;
+		const winHeight = window.innerHeight;
+		const topNavHeight =
+			document.getElementById('top-nav-wrapper').clientHeight;
+		return winHeight - topNavHeight + 35;
 	};
 
 	useEffect(() => {

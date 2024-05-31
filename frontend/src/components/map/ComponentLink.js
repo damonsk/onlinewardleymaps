@@ -64,6 +64,7 @@ function ComponentLink(props) {
 					setMetaText={props.setMetaText}
 					x={x2}
 					y={y2}
+					scaleFactor={props.scaleFactor}
 				/>
 			)}
 			{featureSwitches.enableLinkContext && link.context && (

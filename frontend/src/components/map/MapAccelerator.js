@@ -43,6 +43,7 @@ function MapAccelerator(props) {
 				fixedX={false}
 				shouldShowMoving={false}
 				isModKeyPressed={false}
+				scaleFactor={props.scaleFactor}
 			>
 				<>{children}</>
 			</Movable>

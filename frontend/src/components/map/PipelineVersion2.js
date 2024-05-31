@@ -137,6 +137,7 @@ function PipelineVersion2(props) {
 							fixedX={false}
 							shouldShowMoving={true}
 							isModKeyPressed={isModKeyPressed}
+							scaleFactor={props.scaleFactor}
 						>
 							<ComponentSymbol
 								id={'pipeline_circle_' + props.pipeline.id + '_' + i}
@@ -158,6 +159,7 @@ function PipelineVersion2(props) {
 								element={component}
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
+								scaleFactor={props.scaleFactor}
 							/>
 						</g>
 					</>

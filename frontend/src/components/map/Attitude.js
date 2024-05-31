@@ -62,6 +62,7 @@ const Attitude = (props) => {
 				y={y}
 				fixedY={false}
 				fixedX={false}
+				scaleFactor={props.scaleFactor}
 			>
 				<AttitudeSymbol
 					id={`attitude_${type}`}

@@ -10,26 +10,30 @@ function RelativeMovable(props) {
 		coords: {},
 	});
 
-	const handleMouseMove = React.useRef((e) => {
-		setPosition((position) => {
-			const xDiff = position.coords.x - e.pageX;
-			const yDiff = position.coords.y - e.pageY;
-			return {
-				x: position.x - xDiff,
-				y: position.y - yDiff,
-				coords: {
-					x: e.pageX,
-					y: e.pageY,
-				},
-			};
-		});
-	});
+	const handleMouseMove = useCallback(
+		(e) => {
+			setPosition((position) => {
+				const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
+				const xDiff = (position.coords.x - e.pageX) / scaleFactor;
+				const yDiff = (position.coords.y - e.pageY) / scaleFactor;
+				return {
+					x: position.x - xDiff,
+					y: position.y - yDiff,
+					coords: {
+						x: e.pageX,
+						y: e.pageY,
+					},
+				};
+			});
+		},
+		[props.scaleFactor]
+	);
 
 	const handleEscape = (k) => {
 		if (k.key === 'Escape' && moving) {
 			setMoving(false);
 			endDrag();
-			document.removeEventListener('mousemove', handleMouseMove.current);
+			document.removeEventListener('mousemove', handleMouseMove);
 			document.removeEventListener('keyup', handleEscape);
 			setPosition({ x: x(), y: y() });
 			console.log('pressed');
@@ -48,12 +52,12 @@ function RelativeMovable(props) {
 				},
 			})
 		);
-		document.addEventListener('mousemove', handleMouseMove.current);
+		document.addEventListener('mousemove', handleMouseMove);
 		document.addEventListener('keyup', handleEscape);
 	};
 
 	const handleMouseUp = () => {
-		document.removeEventListener('mousemove', handleMouseMove.current);
+		document.removeEventListener('mousemove', handleMouseMove);
 		setPosition((position) =>
 			Object.assign({}, position, {
 				coords: {},

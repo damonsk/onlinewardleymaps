@@ -80,6 +80,7 @@ function AnnotationElement(props) {
 			y={y()}
 			fixedY={false}
 			fixedX={false}
+			scaleFactor={props.scaleFactor}
 		>
 			<AnnotationElementSymbol
 				annotation={props.annotation}

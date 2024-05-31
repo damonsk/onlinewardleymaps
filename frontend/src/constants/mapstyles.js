@@ -5,7 +5,7 @@ const mergeIntoDefault = (style) => merge({}, Plain, style);
 
 export const Plain = {
 	className: 'plain',
-	containerBackground: 'white',
+	containerBackground: '#eee',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	fontSize: '13px',
 	stroke: 'black',

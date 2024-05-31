@@ -61,10 +61,9 @@ function convertToImage(base64Data, contentType) {
 }
 
 const getHeight = () => {
-	var winHeight = window.innerHeight;
-	var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-	var titleHeight = document.getElementById('title').clientHeight;
-	return winHeight - topNavHeight - titleHeight - 95;
+	const winHeight = window.innerHeight;
+	const topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+	return winHeight - topNavHeight - 95;
 };
 const getWidth = () => {
 	return document.getElementById('map').clientWidth - 50;
@@ -116,6 +115,9 @@ function Environment(props) {
 	);
 	const [mapIterations, setMapIterations] = useState([]);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
+	const [mapCanvasDimensions, setMapCanvasDimensions] = useState(
+		Defaults.MapDimensions
+	);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
@@ -137,7 +139,6 @@ function Environment(props) {
 	const [hideNav, setHideNav] = useState(false);
 
 	const mutateMapText = (newText) => {
-		console.log('mutate');
 		setMapText(newText);
 		setSaveOutstanding(true);
 		if (currentIteration !== null && currentIteration > -1) {
@@ -291,13 +292,25 @@ function Environment(props) {
 	}
 
 	function downloadMap() {
-		html2canvas(mapRef.current).then((canvas) => {
-			const base64image = canvas.toDataURL('image/png');
-			const link = document.createElement('a');
-			link.download = mapTitle;
-			link.href = base64image;
-			link.click();
-		});
+		const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
+		const tempElement = document.createElement('div');
+		tempElement.innerHTML = svgMapText;
+		tempElement.style.position = 'absolute';
+		tempElement.style.left = '-9999px';
+		document.body.appendChild(tempElement);
+		html2canvas(tempElement, { useCORS: true, allowTaint: true })
+			.then((canvas) => {
+				const base64image = canvas.toDataURL('image/png');
+				const link = document.createElement('a');
+				link.download = mapTitle;
+				link.href = base64image;
+				link.click();
+				tempElement.remove();
+			})
+			.catch((x) => {
+				console.log(x);
+				tempElement.remove();
+			});
 	}
 
 	function downloadMapAsSVG() {
@@ -389,7 +402,6 @@ function Environment(props) {
 	useEffect(() => {
 		document.title = mapTitle + ' - ' + Defaults.PageTitle;
 	}, [mapTitle]);
-
 	useEffect(() => {
 		setMapDimensions({
 			width: mapSize.width > 0 ? mapSize.width : getWidth(),
@@ -467,16 +479,15 @@ function Environment(props) {
 
 	useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
-			setMapDimensions({
+			const dimensions = {
 				width: mapSize.width > 0 ? mapSize.width : getWidth(),
 				height: mapSize.height > 0 ? mapSize.height : getHeight(),
-			});
-		}, 0);
+			};
+			setMapDimensions(dimensions);
+		}, 1);
 
-		if (mapSize.width === 0 || mapSize.height === 0) {
-			window.addEventListener('resize', debouncedHandleResize);
-			debouncedHandleResize();
-		}
+		window.addEventListener('resize', debouncedHandleResize);
+		debouncedHandleResize();
 
 		return function cleanup() {
 			window.removeEventListener('resize', debouncedHandleResize);
@@ -484,14 +495,37 @@ function Environment(props) {
 	}, [mapSize]);
 
 	useEffect(() => {
+		const newDimensions = {
+			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			height: mapSize.height > 0 ? mapSize.height : getHeight(),
+		};
+		setMapDimensions(newDimensions);
+		setMapCanvasDimensions({
+			width: getWidth(),
+			height: getHeight(),
+		});
+	}, [mapOnlyView, hideNav]);
+
+	useEffect(() => {
 		const initialLoad = () => {
-			setMapDimensions({
+			setMapCanvasDimensions({
 				width: getWidth(),
 				height: getHeight(),
 			});
 		};
+
+		const debouncedHandleCanvasResize = debounce(() => {
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		}, 500);
+
 		window.addEventListener('load', initialLoad);
+		window.addEventListener('resize', debouncedHandleCanvasResize);
+
 		return function cleanup() {
+			window.removeEventListener('resize', debouncedHandleCanvasResize);
 			window.removeEventListener('load', initialLoad);
 		};
 	}, []);
@@ -616,6 +650,7 @@ function Environment(props) {
 							mapMethods={mapMethods}
 							mapStyleDefs={mapStyleDefs}
 							mapDimensions={mapDimensions}
+							mapCanvasDimensions={mapCanvasDimensions}
 							mapEvolutionStates={mapEvolutionStates}
 							mapRef={mapRef}
 							mapText={mapText}

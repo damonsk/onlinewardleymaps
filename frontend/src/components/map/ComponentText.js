@@ -125,6 +125,7 @@ function ComponentText(props) {
 				onMove={overrideDrag ? overrideDrag : endDrag}
 				x={element.label.x}
 				y={element.label.y}
+				scaleFactor={props.scaleFactor}
 			>
 				{showTextField === false && (
 					<ComponentTextSymbol
