@@ -93,7 +93,7 @@ function MapCanvas(props) {
 	const Viewer = useRef(null);
 	const [tool, setTool] = useState(TOOL_NONE);
 	const [scaleFactor, setScaleFactor] = useState(1);
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	//const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
 	const _fitToViewer = () => {
 		Viewer.current.fitSelection(
@@ -104,9 +104,9 @@ function MapCanvas(props) {
 		);
 	};
 
-	const handleMouseMove = (event) => {
-		setMousePosition({ x: event.x, y: event.y });
-	};
+	// const handleMouseMove = (event) => {
+	// 	setMousePosition({ x: event.x, y: event.y });
+	// };
 
 	const handleZoom = (value) => {
 		setScaleFactor(value.a);
@@ -267,7 +267,7 @@ function MapCanvas(props) {
 				// 	console.log(Svg.current);
 				// }}
 				onDoubleClick={(e) => newElementAt(e)}
-				onMouseMove={handleMouseMove}
+				// onMouseMove={handleMouseMove}
 				onZoom={handleZoom}
 				onZoomReset={() => setScaleFactor(1)}
 			>
