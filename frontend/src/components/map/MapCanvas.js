@@ -106,6 +106,7 @@ function MapCanvas(props) {
 
 	// const handleMouseMove = (event) => {
 	// 	setMousePosition({ x: event.x, y: event.y });
+
 	// };
 
 	const handleZoom = (value) => {
