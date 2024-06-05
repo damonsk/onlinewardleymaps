@@ -14,8 +14,13 @@ import LinksExtractionStrategy from './LinksExtractionStrategy';
 import SubMapExtractionStrategy from './SubMapExtractionStrategy';
 import UrlExtractionStrategy from './UrlExtractionStrategy';
 import AttitudeExtractionStrategy from './AttitudeExtractionStrategy';
+import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 
 export default class Converter {
+	constructor(featureSwitches) {
+		this.featureSwitches = featureSwitches;
+	}
+
 	parse(data) {
 		const t = this.stripComments(data);
 		const strategies = [
@@ -28,13 +33,14 @@ export default class Converter {
 			new ComponentExtractionStrategy(t),
 			new MarketExtractionStrategy(t),
 			new EcosystemExtractionStrategy(t),
-			new PipelineExtractionStrategy(t),
+			new PipelineExtractionStrategy(t, this.featureSwitches),
 			new EvolveExtractionStrategy(t),
 			new AnchorExtractionStrategy(t),
 			new LinksExtractionStrategy(t),
 			new SubMapExtractionStrategy(t),
 			new UrlExtractionStrategy(t),
 			new AttitudeExtractionStrategy(t),
+			new AcceleratorExtractionStrategy(t),
 		];
 		let errorContainer = { errors: [] };
 		let converted = {
@@ -54,8 +60,9 @@ export default class Converter {
 			ecosystems: [],
 			urls: [],
 			attitudes: [],
+			accelerators: [],
 		};
-		strategies.forEach(s => {
+		strategies.forEach((s) => {
 			const o = s.apply();
 			converted = Object.assign(converted, o);
 			if (o.errors && o.errors.length > 0)
@@ -65,7 +72,7 @@ export default class Converter {
 	}
 
 	stripComments(data) {
-		var doubleSlashRemoved = data.split('\n').map(line => {
+		var doubleSlashRemoved = data.split('\n').map((line) => {
 			if (line.trim().indexOf('url') === 0) {
 				return line;
 			}

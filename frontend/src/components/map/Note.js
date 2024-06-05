@@ -47,6 +47,7 @@ function Note(props) {
 			y={y()}
 			fixedY={false}
 			fixedX={false}
+			scaleFactor={props.scaleFactor}
 		>
 			<ComponentTextSymbol
 				id={'note_text_' + props.note.id}

@@ -108,6 +108,7 @@ function MapComponent(props) {
 				fixedX={false}
 				shouldShowMoving={true}
 				isModKeyPressed={isModKeyPressed}
+				scaleFactor={props.scaleFactor}
 			>
 				<>{props.children}</>
 			</Movable>
@@ -126,6 +127,7 @@ function MapComponent(props) {
 					mapText={props.mapText}
 					mutateMapText={props.mutateMapText}
 					onClick={onElementClick}
+					scaleFactor={props.scaleFactor}
 				/>
 			</g>
 		</>

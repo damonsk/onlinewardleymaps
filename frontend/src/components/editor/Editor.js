@@ -21,13 +21,13 @@ function Editor(props) {
 	const aceEditor = React.createRef();
 	const { hideNav } = props;
 
-	const customAceEditorCompleter = ed => {
+	const customAceEditorCompleter = (ed) => {
 		return {
-			getCompletions: function(editor, session, pos, prefix, callback) {
-				let components = ed.elements.map(item => {
+			getCompletions: function (editor, session, pos, prefix, callback) {
+				let components = ed.elements.map((item) => {
 					return { name: item, value: item, score: 1, meta: 'Element' };
 				});
-				let prefixes = ed.prefix.map(item => {
+				let prefixes = ed.prefix.map((item) => {
 					return { name: item, value: item, score: 1, meta: 'Syntax' };
 				});
 
@@ -37,10 +37,10 @@ function Editor(props) {
 	};
 
 	const getHeight = () => {
-		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight + 35;
+		const winHeight = window.innerHeight;
+		const topNavHeight =
+			document.getElementById('top-nav-wrapper').clientHeight;
+		return winHeight - topNavHeight + 35;
 	};
 
 	useEffect(() => {
@@ -64,7 +64,7 @@ function Editor(props) {
 	}, [hideNav]);
 
 	useEffect(() => {
-		const gotoLine = line => {
+		const gotoLine = (line) => {
 			const reactAceComponent = aceEditor.current;
 			if (reactAceComponent !== null) {
 				const editor = reactAceComponent.editor;
@@ -82,7 +82,7 @@ function Editor(props) {
 				editor.session.removeGutterDecoration(x, 'ace_error');
 			}
 			if (props.errorLine.length > 0) {
-				props.errorLine.forEach(e =>
+				props.errorLine.forEach((e) =>
 					editor.session.addGutterDecoration(e, 'ace_error')
 				);
 			}
@@ -123,8 +123,8 @@ function Editor(props) {
 		}
 	}, [editorCompletions, aceEditor]);
 
-	const createExpressionSuggester = mapComponents => {
-		let c = mapComponents.map(_ => {
+	const createExpressionSuggester = (mapComponents) => {
+		let c = mapComponents.map((_) => {
 			return _.name;
 		});
 		return {
@@ -147,7 +147,7 @@ function Editor(props) {
 				width={''}
 				height={height + 'px'}
 				showPrintMargin={false}
-				debounceChangePeriod={500}
+				debounceChangePeriod={1000}
 				editorProps={{ $blockScrolling: true }}
 				setOptions={{
 					showLineNumbers: props.showLineNumbers,

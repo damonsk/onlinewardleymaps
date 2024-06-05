@@ -29,7 +29,7 @@ const drawInsideCircles = (coords, styles) =>
 		/>
 	));
 
-const MarketSymbol = props => {
+const MarketSymbol = (props) => {
 	const { id, styles = {}, onClick } = props;
 	const coords = rotatePoints();
 	return (

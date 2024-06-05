@@ -8,7 +8,7 @@ import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatc
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 
-const Anchor = props => {
+const Anchor = (props) => {
 	const isModKeyPressed = useModKeyPressedConsumer();
 	const identity = 'anchor';
 	const elementKey = (prefix, suffix) => {
@@ -56,6 +56,7 @@ const Anchor = props => {
 				fixedY={false}
 				fixedX={false}
 				isModKeyPressed={isModKeyPressed}
+				scaleFactor={props.scaleFactor}
 			>
 				<ComponentTextSymbol
 					id={elementKey('text')}

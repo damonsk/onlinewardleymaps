@@ -92,6 +92,7 @@ function AnnotationElement(props) {
 			fixedX={false}
 			x={x()}
 			y={y()}
+			scaleFactor={props.scaleFactor}
 		>
 			<AnnotationBoxSymbol
 				id={'annotationsBoxTextContainer'}

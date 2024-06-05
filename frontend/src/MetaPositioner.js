@@ -2,7 +2,7 @@ export default class MetaPositioner {
 	for(id, metaText, defaultOffset) {
 		if (metaText.length > 0) {
 			var meta = JSON.parse(metaText);
-			var itemToModify = meta.find(el => {
+			var itemToModify = meta.find((el) => {
 				if (el.name === id) return el;
 				return null;
 			});
@@ -20,10 +20,10 @@ export default class MetaPositioner {
 	update(id, metaText, moved) {
 		if (metaText.length > 0) {
 			var meta = JSON.parse(metaText);
-			if (meta.find(el => el.name === id) === undefined) {
+			if (meta.find((el) => el.name === id) === undefined) {
 				meta.push({ name: id, x: moved.x, y: moved.y });
 			}
-			var modifiedArray = meta.map(el => {
+			var modifiedArray = meta.map((el) => {
 				if (el.name === id) {
 					el.x = moved.x;
 					el.y = moved.y;

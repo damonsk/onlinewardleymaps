@@ -24,7 +24,6 @@
 		"autoprefixer": "^10.0.1",
 		"babel-core": "^6.26.3",
 		"babel-runtime": "^6.26.0",
-		"node-sass": "^4.14.1",
 		"rollup": "^2.32.1",
 		"rollup-plugin-commonjs": "^10.1.0",
 		"rollup-plugin-node-resolve": "^5.2.0",
@@ -33,12 +32,16 @@
 		"rollup-plugin-sass": "^1.2.2"
 	},
 	"peerDependencies": {
-		"core-js": "^3.6.5",
+		"core-js": "^3.34.0",
 		"lodash.merge": "^4.6.2",
-		"prop-types": "^15.7.2",
-		"react": "^17.0.1",
-		"react-dom": "^17.0.1",
-		"react-icons": "^3.11.0"
+		"prop-types": "^15.8.1",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"@mui/icons-material": "^5.15.2",
+		"@mui/material": "5.15.2",
+		"@mui/styles": "5.15.2"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"sass": "^1.69.5"
+	}
 }

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const PipelineComponentSymbol = props => {
+const PipelineComponentSymbol = (props) => {
 	const {
 		id,
 		x = '-5',

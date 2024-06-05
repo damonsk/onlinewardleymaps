@@ -2,7 +2,7 @@
 
 [![Mentioned in Awesome Wardley Maps](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/wardley-maps-community/awesome-wardley-maps#apps)
 
-The source code that runs www.OnlineWardleyMaps.com.  
+The source code that runs www.OnlineWardleyMaps.com.
 
 Also available as a standalone Visual Studio Extension - [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps).
 

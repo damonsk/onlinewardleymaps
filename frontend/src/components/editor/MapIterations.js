@@ -27,7 +27,7 @@ function NewMapIterations(props) {
 		currentIteration,
 	} = props;
 
-	const StyledArea = styled(props => <Box padding={1} {...props} />)(
+	const StyledArea = styled((props) => <Box padding={1} {...props} />)(
 		({ theme }) => ({
 			width: '100%',
 			boxShadow: theme.shadows[4],
@@ -50,12 +50,12 @@ function NewMapIterations(props) {
 		setValue(mapIterations[currentIteration].name);
 	};
 
-	const handleClose = beforeAction => {
+	const handleClose = (beforeAction) => {
 		if (typeof beforeAction === 'function') beforeAction();
 		setOpenRename(false);
 	};
 
-	const handleCloseDelete = beforeAction => {
+	const handleCloseDelete = (beforeAction) => {
 		if (typeof beforeAction === 'function') beforeAction();
 		setOpenDelete(false);
 	};
@@ -66,7 +66,7 @@ function NewMapIterations(props) {
 		setMapIterations(newList);
 	};
 
-	const deleteIterationClick = function() {
+	const deleteIterationClick = function () {
 		const newList = [...mapIterations];
 		newList.splice(currentIteration, 1);
 		if (currentIteration > -1) {
@@ -86,7 +86,7 @@ function NewMapIterations(props) {
 		setMapIterations(newList);
 	};
 
-	const addIterationClick = function() {
+	const addIterationClick = function () {
 		addIteration();
 		if (currentIteration === -1) {
 			setCurrentIteration(0);
@@ -107,10 +107,10 @@ function NewMapIterations(props) {
 	};
 
 	const handleBack = () => {
-		setCurrentIteration(prevActiveStep => prevActiveStep - 1);
+		setCurrentIteration((prevActiveStep) => prevActiveStep - 1);
 	};
 
-	const handleStep = step => () => {
+	const handleStep = (step) => () => {
 		setCurrentIteration(step);
 	};
 

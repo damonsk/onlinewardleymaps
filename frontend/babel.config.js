@@ -14,13 +14,13 @@ const env = {
 		plugins: ['require-context-hook'],
 	},
 };
-module.exports = api => {
-
+module.exports = (api) => {
 	const isTest = api.env('test');
 
-	return isTest === false ? {
-		"presets": ["next/babel"],
-		"plugins": []
-	} : {presets, env};
-}
-
+	return isTest === false
+		? {
+				presets: ['next/babel'],
+				plugins: [],
+			}
+		: { presets, env };
+};

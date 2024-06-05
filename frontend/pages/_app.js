@@ -8,9 +8,13 @@ import { theme, lightTheme } from '../src/theme';
 import { AmplifyAuthProvider } from '../src/contexts/auth';
 import { configureAmplify } from '../src/lib/amplify/awsConfig';
 import Footer from '../src/components/page/Footer';
-import { Authenticator, Greetings } from 'amplify-material-ui';
-import { Hub, Auth } from 'aws-amplify';
+import { Hub } from 'aws-amplify/utils';
+import { Authenticator } from '@aws-amplify/ui-react';
+import { getCurrentUser, signOut as awsSignOut } from 'aws-amplify/auth';
 import { Modal, Box } from '@mui/material';
+import '@aws-amplify/ui-react/styles.css';
+import { FeatureSwitchesProvider } from '../src/components/FeatureSwitchesContext';
+import { featureSwitches } from '../src/constants/featureswitches';
 
 configureAmplify();
 
@@ -40,11 +44,24 @@ function MyApp({ Component, pageProps }) {
 	}, [isLightTheme]);
 
 	useEffect(() => {
-		let updateUser = async authState => {
+		async function currentAuthenticatedUser() {
 			try {
-				let user = await Auth.currentAuthenticatedUser();
-				setUser(user);
-				console.log('[_app::useEffect]', user);
+				const { username, userId, signInDetails } = await getCurrentUser();
+				setUser({ username, userId, signInDetails });
+				console.log('[_app::useEffect]', {
+					username,
+					userId,
+					signInDetails,
+				});
+			} catch (err) {
+				console.log(err);
+				setUser(null);
+			}
+		}
+		let updateUser = async (authState) => {
+			try {
+				await currentAuthenticatedUser();
+
 				if (authState !== undefined && authState.payload.event === 'signIn') {
 					setHideAuthModal(true);
 				}
@@ -67,7 +84,7 @@ function MyApp({ Component, pageProps }) {
 
 	async function signOut() {
 		try {
-			await Auth.signOut();
+			await awsSignOut();
 		} catch (error) {
 			console.log('error signing out: ', error);
 		}
@@ -101,43 +118,42 @@ function MyApp({ Component, pageProps }) {
 					content="minimum-scale=1, initial-scale=1, width=device-width"
 				/>
 			</Head>
-			<AmplifyAuthProvider>
-				<StylesProvider injectFirst>
-					<MaterialUIThemeProvider theme={currentTheme}>
-						<StyledComponentsThemeProvider theme={currentTheme}>
-							<CssBaseline />
+			<FeatureSwitchesProvider value={featureSwitches}>
+				<AmplifyAuthProvider>
+					<StylesProvider injectFirst>
+						<MaterialUIThemeProvider theme={currentTheme}>
+							<StyledComponentsThemeProvider theme={currentTheme}>
+								<CssBaseline />
 
-							<Component
-								{...pageProps}
-								toggleTheme={toggleTheme}
-								toggleMenu={toggleMenu}
-								menuVisible={menuVisible}
-								user={user}
-								signOut={signOut}
-								setHideAuthModal={setHideAuthModal}
-								isLightTheme={isLightTheme}
-							/>
-							<Modal
-								open={!hideAuthModal}
-								onClose={() => setHideAuthModal(true)}
-								aria-labelledby="modal-modal-title"
-								aria-describedby="modal-modal-description"
-							>
-								<Box>
-									<Authenticator
-										signUpConfig={signUpConfig}
-										theme={currentTheme}
-										{...{
-											hide: [Greetings],
-										}}
-									></Authenticator>
-								</Box>
-							</Modal>
-							<Footer />
-						</StyledComponentsThemeProvider>
-					</MaterialUIThemeProvider>
-				</StylesProvider>
-			</AmplifyAuthProvider>
+								<Component
+									{...pageProps}
+									toggleTheme={toggleTheme}
+									toggleMenu={toggleMenu}
+									menuVisible={menuVisible}
+									user={user}
+									signOut={signOut}
+									setHideAuthModal={setHideAuthModal}
+									isLightTheme={isLightTheme}
+								/>
+								<Modal
+									open={!hideAuthModal}
+									onClose={() => setHideAuthModal(true)}
+									aria-labelledby="modal-modal-title"
+									aria-describedby="modal-modal-description"
+								>
+									<Box>
+										<Authenticator
+											signUpConfig={signUpConfig}
+											theme={currentTheme}
+										></Authenticator>
+									</Box>
+								</Modal>
+								<Footer />
+							</StyledComponentsThemeProvider>
+						</MaterialUIThemeProvider>
+					</StylesProvider>
+				</AmplifyAuthProvider>
+			</FeatureSwitchesProvider>
 		</>
 	);
 }

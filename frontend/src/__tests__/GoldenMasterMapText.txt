@@ -80,3 +80,6 @@ url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]
 //EndSupMap
 
 FooWithCoords->InertiaComponent; Constraint
+
+accelerator foobar1 [0.2, 0.6]
+deaccelerator foobar33 [0.2, 0.6]

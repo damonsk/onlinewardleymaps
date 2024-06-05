@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { API } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
 import { listMaps, listPublicMaps } from '../src/graphql/queries';
 import DashboardMapItem from '../src/components/DashboardMapItem';
 import LeftNavigation from '../src/components/page/LeftNavigation';
@@ -14,7 +14,8 @@ import {
 } from '@mui/material';
 import DashboardHeader from '../src/components/page/DashboardHeader';
 
-const Dashboard = props => {
+const Dashboard = (props) => {
+	const client = generateClient();
 	const [privateMaps, setPrivateMaps] = useState([]);
 	const [publicMaps, setPublicMaps] = useState([]);
 	const [concatenatedMaps, setConcatenatedMaps] = useState([]);
@@ -28,7 +29,7 @@ const Dashboard = props => {
 	} = props;
 
 	const struturePublic = useCallback(() => {
-		return publicMaps.map(m => {
+		return publicMaps.map((m) => {
 			return {
 				id: m.id,
 				isPrivate: false,
@@ -38,7 +39,7 @@ const Dashboard = props => {
 	}, [publicMaps]);
 
 	const structurePrivate = useCallback(() => {
-		return privateMaps.map(m => {
+		return privateMaps.map((m) => {
 			return {
 				id: m.id,
 				isPrivate: true,
@@ -58,32 +59,32 @@ const Dashboard = props => {
 
 	const reload = () => {
 		const getPrivateMaps = async () =>
-			await API.graphql({
+			await client.graphql({
 				query: listMaps,
-				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				//authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'listMaps',
 			});
 		const getPublicMaps = async () =>
-			await API.graphql({
+			await client.graphql({
 				query: listPublicMaps,
-				authMode: 'AMAZON_COGNITO_USER_POOLS',
+				//authMode: 'AMAZON_COGNITO_USER_POOLS',
 				operationName: 'listMaps',
 			});
 		getPrivateMaps()
-			.then(r => {
+			.then((r) => {
 				console.log('setPrivateMaps', r.data);
 				setPrivateMaps(r.data.listMaps.items);
 			})
-			.catch(e => {
+			.catch((e) => {
 				console.log('error', e);
 				setPrivateMaps([]);
 			});
 		getPublicMaps()
-			.then(r => {
+			.then((r) => {
 				console.log('setPublicMaps', r.data);
 				setPublicMaps(r.data.listPublicMaps.items);
 			})
-			.catch(e => {
+			.catch((e) => {
 				console.log('error', e);
 				setPublicMaps([]);
 			});

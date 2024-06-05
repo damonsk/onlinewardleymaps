@@ -22,3 +22,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+frontend/src/ui-components
+frontend/ui-components

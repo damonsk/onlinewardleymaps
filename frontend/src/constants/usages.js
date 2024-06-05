@@ -21,17 +21,6 @@ const usages = [
 		],
 	},
 	{
-		toolbarButtonText: 'Create Market',
-		Icon: ComponentIcon,
-		title: 'To create a market',
-		summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
-		examples: [
-			'market Customer [0.9, 0.5]',
-			'market Cup of Tea [0.9, 0.5]',
-			'evolve Customer 0.9 (market)',
-		],
-	},
-	{
 		toolbarButtonText: 'Inertia',
 		Icon: InertiaIcon,
 		title: 'Inertia - component likely to face resistance to change.',
@@ -63,6 +52,17 @@ const usages = [
 		title: 'To indicate flow',
 		summary: '',
 		examples: ['Start Component+<>End Component', 'Customer+<>Cup of Tea'],
+	},
+	{
+		toolbarButtonText: 'Create Market',
+		Icon: ComponentIcon,
+		title: 'To create a market',
+		summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
+		examples: [
+			'market Customer [0.9, 0.5]',
+			'market Cup of Tea [0.9, 0.5]',
+			'evolve Customer 0.9 (market)',
+		],
 	},
 	{
 		title: 'To set component as pipeline:',
@@ -116,7 +116,7 @@ const usages = [
 	{
 		title: 'Link submap to a component',
 		summary:
-			'Add a reference link to a submap. A component becomes a link to an other Wardley Map',
+			'Add a reference link to a submap. A component becomes a link to another Wardley Map',
 		examples: [
 			'submap Component [<visibility>, <maturity>] url(urlName)',
 			'url urlName [URL]',
@@ -148,6 +148,14 @@ const usages = [
 			'style handwritten',
 			'style colour',
 			'style dark',
+		],
+	},
+	{
+		title: 'Accelerator/Deaccelerator',
+		summary: 'An attempt to alter the map',
+		examples: [
+			'accelerator foobar [0.1, 0.8]',
+			'deaccelerator barbaz [0.2, 0.7]',
 		],
 	},
 ];

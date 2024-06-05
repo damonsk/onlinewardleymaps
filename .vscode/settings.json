@@ -13,5 +13,12 @@
     "amplify/#current-cloud-backend": true,
     "amplify/backend/amplify-meta.json": true,
     "amplify/backend/awscloudformation": true
-  }
+  },
+  "jestrunner.configPath": "frontend/jest.config.js",
+  "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
+  "eslint.lintTask.enable": true,
+  "eslint.run": "onSave",
+  "eslint.workingDirectories": [
+    "frontend/"
+  ]
 }

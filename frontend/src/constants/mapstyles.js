@@ -1,11 +1,11 @@
 import merge from 'lodash.merge';
 
 // use an override model with the default style in case some style options are missing
-const mergeIntoDefault = style => merge({}, Plain, style);
+const mergeIntoDefault = (style) => merge({}, Plain, style);
 
 export const Plain = {
 	className: 'plain',
-	containerBackground: 'white',
+	containerBackground: '#eee',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 	fontSize: '13px',
 	stroke: 'black',

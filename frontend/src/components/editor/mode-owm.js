@@ -9,20 +9,20 @@ ace.define(
 		'ace/mode/text',
 		'ace/mode/owm_highlight_rules',
 	],
-	function(require, exports, module) {
+	function (require, exports, module) {
 		var oop = require('../lib/oop');
 		var TextMode = require('./text').Mode;
 		var OwmHighlightRules = require('./owm_highlight_rules').OwmHighlightRules;
 
-		var Mode = function() {
+		var Mode = function () {
 			this.HighlightRules = OwmHighlightRules;
 		};
 		oop.inherits(Mode, TextMode);
 
-		(function() {
+		(function () {
 			this.lineCommentStart = '//';
 			this.blockComment = { start: '/*', end: '*/' };
-		}.call(Mode.prototype));
+		}).call(Mode.prototype);
 
 		exports.Mode = Mode;
 	}
@@ -37,12 +37,12 @@ ace.define(
 		'ace/lib/oop',
 		'ace/mode/owm_highlight_rules',
 	],
-	function(require, exports, module) {
+	function (require, exports, module) {
 		var oop = require('../lib/oop');
-		var TextHighlightRules = require('./text_highlight_rules')
-			.TextHighlightRules;
+		var TextHighlightRules =
+			require('./text_highlight_rules').TextHighlightRules;
 
-		var DocCommentHighlightRules = function() {
+		var DocCommentHighlightRules = function () {
 			this.$rules = {
 				start: [
 					{
@@ -60,14 +60,14 @@ ace.define(
 
 		oop.inherits(DocCommentHighlightRules, TextHighlightRules);
 
-		DocCommentHighlightRules.getTagRule = function() {
+		DocCommentHighlightRules.getTagRule = function () {
 			return {
 				token: 'comment.doc.tag.storage.type',
 				regex: '\\b(?:TODO|FIXME|XXX|HACK)\\b',
 			};
 		};
 
-		DocCommentHighlightRules.getStartRule = function(start) {
+		DocCommentHighlightRules.getStartRule = function (start) {
 			return {
 				token: 'comment.doc', // doc comment
 				regex: '\\/\\*(?=\\*)',
@@ -75,7 +75,7 @@ ace.define(
 			};
 		};
 
-		DocCommentHighlightRules.getEndRule = function(start) {
+		DocCommentHighlightRules.getEndRule = function (start) {
 			return {
 				token: 'comment.doc', // closing comment
 				regex: '\\*\\/',
@@ -83,7 +83,7 @@ ace.define(
 			};
 		};
 
-		var OwmHighlightRules = function() {
+		var OwmHighlightRules = function () {
 			this.$rules = {
 				start: [
 					{
@@ -140,7 +140,7 @@ ace.define(
 					{
 						token: ['keyword', 'variable.parameter.function.asp'],
 						regex:
-							'(evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'";a-zA-Z0-9\\s*]+)',
+							'(deaccelerator|accelerator|evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
 					},
 					{
 						token: [
@@ -152,6 +152,16 @@ ace.define(
 					},
 					{
 						token: [
+							
+							'punctuation',
+							'constant.numeric',
+							'punctuation',
+						],
+						regex:
+							'(\\[)(\\d+(?:\\.\\d{1,})*)(\\])',
+					},
+					{
+						token: [
 							'keyword',
 							'punctuation',
 							'constant.numeric',
@@ -160,6 +170,17 @@ ace.define(
 							'punctuation',
 						],
 						regex: '(label)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
+					},
+					{
+						token: [
+							'keyword',
+							'punctuation',
+							'constant.numeric',
+							'punctuation',
+							'constant.numeric',
+							'punctuation',
+						],
+						regex: '(size)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
 					},
 					{
 						token: 'keyword',
@@ -184,7 +205,7 @@ ace.define(
 							'punctuation',
 							'variable.parameter.function.asp',
 						],
-						regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[a-zA-Z0-9\\s*]+)',
+						regex: '(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)',
 					},
 					{
 						token: [

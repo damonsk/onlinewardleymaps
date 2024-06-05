@@ -12,7 +12,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LinearProgress from '@mui/material/LinearProgress';
 import Router from 'next/router';
-import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
+import { copy, remove, getUrl } from 'aws-amplify/storage';
 import {
 	createPublicMap,
 	createMap,
@@ -21,7 +22,8 @@ import {
 } from '../graphql/mutations';
 import { CardHeader, Divider, IconButton, Stack } from '@mui/material';
 
-const DashboardMapItem = props => {
+const DashboardMapItem = (props) => {
+	const client = generateClient();
 	const { item, index } = props;
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [imageUrl, setImageUrl] = useState('');
@@ -30,11 +32,11 @@ const DashboardMapItem = props => {
 	const [evicted, setEvicted] = useState(false);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
-	const handleClick = event => {
+	const handleClick = (event) => {
 		console.log('handleClick', event.currentTarget);
 		setAnchorEl(event.currentTarget);
 	};
-	const complete = primaryAction => {
+	const complete = (primaryAction) => {
 		if (typeof primaryAction === 'function') primaryAction();
 		setAnchorEl(null);
 	};
@@ -52,7 +54,7 @@ const DashboardMapItem = props => {
 	const migrateAction = () =>
 		isPrivate ? migrateToPublicStore() : migrateToPrivateStore();
 
-	const migrateToPublicStore = async function() {
+	const migrateToPublicStore = async function () {
 		setIsUpdating(true);
 		const map = mapItem;
 		let mutatedMap = Object.assign({}, map);
@@ -64,17 +66,17 @@ const DashboardMapItem = props => {
 
 		await deleteMapFromPrivateDataStore();
 		const r = await createMapInPublicDataStore(mutatedMap);
-		await Storage.copy(
+		await copy(
 			{ key: mapItem.id + '.png', level: 'private' },
 			{ key: r.data.createPublicMap.id + '.png', level: 'public' }
 		);
-		await Storage.remove({ key: mapItem.id + '.png', level: 'private' });
+		await remove({ key: mapItem.id + '.png', level: 'private' });
 		setMapItem(r.data.createPublicMap);
 		setIsUpdating(false);
 		setIsPrivate(false);
 	};
 
-	const migrateToPrivateStore = async function() {
+	const migrateToPrivateStore = async function () {
 		setIsUpdating(true);
 		const map = mapItem;
 		let mutatedMap = Object.assign({}, map);
@@ -86,45 +88,62 @@ const DashboardMapItem = props => {
 
 		await deleteMapFromPublicDataStore();
 		const r = await createMapInPrivateDataStore(mutatedMap);
-		await Storage.copy(
+		await copy(
 			{ key: mapItem.id + '.png', level: 'public' },
 			{ key: r.data.createMap.id + '.png', level: 'private' }
 		);
-		await Storage.remove({ key: mapItem.id + '.png', level: 'public' });
+		await remove({ key: mapItem.id + '.png', level: 'public' });
 		setIsUpdating(false);
 		setMapItem(r.data.createMap);
 		setIsPrivate(true);
 	};
 
-	const createMapInPrivateDataStore = async function(map) {
-		return await API.graphql(graphqlOperation(createMap, { input: map }));
-	};
-
-	const createMapInPublicDataStore = async function(map) {
-		return await API.graphql(graphqlOperation(createPublicMap, { input: map }));
-	};
-
-	const deleteMapFromPrivateDataStore = async function() {
-		await API.graphql(
-			graphqlOperation(deleteMap, { input: { id: mapItem.id } })
-		);
-	};
-
-	const deleteMapFromPublicDataStore = async function() {
-		await API.graphql(
-			graphqlOperation(deletePublicMap, { input: { id: mapItem.id } })
-		);
-	};
-
-	const getImageUrl = async function(id, privateState) {
-		return await Storage.get(id + '.png', {
-			level: privateState ? 'private' : 'public',
+	const createMapInPrivateDataStore = async function (map) {
+		return await client.graphql({
+			query: createMap,
+			variables: map,
+			operationName: 'createMap',
 		});
+	};
+
+	const createMapInPublicDataStore = async function (map) {
+		return await client.graphql({
+			query: createPublicMap,
+			variables: map,
+			operationName: 'createPublicMap',
+		});
+	};
+
+	const deleteMapFromPrivateDataStore = async function () {
+		await client.graphql({
+			query: deleteMap,
+			variables: { input: { id: mapItem.id } },
+			operationName: 'deleteMap',
+		});
+	};
+
+	const deleteMapFromPublicDataStore = async function () {
+		await client.graphql({
+			query: deletePublicMap,
+			variables: { input: { id: mapItem.id } },
+			operationName: 'deletePublicMap',
+		});
+	};
+
+	const getImageUrl = async function (id, privateState) {
+		const e = await getUrl({
+			key: id + '.png',
+			options: {
+				accessLevel: privateState ? 'private' : 'public',
+			},
+		});
+		console.log('image', { img: e.url.toString(), id, privateState });
+		return e.url.toString();
 	};
 
 	useEffect(() => {
 		const s = getImageUrl(mapItem.id, isPrivate);
-		s.then(r => setImageUrl(r));
+		s.then((r) => setImageUrl(r));
 	}, [mapItem, isPrivate]);
 
 	const saveMapText = (data, fileName) => {

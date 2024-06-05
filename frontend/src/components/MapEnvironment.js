@@ -17,9 +17,16 @@ import { LoadMap } from '../repository/LoadMap';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Grid } from '@mui/material';
-import { Storage } from 'aws-amplify';
+import { uploadData } from 'aws-amplify/storage';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import Router from 'next/router';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import { useFeatureSwitches } from './FeatureSwitchesContext';
 
 function debounce(fn, ms) {
 	let timer;
@@ -55,16 +62,16 @@ function convertToImage(base64Data, contentType) {
 }
 
 const getHeight = () => {
-	var winHeight = window.innerHeight;
-	var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-	var titleHeight = document.getElementById('title').clientHeight;
-	return winHeight - topNavHeight - titleHeight - 95;
+	const winHeight = window.innerHeight;
+	const topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
+	return winHeight - topNavHeight - 95;
 };
 const getWidth = () => {
 	return document.getElementById('map').clientWidth - 50;
 };
 
 function Environment(props) {
+	const featureSwitches = useFeatureSwitches();
 	const {
 		toggleMenu,
 		menuVisible,
@@ -101,6 +108,7 @@ function Environment(props) {
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAttitudes, setMapAttitudes] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
+	const [mapAccelerators, setMapAccelerators] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
 	const [invalid, setInvalid] = useState(false);
 	const [newComponentContext, setNewComponentContext] = useState(null);
@@ -109,10 +117,14 @@ function Environment(props) {
 	);
 	const [mapIterations, setMapIterations] = useState([]);
 	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
+	const [mapCanvasDimensions, setMapCanvasDimensions] = useState(
+		Defaults.MapDimensions
+	);
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
+	const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [saveOutstanding, setSaveOutstanding] = useState(false);
 	const [highlightLine, setHighlightLine] = useState(0);
@@ -128,7 +140,7 @@ function Environment(props) {
 	const [actionInProgress, setActionInProgress] = useState(false);
 	const [hideNav, setHideNav] = useState(false);
 
-	const mutateMapText = newText => {
+	const mutateMapText = (newText) => {
 		setMapText(newText);
 		setSaveOutstanding(true);
 		if (currentIteration !== null && currentIteration > -1) {
@@ -141,9 +153,9 @@ function Environment(props) {
 		}
 	};
 
-	const launchUrl = urlId => {
-		if (mapUrls.find(u => u.name === urlId)) {
-			const urlToLaunch = mapUrls.find(u => u.name === urlId).url;
+	const launchUrl = (urlId) => {
+		if (mapUrls.find((u) => u.name === urlId)) {
+			const urlToLaunch = mapUrls.find((u) => u.name === urlId).url;
 			window.open(urlToLaunch);
 		}
 	};
@@ -152,7 +164,7 @@ function Environment(props) {
 		setShowUsage(!showUsage);
 	};
 
-	const saveToRemoteStorage = async function(hash) {
+	const saveToRemoteStorage = async function (hash) {
 		setActionInProgress(true);
 		const mapToPersist = {
 			mapText: mapText,
@@ -161,7 +173,7 @@ function Environment(props) {
 			mapIterations: mapIterations,
 		};
 
-		const followOnActions = async function(id, resultFromAction) {
+		const followOnActions = async function (id, resultFromAction) {
 			if (mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Private) {
 				const imageData = await makeSnapShot();
 				await createImage(imageData, 'private', id + '.png');
@@ -208,21 +220,21 @@ function Environment(props) {
 			});
 
 			async function createImage(imageData, level, filename) {
-				return await Storage.put(
-					filename,
-					convertToImage(imageData, 'image/png'),
-					{
+				return await uploadData({
+					key: filename,
+					data: convertToImage(imageData, 'image/png'),
+					options: {
 						level: level,
 						contentType: 'image/png',
-					}
-				);
+					},
+				});
 			}
 		};
 
 		await SaveMap(mapPersistenceStrategy, mapToPersist, hash, followOnActions);
 	};
 
-	const loadFromRemoteStorage = async function() {
+	const loadFromRemoteStorage = async function () {
 		const followOnActions = (mapPersistenceStrategy, map) => {
 			setMapPersistenceStrategy(mapPersistenceStrategy);
 			setShoudLoad(false);
@@ -282,13 +294,25 @@ function Environment(props) {
 	}
 
 	function downloadMap() {
-		html2canvas(mapRef.current).then(canvas => {
-			const base64image = canvas.toDataURL('image/png');
-			const link = document.createElement('a');
-			link.download = mapTitle;
-			link.href = base64image;
-			link.click();
-		});
+		const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
+		const tempElement = document.createElement('div');
+		tempElement.innerHTML = svgMapText;
+		tempElement.style.position = 'absolute';
+		tempElement.style.left = '-9999px';
+		document.body.appendChild(tempElement);
+		html2canvas(tempElement, { useCORS: true, allowTaint: true })
+			.then((canvas) => {
+				const base64image = canvas.toDataURL('image/png');
+				const link = document.createElement('a');
+				link.download = mapTitle;
+				link.href = base64image;
+				link.click();
+				tempElement.remove();
+			})
+			.catch((x) => {
+				console.log(x);
+				tempElement.remove();
+			});
 	}
 
 	function downloadMapAsSVG() {
@@ -323,14 +347,14 @@ function Environment(props) {
 	};
 
 	async function makeSnapShot() {
-		return await html2canvas(mapRef.current).then(canvas => {
+		return await html2canvas(mapRef.current).then((canvas) => {
 			const base64image = canvas.toDataURL('image/png');
 			return base64image;
 		});
 	}
 
 	useEffect(() => {
-		const handleBeforeUnload = event => {
+		const handleBeforeUnload = (event) => {
 			if (saveOutstanding) {
 				event.preventDefault();
 				event.returnValue = '';
@@ -344,7 +368,7 @@ function Environment(props) {
 		try {
 			setErrorLine([]);
 			setInvalid(false);
-			var r = new Converter().parse(mapText);
+			var r = new Converter(featureSwitches).parse(mapText);
 			setRawMapTitle(r.title);
 			setMapAnnotations(r.annotations);
 			setMapAnchors(r.anchors);
@@ -360,6 +384,8 @@ function Environment(props) {
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
 			setMapStyle(r.presentation.style);
+			setMapSize(r.presentation.size);
+			setMapAccelerators(r.accelerators);
 			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
 				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
@@ -368,7 +394,7 @@ function Environment(props) {
 				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
 			});
 			if (r.errors.length > 0) {
-				setErrorLine(r.errors.map(e => e.line));
+				setErrorLine(r.errors.map((e) => e.line));
 			}
 		} catch (err) {
 			console.log(`Error:`, err);
@@ -378,11 +404,12 @@ function Environment(props) {
 	useEffect(() => {
 		document.title = mapTitle + ' - ' + Defaults.PageTitle;
 	}, [mapTitle]);
-
 	useEffect(() => {
-		setMapDimensions({ width: getWidth(), height: getHeight() });
-		//setMainViewHeight(105 + getHeight());
-	}, [mapOnlyView, hideNav]);
+		setMapDimensions({
+			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			height: mapSize.height > 0 ? mapSize.height : getHeight(),
+		});
+	}, [mapOnlyView, hideNav, mapSize]);
 
 	useEffect(() => {
 		console.log('[currentIteration, rawMapTitle, mapIterations]', [
@@ -454,21 +481,53 @@ function Environment(props) {
 
 	useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
-			setMapDimensions({ width: getWidth(), height: getHeight() });
-		}, 1000);
-
-		const initialLoad = () => {
-			//loadFromRemoteStorage();
-			setMapDimensions({ width: getWidth(), height: getHeight() });
-		};
+			const dimensions = {
+				width: mapSize.width > 0 ? mapSize.width : getWidth(),
+				height: mapSize.height > 0 ? mapSize.height : getHeight(),
+			};
+			setMapDimensions(dimensions);
+		}, 1);
 
 		window.addEventListener('resize', debouncedHandleResize);
-		window.addEventListener('load', initialLoad);
-
 		debouncedHandleResize();
 
 		return function cleanup() {
 			window.removeEventListener('resize', debouncedHandleResize);
+		};
+	}, [mapSize]);
+
+	useEffect(() => {
+		const newDimensions = {
+			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			height: mapSize.height > 0 ? mapSize.height : getHeight(),
+		};
+		setMapDimensions(newDimensions);
+		setMapCanvasDimensions({
+			width: getWidth(),
+			height: getHeight(),
+		});
+	}, [mapOnlyView, hideNav]);
+
+	useEffect(() => {
+		const initialLoad = () => {
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		};
+
+		const debouncedHandleCanvasResize = debounce(() => {
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		}, 500);
+
+		window.addEventListener('load', initialLoad);
+		window.addEventListener('resize', debouncedHandleCanvasResize);
+
+		return function cleanup() {
+			window.removeEventListener('resize', debouncedHandleCanvasResize);
 			window.removeEventListener('load', initialLoad);
 		};
 	}, []);
@@ -585,6 +644,7 @@ function Environment(props) {
 							mapAnchors={mapAnchors}
 							mapLinks={mapLinks}
 							mapAttitudes={mapAttitudes}
+							mapAccelerators={mapAccelerators}
 							launchUrl={launchUrl}
 							mapNotes={mapNotes}
 							mapAnnotations={mapAnnotations}
@@ -592,6 +652,7 @@ function Environment(props) {
 							mapMethods={mapMethods}
 							mapStyleDefs={mapStyleDefs}
 							mapDimensions={mapDimensions}
+							mapCanvasDimensions={mapCanvasDimensions}
 							mapEvolutionStates={mapEvolutionStates}
 							mapRef={mapRef}
 							mapText={mapText}
@@ -607,9 +668,29 @@ function Environment(props) {
 				</Grid>
 			</Grid>
 
-			{showUsage && (
-				<UsageInfo mutateMapText={mutateMapText} mapText={mapText} />
-			)}
+			<Dialog
+				maxWidth={'lg'}
+				open={showUsage}
+				onClose={() => setShowUsage(false)}
+			>
+				<DialogTitle>Usage</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						Quick reference of all available map elements. You can add an
+						example to your map by clicking the available links.
+					</DialogContentText>
+					<Box marginTop={2}>
+						<UsageInfo
+							mapStyleDefs={mapStyleDefs}
+							mutateMapText={mutateMapText}
+							mapText={mapText}
+						/>
+					</Box>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setShowUsage(false)}>Close</Button>
+				</DialogActions>
+			</Dialog>
 
 			<QuickAdd
 				newComponentContext={newComponentContext}
@@ -620,7 +701,7 @@ function Environment(props) {
 			/>
 
 			<Backdrop
-				sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
+				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={actionInProgress}
 			>
 				<CircularProgress color="inherit" />

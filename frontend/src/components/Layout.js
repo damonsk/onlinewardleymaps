@@ -1,10 +1,10 @@
 import React from 'react';
-import { Authenticator, Greetings } from 'amplify-material-ui';
+import { Authenticator } from '@aws-amplify/ui-react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Modal } from '@mui/material';
 
-const Layout = props => {
+const Layout = (props) => {
 	const { hideAuthModal, setHideAuthModal, children, currentTheme } = props;
 
 	const components = {
@@ -34,13 +34,7 @@ const Layout = props => {
 					aria-labelledby="modal-modal-title"
 					aria-describedby="modal-modal-description"
 				>
-					<Authenticator
-						components={components}
-						theme={currentTheme}
-						{...{
-							hide: [Greetings],
-						}}
-					/>
+					<Authenticator components={components} theme={currentTheme} />
 				</Modal>
 			</React.Fragment>
 		</ThemeProvider>

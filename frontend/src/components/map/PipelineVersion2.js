@@ -49,7 +49,7 @@ function PipelineVersion2(props) {
 		props.mutateMapText(
 			props.mapText
 				.split('\n')
-				.map(line => {
+				.map((line) => {
 					{
 						if (
 							line
@@ -61,16 +61,16 @@ function PipelineVersion2(props) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
 									/\slabel\s\[(.?|.+?)\]+/g,
-									` label [${parseFloat(moved.x).toFixed(2)}, ${parseFloat(
+									` label [${parseFloat(moved.x).toFixed(0)}, ${parseFloat(
 										moved.y
-									).toFixed(2)}]`
+									).toFixed(0)}]`
 								);
 							} else {
 								return (
 									line.trim() +
-									` label [${parseFloat(moved.x).toFixed(2)}, ${parseFloat(
+									` label [${parseFloat(moved.x).toFixed(0)}, ${parseFloat(
 										moved.y
-									).toFixed(2)}]`
+									).toFixed(0)}]`
 								);
 							}
 						} else {
@@ -99,7 +99,8 @@ function PipelineVersion2(props) {
 		props.mapDimensions.width
 	);
 
-	const xCalc = mat => positionCalc.maturityToX(mat, props.mapDimensions.width);
+	const xCalc = (mat) =>
+		positionCalc.maturityToX(mat, props.mapDimensions.width);
 
 	const allowLinking = (component, e) => {
 		const supplementObjectWithVisibilitt = Object.assign(component, {
@@ -129,20 +130,21 @@ function PipelineVersion2(props) {
 					<>
 						<Movable
 							id={'pipeline_' + props.pipeline.id + '_' + i}
-							onMove={m => endDragX2(component, m)}
+							onMove={(m) => endDragX2(component, m)}
 							x={xCalc(component.maturity)}
 							y={y + 12}
 							fixedY={true}
 							fixedX={false}
 							shouldShowMoving={true}
 							isModKeyPressed={isModKeyPressed}
+							scaleFactor={props.scaleFactor}
 						>
 							<ComponentSymbol
 								id={'pipeline_circle_' + props.pipeline.id + '_' + i}
 								cx={'0'}
 								cy="0"
 								styles={props.mapStyleDefs.component}
-								onClick={e => allowLinking(component, e)}
+								onClick={(e) => allowLinking(component, e)}
 							/>
 						</Movable>
 						<g
@@ -151,12 +153,13 @@ function PipelineVersion2(props) {
 							}
 						>
 							<ComponentText
-								overrideDrag={m => endDragForLabel(component, m)}
+								overrideDrag={(m) => endDragForLabel(component, m)}
 								id={'pipelinecomponent_text_' + component.id}
 								mapStyleDefs={props.mapStyleDefs}
 								element={component}
 								mapText={props.mapText}
 								mutateMapText={props.mutateMapText}
+								scaleFactor={props.scaleFactor}
 							/>
 						</g>
 					</>

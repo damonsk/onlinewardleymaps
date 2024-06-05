@@ -1,15 +1,9 @@
 {
-  "resourceName": "s3b569f3d2",
-  "policyUUID": "b569f3d2",
-  "bucketName": "betaowm1c306a5fd0214445b4c8f73240f0798a",
-  "storageAccess": "authAndGuest",
-  "guestAccess": [
-    "CREATE_AND_UPDATE",
-    "READ"
-  ],
-  "authAccess": [
-    "CREATE_AND_UPDATE",
-    "READ"
-  ],
-  "groupAccess": {}
+	"resourceName": "s3b569f3d2",
+	"policyUUID": "b569f3d2",
+	"bucketName": "betaowm1c306a5fd0214445b4c8f73240f0798a",
+	"storageAccess": "authAndGuest",
+	"guestAccess": ["CREATE_AND_UPDATE", "READ"],
+	"authAccess": ["CREATE_AND_UPDATE", "READ"],
+	"groupAccess": {}
 }

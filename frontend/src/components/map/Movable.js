@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react';
 
 const HIGHLIGHT_DEF = 'url(#ctrlHighlight)';
 
-// could check specific element type here
 const shouldHighlight = ({ isModKeyPressed }) => {
 	if (isModKeyPressed) {
 		return HIGHLIGHT_DEF;
@@ -21,28 +20,32 @@ function Movable(props) {
 		coords: {},
 	});
 
-	const handleMouseMove = React.useRef(e => {
-		setPosition(position => {
-			const xDiff = position.coords.x - e.pageX;
-			const yDiff = position.coords.y - e.pageY;
-			return {
-				x: position.x - xDiff,
-				y: position.y - yDiff,
-				coords: {
-					x: e.pageX,
-					y: e.pageY,
-				},
-			};
-		});
-	});
+	const handleMouseMove = useCallback(
+		(e) => {
+			setPosition((position) => {
+				const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
+				const xDiff = (position.coords.x - e.pageX) / scaleFactor;
+				const yDiff = (position.coords.y - e.pageY) / scaleFactor;
+				return {
+					x: position.x - xDiff,
+					y: position.y - yDiff,
+					coords: {
+						x: e.pageX,
+						y: e.pageY,
+					},
+				};
+			});
+		},
+		[props.scaleFactor]
+	);
 
-	const handleMouseDown = e => {
+	const handleMouseDown = (e) => {
 		if (props.isModKeyPressed) return;
 		setMoving(true);
 		const pageX = e.pageX;
 		const pageY = e.pageY;
 
-		setPosition(position =>
+		setPosition((position) =>
 			Object.assign({}, position, {
 				coords: {
 					x: pageX,
@@ -50,13 +53,13 @@ function Movable(props) {
 				},
 			})
 		);
-		document.addEventListener('mousemove', handleMouseMove.current);
+		document.addEventListener('mousemove', handleMouseMove);
 		document.addEventListener('keyup', handleEscape);
 	};
 
-	const handleEscape = k => {
+	const handleEscape = (k) => {
 		if (k.key === 'Escape' && moving) {
-			document.removeEventListener('mousemove', handleMouseMove.current);
+			document.removeEventListener('mousemove', handleMouseMove);
 			document.removeEventListener('keyup', handleEscape);
 			setMoving(false);
 			endDrag();
@@ -66,8 +69,8 @@ function Movable(props) {
 
 	const handleMouseUp = () => {
 		if (props.isModKeyPressed) return;
-		document.removeEventListener('mousemove', handleMouseMove.current);
-		setPosition(position =>
+		document.removeEventListener('mousemove', handleMouseMove);
+		setPosition((position) =>
 			Object.assign({}, position, {
 				coords: {},
 			})
@@ -90,16 +93,15 @@ function Movable(props) {
 			y: y(),
 			coords: {},
 		});
-		//if (props.onEffects !== undefined) props.onEffects();
 	}, [x, y]);
 	const filter = shouldHighlight(props);
 	return (
 		<g
 			is="custom"
 			class={'draggable'}
-			onMouseDown={e => handleMouseDown(e)}
-			onMouseUp={e => handleMouseUp(e)}
 			style={{ cursor: moving ? 'grabbing' : 'grab' }}
+			onMouseDown={(e) => handleMouseDown(e)}
+			onMouseUp={(e) => handleMouseUp(e)}
 			id={'movable_' + props.id}
 			filter={filter}
 			transform={

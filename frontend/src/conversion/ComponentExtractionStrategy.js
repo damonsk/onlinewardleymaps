@@ -21,6 +21,13 @@ export default class ComponentExtractionStrategy {
 				lines.push(' ');
 			}
 			if (
+				isWithinNestedContainer &&
+				element.trim().includes('}') === false &&
+				element.trim().includes('{') === false
+			) {
+				lines.push(' ');
+			}
+			if (
 				isWithinNestedContainer == false &&
 				element.trim().indexOf('}') === -1
 			) {

@@ -1,4 +1,4 @@
-import { API } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
 import { LoadStrategy } from './LoadStrategy';
 
 export class GraphQlLoadStrategy extends LoadStrategy {
@@ -9,7 +9,8 @@ export class GraphQlLoadStrategy extends LoadStrategy {
 	}
 
 	async load(id) {
-		const response = await API.graphql({
+		const client = generateClient();
+		const response = await client.graphql({
 			query: this.config.query,
 			variables: { id },
 			authMode: this.config.authMode,

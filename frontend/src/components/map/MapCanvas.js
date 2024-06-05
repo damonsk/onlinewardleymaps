@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import MethodElement from './MethodElement';
 import MapElements from '../../MapElements';
 import MapGrid from './foundation/MapGrid';
@@ -16,6 +16,7 @@ import Note from './Note';
 import Attitude from './Attitude';
 import LinksBuilder from '../../linkStrategies/LinksBuilder';
 import MapGraphics from './foundation/MapGraphics';
+import MapTitle from './MapTitle';
 import MapBackground from './foundation/MapBackground';
 import SubMapSymbol from '../symbols/SubMapSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
@@ -24,24 +25,126 @@ import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import PositionCalculator from './PositionCalculator';
-import { featureSwitches } from '../../constants/featureswitches';
-import styles from '../../styles/MapCanvas.module.css';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import MapAccelerator from './MapAccelerator';
+import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import PanIcon from '@mui/icons-material/ControlCamera';
+import HandIcon from '@mui/icons-material/PanToolAlt';
+import FitScreenIcon from '@mui/icons-material/FitScreen';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+
+import {
+	UncontrolledReactSVGPanZoom,
+	TOOL_PAN,
+	TOOL_ZOOM_IN,
+	TOOL_ZOOM_OUT,
+	TOOL_NONE,
+} from 'react-svg-pan-zoom';
+import { ButtonGroup, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(() => ({
+	mapCanvas: {
+		userSelect: 'none',
+	},
+}));
 
 function MapCanvas(props) {
+	const { enableAccelerators, enableNewPipelines, enableQuickAdd } =
+		useFeatureSwitches();
+	const styles = useStyles();
+	const {
+		mapComponents,
+		mapSubMaps,
+		mapMarkets,
+		mapEcosystems,
+		mapEvolved,
+		mapPipelines,
+		setNewComponentContext,
+		mapLinks,
+		showLinkedEvolved,
+		mapMethods,
+		mapRef,
+		mapEvolutionStates,
+		mapAttitudes,
+		setMetaText,
+		metaText,
+		launchUrl,
+		mapNotes,
+		mapAnnotations,
+		mapAnnotationsPresentation,
+		mapDimensions,
+		mapText,
+		mutateMapText,
+		mapStyleDefs,
+		setHighlightLine,
+		mapAnchors,
+		evolutionOffsets,
+		mapAccelerators,
+		handleMapCanvasClick,
+		mapTitle,
+	} = props;
 	const isModKeyPressed = useModKeyPressedConsumer();
 	const [mapElementsClicked, setMapElementsClicked] = useState([]);
+
+	const Viewer = useRef(null);
+	const [tool, setTool] = useState(TOOL_NONE);
+	const [scaleFactor, setScaleFactor] = useState(1);
+	//const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+	const _fitToViewer = () => {
+		Viewer.current.fitSelection(
+			-35,
+			-45,
+			props.mapDimensions.width + 70,
+			props.mapDimensions.height + 92
+		);
+	};
+
+	// const handleMouseMove = (event) => {
+	// 	setMousePosition({ x: event.x, y: event.y });
+	// };
+
+	const handleZoom = (value) => {
+		setScaleFactor(value.a);
+	};
+
+	const handleChangeTool = (event, newTool) => {
+		setTool(newTool);
+	};
+
+	const SelectedIconButtonStyle = { color: '#90caf9' };
+	const IconButtonStyle = { color: 'rgba(0, 0, 0, 0.54)' };
+	const textColour = {
+		wardley: 'black',
+		colour: 'black',
+		plain: 'black',
+		handwritten: 'black',
+		dark: 'white',
+	};
+
+	useEffect(() => {
+		if (Viewer.current) {
+			_fitToViewer();
+		}
+	}, []);
+
 	const mapElements = new MapElements(
 		[
-			{ collection: props.mapComponents, type: 'component' },
-			{ collection: props.mapSubMaps, type: 'submap' },
-			{ collection: props.mapMarkets, type: 'market' },
-			{ collection: props.mapEcosystems, type: 'ecosystem' },
+			{ collection: mapComponents, type: 'component' },
+			{ collection: mapSubMaps, type: 'submap' },
+			{ collection: mapMarkets, type: 'market' },
+			{ collection: mapEcosystems, type: 'ecosystem' },
 		],
-		props.mapEvolved,
-		props.mapPipelines
+		mapEvolved,
+		mapPipelines
 	);
 
-	const newElementAt = function(e) {
+	const quickAddAt = function (e) {
+		if (enableQuickAdd == false) return;
 		var svg = document.getElementById('svgMap');
 		var pt = svg.createSVGPoint();
 
@@ -54,13 +157,32 @@ function MapCanvas(props) {
 		var loc = getCursor(e);
 
 		const positionCalc = new PositionCalculator();
-		const x = positionCalc.xToMaturity(loc.x, props.mapDimensions.width);
-		const y = positionCalc.yToVisibility(loc.y, props.mapDimensions.height);
-		props.setNewComponentContext({ x, y });
+		const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
+		const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
+
+		console.log('x: ' + x + ' y: ' + y);
+		handleMapCanvasClick({ x, y });
 	};
 
-	var getElementByName = function(elements, name) {
-		var hasName = function(element) {
+	const newElementAt = function (e) {
+		const svg = Viewer.current.Viewer.ViewerDOM;
+		let pt = svg.createSVGPoint();
+
+		function getCursor(evt) {
+			pt.x = evt.clientX;
+			pt.y = evt.clientY;
+			return pt.matrixTransform(svg.getScreenCTM().inverse());
+		}
+
+		const loc = getCursor(e);
+		const positionCalc = new PositionCalculator();
+		const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
+		const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
+		setNewComponentContext({ x, y });
+	};
+
+	var getElementByName = function (elements, name) {
+		var hasName = function (element) {
 			return element.name === name;
 		};
 		return elements.find(hasName);
@@ -72,8 +194,8 @@ function MapCanvas(props) {
 		}
 	}, [isModKeyPressed]);
 
-	const clicked = function(ctx) {
-		props.setHighlightLine(ctx.el.line);
+	const clicked = function (ctx) {
+		setHighlightLine(ctx.el.line);
 		if (isModKeyPressed === false) return;
 
 		let s = [
@@ -81,22 +203,20 @@ function MapCanvas(props) {
 			{ el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
 		];
 		if (s.length === 2) {
-			props.mutateMapText(
-				props.mapText + '\r\n' + s.map(r => r.el.name).join('->')
-			);
+			mutateMapText(mapText + '\r\n' + s.map((r) => r.el.name).join('->'));
 			setMapElementsClicked([]);
 		} else setMapElementsClicked(s);
 	};
 
 	const linksBuilder = new LinksBuilder(
-		props.mapLinks,
+		mapLinks,
 		mapElements,
-		props.mapAnchors,
-		props.showLinkedEvolved
+		mapAnchors,
+		showLinkedEvolved
 	);
 	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
-	const asMethod = m =>
+	const asMethod = (m) =>
 		Object.assign(
 			{},
 			{
@@ -109,12 +229,14 @@ function MapCanvas(props) {
 
 	const decoratedComponentsMethods = mapElements
 		.getMergedElements()
-		.filter(m => m.decorators && m.decorators.method)
-		.map(m => asMethod(m));
+		.filter((m) => m.decorators && m.decorators.method)
+		.map((m) => asMethod(m));
 
-	const methods = props.mapMethods
-		.filter(m => getElementByName(mapElements.getNonEvolvedElements(), m.name))
-		.map(m => {
+	const methods = mapMethods
+		.filter((m) =>
+			getElementByName(mapElements.getNonEvolvedElements(), m.name)
+		)
+		.map((m) => {
 			const el = getElementByName(mapElements.getNonEvolvedElements(), m.name);
 			const toTransform = Object.assign(el, {
 				decorators: { method: m.method },
@@ -122,286 +244,391 @@ function MapCanvas(props) {
 			return asMethod(toTransform);
 		});
 	const allMeths = methods.concat(decoratedComponentsMethods);
-
 	return (
 		<React.Fragment>
-			<svg
-				onDoubleClick={e => newElementAt(e)}
-				fontFamily={props.mapStyleDefs.fontFamily}
-				fontSize={props.mapStyleDefs.fontSize}
-				className={[props.mapStyleDefs.className, styles.mapCanvas].join(' ')}
-				id="svgMap"
-				width={props.mapDimensions.width + 2 * props.mapPadding}
-				height={props.mapDimensions.height + 4 * props.mapPadding}
-				viewBox={
-					'-' +
-					props.mapPadding +
-					' 0 ' +
-					(props.mapDimensions.width + props.mapPadding) +
-					' ' +
-					(props.mapDimensions.height + props.mapPadding)
-				}
-				version="1.1"
-				xmlns="http://www.w3.org/2000/svg"
-				xmlnsXlink="http://www.w3.org/1999/xlink"
+			<UncontrolledReactSVGPanZoom
+				ref={Viewer}
+				SVGBackground="white"
+				tool={tool}
+				width={props.mapCanvasDimensions.width + 30}
+				height={props.mapCanvasDimensions.height + 30}
+				detectAutoPan={false}
+				miniatureProps={{ position: 'right' }}
+				toolbarProps={{ position: 'none' }}
+				SVGStyle={{
+					x: '-30',
+					y: '-40',
+					height: props.mapDimensions.height + 90,
+					width: props.mapDimensions.width + 60,
+				}}
+				background="#eee"
+				// onClick={(event) => {
+				// 	console.log('click', event.x, event.y, event.originalEvent);
+				// 	console.log(Svg.current);
+				// }}
+				onDoubleClick={(e) => newElementAt(e)}
+				// onMouseMove={handleMouseMove}
+				onZoom={handleZoom}
+				onZoomReset={() => setScaleFactor(1)}
 			>
-				<MapGraphics mapStyleDefs={props.mapStyleDefs} />
-				<g id="grid">
-					<MapBackground
-						mapDimensions={props.mapDimensions}
-						mapStyleClass={props.mapStyleDefs.className}
-					/>
-					<MapGrid
-						mapDimensions={props.mapDimensions}
-						mapStyleDefs={props.mapStyleDefs}
-						evolutionOffsets={props.evolutionOffsets}
-					/>
-					<MapEvolution
-						mapDimensions={props.mapDimensions}
-						mapEvolutionStates={props.mapEvolutionStates}
-						mapStyleDefs={props.mapStyleDefs}
-						evolutionOffsets={props.evolutionOffsets}
-					/>
-				</g>
-				<g id="map">
-					<g id="attitudes">
-						{props.mapAttitudes.map((a, i) => (
-							<Attitude
-								key={i}
-								mapDimensions={props.mapDimensions}
-								mapStyleDefs={props.mapStyleDefs}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								attitude={a}
-							/>
-						))}
+				<svg
+					ref={mapRef}
+					onClick={(e) => quickAddAt(e)}
+					onDoubleClick={(e) => newElementAt(e)}
+					fontFamily={mapStyleDefs.fontFamily}
+					fontSize={mapStyleDefs.fontSize}
+					className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
+					id="svgMap"
+					width={mapDimensions.width + 80}
+					height={mapDimensions.height}
+					viewBox={
+						'-30' +
+						' -50 ' +
+						mapDimensions.width +
+						' ' +
+						(mapDimensions.height + 80)
+					}
+					version="1.1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlnsXlink="http://www.w3.org/1999/xlink"
+				>
+					<MapGraphics mapStyleDefs={mapStyleDefs} />
+					<g id="grid">
+						<MapBackground
+							mapDimensions={mapDimensions}
+							mapStyleClass={mapStyleDefs.className}
+						/>
+						<MapTitle mapTitle={mapTitle} />
+						<MapGrid
+							mapDimensions={mapDimensions}
+							mapStyleDefs={mapStyleDefs}
+							evolutionOffsets={evolutionOffsets}
+						/>
+						<MapEvolution
+							mapDimensions={mapDimensions}
+							mapEvolutionStates={mapEvolutionStates}
+							mapStyleDefs={mapStyleDefs}
+							evolutionOffsets={evolutionOffsets}
+						/>
 					</g>
-
-					<g id="methods">
-						{allMeths.map((m, i) => (
-							<MethodElement
-								key={i}
-								element={m}
-								mapStyleDefs={props.mapStyleDefs}
-								mapDimensions={props.mapDimensions}
-								method={m.method}
-							/>
-						))}
-					</g>
-
-					<g id="fluids" key="fluids">
-						{mapElementsClicked.map((current, i) => {
-							return (
-								<FluidLink
+					<g id="map">
+						<g id="attitudes">
+							{mapAttitudes.map((a, i) => (
+								<Attitude
 									key={i}
-									mapStyleDefs={props.mapStyleDefs}
-									mapDimensions={props.mapDimensions}
-									startElement={current.el}
-									origClick={current.e}
+									mapDimensions={mapDimensions}
+									mapStyleDefs={mapStyleDefs}
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									attitude={a}
+									scaleFactor={scaleFactor}
 								/>
+							))}
+						</g>
+
+						<g id="methods">
+							{allMeths.map((m, i) => (
+								<MethodElement
+									key={i}
+									element={m}
+									mapStyleDefs={mapStyleDefs}
+									mapDimensions={mapDimensions}
+									method={m.method}
+								/>
+							))}
+						</g>
+
+						<g id="fluids" key="fluids">
+							{mapElementsClicked.map((current, i) => {
+								return (
+									<FluidLink
+										key={i}
+										mapStyleDefs={mapStyleDefs}
+										mapDimensions={mapDimensions}
+										startElement={current.el}
+										origClick={current.e}
+										scaleFactor={scaleFactor}
+									/>
+								);
+							})}
+						</g>
+
+						{links.map((current) => {
+							return (
+								<g id={current.name} key={current.name}>
+									{current.links.map((l, i) => (
+										<ComponentLink
+											setMetaText={setMetaText}
+											metaText={metaText}
+											mapStyleDefs={mapStyleDefs}
+											key={i}
+											mapDimensions={mapDimensions}
+											startElement={l.startElement}
+											endElement={l.endElement}
+											link={l.link}
+											scaleFactor={props.scaleFactor}
+										/>
+									))}
+								</g>
 							);
 						})}
-					</g>
 
-					{links.map(current => {
-						return (
-							<g id={current.name} key={current.name}>
-								{current.links.map((l, i) => (
-									<ComponentLink
-										setMetaText={props.setMetaText}
-										metaText={props.metaText}
-										mapStyleDefs={props.mapStyleDefs}
-										key={i}
-										mapDimensions={props.mapDimensions}
-										startElement={l.startElement}
-										endElement={l.endElement}
-										link={l.link}
-									/>
+						<g id="evolvedLinks">
+							{mapElements.getEvolveElements().map((e, i) => (
+								<EvolvingComponentLink
+									mapStyleDefs={mapStyleDefs}
+									key={i}
+									mapDimensions={mapDimensions}
+									startElement={getElementByName(
+										mapElements.getEvolvedElements(),
+										e.name
+									)}
+									endElement={getElementByName(
+										mapElements.getEvolveElements(),
+										e.name
+									)}
+									link={e}
+									evolutionOffsets={evolutionOffsets}
+								/>
+							))}
+							;
+						</g>
+						<g id="anchors">
+							{mapAnchors.map((el, i) => (
+								<Anchor
+									key={i}
+									mapDimensions={mapDimensions}
+									anchor={el}
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									mapStyleDefs={mapStyleDefs}
+									setHighlightLine={setHighlightLine}
+									onClick={(e) => clicked({ el, e })}
+									scaleFactor={scaleFactor}
+								/>
+							))}
+						</g>
+						<g id="accelerators">
+							{enableAccelerators &&
+								mapAccelerators.map((el, l) => (
+									<MapAccelerator
+										key={l}
+										element={el}
+										mapDimensions={mapDimensions}
+										mapText={mapText}
+										mutateMapText={mutateMapText}
+									>
+										<AcceleratorSymbol
+											id={'market_circle_' + el.id}
+											isDeAccelerator={el.deaccelerator}
+											onClick={() => setHighlightLine(el.line)}
+										/>
+									</MapAccelerator>
 								))}
-							</g>
-						);
-					})}
+						</g>
+						<g id="pipelines">
+							{enableNewPipelines &&
+								mapElements
+									.getMapPipelines()
+									.filter((p) => p.hidden == false)
+									.map((p, i) => (
+										<React.Fragment key={i}>
+											{enableNewPipelines &&
+											p.components != undefined &&
+											p.components.length > 0 ? (
+												<PipelineVersion2
+													key={'pipeline_' + i}
+													mapDimensions={mapDimensions}
+													pipeline={p}
+													mapText={mapText}
+													mutateMapText={mutateMapText}
+													setMetaText={setMetaText}
+													metaText={metaText}
+													mapStyleDefs={mapStyleDefs}
+													setHighlightLine={setHighlightLine}
+													linkingFunction={clicked}
+													scaleFactor={scaleFactor}
+												/>
+											) : (
+												<Pipeline
+													key={i}
+													mapDimensions={mapDimensions}
+													pipeline={p}
+													mapText={mapText}
+													mutateMapText={mutateMapText}
+													setMetaText={setMetaText}
+													metaText={metaText}
+													mapStyleDefs={mapStyleDefs}
+													setHighlightLine={setHighlightLine}
+													scaleFactor={scaleFactor}
+												/>
+											)}
+										</React.Fragment>
+									))}
+						</g>
+						<g id="elements">
+							{mapElements.getMergedElements().map((el, i) => (
+								<MapComponent
+									key={i}
+									keyword={el.type}
+									launchUrl={launchUrl}
+									mapDimensions={mapDimensions}
+									element={el}
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									setMetaText={setMetaText}
+									metaText={metaText}
+									mapStyleDefs={mapStyleDefs}
+									setHighlightLine={setHighlightLine}
+									scaleFactor={scaleFactor}
+								>
+									{el.type === 'component' && (
+										<ComponentSymbol
+											id={'element_circle_' + el.id}
+											styles={mapStyleDefs.component}
+											evolved={el.evolved}
+											onClick={(e) => clicked({ el, e })}
+										/>
+									)}
 
-					<g id="evolvedLinks">
-						{mapElements.getEvolveElements().map((e, i) => (
-							<EvolvingComponentLink
-								mapStyleDefs={props.mapStyleDefs}
-								key={i}
-								mapDimensions={props.mapDimensions}
-								startElement={getElementByName(
-									mapElements.getEvolvedElements(),
-									e.name
-								)}
-								endElement={getElementByName(
-									mapElements.getEvolveElements(),
-									e.name
-								)}
-								link={e}
-								evolutionOffsets={props.evolutionOffsets}
-							/>
-						))}
-						;
+									{el.pipeline && (
+										<PipelineComponentSymbol
+											id={'element_square_' + el.id}
+											styles={mapStyleDefs.component}
+											evolved={el.evolved}
+											onClick={(e) => clicked({ el, e })}
+										/>
+									)}
+
+									{(el.decorators && el.decorators.ecosystem) ||
+									el.type === 'ecosystem' ? (
+										<EcosystemSymbol
+											id={'ecosystem_circle_' + el.id}
+											styles={mapStyleDefs.component}
+											onClick={(e) => clicked({ el, e })}
+										/>
+									) : null}
+
+									{(el.decorators && el.decorators.market) ||
+									el.type === 'market' ? (
+										<MarketSymbol
+											id={'market_circle_' + el.id}
+											styles={mapStyleDefs.component}
+											onClick={(e) => clicked({ el, e })}
+										/>
+									) : null}
+
+									{el.type === 'submap' && (
+										<SubMapSymbol
+											id={'element_circle_' + el.id}
+											styles={mapStyleDefs.submap}
+											evolved={el.evolved}
+											onClick={(e) => clicked({ el, e })}
+											launchUrl={() => launchUrl(el.url)}
+										/>
+									)}
+								</MapComponent>
+							))}
+						</g>
+
+						<g id="notes">
+							{mapNotes.map((el, i) => (
+								<Note
+									key={i}
+									mapDimensions={mapDimensions}
+									note={el}
+									mapText={mapText}
+									mutateMapText={mutateMapText}
+									mapStyleDefs={mapStyleDefs}
+									setHighlightLine={setHighlightLine}
+									scaleFactor={scaleFactor}
+								/>
+							))}
+						</g>
+
+						<g id="annotations">
+							{mapAnnotations.map((a, i) => (
+								<React.Fragment key={i}>
+									{a.occurances.map((o, i1) => (
+										<AnnotationElement
+											mapStyleDefs={mapStyleDefs}
+											key={i1 + '_' + i}
+											annotation={a}
+											occurance={o}
+											occuranceIndex={i1}
+											mapDimensions={mapDimensions}
+											mutateMapText={mutateMapText}
+											mapText={mapText}
+											scaleFactor={scaleFactor}
+										/>
+									))}
+								</React.Fragment>
+							))}
+							{mapAnnotations.length === 0 ? null : (
+								<AnnotationBox
+									mapStyleDefs={mapStyleDefs}
+									mutateMapText={mutateMapText}
+									mapText={mapText}
+									annotations={mapAnnotations}
+									position={mapAnnotationsPresentation}
+									mapDimensions={mapDimensions}
+									scaleFactor={scaleFactor}
+								/>
+							)}
+						</g>
 					</g>
-					<g id="anchors">
-						{props.mapAnchors.map((el, i) => (
-							<Anchor
-								key={i}
-								mapDimensions={props.mapDimensions}
-								anchor={el}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
-								onClick={e => clicked({ el, e })}
-							/>
-						))}
-					</g>
-					<g id="pipelines">
-						{featureSwitches.enableNewPipelines &&
-							mapElements
-								.getMapPipelines()
-								.filter(p => p.hidden == false)
-								.map((p, i) => (
-									<React.Fragment key={i}>
-										{featureSwitches.enableNewPipelines &&
-										p.components != undefined &&
-										p.components.length > 0 ? (
-											<PipelineVersion2
-												key={'pipeline_' + i}
-												mapDimensions={props.mapDimensions}
-												pipeline={p}
-												mapText={props.mapText}
-												mutateMapText={props.mutateMapText}
-												setMetaText={props.setMetaText}
-												metaText={props.metaText}
-												mapStyleDefs={props.mapStyleDefs}
-												setHighlightLine={props.setHighlightLine}
-												linkingFunction={clicked}
-											/>
-										) : (
-											<Pipeline
-												key={i}
-												mapDimensions={props.mapDimensions}
-												pipeline={p}
-												mapText={props.mapText}
-												mutateMapText={props.mutateMapText}
-												setMetaText={props.setMetaText}
-												metaText={props.metaText}
-												mapStyleDefs={props.mapStyleDefs}
-												setHighlightLine={props.setHighlightLine}
-											/>
-										)}
-									</React.Fragment>
-								))}
-					</g>
-					<g id="elements">
-						{mapElements.getMergedElements().map((el, i) => (
-							<MapComponent
-								key={i}
-								keyword={el.type}
-								launchUrl={props.launchUrl}
-								mapDimensions={props.mapDimensions}
-								element={el}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								setMetaText={props.setMetaText}
-								metaText={props.metaText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
-							>
-								{el.type === 'component' && (
-									<ComponentSymbol
-										id={'element_circle_' + el.id}
-										styles={props.mapStyleDefs.component}
-										evolved={el.evolved}
-										onClick={e => clicked({ el, e })}
-									/>
-								)}
-
-								{el.pipeline && (
-									<PipelineComponentSymbol
-										id={'element_square_' + el.id}
-										styles={props.mapStyleDefs.component}
-										evolved={el.evolved}
-										onClick={e => clicked({ el, e })}
-									/>
-								)}
-
-								{(el.decorators && el.decorators.ecosystem) ||
-								el.type === 'ecosystem' ? (
-									<EcosystemSymbol
-										id={'ecosystem_circle_' + el.id}
-										styles={props.mapStyleDefs.component}
-										onClick={e => clicked({ el, e })}
-									/>
-								) : null}
-
-								{(el.decorators && el.decorators.market) ||
-								el.type === 'market' ? (
-									<MarketSymbol
-										id={'market_circle_' + el.id}
-										styles={props.mapStyleDefs.component}
-										onClick={e => clicked({ el, e })}
-									/>
-								) : null}
-
-								{el.type === 'submap' && (
-									<SubMapSymbol
-										id={'element_circle_' + el.id}
-										styles={props.mapStyleDefs.submap}
-										evolved={el.evolved}
-										onClick={e => clicked({ el, e })}
-										launchUrl={() => props.launchUrl(el.url)}
-									/>
-								)}
-							</MapComponent>
-						))}
-					</g>
-
-					<g id="notes">
-						{props.mapNotes.map((el, i) => (
-							<Note
-								key={i}
-								mapDimensions={props.mapDimensions}
-								note={el}
-								mapText={props.mapText}
-								mutateMapText={props.mutateMapText}
-								mapStyleDefs={props.mapStyleDefs}
-								setHighlightLine={props.setHighlightLine}
-							/>
-						))}
-					</g>
-
-					<g id="annotations">
-						{props.mapAnnotations.map((a, i) => (
-							<React.Fragment key={i}>
-								{a.occurances.map((o, i1) => (
-									<AnnotationElement
-										mapStyleDefs={props.mapStyleDefs}
-										key={i1 + '_' + i}
-										annotation={a}
-										occurance={o}
-										occuranceIndex={i1}
-										mapDimensions={props.mapDimensions}
-										mutateMapText={props.mutateMapText}
-										mapText={props.mapText}
-									/>
-								))}
-							</React.Fragment>
-						))}
-						{props.mapAnnotations.length === 0 ? null : (
-							<AnnotationBox
-								mapStyleDefs={props.mapStyleDefs}
-								mutateMapText={props.mutateMapText}
-								mapText={props.mapText}
-								annotations={props.mapAnnotations}
-								position={props.mapAnnotationsPresentation}
-								mapDimensions={props.mapDimensions}
-							/>
-						)}
-					</g>
-				</g>
-			</svg>
+				</svg>
+			</UncontrolledReactSVGPanZoom>
+			<ButtonGroup orientation="horizontal" aria-label="button group">
+				<IconButton
+					aria-label={'Select'}
+					onClick={(event) => handleChangeTool(event, TOOL_NONE)}
+					sx={tool === TOOL_NONE ? SelectedIconButtonStyle : IconButtonStyle}
+				>
+					<HandIcon />
+				</IconButton>
+				<IconButton
+					aria-label={'Pan'}
+					onClick={(event) => handleChangeTool(event, TOOL_PAN)}
+					sx={tool === TOOL_PAN ? SelectedIconButtonStyle : IconButtonStyle}
+				>
+					<PanIcon />
+				</IconButton>
+				<IconButton
+					aria-label={'Zoom In'}
+					sx={tool === TOOL_ZOOM_IN ? SelectedIconButtonStyle : IconButtonStyle}
+					onClick={(event) => handleChangeTool(event, TOOL_ZOOM_IN)}
+				>
+					<ZoomInIcon />
+				</IconButton>
+				<IconButton
+					aria-label={'Zoom Out'}
+					sx={
+						tool === TOOL_ZOOM_OUT ? SelectedIconButtonStyle : IconButtonStyle
+					}
+					onClick={(event) => handleChangeTool(event, TOOL_ZOOM_OUT)}
+				>
+					<ZoomOutIcon />
+				</IconButton>
+				<IconButton
+					aria-label={'Fit'}
+					sx={IconButtonStyle}
+					onClick={() => _fitToViewer()}
+				>
+					<FitScreenIcon />
+				</IconButton>
+				<IconButton
+					onClick={props.shouldHideNav}
+					color={textColour[props.mapStyleDefs.className]}
+					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
+				>
+					{props.hideNav ? (
+						<FullscreenExitIcon sx={IconButtonStyle} />
+					) : (
+						<FullscreenIcon sx={IconButtonStyle} />
+					)}
+				</IconButton>
+			</ButtonGroup>
 		</React.Fragment>
 	);
 }

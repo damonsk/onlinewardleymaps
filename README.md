@@ -12,9 +12,19 @@ Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see [Sim
 
 ## Running locally
 
-Dependancies for running locally. NodeJS and Yarn.
+The project depends on AWS Amplify and an AWS account as it creates supporting infrastructure (for saving maps and serving accounts).
+
+The infrastructure that will be created is defined here: https://github.com/damonsk/onlinewardleymaps/tree/master/frontend/amplify/backend
+
+The costs will be minimal as it's based on serverless offerings and likely covered under the Free Tier if you have a new account. For reference, it's approximately $1 a month for the current live site.
+
+The documentation for getting started with the amplify cli can be found @ https://docs.amplify.aws/javascript/start/getting-started/installation/
+
+Dependencies for running locally: Node.js, Yarn, and Amplify.
 
     npm install yarn -g
+    npm install -g @aws-amplify/cli
+    
 
 Change directory to frontend.
 
@@ -23,6 +33,10 @@ Change directory to frontend.
 Install dependencies
 
     yarn install
+
+Initialise Amplify environment
+
+    amplify init
 
 Commands:
 

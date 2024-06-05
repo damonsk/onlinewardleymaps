@@ -15,9 +15,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CoreHeader from './CoreHeader';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { featureSwitches } from '../../constants/featureswitches';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
-const StyledMenu = styled(props => (
+const StyledMenu = styled((props) => (
 	<Menu
 		elevation={0}
 		anchorOrigin={{
@@ -61,6 +61,7 @@ const StyledMenu = styled(props => (
 }));
 
 function NewHeader(props) {
+	const { enableDashboard } = useFeatureSwitches();
 	const {
 		saveOutstanding,
 		saveMapClick,
@@ -105,20 +106,20 @@ function NewHeader(props) {
 	const open = Boolean(anchorEl);
 	const openMore = Boolean(anchorMoreEl);
 
-	const handleClick = event => {
+	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleMoreClick = event => {
+	const handleMoreClick = (event) => {
 		setAnchorMoreEl(event.currentTarget);
 	};
 
-	const handleClose = preAction => {
+	const handleClose = (preAction) => {
 		if (typeof preAction === 'function') preAction();
 		setAnchorEl(null);
 	};
 
-	const handleMoreClose = preAction => {
+	const handleMoreClose = (preAction) => {
 		if (typeof preAction === 'function') preAction();
 		setAnchorMoreEl(null);
 	};
@@ -174,7 +175,7 @@ function NewHeader(props) {
 			open={openMore}
 			onClose={handleMoreClose}
 		>
-			{featureSwitches.enableDashboard && isLoggedIn === false && (
+			{enableDashboard && isLoggedIn === false && (
 				<MenuItem
 					sx={{ display: { xs: 'flex', sm: 'none' } }}
 					disableRipple
@@ -183,7 +184,7 @@ function NewHeader(props) {
 					Login
 				</MenuItem>
 			)}
-			{featureSwitches.enableDashboard && isLoggedIn && (
+			{enableDashboard && isLoggedIn && (
 				<MenuItem
 					sx={{ display: { xs: 'flex', sm: 'none' } }}
 					disableRipple
@@ -262,7 +263,7 @@ function NewHeader(props) {
 				spacing={0.5}
 				divider={<Divider orientation="vertical" flexItem />}
 			>
-				{featureSwitches.enableDashboard && isLoggedIn === false && (
+				{enableDashboard && isLoggedIn === false && (
 					<Button
 						sx={{ display: { xs: 'none', sm: 'block' } }}
 						color="inherit"
@@ -272,7 +273,7 @@ function NewHeader(props) {
 						Login
 					</Button>
 				)}
-				{featureSwitches.enableDashboard && isLoggedIn && (
+				{enableDashboard && isLoggedIn && (
 					<Button
 						sx={{ display: { xs: 'none', sm: 'block' } }}
 						color="inherit"
@@ -295,7 +296,7 @@ function NewHeader(props) {
 					Example Map
 				</Button>
 
-				{featureSwitches.enableDashboard && (
+				{enableDashboard && (
 					<Button
 						color="inherit"
 						size="small"
@@ -311,7 +312,7 @@ function NewHeader(props) {
 					</Button>
 				)}
 
-				{featureSwitches.enableDashboard === false && (
+				{enableDashboard === false && (
 					<Button
 						color="inherit"
 						size="small"
@@ -357,7 +358,7 @@ function NewHeader(props) {
 
 			{moreMenu}
 
-			{featureSwitches.enableDashboard && newMenu}
+			{enableDashboard && newMenu}
 
 			<Dialog open={modalShow} onClose={() => setModalShow(false)}>
 				<DialogTitle>Clone URL</DialogTitle>

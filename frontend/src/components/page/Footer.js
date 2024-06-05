@@ -3,7 +3,7 @@ import { Grid, Link, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 function Footer() {
-	const StyledFooter = styled(props => (
+	const StyledFooter = styled((props) => (
 		<Grid container padding={4} {...props} />
 	))(({ theme }) => ({
 		backgroundColor:

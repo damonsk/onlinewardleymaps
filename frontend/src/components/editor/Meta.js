@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function Meta(props) {
 	const [showMeta, setShowMeta] = useState(false);
-	const onClickAlert = function() {
+	const onClickAlert = function () {
 		setShowMeta(!showMeta);
 	};
 
@@ -14,7 +14,7 @@ function Meta(props) {
 	);
 }
 
-var Alert = props => (
+var Alert = (props) => (
 	<>
 		<div id="meta-alert" className="alert alert-warning" role="alert">
 			Your map has meta data -{' '}
@@ -29,7 +29,7 @@ var Alert = props => (
 	</>
 );
 
-var MetaText = props => (
+var MetaText = (props) => (
 	<>
 		<div id="meta-container">
 			<textarea

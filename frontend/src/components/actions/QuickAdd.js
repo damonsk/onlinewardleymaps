@@ -67,11 +67,11 @@ function QuickAdd(props) {
 	const [showAdd, setShowAdd] = useState(false);
 	const [typeToUse, setTypeToUse] = useState(0);
 	const [value, setValue] = React.useState('');
-	const handleChange = event => {
+	const handleChange = (event) => {
 		setValue(event.target.value);
 	};
 
-	const handleChaneOfComponent = evt => {
+	const handleChaneOfComponent = (evt) => {
 		setTypeToUse(evt.target.value);
 	};
 	const cancelShowAdd = useCallback(() => {
@@ -80,7 +80,7 @@ function QuickAdd(props) {
 	}, [setShowAdd, setNewComponentContext]);
 
 	useEffect(() => {
-		const handleEscape = k => {
+		const handleEscape = (k) => {
 			if (k.key === 'Escape') {
 				document.removeEventListener('keyup', handleEscape);
 				cancelShowAdd();
@@ -160,7 +160,7 @@ function QuickAdd(props) {
 										height: '40px',
 									},
 								}}
-								onKeyPress={e => {
+								onKeyPress={(e) => {
 									if (e.key === 'Enter') addNewComponent();
 								}}
 							/>

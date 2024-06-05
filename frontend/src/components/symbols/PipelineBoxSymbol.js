@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-const PipelineBoxSymbol = props => {
+const PipelineBoxSymbol = (props) => {
 	const { id, y, x1, x2, stroke, styles = {} } = props;
 	const str = stroke || styles.stroke;
 	return (

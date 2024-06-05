@@ -52,16 +52,16 @@ component Water [0.38, 0.82]
 component Kettle [0.45, 0.57] label [-33, -16]
 pipeline Kettle
 {
-  component Campfire Kettle [0.50] label [-29.00, 28.00]
-  component Electric Kettle [0.63] label [-30.00, 25.00]
+  component Campfire Kettle [0.50] label [-29, 28]
+  component Electric Kettle [0.63] label [-30, 25]
 }
 
 component Power [0.26, 0.80] label [-7, -15]
 pipeline Power
 {
-  component Nuclear [0.81] label [-17.00, 35.00]
-  component Solar [0.73] label [-20.00, 35.00]
-  component Coal [0.88] label [-13.00, 35.00]
+  component Nuclear [0.81] label [-17, 35]
+  component Solar [0.73] label [-20, 35]
+  component Coal [0.88] label [-13, 35]
 }
 
 component Campfire [0.35, 0.30] label [-52, -10]

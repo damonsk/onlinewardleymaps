@@ -16,7 +16,7 @@ const trimText = (id, longText) =>
 			</tspan>
 		));
 
-const ComponentTextSymbol = props => {
+const ComponentTextSymbol = (props) => {
 	const {
 		id,
 		x,
@@ -31,11 +31,16 @@ const ComponentTextSymbol = props => {
 		textAnchor,
 		styles = {},
 		onClick,
+		setShowTextField = null,
 	} = props;
 	const displayFill = evolved ? styles.evolvedTextColor : styles.textColor;
 	const isLong = text && text.length > 14;
 	const trimmedText = isLong ? trimText(id, text) : text;
 	const transform = isLong ? 'translate(30, 10)' : '';
+	const handleDblClick = (e) => {
+		e.stopPropagation();
+		if (setShowTextField) setShowTextField(true);
+	};
 	return (
 		<>
 			<text
@@ -51,6 +56,7 @@ const ComponentTextSymbol = props => {
 				transform={transform}
 				fill={fill || displayFill}
 				onClick={onClick ? onClick : null}
+				onDoubleClick={handleDblClick}
 			>
 				{note || trimmedText}
 			</text>
