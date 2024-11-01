@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ExampleMap, MapPersistenceStrategy } from '../../constants/defaults';
 import { styled, alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
@@ -77,7 +77,6 @@ function NewHeader(props) {
 		toggleMenu,
 	} = props;
 
-	const [anchorEl, setAnchorEl] = useState(null);
 	const [anchorMoreEl, setAnchorMoreEl] = useState(null);
 	const [modalShow, setModalShow] = useState(false);
 
@@ -92,7 +91,6 @@ function NewHeader(props) {
 		navigator.clipboard.writeText(copyUrl);
 	};
 
-	const open = Boolean(anchorEl);
 	const openMore = Boolean(anchorMoreEl);
 
 	const handleMoreClick = (event) => {
@@ -199,9 +197,6 @@ function NewHeader(props) {
 					size="small"
 					variant="text"
 					id="new-menu-button"
-					aria-controls={open ? 'new-menu' : undefined}
-					aria-haspopup="true"
-					aria-expanded={open ? 'true' : undefined}
 					onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
 				>
 					New
