@@ -42,7 +42,6 @@ function MyApp({ Component, pageProps }) {
 				/>
 			</Head>
 			<FeatureSwitchesProvider value={featureSwitches}>
-				{/* <AmplifyAuthProvider> */}
 				<StylesProvider injectFirst>
 					<MaterialUIThemeProvider theme={currentTheme}>
 						<StyledComponentsThemeProvider theme={currentTheme}>
