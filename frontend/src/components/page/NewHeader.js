@@ -4,7 +4,6 @@ import { styled, alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -15,7 +14,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CoreHeader from './CoreHeader';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 const StyledMenu = styled((props) => (
 	<Menu
@@ -61,7 +59,6 @@ const StyledMenu = styled((props) => (
 }));
 
 function NewHeader(props) {
-	const { enableDashboard } = useFeatureSwitches();
 	const {
 		saveOutstanding,
 		saveMapClick,
@@ -75,22 +72,14 @@ function NewHeader(props) {
 		setShowLinkedEvolved,
 		showLinkedEvolved,
 		downloadMapAsSVG,
-		canSaveMap,
 		setMapOnlyView,
 		mapOnlyView,
 		toggleMenu,
-		setHideAuthModal,
-		signOut,
 	} = props;
 
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [anchorMoreEl, setAnchorMoreEl] = useState(null);
 	const [modalShow, setModalShow] = useState(false);
-
-	useEffect(() => {
-		setIsLoggedIn(props.user !== null);
-	}, [props.user]);
 
 	const example = () => {
 		mutateMapText(ExampleMap);
@@ -106,64 +95,14 @@ function NewHeader(props) {
 	const open = Boolean(anchorEl);
 	const openMore = Boolean(anchorMoreEl);
 
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-
 	const handleMoreClick = (event) => {
 		setAnchorMoreEl(event.currentTarget);
-	};
-
-	const handleClose = (preAction) => {
-		if (typeof preAction === 'function') preAction();
-		setAnchorEl(null);
 	};
 
 	const handleMoreClose = (preAction) => {
 		if (typeof preAction === 'function') preAction();
 		setAnchorMoreEl(null);
 	};
-
-	const newMenu = (
-		<StyledMenu
-			id="new-menu"
-			MenuListProps={{
-				'aria-labelledby': 'new-menu-button',
-			}}
-			anchorEl={anchorEl}
-			open={open}
-			onClose={handleClose}
-		>
-			<MenuItem
-				disabled={!isLoggedIn}
-				disableRipple
-				onClick={() =>
-					handleClose(() => newMapClick(MapPersistenceStrategy.Public))
-				}
-			>
-				Public Map
-			</MenuItem>
-			<MenuItem
-				disabled={!isLoggedIn}
-				onClick={() =>
-					handleClose(() => newMapClick(MapPersistenceStrategy.Private))
-				}
-				disableRipple
-			>
-				Private Map
-			</MenuItem>
-			<MenuItem
-				onClick={() =>
-					handleClose(() =>
-						newMapClick(MapPersistenceStrategy.PublicUnauthenticated)
-					)
-				}
-				disableRipple
-			>
-				Anonymous Map
-			</MenuItem>
-		</StyledMenu>
-	);
 
 	const moreMenu = (
 		<StyledMenu
@@ -175,27 +114,7 @@ function NewHeader(props) {
 			open={openMore}
 			onClose={handleMoreClose}
 		>
-			{enableDashboard && isLoggedIn === false && (
-				<MenuItem
-					sx={{ display: { xs: 'flex', sm: 'none' } }}
-					disableRipple
-					onClick={() => setHideAuthModal(false)}
-				>
-					Login
-				</MenuItem>
-			)}
-			{enableDashboard && isLoggedIn && (
-				<MenuItem
-					sx={{ display: { xs: 'flex', sm: 'none' } }}
-					disableRipple
-					onClick={() => signOut()}
-				>
-					Logout
-				</MenuItem>
-			)}
-
 			<MenuItem
-				//disabled={!isLoggedIn}
 				disableRipple
 				onClick={() => handleMoreClose(() => setModalShow(true))}
 			>
@@ -263,27 +182,6 @@ function NewHeader(props) {
 				spacing={0.5}
 				divider={<Divider orientation="vertical" flexItem />}
 			>
-				{enableDashboard && isLoggedIn === false && (
-					<Button
-						sx={{ display: { xs: 'none', sm: 'block' } }}
-						color="inherit"
-						size="small"
-						onClick={() => setHideAuthModal(false)}
-					>
-						Login
-					</Button>
-				)}
-				{enableDashboard && isLoggedIn && (
-					<Button
-						sx={{ display: { xs: 'none', sm: 'block' } }}
-						color="inherit"
-						size="small"
-						onClick={() => signOut()}
-					>
-						Logout
-					</Button>
-				)}
-
 				<Button
 					color="inherit"
 					size="small"
@@ -296,42 +194,23 @@ function NewHeader(props) {
 					Example Map
 				</Button>
 
-				{enableDashboard && (
-					<Button
-						color="inherit"
-						size="small"
-						variant="text"
-						id="new-menu-button"
-						aria-controls={open ? 'new-menu' : undefined}
-						aria-haspopup="true"
-						aria-expanded={open ? 'true' : undefined}
-						onClick={handleClick}
-						endIcon={<KeyboardArrowDownIcon />}
-					>
-						New
-					</Button>
-				)}
-
-				{enableDashboard === false && (
-					<Button
-						color="inherit"
-						size="small"
-						variant="text"
-						id="new-menu-button"
-						aria-controls={open ? 'new-menu' : undefined}
-						aria-haspopup="true"
-						aria-expanded={open ? 'true' : undefined}
-						onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
-					>
-						New
-					</Button>
-				)}
+				<Button
+					color="inherit"
+					size="small"
+					variant="text"
+					id="new-menu-button"
+					aria-controls={open ? 'new-menu' : undefined}
+					aria-haspopup="true"
+					aria-expanded={open ? 'true' : undefined}
+					onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
+				>
+					New
+				</Button>
 
 				<Button
 					color={saveOutstanding ? 'error' : 'inherit'}
 					size="small"
 					onClick={saveMapClick}
-					disabled={!canSaveMap}
 					variant={saveOutstanding ? 'outlined' : 'text'}
 					sx={
 						saveOutstanding
@@ -357,8 +236,6 @@ function NewHeader(props) {
 			</Stack>
 
 			{moreMenu}
-
-			{enableDashboard && newMenu}
 
 			<Dialog open={modalShow} onClose={() => setModalShow(false)}>
 				<DialogTitle>Clone URL</DialogTitle>

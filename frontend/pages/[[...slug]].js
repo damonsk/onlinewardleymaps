@@ -2,29 +2,15 @@ import React, { useState, useEffect } from 'react';
 import MapEnvironment from '../src/components/MapEnvironment';
 import * as Defaults from '../src/constants/defaults';
 import { useRouter } from 'next/router';
-import { useFeatureSwitches } from '../src/components/FeatureSwitchesContext';
 
 function Map(props) {
-	const { enableDashboard } = useFeatureSwitches();
 	const router = useRouter();
-	const { user } = props;
 	const { slug } = router.query;
 	const [currentId, setCurrentId] = useState('');
-	const [mapOwner, setMapOwner] = useState();
-	const [isMapReadOnly, setMapReadOnly] = useState(false);
-	const [canSaveMap, setCanSaveMap] = useState(false);
 	const [mapPersistenceStrategy, setMapPersistenceStrategy] = useState(
-		enableDashboard === true
-			? Defaults.MapPersistenceStrategy.PublicUnauthenticated
-			: Defaults.MapPersistenceStrategy.Legacy
+		Defaults.MapPersistenceStrategy.Legacy
 	);
 	const [shouldLoad, setShouldLoad] = useState(false);
-
-	// forcing build. I'll fix it later.
-	useEffect(() => {
-		setMapOwner(false);
-		setMapReadOnly(false);
-	}, [canSaveMap]);
 
 	useEffect(() => {
 		console.log('slug', slug);
@@ -65,34 +51,6 @@ function Map(props) {
 	useEffect(() => {
 		console.log('[slug::useEffect::currentId]', currentId);
 	}, [currentId]);
-
-	useEffect(() => {
-		if (
-			mapPersistenceStrategy ===
-			Defaults.MapPersistenceStrategy.PublicUnauthenticated
-		)
-			setCanSaveMap(true);
-		if (mapOwner) {
-			console.log('--- MapOwner: ' + mapOwner);
-			if (user !== null && mapOwner === user.username) {
-				setCanSaveMap(true);
-				console.log('--- Can Save Map (MapOwner)');
-				return;
-			}
-			if (
-				user !== null &&
-				mapOwner !== user.username &&
-				mapPersistenceStrategy !== Defaults.MapPersistenceStrategy.Private &&
-				!isMapReadOnly
-			) {
-				setCanSaveMap(true);
-				console.log('--- Can Save Map (Public, Logged In, Not Read Only)');
-				return;
-			}
-			console.log('--- Cannot Save Map');
-			setCanSaveMap(false);
-		}
-	}, [mapOwner, user, isMapReadOnly, mapPersistenceStrategy]);
 
 	return (
 		<React.Fragment>

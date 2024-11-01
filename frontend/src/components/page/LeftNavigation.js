@@ -7,12 +7,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Router from 'next/router';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import MapIcon from '@mui/icons-material/Map';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import PersonIcon from '@mui/icons-material/Person';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 export default function LeftNavigation({
 	menuVisible,
@@ -20,10 +17,7 @@ export default function LeftNavigation({
 	submenu,
 	toggleTheme,
 	isLightTheme,
-	setHideAuthModal,
-	user,
 }) {
-	const { enableDashboard } = useFeatureSwitches();
 	const history = {
 		push: (url) => {
 			Router.push({
@@ -48,12 +42,6 @@ export default function LeftNavigation({
 
 	const siteLinks = [
 		{
-			name: 'Dashboard',
-			icon: <DashboardIcon />,
-			action: () => complete(history.push('/dashboard')),
-			visible: enableDashboard,
-		},
-		{
 			name: 'Editor',
 			icon: <MapIcon />,
 			action: () => complete(history.push('/')),
@@ -65,12 +53,6 @@ export default function LeftNavigation({
 			action: () =>
 				complete(history.push('https://classic.onlinewardleymaps.com')),
 			visible: true,
-		},
-		{
-			name: user !== null ? 'Logout' : 'Login',
-			icon: <PersonIcon />,
-			action: () => complete(setHideAuthModal(false)),
-			visible: enableDashboard,
 		},
 	];
 

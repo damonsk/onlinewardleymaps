@@ -8,9 +8,6 @@ export const increasedLabelOffset = { x: 5, y: -20 };
 
 export const MapPersistenceStrategy = {
 	Legacy: 'Legacy',
-	Private: 'Private',
-	Public: 'Public',
-	PublicUnauthenticated: 'PublicUnauthenticated',
 };
 
 export const EvoOffsets = {

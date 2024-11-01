@@ -93,7 +93,6 @@ function MapCanvas(props) {
 	const Viewer = useRef(null);
 	const [tool, setTool] = useState(TOOL_NONE);
 	const [scaleFactor, setScaleFactor] = useState(1);
-	//const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
 	const _fitToViewer = () => {
 		Viewer.current.fitSelection(
@@ -103,11 +102,6 @@ function MapCanvas(props) {
 			props.mapDimensions.height + 92
 		);
 	};
-
-	// const handleMouseMove = (event) => {
-	// 	setMousePosition({ x: event.x, y: event.y });
-
-	// };
 
 	const handleZoom = (value) => {
 		setScaleFactor(value.a);
@@ -249,6 +243,7 @@ function MapCanvas(props) {
 		<React.Fragment>
 			<UncontrolledReactSVGPanZoom
 				ref={Viewer}
+				id="wm-svg-pan-zoom"
 				SVGBackground="white"
 				tool={tool}
 				width={props.mapCanvasDimensions.width + 30}
@@ -582,6 +577,7 @@ function MapCanvas(props) {
 			</UncontrolledReactSVGPanZoom>
 			<ButtonGroup orientation="horizontal" aria-label="button group">
 				<IconButton
+					id="wm-map-select"
 					aria-label={'Select'}
 					onClick={(event) => handleChangeTool(event, TOOL_NONE)}
 					sx={tool === TOOL_NONE ? SelectedIconButtonStyle : IconButtonStyle}
@@ -589,6 +585,7 @@ function MapCanvas(props) {
 					<HandIcon />
 				</IconButton>
 				<IconButton
+					id="wm-map-pan"
 					aria-label={'Pan'}
 					onClick={(event) => handleChangeTool(event, TOOL_PAN)}
 					sx={tool === TOOL_PAN ? SelectedIconButtonStyle : IconButtonStyle}
@@ -596,6 +593,7 @@ function MapCanvas(props) {
 					<PanIcon />
 				</IconButton>
 				<IconButton
+					id="wm-zoom-in"
 					aria-label={'Zoom In'}
 					sx={tool === TOOL_ZOOM_IN ? SelectedIconButtonStyle : IconButtonStyle}
 					onClick={(event) => handleChangeTool(event, TOOL_ZOOM_IN)}
@@ -603,6 +601,7 @@ function MapCanvas(props) {
 					<ZoomInIcon />
 				</IconButton>
 				<IconButton
+					id="wm-zoom-out"
 					aria-label={'Zoom Out'}
 					sx={
 						tool === TOOL_ZOOM_OUT ? SelectedIconButtonStyle : IconButtonStyle
@@ -612,6 +611,7 @@ function MapCanvas(props) {
 					<ZoomOutIcon />
 				</IconButton>
 				<IconButton
+					id="wm-map-fit"
 					aria-label={'Fit'}
 					sx={IconButtonStyle}
 					onClick={() => _fitToViewer()}
@@ -619,6 +619,7 @@ function MapCanvas(props) {
 					<FitScreenIcon />
 				</IconButton>
 				<IconButton
+					id="wm-map-fullscreen"
 					onClick={props.shouldHideNav}
 					color={textColour[props.mapStyleDefs.className]}
 					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}

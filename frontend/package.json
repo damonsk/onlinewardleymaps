@@ -41,16 +41,12 @@
 		"react-error-overlay": "6.0.9"
 	},
 	"dependencies": {
-		"@aws-amplify/core": "^6.0.9",
-		"@aws-amplify/datastore": "^5.0.9",
-		"@aws-amplify/ui-react": "^6.0.7",
 		"@emotion/react": "^11.11.3",
 		"@emotion/styled": "^11.11.0",
 		"@mui/icons-material": "^5.15.2",
 		"@mui/material": "5.15.2",
 		"@mui/styles": "5.15.2",
 		"ace-builds": "^1.32.2",
-		"aws-amplify": "^6.0.9",
 		"core-js": "^3.34.0",
 		"html2canvas": "^1.4.1",
 		"lodash.merge": "^4.6.2",
@@ -59,7 +55,7 @@
 		"react": "18.2.0",
 		"react-ace": "^10.1.0",
 		"react-dom": "18.2.0",
-		"react-svg-pan-zoom": "^3.12.1",
+		"react-svg-pan-zoom": "3.13.1",
 		"sass": "^1.69.5",
 		"styled-components": "6.1.5"
 	},

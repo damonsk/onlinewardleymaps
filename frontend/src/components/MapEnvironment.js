@@ -17,7 +17,6 @@ import { LoadMap } from '../repository/LoadMap';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Grid } from '@mui/material';
-import { uploadData } from 'aws-amplify/storage';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import Router from 'next/router';
 import Dialog from '@mui/material/Dialog';
@@ -39,28 +38,6 @@ function debounce(fn, ms) {
 	};
 }
 
-function convertToImage(base64Data, contentType) {
-	base64Data = base64Data.replace('data:image/png;base64,', '');
-	contentType = contentType || '';
-	var sliceSize = 1024;
-	var byteCharacters = atob(base64Data);
-	var bytesLength = byteCharacters.length;
-	var slicesCount = Math.ceil(bytesLength / sliceSize);
-	var byteArrays = new Array(slicesCount);
-
-	for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-		var begin = sliceIndex * sliceSize;
-		var end = Math.min(begin + sliceSize, bytesLength);
-
-		var bytes = new Array(end - begin);
-		for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-			bytes[i] = byteCharacters[offset].charCodeAt(0);
-		}
-		byteArrays[sliceIndex] = new Uint8Array(bytes);
-	}
-	return new Blob(byteArrays, { type: contentType });
-}
-
 const getHeight = () => {
 	const winHeight = window.innerHeight;
 	const topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
@@ -76,9 +53,6 @@ function Environment(props) {
 		toggleMenu,
 		menuVisible,
 		toggleTheme,
-		signOut,
-		user,
-		setHideAuthModal,
 		isLightTheme,
 		mapPersistenceStrategy,
 		setMapPersistenceStrategy,
@@ -132,9 +106,6 @@ function Environment(props) {
 	const [errorLine, setErrorLine] = useState(-1);
 	const [showLineNumbers, setShowLineNumbers] = useState(false);
 	const [showLinkedEvolved, setShowLinkedEvolved] = useState(false);
-	const [mapOwner, setMapOwner] = useState();
-	const [isMapReadOnly, setMapReadOnly] = useState(false);
-	const [canSaveMap, setCanSaveMap] = useState(false);
 	const [mapOnlyView, setMapOnlyView] = useState(false);
 	const [currentIteration, setCurrentIteration] = useState(-1);
 	const [actionInProgress, setActionInProgress] = useState(false);
@@ -174,14 +145,6 @@ function Environment(props) {
 		};
 
 		const followOnActions = async function (id, resultFromAction) {
-			if (mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Private) {
-				const imageData = await makeSnapShot();
-				await createImage(imageData, 'private', id + '.png');
-			}
-			if (mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Public) {
-				const imageData = await makeSnapShot();
-				await createImage(imageData, 'public', id + '.png');
-			}
 			if (currentId === '') {
 				console.log('[followOnActions::switch]', {
 					mapPersistenceStrategy,
@@ -218,17 +181,6 @@ function Environment(props) {
 				mapPersistenceStrategy,
 				resultFromAction,
 			});
-
-			async function createImage(imageData, level, filename) {
-				return await uploadData({
-					key: filename,
-					data: convertToImage(imageData, 'image/png'),
-					options: {
-						level: level,
-						contentType: 'image/png',
-					},
-				});
-			}
 		};
 
 		await SaveMap(mapPersistenceStrategy, mapToPersist, hash, followOnActions);
@@ -258,13 +210,9 @@ function Environment(props) {
 
 			switch (mapPersistenceStrategy) {
 				case Defaults.MapPersistenceStrategy.Legacy:
-					console.log('--- Need to migrate this map to PublicUnauthd');
-					setMapOwner(false);
 					break;
 				default:
 					setMapPersistenceStrategy(mapPersistenceStrategy);
-					setMapOwner(map.owner || false);
-					setMapReadOnly(map.readOnly || false);
 					break;
 			}
 		};
@@ -347,13 +295,6 @@ function Environment(props) {
 		window.URL.revokeObjectURL(url);
 	};
 
-	async function makeSnapShot() {
-		return await html2canvas(mapRef.current).then((canvas) => {
-			const base64image = canvas.toDataURL('image/png');
-			return base64image;
-		});
-	}
-
 	useEffect(() => {
 		const handleBeforeUnload = (event) => {
 			if (saveOutstanding) {
@@ -426,35 +367,6 @@ function Environment(props) {
 			setMapTitle(rawMapTitle);
 		}
 	}, [currentIteration, rawMapTitle, mapIterations]);
-
-	useEffect(() => {
-		if (
-			mapPersistenceStrategy ===
-				Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
-			mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Legacy
-		)
-			setCanSaveMap(true);
-		if (mapOwner) {
-			console.log('--- MapOwner: ' + mapOwner);
-			if (user !== null && mapOwner === user.username) {
-				setCanSaveMap(true);
-				console.log('--- Can Save Map (MapOwner)');
-				return;
-			}
-			if (
-				user !== null &&
-				mapOwner !== user.username &&
-				mapPersistenceStrategy !== Defaults.MapPersistenceStrategy.Private &&
-				!isMapReadOnly
-			) {
-				setCanSaveMap(true);
-				console.log('--- Can Save Map (Public, Logged In, Not Read Only)');
-				return;
-			}
-			console.log('--- Cannot Save Map');
-			setCanSaveMap(false);
-		}
-	}, [mapOwner, user, isMapReadOnly, mapPersistenceStrategy]);
 
 	useEffect(() => {
 		switch (mapStyle) {
@@ -553,17 +465,12 @@ function Environment(props) {
 				submenu={submenu}
 				toggleTheme={toggleTheme}
 				isLightTheme={isLightTheme}
-				user={user}
-				setHideAuthModal={setHideAuthModal}
 			/>
 
 			<Box id="top-nav-wrapper" sx={{ display: hideNav ? 'none' : 'block' }}>
 				<NewHeader
 					mapOnlyView={mapOnlyView}
 					setMapOnlyView={setMapOnlyView}
-					user={user}
-					signOut={signOut}
-					setHideAuthModal={setHideAuthModal}
 					currentUrl={currentUrl}
 					saveOutstanding={saveOutstanding}
 					setMetaText={setMetaText}
@@ -576,14 +483,12 @@ function Environment(props) {
 					showLinkedEvolved={showLinkedEvolved}
 					setShowLinkedEvolved={setShowLinkedEvolved}
 					downloadMapAsSVG={downloadMapAsSVG}
-					canSaveMap={canSaveMap}
 					toggleMenu={toggleMenu}
 				/>
 
 				<Breadcrumb
 					currentUrl={currentUrl}
 					mapPersistenceStrategy={mapPersistenceStrategy}
-					mapReadOnly={isMapReadOnly}
 				/>
 
 				<NewMapIterations
