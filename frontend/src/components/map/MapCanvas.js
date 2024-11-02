@@ -95,6 +95,7 @@ function MapCanvas(props) {
 	} = props;
 	const isModKeyPressed = useModKeyPressedConsumer();
 	const [mapElementsClicked, setMapElementsClicked] = useState([]);
+	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
 	const Viewer = useRef(null);
 	const [tool, setTool] = useState(TOOL_NONE);
@@ -107,6 +108,10 @@ function MapCanvas(props) {
 			props.mapDimensions.width + 70,
 			props.mapDimensions.height + 92
 		);
+	};
+
+	const handleMouseMove = (event) => {
+		setMousePosition({ x: event.x, y: event.y });
 	};
 
 	const handleZoom = (value) => {
@@ -165,20 +170,10 @@ function MapCanvas(props) {
 		handleMapCanvasClick({ x, y });
 	};
 
-	const newElementAt = function (e) {
-		const svg = Viewer.current.Viewer.ViewerDOM;
-		let pt = svg.createSVGPoint();
-
-		function getCursor(evt) {
-			pt.x = evt.clientX;
-			pt.y = evt.clientY;
-			return pt.matrixTransform(svg.getScreenCTM().inverse());
-		}
-
-		const loc = getCursor(e);
+	const newElementAt = function () {
 		const positionCalc = new PositionCalculator();
-		const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
-		const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
+		const x = positionCalc.xToMaturity(mousePosition.x, mapDimensions.width);
+		const y = positionCalc.yToVisibility(mousePosition.y, mapDimensions.height);
 		setNewComponentContext({ x, y });
 	};
 
@@ -258,35 +253,25 @@ function MapCanvas(props) {
 				detectWheel={allowMapZoomMouseWheel}
 				miniatureProps={{ position: showMiniMap ? 'right' : 'none' }}
 				toolbarProps={{ position: 'none' }}
-				// SVGStyle={{
-				// 	x: '-30',
-				// 	y: '-40',
-				// 	height: props.mapDimensions.height + 90,
-				// 	width: props.mapDimensions.width + 60,
-				// }}
+				SVGStyle={{
+					x: '-30',
+					y: '-40',
+					height: props.mapDimensions.height + 90,
+					width: props.mapDimensions.width + 60,
+				}}
+				fontFamily={mapStyleDefs.fontFamily}
+				fontSize={mapStyleDefs.fontSize}
 				background="#eee"
-				onDoubleClick={(e) => newElementAt(e)}
+				onDoubleClick={newElementAt}
+				onMouseMove={handleMouseMove}
 				onZoom={handleZoom}
 				onZoomReset={() => setScaleFactor(1)}
+				className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
 				style={{ userSelect: 'none', fontFamily: mapStyleDefs.fontFamily }}
 			>
 				<svg
 					ref={mapRef}
-					onClick={(e) => quickAddAt(e)}
-					onDoubleClick={(e) => newElementAt(e)}
-					fontFamily={mapStyleDefs.fontFamily}
-					fontSize={mapStyleDefs.fontSize}
-					className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
 					id="svgMap"
-					// width={mapDimensions.width}
-					// height={mapDimensions.height}
-					// viewBox={
-					// 	'-30' +
-					// 	' -50 ' +
-					// 	(mapDimensions.width + 140) +
-					// 	' ' +
-					// 	(mapDimensions.height + 100)
-					// }
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"
 					xmlnsXlink="http://www.w3.org/1999/xlink"
