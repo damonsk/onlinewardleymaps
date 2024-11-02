@@ -41,10 +41,14 @@ function debounce(fn, ms) {
 const getHeight = () => {
 	const winHeight = window.innerHeight;
 	const topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-	return winHeight - topNavHeight - 95;
+	return winHeight - topNavHeight - 60;
 };
 const getWidth = () => {
-	return document.getElementById('map').clientWidth - 50;
+	return document.getElementById('map').clientWidth - 15;
+};
+
+const getWidthForMap = (mapOnlyView) => {
+	return getWidth() + (mapOnlyView ? 130 : 60);
 };
 
 function Environment(props) {
@@ -348,7 +352,7 @@ function Environment(props) {
 	}, [mapTitle]);
 	useEffect(() => {
 		setMapDimensions({
-			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			width: mapSize.width > 0 ? mapSize.width : getWidthForMap(mapOnlyView),
 			height: mapSize.height > 0 ? mapSize.height : getHeight(),
 		});
 	}, [mapOnlyView, hideNav, mapSize]);
@@ -395,7 +399,7 @@ function Environment(props) {
 	useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
 			const dimensions = {
-				width: mapSize.width > 0 ? mapSize.width : getWidth(),
+				width: mapSize.width > 0 ? mapSize.width : getWidthForMap(mapOnlyView),
 				height: mapSize.height > 0 ? mapSize.height : getHeight(),
 			};
 			setMapDimensions(dimensions);
@@ -407,11 +411,11 @@ function Environment(props) {
 		return function cleanup() {
 			window.removeEventListener('resize', debouncedHandleResize);
 		};
-	}, [mapSize]);
+	}, [mapSize, mapOnlyView]);
 
 	useEffect(() => {
 		const newDimensions = {
-			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			width: mapSize.width > 0 ? mapSize.width : getWidthForMap(mapOnlyView),
 			height: mapSize.height > 0 ? mapSize.height : getHeight(),
 		};
 		setMapDimensions(newDimensions);
@@ -533,6 +537,7 @@ function Environment(props) {
 					item
 					xs={12}
 					sm={mapOnlyView ? 12 : 8}
+					marginLeft={mapOnlyView ? 2 : 0}
 					className="map-view"
 					sx={{ backgroundColor: mapStyleDefs.containerBackground }}
 				>
