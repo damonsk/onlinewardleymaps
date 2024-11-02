@@ -56,7 +56,7 @@ function MapCanvas(props) {
 	const {
 		enableAccelerators,
 		enableNewPipelines,
-		enableQuickAdd,
+		// enableQuickAdd,
 		showMapToolbar,
 		showMiniMap,
 		allowMapZoomMouseWheel,
@@ -90,7 +90,7 @@ function MapCanvas(props) {
 		mapAnchors,
 		evolutionOffsets,
 		mapAccelerators,
-		handleMapCanvasClick,
+		// handleMapCanvasClick,
 		mapTitle,
 	} = props;
 	const isModKeyPressed = useModKeyPressedConsumer();
@@ -149,26 +149,26 @@ function MapCanvas(props) {
 		mapPipelines
 	);
 
-	const quickAddAt = function (e) {
-		if (enableQuickAdd == false) return;
-		var svg = document.getElementById('svgMap');
-		var pt = svg.createSVGPoint();
+	// const quickAddAt = function (e) {
+	// 	if (enableQuickAdd == false) return;
+	// 	var svg = document.getElementById('svgMap');
+	// 	var pt = svg.createSVGPoint();
 
-		function getCursor(evt) {
-			pt.x = evt.clientX;
-			pt.y = evt.clientY;
-			return pt.matrixTransform(svg.getScreenCTM().inverse());
-		}
+	// 	function getCursor(evt) {
+	// 		pt.x = evt.clientX;
+	// 		pt.y = evt.clientY;
+	// 		return pt.matrixTransform(svg.getScreenCTM().inverse());
+	// 	}
 
-		var loc = getCursor(e);
+	// 	var loc = getCursor(e);
 
-		const positionCalc = new PositionCalculator();
-		const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
-		const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
+	// 	const positionCalc = new PositionCalculator();
+	// 	const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
+	// 	const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
 
-		console.log('x: ' + x + ' y: ' + y);
-		handleMapCanvasClick({ x, y });
-	};
+	// 	console.log('x: ' + x + ' y: ' + y);
+	// 	handleMapCanvasClick({ x, y });
+	// };
 
 	const newElementAt = function () {
 		const positionCalc = new PositionCalculator();
