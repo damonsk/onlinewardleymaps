@@ -56,7 +56,7 @@ Cup of Tea->Cup
 Cup of Tea->Tea
 Cup of Tea->Hot Water
 Hot Water->Water
-Hot Water->Kettle 
+Hot Water->Kettle; limited by 
 Kettle->Power
 
 annotation 1 [[0.43,0.49],[0.08,0.79]] Standardising power allows Kettles to evolve faster
