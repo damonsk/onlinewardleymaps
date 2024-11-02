@@ -6,6 +6,6 @@ export const featureSwitches = {
 	enableQuickAdd: false,
 	showToggleFullscreen: true,
 	showMapToolbar: true,
-	showMiniMap: false,
+	showMiniMap: true,
 	allowMapZoomMouseWheel: true,
 };

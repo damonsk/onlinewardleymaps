@@ -252,19 +252,19 @@ function MapCanvas(props) {
 				id="wm-svg-pan-zoom"
 				SVGBackground="white"
 				tool={tool}
-				width={props.mapCanvasDimensions.width}
-				height={props.mapCanvasDimensions.height}
+				width={props.mapCanvasDimensions.width + 30}
+				height={props.mapCanvasDimensions.height + 30}
 				detectAutoPan={false}
 				detectWheel={allowMapZoomMouseWheel}
 				miniatureProps={{ position: showMiniMap ? 'right' : 'none' }}
 				toolbarProps={{ position: 'none' }}
-				// SVGStyle={{
-				// 	x: '0',
-				// 	y: '0',
-				// 	height: props.mapDimensions.height,
-				// 	width: parseInt(props.mapDimensions.width),
-				// }}
-				background="white"
+				SVGStyle={{
+					x: '-30',
+					y: '-40',
+					height: props.mapDimensions.height + 90,
+					width: props.mapDimensions.width + 60,
+				}}
+				background="#eee"
 				onDoubleClick={(e) => newElementAt(e)}
 				onZoom={handleZoom}
 				onZoomReset={() => setScaleFactor(1)}
@@ -277,10 +277,14 @@ function MapCanvas(props) {
 					fontSize={mapStyleDefs.fontSize}
 					className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
 					id="svgMap"
-					width={mapDimensions.width}
+					width={mapDimensions.width + 80}
 					height={mapDimensions.height}
 					viewBox={
-						'0' + '0 ' + mapDimensions.width + ' ' + mapDimensions.height
+						'-30' +
+						' -50 ' +
+						mapDimensions.width +
+						' ' +
+						(mapDimensions.height + 80)
 					}
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"
