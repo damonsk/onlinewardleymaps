@@ -58,6 +58,8 @@ function MapCanvas(props) {
 		enableNewPipelines,
 		enableQuickAdd,
 		showMapToolbar,
+		showMiniMap,
+		allowMapZoomMouseWheel,
 	} = useFeatureSwitches();
 	const styles = useStyles();
 	const {
@@ -253,7 +255,8 @@ function MapCanvas(props) {
 				width={props.mapCanvasDimensions.width + 30}
 				height={props.mapCanvasDimensions.height + 30}
 				detectAutoPan={false}
-				miniatureProps={{ position: 'right' }}
+				detectWheel={allowMapZoomMouseWheel}
+				miniatureProps={{ position: showMiniMap ? 'right' : 'none' }}
 				toolbarProps={{ position: 'none' }}
 				SVGStyle={{
 					x: '-30',
