@@ -53,8 +53,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 function MapCanvas(props) {
-	const { enableAccelerators, enableNewPipelines, enableQuickAdd } =
-		useFeatureSwitches();
+	const {
+		enableAccelerators,
+		enableNewPipelines,
+		enableQuickAdd,
+		showMapToolbar,
+	} = useFeatureSwitches();
 	const styles = useStyles();
 	const {
 		mapComponents,
@@ -258,12 +262,7 @@ function MapCanvas(props) {
 					width: props.mapDimensions.width + 60,
 				}}
 				background="#eee"
-				// onClick={(event) => {
-				// 	console.log('click', event.x, event.y, event.originalEvent);
-				// 	console.log(Svg.current);
-				// }}
 				onDoubleClick={(e) => newElementAt(e)}
-				// onMouseMove={handleMouseMove}
 				onZoom={handleZoom}
 				onZoomReset={() => setScaleFactor(1)}
 			>
@@ -575,62 +574,66 @@ function MapCanvas(props) {
 					</g>
 				</svg>
 			</UncontrolledReactSVGPanZoom>
-			<ButtonGroup orientation="horizontal" aria-label="button group">
-				<IconButton
-					id="wm-map-select"
-					aria-label={'Select'}
-					onClick={(event) => handleChangeTool(event, TOOL_NONE)}
-					sx={tool === TOOL_NONE ? SelectedIconButtonStyle : IconButtonStyle}
-				>
-					<HandIcon />
-				</IconButton>
-				<IconButton
-					id="wm-map-pan"
-					aria-label={'Pan'}
-					onClick={(event) => handleChangeTool(event, TOOL_PAN)}
-					sx={tool === TOOL_PAN ? SelectedIconButtonStyle : IconButtonStyle}
-				>
-					<PanIcon />
-				</IconButton>
-				<IconButton
-					id="wm-zoom-in"
-					aria-label={'Zoom In'}
-					sx={tool === TOOL_ZOOM_IN ? SelectedIconButtonStyle : IconButtonStyle}
-					onClick={(event) => handleChangeTool(event, TOOL_ZOOM_IN)}
-				>
-					<ZoomInIcon />
-				</IconButton>
-				<IconButton
-					id="wm-zoom-out"
-					aria-label={'Zoom Out'}
-					sx={
-						tool === TOOL_ZOOM_OUT ? SelectedIconButtonStyle : IconButtonStyle
-					}
-					onClick={(event) => handleChangeTool(event, TOOL_ZOOM_OUT)}
-				>
-					<ZoomOutIcon />
-				</IconButton>
-				<IconButton
-					id="wm-map-fit"
-					aria-label={'Fit'}
-					sx={IconButtonStyle}
-					onClick={() => _fitToViewer()}
-				>
-					<FitScreenIcon />
-				</IconButton>
-				<IconButton
-					id="wm-map-fullscreen"
-					onClick={props.shouldHideNav}
-					color={textColour[props.mapStyleDefs.className]}
-					aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
-				>
-					{props.hideNav ? (
-						<FullscreenExitIcon sx={IconButtonStyle} />
-					) : (
-						<FullscreenIcon sx={IconButtonStyle} />
-					)}
-				</IconButton>
-			</ButtonGroup>
+			{showMapToolbar && (
+				<ButtonGroup orientation="horizontal" aria-label="button group">
+					<IconButton
+						id="wm-map-select"
+						aria-label={'Select'}
+						onClick={(event) => handleChangeTool(event, TOOL_NONE)}
+						sx={tool === TOOL_NONE ? SelectedIconButtonStyle : IconButtonStyle}
+					>
+						<HandIcon />
+					</IconButton>
+					<IconButton
+						id="wm-map-pan"
+						aria-label={'Pan'}
+						onClick={(event) => handleChangeTool(event, TOOL_PAN)}
+						sx={tool === TOOL_PAN ? SelectedIconButtonStyle : IconButtonStyle}
+					>
+						<PanIcon />
+					</IconButton>
+					<IconButton
+						id="wm-zoom-in"
+						aria-label={'Zoom In'}
+						sx={
+							tool === TOOL_ZOOM_IN ? SelectedIconButtonStyle : IconButtonStyle
+						}
+						onClick={(event) => handleChangeTool(event, TOOL_ZOOM_IN)}
+					>
+						<ZoomInIcon />
+					</IconButton>
+					<IconButton
+						id="wm-zoom-out"
+						aria-label={'Zoom Out'}
+						sx={
+							tool === TOOL_ZOOM_OUT ? SelectedIconButtonStyle : IconButtonStyle
+						}
+						onClick={(event) => handleChangeTool(event, TOOL_ZOOM_OUT)}
+					>
+						<ZoomOutIcon />
+					</IconButton>
+					<IconButton
+						id="wm-map-fit"
+						aria-label={'Fit'}
+						sx={IconButtonStyle}
+						onClick={() => _fitToViewer()}
+					>
+						<FitScreenIcon />
+					</IconButton>
+					<IconButton
+						id="wm-map-fullscreen"
+						onClick={props.shouldHideNav}
+						color={textColour[props.mapStyleDefs.className]}
+						aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
+					>
+						{props.hideNav ? (
+							<FullscreenExitIcon sx={IconButtonStyle} />
+						) : (
+							<FullscreenIcon sx={IconButtonStyle} />
+						)}
+					</IconButton>
+				</ButtonGroup>
+			)}
 		</React.Fragment>
 	);
 }

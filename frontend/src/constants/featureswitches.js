@@ -5,4 +5,5 @@ export const featureSwitches = {
 	enableDoubleClickRename: true,
 	enableQuickAdd: false,
 	showToggleFullscreen: true,
+	showMapToolbar: true,
 };
