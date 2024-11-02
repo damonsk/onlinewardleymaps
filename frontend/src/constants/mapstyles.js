@@ -7,7 +7,7 @@ export const Plain = {
 	className: 'plain',
 	containerBackground: '#eee',
 	fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
-	fontSize: '13px',
+	fontSize: '12px',
 	stroke: 'black',
 	pipelineArrowStroke: 'black',
 	evolutionSeparationStroke: 'black',
@@ -17,11 +17,11 @@ export const Plain = {
 	strokeWidth: '1',
 	strokeDasharray: '2,2',
 	anchor: {
-		fontSize: '14px',
+		fontSize: '12px',
 	},
 	attitudes: {
 		strokeWidth: '5px',
-		fontSize: '14px',
+		fontSize: '12px',
 		pioneers: {
 			stroke: '#3490dd',
 			fill: '#3ccaf8',
@@ -60,7 +60,8 @@ export const Plain = {
 		fill: 'white',
 	},
 	component: {
-		fontSize: '13px',
+		fontSize: '12px',
+		fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 		fill: 'white',
 		stroke: 'black',
 		evolved: 'red',
@@ -73,7 +74,7 @@ export const Plain = {
 		evolvedTextColor: 'red',
 	},
 	submap: {
-		fontSize: '13px',
+		fontSize: '12px',
 		fill: 'black',
 		stroke: 'black',
 		evolved: 'red',
@@ -106,6 +107,7 @@ export const Plain = {
 		fill: 'white',
 		text: 'black',
 		boxStroke: '#595959',
+		fontSize: '11px',
 		boxStrokeWidth: 1,
 		boxFill: '#FFFFFF',
 		boxTextColour: 'black',
@@ -113,6 +115,7 @@ export const Plain = {
 	note: {
 		fontWeight: 'bold',
 		fontSize: '12px',
+		fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 		fill: 'black',
 	},
 };
@@ -126,6 +129,7 @@ export const Handwritten = mergeIntoDefault({
 	component: {
 		fill: 'white',
 		stroke: 'black',
+		fontFamily: '"Gloria Hallelujah", cursive',
 		evolved: 'red',
 		evolvedFill: 'white',
 		strokeWidth: '1',
@@ -151,6 +155,7 @@ export const Wardley = mergeIntoDefault({
 	component: {
 		fill: 'white',
 		stroke: 'black',
+		fontFamily: 'Consolas, Lucida Console, monospace',
 		evolved: 'red',
 		evolvedFill: 'white',
 		strokeWidth: '1',
@@ -160,10 +165,14 @@ export const Wardley = mergeIntoDefault({
 	annotation: {
 		stroke: '#595959',
 		strokeWidth: 2,
+		fontFamily: 'Consolas, Lucida Console, monospace',
 		boxStroke: '#595959',
 		boxStrokeWidth: 1,
 		boxFill: '#FFFFFF',
 		boxTextColour: 'black',
+	},
+	note: {
+		fontFamily: 'Consolas, Lucida Console, monospace',
 	},
 });
 
@@ -226,6 +235,7 @@ export const Dark = mergeIntoDefault({
 	component: {
 		fontSize: '13px',
 		fill: 'rgba(255,255,255,.8)',
+		fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 		stroke: 'white',
 		evolved: '#90caf9',
 		evolvedFill: 'white',

@@ -8,6 +8,8 @@ function AnnotationTextSymbol(props) {
 			id={id}
 			className="label"
 			textAnchor="start"
+			fontFamily={styles.fontFamily}
+			fontSize={styles.fontSize}
 			dy={18}
 			x={0}
 			fill={styles.boxTextColour}

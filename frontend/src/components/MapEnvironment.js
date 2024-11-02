@@ -348,7 +348,7 @@ function Environment(props) {
 	}, [mapTitle]);
 	useEffect(() => {
 		setMapDimensions({
-			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
 			height: mapSize.height > 0 ? mapSize.height : getHeight(),
 		});
 	}, [mapOnlyView, hideNav, mapSize]);
@@ -395,7 +395,7 @@ function Environment(props) {
 	useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
 			const dimensions = {
-				width: mapSize.width > 0 ? mapSize.width : getWidth(),
+				width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
 				height: mapSize.height > 0 ? mapSize.height : getHeight(),
 			};
 			setMapDimensions(dimensions);
@@ -411,7 +411,7 @@ function Environment(props) {
 
 	useEffect(() => {
 		const newDimensions = {
-			width: mapSize.width > 0 ? mapSize.width : getWidth(),
+			width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
 			height: mapSize.height > 0 ? mapSize.height : getHeight(),
 		};
 		setMapDimensions(newDimensions);
@@ -533,6 +533,7 @@ function Environment(props) {
 					item
 					xs={12}
 					sm={mapOnlyView ? 12 : 8}
+					ml={mapOnlyView ? 2 : 0}
 					className="map-view"
 					sx={{ backgroundColor: mapStyleDefs.containerBackground }}
 				>

@@ -66,7 +66,7 @@ function ComponentText(props) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
 									/\slabel\s\[(.?|.+?)\]+/g,
-									` label [${moved.x}, ${moved.y}]`
+									` label [${parseFloat(moved.x).toFixed(2)}, ${moved.y}]`
 								);
 							} else {
 								return line.trim() + ` label [${moved.x}, ${moved.y}]`;
@@ -85,7 +85,7 @@ function ComponentText(props) {
 							if (line.replace(/\s/g, '').indexOf('label[') > -1) {
 								return line.replace(
 									/\slabel\s\[(.?|.+?)\]+/g,
-									` label [${moved.x}, ${moved.y}]`
+									` label [${parseFloat(moved.x).toFixed(2)}, ${moved.y}]`
 								);
 							} else {
 								return line.trim() + ` label [${moved.x}, ${moved.y}]`;

@@ -36,7 +36,6 @@ function RelativeMovable(props) {
 			document.removeEventListener('mousemove', handleMouseMove);
 			document.removeEventListener('keyup', handleEscape);
 			setPosition({ x: x(), y: y() });
-			console.log('pressed');
 		}
 	};
 
@@ -69,8 +68,8 @@ function RelativeMovable(props) {
 
 	function endDrag() {
 		let moved = {
-			x: position.x,
-			y: position.y,
+			x: parseFloat(position.x).toFixed(2),
+			y: parseFloat(position.y).toFixed(2),
 		};
 		props.onMove(moved);
 	}
