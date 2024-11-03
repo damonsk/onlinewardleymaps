@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import PositionCalculator from './PositionCalculator';
+import React, { useCallback, useEffect } from 'react';
 import LinkSymbol from '../symbols/LinkSymbol';
+import PositionCalculator from './PositionCalculator';
 
 function FluidLink(props) {
     const { mapStyleDefs, mapDimensions, startElement, origClick } = props;
@@ -17,20 +17,24 @@ function FluidLink(props) {
         coords: {},
     });
 
-    const handleMouseMove = e => {
-        setPosition(position => {
-            const xDiff = position.coords.x - e.pageX;
-            const yDiff = position.coords.y - e.pageY;
-            return {
-                x: position.x - xDiff,
-                y: position.y - yDiff,
-                coords: {
-                    x: e.pageX,
-                    y: e.pageY,
-                },
-            };
-        });
-    };
+	const handleMouseMove = useCallback(
+		(e) => {
+			setPosition((position) => {
+				const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
+				const xDiff = (position.coords.x - e.pageX) / scaleFactor;
+				const yDiff = (position.coords.y - e.pageY) / scaleFactor;
+				return {
+					x: position.x - xDiff,
+					y: position.y - yDiff,
+					coords: {
+						x: e.pageX,
+						y: e.pageY,
+					},
+				};
+			});
+		},
+		[props.scaleFactor]
+	);
 
     useEffect(() => {
         const pageX = origClick.pageX;

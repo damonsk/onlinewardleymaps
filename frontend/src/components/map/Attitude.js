@@ -1,11 +1,10 @@
-import React from 'react';
-import PositionCalculator from './PositionCalculator';
-import Movable from './Movable';
 import PropTypes from 'prop-types';
-import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
-import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoordsMatcher';
-import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
+import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoordsMatcher';
+import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
+import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 
 const Attitude = props => {
     const { attitude, mapDimensions } = props;
@@ -55,27 +54,28 @@ const Attitude = props => {
         );
     }
 
-    return (
-        <>
-            <Movable
-                id={`attitude_${type}_movable`}
-                onMove={endDrag}
-                x={x}
-                y={y}
-                fixedY={false}
-                fixedX={false}
-            >
-                <AttitudeSymbol
-                    id={`attitude_${type}`}
-                    attitude={type}
-                    height={y2 - y}
-                    width={x2 - x}
-                    textAnchor="middle"
-                    styles={props.mapStyleDefs.attitudes}
-                />
-            </Movable>
-        </>
-    );
+	return (
+		<>
+			<Movable
+				id={`attitude_${type}_movable`}
+				onMove={endDrag}
+				x={x}
+				y={y}
+				fixedY={false}
+				fixedX={false}
+				scaleFactor={props.scaleFactor}
+			>
+				<AttitudeSymbol
+					id={`attitude_${type}`}
+					attitude={type}
+					height={y2 - y}
+					width={x2 - x}
+					textAnchor="middle"
+					styles={props.mapStyleDefs.attitudes}
+				/>
+			</Movable>
+		</>
+	);
 };
 
 Attitude.propTypes = {

@@ -1,9 +1,8 @@
-import React from 'react';
-import PositionCalculator from './PositionCalculator';
 import Movable from './Movable';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 function MapAccelerator(props) {
     const { element, mapDimensions, mapText, mutateMapText, children } = props;
@@ -32,22 +31,23 @@ function MapAccelerator(props) {
         );
     }
 
-    return (
-        <>
-            <Movable
-                id={'accelerator_element_' + element.id}
-                onMove={endDrag}
-                x={x}
-                y={y}
-                fixedY={element.evolved}
-                fixedX={false}
-                shouldShowMoving={false}
-                isModKeyPressed={false}
-            >
-                <>{children}</>
-            </Movable>
-        </>
-    );
+	return (
+		<>
+			<Movable
+				id={'accelerator_element_' + element.id}
+				onMove={endDrag}
+				x={x}
+				y={y}
+				fixedY={element.evolved}
+				fixedX={false}
+				shouldShowMoving={false}
+				isModKeyPressed={false}
+				scaleFactor={props.scaleFactor}
+			>
+				<>{children}</>
+			</Movable>
+		</>
+	);
 }
 
 export default MapAccelerator;

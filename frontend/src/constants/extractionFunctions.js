@@ -120,6 +120,25 @@ export const extractLocation = (input, defaultValue) => {
     } else return defaultValue;
 };
 
+export const extractSize = (input, defaultValue) => {
+	if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
+		let loc = input
+			.split('[')[1]
+			.trim()
+			.split(']')[0]
+			.replace(/\s/g, '')
+			.split(',');
+		return {
+			width: isNaN(parseFloat(loc[0]))
+				? defaultValue.width
+				: parseFloat(loc[0]),
+			height: isNaN(parseFloat(loc[1]))
+				? defaultValue.height
+				: parseFloat(loc[1]),
+		};
+	} else return defaultValue;
+};
+
 export const extractManyLocations = (input, defaultValue) => {
     if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
         const loc = input

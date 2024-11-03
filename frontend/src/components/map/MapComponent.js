@@ -1,12 +1,11 @@
-import React from 'react';
 import ComponentText from './ComponentText';
-import PositionCalculator from './PositionCalculator';
-import Movable from './Movable';
 import Inertia from './Inertia';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoordMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 
@@ -98,39 +97,41 @@ function MapComponent(props) {
         );
     }
 
-    return (
-        <>
-            <Movable
-                id={'element_' + props.element.id}
-                onMove={endDrag}
-                x={x}
-                y={y}
-                fixedY={props.element.evolved}
-                fixedX={false}
-                shouldShowMoving={true}
-                isModKeyPressed={isModKeyPressed}
-            >
-                <>{props.children}</>
-            </Movable>
-            {canApplyInertia() && (
-                <Inertia
-                    maturity={parseFloat(props.element.maturity) + 0.05}
-                    visibility={props.element.visibility}
-                    mapDimensions={props.mapDimensions}
-                />
-            )}
-            <g transform={'translate(' + x + ',' + y + ')'}>
-                <ComponentText
-                    id={'component_text_' + props.element.id}
-                    mapStyleDefs={props.mapStyleDefs}
-                    element={props.element}
-                    mapText={props.mapText}
-                    mutateMapText={props.mutateMapText}
-                    onClick={onElementClick}
-                />
-            </g>
-        </>
-    );
+	return (
+		<>
+			<Movable
+				id={'element_' + props.element.id}
+				onMove={endDrag}
+				x={x}
+				y={y}
+				fixedY={props.element.evolved}
+				fixedX={false}
+				shouldShowMoving={true}
+				isModKeyPressed={isModKeyPressed}
+				scaleFactor={props.scaleFactor}
+			>
+				<>{props.children}</>
+			</Movable>
+			{canApplyInertia() && (
+				<Inertia
+					maturity={parseFloat(props.element.maturity) + 0.05}
+					visibility={props.element.visibility}
+					mapDimensions={props.mapDimensions}
+				/>
+			)}
+			<g transform={'translate(' + x + ',' + y + ')'}>
+				<ComponentText
+					id={'component_text_' + props.element.id}
+					mapStyleDefs={props.mapStyleDefs}
+					element={props.element}
+					mapText={props.mapText}
+					mutateMapText={props.mutateMapText}
+					onClick={onElementClick}
+					scaleFactor={props.scaleFactor}
+				/>
+			</g>
+		</>
+	);
 }
 
 export default MapComponent;

@@ -1,7 +1,6 @@
-import React from 'react';
-import PositionCalculator from './PositionCalculator';
-import Movable from './Movable';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
 
 function AnnotationElement(props) {
     const positionCalc = new PositionCalculator();
@@ -83,21 +82,22 @@ function AnnotationElement(props) {
         );
     }
 
-    return (
-        <Movable
-            id={'annotation_element_' + props.annotation.number}
-            onMove={endDrag}
-            x={x()}
-            y={y()}
-            fixedY={false}
-            fixedX={false}
-        >
-            <AnnotationElementSymbol
-                annotation={props.annotation}
-                styles={props.mapStyleDefs.annotation}
-            />
-        </Movable>
-    );
+	return (
+		<Movable
+			id={'annotation_element_' + props.annotation.number}
+			onMove={endDrag}
+			x={x()}
+			y={y()}
+			fixedY={false}
+			fixedX={false}
+			scaleFactor={props.scaleFactor}
+		>
+			<AnnotationElementSymbol
+				annotation={props.annotation}
+				styles={props.mapStyleDefs.annotation}
+			/>
+		</Movable>
+	);
 }
 
 export default AnnotationElement;

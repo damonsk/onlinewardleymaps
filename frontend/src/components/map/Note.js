@@ -1,10 +1,9 @@
-import React from 'react';
-import PositionCalculator from './PositionCalculator';
-import Movable from './Movable';
-import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 function Note(props) {
     const positionCalc = new PositionCalculator();
@@ -42,23 +41,24 @@ function Note(props) {
         );
     }
 
-    return (
-        <Movable
-            id={'note_' + props.note.id}
-            onMove={endDrag}
-            x={x()}
-            y={y()}
-            fixedY={false}
-            fixedX={false}
-        >
-            <ComponentTextSymbol
-                id={'note_text_' + props.note.id}
-                note={props.note.text}
-                styles={props?.mapStyleDefs?.note}
-                onClick={() => props.setHighlightLine(props.note.line)}
-            />
-        </Movable>
-    );
+	return (
+		<Movable
+			id={'note_' + props.note.id}
+			onMove={endDrag}
+			x={x()}
+			y={y()}
+			fixedY={false}
+			fixedX={false}
+			scaleFactor={props.scaleFactor}
+		>
+			<ComponentTextSymbol
+				id={'note_text_' + props.note.id}
+				note={props.note.text}
+				styles={props?.mapStyleDefs?.note}
+				onClick={() => props.setHighlightLine(props.note.line)}
+			/>
+		</Movable>
+	);
 }
 
 export default Note;

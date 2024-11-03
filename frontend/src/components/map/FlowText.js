@@ -1,7 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import RelativeMovable from '../map/RelativeMovable';
 import MetaPositioner from '../../MetaPositioner';
+import RelativeMovable from '../map/RelativeMovable';
 
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 
@@ -30,31 +29,32 @@ const FlowText = props => {
     };
     const flowLabelPosition = getMetaPosition();
 
-    return (
-        <g
-            id={'flow_' + endElement.name}
-            transform={'translate(' + x + ',' + y + ')'}
-        >
-            <RelativeMovable
-                id={flowLabelElementId}
-                fixedX={false}
-                fixedY={false}
-                onMove={flowLabelEndDrag}
-                y={flowLabelPosition.y}
-                x={flowLabelPosition.x}
-            >
-                <ComponentTextSymbol
-                    className="draggable label"
-                    id={flowLabelElementId}
-                    x="5"
-                    y="5"
-                    textAnchor="start"
-                    fill={mapStyleDefs.link.flowText}
-                    text={link.flowValue}
-                />
-            </RelativeMovable>
-        </g>
-    );
+	return (
+		<g
+			id={'flow_' + endElement.name}
+			transform={'translate(' + x + ',' + y + ')'}
+		>
+			<RelativeMovable
+				id={flowLabelElementId}
+				fixedX={false}
+				fixedY={false}
+				onMove={flowLabelEndDrag}
+				y={flowLabelPosition.y}
+				x={flowLabelPosition.x}
+				scaleFactor={props.scaleFactor}
+			>
+				<ComponentTextSymbol
+					className="draggable label"
+					id={flowLabelElementId}
+					x="5"
+					y="5"
+					textAnchor="start"
+					fill={mapStyleDefs.link.flowText}
+					text={link.flowValue}
+				/>
+			</RelativeMovable>
+		</g>
+	);
 };
 
 FlowText.propTypes = {

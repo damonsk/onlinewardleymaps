@@ -1,8 +1,7 @@
-import React from 'react';
-import PositionCalculator from './PositionCalculator';
-import FlowText from './FlowText';
-import LinkSymbol from '../symbols/LinkSymbol';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import LinkSymbol from '../symbols/LinkSymbol';
+import FlowText from './FlowText';
+import PositionCalculator from './PositionCalculator';
 
 function ComponentLink(props) {
     const { enableLinkContext } = useFeatureSwitches();
@@ -49,44 +48,45 @@ function ComponentLink(props) {
     const isUpsideDown = angle > 90 || angle < -90;
     const adjustedAngle = isUpsideDown ? angle + 180 : angle;
 
-    return (
-        <>
-            <LinkSymbol
-                id={`link_${startElement.id}_${endElement.id}`}
-                x1={x1}
-                x2={x2}
-                y1={y1}
-                y2={y2}
-                flow={isFlow}
-                evolved={isEvolved}
-                styles={mapStyleDefs.link}
-            />
-            {link.flowValue && (
-                <FlowText
-                    mapStyleDefs={mapStyleDefs}
-                    startElement={startElement}
-                    endElement={endElement}
-                    link={link}
-                    metaText={props.metaText}
-                    setMetaText={props.setMetaText}
-                    x={x2}
-                    y={y2}
-                />
-            )}
-            {enableLinkContext && link.context && (
-                <text
-                    is="custom"
-                    font-size={mapStyleDefs.link.contextFontSize ?? '10px'}
-                    text-anchor={'middle'}
-                    x={centerX}
-                    y={centerY - buffer}
-                    transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}
-                >
-                    {link.context}
-                </text>
-            )}
-        </>
-    );
+	return (
+		<>
+			<LinkSymbol
+				id={`link_${startElement.id}_${endElement.id}`}
+				x1={x1}
+				x2={x2}
+				y1={y1}
+				y2={y2}
+				flow={isFlow}
+				evolved={isEvolved}
+				styles={mapStyleDefs.link}
+			/>
+			{link.flowValue && (
+				<FlowText
+					mapStyleDefs={mapStyleDefs}
+					startElement={startElement}
+					endElement={endElement}
+					link={link}
+					metaText={props.metaText}
+					setMetaText={props.setMetaText}
+					x={x2}
+					y={y2}
+					scaleFactor={props.scaleFactor}
+				/>
+			)}
+			{enableLinkContext && link.context && (
+				<text
+					is="custom"
+					font-size={mapStyleDefs.link.contextFontSize ?? '10px'}
+					text-anchor={'middle'}
+					x={centerX}
+					y={centerY - buffer}
+					transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}
+				>
+					{link.context}
+				</text>
+			)}
+		</>
+	);
 }
 
 export default ComponentLink;

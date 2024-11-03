@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
-import PositionCalculator from './PositionCalculator';
+import { useCallback, useEffect } from 'react';
+import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
 import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
+import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
 
 function AnnotationElement(props) {
     const positionCalc = new PositionCalculator();
@@ -87,32 +87,33 @@ function AnnotationElement(props) {
         redraw,
     ]);
 
-    return (
-        <Movable
-            id={'annotationsBox'}
-            onMove={endDrag}
-            fixedY={false}
-            fixedX={false}
-            x={x()}
-            y={y()}
-        >
-            <AnnotationBoxSymbol
-                id={'annotationsBoxTextContainer'}
-                dy={0}
-                x={2}
-                styles={props.mapStyleDefs.annotation}
-            >
-                {props.annotations.map((a, i) => (
-                    <AnnotationTextSymbol
-                        key={i}
-                        annotation={a}
-                        parentIndex={i}
-                        styles={props.mapStyleDefs.annotation}
-                    />
-                ))}
-            </AnnotationBoxSymbol>
-        </Movable>
-    );
+	return (
+		<Movable
+			id={'annotationsBox'}
+			onMove={endDrag}
+			fixedY={false}
+			fixedX={false}
+			x={x()}
+			y={y()}
+			scaleFactor={props.scaleFactor}
+		>
+			<AnnotationBoxSymbol
+				id={'annotationsBoxTextContainer'}
+				dy={0}
+				x={2}
+				styles={props.mapStyleDefs.annotation}
+			>
+				{props.annotations.map((a, i) => (
+					<AnnotationTextSymbol
+						key={i}
+						annotation={a}
+						parentIndex={i}
+						styles={props.mapStyleDefs.annotation}
+					/>
+				))}
+			</AnnotationBoxSymbol>
+		</Movable>
+	);
 }
 
 export default AnnotationElement;
