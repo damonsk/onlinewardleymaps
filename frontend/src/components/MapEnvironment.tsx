@@ -11,8 +11,6 @@ import {
     DialogTitle,
     Grid,
 } from '@mui/material';
-import { GetCurrentUserOutput } from 'aws-amplify/auth';
-import { uploadData } from 'aws-amplify/storage';
 import html2canvas from 'html2canvas';
 import Router from 'next/router';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
@@ -102,15 +100,10 @@ const getWidth = () => {
 interface MapEnvironmentProps {
     toggleMenu: () => void;
     toggleTheme: () => void;
-    signOut: () => void;
-    setHideAuthModal: () => React.Dispatch<React.SetStateAction<boolean>>;
     menuVisible: boolean;
     isLightTheme: boolean;
-    user: GetCurrentUserOutput;
     mapPersistenceStrategy: Defaults.MapPersistenceStrategy;
-    setMapPersistenceStrategy: React.Dispatch<
-        React.SetStateAction<Defaults.MapPersistenceStrategy>
-    >;
+    setMapPersistenceStrategy: React.Dispatch<React.SetStateAction<Defaults.MapPersistenceStrategy>>;
     shouldLoad: boolean;
     setShouldLoad: React.Dispatch<React.SetStateAction<boolean>>;
     currentId: string;
@@ -121,9 +114,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     toggleMenu,
     menuVisible,
     toggleTheme,
-    signOut,
-    user,
-    setHideAuthModal,
     isLightTheme,
     mapPersistenceStrategy,
     setMapPersistenceStrategy,
