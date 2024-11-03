@@ -9,17 +9,24 @@ import Footer from '../src/components/page/Footer';
 import { featureSwitches } from '../src/constants/featureswitches';
 import { lightTheme, theme } from '../src/theme';
 
-function MyApp({ Component, pageProps }) {
+interface MyAppProps {
+    Component: React.FC<any>;
+    pageProps: any;
+}
+const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
     useEffect(() => {
-        const jssStyles = document.querySelector('#jss-server-side');
+        const jssStyles = document.querySelector<HTMLStyleElement>(
+            '#jss-server-side',
+        );
         if (jssStyles && jssStyles.parentNode) {
             jssStyles.parentNode.removeChild(jssStyles);
         }
     }, []);
 
     const [currentTheme, setCurrentTheme] = useState(theme);
-    const [isLightTheme, setIsLightTheme] = useState(false);
-    const [menuVisible, setMenuVisible] = useState(false);
+    const [isLightTheme, setIsLightTheme] = useState<boolean>(false);
+    const [menuVisible, setMenuVisible] = useState<boolean>(false);
+
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
@@ -61,6 +68,6 @@ function MyApp({ Component, pageProps }) {
             </FeatureSwitchesProvider>
         </>
     );
-}
+};
 
 export default MyApp;
