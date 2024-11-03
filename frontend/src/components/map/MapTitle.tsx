@@ -13,7 +13,6 @@ function MapTitle(props: MapTitleProps) {
 			id={'mapTitle'}
 			font-weight={'bold'}
 			font-size={'20px'}
-			font-family='"Helvetica Neue",Helvetica,Arial,sans-serif'
 			fontWeight={'bold'}
 			fontSize={'20px'}
 			fontFamily='"Helvetica Neue",Helvetica,Arial,sans-serif'
