@@ -1,10 +1,17 @@
 import {
+    ComponentEvolvedIcon,
     ComponentIcon,
     InertiaIcon,
-    ComponentEvolvedIcon,
 } from '../components/symbols/icons';
 
-const usages = [
+interface Usage {
+    title: string;
+    summary: string;
+    examples: string[];
+    toolbarButtonText?: string;
+    Icon?: React.ComponentType<any>;
+}
+const usages: Usage[] = [
     {
         title: 'To set the title',
         summary: '',

@@ -1,17 +1,19 @@
-const iterationBuilder = optArray => {
-    const strings = [];
+const iterationBuilder = (optArray: string[]): string[] => {
+    const strings: string[] = [];
     for (let i = 0; i < optArray.length; i++) {
         strings.push(optArray.slice(0, i + 1).join(' '));
     }
     return strings;
 };
 
-const attitudes = ['pioneers', 'settlers', 'townplanners'].map(a => [
-    a,
-    '[<visibility>, <maturity>, <visibility2>, <maturity2>]',
-]);
+const attitudes: [string, string][] = [
+    'pioneers',
+    'settlers',
+    'townplanners',
+].map(a => [a, '[<visibility>, <maturity>, <visibility2>, <maturity2>]']);
 
-const iterations = [
+// type IterationItem = string[];
+const iterations: string[] = [
     ...attitudes,
     ['note', '<note text>', '[<visibility>, <maturity>]'],
     ['component', '<name>', '[<visibility>, <maturity>]'],
@@ -24,7 +26,7 @@ const iterations = [
     .map(iterationBuilder)
     .flat();
 
-export const EditorPrefixes = [
+export const EditorPrefixes: string[] = [
     'outsource <component>',
     'build <component>',
     'buy <component>',

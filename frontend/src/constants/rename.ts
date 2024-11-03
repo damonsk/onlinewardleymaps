@@ -1,34 +1,36 @@
 export const rename = (
-    currentLine,
-    toFind,
-    replaceWith,
-    mapText,
-    mutateMapMethod,
-) => {
+    currentLine: number,
+    toFind: string,
+    replaceWith: string,
+    mapText: string,
+    mutateMapMethod: (updatedText: string) => void,
+): void => {
     if (replaceWith !== toFind && replaceWith.length > 0) {
-        let elementAtLine = mapText.split('\n')[currentLine - 1];
-        let lines = mapText.split('\n');
+        let lines: string[] = mapText.split('\n');
+        let elementAtLine: string = lines[currentLine - 1];
         lines[currentLine - 1] = elementAtLine.replace(toFind, replaceWith);
 
         for (let i = 0; i < lines.length; i++) {
-            let line = lines[i].trim();
+            let line: string = lines[i].trim();
 
             if (line.includes(`->`) && line.split('->').length === 2) {
-                const parts = line.split('->');
-                const firstPart = parts[0].trim();
-                const secondPart = parts[1].trim();
+                const parts: string[] = line.split('->');
+                const firstPart: string = parts[0].trim();
+                const secondPart: string = parts[1].trim();
 
-                if (firstPart == toFind) {
+                if (firstPart === toFind) {
                     lines[i] = [replaceWith, secondPart].join('->');
                 }
-                if (secondPart == toFind) {
+                if (secondPart === toFind) {
                     lines[i] = [firstPart, replaceWith].join('->');
                 }
                 if (
                     secondPart.includes(';') &&
                     secondPart.split(';')[0].trim() === toFind
                 ) {
-                    const optionalNote = secondPart.split(';')[1].trim();
+                    const optionalNote: string = secondPart
+                        .split(';')[1]
+                        .trim();
                     lines[i] = [
                         firstPart,
                         `${replaceWith};${optionalNote}`,
@@ -36,29 +38,31 @@ export const rename = (
                 }
             }
 
-            ['pipeline', 'build', 'buy', 'outsource'].map(startsWith => {
-                if (
-                    line.startsWith(startsWith) &&
-                    line.split(startsWith).length > 1 &&
-                    line.split(startsWith)[1].trim() == toFind
-                ) {
-                    lines[i] = `${startsWith} ${line
-                        .split(startsWith)[1]
-                        .trim()
-                        .replace(toFind, replaceWith)}`;
-                }
-            });
-            ['evolve'].map(startsWith => {
+            ['pipeline', 'build', 'buy', 'outsource'].forEach(
+                (startsWith: string) => {
+                    if (
+                        line.startsWith(startsWith) &&
+                        line.split(startsWith).length > 1 &&
+                        line.split(startsWith)[1].trim() === toFind
+                    ) {
+                        lines[i] = `${startsWith} ${line
+                            .split(startsWith)[1]
+                            .trim()
+                            .replace(toFind, replaceWith)}`;
+                    }
+                },
+            );
+            ['evolve'].forEach((startsWith: string) => {
                 if (
                     line.startsWith(startsWith) &&
                     line.split(startsWith).length > 1
                 ) {
-                    const evolvedWithMaturity =
+                    const evolvedWithMaturity: boolean =
                         line
                             .split(startsWith)[1]
                             .trim()
                             .split(' ')[0]
-                            .trim() == toFind;
+                            .trim() === toFind;
 
                     if (evolvedWithMaturity) {
                         lines[i] = `${startsWith} ${line
@@ -67,13 +71,13 @@ export const rename = (
                             .replace(toFind, replaceWith)}`;
                     }
 
-                    const cleanedPart = line
+                    const cleanedPart: string = line
                         .split(startsWith)[1]
                         .trim()
                         .split(' ')[0]
                         .trim();
 
-                    const evolvedWithNewName =
+                    const evolvedWithNewName: boolean =
                         cleanedPart.includes(toFind) &&
                         cleanedPart.includes('->');
 

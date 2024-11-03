@@ -1,8 +1,31 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 
-const SubMapSymbol = props => {
-    const { id, cx, cy, evolved, onClick, styles = {}, launchUrl } = props;
+interface SubMapSymbolProps {
+    id?: string;
+    cx?: string;
+    cy?: string;
+    evolved?: boolean;
+    onClick?: () => void;
+    styles: {
+        evolvedFill?: string;
+        fill?: string;
+        evolved?: string;
+        stroke?: string;
+        strokeWidth?: number;
+        radius?: number;
+    };
+    launchUrl?: () => void;
+}
+
+const SubMapSymbol: React.FC<SubMapSymbolProps> = ({
+    id,
+    cx,
+    cy,
+    evolved,
+    onClick,
+    styles,
+    launchUrl,
+}) => {
     const fill = evolved ? styles.evolvedFill : styles.fill;
     const stroke = evolved ? styles.evolved : styles.stroke;
 
@@ -50,16 +73,6 @@ const SubMapSymbol = props => {
             />
         </>
     );
-};
-
-SubMapSymbol.propTypes = {
-    onClick: PropTypes.func,
-    launchUrl: PropTypes.func,
-    id: PropTypes.string,
-    cx: PropTypes.string,
-    cy: PropTypes.string,
-    styles: PropTypes.object.isRequired,
-    evolved: PropTypes.bool,
 };
 
 export default memo(SubMapSymbol);

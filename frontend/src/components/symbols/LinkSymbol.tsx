@@ -1,20 +1,39 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 
-const LinkSymbol = props => {
-    const {
-        id,
-        x1,
-        x2,
-        y1,
-        y2,
-        flow,
-        evolved,
-        strokeDasharray,
-        markerStart,
-        styles,
-        filter,
-    } = props;
+interface LinkSymbolProps {
+    id?: string;
+    x1: string | number;
+    x2: string | number;
+    y1: string | number;
+    y2: string | number;
+    flow?: boolean;
+    evolved?: boolean;
+    strokeDasharray?: string;
+    markerStart?: string;
+    styles: {
+        evolvedStroke: string;
+        stroke: string;
+        evolvedStrokeWidth: number;
+        strokeWidth: number;
+        flowStrokeWidth: number;
+        flow: string;
+    };
+    filter?: string;
+}
+
+const LinkSymbol: React.FC<LinkSymbolProps> = ({
+    id,
+    x1,
+    x2,
+    y1,
+    y2,
+    flow,
+    evolved,
+    strokeDasharray,
+    markerStart,
+    styles,
+    filter,
+}) => {
     const stroke = evolved ? styles.evolvedStroke : styles.stroke;
     const strokeWidth = evolved
         ? styles.evolvedStrokeWidth
@@ -44,19 +63,6 @@ const LinkSymbol = props => {
             )}
         </g>
     );
-};
-
-LinkSymbol.propTypes = {
-    id: PropTypes.string,
-    x1: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    x2: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    y1: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    y2: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    evolved: PropTypes.bool,
-    flow: PropTypes.bool,
-    strokeDasharray: PropTypes.string,
-    // stroke: PropTypes.string,
-    // strokeWidth: PropTypes.number,
 };
 
 export default memo(LinkSymbol);

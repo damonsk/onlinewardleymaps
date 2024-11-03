@@ -50,26 +50,26 @@ export interface MapAnnotation {
 export interface NamedComponent {
     name: string;
 }
-export interface MapLinks {}
-export interface MapAnchors extends NamedComponent {}
-export interface MapEvolved {}
-export interface MapPipelines {}
-export interface MapComponents extends NamedComponent {}
+export interface MapLinks { }
+export interface MapAnchors extends NamedComponent { }
+export interface MapEvolved { }
+export interface MapPipelines { }
+export interface MapComponents extends NamedComponent { }
 export interface MapAnnotations {
     occurances: Array<MapAnnotation>;
 }
-export interface MapNotes {}
-export interface MapEvolution extends Array<EvolutionLabel> {}
-export interface MapMethods {}
-export interface MapSubmaps extends NamedComponent {}
-export interface MapMarkets extends NamedComponent {}
-export interface MapEcosystems {}
+export interface MapNotes { }
+export interface MapEvolution extends Array<EvolutionLabel> { }
+export interface MapMethods { }
+export interface MapSubmaps extends NamedComponent { }
+export interface MapMarkets extends NamedComponent { }
+export interface MapEcosystems { }
 export interface MapUrls {
     name: string;
     url: string;
 }
-export interface MapAttitudes {}
-export interface MapAccelerators {}
+export interface MapAttitudes { }
+export interface MapAccelerators { }
 
 export default class Converter {
     featureSwitches: OwmFeatureSwitches;
@@ -103,6 +103,7 @@ export default class Converter {
         const nullPresentation = {
             style: '',
             annotations: { visibility: 0, maturity: 0 },
+            size: { width: 0, height: 0 },
         };
         let wardleyMap: WardleyMap = {
             links: [],

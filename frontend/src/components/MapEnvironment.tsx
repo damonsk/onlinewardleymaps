@@ -31,9 +31,12 @@ import Converter, {
     MapNotes,
     MapPipelines,
     MapSubmaps,
-    MapUrls
+    MapUrls,
 } from '../conversion/Converter';
-import { MapAnnotationsPosition } from '../conversion/PresentationExtractionStrategy';
+import {
+    MapAnnotationsPosition,
+    MapSize,
+} from '../conversion/PresentationExtractionStrategy';
 import { LoadMap } from '../repository/LoadMap';
 import { MapIteration, OwnApiWardleyMap } from '../repository/OwnApiWardleyMap';
 import { SaveMap } from '../repository/SaveMap';
@@ -54,7 +57,7 @@ function debounce<T extends (...args: any[]) => void>(
 ): (...args: Parameters<T>) => void {
     let timer: NodeJS.Timeout | null;
 
-    return function(this: any, ...args: Parameters<T>): void {
+    return function (this: any, ...args: Parameters<T>): void {
         clearTimeout(timer!);
         timer = setTimeout(() => {
             timer = null;
@@ -132,13 +135,13 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     ] = useState<MapAnnotationsPosition>({ maturity: 0, visibility: 0 });
     const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
     const [mapCanvasDimensions, setMapCanvasDimensions] = useState(
-		Defaults.MapDimensions
-	);
+        Defaults.MapDimensions,
+    );
     const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
     const [mapEvolutionStates, setMapEvolutionStates] = useState<
         Defaults.EvolutionStages
     >(Defaults.EvolutionStages);
-    const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
+    const [mapSize, setMapSize] = useState<MapSize>({ width: 0, height: 0 });
     const [mapStyle, setMapStyle] = useState('plain');
     const [mapStyleDefs, setMapStyleDefs] = useState<MapTheme>(MapStyles.Plain);
     const [saveOutstanding, setSaveOutstanding] = useState(false);
@@ -176,7 +179,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         setShowUsage(!showUsage);
     };
 
-    const saveToRemoteStorage = async function(hash: string) {
+    const saveToRemoteStorage = async function (hash: string) {
         setActionInProgress(true);
         const mapToPersist: OwnApiWardleyMap = {
             mapText,
@@ -185,7 +188,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             readOnly: false,
         };
 
-        const followOnActions = async function(id: string) {
+        const followOnActions = async function (id: string) {
             if (currentId === '') {
                 console.log('[followOnActions::switch]', {
                     mapPersistenceStrategy,
@@ -217,7 +220,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         );
     };
 
-    const loadFromRemoteStorage = async function() {
+    const loadFromRemoteStorage = async function () {
         const followOnActions = (
             mapPersistenceStrategy: string,
             map: OwnApiWardleyMap,
@@ -275,39 +278,43 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }
 
     function downloadMap() {
-        if(mapRef.current === null) return;
-		const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
-		const tempElement = document.createElement('div');
-		tempElement.innerHTML = svgMapText;
-		tempElement.style.position = 'absolute';
-		tempElement.style.left = '-9999px';
-		document.body.appendChild(tempElement);
-		html2canvas(tempElement, { useCORS: true, allowTaint: true })
-			.then((canvas) => {
-				const base64image = canvas.toDataURL('image/png');
-				const link = document.createElement('a');
-				link.download = mapTitle;
-				link.href = base64image;
-				link.click();
-				tempElement.remove();
-			})
-			.catch((x) => {
-				console.log(x);
-				tempElement.remove();
-			});
-	}
+        if (mapRef.current === null) return;
+        const svgMapText = mapRef.current.getElementsByTagName('svg')[0]
+            .outerHTML;
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = svgMapText;
+        tempElement.style.position = 'absolute';
+        tempElement.style.left = '-9999px';
+        document.body.appendChild(tempElement);
+        html2canvas(tempElement, { useCORS: true, allowTaint: true })
+            .then(canvas => {
+                const base64image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = mapTitle;
+                link.href = base64image;
+                link.click();
+                tempElement.remove();
+            })
+            .catch(x => {
+                console.log(x);
+                tempElement.remove();
+            });
+    }
 
     function downloadMapAsSVG() {
-        if(mapRef.current === null) return;
-		const svgMapText = mapRef.current
-			.getElementsByTagName('svg')[0]
-			.outerHTML.replace(/&nbsp;/g, ' ')
-			.replace(/<svg([^>]*)>/, '<svg xmlns="http://www.w3.org/2000/svg"$1>');
-		saveMapText(
-			`<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
-			`${mapTitle}.svg`
-		);
-	}
+        if (mapRef.current === null) return;
+        const svgMapText = mapRef.current
+            .getElementsByTagName('svg')[0]
+            .outerHTML.replace(/&nbsp;/g, ' ')
+            .replace(
+                /<svg([^>]*)>/,
+                '<svg xmlns="http://www.w3.org/2000/svg"$1>',
+            );
+        saveMapText(
+            `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
+            `${mapTitle}.svg`,
+        );
+    }
 
     const addIteration = () => {
         const iterations = [...mapIterations];
@@ -342,27 +349,27 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     useEffect(() => {
         try {
             setErrorLine([]);
-			setInvalid(false);
-			const r = new Converter(featureSwitches).parse(mapText);
-			setRawMapTitle(r.title);
-			setMapAnnotations(r.annotations);
-			setMapAnchors(r.anchors);
-			setMapNotes(r.notes);
-			setMapComponents(r.elements);
-			setMapSubMaps(r.submaps);
-			setMarkets(r.markets);
-			setEcosystems(r.ecosystems);
-			setMapEvolved(r.evolved);
-			setMapPipelines(r.pipelines);
-			setMapLinks(r.links);
-			setMapUrls(r.urls);
-			setMapMethods(r.methods);
-			setMapAttitudes(r.attitudes);
-			setMapStyle(r.presentation.style);
-			setMapSize(r.presentation.size);
-			setMapAccelerators(r.accelerators);
-			setMapAnnotationsPresentation(r.presentation.annotations);
-			setMapEvolutionStates({
+            setInvalid(false);
+            const r = new Converter(featureSwitches).parse(mapText);
+            setRawMapTitle(r.title);
+            setMapAnnotations(r.annotations);
+            setMapAnchors(r.anchors);
+            setMapNotes(r.notes);
+            setMapComponents(r.elements);
+            setMapSubMaps(r.submaps);
+            setMarkets(r.markets);
+            setEcosystems(r.ecosystems);
+            setMapEvolved(r.evolved);
+            setMapPipelines(r.pipelines);
+            setMapLinks(r.links);
+            setMapUrls(r.urls);
+            setMapMethods(r.methods);
+            setMapAttitudes(r.attitudes);
+            setMapStyle(r.presentation.style);
+            setMapSize(r.presentation.size);
+            setMapAccelerators(r.accelerators);
+            setMapAnnotationsPresentation(r.presentation.annotations);
+            setMapEvolutionStates({
                 genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
                 custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
                 product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
@@ -384,11 +391,11 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }, [mapTitle]);
 
     useEffect(() => {
-		setMapDimensions({
-			width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-			height: mapSize.height > 0 ? mapSize.height : getHeight(),
-		});
-	}, [mapOnlyView, hideNav, mapSize]);
+        setMapDimensions({
+            width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+            height: mapSize.height > 0 ? mapSize.height : getHeight(),
+        });
+    }, [mapOnlyView, hideNav, mapSize]);
 
     useEffect(() => {
         console.log('[currentIteration, rawMapTitle, mapIterations]', [
@@ -430,57 +437,57 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }, [shouldLoad]);
 
     useEffect(() => {
-		const debouncedHandleResize = debounce(() => {
-			const dimensions = {
-				width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-				height: mapSize.height > 0 ? mapSize.height : getHeight(),
-			};
-			setMapDimensions(dimensions);
-		}, 1);
+        const debouncedHandleResize = debounce(() => {
+            const dimensions = {
+                width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+                height: mapSize.height > 0 ? mapSize.height : getHeight(),
+            };
+            setMapDimensions(dimensions);
+        }, 1);
 
-		window.addEventListener('resize', debouncedHandleResize);
-		debouncedHandleResize();
+        window.addEventListener('resize', debouncedHandleResize);
+        debouncedHandleResize();
 
-		return function cleanup() {
-			window.removeEventListener('resize', debouncedHandleResize);
-		};
-	}, [mapSize]);
+        return function cleanup() {
+            window.removeEventListener('resize', debouncedHandleResize);
+        };
+    }, [mapSize]);
 
     useEffect(() => {
-		const newDimensions = {
-			width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-			height: mapSize.height > 0 ? mapSize.height : getHeight(),
-		};
-		setMapDimensions(newDimensions);
-		setMapCanvasDimensions({
-			width: getWidth(),
-			height: getHeight(),
-		});
-	}, [mapOnlyView, hideNav]);
+        const newDimensions = {
+            width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+            height: mapSize.height > 0 ? mapSize.height : getHeight(),
+        };
+        setMapDimensions(newDimensions);
+        setMapCanvasDimensions({
+            width: getWidth(),
+            height: getHeight(),
+        });
+    }, [mapOnlyView, hideNav]);
 
-	useEffect(() => {
-		const initialLoad = () => {
-			setMapCanvasDimensions({
-				width: getWidth(),
-				height: getHeight(),
-			});
-		};
+    useEffect(() => {
+        const initialLoad = () => {
+            setMapCanvasDimensions({
+                width: getWidth(),
+                height: getHeight(),
+            });
+        };
 
-		const debouncedHandleCanvasResize = debounce(() => {
-			setMapCanvasDimensions({
-				width: getWidth(),
-				height: getHeight(),
-			});
-		}, 500);
+        const debouncedHandleCanvasResize = debounce(() => {
+            setMapCanvasDimensions({
+                width: getWidth(),
+                height: getHeight(),
+            });
+        }, 500);
 
-		window.addEventListener('load', initialLoad);
-		window.addEventListener('resize', debouncedHandleCanvasResize);
+        window.addEventListener('load', initialLoad);
+        window.addEventListener('resize', debouncedHandleCanvasResize);
 
-		return function cleanup() {
-			window.removeEventListener('resize', debouncedHandleCanvasResize);
-			window.removeEventListener('load', initialLoad);
-		};
-	}, []);
+        return function cleanup() {
+            window.removeEventListener('resize', debouncedHandleCanvasResize);
+            window.removeEventListener('load', initialLoad);
+        };
+    }, []);
 
     const submenu = [
         {
@@ -528,9 +535,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     toggleMenu={toggleMenu}
                 />
 
-                <Breadcrumb
-                    currentUrl={currentUrl}
-                />
+                <Breadcrumb currentUrl={currentUrl} />
 
                 <NewMapIterations
                     mapIterations={mapIterations}

@@ -1,11 +1,27 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 
-const PipelineBoxSymbol = props => {
-    const { id, y, x1, x2, stroke, styles = {} } = props;
+interface PipelineBoxSymbolProps {
+    id?: string;
+    y: number;
+    x1: number;
+    x2: number;
+    stroke?: string;
+    styles?: {
+        stroke?: string;
+    };
+}
+
+const PipelineBoxSymbol: React.FC<PipelineBoxSymbolProps> = ({
+    id,
+    y,
+    x1,
+    x2,
+    stroke,
+    styles = {},
+}) => {
     const str = stroke || styles.stroke;
     return (
-        <g id={id} transform={'translate(' + x1 + ',' + y + ')'}>
+        <g id={id} transform={`translate(${x1},${y})`}>
             <line
                 x1={0}
                 y1={0}
@@ -33,15 +49,6 @@ const PipelineBoxSymbol = props => {
             <line x1={0} y1={22} x2={0} y2={0} strokeWidth={1} stroke={str} />
         </g>
     );
-};
-
-PipelineBoxSymbol.propTypes = {
-    id: PropTypes.string,
-    y: PropTypes.number,
-    x1: PropTypes.number,
-    x2: PropTypes.number,
-    stroke: PropTypes.string,
-    styles: PropTypes.object.isRequired,
 };
 
 export default memo(PipelineBoxSymbol);

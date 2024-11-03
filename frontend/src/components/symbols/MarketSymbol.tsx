@@ -1,22 +1,25 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-
 const SM_CIRC_RADIUS = 10;
-const polarCoord = (radius, angle) => [
+const polarCoord = (radius: number, angle: number): [number, number] => [
     Math.round(radius * Math.cos((angle * Math.PI) / 180)),
     Math.round(radius * Math.sin((angle * Math.PI) / 180)),
 ];
 
-const rotatePoints = () => {
+const rotatePoints = (): [number, number][] => {
     const START_ANGLE = 30;
     const ROTATE = 120;
-    const coords = [];
+    const coords: [number, number][] = [];
     for (let i = 0; i < 3; i++) {
         coords.push(polarCoord(SM_CIRC_RADIUS, START_ANGLE + ROTATE * i));
     }
     return coords;
 };
-const drawInsideCircles = (coords, styles) =>
+
+interface Styles {
+    fill: string;
+    stroke: string;
+}
+const drawInsideCircles = (coords: [number, number][], styles: Styles) =>
     coords.map((cxy, i) => (
         <circle
             key={i}
@@ -29,8 +32,15 @@ const drawInsideCircles = (coords, styles) =>
         />
     ));
 
-const MarketSymbol = props => {
-    const { id, styles = {}, onClick } = props;
+interface MarketSymbolProps {
+    id?: string;
+    styles: Styles;
+    onClick?: () => void;
+    cx?: string;
+    cy?: string;
+}
+
+const MarketSymbol: React.FC<MarketSymbolProps> = ({ id, styles, onClick }) => {
     const coords = rotatePoints();
     return (
         <g id={id} onClick={onClick}>
@@ -50,14 +60,6 @@ const MarketSymbol = props => {
             {drawInsideCircles(coords, styles)}
         </g>
     );
-};
-
-MarketSymbol.propTypes = {
-    onClick: PropTypes.func,
-    id: PropTypes.string,
-    cx: PropTypes.string,
-    cy: PropTypes.string,
-    styles: PropTypes.object.isRequired,
 };
 
 export default memo(MarketSymbol);

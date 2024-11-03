@@ -31,6 +31,7 @@ export default class LinksExtractionStrategy implements IParseStrategy {
             '}',
             'accelerator',
             'deaccelerator',
+            'size',
         ];
     }
 
