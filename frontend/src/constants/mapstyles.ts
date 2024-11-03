@@ -286,6 +286,7 @@ export const Wardley = mergeIntoDefault({
     annotation: {
         stroke: '#595959',
         strokeWidth: 2,
+        fill: 'white',
         boxStroke: '#595959',
         boxStrokeWidth: 1,
         boxFill: '#FFFFFF',
