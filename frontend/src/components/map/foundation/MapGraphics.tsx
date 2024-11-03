@@ -8,9 +8,10 @@ const ecosystemStripesPattern = () => (
         height="4"
     >
         <path
-            d="M 3,-1 l 2,2 M/>,0 l 4,4
-			 M -1,3 l 2,2
-			 "
+            d="M 3,-1 l 2,2
+            M 0,0 l 4,4
+            M -1,3 l 2,2
+            "
             stroke="grey"
             strokeWidth="1"
             opacity=".5"

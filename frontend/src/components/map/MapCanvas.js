@@ -254,13 +254,15 @@ function MapCanvas(props) {
                 onMouseMove={handleMouseMove}
                 onZoom={handleZoom}
                 onZoomReset={() => setScaleFactor(1)}
-                className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
                 style={{
                     userSelect: 'none',
                     fontFamily: mapStyleDefs.fontFamily,
                 }}
             >
                 <svg
+                    className={[mapStyleDefs.className, styles.mapCanvas].join(
+                        ' ',
+                    )}
                     ref={mapRef}
                     width={mapDimensions.width + 2}
                     height={mapDimensions.height + 4}

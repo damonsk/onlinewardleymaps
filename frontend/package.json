@@ -1,95 +1,97 @@
 {
-	"name": "online-wardley-maps",
-	"version": "1.117.0",
-	"main": "index.js",
-	"license": "MIT",
-	"devDependencies": {
-		"@next/eslint-plugin-next": "^15.0.2",
-		"@testing-library/jest-dom": "^6.1.6",
-		"@types/cookie": "^0.6.0",
-		"@types/node": "20.10.5",
-		"@types/react": "18.2.45",
-		"@types/react-dom": "^18.2.18",
-		"@typescript-eslint/eslint-plugin": "^6.4.0",
-		"eslint": "^8.0.1",
-		"eslint-config-next": "^14.1.0",
-		"eslint-plugin-import": "^2.25.2",
-		"eslint-plugin-jsx": "^0.1.0",
-		"eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
-		"eslint-plugin-promise": "^6.0.0",
-		"eslint-plugin-react": "^7.33.2",
-		"husky": "^8.0.3",
-		"lint-staged": "^15.2.0",
-		"rollup": "^4.9.1",
-		"typescript": "*"
-	},
-	"env": {
-		"browser": true,
-		"node": true,
-		"es6": true,
-		"jest": true
-	},
-	"build": {
-		"directories": {
-			"output": "release/"
-		}
-	},
-	"resolutions": {
-		"//": "See https://github.com/facebook/create-react-app/issues/11773",
-		"react-error-overlay": "6.0.9"
-	},
-	"dependencies": {
-		"@emotion/react": "^11.13.3",
-		"@emotion/styled": "^11.13.0",
-		"@mui/icons-material": "^5.16.7",
-		"@mui/material": "5.16.7",
-		"@mui/styles": "5.16.7",
-		"ace-builds": "^1.36.3",
-		"core-js": "^3.39.0",
-		"html2canvas": "^1.4.1",
-		"lodash.merge": "^4.6.2",
-		"next": "14.2.16",
-		"prop-types": "^15.8.1",
-		"react": "18.3.1",
-		"react-ace": "^13.0.0",
-		"react-dom": "18.3.1",
-		"react-svg-pan-zoom": "^3.13.1",
-		"sass": "1.80.6",
-		"styled-components": "6.1.13"
-	},
-	"lint-staged": {
-		"*.{js,jsx}": [
-			"yarn run format-staged",
-			"yarn run elint frontend/ --fix",
-			"git add"
-		]
-	},
-	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
-		"lint": "eslint .",
-		"format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
-		"precommit": "yarn run format-staged && yarn test",
-		"package": "rollup -c",
-		"test": "jest --env=jsdom",
-		"test:watch": "jest --watchAll --env=jsdom"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	}
+  "name": "online-wardley-maps",
+  "version": "1.117.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@next/eslint-plugin-next": "15.0.2",
+    "@testing-library/jest-dom": "^6.1.6",
+    "@types/cookie": "^0.6.0",
+    "@types/node": "20.10.5",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "eslint": "^8.0.1",
+    "eslint-config-next": "15.0.2",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx": "^0.1.0",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.33.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "rollup": "^4.9.1",
+    "typescript": "*"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "build": {
+    "directories": {
+      "output": "release/"
+    }
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.6",
+    "@mui/material": "^6.1.6",
+    "@mui/styles": "^6.1.6",
+    "ace-builds": "^1.36.3",
+    "core-js": "^3.39.0",
+    "html2canvas": "^1.4.1",
+    "lodash.merge": "^4.6.2",
+    "next": "15.0.2",
+    "prop-types": "^15.8.1",
+    "react": "19.0.0-rc-02c0e824-20241028",
+    "react-ace": "^13.0.0",
+    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-svg-pan-zoom": "^3.13.1",
+    "sass": "1.80.6",
+    "styled-components": "6.1.13"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "yarn run format-staged",
+      "yarn run elint frontend/ --fix",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
+    "precommit": "yarn run format-staged && yarn test",
+    "package": "rollup -c",
+    "test": "jest --env=jsdom",
+    "test:watch": "jest --watchAll --env=jsdom"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "packageManager": "yarn@4.5.1"
 }
