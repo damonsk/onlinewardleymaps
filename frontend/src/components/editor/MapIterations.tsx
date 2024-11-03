@@ -128,9 +128,9 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
         }
     }, [currentIteration]);
 
-    useEffect(() => {
-        console.log('mapIterations', mapIterations);
-    }, [mapIterations]);
+    // useEffect(() => {
+    //     // console.log('mapIterations', mapIterations);
+    // }, [mapIterations]);
 
     return (
         <StyledArea>

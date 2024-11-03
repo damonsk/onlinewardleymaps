@@ -10,7 +10,7 @@ import { MapTheme } from '../../constants/mapstyles';
 import {
     MapAccelerators,
     MapAnchors,
-    MapAnnotations,
+    MapAnnotation,
     MapAttitudes,
     MapComponents,
     MapEcosystems,
@@ -44,7 +44,7 @@ export interface MapViewProps {
     mapAccelerators: MapAccelerators[];
     launchUrl: (urlId: string) => void;
     mapNotes: MapNotes[];
-    mapAnnotations: MapAnnotations;
+    mapAnnotations: MapAnnotation[];
     mapAnnotationsPresentation: MapAnnotationsPosition;
     mapMethods: MapMethods[];
     mapStyleDefs: MapTheme;
@@ -64,7 +64,7 @@ export interface MapViewProps {
 
 export const MapView: React.FunctionComponent<MapViewProps> = props => {
     const featureSwitches = useFeatureSwitches();
-    const [quickAddCursor, setQuickAddCursor] = useState('default');
+    // const [quickAddCursor, setQuickAddCursor] = useState('default');
     const [quickAddTemplate, setQuickAddTemplate] = useState(() => () =>
         console.log('nullTemplate'),
     );
@@ -78,13 +78,13 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
         dark: '#353347',
     };
 
-    const textColour: DefaultThemes = {
-        wardley: 'black',
-        colour: 'black',
-        plain: 'black',
-        handwritten: 'black',
-        dark: 'white',
-    };
+    // const textColour: DefaultThemes = {
+    //     wardley: 'black',
+    //     colour: 'black',
+    //     plain: 'black',
+    //     handwritten: 'black',
+    //     dark: 'white',
+    // };
 
     const containerStyle: React.CSSProperties = {
         backgroundColor:
@@ -112,7 +112,7 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
             15,
         );
         console.log('MapView::setQuickAdd::icon', i);
-        setQuickAddCursor(i + ' 8 8, auto');
+        // setQuickAddCursor(i + ' 8 8, auto');
         setQuickAddTemplate(() => () => quickAdd.template);
     };
 
@@ -127,7 +127,7 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
             // const componentString = quickAddTemplate()('text', pos.y, pos.x);
             // props.mutateMapText(props.mapText + `\r\n${componentString}`);
             setQuickAddInProgress(false);
-            setQuickAddCursor('default');
+            // setQuickAddCursor('default');
         }
     };
 

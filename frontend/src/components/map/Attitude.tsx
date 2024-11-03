@@ -1,4 +1,5 @@
 import React from 'react';
+import { MapTheme } from '../../constants/mapstyles';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
@@ -21,9 +22,7 @@ interface AttitudeProps {
     };
     mapText: string;
     mutateMapText: (text: string) => void;
-    mapStyleDefs: {
-        attitudes: React.CSSProperties;
-    };
+    mapStyleDefs: MapTheme;
     scaleFactor: number;
 }
 
@@ -98,7 +97,7 @@ const Attitude: React.FC<AttitudeProps> = props => {
                     attitude={type}
                     height={y2 - y}
                     width={x2 - x}
-                    textAnchor="middle"
+                    // textAnchor="middle"
                     styles={props.mapStyleDefs.attitudes}
                 />
             </Movable>

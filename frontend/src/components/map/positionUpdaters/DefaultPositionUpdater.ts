@@ -32,7 +32,9 @@ export default class DefaultPositionUpdater implements PositionUpdater {
         this.mutator = mutator;
         this.replacers = replacers;
     }
-    setSuccessor(positionUpdater: PositionUpdater) {
+
+    //eslint-disable-next-line
+    setSuccessor(_positionUpdater: PositionUpdater) {
         throw new Error('Method not implemented.');
     }
 

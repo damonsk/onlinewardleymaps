@@ -20,7 +20,7 @@ export default class LineNumberPositionUpdater {
         this.mutator = mutator;
         this.replacers = replacers;
     }
-    update(moved: number, identifier: string, line: number): void {
+    update(moved: any, identifier: string, line: number): void {
         let getLine = this.mapText.split('\n')[line - 1];
         for (let i = 0; i < this.replacers.length; i++) {
             const r = this.replacers[i];

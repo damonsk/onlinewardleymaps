@@ -75,7 +75,7 @@ export interface MapTheme {
     anchor?: {
         fontSize?: string;
     };
-    attitudes?: MapAttitudeTheme;
+    attitudes: MapAttitudeTheme;
     methods: MapMethodsTheme;
     market?: {
         stroke?: string;
@@ -110,7 +110,7 @@ export interface MapTheme {
         strokeDasharray?: string;
         strokeWidth?: number;
     };
-    annotation?: MapAnnotationTheme;
+    annotation: MapAnnotationTheme;
     note: MapNoteTheme;
 }
 
@@ -264,6 +264,28 @@ export const Handwritten = mergeIntoDefault({
         evolvedTextColor: '',
         textColor: '',
     },
+    attitudes: {
+        strokeWidth: '5px',
+        fontSize: '14px',
+        pioneers: {
+            stroke: '#3490dd',
+            fill: '#3ccaf8',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+        settlers: {
+            stroke: '#396dc0',
+            fill: '#599afa',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+        townplanners: {
+            stroke: '#4768c8',
+            fill: '#936ff9',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+    },
 });
 
 export const Wardley = mergeIntoDefault({
@@ -300,6 +322,28 @@ export const Wardley = mergeIntoDefault({
     note: {
         evolvedTextColor: 'red',
         textColor: 'black',
+    },
+    attitudes: {
+        strokeWidth: '5px',
+        fontSize: '14px',
+        pioneers: {
+            stroke: '#3490dd',
+            fill: '#3ccaf8',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+        settlers: {
+            stroke: '#396dc0',
+            fill: '#599afa',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+        townplanners: {
+            stroke: '#4768c8',
+            fill: '#936ff9',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
     },
 });
 
@@ -469,5 +513,27 @@ export const Colour = mergeIntoDefault({
     note: {
         evolvedTextColor: 'red',
         textColor: 'black',
+    },
+    attitudes: {
+        strokeWidth: '5px',
+        fontSize: '14px',
+        pioneers: {
+            stroke: '#3490dd',
+            fill: '#3ccaf8',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+        settlers: {
+            stroke: '#396dc0',
+            fill: '#599afa',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
+        townplanners: {
+            stroke: '#4768c8',
+            fill: '#936ff9',
+            fillOpacity: 0.4,
+            strokeOpacity: 0.7,
+        },
     },
 });

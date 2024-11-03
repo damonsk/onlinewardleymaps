@@ -295,8 +295,8 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 link.click();
                 tempElement.remove();
             })
-            .catch(x => {
-                console.log(x);
+            // eslint-disable-next-line
+            .catch(_ => {
                 tempElement.remove();
             });
     }
@@ -398,11 +398,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }, [mapOnlyView, hideNav, mapSize]);
 
     useEffect(() => {
-        console.log('[currentIteration, rawMapTitle, mapIterations]', [
-            currentIteration,
-            rawMapTitle,
-            mapIterations,
-        ]);
         if (currentIteration > -1) {
             setMapTitle(
                 rawMapTitle + ' [' + mapIterations[currentIteration].name + ']',

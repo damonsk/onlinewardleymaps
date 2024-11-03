@@ -1,4 +1,4 @@
-import React from 'react';
+import { MapTheme } from '../../constants/mapstyles';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
@@ -24,9 +24,7 @@ interface AnnotationElementProps {
     mapText: string;
     occuranceIndex: number;
     scaleFactor: number;
-    mapStyleDefs: {
-        annotation: React.CSSProperties;
-    };
+    mapStyleDefs: MapTheme;
 }
 
 interface MovedPosition {

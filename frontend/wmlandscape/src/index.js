@@ -204,6 +204,5 @@ export {
     Usages,
     useFeatureSwitches,
     useModKeyPressedConsumer,
-    XAxisLabelsExtractionStrategy
+    XAxisLabelsExtractionStrategy,
 };
-

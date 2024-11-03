@@ -2,11 +2,11 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MapIcon from '@mui/icons-material/Map';
+import { ListItemButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Router from 'next/router';
@@ -90,30 +90,28 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
                 {siteLinks
                     .filter(i => i.visible === true)
                     .map(l => (
-                        <ListItem button key={l.name} onClick={l.action}>
+                        <ListItemButton key={l.name} onClick={l.action}>
                             <ListItemIcon>{l.icon}</ListItemIcon>
                             <ListItemText primary={l.name} />
-                        </ListItem>
+                        </ListItemButton>
                     ))}
             </List>
             <Divider />
             <List>
                 {submenu &&
                     submenu.map(l => (
-                        <ListItem
-                            button
+                        <ListItemButton
                             key={l.name}
                             onClick={() => complete(() => l.action())}
                         >
                             <ListItemIcon>{l.icon}</ListItemIcon>
                             <ListItemText primary={l.name} />
-                        </ListItem>
+                        </ListItemButton>
                     ))}
             </List>
             <Divider />
             <List>
-                <ListItem
-                    button
+                <ListItemButton
                     key={'toggleTheme'}
                     onClick={() => complete(() => toggleTheme())}
                 >
@@ -127,7 +125,7 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
                                 : 'Enable Light Theme'
                         }
                     />
-                </ListItem>
+                </ListItemButton>
             </List>
         </Box>
     );
