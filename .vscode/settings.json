@@ -1,5 +1,5 @@
 {
-  //"editor.formatOnSave": true, // this runs VSCode formatter instead of prettier which messes things up.  
+  "editor.formatOnSave": true, // this runs VSCode formatter instead of prettier which messes things up.  
   "editor.insertSpaces": false,
   "typescript.tsc.autoDetect": "on",
   "typescript.preferences.quoteStyle": "single",
@@ -9,13 +9,9 @@
     "source.organizeImports": "explicit"
   },
   "files.exclude": {
-    "amplify/.config": true,
-    "amplify/**/*-parameters.json": true,
-    "amplify/**/amplify.state": true,
-    "amplify/**/transform.conf.json": true,
-    "amplify/#current-cloud-backend": true,
-    "amplify/backend/amplify-meta.json": true,
-    "amplify/backend/awscloudformation": true
+    "node_modules": true,
+    "*/node_modules": true,
+    "*/.next": true
   },
   "jestrunner.configPath": "frontend/jest.config.js",
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",

@@ -1,7 +1,7 @@
-import React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheet as StyledServerStyleSheet } from 'styled-components';
 import MuiServerStyleSheets from '@mui/styles/ServerStyleSheets';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
+import React from 'react';
+import { ServerStyleSheet as StyledServerStyleSheet } from 'styled-components';
 import { theme } from '../src/theme';
 
 export default class MyDocument extends Document {
