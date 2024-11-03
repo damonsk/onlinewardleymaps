@@ -8,7 +8,6 @@ export interface ComponentTextSymbolProps {
     text?: string;
     textTheme: TextTheme;
     fill?: string;
-    fontSize?: string;
     fontWeight?: string;
     className?: string;
     evolved?: boolean;
@@ -26,7 +25,6 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     evolved,
     className = 'label',
     note,
-    fontSize,
     fill,
     fontWeight,
     textAnchor,
@@ -67,7 +65,7 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
                 id={id}
                 data-testid={id}
                 fontWeight={fontWeight || '14px'}
-                fontSize={fontSize || textTheme.fontSize || '14px'}
+                fontSize={textTheme.fontSize || '14px'}
                 className={className}
                 textAnchor={textAnchor}
                 x={x}

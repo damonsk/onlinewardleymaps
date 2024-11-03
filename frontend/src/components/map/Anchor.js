@@ -1,12 +1,12 @@
-import React from 'react';
-import PositionCalculator from './PositionCalculator';
-import Movable from './Movable';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { useModKeyPressedConsumer } from '../KeyPressContext';
+import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
-import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
-import { useModKeyPressedConsumer } from '../KeyPressContext';
 
 const Anchor = (props) => {
 	const isModKeyPressed = useModKeyPressedConsumer();
@@ -66,7 +66,7 @@ const Anchor = (props) => {
 					textAnchor="middle"
 					evolved={props.anchor.evolved}
 					fontSize={props.mapStyleDefs.anchor.fontSize}
-					styles={props.mapStyleDefs.component}
+					textTheme={props.mapStyleDefs.component}
 					onClick={props.onClick}
 				/>
 			</Movable>

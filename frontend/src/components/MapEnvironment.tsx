@@ -20,7 +20,7 @@ import { MapTheme } from '../constants/mapstyles';
 import Converter, {
     MapAccelerators,
     MapAnchors,
-    MapAnnotations,
+    MapAnnotation,
     MapAttitudes,
     MapComponents,
     MapEcosystems,
@@ -31,7 +31,7 @@ import Converter, {
     MapNotes,
     MapPipelines,
     MapSubmaps,
-    MapUrls,
+    MapUrls
 } from '../conversion/Converter';
 import { MapAnnotationsPosition } from '../conversion/PresentationExtractionStrategy';
 import { LoadMap } from '../repository/LoadMap';
@@ -63,28 +63,6 @@ function debounce<T extends (...args: any[]) => void>(
     };
 }
 
-function convertToImage(base64Data: string, contentType: string) {
-    base64Data = base64Data.replace('data:image/png;base64,', '');
-    contentType = contentType || '';
-    const sliceSize = 1024;
-    const byteCharacters = atob(base64Data);
-    const bytesLength = byteCharacters.length;
-    const slicesCount = Math.ceil(bytesLength / sliceSize);
-    const byteArrays = new Array(slicesCount);
-
-    for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-        const begin = sliceIndex * sliceSize;
-        const end = Math.min(begin + sliceSize, bytesLength);
-
-        const bytes = new Array(end - begin);
-        for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
-            bytes[i] = byteCharacters[offset].charCodeAt(0);
-        }
-        byteArrays[sliceIndex] = new Uint8Array(bytes);
-    }
-    return new Blob(byteArrays, { type: contentType });
-}
-
 const getHeight = () => {
     const winHeight = window.innerHeight;
     const topNavHeight = document.getElementById('top-nav-wrapper')
@@ -102,8 +80,8 @@ interface MapEnvironmentProps {
     toggleTheme: () => void;
     menuVisible: boolean;
     isLightTheme: boolean;
-    mapPersistenceStrategy: Defaults.MapPersistenceStrategy;
-    setMapPersistenceStrategy: React.Dispatch<React.SetStateAction<Defaults.MapPersistenceStrategy>>;
+    mapPersistenceStrategy: string;
+    setMapPersistenceStrategy: React.Dispatch<React.SetStateAction<string>>;
     shouldLoad: boolean;
     setShouldLoad: React.Dispatch<React.SetStateAction<boolean>>;
     currentId: string;
@@ -141,9 +119,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     const [mapUrls, setMapUrls] = useState<MapUrls[]>([]);
     const [mapLinks, setMapLinks] = useState<MapLinks[]>([]);
     const [mapAttitudes, setMapAttitudes] = useState<MapAttitudes[]>([]);
-    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotations>({
-        occurances: [],
-    });
+    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotation[]>([]);
     const [mapAccelerators, setMapAccelerators] = useState<MapAccelerators[]>(
         [],
     );
@@ -155,10 +131,14 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         setMapAnnotationsPresentation,
     ] = useState<MapAnnotationsPosition>({ maturity: 0, visibility: 0 });
     const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
+    const [mapCanvasDimensions, setMapCanvasDimensions] = useState(
+		Defaults.MapDimensions
+	);
     const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
     const [mapEvolutionStates, setMapEvolutionStates] = useState<
         Defaults.EvolutionStages
     >(Defaults.EvolutionStages);
+    const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
     const [mapStyle, setMapStyle] = useState('plain');
     const [mapStyleDefs, setMapStyleDefs] = useState<MapTheme>(MapStyles.Plain);
     const [saveOutstanding, setSaveOutstanding] = useState(false);
@@ -167,9 +147,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     const [errorLine, setErrorLine] = useState<number[]>([]);
     const [showLineNumbers, setShowLineNumbers] = useState(false);
     const [showLinkedEvolved, setShowLinkedEvolved] = useState(false);
-    const [mapOwner, setMapOwner] = useState('');
-    const [isMapReadOnly, setMapReadOnly] = useState(false);
-    const [canSaveMap, setCanSaveMap] = useState(false);
     const [mapOnlyView, setMapOnlyView] = useState(false);
     const [currentIteration, setCurrentIteration] = useState(-1);
     const [actionInProgress, setActionInProgress] = useState(false);
@@ -205,25 +182,10 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             mapText,
             imageData: '',
             mapIterations,
-            owner: mapOwner,
             readOnly: false,
         };
 
         const followOnActions = async function(id: string) {
-            if (
-                mapPersistenceStrategy ===
-                Defaults.MapPersistenceStrategy.Private
-            ) {
-                const imageData = await makeSnapShot();
-                await createImage(imageData, 'private', id + '.png');
-            }
-            if (
-                mapPersistenceStrategy ===
-                Defaults.MapPersistenceStrategy.Public
-            ) {
-                const imageData = await makeSnapShot();
-                await createImage(imageData, 'public', id + '.png');
-            }
             if (currentId === '') {
                 console.log('[followOnActions::switch]', {
                     mapPersistenceStrategy,
@@ -231,22 +193,8 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     id,
                 });
                 switch (mapPersistenceStrategy) {
-                    case Defaults.MapPersistenceStrategy.Private:
-                        Router.push('/private' + '/' + id, undefined, {
-                            shallow: true,
-                        });
-                        break;
                     case Defaults.MapPersistenceStrategy.Legacy:
                         window.location.hash = '#' + id;
-                        break;
-                    case Defaults.MapPersistenceStrategy.Public:
-                        window.location.hash = '#public:' + id;
-                        break;
-                    default:
-                    case Defaults.MapPersistenceStrategy.PublicUnauthenticated:
-                        Router.push('/public' + '/' + id, undefined, {
-                            shallow: true,
-                        });
                         break;
                 }
             }
@@ -259,22 +207,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             console.log('saveToPrivateDataStore', {
                 mapPersistenceStrategy,
             });
-
-            async function createImage(
-                imageData: string | undefined,
-                level: string,
-                filename: string,
-            ) {
-                if (imageData === undefined) return;
-                return uploadData({
-                    key: filename,
-                    data: convertToImage(imageData, 'image/png'),
-                    options: {
-                        // level: level,
-                        contentType: 'image/png',
-                    },
-                });
-            }
         };
 
         await SaveMap(
@@ -287,7 +219,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
     const loadFromRemoteStorage = async function() {
         const followOnActions = (
-            mapPersistenceStrategy: Defaults.MapPersistenceStrategy,
+            mapPersistenceStrategy: string,
             map: OwnApiWardleyMap,
         ) => {
             setMapPersistenceStrategy(mapPersistenceStrategy);
@@ -312,15 +244,9 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
             switch (mapPersistenceStrategy) {
                 case Defaults.MapPersistenceStrategy.Legacy:
-                    console.log(
-                        '--- Need to migrate this map to PublicUnauthd',
-                    );
-                    setMapOwner('');
                     break;
                 default:
                     setMapPersistenceStrategy(mapPersistenceStrategy);
-                    setMapOwner(map.owner || '');
-                    setMapReadOnly(map.readOnly || false);
                     break;
             }
         };
@@ -331,7 +257,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         await LoadMap(mapPersistenceStrategy, followOnActions, currentId);
     };
 
-    function newMap(mapPersistenceStrategy: Defaults.MapPersistenceStrategy) {
+    function newMap(mapPersistenceStrategy: string) {
         setMapText('');
         setMetaText('');
         setCurrentId('');
@@ -349,26 +275,39 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }
 
     function downloadMap() {
-        if (mapRef.current === null) return;
-        html2canvas(mapRef.current).then(canvas => {
-            const base64image = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = mapTitle;
-            link.href = base64image;
-            link.click();
-        });
-    }
+        if(mapRef.current === null) return;
+		const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
+		const tempElement = document.createElement('div');
+		tempElement.innerHTML = svgMapText;
+		tempElement.style.position = 'absolute';
+		tempElement.style.left = '-9999px';
+		document.body.appendChild(tempElement);
+		html2canvas(tempElement, { useCORS: true, allowTaint: true })
+			.then((canvas) => {
+				const base64image = canvas.toDataURL('image/png');
+				const link = document.createElement('a');
+				link.download = mapTitle;
+				link.href = base64image;
+				link.click();
+				tempElement.remove();
+			})
+			.catch((x) => {
+				console.log(x);
+				tempElement.remove();
+			});
+	}
 
     function downloadMapAsSVG() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current
-            .getElementsByTagName('svg')[0]
-            .outerHTML.replace(/&nbsp;/g, ' ');
-        saveMapText(
-            `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
-            `${mapTitle}.svg`,
-        );
-    }
+        if(mapRef.current === null) return;
+		const svgMapText = mapRef.current
+			.getElementsByTagName('svg')[0]
+			.outerHTML.replace(/&nbsp;/g, ' ')
+			.replace(/<svg([^>]*)>/, '<svg xmlns="http://www.w3.org/2000/svg"$1>');
+		saveMapText(
+			`<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
+			`${mapTitle}.svg`
+		);
+	}
 
     const addIteration = () => {
         const iterations = [...mapIterations];
@@ -391,15 +330,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         window.URL.revokeObjectURL(url);
     };
 
-    async function makeSnapShot() {
-        if (mapRef.current) {
-            return await html2canvas(mapRef.current).then(canvas => {
-                const base64image = canvas.toDataURL('image/png');
-                return base64image;
-            });
-        }
-    }
-
     useEffect(() => {
         window.addEventListener('beforeunload', (event: BeforeUnloadEvent) => {
             if (saveOutstanding) {
@@ -412,26 +342,27 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     useEffect(() => {
         try {
             setErrorLine([]);
-            setInvalid(false);
-            const r = new Converter(featureSwitches).parse(mapText);
-            setRawMapTitle(r.title);
-            setMapAnnotations(r.annotations);
-            setMapAnchors(r.anchors);
-            setMapNotes(r.notes);
-            setMapComponents(r.elements);
-            setMapSubMaps(r.submaps);
-            setMarkets(r.markets);
-            setEcosystems(r.ecosystems);
-            setMapEvolved(r.evolved);
-            setMapPipelines(r.pipelines);
-            setMapLinks(r.links);
-            setMapUrls(r.urls);
-            setMapMethods(r.methods);
-            setMapAttitudes(r.attitudes);
-            setMapStyle(r.presentation.style);
-            setMapAccelerators(r.accelerators);
-            setMapAnnotationsPresentation(r.presentation.annotations);
-            setMapEvolutionStates({
+			setInvalid(false);
+			const r = new Converter(featureSwitches).parse(mapText);
+			setRawMapTitle(r.title);
+			setMapAnnotations(r.annotations);
+			setMapAnchors(r.anchors);
+			setMapNotes(r.notes);
+			setMapComponents(r.elements);
+			setMapSubMaps(r.submaps);
+			setMarkets(r.markets);
+			setEcosystems(r.ecosystems);
+			setMapEvolved(r.evolved);
+			setMapPipelines(r.pipelines);
+			setMapLinks(r.links);
+			setMapUrls(r.urls);
+			setMapMethods(r.methods);
+			setMapAttitudes(r.attitudes);
+			setMapStyle(r.presentation.style);
+			setMapSize(r.presentation.size);
+			setMapAccelerators(r.accelerators);
+			setMapAnnotationsPresentation(r.presentation.annotations);
+			setMapEvolutionStates({
                 genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
                 custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
                 product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
@@ -453,9 +384,11 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }, [mapTitle]);
 
     useEffect(() => {
-        setMapDimensions({ width: getWidth(), height: getHeight() });
-        // setMainViewHeight(105 + getHeight());
-    }, [mapOnlyView, hideNav]);
+		setMapDimensions({
+			width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+			height: mapSize.height > 0 ? mapSize.height : getHeight(),
+		});
+	}, [mapOnlyView, hideNav, mapSize]);
 
     useEffect(() => {
         console.log('[currentIteration, rawMapTitle, mapIterations]', [
@@ -471,39 +404,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             setMapTitle(rawMapTitle);
         }
     }, [currentIteration, rawMapTitle, mapIterations]);
-
-    useEffect(() => {
-        if (
-            mapPersistenceStrategy ===
-                Defaults.MapPersistenceStrategy.PublicUnauthenticated ||
-            mapPersistenceStrategy === Defaults.MapPersistenceStrategy.Legacy
-        ) {
-            setCanSaveMap(true);
-        }
-        if (mapOwner) {
-            console.log('--- MapOwner: ' + mapOwner);
-            if (user !== null && mapOwner === user.username) {
-                setCanSaveMap(true);
-                console.log('--- Can Save Map (MapOwner)');
-                return;
-            }
-            if (
-                user !== null &&
-                mapOwner !== user.username &&
-                mapPersistenceStrategy !==
-                    Defaults.MapPersistenceStrategy.Private &&
-                !isMapReadOnly
-            ) {
-                setCanSaveMap(true);
-                console.log(
-                    '--- Can Save Map (Public, Logged In, Not Read Only)',
-                );
-                return;
-            }
-            console.log('--- Cannot Save Map');
-            setCanSaveMap(false);
-        }
-    }, [mapOwner, user, isMapReadOnly, mapPersistenceStrategy]);
 
     useEffect(() => {
         switch (mapStyle) {
@@ -530,24 +430,57 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }, [shouldLoad]);
 
     useEffect(() => {
-        const debouncedHandleResize = debounce(() => {
-            setMapDimensions({ width: getWidth(), height: getHeight() });
-        }, 1000);
+		const debouncedHandleResize = debounce(() => {
+			const dimensions = {
+				width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+				height: mapSize.height > 0 ? mapSize.height : getHeight(),
+			};
+			setMapDimensions(dimensions);
+		}, 1);
 
-        const initialLoad = () => {
-            setMapDimensions({ width: getWidth(), height: getHeight() });
-        };
+		window.addEventListener('resize', debouncedHandleResize);
+		debouncedHandleResize();
 
-        window.addEventListener('resize', debouncedHandleResize);
-        window.addEventListener('load', initialLoad);
+		return function cleanup() {
+			window.removeEventListener('resize', debouncedHandleResize);
+		};
+	}, [mapSize]);
 
-        debouncedHandleResize();
+    useEffect(() => {
+		const newDimensions = {
+			width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+			height: mapSize.height > 0 ? mapSize.height : getHeight(),
+		};
+		setMapDimensions(newDimensions);
+		setMapCanvasDimensions({
+			width: getWidth(),
+			height: getHeight(),
+		});
+	}, [mapOnlyView, hideNav]);
 
-        return function cleanup() {
-            window.removeEventListener('resize', debouncedHandleResize);
-            window.removeEventListener('load', initialLoad);
-        };
-    }, []);
+	useEffect(() => {
+		const initialLoad = () => {
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		};
+
+		const debouncedHandleCanvasResize = debounce(() => {
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		}, 500);
+
+		window.addEventListener('load', initialLoad);
+		window.addEventListener('resize', debouncedHandleCanvasResize);
+
+		return function cleanup() {
+			window.removeEventListener('resize', debouncedHandleCanvasResize);
+			window.removeEventListener('load', initialLoad);
+		};
+	}, []);
 
     const submenu = [
         {
@@ -571,8 +504,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 submenu={submenu}
                 toggleTheme={toggleTheme}
                 isLightTheme={isLightTheme}
-                user={user}
-                setHideAuthModal={setHideAuthModal}
             />
 
             <Box
@@ -582,9 +513,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 <NewHeader
                     mapOnlyView={mapOnlyView}
                     setMapOnlyView={setMapOnlyView}
-                    user={user}
-                    signOut={signOut}
-                    setHideAuthModal={setHideAuthModal}
                     currentUrl={currentUrl}
                     saveOutstanding={saveOutstanding}
                     setMetaText={setMetaText}
@@ -597,14 +525,11 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     showLinkedEvolved={showLinkedEvolved}
                     setShowLinkedEvolved={setShowLinkedEvolved}
                     downloadMapAsSVG={downloadMapAsSVG}
-                    canSaveMap={canSaveMap}
                     toggleMenu={toggleMenu}
                 />
 
                 <Breadcrumb
                     currentUrl={currentUrl}
-                    mapPersistenceStrategy={mapPersistenceStrategy}
-                    mapReadOnly={isMapReadOnly}
                 />
 
                 <NewMapIterations
@@ -649,6 +574,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     item
                     xs={12}
                     sm={mapOnlyView ? 12 : 8}
+                    ml={mapOnlyView ? 2 : 0}
                     className="map-view"
                     sx={{ backgroundColor: mapStyleDefs.containerBackground }}
                 >
@@ -675,6 +601,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                             }
                             mapMethods={mapMethods}
                             mapStyleDefs={mapStyleDefs}
+                            mapCanvasDimensions={mapCanvasDimensions}
                             mapDimensions={mapDimensions}
                             mapEvolutionStates={mapEvolutionStates}
                             mapRef={mapRef}

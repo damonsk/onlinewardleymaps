@@ -3,6 +3,7 @@ import { ThemeProvider as MaterialUIThemeProvider } from '@mui/material/styles';
 import StylesProvider from '@mui/styles/StylesProvider';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
 import { FeatureSwitchesProvider } from '../src/components/FeatureSwitchesContext';
 import Footer from '../src/components/page/Footer';
 import { featureSwitches } from '../src/constants/featureswitches';

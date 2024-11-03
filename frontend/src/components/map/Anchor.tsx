@@ -82,7 +82,6 @@ const Anchor: React.FunctionComponent<AnchorProps> = ({
                     y="-10"
                     textAnchor="middle"
                     evolved={anchor.evolved}
-                    fontSize={mapStyleDefs.anchor?.fontSize}
                     textTheme={mapStyleDefs.component}
                     onClick={onClick}
                 />

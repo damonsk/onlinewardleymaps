@@ -271,6 +271,8 @@ function MapCanvas(props) {
 			>
 				<svg
 					ref={mapRef}
+					width={mapDimensions.width + 2}
+                	height={mapDimensions.height + 4}
 					id="svgMap"
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"

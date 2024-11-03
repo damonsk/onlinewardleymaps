@@ -54,7 +54,7 @@ function Note(props) {
 			<ComponentTextSymbol
 				id={'note_text_' + props.note.id}
 				note={props.note.text}
-				styles={props?.mapStyleDefs?.note}
+				textTheme={props?.mapStyleDefs?.note}
 				onClick={() => props.setHighlightLine(props.note.line)}
 			/>
 		</Movable>

@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import InertiaSymbol from '../symbols/InertiaSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
-import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MethodSymbol from './MethodSymbol';
 
 const iconWidth = '120px';
@@ -49,7 +49,7 @@ export const ComponentIcon = (props) => (
 	>
 		{props.hideLabel === false && (
 			<ComponentTextSymbol
-				styles={props.mapStyleDefs.component}
+				textTheme={props.mapStyleDefs.component}
 				text={props.text || 'Component'}
 				x="8"
 				y="15"
@@ -74,7 +74,7 @@ export const GenericNoteIcon = (props) => (
 	>
 		<ComponentTextSymbol
 			note={'note'}
-			styles={props?.mapStyleDefs?.note}
+			textTheme={props?.mapStyleDefs?.note}
 			x="1"
 			y="20"
 		/>
@@ -94,7 +94,7 @@ export const InertiaIcon = (props) => (
 	>
 		{props.hideLabel === false && (
 			<ComponentTextSymbol
-				styles={props.mapStyleDefs.component}
+				textTheme={props.mapStyleDefs.component}
 				text="Inertia"
 				x="8"
 				y="15"
@@ -114,7 +114,7 @@ export const MarketIcon = (props) => (
 	>
 		{props.hideLabel === false && (
 			<ComponentTextSymbol
-				styles={props.mapStyleDefs.component}
+				textTheme={props.mapStyleDefs.component}
 				text="Market"
 				x="45"
 				y="15"
@@ -135,7 +135,7 @@ export const MethodIcon = (props) => (
 	>
 		{props.hideLabel === false && (
 			<ComponentTextSymbol
-				styles={props.mapStyleDefs.component}
+				textTheme={props.mapStyleDefs.component}
 				text={props.method}
 				x="45"
 				y="15"
@@ -193,7 +193,7 @@ export const EcosystemIcon = (props) => (
 	>
 		{props.hideLabel === false && (
 			<ComponentTextSymbol
-				styles={props.mapStyleDefs.component}
+				textTheme={props.mapStyleDefs.component}
 				text="Ecosystem"
 				x="45"
 				y="15"

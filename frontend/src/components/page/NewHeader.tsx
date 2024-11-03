@@ -1,4 +1,3 @@
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { MenuListProps, PopoverVirtualElement, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -15,12 +14,10 @@ import { alpha, styled } from '@mui/material/styles';
 import React, {
     FunctionComponent,
     MouseEvent,
-    useEffect,
     useRef,
-    useState,
+    useState
 } from 'react';
 import { ExampleMap, MapPersistenceStrategy } from '../../constants/defaults';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import CoreHeader from './CoreHeader';
 
 interface StyledMenuProps {
@@ -81,13 +78,9 @@ export interface NewHeaderProps {
     setShowLinkedEvolved: any;
     showLinkedEvolved: any;
     downloadMapAsSVG: any;
-    canSaveMap: any;
     setMapOnlyView: any;
     mapOnlyView: any;
     toggleMenu: any;
-    setHideAuthModal: any;
-    signOut: any;
-    user: any;
 }
 
 export const NewHeader: FunctionComponent<NewHeaderProps> = ({
@@ -103,102 +96,33 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     setShowLinkedEvolved,
     showLinkedEvolved,
     downloadMapAsSVG,
-    canSaveMap,
     setMapOnlyView,
     mapOnlyView,
-    toggleMenu,
-    setHideAuthModal,
-    signOut,
-    user,
+    toggleMenu
 }) => {
-    const { enableDashboard } = useFeatureSwitches();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [anchorEl, setAnchorEl] = useState<Element | null>();
     const [anchorMoreEl, setAnchorMoreEl] = useState<Element | null>();
     const [modalShow, setModalShow] = useState(false);
-
-    useEffect(() => {
-        setIsLoggedIn(user !== null);
-    }, [user]);
-
     const example = () => {
         mutateMapText(ExampleMap);
         setMetaText('');
     };
-
     const textArea = useRef(null);
     const copyCodeToClipboard = () => {
         const copyUrl = currentUrl.replace('#', '#clone:');
         navigator.clipboard.writeText(copyUrl);
     };
 
-    const open = Boolean(anchorEl);
-    const openMore = Boolean(anchorMoreEl);
 
-    const handleClick = (event: MouseEvent) => {
-        setAnchorEl(event.currentTarget);
-    };
+    const openMore = Boolean(anchorMoreEl);
 
     const handleMoreClick = (event: MouseEvent) => {
         setAnchorMoreEl(event.currentTarget);
-    };
-
-    const handleClose = (preAction: () => void) => {
-        if (preAction) preAction();
-        setAnchorEl(null);
     };
 
     const handleMoreClose = (preAction: () => void) => {
         if (preAction) preAction();
         setAnchorMoreEl(null);
     };
-
-    const newMenu = (
-        <StyledMenu
-            id="new-menu"
-            MenuListProps={{
-                'aria-labelledby': 'new-menu-button',
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-        >
-            <MenuItem
-                disabled={!isLoggedIn}
-                disableRipple
-                onClick={() =>
-                    handleClose(() =>
-                        newMapClick(MapPersistenceStrategy.Public),
-                    )
-                }
-            >
-                Public Map
-            </MenuItem>
-            <MenuItem
-                disabled={!isLoggedIn}
-                onClick={() =>
-                    handleClose(() =>
-                        newMapClick(MapPersistenceStrategy.Private),
-                    )
-                }
-                disableRipple
-            >
-                Private Map
-            </MenuItem>
-            <MenuItem
-                onClick={() =>
-                    handleClose(() =>
-                        newMapClick(
-                            MapPersistenceStrategy.PublicUnauthenticated,
-                        ),
-                    )
-                }
-                disableRipple
-            >
-                Anonymous Map
-            </MenuItem>
-        </StyledMenu>
-    );
 
     const moreMenu = (
         <StyledMenu
@@ -210,27 +134,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
             open={openMore}
             onClose={handleMoreClose}
         >
-            {enableDashboard && isLoggedIn === false && (
-                <MenuItem
-                    sx={{ display: { xs: 'flex', sm: 'none' } }}
-                    disableRipple
-                    onClick={() => setHideAuthModal(false)}
-                >
-                    Login
-                </MenuItem>
-            )}
-            {enableDashboard && isLoggedIn && (
-                <MenuItem
-                    sx={{ display: { xs: 'flex', sm: 'none' } }}
-                    disableRipple
-                    onClick={() => signOut()}
-                >
-                    Logout
-                </MenuItem>
-            )}
-
             <MenuItem
-                //disabled={!isLoggedIn}
                 disableRipple
                 onClick={() => handleMoreClose(() => setModalShow(true))}
             >
@@ -302,27 +206,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 spacing={0.5}
                 divider={<Divider orientation="vertical" flexItem />}
             >
-                {enableDashboard && isLoggedIn === false && (
-                    <Button
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                        color="inherit"
-                        size="small"
-                        onClick={() => setHideAuthModal(false)}
-                    >
-                        Login
-                    </Button>
-                )}
-                {enableDashboard && isLoggedIn && (
-                    <Button
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                        color="inherit"
-                        size="small"
-                        onClick={() => signOut()}
-                    >
-                        Logout
-                    </Button>
-                )}
-
                 <Button
                     color="inherit"
                     size="small"
@@ -334,45 +217,20 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 <Button color="inherit" size="small" onClick={example}>
                     Example Map
                 </Button>
-
-                {enableDashboard && (
-                    <Button
-                        color="inherit"
-                        size="small"
-                        variant="text"
-                        id="new-menu-button"
-                        aria-controls={open ? 'new-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleClick}
-                        endIcon={<KeyboardArrowDownIcon />}
-                    >
-                        New
-                    </Button>
-                )}
-
-                {enableDashboard === false && (
-                    <Button
-                        color="inherit"
-                        size="small"
-                        variant="text"
-                        id="new-menu-button"
-                        aria-controls={open ? 'new-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={() =>
-                            newMapClick(MapPersistenceStrategy.Legacy)
-                        }
-                    >
-                        New
-                    </Button>
-                )}
+                <Button
+					color="inherit"
+					size="small"
+					variant="text"
+					id="new-menu-button"
+					onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
+				>
+					New
+				</Button>
 
                 <Button
                     color={saveOutstanding ? 'error' : 'inherit'}
                     size="small"
                     onClick={saveMapClick}
-                    disabled={!canSaveMap}
                     variant={saveOutstanding ? 'outlined' : 'text'}
                     sx={
                         saveOutstanding
@@ -398,8 +256,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
             </Stack>
 
             {moreMenu}
-
-            {enableDashboard && newMenu}
 
             <Dialog open={modalShow} onClose={() => setModalShow(false)}>
                 <DialogTitle>Clone URL</DialogTitle>

@@ -51,6 +51,7 @@ const FlowText = props => {
 					textAnchor="start"
 					fill={mapStyleDefs.link.flowText}
 					text={link.flowValue}
+                    textTheme={mapStyleDefs.link}
 				/>
 			</RelativeMovable>
 		</g>

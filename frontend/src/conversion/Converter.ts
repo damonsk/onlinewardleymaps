@@ -29,7 +29,7 @@ export interface WardleyMap {
     evolved: MapEvolved[];
     pipelines: MapPipelines[];
     elements: MapComponents[];
-    annotations: MapAnnotations;
+    annotations: MapAnnotation[];
     notes: MapNotes[];
     evolution: MapEvolution;
     methods: MapMethods[];
@@ -110,9 +110,7 @@ export default class Converter {
             evolved: [],
             pipelines: [],
             elements: [],
-            annotations: {
-                occurances: [],
-            },
+            annotations: [],
             notes: [],
             presentation: nullPresentation,
             evolution: [],

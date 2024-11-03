@@ -4,6 +4,7 @@ import { IconButton, Typography } from '@mui/material';
 import React, { LegacyRef } from 'react';
 import {
     EvolutionStages,
+    MapCanvasDimensions,
     MapDimensions,
     Offsets,
 } from '../../constants/defaults';
@@ -48,6 +49,7 @@ export interface MapViewProps {
     mapAnnotationsPresentation: MapAnnotationsPosition;
     mapMethods: MapMethods[];
     mapStyleDefs: MapTheme;
+    mapCanvasDimensions: MapCanvasDimensions;
     mapDimensions: MapDimensions;
     mapEvolutionStates: EvolutionStages;
     mapRef: React.MutableRefObject<HTMLElement | null>;

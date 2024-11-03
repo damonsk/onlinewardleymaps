@@ -133,7 +133,7 @@ function ComponentText(props) {
 						id={'element_text_' + element.id}
 						text={element.override ? element.override : element.name}
 						evolved={element.evolved}
-						styles={mapStyleDefs.component}
+						textTheme={mapStyleDefs.component}
 						onClick={onClick}
 						setShowTextField={enableDoubleClickRename ? setShowTextField : null}
 					/>

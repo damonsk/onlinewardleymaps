@@ -10,6 +10,12 @@ export const MapPersistenceStrategy = {
     Legacy: 'Legacy',
 };
 
+export interface Offsets {
+    custom: number;
+    product: number;
+    commodity: number;
+};
+
 export const EvoOffsets: Offsets = {
     custom: 3.5,
     product: 8,
@@ -45,7 +51,17 @@ export const MapDimensions: MapDimensions = {
     height: 600,
 };
 
+export const MapCanvasDimensions: MapCanvasDimensions = {
+    width: 500,
+    height: 600,
+};
+
 export interface MapDimensions {
+    width: number;
+    height: number;
+}
+
+export interface MapCanvasDimensions {
     width: number;
     height: number;
 }
