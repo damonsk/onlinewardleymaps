@@ -1,5 +1,5 @@
 {
-  "editor.formatOnSave": true, // this runs VSCode formatter instead of prettier which messes things up.  
+  // "editor.formatOnSave": true, // this runs VSCode formatter instead of prettier which messes things up.  
   "editor.insertSpaces": false,
   "typescript.tsc.autoDetect": "on",
   "typescript.preferences.quoteStyle": "single",
