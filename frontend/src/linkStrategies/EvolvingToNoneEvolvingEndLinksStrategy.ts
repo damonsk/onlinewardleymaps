@@ -1,10 +1,20 @@
-export default class EvolvingToNoneEvolvingEndLinksStrategy {
-    constructor(links, mapElements) {
+import MapElements from '../MapElements';
+import {
+    Link,
+    LinkExtractionStrategy,
+    LinkResult,
+} from './LinkStrategiesInterfaces';
+
+export default class EvolvingToNoneEvolvingEndLinksStrategy
+    implements LinkExtractionStrategy {
+    private links: Link[];
+    private mapElements: MapElements;
+
+    constructor(links: Link[], mapElements: MapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }
-
-    getLinks() {
+    getLinks(): LinkResult {
         const links = this.links.filter(
             li =>
                 this.mapElements

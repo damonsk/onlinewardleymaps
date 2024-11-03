@@ -1,17 +1,15 @@
-import MapElements, { Component } from '../MapElements'; // Assuming MapElements is defined in a separate file
+import {
+    Link,
+    LinkExtractionStrategy,
+    LinkResult,
+    MapElements,
+} from './LinkStrategiesInterfaces';
 
-interface LinkResult {
-    name: string;
-    links: string[];
-    startElements: Component[]; // Replace 'any' with the actual type returned by getNoneEvolvedOrEvolvingElements
-    endElements: Component[]; // Replace 'any' with the actual type returned by getNoneEvolvedOrEvolvingElements
-}
-
-export default class AllLinksStrategy {
-    private links: string[];
+export default class AllLinksStrategy implements LinkExtractionStrategy {
+    private links: Link[];
     private mapElements: MapElements;
 
-    constructor(links: string[], mapElements: MapElements) {
+    constructor(links: Link[], mapElements: MapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }

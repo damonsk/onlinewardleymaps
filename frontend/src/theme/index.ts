@@ -1,6 +1,6 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, Theme } from '@mui/material/styles';
 
-const theme = createTheme({
+const theme: Theme = createTheme({
     palette: {
         mode: 'dark',
         background: {
@@ -16,8 +16,7 @@ const theme = createTheme({
         h1: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
             fontSize: '34px',
-            // lineHeight: '42px',
-            fontWeight: '700',
+            fontWeight: 700,
         },
         h2: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
@@ -25,8 +24,7 @@ const theme = createTheme({
         h3: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
             fontSize: '18px',
-            // lineHeight: '24px',
-            fontWeight: '600',
+            fontWeight: 600,
         },
         h4: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
@@ -49,7 +47,7 @@ const theme = createTheme({
     },
 });
 
-const lightTheme = createTheme({
+const lightTheme: Theme = createTheme({
     palette: {
         mode: 'light',
     },
@@ -59,7 +57,7 @@ const lightTheme = createTheme({
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
             fontSize: '34px',
             // lineHeight: '42px',
-            fontWeight: '700',
+            fontWeight: 700,
         },
         h2: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
@@ -67,8 +65,7 @@ const lightTheme = createTheme({
         h3: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
             fontSize: '18px',
-            // lineHeight: '24px',
-            fontWeight: '600',
+            fontWeight: 600,
         },
         h4: {
             fontFamily: '"Exo 2",Lato,Lato2,sans-serif',
@@ -89,4 +86,5 @@ const lightTheme = createTheme({
         },
     },
 });
+
 export { lightTheme, theme };
