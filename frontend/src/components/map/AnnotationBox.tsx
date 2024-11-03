@@ -58,22 +58,22 @@ function AnnotationElement(props: AnnotationElementProps) {
         );
 
     function endDrag(moved: { x: number; y: number }): void {
-        const visibility = parseFloat(positionCalc.yToVisibility(
-            moved.y,
-            props.mapDimensions.height,
-        ));
-        const maturity = parseFloat(positionCalc.xToMaturity(
-            moved.x,
-            props.mapDimensions.width,
-        ));
+        const visibility = parseFloat(
+            positionCalc.yToVisibility(moved.y, props.mapDimensions.height),
+        );
+        const maturity = parseFloat(
+            positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
+        );
         positionUpdater.update({ param1: visibility, param2: maturity }, '');
     }
 
     const redraw = useCallback(() => {
-        let elem = document.getElementById('annotationsBoxWrap');
+        const elem = document.getElementById('annotationsBoxWrap');
         if (elem !== null) elem.parentNode?.removeChild(elem);
 
-        let ctx = document.getElementById('movable_annotationsBox') as unknown as SVGGraphicsElement,
+        const ctx = (document.getElementById(
+                'movable_annotationsBox',
+            ) as unknown) as SVGGraphicsElement,
             SVGRect = ctx.getBBox(),
             rect = document.createElementNS(
                 'http://www.w3.org/2000/svg',

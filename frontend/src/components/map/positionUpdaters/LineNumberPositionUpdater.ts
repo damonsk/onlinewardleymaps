@@ -9,7 +9,12 @@ export default class LineNumberPositionUpdater {
     private mutator: (text: string) => void;
     private replacers: Replacer[];
 
-    constructor(type: string, mapText: string, mutator: (text: string) => void, replacers: Replacer[]) {
+    constructor(
+        type: string,
+        mapText: string,
+        mutator: (text: string) => void,
+        replacers: Replacer[],
+    ) {
         this.type = type;
         this.mapText = mapText;
         this.mutator = mutator;
@@ -23,7 +28,7 @@ export default class LineNumberPositionUpdater {
                 getLine = r.action(getLine, moved);
             }
         }
-        let splitArray = this.mapText.split('\n');
+        const splitArray = this.mapText.split('\n');
         splitArray[line - 1] = getLine;
         this.mutator(splitArray.join('\n'));
     }

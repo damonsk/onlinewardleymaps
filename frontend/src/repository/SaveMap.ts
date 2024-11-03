@@ -11,9 +11,9 @@ export const SaveMap = async (
 ) => {
     let loadedSaveStrategy = new NullSaveStrategy(callback); // Default
     switch (mapPersistenceStrategy) {
-		case Defaults.MapPersistenceStrategy.Legacy:
-			loadedSaveStrategy = new LegacySaveStrategy(callback);
-			break;
-	}
+        case Defaults.MapPersistenceStrategy.Legacy:
+            loadedSaveStrategy = new LegacySaveStrategy(callback);
+            break;
+    }
     await loadedSaveStrategy.save(mapToPersist, hash);
 };

@@ -6,12 +6,12 @@ export const rename = (
     mutateMapMethod: (updatedText: string) => void,
 ): void => {
     if (replaceWith !== toFind && replaceWith.length > 0) {
-        let lines: string[] = mapText.split('\n');
-        let elementAtLine: string = lines[currentLine - 1];
+        const lines: string[] = mapText.split('\n');
+        const elementAtLine: string = lines[currentLine - 1];
         lines[currentLine - 1] = elementAtLine.replace(toFind, replaceWith);
 
         for (let i = 0; i < lines.length; i++) {
-            let line: string = lines[i].trim();
+            const line: string = lines[i].trim();
 
             if (line.includes(`->`) && line.split('->').length === 2) {
                 const parts: string[] = line.split('->');

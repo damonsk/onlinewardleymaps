@@ -57,7 +57,7 @@ function debounce<T extends (...args: any[]) => void>(
 ): (...args: Parameters<T>) => void {
     let timer: NodeJS.Timeout | null;
 
-    return function (this: any, ...args: Parameters<T>): void {
+    return function(this: any, ...args: Parameters<T>): void {
         clearTimeout(timer!);
         timer = setTimeout(() => {
             timer = null;
@@ -179,7 +179,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         setShowUsage(!showUsage);
     };
 
-    const saveToRemoteStorage = async function (hash: string) {
+    const saveToRemoteStorage = async function(hash: string) {
         setActionInProgress(true);
         const mapToPersist: OwnApiWardleyMap = {
             mapText,
@@ -188,7 +188,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             readOnly: false,
         };
 
-        const followOnActions = async function (id: string) {
+        const followOnActions = async function(id: string) {
             if (currentId === '') {
                 console.log('[followOnActions::switch]', {
                     mapPersistenceStrategy,
@@ -220,7 +220,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         );
     };
 
-    const loadFromRemoteStorage = async function () {
+    const loadFromRemoteStorage = async function() {
         const followOnActions = (
             mapPersistenceStrategy: string,
             map: OwnApiWardleyMap,

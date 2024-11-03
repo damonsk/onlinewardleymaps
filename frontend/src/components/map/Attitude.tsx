@@ -32,7 +32,7 @@ interface MovedPosition {
     y: number;
 }
 
-const Attitude: React.FC<AttitudeProps> = (props) => {
+const Attitude: React.FC<AttitudeProps> = props => {
     const { attitude, mapDimensions } = props;
     const { height, width } = mapDimensions;
     const type = attitude.attitude;
@@ -49,7 +49,9 @@ const Attitude: React.FC<AttitudeProps> = (props) => {
     const y2 = positionCalc.visibilityToY(attitude.visibility2, height);
 
     function endDrag(moved: MovedPosition): void {
-        const visibility = parseFloat(positionCalc.yToVisibility(moved.y, height));
+        const visibility = parseFloat(
+            positionCalc.yToVisibility(moved.y, height),
+        );
         const maturity = parseFloat(positionCalc.xToMaturity(moved.x, width));
         let visibility2 = attitude.visibility2;
         let maturity2 = attitude.maturity2;

@@ -14,7 +14,7 @@ export interface Offsets {
     custom: number;
     product: number;
     commodity: number;
-};
+}
 
 export const EvoOffsets: Offsets = {
     custom: 3.5,

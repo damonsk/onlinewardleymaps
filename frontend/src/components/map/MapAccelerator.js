@@ -31,23 +31,23 @@ function MapAccelerator(props) {
         );
     }
 
-	return (
-		<>
-			<Movable
-				id={'accelerator_element_' + element.id}
-				onMove={endDrag}
-				x={x}
-				y={y}
-				fixedY={element.evolved}
-				fixedX={false}
-				shouldShowMoving={false}
-				isModKeyPressed={false}
-				scaleFactor={props.scaleFactor}
-			>
-				<>{children}</>
-			</Movable>
-		</>
-	);
+    return (
+        <>
+            <Movable
+                id={'accelerator_element_' + element.id}
+                onMove={endDrag}
+                x={x}
+                y={y}
+                fixedY={element.evolved}
+                fixedX={false}
+                shouldShowMoving={false}
+                isModKeyPressed={false}
+                scaleFactor={props.scaleFactor}
+            >
+                <>{children}</>
+            </Movable>
+        </>
+    );
 }
 
 export default MapAccelerator;

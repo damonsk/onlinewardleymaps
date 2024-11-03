@@ -11,12 +11,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { alpha, styled } from '@mui/material/styles';
-import React, {
-    FunctionComponent,
-    MouseEvent,
-    useRef,
-    useState
-} from 'react';
+import React, { FunctionComponent, MouseEvent, useRef, useState } from 'react';
 import { ExampleMap, MapPersistenceStrategy } from '../../constants/defaults';
 import CoreHeader from './CoreHeader';
 
@@ -98,7 +93,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     downloadMapAsSVG,
     setMapOnlyView,
     mapOnlyView,
-    toggleMenu
+    toggleMenu,
 }) => {
     const [anchorMoreEl, setAnchorMoreEl] = useState<Element | null>();
     const [modalShow, setModalShow] = useState(false);
@@ -111,7 +106,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
         const copyUrl = currentUrl.replace('#', '#clone:');
         navigator.clipboard.writeText(copyUrl);
     };
-
 
     const openMore = Boolean(anchorMoreEl);
 
@@ -218,14 +212,14 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                     Example Map
                 </Button>
                 <Button
-					color="inherit"
-					size="small"
-					variant="text"
-					id="new-menu-button"
-					onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
-				>
-					New
-				</Button>
+                    color="inherit"
+                    size="small"
+                    variant="text"
+                    id="new-menu-button"
+                    onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
+                >
+                    New
+                </Button>
 
                 <Button
                     color={saveOutstanding ? 'error' : 'inherit'}

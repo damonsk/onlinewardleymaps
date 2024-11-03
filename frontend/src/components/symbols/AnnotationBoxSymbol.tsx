@@ -5,7 +5,7 @@ export interface AnnotationBoxSymbolProps {
     id?: string;
     x?: string | number;
     dy?: string | number;
-    theme: MapAnnotationTheme
+    theme: MapAnnotationTheme;
     fill?: string;
     textAnchor?: string;
     textDecoration?: string;

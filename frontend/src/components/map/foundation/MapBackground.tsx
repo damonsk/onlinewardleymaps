@@ -13,7 +13,7 @@ const fill: DefaultThemes = {
 export interface MapBackgroundProps {
     mapDimensions: MapDimensions;
     mapStyleClass: string;
-};
+}
 
 const MapBackground: React.FunctionComponent<MapBackgroundProps> = ({
     mapStyleClass,

@@ -55,51 +55,51 @@ function Pipeline(props) {
             props.mapDimensions.height,
         ) + 2;
 
-	return (
-		<>
-			<PipelineBoxSymbol
-				id={'pipeline_box_' + props.pipeline.id}
-				y={y}
-				x1={x1}
-				x2={x2}
-				styles={props.mapStyleDefs.component}
-			/>
-			<Movable
-				id={'pipeline_x1_' + props.pipeline.id}
-				onMove={endDragX1}
-				x={x1}
-				y={y}
-				fixedY={true}
-				fixedX={false}
-				scaleFactor={props.scaleFactor}
-			>
-				<ComponentSymbol
-					id={'pipeline_circle_x1_' + props.pipeline.id}
-					cx="10"
-					cy="12"
-					styles={props.mapStyleDefs.component}
-					onClick={() => props.setHighlightLine(props.pipeline.line)}
-				/>
-			</Movable>
-			<Movable
-				id={'pipeline_x2_' + props.pipeline.id}
-				onMove={endDragX2}
-				x={x2}
-				y={y}
-				fixedY={true}
-				fixedX={false}
-				scaleFactor={props.scaleFactor}
-			>
-				<ComponentSymbol
-					id={'pipeline_circle_x2_' + props.pipeline.id}
-					cx={'-10'}
-					cy="12"
-					styles={props.mapStyleDefs.component}
-					onClick={() => props.setHighlightLine(props.pipeline.line)}
-				/>
-			</Movable>
-		</>
-	);
+    return (
+        <>
+            <PipelineBoxSymbol
+                id={'pipeline_box_' + props.pipeline.id}
+                y={y}
+                x1={x1}
+                x2={x2}
+                styles={props.mapStyleDefs.component}
+            />
+            <Movable
+                id={'pipeline_x1_' + props.pipeline.id}
+                onMove={endDragX1}
+                x={x1}
+                y={y}
+                fixedY={true}
+                fixedX={false}
+                scaleFactor={props.scaleFactor}
+            >
+                <ComponentSymbol
+                    id={'pipeline_circle_x1_' + props.pipeline.id}
+                    cx="10"
+                    cy="12"
+                    styles={props.mapStyleDefs.component}
+                    onClick={() => props.setHighlightLine(props.pipeline.line)}
+                />
+            </Movable>
+            <Movable
+                id={'pipeline_x2_' + props.pipeline.id}
+                onMove={endDragX2}
+                x={x2}
+                y={y}
+                fixedY={true}
+                fixedX={false}
+                scaleFactor={props.scaleFactor}
+            >
+                <ComponentSymbol
+                    id={'pipeline_circle_x2_' + props.pipeline.id}
+                    cx={'-10'}
+                    cy="12"
+                    styles={props.mapStyleDefs.component}
+                    onClick={() => props.setHighlightLine(props.pipeline.line)}
+                />
+            </Movable>
+        </>
+    );
 }
 
 export default Pipeline;

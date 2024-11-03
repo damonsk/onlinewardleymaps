@@ -60,7 +60,7 @@ function AnnotationElement(props: AnnotationElementProps): JSX.Element {
                             ) !== -1
                     ) {
                         if (line.replace(/\s/g, '').indexOf(']]') > -1) {
-                            var extractedOccurances = line
+                            const extractedOccurances = line
                                 .replace(/\s/g, '')
                                 .split('[[')[1]
                                 .split(']]')[0]
@@ -75,12 +75,12 @@ function AnnotationElement(props: AnnotationElementProps): JSX.Element {
                                     moved.x,
                                     props.mapDimensions.width,
                                 );
-                            var beforeCoords = line.split('[')[0].trim();
-                            var afterCoords = line.substr(
+                            const beforeCoords = line.split('[')[0].trim();
+                            const afterCoords = line.substr(
                                 line.lastIndexOf(']'),
                                 line.length - line.lastIndexOf(']'),
                             );
-                            var newCoords =
+                            const newCoords =
                                 '[' +
                                 extractedOccurances
                                     .map(e => {

@@ -97,41 +97,41 @@ function MapComponent(props) {
         );
     }
 
-	return (
-		<>
-			<Movable
-				id={'element_' + props.element.id}
-				onMove={endDrag}
-				x={x}
-				y={y}
-				fixedY={props.element.evolved}
-				fixedX={false}
-				shouldShowMoving={true}
-				isModKeyPressed={isModKeyPressed}
-				scaleFactor={props.scaleFactor}
-			>
-				<>{props.children}</>
-			</Movable>
-			{canApplyInertia() && (
-				<Inertia
-					maturity={parseFloat(props.element.maturity) + 0.05}
-					visibility={props.element.visibility}
-					mapDimensions={props.mapDimensions}
-				/>
-			)}
-			<g transform={'translate(' + x + ',' + y + ')'}>
-				<ComponentText
-					id={'component_text_' + props.element.id}
-					mapStyleDefs={props.mapStyleDefs}
-					element={props.element}
-					mapText={props.mapText}
-					mutateMapText={props.mutateMapText}
-					onClick={onElementClick}
-					scaleFactor={props.scaleFactor}
-				/>
-			</g>
-		</>
-	);
+    return (
+        <>
+            <Movable
+                id={'element_' + props.element.id}
+                onMove={endDrag}
+                x={x}
+                y={y}
+                fixedY={props.element.evolved}
+                fixedX={false}
+                shouldShowMoving={true}
+                isModKeyPressed={isModKeyPressed}
+                scaleFactor={props.scaleFactor}
+            >
+                <>{props.children}</>
+            </Movable>
+            {canApplyInertia() && (
+                <Inertia
+                    maturity={parseFloat(props.element.maturity) + 0.05}
+                    visibility={props.element.visibility}
+                    mapDimensions={props.mapDimensions}
+                />
+            )}
+            <g transform={'translate(' + x + ',' + y + ')'}>
+                <ComponentText
+                    id={'component_text_' + props.element.id}
+                    mapStyleDefs={props.mapStyleDefs}
+                    element={props.element}
+                    mapText={props.mapText}
+                    mutateMapText={props.mutateMapText}
+                    onClick={onElementClick}
+                    scaleFactor={props.scaleFactor}
+                />
+            </g>
+        </>
+    );
 }
 
 export default MapComponent;

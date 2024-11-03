@@ -76,7 +76,7 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
                     history.push('https://classic.onlinewardleymaps.com'),
                 ),
             visible: true,
-        }
+        },
     ];
 
     const list = (

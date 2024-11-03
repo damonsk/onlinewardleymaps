@@ -1,4 +1,8 @@
-type MatcherFunction = (line: string, identifier: string, type: string) => boolean;
+type MatcherFunction = (
+    line: string,
+    identifier: string,
+    type: string,
+) => boolean;
 type ActionFunction = (line: string, moved: any) => string;
 
 interface Replacer {
@@ -8,7 +12,7 @@ interface Replacer {
 
 export interface PositionUpdater {
     setSuccessor(positionUpdater: PositionUpdater): unknown;
-    update(moved: any, identifier: string): void
+    update(moved: any, identifier: string): void;
 }
 
 export default class DefaultPositionUpdater implements PositionUpdater {
@@ -17,7 +21,12 @@ export default class DefaultPositionUpdater implements PositionUpdater {
     mutator: (updatedText: string) => void;
     replacers: Replacer[];
 
-    constructor(type: string, mapText: string, mutator: (updatedText: string) => void, replacers: Replacer[]) {
+    constructor(
+        type: string,
+        mapText: string,
+        mutator: (updatedText: string) => void,
+        replacers: Replacer[],
+    ) {
         this.type = type;
         this.mapText = mapText;
         this.mutator = mutator;

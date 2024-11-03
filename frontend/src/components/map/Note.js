@@ -41,24 +41,24 @@ function Note(props) {
         );
     }
 
-	return (
-		<Movable
-			id={'note_' + props.note.id}
-			onMove={endDrag}
-			x={x()}
-			y={y()}
-			fixedY={false}
-			fixedX={false}
-			scaleFactor={props.scaleFactor}
-		>
-			<ComponentTextSymbol
-				id={'note_text_' + props.note.id}
-				note={props.note.text}
-				textTheme={props?.mapStyleDefs?.note}
-				onClick={() => props.setHighlightLine(props.note.line)}
-			/>
-		</Movable>
-	);
+    return (
+        <Movable
+            id={'note_' + props.note.id}
+            onMove={endDrag}
+            x={x()}
+            y={y()}
+            fixedY={false}
+            fixedX={false}
+            scaleFactor={props.scaleFactor}
+        >
+            <ComponentTextSymbol
+                id={'note_text_' + props.note.id}
+                note={props.note.text}
+                textTheme={props?.mapStyleDefs?.note}
+                onClick={() => props.setHighlightLine(props.note.line)}
+            />
+        </Movable>
+    );
 }
 
 export default Note;

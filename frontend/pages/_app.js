@@ -17,50 +17,50 @@ function MyApp({ Component, pageProps }) {
         }
     }, []);
 
-	const [currentTheme, setCurrentTheme] = useState(theme);
-	const [isLightTheme, setIsLightTheme] = useState(false);
-	const [menuVisible, setMenuVisible] = useState(false);
-	const toggleMenu = () => {
-		setMenuVisible(!menuVisible);
-	};
+    const [currentTheme, setCurrentTheme] = useState(theme);
+    const [isLightTheme, setIsLightTheme] = useState(false);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible);
+    };
 
     const toggleTheme = () => {
         setIsLightTheme(!isLightTheme);
     };
 
-	useEffect(() => {
-		setCurrentTheme(isLightTheme ? lightTheme : theme);
-	}, [isLightTheme]);
+    useEffect(() => {
+        setCurrentTheme(isLightTheme ? lightTheme : theme);
+    }, [isLightTheme]);
 
-	return (
-		<>
-			<Head>
-				<title>OnlineWardleyMaps.com</title>
-				<meta
-					name="viewport"
-					content="minimum-scale=1, initial-scale=1, width=device-width"
-				/>
-			</Head>
-			<FeatureSwitchesProvider value={featureSwitches}>
-				<StylesProvider injectFirst>
-					<MaterialUIThemeProvider theme={currentTheme}>
-						<StyledComponentsThemeProvider theme={currentTheme}>
-							<CssBaseline />
+    return (
+        <>
+            <Head>
+                <title>OnlineWardleyMaps.com</title>
+                <meta
+                    name="viewport"
+                    content="minimum-scale=1, initial-scale=1, width=device-width"
+                />
+            </Head>
+            <FeatureSwitchesProvider value={featureSwitches}>
+                <StylesProvider injectFirst>
+                    <MaterialUIThemeProvider theme={currentTheme}>
+                        <StyledComponentsThemeProvider theme={currentTheme}>
+                            <CssBaseline />
 
-							<Component
-								{...pageProps}
-								toggleTheme={toggleTheme}
-								toggleMenu={toggleMenu}
-								menuVisible={menuVisible}
-								isLightTheme={isLightTheme}
-							/>
-							<Footer />
-						</StyledComponentsThemeProvider>
-					</MaterialUIThemeProvider>
-				</StylesProvider>
-			</FeatureSwitchesProvider>
-		</>
-	);
+                            <Component
+                                {...pageProps}
+                                toggleTheme={toggleTheme}
+                                toggleMenu={toggleMenu}
+                                menuVisible={menuVisible}
+                                isLightTheme={isLightTheme}
+                            />
+                            <Footer />
+                        </StyledComponentsThemeProvider>
+                    </MaterialUIThemeProvider>
+                </StylesProvider>
+            </FeatureSwitchesProvider>
+        </>
+    );
 }
 
 export default MyApp;

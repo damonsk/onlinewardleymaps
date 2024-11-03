@@ -37,8 +37,9 @@ const Anchor: React.FunctionComponent<AnchorProps> = ({
     const isModKeyPressed = useModKeyPressedConsumer();
     const identity = 'anchor';
     const elementKey = (prefix: string = '', suffix: string = '') => {
-        return `${identity}_${prefix !== undefined ? prefix + '_' : ''}${anchor.id
-            }${suffix !== undefined ? '_' + suffix : ''}`;
+        return `${identity}_${prefix !== undefined ? prefix + '_' : ''}${
+            anchor.id
+        }${suffix !== undefined ? '_' + suffix : ''}`;
     };
 
     const positionCalc = new PositionCalculator();
