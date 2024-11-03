@@ -1,54 +1,48 @@
 {
-	"parser": "@typescript-eslint/parser",
-	"parserOptions": {
-		"requireConfigFile": false,
-		"ecmaVersion": "latest",
-		"sourceType": "module",
-		"ecmaFeatures": {
-			"jsx": true
-		}
-	},
-	"env": {
-		"browser": true,
-		"node": true,
-		"es6": true,
-		"jest": true
-	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:react/recommended",
-		"plugin:prettier/recommended",
-		"plugin:@next/next/recommended"
-	],
-	"plugins": [
-		"react",
-		"jsx",
-		"@typescript-eslint"
-	],
-	"ignorePatterns": [
-		"models",
-		"src/ui-components",
-		"node_modules/"
-	],
-	"rules": {
-		"prettier/prettier": [
-			"error",
-			{},
-			{
-				"usePrettierrc": true
-			}
-		],
-		// "linebreak-style": [
-		// 	"error",
-		// 	"unix"
-		// ],
-		"react/prop-types": 0,
-		"@next/next/no-img-element": 0
-	},
-	"settings": {
-		"react": {
-			"version": "detect"
-		}
-	}
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "plugin:@next/next/recommended",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "ignorePatterns": [
+        "models",
+        "src/ui-components",
+        "node_modules/"
+    ],
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "prettier/prettier": [
+            "error",
+            {},
+            {
+                "usePrettierrc": true
+            }
+        ],
+        // "linebreak-style": [
+        // 	"error",
+        // 	"unix"
+        // ],
+        "react/prop-types": 0,
+        "@next/next/no-img-element": 0,
+        "@typescript-eslint/no-explicit-any": 0
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
 }

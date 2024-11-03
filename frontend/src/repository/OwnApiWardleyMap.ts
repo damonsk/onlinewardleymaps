@@ -1,9 +1,12 @@
 export interface OwnApiWardleyMap {
-  mapIterations: OwmApiWardleyMapIterations;
-  mapText: string;
+    readOnly: boolean;
+    owner: string;
+    mapText: string;
+    imageData: string;
+    mapIterations: Array<MapIteration>;
 }
 
-export interface OwmApiWardleyMapIterations {
-  mapText: string;
-  name: string;
+export interface MapIteration {
+    mapText: string;
+    name: string;
 }

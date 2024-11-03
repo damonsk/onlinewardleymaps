@@ -36,10 +36,13 @@
 			"type": "npm",
 			"script": "build",
 			"path": "frontend",
-			"group": "build",
 			"problemMatcher": [],
 			"label": "build - frontend",
-			"detail": "next build"
+			"detail": "next build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		},
 		{
 			"type": "npm",

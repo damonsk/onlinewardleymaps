@@ -1,12 +1,12 @@
 {
+  //"editor.formatOnSave": true, // this runs VSCode formatter instead of prettier which messes things up.  
   "editor.insertSpaces": false,
-  "editor.formatOnSave": true,
-  "typescript.tsc.autoDetect": "off",
+  "typescript.tsc.autoDetect": "on",
   "typescript.preferences.quoteStyle": "single",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.fixAll": true,
-    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
   },
   "files.exclude": {
     "amplify/.config": true,
