@@ -1,9 +1,11 @@
+import { Replacer } from './LineNumberPositionUpdater';
+
 interface Moved {
     param1: number;
     param2: number;
 }
 
-export const ExistingCoordsMatcher = {
+export const ExistingCoordsMatcher: Replacer = {
     matcher: (line: string, identifier: string, type: string): boolean => {
         return (
             line

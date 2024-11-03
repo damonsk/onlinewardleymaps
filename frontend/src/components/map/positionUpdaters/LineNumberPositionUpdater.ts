@@ -1,6 +1,6 @@
-interface Replacer {
+export interface Replacer {
     matcher: (line: string, identifier: string, type: string) => boolean;
-    action: (line: string, moved: number) => string;
+    action: (line: string, moved: any) => string;
 }
 
 export default class LineNumberPositionUpdater {

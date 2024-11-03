@@ -1,21 +1,53 @@
+import React from 'react';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 
-function AnnotationElement(props) {
+interface Annotation {
+    number: number;
+}
+
+interface Occurance {
+    maturity: number;
+    visibility: number;
+}
+
+interface MapDimensions {
+    width: number;
+    height: number;
+}
+interface AnnotationElementProps {
+    annotation: Annotation;
+    occurance: Occurance;
+    mapDimensions: MapDimensions;
+    mutateMapText: (text: string) => void;
+    mapText: string;
+    occuranceIndex: number;
+    scaleFactor: number;
+    mapStyleDefs: {
+        annotation: React.CSSProperties;
+    };
+}
+
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+function AnnotationElement(props: AnnotationElementProps): JSX.Element {
     const positionCalc = new PositionCalculator();
-    const x = () =>
+    const x = (): number =>
         positionCalc.maturityToX(
             props.occurance.maturity,
             props.mapDimensions.width,
         );
-    const y = () =>
+    const y = (): number =>
         positionCalc.visibilityToY(
             props.occurance.visibility,
             props.mapDimensions.height,
         );
 
-    function endDrag(moved) {
+    function endDrag(moved: MovedPosition): void {
         props.mutateMapText(
             props.mapText
                 .split('\n')
@@ -82,22 +114,22 @@ function AnnotationElement(props) {
         );
     }
 
-	return (
-		<Movable
-			id={'annotation_element_' + props.annotation.number}
-			onMove={endDrag}
-			x={x()}
-			y={y()}
-			fixedY={false}
-			fixedX={false}
-			scaleFactor={props.scaleFactor}
-		>
-			<AnnotationElementSymbol
-				annotation={props.annotation}
-				styles={props.mapStyleDefs.annotation}
-			/>
-		</Movable>
-	);
+    return (
+        <Movable
+            id={'annotation_element_' + props.annotation.number}
+            onMove={endDrag}
+            x={x()}
+            y={y()}
+            fixedY={false}
+            fixedX={false}
+            scaleFactor={props.scaleFactor}
+        >
+            <AnnotationElementSymbol
+                annotation={props.annotation}
+                styles={props.mapStyleDefs.annotation}
+            />
+        </Movable>
+    );
 }
 
 export default AnnotationElement;

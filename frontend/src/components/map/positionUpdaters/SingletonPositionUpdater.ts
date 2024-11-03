@@ -1,13 +1,15 @@
+import { PositionUpdater } from './DefaultPositionUpdater';
+
 interface Moved {
     param1: number;
     param2: number;
 }
 
-export default class SingletonPositionUpdater {
+export default class SingletonPositionUpdater implements PositionUpdater {
     private type: string;
     private mutator: (text: string) => void;
     private mapText: string;
-    private positionUpdater: SingletonPositionUpdater | null;
+    private positionUpdater: PositionUpdater | null;
 
     constructor(type: string, mapText: string, mutator: (text: string) => void) {
         this.type = type;
@@ -15,7 +17,7 @@ export default class SingletonPositionUpdater {
         this.mapText = mapText;
         this.positionUpdater = null;
     }
-    setSuccessor(positionUpdater: SingletonPositionUpdater): void {
+    setSuccessor(positionUpdater: PositionUpdater): void {
         this.positionUpdater = positionUpdater;
     }
     update(moved: Moved, identifier: string): void {

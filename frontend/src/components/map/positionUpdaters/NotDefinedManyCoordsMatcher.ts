@@ -1,3 +1,5 @@
+import { Replacer } from './LineNumberPositionUpdater';
+
 interface Moved {
     param1: number;
     param2: number;
@@ -5,7 +7,7 @@ interface Moved {
     param4: number;
 }
 
-export const NotDefinedManyCoordsMatcher = {
+export const NotDefinedManyCoordsMatcher: Replacer = {
     matcher: (line: string, identifier: string, type: string): boolean => {
         return line.replace(/\s/g, '') === type + identifier.replace(/\s/g, '');
     },

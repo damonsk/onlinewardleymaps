@@ -1,3 +1,5 @@
+import { Replacer } from './LineNumberPositionUpdater';
+
 interface ManyCoordsMoved {
     param1: number;
     param2: number;
@@ -5,7 +7,7 @@ interface ManyCoordsMoved {
     param4: number;
 }
 
-export const ExistingManyCoordsMatcher = {
+export const ExistingManyCoordsMatcher: Replacer = {
     matcher: (line: string, identifier: string, type: string): boolean => {
         return (
             line
@@ -13,6 +15,7 @@ export const ExistingManyCoordsMatcher = {
                 .indexOf(type + identifier.replace(/\s/g, '') + '[') !== -1
         );
     },
+
     action: (line: string, moved: ManyCoordsMoved): string => {
         return line.replace(
             /\[(.?|.+?)\]/g,

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import React from 'react';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
@@ -6,7 +6,33 @@ import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoords
 import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
 import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 
-const Attitude = props => {
+interface AttitudeProps {
+    attitude: {
+        attitude: string;
+        maturity: number;
+        maturity2: number;
+        visibility: number;
+        visibility2: number;
+        line: number;
+    };
+    mapDimensions: {
+        height: number;
+        width: number;
+    };
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    mapStyleDefs: {
+        attitudes: React.CSSProperties;
+    };
+    scaleFactor: number;
+}
+
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+const Attitude: React.FC<AttitudeProps> = (props) => {
     const { attitude, mapDimensions } = props;
     const { height, width } = mapDimensions;
     const type = attitude.attitude;
@@ -22,9 +48,9 @@ const Attitude = props => {
     const y = positionCalc.visibilityToY(attitude.visibility, height);
     const y2 = positionCalc.visibilityToY(attitude.visibility2, height);
 
-    function endDrag(moved) {
-        const visibility = positionCalc.yToVisibility(moved.y, height);
-        const maturity = positionCalc.xToMaturity(moved.x, width);
+    function endDrag(moved: MovedPosition): void {
+        const visibility = parseFloat(positionCalc.yToVisibility(moved.y, height));
+        const maturity = parseFloat(positionCalc.xToMaturity(moved.x, width));
         let visibility2 = attitude.visibility2;
         let maturity2 = attitude.maturity2;
         if (attitude.visibility < visibility) {
@@ -44,46 +70,38 @@ const Attitude = props => {
 
         positionUpdater.update(
             {
-                param1: parseFloat(visibility).toFixed(2),
-                param2: parseFloat(maturity).toFixed(2),
-                param3: parseFloat(visibility2).toFixed(2),
-                param4: parseFloat(maturity2).toFixed(2),
+                param1: parseFloat(visibility.toFixed(2)),
+                param2: parseFloat(maturity.toFixed(2)),
+                param3: parseFloat(visibility2.toFixed(2)),
+                param4: parseFloat(maturity2.toFixed(2)),
             },
             '',
             attitude.line,
         );
     }
 
-	return (
-		<>
-			<Movable
-				id={`attitude_${type}_movable`}
-				onMove={endDrag}
-				x={x}
-				y={y}
-				fixedY={false}
-				fixedX={false}
-				scaleFactor={props.scaleFactor}
-			>
-				<AttitudeSymbol
-					id={`attitude_${type}`}
-					attitude={type}
-					height={y2 - y}
-					width={x2 - x}
-					textAnchor="middle"
-					styles={props.mapStyleDefs.attitudes}
-				/>
-			</Movable>
-		</>
-	);
-};
-
-Attitude.propTypes = {
-    attitude: PropTypes.object.isRequired,
-    mapDimensions: PropTypes.object.isRequired,
-    mapText: PropTypes.string.isRequired,
-    mutateMapText: PropTypes.func.isRequired,
-    mapStyleDefs: PropTypes.object.isRequired,
+    return (
+        <>
+            <Movable
+                id={`attitude_${type}_movable`}
+                onMove={endDrag}
+                x={x}
+                y={y}
+                fixedY={false}
+                fixedX={false}
+                scaleFactor={props.scaleFactor}
+            >
+                <AttitudeSymbol
+                    id={`attitude_${type}`}
+                    attitude={type}
+                    height={y2 - y}
+                    width={x2 - x}
+                    textAnchor="middle"
+                    styles={props.mapStyleDefs.attitudes}
+                />
+            </Movable>
+        </>
+    );
 };
 
 export default Attitude;

@@ -6,7 +6,12 @@ interface Replacer {
     action: ActionFunction;
 }
 
-export default class DefaultPositionUpdater {
+export interface PositionUpdater {
+    setSuccessor(positionUpdater: PositionUpdater): unknown;
+    update(moved: any, identifier: string): void
+}
+
+export default class DefaultPositionUpdater implements PositionUpdater {
     type: string;
     mapText: string;
     mutator: (updatedText: string) => void;
@@ -17,6 +22,9 @@ export default class DefaultPositionUpdater {
         this.mapText = mapText;
         this.mutator = mutator;
         this.replacers = replacers;
+    }
+    setSuccessor(positionUpdater: PositionUpdater) {
+        throw new Error('Method not implemented.');
     }
 
     update(moved: any, identifier: string): void {

@@ -7,7 +7,29 @@ import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
 
-function AnnotationElement(props) {
+interface AnnotationElementProps {
+    mapText: any;
+    mutateMapText: (text: string) => void;
+    position: {
+        maturity: number;
+        visibility: number;
+    };
+    mapDimensions: {
+        width: number;
+        height: number;
+    };
+    mapStyleDefs: {
+        annotation: {
+            boxStroke: string;
+            boxStrokeWidth: number;
+            boxFill: string;
+        };
+    };
+    annotations: any[];
+    scaleFactor: number;
+}
+
+function AnnotationElement(props: AnnotationElementProps) {
     const positionCalc = new PositionCalculator();
     const identifier = 'annotations';
 
@@ -24,55 +46,55 @@ function AnnotationElement(props) {
     );
     positionUpdater.setSuccessor(defaultPositionUpdater);
 
-    const x = () =>
+    const x = (): number =>
         positionCalc.maturityToX(
             props.position.maturity,
             props.mapDimensions.width,
         );
-    const y = () =>
+    const y = (): number =>
         positionCalc.visibilityToY(
             props.position.visibility,
             props.mapDimensions.height,
         );
 
-    function endDrag(moved) {
-        const visibility = positionCalc.yToVisibility(
+    function endDrag(moved: { x: number; y: number }): void {
+        const visibility = parseFloat(positionCalc.yToVisibility(
             moved.y,
             props.mapDimensions.height,
-        );
-        const maturity = positionCalc.xToMaturity(
+        ));
+        const maturity = parseFloat(positionCalc.xToMaturity(
             moved.x,
             props.mapDimensions.width,
-        );
+        ));
         positionUpdater.update({ param1: visibility, param2: maturity }, '');
     }
 
     const redraw = useCallback(() => {
         let elem = document.getElementById('annotationsBoxWrap');
-        if (elem !== null) elem.parentNode.removeChild(elem);
+        if (elem !== null) elem.parentNode?.removeChild(elem);
 
-        let ctx = document.getElementById('movable_annotationsBox'),
+        let ctx = document.getElementById('movable_annotationsBox') as unknown as SVGGraphicsElement,
             SVGRect = ctx.getBBox(),
             rect = document.createElementNS(
                 'http://www.w3.org/2000/svg',
                 'rect',
             );
 
-        rect.setAttribute('x', SVGRect.x - 2);
+        rect.setAttribute('x', (SVGRect.x - 2).toString());
         rect.setAttribute('id', 'annotationsBoxWrap');
-        rect.setAttribute('y', SVGRect.y - 2);
+        rect.setAttribute('y', (SVGRect.y - 2).toString());
         rect.setAttribute('class', 'draggable');
-        rect.setAttribute('width', SVGRect.width + 4);
-        rect.setAttribute('height', SVGRect.height + 4);
+        rect.setAttribute('width', (SVGRect.width + 4).toString());
+        rect.setAttribute('height', (SVGRect.height + 4).toString());
         rect.setAttribute('stroke', props.mapStyleDefs.annotation.boxStroke);
         rect.setAttribute(
             'stroke-width',
-            props.mapStyleDefs.annotation.boxStrokeWidth,
+            props.mapStyleDefs.annotation.boxStrokeWidth.toString(),
         );
         rect.setAttribute('fill', props.mapStyleDefs.annotation.boxFill);
         ctx.insertBefore(
             rect,
-            document.getElementById('annotationsBoxTextContainer'),
+            document.getElementById('annotationsBoxTextContainer') as Node,
         );
     }, [props.mapStyleDefs]);
 
@@ -87,33 +109,33 @@ function AnnotationElement(props) {
         redraw,
     ]);
 
-	return (
-		<Movable
-			id={'annotationsBox'}
-			onMove={endDrag}
-			fixedY={false}
-			fixedX={false}
-			x={x()}
-			y={y()}
-			scaleFactor={props.scaleFactor}
-		>
-			<AnnotationBoxSymbol
-				id={'annotationsBoxTextContainer'}
-				dy={0}
-				x={2}
-				styles={props.mapStyleDefs.annotation}
-			>
-				{props.annotations.map((a, i) => (
-					<AnnotationTextSymbol
-						key={i}
-						annotation={a}
-						parentIndex={i}
-						styles={props.mapStyleDefs.annotation}
-					/>
-				))}
-			</AnnotationBoxSymbol>
-		</Movable>
-	);
+    return (
+        <Movable
+            id={'annotationsBox'}
+            onMove={endDrag}
+            fixedY={false}
+            fixedX={false}
+            x={x()}
+            y={y()}
+            scaleFactor={props.scaleFactor}
+        >
+            <AnnotationBoxSymbol
+                id={'annotationsBoxTextContainer'}
+                dy={0}
+                x={2}
+                theme={props.mapStyleDefs.annotation}
+            >
+                {props.annotations.map((a, i) => (
+                    <AnnotationTextSymbol
+                        key={i}
+                        annotation={a}
+                        // parentIndex={i}
+                        styles={props.mapStyleDefs.annotation}
+                    />
+                ))}
+            </AnnotationBoxSymbol>
+        </Movable>
+    );
 }
 
 export default AnnotationElement;

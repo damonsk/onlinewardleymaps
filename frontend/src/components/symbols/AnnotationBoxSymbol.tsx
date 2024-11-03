@@ -1,9 +1,11 @@
 import React, { ReactNode, memo } from 'react';
+import { MapAnnotationTheme } from '../../constants/mapstyles';
 
 export interface AnnotationBoxSymbolProps {
     id?: string;
     x?: string | number;
     dy?: string | number;
+    theme: MapAnnotationTheme
     fill?: string;
     textAnchor?: string;
     textDecoration?: string;
@@ -15,10 +17,10 @@ const AnnotationBoxSymbol: React.FunctionComponent<AnnotationBoxSymbolProps> = (
     id,
     dy = '0',
     x = '2',
-    fill,
     textAnchor = 'start',
     textDecoration = 'underline',
     className = 'label draggable',
+    theme,
     children,
 }) => {
     return (
@@ -28,7 +30,7 @@ const AnnotationBoxSymbol: React.FunctionComponent<AnnotationBoxSymbolProps> = (
                 textAnchor={textAnchor}
                 dy={dy}
                 x={x}
-                fill={fill}
+                fill={theme.text}
                 textDecoration={textDecoration}
             >
                 Annotations:
