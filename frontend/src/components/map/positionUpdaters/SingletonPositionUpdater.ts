@@ -1,14 +1,24 @@
+interface Moved {
+    param1: number;
+    param2: number;
+}
+
 export default class SingletonPositionUpdater {
-    constructor(type, mapText, mutator) {
+    private type: string;
+    private mutator: (text: string) => void;
+    private mapText: string;
+    private positionUpdater: SingletonPositionUpdater | null;
+
+    constructor(type: string, mapText: string, mutator: (text: string) => void) {
         this.type = type;
         this.mutator = mutator;
         this.mapText = mapText;
         this.positionUpdater = null;
     }
-    setSuccessor(positionUpdater) {
+    setSuccessor(positionUpdater: SingletonPositionUpdater): void {
         this.positionUpdater = positionUpdater;
     }
-    update(moved, identifier) {
+    update(moved: Moved, identifier: string): void {
         if (
             this.mapText.indexOf(this.type + ' ') > -1 &&
             this.positionUpdater != null
@@ -19,7 +29,7 @@ export default class SingletonPositionUpdater {
                 this.mapText +
                 '\n' +
                 this.type +
-                ` [${moved.param1}, ${moved.param2}]`,
+                ` [${moved.param1}, ${moved.param2}]`
             );
         }
     }
