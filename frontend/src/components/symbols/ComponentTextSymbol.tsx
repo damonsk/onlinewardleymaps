@@ -64,14 +64,14 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
             <text
                 id={id}
                 data-testid={id}
-                fontWeight={fontWeight || '14px'}
+                fontWeight={textTheme.fontWeight}
                 fontSize={textTheme.fontSize || '14px'}
                 className={className}
                 textAnchor={textAnchor}
                 x={x}
                 y={y}
                 transform={transform}
-                fill={fill || displayFill}
+                fill={textTheme.textColor || displayFill}
                 onClick={onClick ? onClick : () => {}}
                 onDoubleClick={handleDblClick}
             >

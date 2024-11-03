@@ -2,6 +2,7 @@ const mergeIntoDefault = (style: MapTheme) => Object.assign({}, Plain, style);
 
 export interface TextTheme {
     fontSize?: string;
+    fontWeight: string;
     evolvedTextColor: string;
     textColor: string;
 }
@@ -44,7 +45,7 @@ export interface MapAttitudeTheme {
 }
 
 export interface MapNoteTheme extends TextTheme {
-    fontWeight?: string;
+    fontWeight: string;
     fill?: string;
 }
 
@@ -171,7 +172,6 @@ export const Plain: MapTheme = {
         fill: 'white',
     },
     component: {
-        fontSize: '13px',
         fill: 'white',
         stroke: 'black',
         evolved: 'red',
@@ -182,6 +182,8 @@ export const Plain: MapTheme = {
         textColor: 'black',
         textOffset: 8,
         evolvedTextColor: 'red',
+        fontSize: '14px',
+        fontWeight: 'normal',
     },
     submap: {
         fontSize: '13px',
@@ -246,6 +248,8 @@ export const Handwritten = mergeIntoDefault({
         radius: 5,
         evolvedTextColor: 'red',
         textColor: 'black',
+        fontWeight: 'normal',
+        fontSize: '12px',
     },
     annotation: {
         stroke: '#595959',
@@ -262,7 +266,8 @@ export const Handwritten = mergeIntoDefault({
     },
     note: {
         evolvedTextColor: '',
-        textColor: '',
+        textColor: 'black',
+        fontWeight: 'bold',
     },
     attitudes: {
         strokeWidth: '5px',
@@ -304,6 +309,8 @@ export const Wardley = mergeIntoDefault({
         radius: 5,
         evolvedTextColor: 'red',
         textColor: 'black',
+        fontWeight: 'normal',
+        fontSize: '12px',
     },
     annotation: {
         stroke: '#595959',
@@ -322,6 +329,7 @@ export const Wardley = mergeIntoDefault({
     note: {
         evolvedTextColor: 'red',
         textColor: 'black',
+        fontWeight: 'bold',
     },
     attitudes: {
         strokeWidth: '5px',
