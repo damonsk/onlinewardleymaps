@@ -33,7 +33,7 @@
             }
         ],
         "react/prop-types": 0,
-        "react/reac-in-jsx-scope": 0,
+        "react/react-in-jsx-scope": 0,
         "@next/next/no-img-element": 0,
         "@typescript-eslint/no-explicit-any": 0
     },
