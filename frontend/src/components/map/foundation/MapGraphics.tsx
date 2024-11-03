@@ -18,7 +18,7 @@ const ecosystemStripesPattern = () => (
     </pattern>
 );
 
-interface MapGraphicsProps {
+export interface MapGraphicsProps {
     mapStyleDefs: MapTheme;
 }
 

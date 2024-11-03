@@ -17,9 +17,9 @@ export default class SingletonPositionUpdater {
         } else {
             this.mutator(
                 this.mapText +
-                    '\n' +
-                    this.type +
-                    ` [${moved.param1}, ${moved.param2}]`,
+                '\n' +
+                this.type +
+                ` [${moved.param1}, ${moved.param2}]`,
             );
         }
     }

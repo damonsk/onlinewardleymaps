@@ -10,10 +10,11 @@ const fill: DefaultThemes = {
     dark: '#353347',
 };
 
-type MapBackgroundProps = {
+export interface MapBackgroundProps {
     mapDimensions: MapDimensions;
     mapStyleClass: string;
 };
+
 const MapBackground: React.FunctionComponent<MapBackgroundProps> = ({
     mapStyleClass,
     mapDimensions,
