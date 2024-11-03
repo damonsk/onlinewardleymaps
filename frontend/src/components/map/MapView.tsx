@@ -64,11 +64,11 @@ export interface MapViewProps {
 
 export const MapView: React.FunctionComponent<MapViewProps> = props => {
     const featureSwitches = useFeatureSwitches();
-	const [quickAddCursor, setQuickAddCursor] = useState('default');
-	const [quickAddTemplate, setQuickAddTemplate] = useState(
-		() => () => console.log('nullTemplate')
-	);
-	const [quickAddInProgress, setQuickAddInProgress] = useState(false);
+    const [quickAddCursor, setQuickAddCursor] = useState('default');
+    const [quickAddTemplate, setQuickAddTemplate] = useState(() => () =>
+        console.log('nullTemplate'),
+    );
+    const [quickAddInProgress, setQuickAddInProgress] = useState(false);
 
     const fill: DefaultThemes = {
         wardley: 'url(#wardleyGradient)',
@@ -92,30 +92,29 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
         position: 'relative',
     };
 
-    const textStyle: React.CSSProperties = {
-        textAlign: 'center',
-        color: textColour[props.mapStyleDefs.className as keyof DefaultThemes],
-    };
+    // const textStyle: React.CSSProperties = {
+    //     textAlign: 'center',
+    //     color: textColour[props.mapStyleDefs.className as keyof DefaultThemes],
+    // };
 
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as
         | LegacyRef<HTMLDivElement>
         | undefined;
 
-
     function svgToBase64Url(svgString: string, width: number, height: number) {
         console.log(svgString);
         const base64SVG = btoa(
-            `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${width}px" height="${height}px">${svgString}</svg>`
+            `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${width}px" height="${height}px">${svgString}</svg>`,
         );
         return `url('data:image/svg+xml;base64,${base64SVG}')`;
     }
-    
+
     const setQuickAdd = (quickAdd: any) => {
         setQuickAddInProgress(true);
         const i = svgToBase64Url(
             ReactDOMServer.renderToString(quickAdd.cursor),
             15,
-            15
+            15,
         );
         console.log('MapView::setQuickAdd::icon', i);
         setQuickAddCursor(i + ' 8 8, auto');
@@ -123,19 +122,19 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
     };
 
     const handleMapCanvasClick = (pos: any) => {
-		if (featureSwitches.enableQuickAdd == false) return;
-		console.log('MapView::handleMapCanvasClick', pos);
-		if (quickAddInProgress) {
-			console.log(
-				'MapView::handleMapCanvasClick::quickAddTemplate',
-				quickAddTemplate
-			);
-			// const componentString = quickAddTemplate()('text', pos.y, pos.x);
-			// props.mutateMapText(props.mapText + `\r\n${componentString}`);
-			setQuickAddInProgress(false);
-			setQuickAddCursor('default');
-		}
-	};
+        if (featureSwitches.enableQuickAdd == false) return;
+        console.log('MapView::handleMapCanvasClick', pos);
+        if (quickAddInProgress) {
+            console.log(
+                'MapView::handleMapCanvasClick::quickAddTemplate',
+                quickAddTemplate,
+            );
+            // const componentString = quickAddTemplate()('text', pos.y, pos.x);
+            // props.mutateMapText(props.mapText + `\r\n${componentString}`);
+            setQuickAddInProgress(false);
+            setQuickAddCursor('default');
+        }
+    };
 
     return (
         <div
@@ -144,11 +143,14 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
             style={containerStyle}
         >
             {featureSwitches.enableQuickAdd && (
-					<CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
-				)}
-				<div id="map">
-					<MapCanvas handleMapCanvasClick={handleMapCanvasClick} {...props} />
-				</div>
+                <CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
+            )}
+            <div id="map">
+                <MapCanvas
+                    handleMapCanvasClick={handleMapCanvasClick}
+                    {...props}
+                />
+            </div>
         </div>
     );
 };

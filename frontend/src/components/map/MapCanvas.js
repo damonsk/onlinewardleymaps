@@ -47,9 +47,9 @@ import {
 } from 'react-svg-pan-zoom';
 
 const useStyles = makeStyles(() => ({
-    mapCanvas: {
-        userSelect: 'none',
-    },
+	mapCanvas: {
+		userSelect: 'none',
+	},
 }));
 
 function MapCanvas(props) {
@@ -106,15 +106,15 @@ function MapCanvas(props) {
 			-35,
 			-45,
 			props.mapDimensions.width + 70,
-			props.mapDimensions.height + 92
+			props.mapDimensions.height + 92,
 		);
 	};
 
-	const handleMouseMove = (event) => {
+	const handleMouseMove = event => {
 		setMousePosition({ x: event.x, y: event.y });
 	};
 
-	const handleZoom = (value) => {
+	const handleZoom = value => {
 		setScaleFactor(value.a);
 	};
 
@@ -146,94 +146,82 @@ function MapCanvas(props) {
 			{ collection: mapEcosystems, type: 'ecosystem' },
 		],
 		mapEvolved,
-		mapPipelines
+		mapPipelines,
 	);
-
-	// const quickAddAt = function (e) {
-	// 	if (enableQuickAdd == false) return;
-	// 	var svg = document.getElementById('svgMap');
-	// 	var pt = svg.createSVGPoint();
-
-	// 	function getCursor(evt) {
-	// 		pt.x = evt.clientX;
-	// 		pt.y = evt.clientY;
-	// 		return pt.matrixTransform(svg.getScreenCTM().inverse());
-	// 	}
-
-	// 	var loc = getCursor(e);
-
-	// 	const positionCalc = new PositionCalculator();
-	// 	const x = positionCalc.xToMaturity(loc.x, mapDimensions.width);
-	// 	const y = positionCalc.yToVisibility(loc.y, mapDimensions.height);
-
-	// 	console.log('x: ' + x + ' y: ' + y);
-	// 	handleMapCanvasClick({ x, y });
-	// };
 
 	const newElementAt = function () {
 		const positionCalc = new PositionCalculator();
-		const x = positionCalc.xToMaturity(mousePosition.x, mapDimensions.width);
-		const y = positionCalc.yToVisibility(mousePosition.y, mapDimensions.height);
+		const x = positionCalc.xToMaturity(
+			mousePosition.x,
+			mapDimensions.width,
+		);
+		const y = positionCalc.yToVisibility(
+			mousePosition.y,
+			mapDimensions.height,
+		);
 		setNewComponentContext({ x, y });
 	};
 
-    var getElementByName = function(elements, name) {
-        var hasName = function(element) {
-            return element.name === name;
-        };
-        return elements.find(hasName);
-    };
+	var getElementByName = function (elements, name) {
+		var hasName = function (element) {
+			return element.name === name;
+		};
+		return elements.find(hasName);
+	};
 
-    useEffect(() => {
-        if (isModKeyPressed === false) {
-            setMapElementsClicked([]);
-        }
-    }, [isModKeyPressed]);
+	useEffect(() => {
+		if (isModKeyPressed === false) {
+			setMapElementsClicked([]);
+		}
+	}, [isModKeyPressed]);
 
-    const clicked = function(ctx) {
-        setHighlightLine(ctx.el.line);
-        if (isModKeyPressed === false) return;
+	const clicked = function (ctx) {
+		setHighlightLine(ctx.el.line);
+		if (isModKeyPressed === false) return;
 
-        let s = [
-            ...mapElementsClicked,
-            { el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
-        ];
-        if (s.length === 2) {
-            mutateMapText(mapText + '\r\n' + s.map(r => r.el.name).join('->'));
-            setMapElementsClicked([]);
-        } else setMapElementsClicked(s);
-    };
+		let s = [
+			...mapElementsClicked,
+			{ el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
+		];
+		if (s.length === 2) {
+			mutateMapText(mapText + '\r\n' + s.map(r => r.el.name).join('->'));
+			setMapElementsClicked([]);
+		} else setMapElementsClicked(s);
+	};
 
-    const linksBuilder = new LinksBuilder(
-        mapLinks,
-        mapElements,
-        mapAnchors,
-        showLinkedEvolved,
-    );
-    const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
+	const linksBuilder = new LinksBuilder(
+		mapLinks,
+		mapElements,
+		mapAnchors,
+		showLinkedEvolved,
+	);
+	const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
-    const asMethod = m =>
-        Object.assign(
-            {},
-            {
-                name: m.name,
-                maturity: m.maturity,
-                visibility: m.visibility,
-                method: m.decorators.method,
-            },
-        );
+	const asMethod = m =>
+		Object.assign(
+			{},
+			{
+				name: m.name,
+				maturity: m.maturity,
+				visibility: m.visibility,
+				method: m.decorators.method,
+			},
+		);
 
-    const decoratedComponentsMethods = mapElements
-        .getMergedElements()
-        .filter(m => m.decorators && m.decorators.method)
-        .map(m => asMethod(m));
+	const decoratedComponentsMethods = mapElements
+		.getMergedElements()
+		.filter(m => m.decorators && m.decorators.method)
+		.map(m => asMethod(m));
 
 	const methods = mapMethods
-		.filter((m) =>
-			getElementByName(mapElements.getNonEvolvedElements(), m.name)
+		.filter(m =>
+			getElementByName(mapElements.getNonEvolvedElements(), m.name),
 		)
-		.map((m) => {
-			const el = getElementByName(mapElements.getNonEvolvedElements(), m.name);
+		.map(m => {
+			const el = getElementByName(
+				mapElements.getNonEvolvedElements(),
+				m.name,
+			);
 			const toTransform = Object.assign(el, {
 				decorators: { method: m.method },
 			});
@@ -267,12 +255,15 @@ function MapCanvas(props) {
 				onZoom={handleZoom}
 				onZoomReset={() => setScaleFactor(1)}
 				className={[mapStyleDefs.className, styles.mapCanvas].join(' ')}
-				style={{ userSelect: 'none', fontFamily: mapStyleDefs.fontFamily }}
+				style={{
+					userSelect: 'none',
+					fontFamily: mapStyleDefs.fontFamily,
+				}}
 			>
 				<svg
 					ref={mapRef}
 					width={mapDimensions.width + 2}
-                	height={mapDimensions.height + 4}
+					height={mapDimensions.height + 4}
 					id="svgMap"
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"
@@ -339,7 +330,7 @@ function MapCanvas(props) {
 							})}
 						</g>
 
-						{links.map((current) => {
+						{links.map(current => {
 							return (
 								<g id={current.name} key={current.name}>
 									{current.links.map((l, i) => (
@@ -367,11 +358,11 @@ function MapCanvas(props) {
 									mapDimensions={mapDimensions}
 									startElement={getElementByName(
 										mapElements.getEvolvedElements(),
-										e.name
+										e.name,
 									)}
 									endElement={getElementByName(
 										mapElements.getEvolveElements(),
-										e.name
+										e.name,
 									)}
 									link={e}
 									evolutionOffsets={evolutionOffsets}
@@ -389,7 +380,7 @@ function MapCanvas(props) {
 									mutateMapText={mutateMapText}
 									mapStyleDefs={mapStyleDefs}
 									setHighlightLine={setHighlightLine}
-									onClick={(e) => clicked({ el, e })}
+									onClick={e => clicked({ el, e })}
 									scaleFactor={scaleFactor}
 								/>
 							))}
@@ -407,7 +398,9 @@ function MapCanvas(props) {
 										<AcceleratorSymbol
 											id={'market_circle_' + el.id}
 											isDeAccelerator={el.deaccelerator}
-											onClick={() => setHighlightLine(el.line)}
+											onClick={() =>
+												setHighlightLine(el.line)
+											}
 										/>
 									</MapAccelerator>
 								))}
@@ -416,36 +409,48 @@ function MapCanvas(props) {
 							{enableNewPipelines &&
 								mapElements
 									.getMapPipelines()
-									.filter((p) => p.hidden == false)
+									.filter(p => p.hidden == false)
 									.map((p, i) => (
 										<React.Fragment key={i}>
 											{enableNewPipelines &&
-											p.components != undefined &&
-											p.components.length > 0 ? (
+												p.components != undefined &&
+												p.components.length > 0 ? (
 												<PipelineVersion2
 													key={'pipeline_' + i}
-													mapDimensions={mapDimensions}
+													mapDimensions={
+														mapDimensions
+													}
 													pipeline={p}
 													mapText={mapText}
-													mutateMapText={mutateMapText}
+													mutateMapText={
+														mutateMapText
+													}
 													setMetaText={setMetaText}
 													metaText={metaText}
 													mapStyleDefs={mapStyleDefs}
-													setHighlightLine={setHighlightLine}
+													setHighlightLine={
+														setHighlightLine
+													}
 													linkingFunction={clicked}
 													scaleFactor={scaleFactor}
 												/>
 											) : (
 												<Pipeline
 													key={i}
-													mapDimensions={mapDimensions}
+													mapDimensions={
+														mapDimensions
+													}
 													pipeline={p}
 													mapText={mapText}
-													mutateMapText={mutateMapText}
+													mutateMapText={
+														mutateMapText
+													}
 													setMetaText={setMetaText}
 													metaText={metaText}
 													mapStyleDefs={mapStyleDefs}
-													setHighlightLine={setHighlightLine}
+													setHighlightLine={
+														setHighlightLine
+													}
 													scaleFactor={scaleFactor}
 												/>
 											)}
@@ -473,7 +478,7 @@ function MapCanvas(props) {
 											id={'element_circle_' + el.id}
 											styles={mapStyleDefs.component}
 											evolved={el.evolved}
-											onClick={(e) => clicked({ el, e })}
+											onClick={e => clicked({ el, e })}
 										/>
 									)}
 
@@ -482,25 +487,26 @@ function MapCanvas(props) {
 											id={'element_square_' + el.id}
 											styles={mapStyleDefs.component}
 											evolved={el.evolved}
-											onClick={(e) => clicked({ el, e })}
+											onClick={e => clicked({ el, e })}
 										/>
 									)}
 
-									{(el.decorators && el.decorators.ecosystem) ||
-									el.type === 'ecosystem' ? (
+									{(el.decorators &&
+										el.decorators.ecosystem) ||
+										el.type === 'ecosystem' ? (
 										<EcosystemSymbol
 											id={'ecosystem_circle_' + el.id}
 											styles={mapStyleDefs.component}
-											onClick={(e) => clicked({ el, e })}
+											onClick={e => clicked({ el, e })}
 										/>
 									) : null}
 
 									{(el.decorators && el.decorators.market) ||
-									el.type === 'market' ? (
+										el.type === 'market' ? (
 										<MarketSymbol
 											id={'market_circle_' + el.id}
 											styles={mapStyleDefs.component}
-											onClick={(e) => clicked({ el, e })}
+											onClick={e => clicked({ el, e })}
 										/>
 									) : null}
 
@@ -509,7 +515,7 @@ function MapCanvas(props) {
 											id={'element_circle_' + el.id}
 											styles={mapStyleDefs.submap}
 											evolved={el.evolved}
-											onClick={(e) => clicked({ el, e })}
+											onClick={e => clicked({ el, e })}
 											launchUrl={() => launchUrl(el.url)}
 										/>
 									)}
@@ -570,16 +576,24 @@ function MapCanvas(props) {
 					<IconButton
 						id="wm-map-select"
 						aria-label={'Select'}
-						onClick={(event) => handleChangeTool(event, TOOL_NONE)}
-						sx={tool === TOOL_NONE ? SelectedIconButtonStyle : IconButtonStyle}
+						onClick={event => handleChangeTool(event, TOOL_NONE)}
+						sx={
+							tool === TOOL_NONE
+								? SelectedIconButtonStyle
+								: IconButtonStyle
+						}
 					>
 						<HandIcon />
 					</IconButton>
 					<IconButton
 						id="wm-map-pan"
 						aria-label={'Pan'}
-						onClick={(event) => handleChangeTool(event, TOOL_PAN)}
-						sx={tool === TOOL_PAN ? SelectedIconButtonStyle : IconButtonStyle}
+						onClick={event => handleChangeTool(event, TOOL_PAN)}
+						sx={
+							tool === TOOL_PAN
+								? SelectedIconButtonStyle
+								: IconButtonStyle
+						}
 					>
 						<PanIcon />
 					</IconButton>
@@ -587,9 +601,11 @@ function MapCanvas(props) {
 						id="wm-zoom-in"
 						aria-label={'Zoom In'}
 						sx={
-							tool === TOOL_ZOOM_IN ? SelectedIconButtonStyle : IconButtonStyle
+							tool === TOOL_ZOOM_IN
+								? SelectedIconButtonStyle
+								: IconButtonStyle
 						}
-						onClick={(event) => handleChangeTool(event, TOOL_ZOOM_IN)}
+						onClick={event => handleChangeTool(event, TOOL_ZOOM_IN)}
 					>
 						<ZoomInIcon />
 					</IconButton>
@@ -597,9 +613,13 @@ function MapCanvas(props) {
 						id="wm-zoom-out"
 						aria-label={'Zoom Out'}
 						sx={
-							tool === TOOL_ZOOM_OUT ? SelectedIconButtonStyle : IconButtonStyle
+							tool === TOOL_ZOOM_OUT
+								? SelectedIconButtonStyle
+								: IconButtonStyle
 						}
-						onClick={(event) => handleChangeTool(event, TOOL_ZOOM_OUT)}
+						onClick={event =>
+							handleChangeTool(event, TOOL_ZOOM_OUT)
+						}
 					>
 						<ZoomOutIcon />
 					</IconButton>
@@ -615,7 +635,9 @@ function MapCanvas(props) {
 						id="wm-map-fullscreen"
 						onClick={props.shouldHideNav}
 						color={textColour[props.mapStyleDefs.className]}
-						aria-label={props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
+						aria-label={
+							props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'
+						}
 					>
 						{props.hideNav ? (
 							<FullscreenExitIcon sx={IconButtonStyle} />

@@ -5,6 +5,9 @@ export const featureSwitches: OwmFeatureSwitches = {
     enableAccelerators: true,
     enableDoubleClickRename: true,
     showToggleFullscreen: true,
+    showMapToolbar: true,
+    showMiniMap: false,
+    allowMapZoomMouseWheel: true,
 };
 
 export interface OwmFeatureSwitches {
@@ -14,4 +17,7 @@ export interface OwmFeatureSwitches {
     enableAccelerators: boolean;
     enableDoubleClickRename: boolean;
     showToggleFullscreen: boolean;
+    showMapToolbar: boolean;
+    showMiniMap: boolean;
+    allowMapZoomMouseWheel: boolean;
 }

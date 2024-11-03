@@ -15,11 +15,12 @@ const Map: React.FC<MapProps> = props => {
     const router = useRouter();
     const { slug } = router.query;
     const [currentId, setCurrentId] = useState('');
-    const [mapPersistenceStrategy, setMapPersistenceStrategy] = useState(MapPersistenceStrategy.Legacy);
+    const [mapPersistenceStrategy, setMapPersistenceStrategy] = useState(
+        MapPersistenceStrategy.Legacy,
+    );
     const [shouldLoad, setShouldLoad] = useState(false);
 
     useEffect(() => {
-        console.log('slug', slug);
         if (slug === undefined) {
             if (
                 typeof window !== 'undefined' &&
@@ -31,7 +32,7 @@ const Map: React.FC<MapProps> = props => {
                     mapId = mapId.split(':')[1];
                 }
                 setCurrentId(mapId);
-				setShouldLoad(true);
+                setShouldLoad(true);
             }
             return;
         }
