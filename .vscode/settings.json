@@ -18,7 +18,10 @@
   "eslint.lintTask.enable": true,
   "eslint.run": "onSave",
   "eslint.workingDirectories": [
-    "frontend/"
+    "./frontend/"
   ],
+  "eslint.options": {
+    "configFile": "./frontend/.eslintrc.json"
+  },
   "eslint.debug": true
 }

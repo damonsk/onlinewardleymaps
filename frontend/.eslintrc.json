@@ -32,11 +32,8 @@
                 "usePrettierrc": true
             }
         ],
-        // "linebreak-style": [
-        // 	"error",
-        // 	"unix"
-        // ],
         "react/prop-types": 0,
+        "react/reac-in-jsx-scope": 0,
         "@next/next/no-img-element": 0,
         "@typescript-eslint/no-explicit-any": 0
     },

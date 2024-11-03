@@ -92,11 +92,6 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
         position: 'relative',
     };
 
-    // const textStyle: React.CSSProperties = {
-    //     textAlign: 'center',
-    //     color: textColour[props.mapStyleDefs.className as keyof DefaultThemes],
-    // };
-
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as
         | LegacyRef<HTMLDivElement>
         | undefined;
