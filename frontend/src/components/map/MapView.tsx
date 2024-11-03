@@ -1,7 +1,5 @@
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { IconButton, Typography } from '@mui/material';
-import React, { LegacyRef } from 'react';
+import React, { LegacyRef, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import {
     EvolutionStages,
     MapCanvasDimensions,
@@ -26,6 +24,7 @@ import {
 } from '../../conversion/Converter';
 import { MapAnnotationsPosition } from '../../conversion/PresentationExtractionStrategy';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import CanvasSpeedDial from './CanvasSpeedDial';
 import MapCanvas from './MapCanvas';
 import { DefaultThemes } from './foundation/Fill';
 
@@ -65,6 +64,12 @@ export interface MapViewProps {
 
 export const MapView: React.FunctionComponent<MapViewProps> = props => {
     const featureSwitches = useFeatureSwitches();
+	const [quickAddCursor, setQuickAddCursor] = useState('default');
+	const [quickAddTemplate, setQuickAddTemplate] = useState(
+		() => () => console.log('nullTemplate')
+	);
+	const [quickAddInProgress, setQuickAddInProgress] = useState(false);
+
     const fill: DefaultThemes = {
         wardley: 'url(#wardleyGradient)',
         colour: 'none',
@@ -96,34 +101,54 @@ export const MapView: React.FunctionComponent<MapViewProps> = props => {
         | LegacyRef<HTMLDivElement>
         | undefined;
 
+
+    function svgToBase64Url(svgString: string, width: number, height: number) {
+        console.log(svgString);
+        const base64SVG = btoa(
+            `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${width}px" height="${height}px">${svgString}</svg>`
+        );
+        return `url('data:image/svg+xml;base64,${base64SVG}')`;
+    }
+    
+    const setQuickAdd = (quickAdd: any) => {
+        setQuickAddInProgress(true);
+        const i = svgToBase64Url(
+            ReactDOMServer.renderToString(quickAdd.cursor),
+            15,
+            15
+        );
+        console.log('MapView::setQuickAdd::icon', i);
+        setQuickAddCursor(i + ' 8 8, auto');
+        setQuickAddTemplate(() => () => quickAdd.template);
+    };
+
+    const handleMapCanvasClick = (pos: any) => {
+		if (featureSwitches.enableQuickAdd == false) return;
+		console.log('MapView::handleMapCanvasClick', pos);
+		if (quickAddInProgress) {
+			console.log(
+				'MapView::handleMapCanvasClick::quickAddTemplate',
+				quickAddTemplate
+			);
+			// const componentString = quickAddTemplate()('text', pos.y, pos.x);
+			// props.mutateMapText(props.mapText + `\r\n${componentString}`);
+			setQuickAddInProgress(false);
+			setQuickAddCursor('default');
+		}
+	};
+
     return (
         <div
             ref={legacyRef}
             className={props.mapStyleDefs.className}
             style={containerStyle}
         >
-            <Typography padding={'5px'} sx={textStyle} variant="h5" id="title">
-                {props.mapTitle}
-            </Typography>
-            <div id="map">
-                <MapCanvas mapPadding={20} {...props} />
-            </div>
-            {featureSwitches.showToggleFullscreen && (
-                <IconButton
-                    onClick={props.shouldHideNav}
-                    color={'default'}
-                    aria-label={
-                        props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'
-                    }
-                    sx={{ position: 'absolute', right: '10px', top: '0' }}
-                >
-                    {props.hideNav ? (
-                        <FullscreenExitIcon sx={{ color: textStyle.color }} />
-                    ) : (
-                        <FullscreenIcon sx={{ color: textStyle.color }} />
-                    )}
-                </IconButton>
-            )}
+            {featureSwitches.enableQuickAdd && (
+					<CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
+				)}
+				<div id="map">
+					<MapCanvas handleMapCanvasClick={handleMapCanvasClick} {...props} />
+				</div>
         </div>
     );
 };
