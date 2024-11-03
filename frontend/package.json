@@ -51,7 +51,7 @@
 		"next": "14.2.16",
 		"prop-types": "^15.8.1",
 		"react": "18.3.1",
-		"react-ace": "^12.0.0",
+		"react-ace": "^13.0.0",
 		"react-dom": "18.3.1",
 		"react-svg-pan-zoom": "^3.13.1",
 		"sass": "1.80.6",
