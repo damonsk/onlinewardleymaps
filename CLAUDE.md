@@ -76,6 +76,42 @@ Customer->Service
 evolution Genesis->Custom->Product->Commodity
 ```
 
+## Map Rendering Architecture
+
+### SVG Structure
+- Maps are rendered as SVG with nested group elements
+- Coordinate system: (0,0) at top-left, (1,1) at bottom-right
+- X-axis represents evolution (genesis to commodity)
+- Y-axis represents visibility/value (invisible to visible)
+- `PositionCalculator` converts between logical and screen coordinates
+
+### Component Hierarchy
+- `MapView` - Top-level container that renders the title and map
+- `MapCanvas` - Main SVG container that organizes all map elements
+- `MapGraphics` - Defines common SVG graphics (markers, patterns, etc.)
+- Map foundation elements:
+  - `MapBackground` - Renders the background grid
+  - `MapGrid` - Renders the grid lines
+  - `MapEvolution` - Renders the evolution axis labels
+
+### Map Elements
+- `MapComponent` - Base component for map elements with positioning
+- `Movable` - HOC that adds drag-and-drop functionality
+- `ComponentSymbol` - Visual representation of components (circles, squares)
+- Element types:
+  - Regular components (circles)
+  - Pipeline components (squares)
+  - Submap components (nested maps)
+  - Market components
+  - Ecosystem components
+
+### Interactive Features
+- Drag-and-drop positioning of elements
+- Quick-link creation by holding mod key + clicking components
+- Double-click to add new components at cursor position
+- Line highlighting shows code for selected elements
+- Inertia indicators for components with resistance to change
+
 ## API Reference (api.wardleymaps.ai)
 
 ### Map Management
