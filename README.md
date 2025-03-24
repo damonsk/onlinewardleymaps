@@ -31,9 +31,14 @@ evolution Genesis->Custom->Product->Commodity
 ## Architecture
 
 - React-based frontend with ACE editor integration
-- SVG-based map rendering
+- SVG-based map rendering using modular symbol components
 - Text parser with specialized extraction strategies
 - Two-way binding between text and visual elements
+- Component hierarchy:
+  - Editor - ACE editor with custom language support
+  - MapCanvas - Main SVG container for all map elements
+  - Symbol components - Reusable SVG elements for visualization
+  - Position handlers - Coordinate transformation and drag-and-drop
 
 ## Running locally
 

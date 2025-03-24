@@ -112,6 +112,23 @@ evolution Genesis->Custom->Product->Commodity
 - Line highlighting shows code for selected elements
 - Inertia indicators for components with resistance to change
 
+### Symbol Components
+- Modular SVG-based symbols in `src/components/symbols/`
+- Each map element type has a dedicated symbol component:
+  - `ComponentSymbol` - Standard component (circle)
+  - `PipelineComponentSymbol` - Pipeline component (square) 
+  - `EcosystemSymbol` - Ecosystem with concentric circles pattern
+  - `MarketSymbol` - Market representation with distinctive shape
+  - `MethodSymbol` - Shows build/buy/outsource methods
+  - `LinkSymbol` - Connection between components with flow options
+- Symbol components handle:
+  - Visual appearance (SVG elements)
+  - Style variations based on state (evolved/normal)
+  - Click handlers for interaction
+  - Consistent styling via props inheritance
+- All components are memoized with React.memo for performance
+- Used by higher-level components in `src/components/map/`
+
 ## API Reference (api.wardleymaps.ai)
 
 ### Map Management
