@@ -40,6 +40,18 @@ evolution Genesis->Custom->Product->Commodity
   - Symbol components - Reusable SVG elements for visualization
   - Position handlers - Coordinate transformation and drag-and-drop
 
+## For AI Coding Assistants
+
+This repository includes a `CLAUDE.md` file with detailed technical documentation specifically designed for AI coding agents. The file contains:
+
+- Developer build and test commands
+- Code style guidelines and conventions
+- Project structure and architecture details
+- API reference documentation
+- Detailed explanation of the map rendering system
+
+If you're using an AI assistant like Claude, GitHub Copilot, or similar tools to help with this codebase, refer them to the CLAUDE.md file for context.
+
 ## Running locally
 
 Dependencies for running locally: NodeJS and Yarn.
