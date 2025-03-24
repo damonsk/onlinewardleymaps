@@ -41,6 +41,41 @@
 - Pipeline components show progression stages
 - Evolution stages typically follow: Genesis → Custom → Product → Commodity
 
+## Editor Design and Architecture
+
+### Text-Based Map Creation 
+- Maps are created using a domain-specific language (DSL)
+- Text input is automatically converted to visual map elements
+- Two-way binding between text and visualization
+- Each map element has a specific syntax (`component Name [x, y]`)
+- Changes to map text are reflected in real-time on the visual map
+
+### Editor Components
+- Built on ACE Editor (react-ace) for text editing
+- Supports syntax highlighting and auto-completion
+- Provides intelligent suggestions for map elements
+- Auto-suggests existing component names for links
+- Highlights errors in the editor gutter
+- Elements can be clicked in the map to highlight their code
+
+### Conversion Pipeline
+1. Text input → Converter class → Multiple extraction strategies
+2. Each strategy handles specific element types (components, links, etc.)
+3. Structured map data object is created
+4. React components render the visual representation
+5. User interactions can modify both text and visual elements
+
+### Example Map Syntax
+```
+title My Wardley Map
+component Customer [0.9, 0.2]
+component Service [0.7, 0.55]
+component Database [0.5, 0.85]
+Service->Database
+Customer->Service
+evolution Genesis->Custom->Product->Commodity
+```
+
 ## API Reference (api.wardleymaps.ai)
 
 ### Map Management
