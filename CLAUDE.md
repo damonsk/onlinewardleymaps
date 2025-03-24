@@ -129,6 +129,25 @@ evolution Genesis->Custom->Product->Commodity
 - All components are memoized with React.memo for performance
 - Used by higher-level components in `src/components/map/`
 
+### Link Strategies
+- Strategy pattern implementation in `src/linkStrategies/`
+- Handles the complex logic of component connections:
+  - Regular components to regular components
+  - Evolved to evolving components
+  - Anchors to components
+  - Various evolution state combinations
+- Key components:
+  - `LinksBuilder` - Orchestrates all strategies and builds final links collection
+  - Strategy classes for specific link types (e.g., `EvolvedToEvolvingLinksStrategy`)
+- Benefits:
+  - Separates link determination logic from rendering
+  - Handles evolution states elegantly
+  - Makes it easy to toggle link visibility based on map settings
+  - Allows filtering links based on component states
+- Each strategy implements the same interface with:
+  - Constructor taking links and map elements
+  - `getLinks()` method returning applicable links and elements
+
 ## API Reference (api.wardleymaps.ai)
 
 ### Map Management

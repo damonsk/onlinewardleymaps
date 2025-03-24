@@ -38,7 +38,13 @@ evolution Genesis->Custom->Product->Commodity
   - Editor - ACE editor with custom language support
   - MapCanvas - Main SVG container for all map elements
   - Symbol components - Reusable SVG elements for visualization
+  - Link strategies - Determine how components connect based on evolution states
   - Position handlers - Coordinate transformation and drag-and-drop
+- Design patterns:
+  - Strategy pattern for link rendering
+  - Builder pattern for map elements
+  - Factory pattern for symbol creation
+  - Observer pattern for two-way binding
 
 ## For AI Coding Assistants
 
