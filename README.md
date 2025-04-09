@@ -14,35 +14,46 @@ Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see [Sim
 
 Dependencies for running locally: Node.js and Yarn.
 
-    npm install yarn -g
+    `npm install yarn -g`
     
 
 Change directory to frontend.
 
-    cd frontend/
+    `cd frontend/`
 
 Install dependencies
 
-    yarn install
+    `yarn install`
 
 Commands:
 
 To run locally, develop/edit. Open web browser @ http://localhost:3000
 
-     yarn dev
+     `yarn dev`
 
 To create minified scripts/styling.
 
-    yarn build
+    `yarn build`
 
 To run all tests.
 
-    yarn test
+    `yarn test`
 
 To create package for use in [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps) or [obsidian-wardley-maps](https://github.com/damonsk/obsidian-wardley-maps).
 
-    yarn package
+    `yarn package`
 
+Alternatively, you can also run it locally using the provided Dockerfile.
+
+From the root repository, build a container image via
+
+    `docker build -t onlinewardleymaps .`
+
+and then run it locally 
+
+    `docker run -p 3000:3000 onlinewardleymaps`
+
+Now you can access the frontend @ http://localhost:3000
 
 ## Support the Project
 
