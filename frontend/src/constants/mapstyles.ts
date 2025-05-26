@@ -423,6 +423,7 @@ export const Dark = mergeIntoDefault({
         textColor: 'rgba(255,255,255,.8)',
         textOffset: 8,
         evolvedTextColor: '#90caf9',
+        fontWeight: 'normal',
     },
     submap: {
         fontSize: '13px',
@@ -486,6 +487,7 @@ export const Colour = mergeIntoDefault({
         textColor: '#486b1a',
         textOffset: 8,
         evolvedTextColor: '#ea7f5b',
+        fontWeight: 'normal',
     },
     submap: {
         fill: '#8cb358',
@@ -521,6 +523,7 @@ export const Colour = mergeIntoDefault({
     note: {
         evolvedTextColor: 'red',
         textColor: 'black',
+        fontWeight: 'bold',
     },
     attitudes: {
         strokeWidth: '5px',

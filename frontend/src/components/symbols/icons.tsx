@@ -184,7 +184,13 @@ export const MarketIcon: React.FunctionComponent<IconProps> = ({
             />
         )}
         <g transform="translate(20 20) scale(0.8)">
-            <MarketSymbol styles={mapStyleDefs.component} />
+            <MarketSymbol
+                styles={{
+                    ...mapStyleDefs.component,
+                    fill: mapStyleDefs.component.fill ?? 'none',
+                    stroke: mapStyleDefs.component.stroke ?? 'none',
+                }}
+            />
         </g>
     </IconWrapper>
 );

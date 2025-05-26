@@ -25,8 +25,6 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     evolved,
     className = 'label',
     note,
-    fill,
-    fontWeight,
     textAnchor,
     textTheme,
     onClick,
