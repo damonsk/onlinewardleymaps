@@ -1,10 +1,3 @@
-import PanIcon from '@mui/icons-material/ControlCamera';
-import FitScreenIcon from '@mui/icons-material/FitScreen';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import HandIcon from '@mui/icons-material/PanToolAlt';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import LinksBuilder from '../../linkStrategies/LinksBuilder';
 import MapElements from '../../MapElements';
@@ -23,28 +16,18 @@ import Attitude from './Attitude';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import FluidLink from './FluidLink';
-import MapBackground from './foundation/MapBackground';
-import MapEvolution from './foundation/MapEvolution';
-import MapGraphics from './foundation/MapGraphics';
-import MapGrid from './foundation/MapGrid';
 import MapAccelerator from './MapAccelerator';
+import MapCanvasToolbar from './MapCanvasToolbar';
 import MapComponent from './MapComponent';
-import MapTitle from './MapTitle';
+import MapGridGroup from './MapGridGroup';
 import MethodElement from './MethodElement';
 import Note from './Note';
 import Pipeline from './Pipeline';
 import PipelineVersion2 from './PipelineVersion2';
 import PositionCalculator from './PositionCalculator';
 
-import { ButtonGroup, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import {
-    TOOL_NONE,
-    TOOL_PAN,
-    TOOL_ZOOM_IN,
-    TOOL_ZOOM_OUT,
-    UncontrolledReactSVGPanZoom,
-} from 'react-svg-pan-zoom';
+import { TOOL_NONE, UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
 
 const useStyles = makeStyles(() => ({
     mapCanvas: {
@@ -120,16 +103,6 @@ function MapCanvas(props) {
 
     const handleChangeTool = (event, newTool) => {
         setTool(newTool);
-    };
-
-    const SelectedIconButtonStyle = { color: '#90caf9' };
-    const IconButtonStyle = { color: 'rgba(0, 0, 0, 0.54)' };
-    const textColour = {
-        wardley: 'black',
-        colour: 'black',
-        plain: 'black',
-        handwritten: 'black',
-        dark: 'white',
     };
 
     useEffect(() => {
@@ -273,25 +246,13 @@ function MapCanvas(props) {
                     xmlns="http://www.w3.org/2000/svg"
                     xmlnsXlink="http://www.w3.org/1999/xlink"
                 >
-                    <MapGraphics mapStyleDefs={mapStyleDefs} />
-                    <g id="grid">
-                        <MapBackground
-                            mapDimensions={mapDimensions}
-                            mapStyleClass={mapStyleDefs.className}
-                        />
-                        <MapTitle mapTitle={mapTitle} />
-                        <MapGrid
-                            mapDimensions={mapDimensions}
-                            mapStyleDefs={mapStyleDefs}
-                            evolutionOffsets={evolutionOffsets}
-                        />
-                        <MapEvolution
-                            mapDimensions={mapDimensions}
-                            mapEvolutionStates={mapEvolutionStates}
-                            mapStyleDefs={mapStyleDefs}
-                            evolutionOffsets={evolutionOffsets}
-                        />
-                    </g>
+                    <MapGridGroup
+                        mapStyleDefs={mapStyleDefs}
+                        mapDimensions={mapDimensions}
+                        mapTitle={mapTitle}
+                        evolutionOffsets={evolutionOffsets}
+                        mapEvolutionStates={mapEvolutionStates}
+                    />
                     <g id="map">
                         <g id="attitudes">
                             {mapAttitudes.map((a, i) => (
@@ -365,7 +326,7 @@ function MapCanvas(props) {
                                         e.name,
                                     )}
                                     endElement={getElementByName(
-                                        mapElements.getEvolveElements(),
+                                        mapElements.getEvolvedElements(),
                                         e.name,
                                     )}
                                     link={e}
@@ -576,82 +537,14 @@ function MapCanvas(props) {
                 </svg>
             </UncontrolledReactSVGPanZoom>
             {showMapToolbar && (
-                <ButtonGroup orientation="horizontal" aria-label="button group">
-                    <IconButton
-                        id="wm-map-select"
-                        aria-label={'Select'}
-                        onClick={(event) => handleChangeTool(event, TOOL_NONE)}
-                        sx={
-                            tool === TOOL_NONE
-                                ? SelectedIconButtonStyle
-                                : IconButtonStyle
-                        }
-                    >
-                        <HandIcon />
-                    </IconButton>
-                    <IconButton
-                        id="wm-map-pan"
-                        aria-label={'Pan'}
-                        onClick={(event) => handleChangeTool(event, TOOL_PAN)}
-                        sx={
-                            tool === TOOL_PAN
-                                ? SelectedIconButtonStyle
-                                : IconButtonStyle
-                        }
-                    >
-                        <PanIcon />
-                    </IconButton>
-                    <IconButton
-                        id="wm-zoom-in"
-                        aria-label={'Zoom In'}
-                        sx={
-                            tool === TOOL_ZOOM_IN
-                                ? SelectedIconButtonStyle
-                                : IconButtonStyle
-                        }
-                        onClick={(event) =>
-                            handleChangeTool(event, TOOL_ZOOM_IN)
-                        }
-                    >
-                        <ZoomInIcon />
-                    </IconButton>
-                    <IconButton
-                        id="wm-zoom-out"
-                        aria-label={'Zoom Out'}
-                        sx={
-                            tool === TOOL_ZOOM_OUT
-                                ? SelectedIconButtonStyle
-                                : IconButtonStyle
-                        }
-                        onClick={(event) =>
-                            handleChangeTool(event, TOOL_ZOOM_OUT)
-                        }
-                    >
-                        <ZoomOutIcon />
-                    </IconButton>
-                    <IconButton
-                        id="wm-map-fit"
-                        aria-label={'Fit'}
-                        sx={IconButtonStyle}
-                        onClick={() => _fitToViewer()}
-                    >
-                        <FitScreenIcon />
-                    </IconButton>
-                    <IconButton
-                        id="wm-map-fullscreen"
-                        onClick={props.shouldHideNav}
-                        color={textColour[props.mapStyleDefs.className]}
-                        aria-label={
-                            props.hideNav ? 'Exit Fullscreen' : 'Fullscreen'
-                        }
-                    >
-                        {props.hideNav ? (
-                            <FullscreenExitIcon sx={IconButtonStyle} />
-                        ) : (
-                            <FullscreenIcon sx={IconButtonStyle} />
-                        )}
-                    </IconButton>
-                </ButtonGroup>
+                <MapCanvasToolbar
+                    hideNav={hideNav}
+                    tool={tool}
+                    handleChangeTool={handleChangeTool}
+                    shouldHideNav={shouldHideNav}
+                    mapStyleDefs={mapStyleDefs}
+                    _fitToViewer={_fitToViewer}
+                />
             )}
         </React.Fragment>
     );
