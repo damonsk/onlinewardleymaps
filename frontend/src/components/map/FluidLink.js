@@ -18,8 +18,8 @@ function FluidLink(props) {
     });
 
     const handleMouseMove = useCallback(
-        e => {
-            setPosition(position => {
+        (e) => {
+            setPosition((position) => {
                 const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
                 const xDiff = (position.coords.x - e.pageX) / scaleFactor;
                 const yDiff = (position.coords.y - e.pageY) / scaleFactor;
@@ -40,7 +40,7 @@ function FluidLink(props) {
         const pageX = origClick.pageX;
         const pageY = origClick.pageY;
 
-        setPosition(position =>
+        setPosition((position) =>
             Object.assign({}, position, {
                 coords: {
                     x: pageX,

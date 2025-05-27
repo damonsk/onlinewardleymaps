@@ -29,7 +29,7 @@ export default class AnchorLinksStrategy implements LinkExtractionStrategy {
         return {
             name: 'anchorLinks',
             links: links,
-            startElements: this.anchors.map(a => a as MapElement),
+            startElements: this.anchors.map((a) => a as MapElement),
             endElements: this.mapElements.getNoneEvolvedOrEvolvingElements(),
         };
     }

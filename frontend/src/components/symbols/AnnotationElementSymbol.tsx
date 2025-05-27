@@ -10,10 +10,9 @@ export interface AnnotationElementSymbolProps {
     annotation: MapAnnotation;
     styles: MapAnnotationTheme;
 }
-const AnnotationElementSymbol: React.FunctionComponent<AnnotationElementSymbolProps> = ({
-    annotation,
-    styles,
-}) => {
+const AnnotationElementSymbol: React.FunctionComponent<
+    AnnotationElementSymbolProps
+> = ({ annotation, styles }) => {
     return (
         <>
             <circle

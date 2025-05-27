@@ -29,7 +29,7 @@ function ComponentText(props) {
         const rows = splits.length + 1;
 
         const longestRowLength = Math.max(
-            ...renameVal.split('\n').map(row => row.length),
+            ...renameVal.split('\n').map((row) => row.length),
         );
 
         setSizing({
@@ -49,7 +49,7 @@ function ComponentText(props) {
         mutateMapText(
             mapText
                 .split('\n')
-                .map(line => {
+                .map((line) => {
                     if (element.evolved) {
                         if (
                             line
@@ -115,7 +115,7 @@ function ComponentText(props) {
         );
     }
 
-    const handleKeyUp = event => {
+    const handleKeyUp = (event) => {
         event.stopPropagation();
         if (event.key === 'Enter') {
             console.log('Enter key pressed!');
@@ -172,8 +172,8 @@ function ComponentText(props) {
                             autoComplete="off"
                             size="small"
                             cols={sizing.cols}
-                            onChange={e => setRenameVal(e.target.value)}
-                            onKeyDown={e => {
+                            onChange={(e) => setRenameVal(e.target.value)}
+                            onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     e.preventDefault();
                                 }
@@ -197,10 +197,10 @@ function ComponentText(props) {
                                 },
                             }}
                             margin="dense"
-                            onKeyUp={e => handleKeyUp(e)}
+                            onKeyUp={(e) => handleKeyUp(e)}
                             defaultValue={element.name}
-                            onDoubleClick={e => e.stopPropagation()}
-                            onClick={e => e.stopPropagation()}
+                            onDoubleClick={(e) => e.stopPropagation()}
+                            onClick={(e) => e.stopPropagation()}
                         />
                     </foreignObject>
                 )}

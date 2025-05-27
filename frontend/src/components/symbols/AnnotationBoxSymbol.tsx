@@ -13,7 +13,9 @@ export interface AnnotationBoxSymbolProps {
     children: ReactNode;
 }
 
-const AnnotationBoxSymbol: React.FunctionComponent<AnnotationBoxSymbolProps> = ({
+const AnnotationBoxSymbol: React.FunctionComponent<
+    AnnotationBoxSymbolProps
+> = ({
     id,
     dy = '0',
     x = '2',

@@ -14,7 +14,7 @@ export default class AcceleratorExtractionStrategy {
         this.containerName = 'accelerators';
         this.baseStrategies = ['accelerator', 'deaccelerator']
             .map(
-                e =>
+                (e) =>
                     new BaseStrategyRunner(
                         data,
                         {
@@ -29,9 +29,9 @@ export default class AcceleratorExtractionStrategy {
     }
 
     apply() {
-        const output = this.baseStrategies.map(bs => bs.apply()).flat();
+        const output = this.baseStrategies.map((bs) => bs.apply()).flat();
         return {
-            [this.containerName]: output.map(o => o.accelerators).flat(),
+            [this.containerName]: output.map((o) => o.accelerators).flat(),
             errors: [],
         };
     }

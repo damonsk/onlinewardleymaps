@@ -9,11 +9,11 @@ jest.mock('react', () => ({
 
 useContext.mockReturnValue({ enableNewPipelines: false });
 
-describe('Given Submaps', function() {
+describe('Given Submaps', function () {
     const mockContextValue = useContext();
     test.each(['Foo', 'Bar', 'Bleh'])(
         'When mapText contains submaps then text is correctly parsed',
-        name => {
+        (name) => {
             let actual = `submap ${name}`;
             let result = new Converter(mockContextValue).parse(actual);
             expect(result.submaps.length).toEqual(1);
@@ -64,7 +64,7 @@ describe('Given Submaps', function() {
         expect(result.submaps[0].label.y).toEqual(offsetY);
     });
 
-    test('Editor prefixes are defined', function() {
+    test('Editor prefixes are defined', function () {
         expect(EditorPrefixes.includes('submap')).toEqual(true);
         expect(EditorPrefixes.includes('submap <name>')).toEqual(true);
         expect(

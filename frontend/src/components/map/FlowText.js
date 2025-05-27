@@ -4,7 +4,7 @@ import RelativeMovable from '../map/RelativeMovable';
 
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 
-const FlowText = props => {
+const FlowText = (props) => {
     const {
         x,
         y,
@@ -24,7 +24,7 @@ const FlowText = props => {
         };
         return metaPosition.for(flowLabelElementId, metaText, defaultOffset);
     };
-    const flowLabelEndDrag = moved => {
+    const flowLabelEndDrag = (moved) => {
         setMetaText(metaPosition.update(flowLabelElementId, metaText, moved));
     };
     const flowLabelPosition = getMetaPosition();

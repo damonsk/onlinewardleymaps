@@ -15,7 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CoreHeader from './CoreHeader';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const StyledMenu = styled(props => (
+const StyledMenu = styled((props) => (
     <Menu
         elevation={0}
         anchorOrigin={{
@@ -93,11 +93,11 @@ function NewHeader(props) {
 
     const openMore = Boolean(anchorMoreEl);
 
-    const handleMoreClick = event => {
+    const handleMoreClick = (event) => {
         setAnchorMoreEl(event.currentTarget);
     };
 
-    const handleMoreClose = preAction => {
+    const handleMoreClose = (preAction) => {
         if (typeof preAction === 'function') preAction();
         setAnchorMoreEl(null);
     };

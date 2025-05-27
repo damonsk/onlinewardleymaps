@@ -88,8 +88,8 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
         >
             <List>
                 {siteLinks
-                    .filter(i => i.visible === true)
-                    .map(l => (
+                    .filter((i) => i.visible === true)
+                    .map((l) => (
                         <ListItemButton key={l.name} onClick={l.action}>
                             <ListItemIcon>{l.icon}</ListItemIcon>
                             <ListItemText primary={l.name} />
@@ -99,7 +99,7 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
             <Divider />
             <List>
                 {submenu &&
-                    submenu.map(l => (
+                    submenu.map((l) => (
                         <ListItemButton
                             key={l.name}
                             onClick={() => complete(() => l.action())}

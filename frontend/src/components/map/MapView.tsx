@@ -62,11 +62,11 @@ export interface MapViewProps {
     showLinkedEvolved: boolean;
 }
 
-export const MapView: React.FunctionComponent<MapViewProps> = props => {
+export const MapView: React.FunctionComponent<MapViewProps> = (props) => {
     const featureSwitches = useFeatureSwitches();
     // const [quickAddCursor, setQuickAddCursor] = useState('default');
-    const [quickAddTemplate, setQuickAddTemplate] = useState(() => () =>
-        console.log('nullTemplate'),
+    const [quickAddTemplate, setQuickAddTemplate] = useState(
+        () => () => console.log('nullTemplate'),
     );
     const [quickAddInProgress, setQuickAddInProgress] = useState(false);
 

@@ -7,7 +7,8 @@ import {
 } from './LinkStrategiesInterfaces';
 
 export default class EvolveToEvolvedLinksStrategy
-    implements LinkExtractionStrategy {
+    implements LinkExtractionStrategy
+{
     private links: Link[];
     private mapElements: MapElements;
 

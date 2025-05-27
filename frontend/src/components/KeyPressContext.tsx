@@ -23,7 +23,7 @@ export function useKeysPressed(allowedKeys: string[] | undefined) {
         const onKeyDown = (event: KeyboardEvent) => {
             const { key } = event;
             if (allowAll || (allowedKeys && allowedKeys.includes(key))) {
-                setPressedKeys(previousPressedKeys => [
+                setPressedKeys((previousPressedKeys) => [
                     ...previousPressedKeys,
                     key,
                 ]);
@@ -33,8 +33,8 @@ export function useKeysPressed(allowedKeys: string[] | undefined) {
         const onKeyUp = (event: KeyboardEvent) => {
             const { key } = event;
             if (allowAll || (allowedKeys && allowedKeys.includes(key))) {
-                setPressedKeys(previousPressedKeys =>
-                    previousPressedKeys.filter(k => k !== key),
+                setPressedKeys((previousPressedKeys) =>
+                    previousPressedKeys.filter((k) => k !== key),
                 );
             }
         };

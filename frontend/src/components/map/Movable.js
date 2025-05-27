@@ -21,8 +21,8 @@ function Movable(props) {
     });
 
     const handleMouseMove = useCallback(
-        e => {
-            setPosition(position => {
+        (e) => {
+            setPosition((position) => {
                 const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
                 const xDiff = (position.coords.x - e.pageX) / scaleFactor;
                 const yDiff = (position.coords.y - e.pageY) / scaleFactor;
@@ -39,13 +39,13 @@ function Movable(props) {
         [props.scaleFactor],
     );
 
-    const handleMouseDown = e => {
+    const handleMouseDown = (e) => {
         if (props.isModKeyPressed) return;
         setMoving(true);
         const pageX = e.pageX;
         const pageY = e.pageY;
 
-        setPosition(position =>
+        setPosition((position) =>
             Object.assign({}, position, {
                 coords: {
                     x: pageX,
@@ -57,7 +57,7 @@ function Movable(props) {
         document.addEventListener('keyup', handleEscape);
     };
 
-    const handleEscape = k => {
+    const handleEscape = (k) => {
         if (k.key === 'Escape' && moving) {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('keyup', handleEscape);
@@ -70,7 +70,7 @@ function Movable(props) {
     const handleMouseUp = () => {
         if (props.isModKeyPressed) return;
         document.removeEventListener('mousemove', handleMouseMove);
-        setPosition(position =>
+        setPosition((position) =>
             Object.assign({}, position, {
                 coords: {},
             }),
@@ -100,8 +100,8 @@ function Movable(props) {
             is="custom"
             class={'draggable'}
             style={{ cursor: moving ? 'grabbing' : 'grab' }}
-            onMouseDown={e => handleMouseDown(e)}
-            onMouseUp={e => handleMouseUp(e)}
+            onMouseDown={(e) => handleMouseDown(e)}
+            onMouseUp={(e) => handleMouseUp(e)}
             id={'movable_' + props.id}
             filter={filter}
             transform={

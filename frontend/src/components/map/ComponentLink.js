@@ -5,13 +5,8 @@ import PositionCalculator from './PositionCalculator';
 
 function ComponentLink(props) {
     const { enableLinkContext } = useFeatureSwitches();
-    const {
-        mapStyleDefs,
-        mapDimensions,
-        startElement,
-        endElement,
-        link,
-    } = props;
+    const { mapStyleDefs, mapDimensions, startElement, endElement, link } =
+        props;
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
     const x1 = positionCalc.maturityToX(startElement.maturity, width);

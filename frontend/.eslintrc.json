@@ -16,14 +16,8 @@
             "jsx": true
         }
     },
-    "ignorePatterns": [
-        "models",
-        "src/ui-components",
-        "node_modules/"
-    ],
-    "plugins": [
-        "react"
-    ],
+    "ignorePatterns": ["models", "src/ui-components", "node_modules/"],
+    "plugins": ["react"],
     "rules": {
         "prettier/prettier": [
             "error",

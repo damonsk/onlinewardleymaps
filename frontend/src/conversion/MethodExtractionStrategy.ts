@@ -11,7 +11,7 @@ export default class MethodExtractionStrategy implements IParseStrategy {
         this.containerName = 'methods';
         this.baseStrategies = ['buy', 'outsource', 'build']
             .map(
-                e =>
+                (e) =>
                     new BaseStrategyRunner(
                         data,
                         {
@@ -26,9 +26,9 @@ export default class MethodExtractionStrategy implements IParseStrategy {
     }
 
     apply() {
-        const output = this.baseStrategies.map(bs => bs.apply()).flat();
+        const output = this.baseStrategies.map((bs) => bs.apply()).flat();
         return {
-            [this.containerName]: output.map(o => o.methods).flat(),
+            [this.containerName]: output.map((o) => o.methods).flat(),
             errors: [],
         };
     }

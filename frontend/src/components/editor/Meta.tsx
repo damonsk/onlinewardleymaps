@@ -6,7 +6,7 @@ export interface MetaProps {
 
 const Meta: React.FunctionComponent<MetaProps> = ({ metaText }) => {
     const [showMeta, setShowMeta] = useState(false);
-    const onClickAlert = function() {
+    const onClickAlert = function () {
         setShowMeta(!showMeta);
     };
     return (

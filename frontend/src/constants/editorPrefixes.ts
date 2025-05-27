@@ -10,7 +10,7 @@ const attitudes: [string, string][] = [
     'pioneers',
     'settlers',
     'townplanners',
-].map(a => [a, '[<visibility>, <maturity>, <visibility2>, <maturity2>]']);
+].map((a) => [a, '[<visibility>, <maturity>, <visibility2>, <maturity2>]']);
 
 // type IterationItem = string[];
 const iterations: string[] = [

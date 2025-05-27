@@ -8,7 +8,8 @@ import {
 } from './LinkStrategiesInterfaces';
 
 export default class AnchorNoneEvolvedLinksStrategy
-    implements LinkExtractionStrategy {
+    implements LinkExtractionStrategy
+{
     private links: Link[];
     private mapElements: MapElements;
     private anchors: Anchor[];
@@ -20,17 +21,17 @@ export default class AnchorNoneEvolvedLinksStrategy
     }
     getLinks(): LinkResult {
         const links = this.links.filter(
-            li =>
-                this.anchors.find(i => i.name === li.start) &&
+            (li) =>
+                this.anchors.find((i) => i.name === li.start) &&
                 this.mapElements
                     .getEvolveElements()
-                    .find(i => i.name === li.end),
+                    .find((i) => i.name === li.end),
         );
 
         return {
             name: 'anchorNonEvolvedLinks',
             links: links,
-            startElements: this.anchors.map(a => a as MapElement),
+            startElements: this.anchors.map((a) => a as MapElement),
             endElements: this.mapElements.getEvolveElements(),
         };
     }

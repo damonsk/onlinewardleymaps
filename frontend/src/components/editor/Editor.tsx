@@ -62,7 +62,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
     const customAceEditorCompleter = (ed: { prefix: any; elements: any }) => {
         return {
-            getCompletions: function(
+            getCompletions: function (
                 _editor: any,
                 _session: any,
                 _pos: any,
@@ -93,8 +93,8 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
     const getHeight = () => {
         const winHeight = window.innerHeight;
-        const topNavHeight = document.getElementById('top-nav-wrapper')
-            ?.clientHeight;
+        const topNavHeight =
+            document.getElementById('top-nav-wrapper')?.clientHeight;
         const titleHeight = document.getElementById('title')?.clientHeight;
         return winHeight - (topNavHeight ?? 0) - (titleHeight ?? 0) + 35;
     };
@@ -147,21 +147,21 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
     useEffect(() => {
         const concatenatedUserComponents = mapComponents
-            .map(c => {
+            .map((c) => {
                 return c.name;
             })
             .concat(
-                mapAnchors.map(_ => {
+                mapAnchors.map((_) => {
                     return _.name;
                 }),
             )
             .concat(
-                mapSubMaps.map(_ => {
+                mapSubMaps.map((_) => {
                     return _.name;
                 }),
             )
             .concat(
-                mapMarkets.map(_ => {
+                mapMarkets.map((_) => {
                     return _.name;
                 }),
             );

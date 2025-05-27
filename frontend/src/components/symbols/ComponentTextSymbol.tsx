@@ -17,7 +17,9 @@ export interface ComponentTextSymbolProps {
     setShowTextField?: (value: React.SetStateAction<boolean>) => void;
 }
 
-const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = ({
+const ComponentTextSymbol: React.FunctionComponent<
+    ComponentTextSymbolProps
+> = ({
     id,
     x,
     y,

@@ -14,7 +14,7 @@ export default class MetaPositioner {
     for(id: string, metaText: string, defaultOffset: Offset): Offset {
         if (metaText.length > 0) {
             const meta: MetaItem[] = JSON.parse(metaText);
-            const itemToModify = meta.find(el => el.name === id);
+            const itemToModify = meta.find((el) => el.name === id);
             if (itemToModify !== undefined) {
                 return {
                     x: itemToModify.x,
@@ -35,10 +35,10 @@ export default class MetaPositioner {
     ): string {
         if (metaText.length > 0) {
             const meta: MetaItem[] = JSON.parse(metaText);
-            if (meta.find(el => el.name === id) === undefined) {
+            if (meta.find((el) => el.name === id) === undefined) {
                 meta.push({ name: id, x: moved.x, y: moved.y });
             }
-            const modifiedArray = meta.map(el => {
+            const modifiedArray = meta.map((el) => {
                 if (el.name === id) {
                     return { ...el, x: moved.x, y: moved.y };
                 }

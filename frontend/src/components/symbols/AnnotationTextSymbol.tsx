@@ -8,11 +8,9 @@ export interface AnnotationTextSymbolProps {
     styles: MapAnnotationTheme;
 }
 
-const AnnotationTextSymbol: React.FunctionComponent<AnnotationTextSymbolProps> = ({
-    id,
-    annotation,
-    styles,
-}) => {
+const AnnotationTextSymbol: React.FunctionComponent<
+    AnnotationTextSymbolProps
+> = ({ id, annotation, styles }) => {
     return (
         <tspan
             id={id}

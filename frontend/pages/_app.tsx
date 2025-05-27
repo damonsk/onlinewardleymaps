@@ -15,9 +15,8 @@ interface MyAppProps {
 }
 const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
     useEffect(() => {
-        const jssStyles = document.querySelector<HTMLStyleElement>(
-            '#jss-server-side',
-        );
+        const jssStyles =
+            document.querySelector<HTMLStyleElement>('#jss-server-side');
         if (jssStyles && jssStyles.parentNode) {
             jssStyles.parentNode.removeChild(jssStyles);
         }

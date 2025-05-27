@@ -40,15 +40,15 @@ export default class MapElements {
         pipelines: Pipeline[],
     ) {
         const { enableNewPipelines } = useFeatureSwitches();
-        this.mapComponents = components.flatMap(i =>
-            i.collection.map(c => ({ ...c, type: i.type })),
+        this.mapComponents = components.flatMap((i) =>
+            i.collection.map((c) => ({ ...c, type: i.type })),
         );
         this.evolved = evolved;
         this.pipelines = this.processPipelines(pipelines, this.mapComponents);
 
         if (enableNewPipelines) {
-            const getPipelineChildComponents = this.pipelines.flatMap(p =>
-                p.components.map(c => ({
+            const getPipelineChildComponents = this.pipelines.flatMap((p) =>
+                p.components.map((c) => ({
                     ...c,
                     type: 'component',
                     pseudoComponent: true,
@@ -57,7 +57,7 @@ export default class MapElements {
                 })),
             );
             this.mapComponents = this.mapComponents.concat(
-                getPipelineChildComponents.map(p => p as Component),
+                getPipelineChildComponents.map((p) => p as Component),
             );
         }
     }
@@ -67,8 +67,8 @@ export default class MapElements {
         components: Component[],
     ): Pipeline[] {
         if (pipelines === undefined) return [];
-        return pipelines.map(e => {
-            const component = components.find(el => el.name === e.name);
+        return pipelines.map((e) => {
+            const component = components.find((el) => el.name === e.name);
             if (component) {
                 e.visibility = component.visibility;
             } else {
@@ -83,8 +83,8 @@ export default class MapElements {
     }
 
     getEvolvedElements(): Component[] {
-        return this.getEvolveElements().map(el => {
-            const v = this.evolved.find(evd => evd.name === el.name);
+        return this.getEvolveElements().map((el) => {
+            const v = this.evolved.find((evd) => evd.name === el.name);
             if (!v) throw new Error(`Evolved element not found for ${el.name}`);
             return {
                 name: el.name,
@@ -106,10 +106,10 @@ export default class MapElements {
 
     getEvolveElements(): Component[] {
         if (this.evolved === undefined) return [];
-        return this.evolved.flatMap(e =>
+        return this.evolved.flatMap((e) =>
             this.mapComponents
-                .filter(el => el.name === e.name)
-                .map(i => ({
+                .filter((el) => el.name === e.name)
+                .map((i) => ({
                     ...i,
                     evolveMaturity: e.maturity,
                     evolving: true,
@@ -118,12 +118,12 @@ export default class MapElements {
     }
 
     getNoneEvolvingElements(): Component[] {
-        return this.mapComponents.filter(el => el.evolving === false);
+        return this.mapComponents.filter((el) => el.evolving === false);
     }
 
     getNoneEvolvedOrEvolvingElements(): Component[] {
         return this.mapComponents.filter(
-            el =>
+            (el) =>
                 (el.evolving === undefined || el.evolving === false) &&
                 (el.evolved === undefined || el.evolved === false),
         );
@@ -131,7 +131,7 @@ export default class MapElements {
 
     geEvolvedOrEvolvingElements(): Component[] {
         return this.mapComponents.filter(
-            el => el.evolving === true || el.evolved === true,
+            (el) => el.evolving === true || el.evolved === true,
         );
     }
 
@@ -146,13 +146,13 @@ export default class MapElements {
         const collection = noneEvolving
             .concat(evolvedElements)
             .concat(evolveElements)
-            .filter(c => !c.pseudoComponent);
+            .filter((c) => !c.pseudoComponent);
 
         if (this.pipelines === undefined) return collection;
 
-        return collection.map(e => ({
+        return collection.map((e) => ({
             ...e,
-            pipeline: this.pipelines.some(el => el.name === e.name),
+            pipeline: this.pipelines.some((el) => el.name === e.name),
         }));
     }
 }

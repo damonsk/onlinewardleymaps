@@ -25,23 +25,27 @@ export default class LinksBuilder {
         mapAnchors: any,
         showLinkedEvolved: boolean,
     ) {
-        const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] = showLinkedEvolved
-            ? [
-                  new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
-                  new EvolvedToNoneEvolvingLinksStrategy(mapLinks, mapElements),
-                  new NoneEvolvingToEvolvingLinksStrategy(
-                      mapLinks,
-                      mapElements,
-                  ),
-                  new BothEvolvedLinksStrategy(mapLinks, mapElements),
-                  new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
-                  new AnchorEvolvedLinksStrategy(
-                      mapLinks,
-                      mapElements,
-                      mapAnchors,
-                  ),
-              ]
-            : [];
+        const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
+            showLinkedEvolved
+                ? [
+                      new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
+                      new EvolvedToNoneEvolvingLinksStrategy(
+                          mapLinks,
+                          mapElements,
+                      ),
+                      new NoneEvolvingToEvolvingLinksStrategy(
+                          mapLinks,
+                          mapElements,
+                      ),
+                      new BothEvolvedLinksStrategy(mapLinks, mapElements),
+                      new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
+                      new AnchorEvolvedLinksStrategy(
+                          mapLinks,
+                          mapElements,
+                          mapAnchors,
+                      ),
+                  ]
+                : [];
 
         this.linkStrategies = linksThatAreEvolvingOfAnyKind.concat([
             new AllLinksStrategy(mapLinks, mapElements),
@@ -61,7 +65,7 @@ export default class LinksBuilder {
         elements: MapElement[],
         name: string,
     ): MapElement | undefined {
-        return elements.find(element => element.name === name);
+        return elements.find((element) => element.name === name);
     }
 
     private canSatisfyLink(
@@ -93,7 +97,7 @@ export default class LinksBuilder {
                 link: Link;
             }[];
         }[] = [];
-        this.linkStrategies.forEach(strategy => {
+        this.linkStrategies.forEach((strategy) => {
             const result: LinkResult = strategy.getLinks();
             const currentLinks: {
                 key: number;

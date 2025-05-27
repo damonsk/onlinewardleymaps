@@ -74,7 +74,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
         setMapIterations(newList);
     };
 
-    const deleteIterationClick = function() {
+    const deleteIterationClick = function () {
         const newList = [...mapIterations];
         newList.splice(currentIteration, 1);
         if (currentIteration > -1) {
@@ -94,7 +94,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
         setMapIterations(newList);
     };
 
-    const addIterationClick = function() {
+    const addIterationClick = function () {
         addIteration();
         if (currentIteration === -1) {
             setCurrentIteration(0);
@@ -115,7 +115,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
     };
 
     const handleBack = () => {
-        setCurrentIteration(prevActiveStep => prevActiveStep - 1);
+        setCurrentIteration((prevActiveStep) => prevActiveStep - 1);
     };
 
     const handleStep = (step: number) => () => {

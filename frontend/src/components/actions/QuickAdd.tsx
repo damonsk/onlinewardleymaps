@@ -195,7 +195,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                                         height: '40px',
                                     },
                                 }}
-                                onKeyPress={e => {
+                                onKeyPress={(e) => {
                                     if (e.key === 'Enter') addNewComponent();
                                 }}
                             />

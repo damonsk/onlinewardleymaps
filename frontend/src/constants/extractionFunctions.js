@@ -12,10 +12,7 @@ export const setNumber = (o, line, config) => {
 
 export const setRef = (o, line) => {
     if (line.indexOf('url(') !== -1) {
-        const extractedRef = line
-            .split('url(')[1]
-            .split(')')[0]
-            .trim();
+        const extractedRef = line.split('url(')[1].split(')')[0].trim();
         return Object.assign(o, { url: extractedRef });
     }
 };
@@ -45,16 +42,11 @@ export const setOccurances = (o, line) => {
     const positionData = [];
     if (line.replace(/\s/g, '').indexOf('[[') > -1) {
         const justOccurances =
-            '[' +
-            line
-                .replace(/\s/g, '')
-                .split('[[')[1]
-                .split(']]')[0] +
-            ']';
+            '[' + line.replace(/\s/g, '').split('[[')[1].split(']]')[0] + ']';
         const occurancesAsArray = justOccurances
             .replace(/\],\[/g, ']|[')
             .split('|');
-        occurancesAsArray.forEach(e => {
+        occurancesAsArray.forEach((e) => {
             positionData.push(extractLocation(e, defaultPosition));
         });
     } else if (line.indexOf('[') > -1 && line.indexOf(']') > -1) {
@@ -177,10 +169,7 @@ export const setHeightWidth = (o, line) => {
     if (!line.includes(']')) {
         return o;
     }
-    const [width, height] = line
-        .split(']')[1]
-        .trim()
-        .split(' ');
+    const [width, height] = line.split(']')[1].trim().split(' ');
 
     return Object.assign(o, { width, height });
 };
@@ -297,7 +286,7 @@ const ecosystemDecorator = (o, line) => {
 };
 
 export const decorators = (o, line) => {
-    [methodDecorator, marketDecorator, ecosystemDecorator].forEach(d =>
+    [methodDecorator, marketDecorator, ecosystemDecorator].forEach((d) =>
         merge(o, d(o, line)),
     );
     return o;
@@ -376,10 +365,6 @@ export const setName = (o, line, config) => {
 };
 
 export const setUrl = (o, line) => {
-    const path = line
-        .split('[')[1]
-        .trim()
-        .split(']')[0]
-        .trim();
+    const path = line.split('[')[1].trim().split(']')[0].trim();
     return Object.assign(o, { url: path });
 };

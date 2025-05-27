@@ -9,9 +9,9 @@ jest.mock('react', () => ({
 
 useContext.mockReturnValue({ enableNewPipelines: false });
 
-describe('Given Components Evolve', function() {
+describe('Given Components Evolve', function () {
     const mockContextValue = useContext();
-    test('When evolve text is supplied then convert output is correct', function() {
+    test('When evolve text is supplied then convert output is correct', function () {
         let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo 0.9';
         let result = new Converter(mockContextValue).parse(actual);
         const mergeables = [{ collection: result.elements, type: 'component' }];
@@ -24,7 +24,7 @@ describe('Given Components Evolve', function() {
         expect(evolved[0].evolveMaturity).toEqual(0.9);
     });
 
-    test('When evolve text is supplied with overriding label, ensure label is mutated', function() {
+    test('When evolve text is supplied with overriding label, ensure label is mutated', function () {
         let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo->Bar 0.9';
         let result = new Converter(mockContextValue).parse(actual);
         const mergeables = [{ collection: result.elements, type: 'component' }];
@@ -38,7 +38,7 @@ describe('Given Components Evolve', function() {
         expect(evolved[0].evolveMaturity).toEqual(0.9);
     });
 
-    test('When evolve text with label is supplied then convert output is correct', function() {
+    test('When evolve text with label is supplied then convert output is correct', function () {
         let actual =
             'component Foo [0.1, 0.1] label [66,99]' +
             '\n' +

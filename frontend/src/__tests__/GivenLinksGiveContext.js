@@ -8,8 +8,8 @@ jest.mock('react', () => ({
 
 useContext.mockReturnValue({});
 
-describe('Given Links can support context', function() {
-    test('When link is established, additional context can be supplied to be made visible on the map.', function() {
+describe('Given Links can support context', function () {
+    test('When link is established, additional context can be supplied to be made visible on the map.', function () {
         const mockContextValue = useContext();
         let actual =
             'component Foo [0.9, 0.1]' +

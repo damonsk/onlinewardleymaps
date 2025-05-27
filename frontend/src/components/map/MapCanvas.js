@@ -110,11 +110,11 @@ function MapCanvas(props) {
         );
     };
 
-    const handleMouseMove = event => {
+    const handleMouseMove = (event) => {
         setMousePosition({ x: event.x, y: event.y });
     };
 
-    const handleZoom = value => {
+    const handleZoom = (value) => {
         setScaleFactor(value.a);
     };
 
@@ -149,7 +149,7 @@ function MapCanvas(props) {
         mapPipelines,
     );
 
-    const newElementAt = function() {
+    const newElementAt = function () {
         const positionCalc = new PositionCalculator();
         const x = positionCalc.xToMaturity(
             mousePosition.x,
@@ -162,8 +162,8 @@ function MapCanvas(props) {
         setNewComponentContext({ x, y });
     };
 
-    var getElementByName = function(elements, name) {
-        var hasName = function(element) {
+    var getElementByName = function (elements, name) {
+        var hasName = function (element) {
             return element.name === name;
         };
         return elements.find(hasName);
@@ -175,7 +175,7 @@ function MapCanvas(props) {
         }
     }, [isModKeyPressed]);
 
-    const clicked = function(ctx) {
+    const clicked = function (ctx) {
         setHighlightLine(ctx.el.line);
         if (isModKeyPressed === false) return;
 
@@ -184,7 +184,9 @@ function MapCanvas(props) {
             { el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
         ];
         if (s.length === 2) {
-            mutateMapText(mapText + '\r\n' + s.map(r => r.el.name).join('->'));
+            mutateMapText(
+                mapText + '\r\n' + s.map((r) => r.el.name).join('->'),
+            );
             setMapElementsClicked([]);
         } else setMapElementsClicked(s);
     };
@@ -197,7 +199,7 @@ function MapCanvas(props) {
     );
     const links = useMemo(() => linksBuilder.build(), [linksBuilder]);
 
-    const asMethod = m =>
+    const asMethod = (m) =>
         Object.assign(
             {},
             {
@@ -210,14 +212,14 @@ function MapCanvas(props) {
 
     const decoratedComponentsMethods = mapElements
         .getMergedElements()
-        .filter(m => m.decorators && m.decorators.method)
-        .map(m => asMethod(m));
+        .filter((m) => m.decorators && m.decorators.method)
+        .map((m) => asMethod(m));
 
     const methods = mapMethods
-        .filter(m =>
+        .filter((m) =>
             getElementByName(mapElements.getNonEvolvedElements(), m.name),
         )
-        .map(m => {
+        .map((m) => {
             const el = getElementByName(
                 mapElements.getNonEvolvedElements(),
                 m.name,
@@ -332,7 +334,7 @@ function MapCanvas(props) {
                             })}
                         </g>
 
-                        {links.map(current => {
+                        {links.map((current) => {
                             return (
                                 <g id={current.name} key={current.name}>
                                     {current.links.map((l, i) => (
@@ -382,7 +384,7 @@ function MapCanvas(props) {
                                     mutateMapText={mutateMapText}
                                     mapStyleDefs={mapStyleDefs}
                                     setHighlightLine={setHighlightLine}
-                                    onClick={e => clicked({ el, e })}
+                                    onClick={(e) => clicked({ el, e })}
                                     scaleFactor={scaleFactor}
                                 />
                             ))}
@@ -411,7 +413,7 @@ function MapCanvas(props) {
                             {enableNewPipelines &&
                                 mapElements
                                     .getMapPipelines()
-                                    .filter(p => p.hidden == false)
+                                    .filter((p) => p.hidden == false)
                                     .map((p, i) => (
                                         <React.Fragment key={i}>
                                             {enableNewPipelines &&
@@ -480,7 +482,7 @@ function MapCanvas(props) {
                                             id={'element_circle_' + el.id}
                                             styles={mapStyleDefs.component}
                                             evolved={el.evolved}
-                                            onClick={e => clicked({ el, e })}
+                                            onClick={(e) => clicked({ el, e })}
                                         />
                                     )}
 
@@ -489,7 +491,7 @@ function MapCanvas(props) {
                                             id={'element_square_' + el.id}
                                             styles={mapStyleDefs.component}
                                             evolved={el.evolved}
-                                            onClick={e => clicked({ el, e })}
+                                            onClick={(e) => clicked({ el, e })}
                                         />
                                     )}
 
@@ -499,7 +501,7 @@ function MapCanvas(props) {
                                         <EcosystemSymbol
                                             id={'ecosystem_circle_' + el.id}
                                             styles={mapStyleDefs.component}
-                                            onClick={e => clicked({ el, e })}
+                                            onClick={(e) => clicked({ el, e })}
                                         />
                                     ) : null}
 
@@ -508,7 +510,7 @@ function MapCanvas(props) {
                                         <MarketSymbol
                                             id={'market_circle_' + el.id}
                                             styles={mapStyleDefs.component}
-                                            onClick={e => clicked({ el, e })}
+                                            onClick={(e) => clicked({ el, e })}
                                         />
                                     ) : null}
 
@@ -517,7 +519,7 @@ function MapCanvas(props) {
                                             id={'element_circle_' + el.id}
                                             styles={mapStyleDefs.submap}
                                             evolved={el.evolved}
-                                            onClick={e => clicked({ el, e })}
+                                            onClick={(e) => clicked({ el, e })}
                                             launchUrl={() => launchUrl(el.url)}
                                         />
                                     )}
@@ -578,7 +580,7 @@ function MapCanvas(props) {
                     <IconButton
                         id="wm-map-select"
                         aria-label={'Select'}
-                        onClick={event => handleChangeTool(event, TOOL_NONE)}
+                        onClick={(event) => handleChangeTool(event, TOOL_NONE)}
                         sx={
                             tool === TOOL_NONE
                                 ? SelectedIconButtonStyle
@@ -590,7 +592,7 @@ function MapCanvas(props) {
                     <IconButton
                         id="wm-map-pan"
                         aria-label={'Pan'}
-                        onClick={event => handleChangeTool(event, TOOL_PAN)}
+                        onClick={(event) => handleChangeTool(event, TOOL_PAN)}
                         sx={
                             tool === TOOL_PAN
                                 ? SelectedIconButtonStyle
@@ -607,7 +609,9 @@ function MapCanvas(props) {
                                 ? SelectedIconButtonStyle
                                 : IconButtonStyle
                         }
-                        onClick={event => handleChangeTool(event, TOOL_ZOOM_IN)}
+                        onClick={(event) =>
+                            handleChangeTool(event, TOOL_ZOOM_IN)
+                        }
                     >
                         <ZoomInIcon />
                     </IconButton>
@@ -619,7 +623,7 @@ function MapCanvas(props) {
                                 ? SelectedIconButtonStyle
                                 : IconButtonStyle
                         }
-                        onClick={event =>
+                        onClick={(event) =>
                             handleChangeTool(event, TOOL_ZOOM_OUT)
                         }
                     >

@@ -85,7 +85,7 @@ export default function CanvasSpeedDial(props: CanvasSpeedDialProps) {
                     icon={<SpeedDialIcon />}
                     direction="left"
                 >
-                    {actions.map(action => (
+                    {actions.map((action) => (
                         <SpeedDialAction
                             key={action.name}
                             icon={action.icon}

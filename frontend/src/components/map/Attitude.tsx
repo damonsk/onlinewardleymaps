@@ -31,7 +31,7 @@ interface MovedPosition {
     y: number;
 }
 
-const Attitude: React.FC<AttitudeProps> = props => {
+const Attitude: React.FC<AttitudeProps> = (props) => {
     const { attitude, mapDimensions } = props;
     const { height, width } = mapDimensions;
     const type = attitude.attitude;

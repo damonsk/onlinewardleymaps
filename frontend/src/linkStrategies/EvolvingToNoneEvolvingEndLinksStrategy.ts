@@ -6,7 +6,8 @@ import {
 } from './LinkStrategiesInterfaces';
 
 export default class EvolvingToNoneEvolvingEndLinksStrategy
-    implements LinkExtractionStrategy {
+    implements LinkExtractionStrategy
+{
     private links: Link[];
     private mapElements: MapElements;
 
@@ -16,13 +17,13 @@ export default class EvolvingToNoneEvolvingEndLinksStrategy
     }
     getLinks(): LinkResult {
         const links = this.links.filter(
-            li =>
+            (li) =>
                 this.mapElements
                     .getEvolveElements()
-                    .find(i => i.name === li.start) &&
+                    .find((i) => i.name === li.start) &&
                 this.mapElements
                     .getNoneEvolvingElements()
-                    .find(i => i.name === li.end),
+                    .find((i) => i.name === li.end),
         );
         return {
             name: 'evolvingToNoneEvolvingEndLinks',

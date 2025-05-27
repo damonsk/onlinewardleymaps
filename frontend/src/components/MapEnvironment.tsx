@@ -57,7 +57,7 @@ function debounce<T extends (...args: any[]) => void>(
 ): (...args: Parameters<T>) => void {
     let timer: NodeJS.Timeout | null;
 
-    return function(this: any, ...args: Parameters<T>): void {
+    return function (this: any, ...args: Parameters<T>): void {
         clearTimeout(timer!);
         timer = setTimeout(() => {
             timer = null;
@@ -68,8 +68,8 @@ function debounce<T extends (...args: any[]) => void>(
 
 const getHeight = () => {
     const winHeight = window.innerHeight;
-    const topNavHeight = document.getElementById('top-nav-wrapper')
-        ?.clientHeight;
+    const topNavHeight =
+        document.getElementById('top-nav-wrapper')?.clientHeight;
     const titleHeight = document.getElementById('title')?.clientHeight;
     return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 95;
 };
@@ -129,18 +129,15 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     const [mapMethods, setMapMethods] = useState<MapMethods[]>([]);
     const [invalid, setInvalid] = useState(false);
     const [newComponentContext, setNewComponentContext] = useState(null);
-    const [
-        mapAnnotationsPresentation,
-        setMapAnnotationsPresentation,
-    ] = useState<MapAnnotationsPosition>({ maturity: 0, visibility: 0 });
+    const [mapAnnotationsPresentation, setMapAnnotationsPresentation] =
+        useState<MapAnnotationsPosition>({ maturity: 0, visibility: 0 });
     const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
     const [mapCanvasDimensions, setMapCanvasDimensions] = useState(
         Defaults.MapDimensions,
     );
     const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
-    const [mapEvolutionStates, setMapEvolutionStates] = useState<
-        Defaults.EvolutionStages
-    >(Defaults.EvolutionStages);
+    const [mapEvolutionStates, setMapEvolutionStates] =
+        useState<Defaults.EvolutionStages>(Defaults.EvolutionStages);
     const [mapSize, setMapSize] = useState<MapSize>({ width: 0, height: 0 });
     const [mapStyle, setMapStyle] = useState('plain');
     const [mapStyleDefs, setMapStyleDefs] = useState<MapTheme>(MapStyles.Plain);
@@ -169,7 +166,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     };
 
     const launchUrl = (urlId: string) => {
-        const mapUrl = mapUrls.find(u => u.name === urlId);
+        const mapUrl = mapUrls.find((u) => u.name === urlId);
         if (mapUrl) {
             window.open(mapUrl.url);
         }
@@ -179,7 +176,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         setShowUsage(!showUsage);
     };
 
-    const saveToRemoteStorage = async function(hash: string) {
+    const saveToRemoteStorage = async function (hash: string) {
         setActionInProgress(true);
         const mapToPersist: OwnApiWardleyMap = {
             mapText,
@@ -188,7 +185,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             readOnly: false,
         };
 
-        const followOnActions = async function(id: string) {
+        const followOnActions = async function (id: string) {
             if (currentId === '') {
                 console.log('[followOnActions::switch]', {
                     mapPersistenceStrategy,
@@ -220,7 +217,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         );
     };
 
-    const loadFromRemoteStorage = async function() {
+    const loadFromRemoteStorage = async function () {
         const followOnActions = (
             mapPersistenceStrategy: string,
             map: OwnApiWardleyMap,
@@ -279,15 +276,15 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
     function downloadMap() {
         if (mapRef.current === null) return;
-        const svgMapText = mapRef.current.getElementsByTagName('svg')[0]
-            .outerHTML;
+        const svgMapText =
+            mapRef.current.getElementsByTagName('svg')[0].outerHTML;
         const tempElement = document.createElement('div');
         tempElement.innerHTML = svgMapText;
         tempElement.style.position = 'absolute';
         tempElement.style.left = '-9999px';
         document.body.appendChild(tempElement);
         html2canvas(tempElement, { useCORS: true, allowTaint: true })
-            .then(canvas => {
+            .then((canvas) => {
                 const base64image = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.download = mapTitle;
@@ -296,7 +293,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 tempElement.remove();
             })
             // eslint-disable-next-line
-            .catch(_ => {
+            .catch((_) => {
                 tempElement.remove();
             });
     }
@@ -379,7 +376,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 },
             });
             if (r.errors.length > 0) {
-                setErrorLine(r.errors.map(e => e.line));
+                setErrorLine(r.errors.map((e) => e.line));
             }
         } catch (err) {
             console.log('Error:', err);
@@ -652,7 +649,10 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             />
 
             <Backdrop
-                sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
+                sx={{
+                    color: '#fff',
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
                 open={actionInProgress}
             >
                 <CircularProgress color="inherit" />

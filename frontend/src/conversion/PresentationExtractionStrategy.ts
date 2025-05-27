@@ -36,13 +36,11 @@ export default class PresentationExtractionStrategy {
                 presentationObject.style = name;
             }
             if (element.trim().indexOf('annotations ') === 0) {
-                presentationObject.annotations = ExtractionFunctions.extractLocation(
-                    element,
-                    {
+                presentationObject.annotations =
+                    ExtractionFunctions.extractLocation(element, {
                         visibility: 0.9,
                         maturity: 0.1,
-                    },
-                );
+                    });
             }
             if (element.trim().indexOf('size ') === 0) {
                 presentationObject.size = ExtractionFunctions.extractSize(

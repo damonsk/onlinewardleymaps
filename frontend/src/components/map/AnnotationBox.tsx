@@ -71,9 +71,9 @@ function AnnotationElement(props: AnnotationElementProps) {
         const elem = document.getElementById('annotationsBoxWrap');
         if (elem !== null) elem.parentNode?.removeChild(elem);
 
-        const ctx = (document.getElementById(
+        const ctx = document.getElementById(
                 'movable_annotationsBox',
-            ) as unknown) as SVGGraphicsElement,
+            ) as unknown as SVGGraphicsElement,
             SVGRect = ctx.getBBox(),
             rect = document.createElementNS(
                 'http://www.w3.org/2000/svg',

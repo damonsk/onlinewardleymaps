@@ -7,7 +7,8 @@ import {
 } from './LinkStrategiesInterfaces';
 
 export default class AnchorEvolvedLinksStrategy
-    implements LinkExtractionStrategy {
+    implements LinkExtractionStrategy
+{
     private links: Link[];
     private mapElements: MapElements;
     private anchors: Anchor[];
@@ -19,11 +20,11 @@ export default class AnchorEvolvedLinksStrategy
     }
     getLinks(): LinkStrategy {
         const links = this.links.filter(
-            li =>
-                this.anchors.find(i => i.name === li.start) &&
+            (li) =>
+                this.anchors.find((i) => i.name === li.start) &&
                 this.mapElements
                     .getEvolvedElements()
-                    .filter(i => i.name === li.end),
+                    .filter((i) => i.name === li.end),
         );
 
         return {

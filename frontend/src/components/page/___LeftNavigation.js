@@ -19,13 +19,13 @@ export default function LeftNavigation({
     isLightTheme,
 }) {
     const history = {
-        push: url => {
+        push: (url) => {
             Router.push({
                 pathname: url,
             });
         },
     };
-    const toggleDrawer = () => event => {
+    const toggleDrawer = () => (event) => {
         if (
             event.type === 'keydown' &&
             (event.key === 'Tab' || event.key === 'Shift')
@@ -35,7 +35,7 @@ export default function LeftNavigation({
         toggleMenu();
     };
 
-    const complete = followAction => {
+    const complete = (followAction) => {
         toggleMenu();
         if (typeof followAction === 'function') followAction();
     };
@@ -65,8 +65,8 @@ export default function LeftNavigation({
         >
             <List>
                 {siteLinks
-                    .filter(i => i.visible === true)
-                    .map(l => (
+                    .filter((i) => i.visible === true)
+                    .map((l) => (
                         <ListItem button key={l.name} onClick={l.action}>
                             <ListItemIcon>{l.icon}</ListItemIcon>
                             <ListItemText primary={l.name} />
@@ -76,7 +76,7 @@ export default function LeftNavigation({
             <Divider />
             <List>
                 {submenu &&
-                    submenu.map(l => (
+                    submenu.map((l) => (
                         <ListItem
                             button
                             key={l.name}

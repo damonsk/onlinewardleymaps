@@ -8,10 +8,9 @@ interface FeatureSwitchesProviderProps {
 
 const FeatureSwitchesContext = createContext<any>(null);
 
-export const FeatureSwitchesProvider: React.FC<FeatureSwitchesProviderProps> = ({
-    children,
-    value,
-}) => (
+export const FeatureSwitchesProvider: React.FC<
+    FeatureSwitchesProviderProps
+> = ({ children, value }) => (
     <FeatureSwitchesContext.Provider value={value}>
         {children}
     </FeatureSwitchesContext.Provider>

@@ -11,7 +11,7 @@ interface MapProps {
     isLightTheme: boolean;
 }
 
-const Map: React.FC<MapProps> = props => {
+const Map: React.FC<MapProps> = (props) => {
     const router = useRouter();
     const { slug } = router.query;
     const [currentId, setCurrentId] = useState('');

@@ -125,7 +125,7 @@ export default class Converter {
             title: '',
             errors: [],
         };
-        strategies.forEach(strategy => {
+        strategies.forEach((strategy) => {
             const strategyResult = strategy.apply();
             wardleyMap = Object.assign(wardleyMap, strategyResult);
             if (strategyResult.errors && strategyResult.errors.length > 0)
@@ -137,7 +137,7 @@ export default class Converter {
     }
 
     stripComments(data: string) {
-        const doubleSlashRemoved = data.split('\n').map(line => {
+        const doubleSlashRemoved = data.split('\n').map((line) => {
             if (line.trim().indexOf('url') === 0) {
                 return line;
             }

@@ -7,7 +7,8 @@ import { IProvideBaseStrategyRunnerConfig } from './BaseStrategyRunnerConfig';
 import { IParseStrategy } from './IParseStrategy';
 
 export default class ExtendableComponentExtractionStrategy
-    implements IParseStrategy {
+    implements IParseStrategy
+{
     data: string;
     keyword: string;
     containerName: string;

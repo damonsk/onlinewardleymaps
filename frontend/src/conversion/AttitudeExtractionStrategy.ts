@@ -16,7 +16,7 @@ export default class AttitudeExtractionStrategy implements IParseStrategy {
         this.containerName = 'attitudes';
         this.baseStrategies = ['pioneers', 'settlers', 'townplanners']
             .map(
-                e =>
+                (e) =>
                     new BaseStrategyRunner(
                         data,
                         {
@@ -31,9 +31,9 @@ export default class AttitudeExtractionStrategy implements IParseStrategy {
     }
 
     apply() {
-        const output = this.baseStrategies.map(bs => bs.apply()).flat();
+        const output = this.baseStrategies.map((bs) => bs.apply()).flat();
         return {
-            [this.containerName]: output.map(o => o.attitudes).flat(),
+            [this.containerName]: output.map((o) => o.attitudes).flat(),
             errors: [],
         };
     }

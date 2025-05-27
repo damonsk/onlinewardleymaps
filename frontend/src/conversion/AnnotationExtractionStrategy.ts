@@ -28,7 +28,7 @@ export default class AnnotationExtractionStrategy implements IParseStrategy {
     apply() {
         const result = this.baseRunner.apply();
         const unpack = result[this.containerName];
-        const returnables = unpack.filter(a => a.occurances.length > 0);
+        const returnables = unpack.filter((a) => a.occurances.length > 0);
         return { [this.containerName]: returnables, errors: [] };
     }
 }
