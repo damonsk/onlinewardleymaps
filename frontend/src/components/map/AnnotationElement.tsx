@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { MapTheme } from '../../constants/mapstyles';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 import Movable from './Movable';
