@@ -16,9 +16,9 @@ export function MapSVGContainer({
     showMiniMap,
     mapStyleDefs,
     onDoubleClick,
-    onMouseMove,
     onZoom,
     onZoomReset,
+    onMouseMove,
     children,
 }) {
     const styles = useStyles();

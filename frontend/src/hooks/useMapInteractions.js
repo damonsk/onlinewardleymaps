@@ -9,9 +9,9 @@ export function useMapInteractions({
     setHighlightLine,
     setNewComponentContext,
     mapDimensions,
+    mousePosition, // Add mousePosition as a parameter instead of managing it internally
 }) {
     const [mapElementsClicked, setMapElementsClicked] = useState([]);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [tool, setTool] = useState(TOOL_NONE);
     const [scaleFactor, setScaleFactor] = useState(1);
 
@@ -20,10 +20,6 @@ export function useMapInteractions({
             setMapElementsClicked([]);
         }
     }, [isModKeyPressed]);
-
-    const handleMouseMove = (event) => {
-        setMousePosition({ x: event.x, y: event.y });
-    };
 
     const handleZoom = (value) => {
         setScaleFactor(value.a);
@@ -64,10 +60,8 @@ export function useMapInteractions({
 
     return {
         mapElementsClicked,
-        mousePosition,
         tool,
         scaleFactor,
-        handleMouseMove,
         handleZoom,
         handleChangeTool,
         newElementAt,
