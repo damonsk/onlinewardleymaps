@@ -1,6 +1,6 @@
-import Converter from '../conversion/Converter';
-import { EditorPrefixes } from '../constants/editorPrefixes';
 import { useContext } from 'react';
+import { EditorPrefixes } from '../constants/editorPrefixes';
+import Converter from '../conversion/Converter';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
