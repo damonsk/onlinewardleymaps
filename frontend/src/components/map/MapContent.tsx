@@ -114,11 +114,6 @@ const MapContent: React.FC<MapContentProps> = ({
         [mapMethods, mapElements],
     );
 
-    const els = mapElements.getEvolveElements();
-
-    const mapElementsMerged = mapElements.getMergedElements();
-    console.log('MapContent: mapElementsMerged', mapElementsMerged);
-
     return (
         <g id="map">
             <g id="attitudes">
@@ -179,19 +174,30 @@ const MapContent: React.FC<MapContentProps> = ({
             ))}
 
             <g id="evolvedLinks">
-                {els.map(
-                    (e: Component, i: number) =>
-                        getElementByName(els, e.name) && (
-                            <EvolvingComponentLink
-                                key={i}
-                                mapStyleDefs={mapStyleDefs}
-                                mapDimensions={mapDimensions}
-                                startElement={getElementByName(els, e.name)}
-                                endElement={getElementByName(els, e.name)}
-                                evolutionOffsets={evolutionOffsets}
-                            />
-                        ),
-                )}
+                {mapElements
+                    .getEvolveElements()
+                    .map(
+                        (e: Component, i: number) =>
+                            getElementByName(
+                                mapElements.getEvolveElements(),
+                                e.name,
+                            ) && (
+                                <EvolvingComponentLink
+                                    key={i}
+                                    mapStyleDefs={mapStyleDefs}
+                                    mapDimensions={mapDimensions}
+                                    startElement={getElementByName(
+                                        mapElements.getEvolveElements(),
+                                        e.name,
+                                    )}
+                                    endElement={getElementByName(
+                                        mapElements.getEvolveElements(),
+                                        e.name,
+                                    )}
+                                    evolutionOffsets={evolutionOffsets}
+                                />
+                            ),
+                    )}
             </g>
 
             <g id="anchors">
@@ -243,7 +249,7 @@ const MapContent: React.FC<MapContentProps> = ({
             />
 
             <g id="elements">
-                {mapElementsMerged.map((el: Component, i) => (
+                {mapElements.getMergedElements().map((el: Component, i) => (
                     <MapComponent
                         key={i}
                         keyword={el.type}
