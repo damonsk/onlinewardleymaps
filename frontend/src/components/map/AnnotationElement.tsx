@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { MapTheme } from '../../constants/mapstyles';
-import { MapAnnotation } from '../../conversion/Converter';
+import { MapAnnotation, MapAnnotations } from '../../conversion/Converter';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
@@ -10,7 +10,8 @@ interface MapDimensions {
     height: number;
 }
 interface AnnotationElementProps {
-    annotation: MapAnnotation;
+    occurance: MapAnnotation;
+    annotation: MapAnnotations;
     mapDimensions: MapDimensions;
     mutateMapText: (text: string) => void;
     mapText: string;
@@ -28,12 +29,12 @@ function AnnotationElement(props: AnnotationElementProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const x = (): number =>
         positionCalc.maturityToX(
-            props.annotation.maturity,
+            props.occurance.maturity,
             props.mapDimensions.width,
         );
     const y = (): number =>
         positionCalc.visibilityToY(
-            props.annotation.visibility,
+            props.occurance.visibility,
             props.mapDimensions.height,
         );
 
@@ -103,7 +104,7 @@ function AnnotationElement(props: AnnotationElementProps): JSX.Element {
                 .join('\n'),
         );
     }
-
+    console.log('AnnotationElement::render', props.occurance);
     return (
         <Movable
             id={'annotation_element_' + props.annotation.number}

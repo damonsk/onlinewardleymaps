@@ -1,15 +1,16 @@
 import React, { memo } from 'react';
 import { MapAnnotationTheme } from '../../constants/mapstyles';
-import { MapAnnotation } from '../../conversion/Converter';
+import { MapAnnotations } from '../../conversion/Converter';
 
 export interface AnnotationElementSymbolProps {
     id?: string;
-    annotation: MapAnnotation;
+    annotation: MapAnnotations;
     styles: MapAnnotationTheme;
 }
 const AnnotationElementSymbol: React.FunctionComponent<
     AnnotationElementSymbolProps
 > = ({ annotation, styles }) => {
+    console.log('AnnotationElementSymbol', annotation);
     return (
         <>
             <circle

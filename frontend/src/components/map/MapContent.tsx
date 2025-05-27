@@ -338,11 +338,12 @@ const MapContent: React.FC<MapContentProps> = ({
                 {mapAnnotations &&
                     mapAnnotations.map((a, i) => (
                         <React.Fragment key={i}>
-                            {a.occurances.map((o, i1) => (
+                            {a.occurances.map((occurance, i1) => (
                                 <AnnotationElement
                                     mapStyleDefs={mapStyleDefs}
                                     key={'mapAnnotation_' + i + '_' + i1}
-                                    annotation={o}
+                                    occurance={occurance}
+                                    annotation={a}
                                     occuranceIndex={i}
                                     mapDimensions={mapDimensions}
                                     mutateMapText={mutateMapText}
