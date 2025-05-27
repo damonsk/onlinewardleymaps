@@ -6,7 +6,6 @@ import { MapPersistenceStrategy } from '../src/constants/defaults';
 interface MapProps {
     toggleTheme: () => void;
     toggleMenu: () => void;
-    signOut: () => void;
     menuVisible: boolean;
     isLightTheme: boolean;
 }

@@ -56,7 +56,6 @@ export default class MapElements {
     ) {
         const { enableNewPipelines } = useFeatureSwitches();
         this.mapComponents = components.flatMap((i) => {
-            console.log(i);
             return i.collection.map((c) => ({ ...c, type: i.type }));
         });
         this.evolved = evolved;

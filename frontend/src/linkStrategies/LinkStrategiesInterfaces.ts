@@ -1,3 +1,4 @@
+import { ComponentLabel } from '../conversion/Converter';
 import { ComponentDectorator } from '../MapElements';
 
 export interface Link {
@@ -17,7 +18,7 @@ export interface MapElement {
     evolved?: boolean;
     pseudoComponent?: boolean;
     offsetY?: number;
-    label?: string;
+    label: ComponentLabel;
     override?: any;
     line?: any;
     decorators: ComponentDectorator;
