@@ -1,4 +1,34 @@
 /* eslint-disable */
+import * as ace from 'ace-builds';
+
+interface Mode {
+    HighlightRules: any;
+    lineCommentStart?: string;
+    blockComment?: { start: string; end: string };
+}
+
+interface TextMode {
+    Mode: Mode;
+}
+
+interface TextHighlightRules {
+    $rules: {
+        [key: string]: Array<{
+            token: string | string[];
+            regex: string;
+            next?: string;
+            caseInsensitive?: boolean;
+            defaultToken?: string;
+        }>;
+    };
+}
+
+interface DocCommentHighlightRules extends TextHighlightRules {
+    getTagRule(): { token: string; regex: string };
+    getStartRule(start: string): { token: string; regex: string; next: string };
+    getEndRule(start: string): { token: string; regex: string; next: string };
+}
+
 ace.define(
     'ace/mode/owm',
     [
@@ -10,12 +40,12 @@ ace.define(
         'ace/mode/owm_highlight_rules',
     ],
     function (require, exports, module) {
-        var oop = require('../lib/oop');
-        var TextMode = require('./text').Mode;
-        var OwmHighlightRules =
+        const oop = require('../lib/oop');
+        const TextMode = require('./text').Mode;
+        const OwmHighlightRules =
             require('./owm_highlight_rules').OwmHighlightRules;
 
-        var Mode = function () {
+        const Mode = function (this: Mode) {
             this.HighlightRules = OwmHighlightRules;
         };
         oop.inherits(Mode, TextMode);
@@ -36,14 +66,16 @@ ace.define(
         'exports',
         'module',
         'ace/lib/oop',
-        'ace/mode/owm_highlight_rules',
+        'ace/mode/text_highlight_rules',
     ],
     function (require, exports, module) {
-        var oop = require('../lib/oop');
-        var TextHighlightRules =
+        const oop = require('../lib/oop');
+        const TextHighlightRules =
             require('./text_highlight_rules').TextHighlightRules;
 
-        var DocCommentHighlightRules = function () {
+        const DocCommentHighlightRules = function (
+            this: DocCommentHighlightRules,
+        ) {
             this.$rules = {
                 start: [
                     {
@@ -84,7 +116,7 @@ ace.define(
             };
         };
 
-        var OwmHighlightRules = function () {
+        const OwmHighlightRules = function (this: TextHighlightRules) {
             this.$rules = {
                 start: [
                     {

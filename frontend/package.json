@@ -84,7 +84,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint .",
+        "lint": "prettier --write .",
         "format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
         "precommit": "yarn run format-staged && yarn test",
         "package": "rollup -c",
