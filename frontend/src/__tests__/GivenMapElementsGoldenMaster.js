@@ -2,9 +2,9 @@
 const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
+import { useContext } from 'react';
 import MapElements from '../MapElements';
 import Converter from '../conversion/Converter';
-import { useContext } from 'react';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -40,7 +40,7 @@ describe('So that large refactors can be done without breaking output of mapElem
         const fileContent = loadFileContent(fileName);
 
         let result = new Converter(mockContextValue).parse(fileContent);
-        //console.log(JSON.stringify(result)); // Uncomment for debugging
+        console.log(JSON.stringify(result)); // Uncomment for debugging
         testResultEquality(result, 'GoldenMasterConverterOutput.txt');
 
         const mergeables = [{ collection: result.elements, type: 'component' }];

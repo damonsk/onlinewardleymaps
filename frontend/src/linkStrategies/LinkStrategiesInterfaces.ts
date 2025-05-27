@@ -22,7 +22,7 @@ export interface MapElement {
     override?: any;
     line?: any;
     decorators: ComponentDectorator;
-    increaseLabelSpacing?: boolean;
+    increaseLabelSpacing?: number;
 }
 
 export interface LinkExtractionStrategy {

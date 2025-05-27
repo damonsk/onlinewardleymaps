@@ -32,7 +32,6 @@ export interface ComponentDectorator {
     ecosystem?: boolean;
     market?: boolean;
     method?: string;
-    // [key: string]: boolean | undefined;
 }
 
 export interface EvolvedElement {
@@ -42,7 +41,7 @@ export interface EvolvedElement {
     override?: Record<string, unknown>;
     line?: number;
     decorators: ComponentDectorator;
-    increaseLabelSpacing: boolean;
+    increaseLabelSpacing: number;
 }
 
 export default class MapElements {
@@ -160,11 +159,6 @@ export default class MapElements {
     }
 
     getMergedElements(): Component[] {
-        console.log('getMergedElements called', [
-            this.mapComponents,
-            this.evolved,
-            this.pipelines,
-        ]);
         const evolveElements = this.getEvolveElements();
         const noneEvolving = this.getNoneEvolvingElements();
         const evolvedElements = this.getEvolvedElements();
