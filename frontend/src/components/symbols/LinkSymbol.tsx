@@ -1,5 +1,14 @@
 import React, { memo } from 'react';
 
+interface LinkStyles {
+    evolvedStroke: string;
+    stroke: string;
+    evolvedStrokeWidth: number;
+    strokeWidth: number;
+    flowStrokeWidth: number;
+    flow: string;
+}
+
 interface LinkSymbolProps {
     id?: string;
     x1: string | number;
@@ -10,16 +19,18 @@ interface LinkSymbolProps {
     evolved?: boolean;
     strokeDasharray?: string;
     markerStart?: string;
-    styles: {
-        evolvedStroke: string;
-        stroke: string;
-        evolvedStrokeWidth: number;
-        strokeWidth: number;
-        flowStrokeWidth: number;
-        flow: string;
-    };
+    styles?: Partial<LinkStyles>;
     filter?: string;
 }
+
+const defaultStyles: LinkStyles = {
+    evolvedStroke: '#000000',
+    stroke: '#000000',
+    evolvedStrokeWidth: 2,
+    strokeWidth: 1,
+    flowStrokeWidth: 1,
+    flow: 'none',
+};
 
 const LinkSymbol: React.FC<LinkSymbolProps> = ({
     id,
@@ -31,13 +42,15 @@ const LinkSymbol: React.FC<LinkSymbolProps> = ({
     evolved,
     strokeDasharray,
     markerStart,
-    styles,
+    styles = {},
     filter,
 }) => {
-    const stroke = evolved ? styles.evolvedStroke : styles.stroke;
+    const finalStyles = { ...defaultStyles, ...styles };
+    const stroke = evolved ? finalStyles.evolvedStroke : finalStyles.stroke;
     const strokeWidth = evolved
-        ? styles.evolvedStrokeWidth
-        : styles.strokeWidth;
+        ? finalStyles.evolvedStrokeWidth
+        : finalStyles.strokeWidth;
+
     return (
         <g id={id}>
             <line
@@ -57,8 +70,8 @@ const LinkSymbol: React.FC<LinkSymbolProps> = ({
                     y1={y1}
                     x2={x2}
                     y2={y2}
-                    strokeWidth={styles.flowStrokeWidth}
-                    stroke={styles.flow}
+                    strokeWidth={finalStyles.flowStrokeWidth}
+                    stroke={finalStyles.flow}
                 />
             )}
         </g>

@@ -5,6 +5,20 @@ export interface Link {
 
 export interface MapElement {
     name: string;
+    id: string;
+    visibility: string | number; // Make this accept both string and number since both seem to be used
+    type: string;
+    evolveMaturity?: number;
+    maturity?: number; // Add this for evolved elements
+    evolving?: boolean;
+    evolved?: boolean;
+    pseudoComponent?: boolean;
+    offsetY?: number;
+    label?: string; // From EvolvedElement
+    override?: any;
+    line?: any;
+    decorators?: any;
+    increaseLabelSpacing?: boolean;
 }
 
 export interface LinkExtractionStrategy {

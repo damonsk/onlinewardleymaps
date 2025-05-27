@@ -1,7 +1,10 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
-import { Component } from '../../MapElements';
+import {
+    Link,
+    MapElement,
+} from '../../linkStrategies/LinkStrategiesInterfaces';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import FlowText from './FlowText';
@@ -10,13 +13,14 @@ import PositionCalculator from './PositionCalculator';
 interface ComponentLinkProps {
     mapStyleDefs: MapTheme;
     mapDimensions: MapDimensions;
-    startElement: Component;
-    endElement: Component;
-    link: {
+    startElement: MapElement;
+    endElement: MapElement;
+    link: Link & {
         flow?: boolean;
         future?: boolean;
         past?: boolean;
         context?: string;
+        flowValue?: string;
     };
     setMetaText: (text: string) => void;
     metaText: string;
@@ -29,41 +33,39 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
     startElement,
     endElement,
     link,
+    setMetaText,
+    metaText,
+    scaleFactor,
 }) => {
     const { enableLinkContext } = useFeatureSwitches();
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
-    const x1 = positionCalc.maturityToX(startElement.maturity, width);
-    const x2 = positionCalc.maturityToX(endElement.maturity, width);
-    const y1 =
-        positionCalc.visibilityToY(startElement.visibility, height) +
-        (startElement.offsetY ? startElement.offsetY : 0);
-    const y2 =
-        positionCalc.visibilityToY(endElement.visibility, height) +
-        (endElement.offsetY ? endElement.offsetY : 0);
-
+    const isFlow = link.flow !== false;
     const isEvolved = startElement.evolved || endElement.evolved;
-    const isFlow =
-        link.flow &&
-        (link.future === link.past || // both
-            (link.past === true &&
-                endElement.evolving === false &&
-                startElement.evolving === true) ||
-            (link.past === true &&
-                endElement.evolving === true &&
-                startElement.evolving === false) ||
-            (link.future === true && startElement.evolving === true) ||
-            (link.future === true && startElement.evolved === true) ||
-            (link.future === true && endElement.evolved === true));
 
-    const getAngle = (
-        x1: number,
-        y1: number,
-        x2: number,
-        y2: number,
-    ): number => {
-        return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-    };
+    const startMaturity =
+        startElement.maturity ?? startElement.evolveMaturity ?? 0;
+
+    const endMaturity = endElement.maturity ?? endElement.evolveMaturity ?? 0;
+
+    const x1 = positionCalc.maturityToX(startMaturity, width);
+    const x2 = positionCalc.maturityToX(endMaturity, width);
+
+    const y1 =
+        positionCalc.visibilityToY(
+            typeof startElement.visibility === 'string'
+                ? parseFloat(startElement.visibility)
+                : startElement.visibility,
+            height,
+        ) + (startElement.offsetY ?? 0);
+
+    const y2 =
+        positionCalc.visibilityToY(
+            typeof endElement.visibility === 'string'
+                ? parseFloat(endElement.visibility)
+                : endElement.visibility,
+            height,
+        ) + (endElement.offsetY ?? 0);
 
     const centerX = (x1 + x2) / 2;
     const centerY = (y1 + y2) / 2;
@@ -91,18 +93,18 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
                     startElement={startElement}
                     endElement={endElement}
                     link={link}
-                    metaText={props.metaText}
-                    setMetaText={props.setMetaText}
+                    metaText={metaText}
+                    setMetaText={setMetaText}
                     x={x2}
                     y={y2}
-                    scaleFactor={props.scaleFactor}
+                    scaleFactor={scaleFactor}
                 />
             )}
             {enableLinkContext && link.context && (
                 <text
-                    is="custom"
-                    font-size={mapStyleDefs.link.contextFontSize ?? '10px'}
-                    text-anchor={'middle'}
+                    className="link-context"
+                    fontSize={mapStyleDefs.link?.contextFontSize ?? '10px'}
+                    textAnchor="middle"
                     x={centerX}
                     y={centerY - buffer}
                     transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}
@@ -112,6 +114,10 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
             )}
         </>
     );
+};
+
+const getAngle = (x1: number, y1: number, x2: number, y2: number) => {
+    return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
 };
 
 export default ComponentLink;

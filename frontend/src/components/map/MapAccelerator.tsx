@@ -22,6 +22,7 @@ interface MapAcceleratorProps {
     mapText: string;
     mutateMapText: (text: string) => void;
     children: React.ReactNode;
+    scaleFactor: number;
 }
 
 const MapAccelerator: React.FC<MapAcceleratorProps> = ({
@@ -30,6 +31,7 @@ const MapAccelerator: React.FC<MapAcceleratorProps> = ({
     mapText,
     mutateMapText,
     children,
+    scaleFactor,
 }) => {
     const positionCalc = new PositionCalculator();
     const x = positionCalc.maturityToX(element.maturity, mapDimensions.width);
@@ -66,7 +68,7 @@ const MapAccelerator: React.FC<MapAcceleratorProps> = ({
             fixedX={false}
             shouldShowMoving={false}
             isModKeyPressed={false}
-            scaleFactor={props.scaleFactor}
+            scaleFactor={scaleFactor}
         >
             <>{children}</>
         </Movable>

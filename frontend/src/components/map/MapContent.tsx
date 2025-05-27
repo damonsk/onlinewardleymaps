@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
-import { MapAnnotation, MapLinks } from '../../conversion/Converter';
+import { MapAnnotations, MapLinks } from '../../conversion/Converter';
 import { MapAnnotationsPosition } from '../../conversion/PresentationExtractionStrategy';
 import MapElements from '../../MapElements';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
@@ -45,7 +45,7 @@ interface MapContentProps {
     mapAccelerators: any[];
     enableNewPipelines: boolean;
     mapNotes: any[];
-    mapAnnotations: Array<{ occurances: MapAnnotation[] }>;
+    mapAnnotations: MapAnnotations;
     mapAnnotationsPresentation: MapAnnotationsPosition;
     launchUrl: (url: string) => void;
 }
@@ -180,6 +180,7 @@ const MapContent: React.FC<MapContentProps> = ({
                             mapDimensions={mapDimensions}
                             mapText={mapText}
                             mutateMapText={mutateMapText}
+                            scaleFactor={scaleFactor}
                         >
                             <AcceleratorSymbol
                                 id={'market_circle_' + el.id}

@@ -48,9 +48,11 @@ const setBoundary = (
         evolutionOffsets.custom,
     ];
     for (let i = 0; i < limits.length; i++) {
-        const edge = positionCalc.xToMaturity(
-            boundWidth * limits[i],
-            mapDimensions.width,
+        const edge = parseFloat(
+            positionCalc.xToMaturity(
+                boundWidth * limits[i],
+                mapDimensions.width,
+            ),
         );
         if (startElement.maturity >= edge) {
             return edge;

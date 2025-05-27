@@ -10,7 +10,7 @@ import { MapTheme } from '../../constants/mapstyles';
 import {
     MapAccelerators,
     MapAnchors,
-    MapAnnotation,
+    MapAnnotations,
     MapAttitudes,
     MapComponents,
     MapEcosystems,
@@ -44,7 +44,7 @@ export interface MapViewProps {
     mapAccelerators: MapAccelerators[];
     launchUrl: (urlId: string) => void;
     mapNotes: MapNotes[];
-    mapAnnotations: MapAnnotation[];
+    mapAnnotations: MapAnnotations;
     mapAnnotationsPresentation: MapAnnotationsPosition;
     mapMethods: MapMethods[];
     mapStyleDefs: MapTheme;

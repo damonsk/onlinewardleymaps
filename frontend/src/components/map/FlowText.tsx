@@ -1,37 +1,40 @@
 import React from 'react';
-import { MapTheme } from '../../constants/mapstyles';
-import { Component } from '../../MapElements';
+import { MapTheme, TextTheme } from '../../constants/mapstyles';
+import {
+    Link,
+    MapElement,
+} from '../../linkStrategies/LinkStrategiesInterfaces';
 import MetaPositioner from '../../MetaPositioner';
 import RelativeMovable from '../map/RelativeMovable';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 
 interface FlowTextProps {
-    x: number;
-    y: number;
-    startElement: Component;
-    endElement: Component;
-    metaText: string;
-    link: {
-        flowValue?: string;
+    mapStyleDefs: MapTheme;
+    startElement: MapElement;
+    endElement: MapElement;
+    link: Link & {
         flow?: boolean;
         future?: boolean;
         past?: boolean;
         context?: string;
+        flowValue?: string;
     };
     setMetaText: (text: string) => void;
-    mapStyleDefs: MapTheme;
-    scaleFactor?: number;
+    metaText: string;
+    x: number;
+    y: number;
+    scaleFactor: number;
 }
 
 const FlowText: React.FC<FlowTextProps> = ({
-    x,
-    y,
+    mapStyleDefs,
     startElement,
     endElement,
-    metaText,
     link,
     setMetaText,
-    mapStyleDefs,
+    metaText,
+    x,
+    y,
     scaleFactor,
 }) => {
     const metaPosition = new MetaPositioner();
@@ -60,6 +63,12 @@ const FlowText: React.FC<FlowTextProps> = ({
         return null;
     }
 
+    const theme: TextTheme = {
+        fontWeight: mapStyleDefs.component.fontWeight,
+        evolvedTextColor: mapStyleDefs.component.evolvedTextColor,
+        textColor: mapStyleDefs.component.textColor,
+    };
+
     return (
         <g id={'flow_' + endElement.name} transform={`translate(${x},${y})`}>
             <RelativeMovable
@@ -79,7 +88,7 @@ const FlowText: React.FC<FlowTextProps> = ({
                     textAnchor="start"
                     fill={mapStyleDefs.link?.flowText}
                     text={link.flowValue}
-                    textTheme={mapStyleDefs.link}
+                    textTheme={theme}
                 />
             </RelativeMovable>
         </g>
