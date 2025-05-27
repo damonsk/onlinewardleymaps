@@ -1,5 +1,4 @@
 /* eslint-disable */
-import type { Ace } from 'ace-builds';
 // @ts-ignore - ace-builds has incorrect type definitions
 import ace from 'ace-builds';
 
@@ -56,7 +55,11 @@ interface DocCommentHighlightRules extends TextHighlightRules {
         'ace/mode/text',
         'ace/mode/owm_highlight_rules',
     ],
-    function (require: RequireFunction, exports: ModuleExports, _module: Module) {
+    function (
+        require: RequireFunction,
+        exports: ModuleExports,
+        _module: Module,
+    ) {
         const oop = require('../lib/oop');
         const TextMode = require('./text').Mode;
         const OwmHighlightRules =
@@ -85,7 +88,11 @@ interface DocCommentHighlightRules extends TextHighlightRules {
         'ace/lib/oop',
         'ace/mode/text_highlight_rules',
     ],
-    function (require: RequireFunction, exports: ModuleExports, _module: Module) {
+    function (
+        require: RequireFunction,
+        exports: ModuleExports,
+        _module: Module,
+    ) {
         const oop = require('../lib/oop');
         const TextHighlightRules =
             require('./text_highlight_rules').TextHighlightRules;
@@ -104,7 +111,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         token: 'comment.doc',
                         regex: '.*?',
                         defaultToken: 'comment.doc',
-                        caseInsensitive: true
+                        caseInsensitive: true,
                     },
                 ],
             };
@@ -273,7 +280,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                     {
                         token: 'text',
                         regex: '.',
-                        defaultToken: 'text'
+                        defaultToken: 'text',
                     },
                 ],
                 comment: [
@@ -285,7 +292,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                     {
                         token: 'comment',
                         regex: '.',
-                        defaultToken: 'comment'
+                        defaultToken: 'comment',
                     },
                 ],
             };

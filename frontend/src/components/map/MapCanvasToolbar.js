@@ -92,7 +92,7 @@ function MapCanvasToolbar({
             </IconButton>
             <IconButton
                 id="wm-map-fullscreen"
-                onClick={shouldHideNav}
+                onClick={() => shouldHideNav()}
                 color={textColour[mapStyleDefs.className]}
                 aria-label={hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
             >

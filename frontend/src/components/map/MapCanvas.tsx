@@ -59,6 +59,7 @@ function MapCanvas(props: MapCanvasProps) {
         mapAccelerators,
         mapTitle,
         mapCanvasDimensions,
+        shouldHideNav,
     } = props;
 
     console.log('MapCanvas', props);
@@ -231,7 +232,7 @@ function MapCanvas(props: MapCanvasProps) {
                     handleChangeTool={handleChangeTool}
                     mapStyleDefs={mapStyleDefs}
                     _fitToViewer={fitToViewer}
-                    shouldHideNav={false}
+                    shouldHideNav={shouldHideNav}
                     hideNav={false}
                 />
             )}
