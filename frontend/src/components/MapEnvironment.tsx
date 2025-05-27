@@ -20,7 +20,7 @@ import { MapTheme } from '../constants/mapstyles';
 import Converter, {
     MapAccelerators,
     MapAnchors,
-    MapAnnotation,
+    MapAnnotations,
     MapAttitudes,
     MapComponents,
     MapEcosystems,
@@ -122,7 +122,9 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     const [mapUrls, setMapUrls] = useState<MapUrls[]>([]);
     const [mapLinks, setMapLinks] = useState<MapLinks[]>([]);
     const [mapAttitudes, setMapAttitudes] = useState<MapAttitudes[]>([]);
-    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotation[]>([]);
+    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotations>({
+        occurances: [],
+    });
     const [mapAccelerators, setMapAccelerators] = useState<MapAccelerators[]>(
         [],
     );

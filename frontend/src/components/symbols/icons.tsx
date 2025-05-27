@@ -190,6 +190,7 @@ export const MarketIcon: React.FunctionComponent<IconProps> = ({
                     fill: mapStyleDefs.component.fill ?? 'none',
                     stroke: mapStyleDefs.component.stroke ?? 'none',
                 }}
+                onClick={() => {}}
             />
         </g>
     </IconWrapper>

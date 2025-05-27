@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { MapAnnotationTheme } from '../../constants/mapstyles';
-import { MapAnnotation } from './AnnotationElementSymbol';
+import { MapAnnotation } from '../../conversion/Converter';
 
 export interface AnnotationTextSymbolProps {
     id?: string;

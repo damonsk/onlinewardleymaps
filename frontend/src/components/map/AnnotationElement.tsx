@@ -1,25 +1,16 @@
 import { JSX } from 'react';
 import { MapTheme } from '../../constants/mapstyles';
+import { MapAnnotation } from '../../conversion/Converter';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
-
-interface Annotation {
-    number: number;
-}
-
-interface Occurance {
-    maturity: number;
-    visibility: number;
-}
 
 interface MapDimensions {
     width: number;
     height: number;
 }
 interface AnnotationElementProps {
-    annotation: Annotation;
-    occurance: Occurance;
+    annotation: MapAnnotation;
     mapDimensions: MapDimensions;
     mutateMapText: (text: string) => void;
     mapText: string;
@@ -37,12 +28,12 @@ function AnnotationElement(props: AnnotationElementProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const x = (): number =>
         positionCalc.maturityToX(
-            props.occurance.maturity,
+            props.annotation.maturity,
             props.mapDimensions.width,
         );
     const y = (): number =>
         positionCalc.visibilityToY(
-            props.occurance.visibility,
+            props.annotation.visibility,
             props.mapDimensions.height,
         );
 

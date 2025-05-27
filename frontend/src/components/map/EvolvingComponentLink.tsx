@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
+import { MapElement } from '../../linkStrategies/LinkStrategiesInterfaces';
 import LinkSymbol from '../symbols/LinkSymbol';
 import Inertia from './Inertia';
 import PositionCalculator from './PositionCalculator';
@@ -11,19 +12,9 @@ interface EvolutionOffsets {
     custom: number;
 }
 
-interface MapElement {
-    id: string;
-    maturity: number;
-    visibility: number;
-    offsetY?: number;
-    evolved?: boolean;
-    evolving?: boolean;
-    inertia?: boolean;
-}
-
 interface EvolvingComponentLinkProps {
-    startElement: MapElement;
-    endElement: MapElement;
+    startElement: MapElement | undefined;
+    endElement: MapElement | undefined;
     mapDimensions: MapDimensions;
     evolutionOffsets: EvolutionOffsets;
     mapStyleDefs: MapTheme;
@@ -68,6 +59,9 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     evolutionOffsets,
     mapStyleDefs,
 }) => {
+    if (!startElement || !endElement) {
+        return null;
+    }
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
     const x1 = positionCalc.maturityToX(startElement.maturity, width);

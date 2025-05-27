@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { MouseEvent, useMemo } from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
-import { MapAnnotations, MapLinks } from '../../conversion/Converter';
-import { MapAnnotationsPosition } from '../../conversion/PresentationExtractionStrategy';
-import MapElements from '../../MapElements';
+import {
+    MapAccelerators,
+    MapAnchors,
+    MapAnnotations,
+    MapMethods,
+    MapNotes,
+} from '../../conversion/Converter';
+import { MapElement } from '../../linkStrategies/LinkStrategiesInterfaces';
+import MapElements, { Component, ComponentDectorator } from '../../MapElements';
+import {
+    ProcessedLinkGroup,
+    processMapElements,
+} from '../../utils/mapProcessing';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
@@ -23,6 +33,21 @@ import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
 import Note from './Note';
 
+interface MapBaseElement extends MapElement {
+    id: string;
+    visibility: number;
+    maturity: number;
+    type: string;
+    offsetY?: number;
+    evolved?: boolean;
+    evolving?: boolean;
+    pipeline?: boolean;
+    url?: string | { url: string; [key: string]: any };
+    evolveMaturity?: number;
+    decorators: ComponentDectorator;
+    line?: number;
+}
+
 interface MapContentProps {
     mapAttitudes: any[];
     mapDimensions: MapDimensions;
@@ -30,24 +55,33 @@ interface MapContentProps {
     mapText: string;
     mutateMapText: (text: string) => void;
     scaleFactor: number;
-    allMeths: any[];
-    mapElementsClicked: Array<{ el: any; e: any }>;
-    links: Array<{ name: string; links: MapLinks[] }>;
+    mapElementsClicked: Array<{
+        el: MapBaseElement;
+        e: MouseEvent<Element>;
+    }>;
+    links: ProcessedLinkGroup[];
     setMetaText: (text: string) => void;
     metaText: string;
     mapElements: MapElements;
-    getElementByName: (elements: any[], name: string) => any;
-    evolutionOffsets: { custom: number; product: number; commodity: number };
-    mapAnchors: any[];
-    setHighlightLine: (line: number) => void;
-    clicked: (params: { el: any; e: any }) => void;
-    enableAccelerators: boolean;
-    mapAccelerators: any[];
+    evolutionOffsets: {
+        commodity: number;
+        product: number;
+        custom: number;
+    };
     enableNewPipelines: boolean;
-    mapNotes: any[];
+    mapAnchors: MapAnchors[];
+    setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
+    clicked: (data: {
+        el: MapBaseElement;
+        e: MouseEvent<Element> | null;
+    }) => void;
+    enableAccelerators: boolean;
+    mapAccelerators: MapAccelerators[];
+    mapNotes: MapNotes[];
     mapAnnotations: MapAnnotations;
-    mapAnnotationsPresentation: MapAnnotationsPosition;
+    mapAnnotationsPresentation: any;
     launchUrl: (url: string) => void;
+    mapMethods: MapMethods[];
 }
 
 const MapContent: React.FC<MapContentProps> = ({
@@ -57,13 +91,12 @@ const MapContent: React.FC<MapContentProps> = ({
     mapText,
     mutateMapText,
     scaleFactor,
-    allMeths,
     mapElementsClicked,
     links,
     setMetaText,
     metaText,
     mapElements,
-    getElementByName,
+
     evolutionOffsets,
     mapAnchors,
     setHighlightLine,
@@ -75,7 +108,15 @@ const MapContent: React.FC<MapContentProps> = ({
     mapAnnotations,
     mapAnnotationsPresentation,
     launchUrl,
+    mapMethods,
 }) => {
+    const { allMethods: allMeths, getElementByName } = useMemo(
+        () => processMapElements(mapMethods, mapElements),
+        [mapMethods, mapElements],
+    );
+
+    const els = mapElements.getEvolveElements();
+
     return (
         <g id="map">
             <g id="attitudes">
@@ -136,27 +177,23 @@ const MapContent: React.FC<MapContentProps> = ({
             ))}
 
             <g id="evolvedLinks">
-                {mapElements.getEvolveElements().map((e, i) => (
-                    <EvolvingComponentLink
-                        mapStyleDefs={mapStyleDefs}
-                        key={i}
-                        mapDimensions={mapDimensions}
-                        startElement={getElementByName(
-                            mapElements.getEvolvedElements(),
-                            e.name,
-                        )}
-                        endElement={getElementByName(
-                            mapElements.getEvolvedElements(),
-                            e.name,
-                        )}
-                        link={e}
-                        evolutionOffsets={evolutionOffsets}
-                    />
-                ))}
+                {els.map(
+                    (e: Component, i: number) =>
+                        getElementByName(els, e.name) && (
+                            <EvolvingComponentLink
+                                key={i}
+                                mapStyleDefs={mapStyleDefs}
+                                mapDimensions={mapDimensions}
+                                startElement={getElementByName(els, e.name)}
+                                endElement={getElementByName(els, e.name)}
+                                evolutionOffsets={evolutionOffsets}
+                            />
+                        ),
+                )}
             </g>
 
             <g id="anchors">
-                {mapAnchors.map((el, i) => (
+                {mapAnchors.map((el: MapAnchors, i) => (
                     <Anchor
                         key={i}
                         mapDimensions={mapDimensions}
@@ -164,9 +201,7 @@ const MapContent: React.FC<MapContentProps> = ({
                         mapText={mapText}
                         mutateMapText={mutateMapText}
                         mapStyleDefs={mapStyleDefs}
-                        setHighlightLine={setHighlightLine}
                         onClick={(e) => clicked({ el, e })}
-                        scaleFactor={scaleFactor}
                     />
                 ))}
             </g>
@@ -206,7 +241,7 @@ const MapContent: React.FC<MapContentProps> = ({
             />
 
             <g id="elements">
-                {mapElements.getMergedElements().map((el, i) => (
+                {mapElements.getMergedElements().map((el: Component, i) => (
                     <MapComponent
                         key={i}
                         keyword={el.type}
@@ -223,10 +258,10 @@ const MapContent: React.FC<MapContentProps> = ({
                     >
                         {el.type === 'component' && (
                             <ComponentSymbol
-                                id={'element_circle_' + el.id}
                                 styles={mapStyleDefs.component}
-                                evolved={el.evolved}
-                                onClick={(e) => clicked({ el, e })}
+                                onClick={(e: MouseEvent<SVGElement>) =>
+                                    clicked({ el, e })
+                                }
                             />
                         )}
 
@@ -259,11 +294,15 @@ const MapContent: React.FC<MapContentProps> = ({
 
                         {el.type === 'submap' && (
                             <SubMapSymbol
-                                id={'element_circle_' + el.id}
-                                styles={mapStyleDefs.submap}
-                                evolved={el.evolved}
-                                onClick={(e) => clicked({ el, e })}
-                                launchUrl={() => launchUrl(el.url)}
+                                styles={mapStyleDefs.component}
+                                onClick={(e: MouseEvent<SVGElement>) =>
+                                    clicked({ el, e })
+                                }
+                                launchUrl={
+                                    el.url
+                                        ? () => launchUrl(el.url.url!)
+                                        : undefined
+                                }
                             />
                         )}
                     </MapComponent>
@@ -286,24 +325,20 @@ const MapContent: React.FC<MapContentProps> = ({
             </g>
 
             <g id="annotations">
-                {mapAnnotations.map((a, i) => (
-                    <React.Fragment key={i}>
-                        {a.occurances.map((o, i1) => (
-                            <AnnotationElement
-                                mapStyleDefs={mapStyleDefs}
-                                key={i1 + '_' + i}
-                                annotation={a}
-                                occurance={o}
-                                occuranceIndex={i1}
-                                mapDimensions={mapDimensions}
-                                mutateMapText={mutateMapText}
-                                mapText={mapText}
-                                scaleFactor={scaleFactor}
-                            />
-                        ))}
-                    </React.Fragment>
+                {mapAnnotations.occurances.map((o, i) => (
+                    <AnnotationElement
+                        mapStyleDefs={mapStyleDefs}
+                        key={'mapAnnotation_' + i}
+                        annotation={o}
+                        occuranceIndex={i}
+                        mapDimensions={mapDimensions}
+                        mutateMapText={mutateMapText}
+                        mapText={mapText}
+                        scaleFactor={scaleFactor}
+                    />
                 ))}
-                {mapAnnotations.length === 0 ? null : (
+
+                {mapAnnotations.occurances.length === 0 ? null : (
                     <AnnotationBox
                         mapStyleDefs={mapStyleDefs}
                         mutateMapText={mutateMapText}

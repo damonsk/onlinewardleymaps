@@ -1,4 +1,6 @@
 import { OwmFeatureSwitches } from '../constants/featureswitches';
+import { Link } from '../linkStrategies/LinkStrategiesInterfaces';
+import { ComponentDectorator } from '../MapElements';
 import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
@@ -29,7 +31,7 @@ export interface WardleyMap {
     evolved: MapEvolved[];
     pipelines: MapPipelines[];
     elements: MapComponents[];
-    annotations: MapAnnotation[];
+    annotations: MapAnnotations;
     notes: MapNotes[];
     evolution: MapEvolution;
     methods: MapMethods[];
@@ -45,13 +47,29 @@ export interface WardleyMap {
 
 export interface MapAnnotation {
     maturity: number;
+    number: number;
     visibility: number;
+    text: string;
 }
 export interface NamedComponent {
     name: string;
 }
-export interface MapLinks {}
-export interface MapAnchors extends NamedComponent {}
+export interface MapLinks extends Link {
+    flow?: boolean;
+    future?: boolean;
+    past?: boolean;
+    context?: string;
+    flowValue?: string;
+}
+export interface MapAnchors extends NamedComponent {
+    evolved: boolean;
+    maturity: number;
+    visibility: number;
+    id: string;
+    type: string;
+    inertia: boolean;
+    decorators: ComponentDectorator;
+}
 export interface MapEvolved {}
 export interface MapPipelines {}
 export interface MapComponents extends NamedComponent {}
@@ -69,7 +87,16 @@ export interface MapUrls {
     url: string;
 }
 export interface MapAttitudes {}
-export interface MapAccelerators {}
+export interface MapAccelerators {
+    id: string;
+    name: string;
+    maturity: number;
+    visibility: number;
+    offsetY?: number;
+    evolved?: boolean;
+    deaccelerator: boolean;
+    line: number;
+}
 
 export default class Converter {
     featureSwitches: OwmFeatureSwitches;
@@ -111,7 +138,7 @@ export default class Converter {
             evolved: [],
             pipelines: [],
             elements: [],
-            annotations: [],
+            annotations: { occurances: [] },
             notes: [],
             presentation: nullPresentation,
             evolution: [],

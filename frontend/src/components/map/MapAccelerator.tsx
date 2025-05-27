@@ -1,23 +1,14 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
+import { MapAccelerators } from '../../conversion/Converter';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
-interface MapAcceleratorElement {
-    id: string;
-    name: string;
-    maturity: number;
-    visibility: number;
-    offsetY?: number;
-    evolved?: boolean;
-    deaccelerator?: boolean;
-}
-
 interface MapAcceleratorProps {
-    element: MapAcceleratorElement;
+    element: MapAccelerators;
     mapDimensions: MapDimensions;
     mapText: string;
     mutateMapText: (text: string) => void;

@@ -1,19 +1,13 @@
 import React, { memo } from 'react';
+import { MapComponentTheme } from '../../constants/mapstyles';
 
 interface SubMapSymbolProps {
     id?: string;
     cx?: string;
     cy?: string;
     evolved?: boolean;
-    onClick?: () => void;
-    styles: {
-        evolvedFill?: string;
-        fill?: string;
-        evolved?: string;
-        stroke?: string;
-        strokeWidth?: number;
-        radius?: number;
-    };
+    onClick: (e: React.MouseEvent<SVGElement>) => void;
+    styles: MapComponentTheme;
     launchUrl?: () => void;
 }
 

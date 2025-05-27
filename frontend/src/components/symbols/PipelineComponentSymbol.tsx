@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { MapComponentTheme } from '../../constants/mapstyles';
 
 interface PipelineComponentSymbolProps {
     id?: string;
@@ -8,13 +9,7 @@ interface PipelineComponentSymbolProps {
     height?: string;
     evolved?: boolean;
     onClick?: () => void;
-    styles: {
-        evolvedFill?: string;
-        fill?: string;
-        evolved?: string;
-        stroke?: string;
-        pipelineStrokeWidth?: string;
-    };
+    styles: MapComponentTheme;
 }
 
 const PipelineComponentSymbol: React.FC<PipelineComponentSymbolProps> = ({
@@ -25,7 +20,7 @@ const PipelineComponentSymbol: React.FC<PipelineComponentSymbolProps> = ({
     height = '10',
     evolved,
     onClick,
-    styles = {},
+    styles,
 }) => {
     const fill = evolved ? styles.evolvedFill : styles.fill;
     const stroke = evolved ? styles.evolved : styles.stroke;

@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { MapComponentTheme } from '../../constants/mapstyles';
 const SM_CIRC_RADIUS = 10;
 const polarCoord = (radius: number, angle: number): [number, number] => [
     Math.round(radius * Math.cos((angle * Math.PI) / 180)),
@@ -15,11 +16,10 @@ const rotatePoints = (): [number, number][] => {
     return coords;
 };
 
-interface Styles {
-    fill: string;
-    stroke: string;
-}
-const drawInsideCircles = (coords: [number, number][], styles: Styles) =>
+const drawInsideCircles = (
+    coords: [number, number][],
+    styles: MapComponentTheme,
+) =>
     coords.map((cxy, i) => (
         <circle
             key={i}
@@ -34,10 +34,10 @@ const drawInsideCircles = (coords: [number, number][], styles: Styles) =>
 
 interface MarketSymbolProps {
     id?: string;
-    styles: Styles;
-    onClick?: () => void;
+    styles: MapComponentTheme;
     cx?: string;
     cy?: string;
+    onClick: (e: React.MouseEvent<SVGElement>) => void;
 }
 
 const MarketSymbol: React.FC<MarketSymbolProps> = ({ id, styles, onClick }) => {

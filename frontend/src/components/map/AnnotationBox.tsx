@@ -1,4 +1,6 @@
 import { useCallback, useEffect } from 'react';
+import { MapTheme } from '../../constants/mapstyles';
+import { MapAnnotations } from '../../conversion/Converter';
 import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
 import Movable from './Movable';
@@ -18,18 +20,12 @@ interface AnnotationElementProps {
         width: number;
         height: number;
     };
-    mapStyleDefs: {
-        annotation: {
-            boxStroke: string;
-            boxStrokeWidth: number;
-            boxFill: string;
-        };
-    };
-    annotations: any[];
+    mapStyleDefs: MapTheme;
+    annotations: MapAnnotations;
     scaleFactor: number;
 }
 
-function AnnotationElement(props: AnnotationElementProps) {
+function AnnotationBox(props: AnnotationElementProps) {
     const positionCalc = new PositionCalculator();
     const identifier = 'annotations';
 
@@ -125,7 +121,7 @@ function AnnotationElement(props: AnnotationElementProps) {
                 x={2}
                 theme={props.mapStyleDefs.annotation}
             >
-                {props.annotations.map((a, i) => (
+                {props.annotations.occurances.map((a, i) => (
                     <AnnotationTextSymbol
                         key={i}
                         annotation={a}
@@ -138,4 +134,4 @@ function AnnotationElement(props: AnnotationElementProps) {
     );
 }
 
-export default AnnotationElement;
+export default AnnotationBox;

@@ -6,7 +6,8 @@ import MapElements, {
     EvolvedElement,
     Pipeline,
 } from '../../MapElements';
-import { processLinks, processMapElements } from '../../utils/mapProcessing';
+import { processLinks } from '../../utils/mapProcessing.js';
+
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
@@ -63,14 +64,17 @@ function MapCanvas(props: MapCanvasProps) {
     const isModKeyPressed = useModKeyPressedConsumer();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
-    // Convert WardleyMap types to MapElements types
     function convertToMapElementsComponent(component: any): Component {
         return {
             name: component.name,
-            id: component.name, // or generate a unique ID if needed
+            inertia: component.inertia || false,
+            id: component.id,
             visibility: component.visibility || '',
             type: component.type || '',
-            // Add other optional fields from the Component interface as needed
+            maturity: component.maturity || 0,
+            url: { ...component.url },
+            decorators: { ...component.decorators },
+            pipeline: { ...component.pipeline },
         };
     }
 
@@ -89,6 +93,7 @@ function MapCanvas(props: MapCanvasProps) {
     function convertToMapElementsPipeline(pipeline: any): Pipeline {
         return {
             name: pipeline.name,
+            inertia: pipeline.inertia || false,
             components: (pipeline.components || []).map(
                 convertToMapElementsComponent,
             ),
@@ -145,11 +150,6 @@ function MapCanvas(props: MapCanvasProps) {
         [mapLinks, mapElements, mapAnchors, showLinkedEvolved],
     );
 
-    const { allMethods: allMeths, getElementByName } = useMemo(
-        () => processMapElements(mapMethods, mapElements),
-        [mapMethods, mapElements],
-    );
-
     const fitToViewer = () => {
         if (Viewer.current) {
             Viewer.current.fitSelection(
@@ -196,13 +196,11 @@ function MapCanvas(props: MapCanvasProps) {
                     mapText={mapText}
                     mutateMapText={mutateMapText}
                     scaleFactor={scaleFactor}
-                    allMeths={allMeths}
                     mapElementsClicked={mapElementsClicked}
                     links={links}
                     setMetaText={setMetaText}
                     metaText={metaText}
                     mapElements={mapElements}
-                    getElementByName={getElementByName}
                     evolutionOffsets={evolutionOffsets}
                     mapAnchors={mapAnchors}
                     setHighlightLine={setHighlightLine}
@@ -214,6 +212,7 @@ function MapCanvas(props: MapCanvasProps) {
                     mapAnnotations={mapAnnotations}
                     mapAnnotationsPresentation={mapAnnotationsPresentation}
                     launchUrl={launchUrl}
+                    mapMethods={mapMethods}
                 />
             </MapSVGContainer>
             {showMapToolbar && (

@@ -1,31 +1,45 @@
 import { useFeatureSwitches } from './components/FeatureSwitchesContext';
+import { MapUrls } from './conversion/Converter';
 
 export interface Component {
+    url: MapUrls;
+    decorators: ComponentDectorator;
+    pipeline: any;
     name: string;
     id: string;
-    visibility: string;
+    visibility: number;
     type: string;
+    maturity: number;
     evolveMaturity?: number;
     evolving?: boolean;
     evolved?: boolean;
     pseudoComponent?: boolean;
     offsetY?: number;
+    inertia: boolean;
 }
 
 export interface Pipeline {
     name: string;
     components: Component[];
-    visibility?: string;
+    inertia: boolean;
+    visibility: number;
     hidden?: boolean;
 }
 
+export interface ComponentDectorator {
+    ecosystem?: boolean;
+    market?: boolean;
+    method?: string;
+    // [key: string]: boolean | undefined;
+}
+
 export interface EvolvedElement {
-    maturity: any;
+    maturity: number;
     name: string;
     label: string;
-    override: any;
-    line: any;
-    decorators: any;
+    override?: Record<string, unknown>;
+    line?: number;
+    decorators: ComponentDectorator;
     increaseLabelSpacing: boolean;
 }
 
@@ -67,7 +81,7 @@ export default class MapElements {
         components: Component[],
     ): Pipeline[] {
         if (pipelines === undefined) return [];
-        return pipelines.map((e) => {
+        return pipelines.map((e: Pipeline) => {
             const component = components.find((el) => el.name === e.name);
             if (component) {
                 e.visibility = component.visibility;
@@ -86,7 +100,7 @@ export default class MapElements {
         return this.getEvolveElements().map((el) => {
             const v = this.evolved.find((evd) => evd.name === el.name);
             if (!v) throw new Error(`Evolved element not found for ${el.name}`);
-            return {
+            const r = {
                 name: el.name,
                 id: el.id + 'ev',
                 maturity: el.evolveMaturity,
@@ -100,7 +114,11 @@ export default class MapElements {
                 offsetY: el.offsetY,
                 decorators: v.decorators,
                 increaseLabelSpacing: v.increaseLabelSpacing,
-            };
+                inertia: el.inertia,
+                url: el.url,
+                pipeline: el.pipeline,
+            } as Component;
+            return r;
         });
     }
 

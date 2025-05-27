@@ -1,23 +1,26 @@
+import { ComponentDectorator } from '../MapElements';
+
 export interface Link {
     start: string;
     end: string;
 }
 
 export interface MapElement {
+    inertia: boolean;
     name: string;
     id: string;
-    visibility: string | number; // Make this accept both string and number since both seem to be used
+    visibility: number;
     type: string;
     evolveMaturity?: number;
-    maturity?: number; // Add this for evolved elements
+    maturity: number;
     evolving?: boolean;
     evolved?: boolean;
     pseudoComponent?: boolean;
     offsetY?: number;
-    label?: string; // From EvolvedElement
+    label?: string;
     override?: any;
     line?: any;
-    decorators?: any;
+    decorators: ComponentDectorator;
     increaseLabelSpacing?: boolean;
 }
 

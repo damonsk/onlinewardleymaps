@@ -3,6 +3,7 @@ import {
     Link,
     LinkExtractionStrategy,
     LinkStrategy,
+    MapElement,
     MapElements,
 } from './LinkStrategiesInterfaces';
 
@@ -30,7 +31,9 @@ export default class AnchorEvolvedLinksStrategy
         return {
             name: 'anchorEvolvedLinks',
             links: links,
-            startElements: this.anchors,
+            startElements: this.anchors.map(
+                (anchor: Anchor) => ({ ...anchor }) as MapElement,
+            ),
             endElements: this.mapElements.getEvolvedElements(),
         };
     }

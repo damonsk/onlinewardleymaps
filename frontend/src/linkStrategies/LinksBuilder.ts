@@ -1,3 +1,5 @@
+import { MapAnchors } from '../conversion/Converter';
+import MapElements from '../MapElements';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
@@ -20,9 +22,9 @@ import NoneEvolvingToEvolvingLinksStrategy from './NoneEvolvingToEvolvingLinksSt
 export default class LinksBuilder {
     private linkStrategies: LinkExtractionStrategy[];
     constructor(
-        mapLinks: any,
-        mapElements: any,
-        mapAnchors: any,
+        mapLinks: Link[],
+        mapElements: MapElements,
+        mapAnchors: MapAnchors[],
         showLinkedEvolved: boolean,
     ) {
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =

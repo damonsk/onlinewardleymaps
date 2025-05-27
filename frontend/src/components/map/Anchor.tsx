@@ -1,6 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
+import { MapAnchors } from '../../conversion/Converter';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import Movable from './Movable';
@@ -18,7 +19,7 @@ export interface MapAchor {
 }
 
 interface AnchorProps {
-    anchor: MapAchor;
+    anchor: MapAnchors;
     mapDimensions: MapDimensions;
     mapText: string;
     mutateMapText: (...args: any[]) => any;

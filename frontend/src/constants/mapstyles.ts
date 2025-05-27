@@ -19,14 +19,14 @@ export interface MapComponentTheme extends TextTheme {
 }
 
 export interface MapAnnotationTheme {
-    stroke?: string;
-    strokeWidth?: number;
-    fill?: string;
-    text?: string;
-    boxStroke?: string;
-    boxStrokeWidth?: number;
-    boxFill?: string;
-    boxTextColour?: string;
+    stroke: string;
+    strokeWidth: number;
+    fill: string;
+    text: string;
+    boxStroke: string;
+    boxStrokeWidth: number;
+    boxFill: string;
+    boxTextColour: string;
 }
 
 export interface MapAttitudeTypeTheme {
@@ -258,6 +258,8 @@ export const Handwritten = mergeIntoDefault({
         boxStrokeWidth: 1,
         boxFill: '#FFFFFF',
         boxTextColour: 'black',
+        fill: '',
+        text: '',
     },
     methods: {
         buy: {},
@@ -320,6 +322,7 @@ export const Wardley = mergeIntoDefault({
         boxStrokeWidth: 1,
         boxFill: '#FFFFFF',
         boxTextColour: 'black',
+        text: '',
     },
     methods: {
         buy: {},
@@ -514,6 +517,7 @@ export const Colour = mergeIntoDefault({
         boxStrokeWidth: 2,
         boxFill: '#99c5ee',
         boxTextColour: 'black',
+        text: '',
     },
     methods: {
         buy: {},
