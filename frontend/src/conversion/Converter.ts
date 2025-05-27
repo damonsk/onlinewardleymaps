@@ -148,7 +148,7 @@ export default class Converter {
             evolved: [],
             pipelines: [],
             elements: [],
-            annotations: { occurances: [] },
+            annotations: [],
             notes: [],
             presentation: nullPresentation,
             evolution: [],
