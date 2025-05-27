@@ -78,7 +78,7 @@ interface MapContentProps {
     enableAccelerators: boolean;
     mapAccelerators: MapAccelerators[];
     mapNotes: MapNotes[];
-    mapAnnotations: MapAnnotations;
+    mapAnnotations: MapAnnotations[];
     mapAnnotationsPresentation: any;
     launchUrl: (url: string) => void;
     mapMethods: MapMethods[];
@@ -113,6 +113,8 @@ const MapContent: React.FC<MapContentProps> = ({
         () => processMapElements(mapMethods, mapElements),
         [mapMethods, mapElements],
     );
+
+    console.log('MapAnnotations', mapAnnotations);
 
     return (
         <g id="map">
@@ -333,22 +335,25 @@ const MapContent: React.FC<MapContentProps> = ({
             </g>
 
             <g id="annotations">
-                {mapAnnotations.occurances &&
-                    mapAnnotations.occurances.map((o, i) => (
-                        <AnnotationElement
-                            mapStyleDefs={mapStyleDefs}
-                            key={'mapAnnotation_' + i}
-                            annotation={o}
-                            occuranceIndex={i}
-                            mapDimensions={mapDimensions}
-                            mutateMapText={mutateMapText}
-                            mapText={mapText}
-                            scaleFactor={scaleFactor}
-                        />
+                {mapAnnotations &&
+                    mapAnnotations.map((a, i) => (
+                        <React.Fragment key={i}>
+                            {a.occurances.map((o, i1) => (
+                                <AnnotationElement
+                                    mapStyleDefs={mapStyleDefs}
+                                    key={'mapAnnotation_' + i + '_' + i1}
+                                    annotation={o}
+                                    occuranceIndex={i}
+                                    mapDimensions={mapDimensions}
+                                    mutateMapText={mutateMapText}
+                                    mapText={mapText}
+                                    scaleFactor={scaleFactor}
+                                />
+                            ))}
+                        </React.Fragment>
                     ))}
 
-                {mapAnnotations.occurances &&
-                mapAnnotations.occurances.length === 0 ? null : (
+                {mapAnnotations && mapAnnotations.length === 0 ? null : (
                     <AnnotationBox
                         mapStyleDefs={mapStyleDefs}
                         mutateMapText={mutateMapText}

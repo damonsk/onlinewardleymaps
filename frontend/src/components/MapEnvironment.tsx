@@ -122,9 +122,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     const [mapUrls, setMapUrls] = useState<MapUrls[]>([]);
     const [mapLinks, setMapLinks] = useState<MapLinks[]>([]);
     const [mapAttitudes, setMapAttitudes] = useState<MapAttitudes[]>([]);
-    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotations>({
-        occurances: [],
-    });
+    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotations[]>();
     const [mapAccelerators, setMapAccelerators] = useState<MapAccelerators[]>(
         [],
     );

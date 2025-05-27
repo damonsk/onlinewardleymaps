@@ -31,7 +31,7 @@ export interface WardleyMap {
     evolved: MapEvolved[];
     pipelines: MapPipelines[];
     elements: MapComponents[];
-    annotations: MapAnnotations;
+    annotations: MapAnnotations[];
     notes: MapNotes[];
     evolution: MapEvolution;
     methods: MapMethods[];
@@ -82,7 +82,9 @@ export interface MapEvolved {}
 export interface MapPipelines {}
 export interface MapComponents extends NamedComponent {}
 export interface MapAnnotations {
+    number: number;
     occurances: Array<MapAnnotation>;
+    text: string;
 }
 export interface MapNotes {}
 export interface MapEvolution extends Array<EvolutionLabel> {}

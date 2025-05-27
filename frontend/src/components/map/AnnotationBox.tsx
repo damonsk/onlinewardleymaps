@@ -21,7 +21,7 @@ interface AnnotationElementProps {
         height: number;
     };
     mapStyleDefs: MapTheme;
-    annotations: MapAnnotations;
+    annotations: MapAnnotations[];
     scaleFactor: number;
 }
 
@@ -121,12 +121,11 @@ function AnnotationBox(props: AnnotationElementProps) {
                 x={2}
                 theme={props.mapStyleDefs.annotation}
             >
-                {props.annotations.occurances &&
-                    props.annotations.occurances.map((a, i) => (
+                {props.annotations &&
+                    props.annotations.map((a, i) => (
                         <AnnotationTextSymbol
                             key={i}
                             annotation={a}
-                            // parentIndex={i}
                             styles={props.mapStyleDefs.annotation}
                         />
                     ))}

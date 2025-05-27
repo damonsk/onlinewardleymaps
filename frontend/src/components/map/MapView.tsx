@@ -44,7 +44,7 @@ export interface MapViewProps {
     mapAccelerators: MapAccelerators[];
     launchUrl: (urlId: string) => void;
     mapNotes: MapNotes[];
-    mapAnnotations: MapAnnotations;
+    mapAnnotations: MapAnnotations[];
     mapAnnotationsPresentation: MapAnnotationsPosition;
     mapMethods: MapMethods[];
     mapStyleDefs: MapTheme;
