@@ -54,6 +54,7 @@ export interface MapAnnotation {
 export interface NamedComponent {
     name: string;
     label: ComponentLabel;
+    line: number;
 }
 
 export interface ComponentLabel {

@@ -17,6 +17,7 @@ export interface Component {
     offsetY?: number;
     inertia: boolean;
     label: ComponentLabel;
+    line: number;
 }
 
 export interface Pipeline {

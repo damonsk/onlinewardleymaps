@@ -78,6 +78,7 @@ function MapCanvas(props: MapCanvasProps) {
             pipeline: { ...component.pipeline },
             evolving: component.evolving || false,
             label: component.label,
+            line: component.line,
         };
     }
 
