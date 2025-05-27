@@ -129,11 +129,12 @@ function MapCanvas(props: MapCanvasProps) {
         mapPipelines.map(convertToMapElementsPipeline),
     );
 
+    const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+
     const {
         mapElementsClicked,
         tool,
         scaleFactor,
-        handleMouseMove,
         handleZoom,
         handleChangeTool,
         newElementAt,
@@ -146,7 +147,12 @@ function MapCanvas(props: MapCanvasProps) {
         setHighlightLine,
         setNewComponentContext,
         mapDimensions,
+        mousePosition,
     });
+
+    const handleMouseMove = (event: any) => {
+        setMousePosition({ x: event.x, y: event.y });
+    };
 
     const links = useMemo(
         () =>
