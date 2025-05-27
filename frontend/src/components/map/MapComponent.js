@@ -97,6 +97,8 @@ function MapComponent(props) {
         );
     }
 
+    console.log('MapComponent', props);
+
     return (
         <>
             <Movable

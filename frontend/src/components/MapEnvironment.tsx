@@ -350,6 +350,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             setErrorLine([]);
             setInvalid(false);
             const r = new Converter(featureSwitches).parse(mapText);
+            console.log('MapEnvironment', r);
             setRawMapTitle(r.title);
             setMapAnnotations(r.annotations);
             setMapAnchors(r.anchors);

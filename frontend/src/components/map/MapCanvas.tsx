@@ -6,7 +6,7 @@ import MapElements, {
     EvolvedElement,
     Pipeline,
 } from '../../MapElements';
-import { processLinks } from '../../utils/mapProcessing.js';
+import { processLinks } from '../../utils/mapProcessing';
 
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
@@ -61,6 +61,7 @@ function MapCanvas(props: MapCanvasProps) {
         mapCanvasDimensions,
     } = props;
 
+    console.log('MapCanvas', props);
     const isModKeyPressed = useModKeyPressedConsumer();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
@@ -75,6 +76,8 @@ function MapCanvas(props: MapCanvasProps) {
             url: { ...component.url },
             decorators: { ...component.decorators },
             pipeline: { ...component.pipeline },
+            evolving: component.evolving || false,
+            label: component.label,
         };
     }
 

@@ -121,14 +121,15 @@ function AnnotationBox(props: AnnotationElementProps) {
                 x={2}
                 theme={props.mapStyleDefs.annotation}
             >
-                {props.annotations.occurances.map((a, i) => (
-                    <AnnotationTextSymbol
-                        key={i}
-                        annotation={a}
-                        // parentIndex={i}
-                        styles={props.mapStyleDefs.annotation}
-                    />
-                ))}
+                {props.annotations.occurances &&
+                    props.annotations.occurances.map((a, i) => (
+                        <AnnotationTextSymbol
+                            key={i}
+                            annotation={a}
+                            // parentIndex={i}
+                            styles={props.mapStyleDefs.annotation}
+                        />
+                    ))}
             </AnnotationBoxSymbol>
         </Movable>
     );

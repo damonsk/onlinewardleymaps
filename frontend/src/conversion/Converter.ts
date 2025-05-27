@@ -53,7 +53,14 @@ export interface MapAnnotation {
 }
 export interface NamedComponent {
     name: string;
+    label: ComponentLabel;
 }
+
+export interface ComponentLabel {
+    x: number;
+    y: number;
+}
+
 export interface MapLinks extends Link {
     flow?: boolean;
     future?: boolean;

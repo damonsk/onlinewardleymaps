@@ -96,7 +96,6 @@ const MapContent: React.FC<MapContentProps> = ({
     setMetaText,
     metaText,
     mapElements,
-
     evolutionOffsets,
     mapAnchors,
     setHighlightLine,
@@ -116,6 +115,9 @@ const MapContent: React.FC<MapContentProps> = ({
     );
 
     const els = mapElements.getEvolveElements();
+
+    const mapElementsMerged = mapElements.getMergedElements();
+    console.log('MapContent: mapElementsMerged', mapElementsMerged);
 
     return (
         <g id="map">
@@ -241,7 +243,7 @@ const MapContent: React.FC<MapContentProps> = ({
             />
 
             <g id="elements">
-                {mapElements.getMergedElements().map((el: Component, i) => (
+                {mapElementsMerged.map((el: Component, i) => (
                     <MapComponent
                         key={i}
                         keyword={el.type}
@@ -325,20 +327,22 @@ const MapContent: React.FC<MapContentProps> = ({
             </g>
 
             <g id="annotations">
-                {mapAnnotations.occurances.map((o, i) => (
-                    <AnnotationElement
-                        mapStyleDefs={mapStyleDefs}
-                        key={'mapAnnotation_' + i}
-                        annotation={o}
-                        occuranceIndex={i}
-                        mapDimensions={mapDimensions}
-                        mutateMapText={mutateMapText}
-                        mapText={mapText}
-                        scaleFactor={scaleFactor}
-                    />
-                ))}
+                {mapAnnotations.occurances &&
+                    mapAnnotations.occurances.map((o, i) => (
+                        <AnnotationElement
+                            mapStyleDefs={mapStyleDefs}
+                            key={'mapAnnotation_' + i}
+                            annotation={o}
+                            occuranceIndex={i}
+                            mapDimensions={mapDimensions}
+                            mutateMapText={mutateMapText}
+                            mapText={mapText}
+                            scaleFactor={scaleFactor}
+                        />
+                    ))}
 
-                {mapAnnotations.occurances.length === 0 ? null : (
+                {mapAnnotations.occurances &&
+                mapAnnotations.occurances.length === 0 ? null : (
                     <AnnotationBox
                         mapStyleDefs={mapStyleDefs}
                         mutateMapText={mutateMapText}

@@ -1,5 +1,5 @@
 import { useFeatureSwitches } from './components/FeatureSwitchesContext';
-import { MapUrls } from './conversion/Converter';
+import { ComponentLabel, MapUrls } from './conversion/Converter';
 
 export interface Component {
     url: MapUrls;
@@ -11,11 +11,12 @@ export interface Component {
     type: string;
     maturity: number;
     evolveMaturity?: number;
-    evolving?: boolean;
+    evolving: boolean;
     evolved?: boolean;
     pseudoComponent?: boolean;
     offsetY?: number;
     inertia: boolean;
+    label: ComponentLabel;
 }
 
 export interface Pipeline {
@@ -36,7 +37,7 @@ export interface ComponentDectorator {
 export interface EvolvedElement {
     maturity: number;
     name: string;
-    label: string;
+    label: ComponentLabel;
     override?: Record<string, unknown>;
     line?: number;
     decorators: ComponentDectorator;
@@ -54,9 +55,10 @@ export default class MapElements {
         pipelines: Pipeline[],
     ) {
         const { enableNewPipelines } = useFeatureSwitches();
-        this.mapComponents = components.flatMap((i) =>
-            i.collection.map((c) => ({ ...c, type: i.type })),
-        );
+        this.mapComponents = components.flatMap((i) => {
+            console.log(i);
+            return i.collection.map((c) => ({ ...c, type: i.type }));
+        });
         this.evolved = evolved;
         this.pipelines = this.processPipelines(pipelines, this.mapComponents);
 
@@ -158,6 +160,11 @@ export default class MapElements {
     }
 
     getMergedElements(): Component[] {
+        console.log('getMergedElements called', [
+            this.mapComponents,
+            this.evolved,
+            this.pipelines,
+        ]);
         const evolveElements = this.getEvolveElements();
         const noneEvolving = this.getNoneEvolvingElements();
         const evolvedElements = this.getEvolvedElements();

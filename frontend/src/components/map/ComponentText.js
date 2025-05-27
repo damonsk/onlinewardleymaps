@@ -17,6 +17,8 @@ function ComponentText(props) {
         scaleFactor,
     } = props;
 
+    console.log('ComponentText', props);
+
     const [sizing, setSizing] = React.useState({ rows: 0, cols: 0 });
     const [renameVal, setRenameVal] = React.useState('');
     const [showTextField, setShowTextField] = React.useState(false);
