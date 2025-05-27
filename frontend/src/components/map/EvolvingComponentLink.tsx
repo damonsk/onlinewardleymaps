@@ -65,7 +65,7 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
     const x1 = positionCalc.maturityToX(startElement.maturity, width);
-    const x2 = positionCalc.maturityToX(endElement.maturity, width);
+    const x2 = positionCalc.maturityToX(endElement.evolveMaturity ?? 0, width);
     const y1 =
         positionCalc.visibilityToY(startElement.visibility, height) +
         (startElement.offsetY ? startElement.offsetY : 0);
