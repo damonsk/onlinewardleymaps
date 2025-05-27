@@ -1,11 +1,4 @@
-import { Replacer } from './LineNumberPositionUpdater';
-
-interface ManyCoordsMoved {
-    param1: number;
-    param2: number;
-    param3: number;
-    param4: number;
-}
+import { ManyCoordsMoved, Replacer } from '../../../types/base';
 
 export const ExistingManyCoordsMatcher: Replacer = {
     matcher: (line: string, identifier: string, type: string): boolean => {

@@ -1,9 +1,4 @@
-import { Replacer } from './LineNumberPositionUpdater';
-
-interface Moved {
-    param1: number;
-    param2: number;
-}
+import { Moved, Replacer } from '../../../types/base';
 
 export const NotDefinedCoordsMatcher: Replacer = {
     matcher: (line: string, identifier: string, type: string): boolean => {

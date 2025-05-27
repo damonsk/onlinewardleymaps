@@ -1,9 +1,4 @@
-import { PositionUpdater } from './DefaultPositionUpdater';
-
-interface Moved {
-    param1: number;
-    param2: number;
-}
+import { Moved, PositionUpdater } from '../../../types/base';
 
 export default class SingletonPositionUpdater implements PositionUpdater {
     private type: string;

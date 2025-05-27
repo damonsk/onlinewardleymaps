@@ -1,7 +1,4 @@
-export interface Replacer {
-    matcher: (line: string, identifier: string, type: string) => boolean;
-    action: (line: string, moved: any) => string;
-}
+import { Replacer } from '../../../types/base';
 
 export default class LineNumberPositionUpdater {
     private type: string;

@@ -1,19 +1,4 @@
-type MatcherFunction = (
-    line: string,
-    identifier: string,
-    type: string,
-) => boolean;
-type ActionFunction = (line: string, moved: any) => string;
-
-interface Replacer {
-    matcher: MatcherFunction;
-    action: ActionFunction;
-}
-
-export interface PositionUpdater {
-    setSuccessor(positionUpdater: PositionUpdater): unknown;
-    update(moved: any, identifier: string): void;
-}
+import { PositionUpdater, Replacer } from '../../../types/base';
 
 export default class DefaultPositionUpdater implements PositionUpdater {
     type: string;
