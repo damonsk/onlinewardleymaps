@@ -15,7 +15,7 @@ export default class SubMapExtractionStrategy implements IParseStrategy {
             {
                 keyword: 'submap',
                 containerName: 'submaps',
-                defaultAttributes: {},
+                defaultAttributes: { increaseLabelSpacing: 0 },
             },
             additionalExtractions,
         );

@@ -13,7 +13,7 @@ export default class ComponentExtractionStrategy implements IParseStrategy {
         const config: IProvideBaseStrategyRunnerConfig = {
             keyword: 'component',
             containerName: 'elements',
-            defaultAttributes: {},
+            defaultAttributes: { increaseLabelSpacing: 0 },
         };
 
         const lines = [];

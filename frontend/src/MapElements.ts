@@ -1,50 +1,8 @@
 import { useFeatureSwitches } from './components/FeatureSwitchesContext';
-import { ComponentLabel, MapUrls } from './types/base';
+import { Component, EvolvedElement, Pipeline } from './types/base';
+import { IProvideMapElements } from './types/map/elements';
 
-export interface Component {
-    url: MapUrls;
-    decorators: ComponentDectorator;
-    pipeline: any;
-    name: string;
-    id: string;
-    visibility: number;
-    type: string;
-    maturity: number;
-    evolveMaturity?: number;
-    evolving: boolean;
-    evolved?: boolean;
-    pseudoComponent?: boolean;
-    offsetY?: number;
-    inertia: boolean;
-    label: ComponentLabel;
-    line: number;
-}
-
-export interface Pipeline {
-    name: string;
-    components: Component[];
-    inertia: boolean;
-    visibility: number;
-    hidden?: boolean;
-}
-
-export interface ComponentDectorator {
-    ecosystem?: boolean;
-    market?: boolean;
-    method?: string;
-}
-
-export interface EvolvedElement {
-    maturity: number;
-    name: string;
-    label: ComponentLabel;
-    override?: Record<string, unknown>;
-    line?: number;
-    decorators: ComponentDectorator;
-    increaseLabelSpacing: number;
-}
-
-export default class MapElements {
+export default class MapElements implements IProvideMapElements {
     private mapComponents: Component[];
     private evolved: EvolvedElement[];
     private pipelines: Pipeline[];
@@ -118,6 +76,7 @@ export default class MapElements {
                 inertia: el.inertia,
                 url: el.url,
                 pipeline: el.pipeline,
+                pseudoComponent: el.pseudoComponent || false,
             } as Component;
             return r;
         });

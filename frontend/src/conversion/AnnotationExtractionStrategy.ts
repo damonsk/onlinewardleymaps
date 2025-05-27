@@ -11,7 +11,7 @@ export default class AnnotationExtractionStrategy implements IParseStrategy {
         const config = {
             keyword: 'annotation',
             containerName: 'annotations',
-            defaultAttributes: {},
+            defaultAttributes: { increaseLabelSpacing: 0 },
         };
         this.data = data;
         this.keyword = config.keyword;

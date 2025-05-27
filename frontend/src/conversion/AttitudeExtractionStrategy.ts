@@ -22,7 +22,7 @@ export default class AttitudeExtractionStrategy implements IParseStrategy {
                         {
                             keyword: e,
                             containerName: 'attitudes',
-                            defaultAttributes: {},
+                            defaultAttributes: { increaseLabelSpacing: 0 },
                         },
                         [setAttitude, setCoords, setManyCoords, setHeightWidth],
                     ),

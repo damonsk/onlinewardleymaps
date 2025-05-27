@@ -11,7 +11,7 @@ export default class AnchorExtractionStrategy implements IParseStrategy {
         const config = {
             keyword: 'anchor',
             containerName: 'anchors',
-            defaultAttributes: {},
+            defaultAttributes: { increaseLabelSpacing: 0 },
         };
         this.data = data;
         this.keyword = config.keyword;

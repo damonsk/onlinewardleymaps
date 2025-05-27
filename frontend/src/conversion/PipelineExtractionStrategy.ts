@@ -20,7 +20,7 @@ export default class PipelineExtractionStrategy implements IParseStrategy {
                 {
                     keyword: this.keyword,
                     containerName: this.containerName,
-                    defaultAttributes: {},
+                    defaultAttributes: { increaseLabelSpacing: 0 },
                 },
                 [
                     ExtractionFunctions.setName,
@@ -38,7 +38,7 @@ export default class PipelineExtractionStrategy implements IParseStrategy {
                 {
                     keyword: this.keyword,
                     containerName: this.containerName,
-                    defaultAttributes: {},
+                    defaultAttributes: { increaseLabelSpacing: 0 },
                 },
                 [
                     ExtractionFunctions.setName,

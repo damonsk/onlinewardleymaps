@@ -1,13 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { ReactSVGPanZoom } from 'react-svg-pan-zoom';
 import { useMapInteractions } from '../../hooks/useMapInteractions';
-import MapElements, {
-    Component,
-    EvolvedElement,
-    Pipeline,
-} from '../../MapElements';
 import { processLinks } from '../../utils/mapProcessing';
 
+import MapElements from '../../MapElements';
+import { Component, EvolvedElement, Pipeline } from '../../types/base';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
@@ -78,6 +75,11 @@ function MapCanvas(props: MapCanvasProps) {
             evolving: component.evolving || false,
             label: component.label,
             line: component.line,
+            evolved: component.evolved,
+            offsetY: component.offsetY || 0,
+            pseudoComponent: component.pseudoComponent || false,
+            evolveMaturity: component.evolveMaturity || null,
+            increaseLabelSpacing: component.increaseLabelSpacing || 0,
         };
     }
 

@@ -1,9 +1,9 @@
+import MapElements from '../MapElements';
 import {
     Link,
     LinkExtractionStrategy,
     LinkResult,
     MapElement,
-    MapElements,
 } from './LinkStrategiesInterfaces';
 
 export default class EvolvedToNoneEvolvingLinksStrategy

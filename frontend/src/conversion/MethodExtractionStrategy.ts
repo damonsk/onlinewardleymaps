@@ -17,7 +17,7 @@ export default class MethodExtractionStrategy implements IParseStrategy {
                         {
                             keyword: e,
                             containerName: 'methods',
-                            defaultAttributes: {},
+                            defaultAttributes: { increaseLabelSpacing: 0 },
                         },
                         [ExtractionFunctions.setMethod],
                     ),

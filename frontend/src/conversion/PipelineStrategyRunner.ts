@@ -64,6 +64,7 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                             id: 1 + i,
                             line: 1 + i,
                             components: [],
+                            hidden: false,
                         },
                         this.config.defaultAttributes,
                     );

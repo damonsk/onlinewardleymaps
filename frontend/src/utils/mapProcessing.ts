@@ -1,5 +1,4 @@
 import LinksBuilder from '../linkStrategies/LinksBuilder';
-
 import MapElementsClass from '../MapElements';
 import { MapAnchors, MapElement, MapLinks, MapMethods } from '../types/base';
 
@@ -37,10 +36,10 @@ export function processLinks(
         mapAnchors,
         showLinkedEvolved,
     );
-    const result: LinksResult[] = linksBuilder.build();
+    const result = linksBuilder.build();
 
     // Filter out any links where startElement or endElement is undefined
-    return result.map((group: LinksResult) => ({
+    return result.map((group) => ({
         name: group.name,
         links: group.links.filter(
             (link) => link.startElement && link.endElement,
@@ -94,7 +93,11 @@ export function processMapElements(
                 };
             return asMethod({
                 ...el,
-                decorators: { method: m.method || '' },
+                decorators: {
+                    method: m.method || '',
+                    ecosystem: false,
+                    market: false,
+                },
             });
         });
 

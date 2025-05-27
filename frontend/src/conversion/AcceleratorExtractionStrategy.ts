@@ -20,7 +20,7 @@ export default class AcceleratorExtractionStrategy {
                         {
                             keyword: e,
                             containerName: 'accelerators',
-                            defaultAttributes: {},
+                            defaultAttributes: { increaseLabelSpacing: 0 },
                         },
                         [setName, setCoords, isDeAccelerator],
                     ),

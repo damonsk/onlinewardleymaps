@@ -1,8 +1,8 @@
+import MapElements from '../MapElements';
 import {
     Link,
     LinkExtractionStrategy,
     LinkResult,
-    MapElements,
 } from './LinkStrategiesInterfaces';
 
 export default class AllLinksStrategy implements LinkExtractionStrategy {

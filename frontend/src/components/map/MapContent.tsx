@@ -4,11 +4,11 @@ import {
     MapAccelerators,
     MapAnchors,
     MapAnnotations,
-    MapElement,
     MapMethods,
     MapNotes,
 } from '../../linkStrategies/LinkStrategiesInterfaces';
-import MapElements, { Component, ComponentDectorator } from '../../MapElements';
+import MapElements from '../../MapElements';
+import { Component, MapElement } from '../../types/base';
 import { MapTheme } from '../../types/map/styles';
 import {
     ProcessedLinkGroup,
@@ -33,20 +33,19 @@ import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
 import Note from './Note';
 
-interface MapBaseElement extends MapElement {
-    id: string;
-    visibility: number;
-    maturity: number;
-    type: string;
-    offsetY?: number;
-    evolved?: boolean;
-    evolving?: boolean;
-    pipeline?: boolean;
-    url?: string | { url: string; [key: string]: any };
-    evolveMaturity?: number;
-    decorators: ComponentDectorator;
-    line?: number;
-}
+// interface MapBaseElement extends MapElement {
+//     id: string;
+//     visibility: number;
+//     maturity: number;
+//     type: string;
+//     offsetY?: number;
+//     evolved?: boolean;
+//     pipeline?: boolean;
+//     url?: string | { url: string; [key: string]: any };
+//     evolveMaturity?: number;
+//     decorators: ComponentDecorator;
+//     line?: number;
+// }
 
 interface MapContentProps {
     mapAttitudes: any[];
@@ -56,7 +55,7 @@ interface MapContentProps {
     mutateMapText: (text: string) => void;
     scaleFactor: number;
     mapElementsClicked: Array<{
-        el: MapBaseElement;
+        el: MapElement;
         e: MouseEvent<Element>;
     }>;
     links: ProcessedLinkGroup[];
@@ -69,10 +68,7 @@ interface MapContentProps {
     enableNewPipelines: boolean;
     mapAnchors: MapAnchors[];
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    clicked: (data: {
-        el: MapBaseElement;
-        e: MouseEvent<Element> | null;
-    }) => void;
+    clicked: (data: { el: MapElement; e: MouseEvent<Element> | null }) => void;
     enableAccelerators: boolean;
     mapAccelerators: MapAccelerators[];
     mapNotes: MapNotes[];

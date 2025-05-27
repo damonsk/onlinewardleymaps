@@ -1,4 +1,4 @@
-import { ComponentLabel } from '../conversion/converter';
+import { ComponentLabel, IProvideBaseElement } from '../base';
 
 export interface MapComponent {
     maturity: number;
@@ -45,12 +45,7 @@ export interface LinkStrategy {
     past?: boolean;
 }
 
-export interface IProvideBaseElement {
-    id: number;
-    line: number;
-}
-
-export interface MapElements {
+export interface IProvideMapElements {
     getNonEvolvedElements(): MapElement[];
     getEvolvedElements(): MapElement[];
     getEvolveElements(): MapElement[];

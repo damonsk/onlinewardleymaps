@@ -1,4 +1,4 @@
-import { IProvideDefaultAttributes } from './IProvideDefaultAttributes';
+import { IProvideDefaultAttributes } from '../types/base';
 
 export interface IProvideBaseStrategyRunnerConfig {
     containerName: string;

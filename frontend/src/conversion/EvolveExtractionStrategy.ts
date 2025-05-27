@@ -11,7 +11,7 @@ export default class EvolveExtractionStrategy implements IParseStrategy {
         const config = {
             keyword: 'evolve',
             containerName: 'evolved',
-            defaultAttributes: {},
+            defaultAttributes: { increaseLabelSpacing: 0 },
         };
         this.data = data;
         this.keyword = config.keyword;

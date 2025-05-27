@@ -1,10 +1,10 @@
+import MapElements from '../MapElements';
 import {
     Anchor,
     Link,
     LinkExtractionStrategy,
     LinkResult,
     MapElement,
-    MapElements,
 } from './LinkStrategiesInterfaces';
 
 export default class AnchorNoneEvolvedLinksStrategy

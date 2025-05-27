@@ -1,5 +1,3 @@
-import { ComponentDectorator } from '../MapElements';
-
 // Link Types
 export interface Link {
     start: string;
@@ -14,27 +12,27 @@ export interface MapElement {
     type: string;
     evolveMaturity?: number;
     maturity: number;
-    evolving?: boolean;
-    evolved?: boolean;
-    pseudoComponent?: boolean;
-    offsetY?: number;
+    evolving: boolean; // Was optional
+    evolved: boolean; // Was optional
+    pseudoComponent: boolean; // Was optional
+    offsetY: number; // Was optional
     label: ComponentLabel;
     override?: any;
     line?: any;
-    decorators: ComponentDectorator;
-    increaseLabelSpacing?: number;
+    decorators: ComponentDecorator;
+    increaseLabelSpacing: number; // Was optional
 }
 
 export interface LinkExtractionStrategy {
     getLinks(): LinkResult;
 }
 
-export interface MapElements {
-    getEvolveElements(): MapElement[];
-    getEvolvedElements(): MapElement[];
-    getNoneEvolvedOrEvolvingElements(): MapElement[];
-    getNoneEvolvingElements(): MapElement[];
-}
+// export interface MapElements {
+//     getEvolveElements(): MapElement[];
+//     getEvolvedElements(): MapElement[];
+//     getNoneEvolvedOrEvolvingElements(): MapElement[];
+//     getNoneEvolvingElements(): MapElement[];
+// }
 
 export interface LinkStrategy {
     name: string;
@@ -69,11 +67,11 @@ export interface NamedComponent {
 }
 
 export interface MapLinks extends Link {
-    flow?: boolean;
-    future?: boolean;
-    past?: boolean;
-    context?: string;
-    flowValue?: string;
+    flow: boolean; // Was optional
+    future: boolean; // Was optional
+    past: boolean; // Was optional
+    context: string; // Was optional
+    flowValue: string; // Was optional
 }
 
 export interface MapAnchors extends NamedComponent {
@@ -84,6 +82,10 @@ export interface MapAnchors extends NamedComponent {
     type: string;
     inertia: boolean;
     decorators: ComponentDecorator;
+    increaseLabelSpacing: number; // Was optional
+    pseudoComponent: boolean; // Was optional
+    offsetY: number; // Was optional
+    evolving: boolean; // Was optional
 }
 
 export interface MapEvolved {}
@@ -121,8 +123,8 @@ export interface MapAccelerators {
     name: string;
     maturity: number;
     visibility: number;
-    offsetY?: number;
-    evolved?: boolean;
+    offsetY: number; // Was optional
+    evolved: boolean; // Was optional
     deaccelerator: boolean;
     line: number;
 }
@@ -166,19 +168,20 @@ export interface Component {
     type: string;
     maturity: number;
     evolveMaturity?: number;
-    evolving: boolean;
-    evolved?: boolean;
-    pseudoComponent?: boolean;
-    offsetY?: number;
+    evolving: boolean; // Maintained as non-optional
+    evolved: boolean; // Was optional
+    pseudoComponent: boolean; // Was optional
+    offsetY: number; // Was optional
     inertia: boolean;
     label: ComponentLabel;
     line: number;
+    increaseLabelSpacing: number; // Was optional
 }
 
 export interface ComponentDecorator {
-    ecosystem?: boolean;
-    market?: boolean;
-    method?: string;
+    ecosystem: boolean; // Was optional
+    market: boolean; // Was optional
+    method: string; // Was optional
 }
 
 export interface EvolvedElement {
@@ -186,7 +189,7 @@ export interface EvolvedElement {
     name: string;
     label: ComponentLabel;
     override?: Record<string, unknown>;
-    line?: number;
+    line: number; // Was optional
     decorators: ComponentDecorator;
     increaseLabelSpacing: number;
 }
@@ -196,7 +199,7 @@ export interface Pipeline {
     components: Component[];
     inertia: boolean;
     visibility: number;
-    hidden?: boolean;
+    hidden: boolean; // Was optional
 }
 
 // Strategy Types
@@ -205,7 +208,7 @@ export interface IParseStrategy {
 }
 
 export interface IProvideDefaultAttributes {
-    increaseLabelSpacing?: number;
+    increaseLabelSpacing: number; // Was optional
 }
 
 export interface IProvideBaseElement {
@@ -234,7 +237,7 @@ export interface IPipelineComponent extends IProvideBaseElement {
     components: MapComponent[];
     maturity1?: number;
     maturity2?: number;
-    hidden?: boolean;
+    hidden: boolean; // Was optional
 }
 
 // Map Presentation Types

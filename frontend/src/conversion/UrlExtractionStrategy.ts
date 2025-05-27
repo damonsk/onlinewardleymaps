@@ -16,7 +16,7 @@ export default class UrlExtractionStrategy implements IParseStrategy {
             {
                 keyword: this.keyword,
                 containerName: this.containerName,
-                defaultAttributes: {},
+                defaultAttributes: { increaseLabelSpacing: 0 },
             },
             [ExtractionFunctions.setName, ExtractionFunctions.setUrl],
         );

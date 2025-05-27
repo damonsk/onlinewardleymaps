@@ -16,7 +16,7 @@ export default class NoteExtractionStrategy implements IParseStrategy {
             {
                 keyword: this.keyword,
                 containerName: this.containerName,
-                defaultAttributes: {},
+                defaultAttributes: { increaseLabelSpacing: 0 },
             },
             [ExtractionFunctions.setText, ExtractionFunctions.setCoords],
         );
