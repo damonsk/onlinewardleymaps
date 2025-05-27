@@ -36,6 +36,7 @@
         "lint-staged": "^15.2.2",
         "prettier": "^3.2.5",
         "rollup": "^4.13.0",
+        "sonarqube-scanner": "^4.3.0",
         "typescript": "^5.4.3"
     },
     "env": {
@@ -89,7 +90,8 @@
         "precommit": "yarn run format-staged && yarn test",
         "package": "rollup -c",
         "test": "jest --env=jsdom",
-        "test:watch": "jest --watchAll --env=jsdom"
+        "test:watch": "jest --watchAll --env=jsdom",
+        "sonar": "node sonar-project.js"
     },
     "browserslist": {
         "production": [

@@ -3,9 +3,10 @@ import {
     setCoords,
     setName,
 } from '../constants/extractionFunctions';
+import { IParseStrategy } from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
 
-export default class AcceleratorExtractionStrategy {
+export default class AcceleratorExtractionStrategy implements IParseStrategy {
     data: string;
     containerName: string;
     baseStrategies: BaseStrategyRunner[];
