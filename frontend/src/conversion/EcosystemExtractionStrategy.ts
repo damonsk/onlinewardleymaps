@@ -1,5 +1,5 @@
+import { IParseStrategy } from '../types/base';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
-import { IParseStrategy } from './IParseStrategy';
 
 export default class EcosystemExtractionStrategy implements IParseStrategy {
     data: string;

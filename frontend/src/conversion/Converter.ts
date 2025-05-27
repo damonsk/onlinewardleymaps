@@ -1,6 +1,5 @@
 import { OwmFeatureSwitches } from '../constants/featureswitches';
-import { Link } from '../linkStrategies/LinkStrategiesInterfaces';
-import { ComponentDectorator } from '../MapElements';
+import { WardleyMap } from '../types/base';
 import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
@@ -12,101 +11,12 @@ import LinksExtractionStrategy from './LinksExtractionStrategy';
 import MarketExtractionStrategy from './MarketExtractionStrategy';
 import MethodExtractionStrategy from './MethodExtractionStrategy';
 import NoteExtractionStrategy from './NoteExtractionStrategy';
-import ParseError from './ParseError';
 import PipelineExtractionStrategy from './PipelineExtractionStrategy';
-import PresentationExtractionStrategy, {
-    MapPresentationStyle,
-} from './PresentationExtractionStrategy';
+import PresentationExtractionStrategy from './PresentationExtractionStrategy';
 import SubMapExtractionStrategy from './SubMapExtractionStrategy';
 import TitleExtractionStrategy from './TitleExtractionStrategy';
 import UrlExtractionStrategy from './UrlExtractionStrategy';
-import XAxisLabelsExtractionStrategy, {
-    EvolutionLabel,
-} from './XAxisLabelsExtractionStrategy';
-
-export interface WardleyMap {
-    presentation: MapPresentationStyle;
-    links: MapLinks[];
-    anchors: MapAnchors[];
-    evolved: MapEvolved[];
-    pipelines: MapPipelines[];
-    elements: MapComponents[];
-    annotations: MapAnnotations[];
-    notes: MapNotes[];
-    evolution: MapEvolution;
-    methods: MapMethods[];
-    title: string;
-    submaps: MapSubmaps[];
-    markets: MapMarkets[];
-    ecosystems: MapEcosystems[];
-    urls: MapUrls[];
-    attitudes: MapAttitudes[];
-    accelerators: MapAccelerators[];
-    errors: Array<ParseError>;
-}
-
-export interface MapAnnotation {
-    maturity: number;
-    number: number;
-    visibility: number;
-    text: string;
-}
-export interface NamedComponent {
-    name: string;
-    label: ComponentLabel;
-    line: number;
-}
-
-export interface ComponentLabel {
-    x: number;
-    y: number;
-}
-
-export interface MapLinks extends Link {
-    flow?: boolean;
-    future?: boolean;
-    past?: boolean;
-    context?: string;
-    flowValue?: string;
-}
-export interface MapAnchors extends NamedComponent {
-    evolved: boolean;
-    maturity: number;
-    visibility: number;
-    id: string;
-    type: string;
-    inertia: boolean;
-    decorators: ComponentDectorator;
-}
-export interface MapEvolved {}
-export interface MapPipelines {}
-export interface MapComponents extends NamedComponent {}
-export interface MapAnnotations {
-    number: number;
-    occurances: Array<MapAnnotation>;
-    text: string;
-}
-export interface MapNotes {}
-export interface MapEvolution extends Array<EvolutionLabel> {}
-export interface MapMethods {}
-export interface MapSubmaps extends NamedComponent {}
-export interface MapMarkets extends NamedComponent {}
-export interface MapEcosystems {}
-export interface MapUrls {
-    name: string;
-    url: string;
-}
-export interface MapAttitudes {}
-export interface MapAccelerators {
-    id: string;
-    name: string;
-    maturity: number;
-    visibility: number;
-    offsetY?: number;
-    evolved?: boolean;
-    deaccelerator: boolean;
-    line: number;
-}
+import XAxisLabelsExtractionStrategy from './XAxisLabelsExtractionStrategy';
 
 export default class Converter {
     featureSwitches: OwmFeatureSwitches;

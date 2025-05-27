@@ -1,16 +1,9 @@
-import { IProvideBaseStrategyRunnerConfig } from './BaseStrategyRunnerConfig';
-import { IParseStrategy } from './IParseStrategy';
-
-export interface IProvideBaseElement {
-    id: number;
-    line: number;
-}
-
-export interface IProvideDecoratorsConfig {
-    keyword: string;
-    containerName: string;
-    config: IProvideBaseStrategyRunnerConfig;
-}
+import {
+    IParseStrategy,
+    IProvideBaseElement,
+    IProvideBaseStrategyRunnerConfig,
+    IProvideDecoratorsConfig,
+} from '../types/base';
 
 export default class BaseStrategyRunner implements IParseStrategy {
     data: string;

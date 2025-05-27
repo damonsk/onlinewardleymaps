@@ -1,7 +1,7 @@
-import { MapAnchors, MapLinks, MapMethods } from '../conversion/Converter';
 import LinksBuilder from '../linkStrategies/LinksBuilder';
-import { MapElement } from '../linkStrategies/LinkStrategiesInterfaces';
+
 import MapElementsClass from '../MapElements';
+import { MapAnchors, MapElement, MapLinks, MapMethods } from '../types/base';
 
 export interface ProcessedLink {
     key: number;

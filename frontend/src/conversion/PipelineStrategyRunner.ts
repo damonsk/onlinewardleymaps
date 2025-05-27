@@ -1,22 +1,11 @@
 import {
+    IParseStrategy,
+    IPipelineComponent,
     IProvideBaseElement,
+    IProvideBaseStrategyRunnerConfig,
     IProvideDecoratorsConfig,
-} from './BaseStrategyRunner';
-import { IProvideBaseStrategyRunnerConfig } from './BaseStrategyRunnerConfig';
-import { IParseStrategy } from './IParseStrategy';
+} from '../types/base';
 import ParseError from './ParseError';
-
-export interface MapComponent {
-    maturity: number;
-    visibility: number;
-}
-
-export interface IPipelineComponent extends IProvideBaseElement {
-    components: MapComponent[];
-    maturity1?: number;
-    maturity2?: number;
-    hidden?: boolean;
-}
 
 export default class PipelineStrategyRunner implements IParseStrategy {
     data: string;

@@ -1,6 +1,8 @@
-import { IProvideBaseStrategyRunnerConfig } from './BaseStrategyRunnerConfig';
+import {
+    IParseStrategy,
+    IProvideBaseStrategyRunnerConfig,
+} from '../types/base';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
-import { IParseStrategy } from './IParseStrategy';
 
 export default class ComponentExtractionStrategy implements IParseStrategy {
     data: string;

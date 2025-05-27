@@ -1,5 +1,5 @@
 import { useFeatureSwitches } from './components/FeatureSwitchesContext';
-import { ComponentLabel, MapUrls } from './conversion/Converter';
+import { ComponentLabel, MapUrls } from './types/base';
 
 export interface Component {
     url: MapUrls;

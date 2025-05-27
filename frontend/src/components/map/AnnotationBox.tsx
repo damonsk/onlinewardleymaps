@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import { MapTheme } from '../../constants/mapstyles';
-import { MapAnnotations } from '../../conversion/Converter';
+import { MapAnnotations } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
 import Movable from './Movable';

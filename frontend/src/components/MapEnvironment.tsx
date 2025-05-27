@@ -16,11 +16,15 @@ import Router from 'next/router';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
-import { MapTheme } from '../constants/mapstyles';
-import Converter, {
+import Converter from '../conversion/Converter';
+import { LoadMap } from '../repository/LoadMap';
+import { MapIteration, OwnApiWardleyMap } from '../repository/OwnApiWardleyMap';
+import { SaveMap } from '../repository/SaveMap';
+import {
     MapAccelerators,
     MapAnchors,
     MapAnnotations,
+    MapAnnotationsPosition,
     MapAttitudes,
     MapComponents,
     MapEcosystems,
@@ -30,16 +34,11 @@ import Converter, {
     MapMethods,
     MapNotes,
     MapPipelines,
+    MapSize,
     MapSubmaps,
     MapUrls,
-} from '../conversion/Converter';
-import {
-    MapAnnotationsPosition,
-    MapSize,
-} from '../conversion/PresentationExtractionStrategy';
-import { LoadMap } from '../repository/LoadMap';
-import { MapIteration, OwnApiWardleyMap } from '../repository/OwnApiWardleyMap';
-import { SaveMap } from '../repository/SaveMap';
+} from '../types/base';
+import { MapTheme } from '../types/map/styles';
 import { useFeatureSwitches } from './FeatureSwitchesContext';
 import { ModKeyPressedProvider } from './KeyPressContext';
 import QuickAdd from './actions/QuickAdd';

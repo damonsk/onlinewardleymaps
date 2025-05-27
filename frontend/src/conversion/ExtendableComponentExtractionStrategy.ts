@@ -1,10 +1,11 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-import BaseStrategyRunner, {
+import {
+    IParseStrategy,
     IProvideBaseElement,
+    IProvideBaseStrategyRunnerConfig,
     IProvideDecoratorsConfig,
-} from './BaseStrategyRunner';
-import { IProvideBaseStrategyRunnerConfig } from './BaseStrategyRunnerConfig';
-import { IParseStrategy } from './IParseStrategy';
+} from '../types/base';
+import BaseStrategyRunner from './BaseStrategyRunner';
 
 export default class ExtendableComponentExtractionStrategy
     implements IParseStrategy

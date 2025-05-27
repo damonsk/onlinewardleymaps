@@ -1,7 +1,7 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 import { OwmFeatureSwitches } from '../constants/featureswitches';
+import { IParseStrategy } from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
-import { IParseStrategy } from './IParseStrategy';
 import PipelineStrategyRunner from './PipelineStrategyRunner';
 
 export default class PipelineExtractionStrategy implements IParseStrategy {

@@ -1,15 +1,15 @@
 import React, { MouseEvent, useMemo } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
 import {
     MapAccelerators,
     MapAnchors,
     MapAnnotations,
+    MapElement,
     MapMethods,
     MapNotes,
-} from '../../conversion/Converter';
-import { MapElement } from '../../linkStrategies/LinkStrategiesInterfaces';
+} from '../../linkStrategies/LinkStrategiesInterfaces';
 import MapElements, { Component, ComponentDectorator } from '../../MapElements';
+import { MapTheme } from '../../types/map/styles';
 import {
     ProcessedLinkGroup,
     processMapElements,

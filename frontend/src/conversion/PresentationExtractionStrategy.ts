@@ -1,20 +1,5 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-
-export interface MapAnnotationsPosition {
-    visibility: number;
-    maturity: number;
-}
-
-export interface MapSize {
-    width: number;
-    height: number;
-}
-
-export interface MapPresentationStyle {
-    style: string;
-    annotations: MapAnnotationsPosition;
-    size: MapSize;
-}
+import { MapPresentationStyle } from '../types/base';
 
 export default class PresentationExtractionStrategy {
     data: string;

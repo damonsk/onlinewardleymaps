@@ -1,6 +1,6 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
+import { IParseStrategy } from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
-import { IParseStrategy } from './IParseStrategy';
 
 export default class AnchorExtractionStrategy implements IParseStrategy {
     data: string;

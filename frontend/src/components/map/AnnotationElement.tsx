@@ -1,6 +1,5 @@
-import { JSX } from 'react';
-import { MapTheme } from '../../constants/mapstyles';
-import { MapAnnotation, MapAnnotations } from '../../conversion/Converter';
+import { MapAnnotation, MapAnnotations } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';

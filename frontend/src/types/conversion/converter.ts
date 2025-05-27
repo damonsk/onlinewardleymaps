@@ -1,6 +1,5 @@
-import { EvolutionLabel } from '../../conversion/XAxisLabelsExtractionStrategy';
 import { Link } from '../../linkStrategies/LinkStrategiesInterfaces';
-import { ComponentDecorator } from '../base';
+import { ComponentDecorator, EvolutionLabel } from '../base';
 import { MapPresentationStyle } from './strategies';
 
 export interface ComponentLabel {

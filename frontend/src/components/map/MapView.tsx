@@ -6,11 +6,12 @@ import {
     MapDimensions,
     Offsets,
 } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
+
 import {
     MapAccelerators,
     MapAnchors,
     MapAnnotations,
+    MapAnnotationsPosition,
     MapAttitudes,
     MapComponents,
     MapEcosystems,
@@ -21,8 +22,8 @@ import {
     MapNotes,
     MapPipelines,
     MapSubmaps,
-} from '../../conversion/Converter';
-import { MapAnnotationsPosition } from '../../conversion/PresentationExtractionStrategy';
+} from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import MapCanvas from './MapCanvas';

@@ -8,7 +8,7 @@ import {
     MapComponents,
     MapMarkets,
     MapSubmaps,
-} from '../../conversion/Converter';
+} from '../../types/base';
 import { WrappedEditorProps } from './WrappedEditor';
 
 const TextEditor = dynamic(() => import('./WrappedEditor'), {

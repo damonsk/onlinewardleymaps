@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
-import { MapAnchors } from '../../conversion/Converter';
+import { MapAnchors } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import Movable from './Movable';

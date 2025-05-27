@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapAccelerators } from '../../conversion/Converter';
+
+import { MapAccelerators } from '../../types/base';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';

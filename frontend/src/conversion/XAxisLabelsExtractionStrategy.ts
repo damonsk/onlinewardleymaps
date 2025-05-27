@@ -1,4 +1,4 @@
-import { IParseStrategy } from './IParseStrategy';
+import { EvolutionLabel, IParseStrategy } from '../types/base';
 import ParseError from './ParseError';
 
 export default class XAxisLabelsExtractionStrategy implements IParseStrategy {
@@ -41,9 +41,4 @@ export default class XAxisLabelsExtractionStrategy implements IParseStrategy {
             errors,
         };
     }
-}
-
-export interface EvolutionLabel {
-    line1: string;
-    line2: string;
 }
