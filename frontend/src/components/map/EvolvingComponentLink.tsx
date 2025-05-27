@@ -1,12 +1,46 @@
 import React from 'react';
-import PositionCalculator from './PositionCalculator';
-import Inertia from './Inertia';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../constants/mapstyles';
 import LinkSymbol from '../symbols/LinkSymbol';
+import Inertia from './Inertia';
+import PositionCalculator from './PositionCalculator';
+
+interface EvolutionOffsets {
+    commodity: number;
+    product: number;
+    custom: number;
+}
+
+interface MapElement {
+    id: string;
+    maturity: number;
+    visibility: number;
+    offsetY?: number;
+    evolved?: boolean;
+    evolving?: boolean;
+    inertia?: boolean;
+}
+
+interface EvolvingComponentLinkProps {
+    startElement: MapElement;
+    endElement: MapElement;
+    mapDimensions: MapDimensions;
+    evolutionOffsets: EvolutionOffsets;
+    mapStyleDefs: MapTheme;
+}
 
 const setBoundary = (
-    positionCalc,
-    { mapDimensions, evolutionOffsets, startElement },
-) => {
+    positionCalc: PositionCalculator,
+    {
+        mapDimensions,
+        evolutionOffsets,
+        startElement,
+    }: {
+        mapDimensions: MapDimensions;
+        evolutionOffsets: EvolutionOffsets;
+        startElement: MapElement;
+    },
+): number | null => {
     const boundWidth = mapDimensions.width / 20;
     const limits = [
         evolutionOffsets.commodity,
@@ -25,8 +59,13 @@ const setBoundary = (
     return null;
 };
 
-function EvolvingComponentLink(props) {
-    const { mapStyleDefs, mapDimensions, startElement, endElement } = props;
+const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
+    startElement,
+    endElement,
+    mapDimensions,
+    evolutionOffsets,
+    mapStyleDefs,
+}) => {
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
     const x1 = positionCalc.maturityToX(startElement.maturity, width);
@@ -37,10 +76,15 @@ function EvolvingComponentLink(props) {
     const y2 =
         positionCalc.visibilityToY(endElement.visibility, height) +
         (endElement.offsetY ? endElement.offsetY : 0);
-    let boundary;
+    let boundary: number | undefined;
 
     if (endElement.inertia) {
-        boundary = setBoundary(positionCalc, props) || x1;
+        boundary =
+            setBoundary(positionCalc, {
+                mapDimensions,
+                evolutionOffsets,
+                startElement,
+            }) || x1;
     }
 
     return (
@@ -57,13 +101,13 @@ function EvolvingComponentLink(props) {
             />
             {endElement.inertia && (
                 <Inertia
-                    maturity={boundary}
+                    maturity={boundary!}
                     visibility={endElement.visibility}
                     mapDimensions={mapDimensions}
                 />
             )}
         </>
     );
-}
+};
 
 export default EvolvingComponentLink;

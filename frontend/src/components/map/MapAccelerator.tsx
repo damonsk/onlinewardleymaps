@@ -1,0 +1,76 @@
+import React from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
+
+interface MapAcceleratorElement {
+    id: string;
+    name: string;
+    maturity: number;
+    visibility: number;
+    offsetY?: number;
+    evolved?: boolean;
+    deaccelerator?: boolean;
+}
+
+interface MapAcceleratorProps {
+    element: MapAcceleratorElement;
+    mapDimensions: MapDimensions;
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    children: React.ReactNode;
+}
+
+const MapAccelerator: React.FC<MapAcceleratorProps> = ({
+    element,
+    mapDimensions,
+    mapText,
+    mutateMapText,
+    children,
+}) => {
+    const positionCalc = new PositionCalculator();
+    const x = positionCalc.maturityToX(element.maturity, mapDimensions.width);
+    const y =
+        positionCalc.visibilityToY(element.visibility, mapDimensions.height) +
+        (element.offsetY ? element.offsetY : 0);
+
+    const positionUpdater = new DefaultPositionUpdater(
+        element.deaccelerator ? 'deaccelerator' : 'accelerator',
+        mapText,
+        mutateMapText,
+        [NotDefinedCoordsMatcher, ExistingCoordsMatcher],
+    );
+
+    const endDrag = (moved: { x: number; y: number }) => {
+        const visibility = positionCalc.yToVisibility(
+            moved.y,
+            mapDimensions.height,
+        );
+        const maturity = positionCalc.xToMaturity(moved.x, mapDimensions.width);
+        positionUpdater.update(
+            { param1: visibility, param2: maturity },
+            element.name,
+        );
+    };
+
+    return (
+        <Movable
+            id={'accelerator_element_' + element.id}
+            onMove={endDrag}
+            x={x}
+            y={y}
+            fixedY={element.evolved}
+            fixedX={false}
+            shouldShowMoving={false}
+            isModKeyPressed={false}
+            scaleFactor={props.scaleFactor}
+        >
+            <>{children}</>
+        </Movable>
+    );
+};
+
+export default MapAccelerator;

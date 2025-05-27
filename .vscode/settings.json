@@ -1,6 +1,8 @@
 {
-  // "editor.formatOnSave": true, // this runs VSCode formatter instead of prettier which messes things up.  
-  "editor.insertSpaces": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
   "typescript.tsc.autoDetect": "on",
   "typescript.preferences.quoteStyle": "single",
   "editor.codeActionsOnSave": {
@@ -18,8 +20,6 @@
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
   "eslint.lintTask.enable": true,
   "eslint.run": "onSave",
-  "eslint.workingDirectories": [
-    "/frontend/"
-  ],
+  "eslint.workingDirectories": ["/frontend/"],
   "eslint.debug": true
 }
