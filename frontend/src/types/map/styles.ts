@@ -30,6 +30,22 @@ export interface MapAnnotationTheme {
     boxTextColour: string;
 }
 
+// Attitude Theme
+export interface MapAttitudeTypeTheme {
+    stroke?: string;
+    fill?: string;
+    fillOpacity?: number;
+    strokeOpacity?: number;
+}
+
+export interface MapAttitudeTheme {
+    strokeWidth?: string;
+    fontSize?: string;
+    pioneers?: MapAttitudeTypeTheme;
+    settlers?: MapAttitudeTypeTheme;
+    townplanners?: MapAttitudeTypeTheme;
+}
+
 // Note Theme
 export interface MapNoteTheme extends TextTheme {
     fontWeight: string;
@@ -46,22 +62,6 @@ export interface MapMethodsTheme {
     buy: MapMethodTheme;
     build: MapMethodTheme;
     outsource: MapMethodTheme;
-}
-
-// Attitude Theme
-export interface MapAttitudeTypeTheme {
-    stroke?: string;
-    fill?: string;
-    fillOpacity?: number;
-    strokeOpacity?: number;
-}
-
-export interface MapAttitudeTheme {
-    strokeWidth?: string;
-    fontSize?: string;
-    pioneers?: MapAttitudeTypeTheme;
-    settlers?: MapAttitudeTypeTheme;
-    townplanners?: MapAttitudeTypeTheme;
 }
 
 // Main Theme Interface
