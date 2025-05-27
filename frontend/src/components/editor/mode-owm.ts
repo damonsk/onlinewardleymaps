@@ -1,5 +1,7 @@
 /* eslint-disable */
-import * as ace from 'ace-builds';
+import type { Ace } from 'ace-builds';
+// @ts-ignore - ace-builds has incorrect type definitions
+import ace from 'ace-builds';
 
 interface Mode {
     HighlightRules: any;
@@ -7,19 +9,34 @@ interface Mode {
     blockComment?: { start: string; end: string };
 }
 
+interface RequireFunction {
+    (path: string): any;
+}
+
+interface ModuleExports {
+    Mode: any;
+    OwmHighlightRules: any;
+}
+
+interface Module {
+    exports: ModuleExports;
+}
+
 interface TextMode {
     Mode: Mode;
 }
 
+interface HighlightRule {
+    token: string | string[];
+    regex: string;
+    next?: string;
+    caseInsensitive?: boolean;
+    defaultToken?: string;
+}
+
 interface TextHighlightRules {
     $rules: {
-        [key: string]: Array<{
-            token: string | string[];
-            regex: string;
-            next?: string;
-            caseInsensitive?: boolean;
-            defaultToken?: string;
-        }>;
+        [key: string]: HighlightRule[];
     };
 }
 
@@ -29,7 +46,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
     getEndRule(start: string): { token: string; regex: string; next: string };
 }
 
-ace.define(
+(ace as any).define(
     'ace/mode/owm',
     [
         'require',
@@ -39,7 +56,7 @@ ace.define(
         'ace/mode/text',
         'ace/mode/owm_highlight_rules',
     ],
-    function (require, exports, module) {
+    function (require: RequireFunction, exports: ModuleExports, _module: Module) {
         const oop = require('../lib/oop');
         const TextMode = require('./text').Mode;
         const OwmHighlightRules =
@@ -50,7 +67,7 @@ ace.define(
         };
         oop.inherits(Mode, TextMode);
 
-        (function () {
+        (function (this: Mode) {
             this.lineCommentStart = '//';
             this.blockComment = { start: '/*', end: '*/' };
         }).call(Mode.prototype);
@@ -59,7 +76,7 @@ ace.define(
     },
 );
 
-ace.define(
+(ace as any).define(
     'ace/mode/owm_highlight_rules',
     [
         'require',
@@ -68,7 +85,7 @@ ace.define(
         'ace/lib/oop',
         'ace/mode/text_highlight_rules',
     ],
-    function (require, exports, module) {
+    function (require: RequireFunction, exports: ModuleExports, _module: Module) {
         const oop = require('../lib/oop');
         const TextHighlightRules =
             require('./text_highlight_rules').TextHighlightRules;
@@ -84,8 +101,10 @@ ace.define(
                     },
                     DocCommentHighlightRules.getTagRule(),
                     {
+                        token: 'comment.doc',
+                        regex: '.*?',
                         defaultToken: 'comment.doc',
-                        caseInsensitive: true,
+                        caseInsensitive: true
                     },
                 ],
             };
@@ -100,7 +119,7 @@ ace.define(
             };
         };
 
-        DocCommentHighlightRules.getStartRule = function (start) {
+        DocCommentHighlightRules.getStartRule = function (start: string) {
             return {
                 token: 'comment.doc', // doc comment
                 regex: '\\/\\*(?=\\*)',
@@ -108,7 +127,7 @@ ace.define(
             };
         };
 
-        DocCommentHighlightRules.getEndRule = function (start) {
+        DocCommentHighlightRules.getEndRule = function (start: string) {
             return {
                 token: 'comment.doc', // closing comment
                 regex: '\\*\\/',
@@ -252,7 +271,9 @@ ace.define(
                         regex: "(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\'))([^']+)(\\'(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)",
                     },
                     {
-                        defaultToken: 'text',
+                        token: 'text',
+                        regex: '.',
+                        defaultToken: 'text'
                     },
                 ],
                 comment: [
@@ -262,7 +283,9 @@ ace.define(
                         next: 'start',
                     },
                     {
-                        defaultToken: 'comment',
+                        token: 'comment',
+                        regex: '.',
+                        defaultToken: 'comment'
                     },
                 ],
             };
