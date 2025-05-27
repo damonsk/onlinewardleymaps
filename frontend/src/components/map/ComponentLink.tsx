@@ -22,8 +22,6 @@ interface ComponentLinkProps {
         context?: string;
         flowValue?: string;
     };
-    setMetaText: (text: string) => void;
-    metaText: string;
     scaleFactor: number;
 }
 
@@ -33,8 +31,6 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
     startElement,
     endElement,
     link,
-    setMetaText,
-    metaText,
     scaleFactor,
 }) => {
     const { enableLinkContext } = useFeatureSwitches();
@@ -93,8 +89,6 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
                     startElement={startElement}
                     endElement={endElement}
                     link={link}
-                    metaText={metaText}
-                    setMetaText={setMetaText}
                     x={x2}
                     y={y2}
                     scaleFactor={scaleFactor}

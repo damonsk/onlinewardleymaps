@@ -107,7 +107,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     const mapRef = useRef<HTMLElement | null>(null);
     const [currentUrl, setCurrentUrl] = useState('');
     const [showUsage, setShowUsage] = useState(false);
-    const [metaText, setMetaText] = useState('');
     const [mapText, setMapText] = useState('');
     const [mapTitle, setMapTitle] = useState('Untitled Map');
     const [rawMapTitle, setRawMapTitle] = useState('Untitled Map');
@@ -259,7 +258,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
     function newMap(mapPersistenceStrategy: string) {
         setMapText('');
-        setMetaText('');
         setCurrentId('');
         setCurrentUrl('(unsaved)');
         setSaveOutstanding(false);
@@ -515,7 +513,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     setMapOnlyView={setMapOnlyView}
                     currentUrl={currentUrl}
                     saveOutstanding={saveOutstanding}
-                    setMetaText={setMetaText}
                     mutateMapText={mutateMapText}
                     newMapClick={newMap}
                     saveMapClick={saveMap}
@@ -605,8 +602,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                             mapRef={mapRef}
                             mapText={mapText}
                             mutateMapText={mutateMapText}
-                            setMetaText={setMetaText}
-                            metaText={metaText}
                             evolutionOffsets={Defaults.EvoOffsets}
                             setHighlightLine={setHighlightLine}
                             setNewComponentContext={setNewComponentContext}

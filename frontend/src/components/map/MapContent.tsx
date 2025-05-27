@@ -60,8 +60,6 @@ interface MapContentProps {
         e: MouseEvent<Element>;
     }>;
     links: ProcessedLinkGroup[];
-    setMetaText: (text: string) => void;
-    metaText: string;
     mapElements: MapElements;
     evolutionOffsets: {
         commodity: number;
@@ -93,8 +91,6 @@ const MapContent: React.FC<MapContentProps> = ({
     scaleFactor,
     mapElementsClicked,
     links,
-    setMetaText,
-    metaText,
     mapElements,
     evolutionOffsets,
     mapAnchors,
@@ -161,8 +157,6 @@ const MapContent: React.FC<MapContentProps> = ({
                 <g id={current.name} key={current.name}>
                     {current.links.map((l, i) => (
                         <ComponentLink
-                            setMetaText={setMetaText}
-                            metaText={metaText}
                             mapStyleDefs={mapStyleDefs}
                             key={i}
                             mapDimensions={mapDimensions}
@@ -242,8 +236,6 @@ const MapContent: React.FC<MapContentProps> = ({
                 mapDimensions={mapDimensions}
                 mapText={mapText}
                 mutateMapText={mutateMapText}
-                setMetaText={setMetaText}
-                metaText={metaText}
                 mapStyleDefs={mapStyleDefs}
                 setHighlightLine={setHighlightLine}
                 clicked={clicked}
@@ -260,8 +252,6 @@ const MapContent: React.FC<MapContentProps> = ({
                         element={el}
                         mapText={mapText}
                         mutateMapText={mutateMapText}
-                        setMetaText={setMetaText}
-                        metaText={metaText}
                         mapStyleDefs={mapStyleDefs}
                         setHighlightLine={setHighlightLine}
                         scaleFactor={scaleFactor}

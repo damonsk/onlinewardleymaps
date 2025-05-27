@@ -8,8 +8,6 @@ function MapPipelines({
     mapDimensions,
     mapText,
     mutateMapText,
-    setMetaText,
-    metaText,
     mapStyleDefs,
     setHighlightLine,
     clicked,
@@ -32,8 +30,6 @@ function MapPipelines({
                                     pipeline={p}
                                     mapText={mapText}
                                     mutateMapText={mutateMapText}
-                                    setMetaText={setMetaText}
-                                    metaText={metaText}
                                     mapStyleDefs={mapStyleDefs}
                                     setHighlightLine={setHighlightLine}
                                     linkingFunction={clicked}
@@ -46,8 +42,6 @@ function MapPipelines({
                                     pipeline={p}
                                     mapText={mapText}
                                     mutateMapText={mutateMapText}
-                                    setMetaText={setMetaText}
-                                    metaText={metaText}
                                     mapStyleDefs={mapStyleDefs}
                                     setHighlightLine={setHighlightLine}
                                     scaleFactor={scaleFactor}

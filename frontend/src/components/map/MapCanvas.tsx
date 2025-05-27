@@ -43,8 +43,6 @@ function MapCanvas(props: MapCanvasProps) {
         mapMethods,
         mapEvolutionStates,
         mapAttitudes,
-        setMetaText,
-        metaText,
         launchUrl,
         mapNotes,
         mapAnnotations,
@@ -209,8 +207,6 @@ function MapCanvas(props: MapCanvasProps) {
                     scaleFactor={scaleFactor}
                     mapElementsClicked={mapElementsClicked}
                     links={links}
-                    setMetaText={setMetaText}
-                    metaText={metaText}
                     mapElements={mapElements}
                     evolutionOffsets={evolutionOffsets}
                     mapAnchors={mapAnchors}

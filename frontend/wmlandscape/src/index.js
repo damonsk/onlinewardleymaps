@@ -104,7 +104,6 @@ import EvolvingToEvolvingLinksStrategy from '../../src/linkStrategies/EvolvingTo
 import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingToNoneEvolvingEndLinksStrategy';
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
 import MapElements from '../../src/MapElements';
-import MetaPositioner from '../../src/MetaPositioner';
 export {
     AccelerateSymbol,
     AcceleratorExtractionStrategy,
@@ -173,7 +172,6 @@ export {
     MapView,
     MarketExtractionStrategy,
     MarketSymbol,
-    MetaPositioner,
     MethodElement,
     MethodExtractionStrategy,
     MethodSymbol,

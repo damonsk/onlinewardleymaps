@@ -64,7 +64,6 @@ export interface NewHeaderProps {
     saveOutstanding: any;
     saveMapClick: any;
     mutateMapText: any;
-    setMetaText: any;
     newMapClick: any;
     downloadMapImage: any;
     currentUrl: any;
@@ -82,7 +81,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     saveOutstanding,
     saveMapClick,
     mutateMapText,
-    setMetaText,
     newMapClick,
     downloadMapImage,
     currentUrl,
@@ -99,7 +97,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     const [modalShow, setModalShow] = useState(false);
     const example = () => {
         mutateMapText(ExampleMap);
-        setMetaText('');
     };
     const textArea = useRef(null);
     const copyCodeToClipboard = () => {

@@ -54,8 +54,6 @@ export interface MapViewProps {
     mapRef: React.MutableRefObject<HTMLElement | null>;
     mapText: string;
     mutateMapText: (newText: string) => void;
-    setMetaText: React.Dispatch<React.SetStateAction<string>>;
-    metaText: string;
     evolutionOffsets: Offsets;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     setNewComponentContext: React.Dispatch<React.SetStateAction<null>>;

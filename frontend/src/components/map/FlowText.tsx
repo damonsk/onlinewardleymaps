@@ -4,7 +4,6 @@ import {
     Link,
     MapElement,
 } from '../../linkStrategies/LinkStrategiesInterfaces';
-import MetaPositioner from '../../MetaPositioner';
 import RelativeMovable from '../map/RelativeMovable';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 
@@ -19,8 +18,6 @@ interface FlowTextProps {
         context?: string;
         flowValue?: string;
     };
-    setMetaText: (text: string) => void;
-    metaText: string;
     x: number;
     y: number;
     scaleFactor: number;
@@ -31,33 +28,11 @@ const FlowText: React.FC<FlowTextProps> = ({
     startElement,
     endElement,
     link,
-    setMetaText,
-    metaText,
     x,
     y,
     scaleFactor,
 }) => {
-    const metaPosition = new MetaPositioner();
     const flowLabelElementId = `flow_text_${startElement.id}_${endElement.id}`;
-
-    const getMetaPosition = () => {
-        const defaultOffset = {
-            x: 0,
-            y: -30,
-            coords: { x: 0, y: -30 },
-        };
-        return metaPosition.for(flowLabelElementId, metaText, defaultOffset);
-    };
-
-    const flowLabelPosition = getMetaPosition();
-
-    const flowLabelEndDrag = (moved: {
-        x: number;
-        y: number;
-        coords: { x: number; y: number };
-    }) => {
-        setMetaText(metaPosition.update(flowLabelElementId, metaText, moved));
-    };
 
     if (!link.flowValue) {
         return null;
@@ -75,9 +50,16 @@ const FlowText: React.FC<FlowTextProps> = ({
                 id={flowLabelElementId}
                 fixedX={false}
                 fixedY={false}
-                onMove={flowLabelEndDrag}
-                y={flowLabelPosition.y}
-                x={flowLabelPosition.x}
+                y={
+                    (() => {
+                        return { x: 0, y: -30 };
+                    })().y
+                }
+                x={
+                    (() => {
+                        return { x: 0, y: -30 };
+                    })().x
+                }
                 scaleFactor={scaleFactor}
             >
                 <ComponentTextSymbol
