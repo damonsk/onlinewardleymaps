@@ -74,9 +74,10 @@ export class UnifiedConverter {
             legacyMap.evolved || [],
         );
 
-        // Transform pipelines
+        // Transform pipelines (must be done after components for visibility processing)
         unifiedMap.pipelines = this.transformPipelines(
             legacyMap.pipelines || [],
+            this.getAllComponents(unifiedMap),
         );
 
         // Transform links
@@ -142,20 +143,49 @@ export class UnifiedConverter {
     }
 
     /**
-     * Transform legacy pipelines
+     * Transform legacy pipelines with visibility processing
      */
-    private transformPipelines(legacyPipelines: any[]): PipelineData[] {
-        return legacyPipelines.map((pipeline) => ({
-            name: pipeline.name || '',
-            visibility: pipeline.visibility || 0,
-            components: (pipeline.components || []).map((comp: any) => ({
-                name: comp.name || '',
-                maturity: comp.maturity || 0,
-                visibility: comp.visibility || 0,
-            })),
-            inertia: pipeline.inertia || false,
-            hidden: pipeline.hidden || false,
-        }));
+    private transformPipelines(
+        legacyPipelines: any[],
+        allComponents?: UnifiedComponent[],
+    ): PipelineData[] {
+        return legacyPipelines.map((pipeline) => {
+            const transformedPipeline: PipelineData = {
+                id: pipeline.id || this.generateId(pipeline.name, 'pipeline'),
+                name: pipeline.name || '',
+                visibility: pipeline.visibility || 0,
+                line: pipeline.line,
+                components: (pipeline.components || []).map((comp: any) => ({
+                    id:
+                        comp.id ||
+                        this.generateId(comp.name, 'pipelinecomponent'),
+                    name: comp.name || '',
+                    maturity: comp.maturity || 0,
+                    visibility: comp.visibility || 0,
+                    line: comp.line,
+                    label: comp.label || { x: 0, y: 0 },
+                })),
+                inertia: pipeline.inertia || false,
+                hidden: pipeline.hidden || false,
+                maturity1: pipeline.maturity1,
+                maturity2: pipeline.maturity2,
+            };
+
+            // Apply processPipelines logic similar to legacy MapElements.ts
+            if (allComponents) {
+                const matchingComponent = allComponents.find(
+                    (component) => component.name === pipeline.name,
+                );
+                if (matchingComponent) {
+                    transformedPipeline.visibility =
+                        matchingComponent.visibility;
+                } else {
+                    transformedPipeline.hidden = true;
+                }
+            }
+
+            return transformedPipeline;
+        });
     }
 
     /**

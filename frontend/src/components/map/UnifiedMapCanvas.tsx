@@ -240,7 +240,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         mapElements={mapElements}
                         evolutionOffsets={evolutionOffsets}
                         enableNewPipelines={enableNewPipelines}
-                        mapAnchors={unifiedMap.anchors}
                         setHighlightLine={setHighlightLine}
                         clicked={clicked}
                         enableAccelerators={enableAccelerators}

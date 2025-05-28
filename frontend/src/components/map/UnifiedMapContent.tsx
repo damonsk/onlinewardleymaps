@@ -51,7 +51,6 @@ interface UnifiedMapContentProps {
         custom: number;
     };
     enableNewPipelines: boolean;
-    mapAnchors: UnifiedComponent[]; // Using unified types
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     clicked: (data: { el: MapElement; e: MouseEvent<Element> | null }) => void;
     enableAccelerators: boolean;
@@ -116,6 +115,7 @@ const createLegacyMapElementsAdapter = (
             // 2. Get evolved components (evolved versions of evolving components)
             // 3. Get evolving components (original evolving components)
             // 4. Combine them all
+            // 5. Filter out anchors to prevent double rendering (anchors have dedicated section)
             const noneEvolving = unifiedMapElements
                 .getStaticComponents()
                 .map(adaptUnifiedComponentToLegacy);
@@ -131,7 +131,8 @@ const createLegacyMapElementsAdapter = (
             const merged = noneEvolving
                 .concat(evolvedComponents)
                 .concat(evolvingComponents)
-                .filter((c) => !c.pseudoComponent);
+                .filter((c) => !c.pseudoComponent)
+                .filter((c) => c.type !== 'anchor'); // Filter out anchors to prevent double rendering
 
             console.log('getMergedElements result:', {
                 noneEvolving: noneEvolving.length,
@@ -175,7 +176,6 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
     links,
     mapElements,
     evolutionOffsets,
-    mapAnchors,
     setHighlightLine,
     clicked,
     enableAccelerators,
@@ -285,22 +285,24 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
             </g>
 
             <g id="anchors">
-                {mapAnchors.map((el: UnifiedComponent, i) => (
-                    <Anchor
-                        key={i}
-                        mapDimensions={mapDimensions}
-                        anchor={adaptUnifiedComponentToLegacy(el)}
-                        mapText={mapText}
-                        mutateMapText={mutateMapText}
-                        mapStyleDefs={mapStyleDefs}
-                        onClick={(e) =>
-                            clicked({
-                                el: adaptUnifiedComponentToLegacy(el),
-                                e,
-                            })
-                        }
-                    />
-                ))}
+                {mapElements
+                    .getComponentsByType('anchor')
+                    .map((el: UnifiedComponent, i) => (
+                        <Anchor
+                            key={i}
+                            mapDimensions={mapDimensions}
+                            anchor={adaptUnifiedComponentToLegacy(el)}
+                            mapText={mapText}
+                            mutateMapText={mutateMapText}
+                            mapStyleDefs={mapStyleDefs}
+                            onClick={(e) =>
+                                clicked({
+                                    el: adaptUnifiedComponentToLegacy(el),
+                                    e,
+                                })
+                            }
+                        />
+                    ))}
             </g>
 
             <g id="accelerators">
@@ -351,7 +353,7 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                         setHighlightLine={setHighlightLine}
                         scaleFactor={scaleFactor}
                     >
-                        {el.type === 'component' && (
+                        {el.type === 'component' && !el.pipeline && (
                             <ComponentSymbol
                                 styles={mapStyleDefs.component}
                                 onClick={(e: MouseEvent<SVGElement>) =>

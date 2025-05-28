@@ -113,20 +113,27 @@ export interface EvolvedElementData {
  * Interface for pipeline components
  */
 export interface PipelineComponentData {
+    id: string;
     name: string;
     maturity: number;
     visibility: number;
+    line?: number;
+    label?: ComponentLabel;
 }
 
 /**
  * Interface for pipelines
  */
 export interface PipelineData {
+    id: string;
     name: string;
     visibility: number;
+    line?: number;
     components: PipelineComponentData[];
     inertia?: boolean;
     hidden?: boolean;
+    maturity1?: number;
+    maturity2?: number;
 }
 
 /**
@@ -203,7 +210,7 @@ export const createEvolvedElement = (
 
 export const createPipeline = (
     partial: Partial<PipelineData> &
-        Pick<PipelineData, 'name' | 'visibility' | 'components'>,
+        Pick<PipelineData, 'id' | 'name' | 'visibility' | 'components'>,
 ): PipelineData => {
     return {
         inertia: false,
