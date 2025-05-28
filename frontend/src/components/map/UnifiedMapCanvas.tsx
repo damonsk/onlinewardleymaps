@@ -151,37 +151,23 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
 
     const fitToViewer = () => {
         if (Viewer.current) {
-            Viewer.current.fitToViewer();
+            Viewer.current.fitSelection(
+                -35,
+                -45,
+                mapDimensions.width + 70,
+                mapDimensions.height + 92,
+            );
         }
     };
 
     useEffect(() => {
-        if (Viewer.current !== null) {
+        if (Viewer.current) {
             fitToViewer();
         }
-    }, [mapCanvasDimensions]);
-
-    const mapCanvasClick = (e: any) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        props.handleMapCanvasClick && props.handleMapCanvasClick({ x, y });
-        mousePositionRef.current = { x: x, y: y };
-        // setMousePosition({ x, y });
-    };
+    }, []);
 
     return (
         <React.Fragment>
-            {showMapToolbar && (
-                <MapCanvasToolbar
-                    shouldHideNav={shouldHideNav}
-                    mapStyleDefs={mapStyleDefs}
-                    hideNav={false}
-                    tool={tool}
-                    handleChangeTool={handleChangeTool}
-                    _fitToViewer={fitToViewer}
-                />
-            )}
             <MapSVGContainer
                 viewerRef={Viewer}
                 tool={tool}
@@ -195,67 +181,63 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 onZoomReset={() => setScaleFactor(1)}
                 onMouseMove={handleMouseMove}
             >
-                <svg
-                    id="svgMap"
-                    width={mapDimensions.width}
-                    height={mapDimensions.height}
-                    viewBox={
-                        '0 0 ' +
-                        mapDimensions.width +
-                        ' ' +
-                        mapDimensions.height
-                    }
-                    xmlns="http://www.w3.org/2000/svg"
-                    onClick={mapCanvasClick}
-                >
-                    <defs>
-                        <filter id="dropshadow" width="200%" height="200%">
-                            <feDropShadow
-                                dx="0"
-                                dy="0"
-                                stdDeviation="5"
-                                floodColor="#000"
-                                floodOpacity="0.5"
-                            />
-                        </filter>
-                    </defs>
+                <defs>
+                    <filter id="dropshadow" width="200%" height="200%">
+                        <feDropShadow
+                            dx="0"
+                            dy="0"
+                            stdDeviation="5"
+                            floodColor="#000"
+                            floodOpacity="0.5"
+                        />
+                    </filter>
+                </defs>
 
-                    <MapGridGroup
-                        mapStyleDefs={mapStyleDefs}
-                        mapDimensions={mapDimensions}
-                        mapTitle={mapTitle}
-                        evolutionOffsets={evolutionOffsets}
-                        mapEvolutionStates={mapEvolutionStates}
-                    />
+                <MapGridGroup
+                    mapStyleDefs={mapStyleDefs}
+                    mapDimensions={mapDimensions}
+                    mapTitle={mapTitle}
+                    evolutionOffsets={evolutionOffsets}
+                    mapEvolutionStates={mapEvolutionStates}
+                />
 
-                    <UnifiedMapContent
-                        mapAttitudes={unifiedMap.attitudes}
-                        mapDimensions={mapDimensions}
-                        mapStyleDefs={mapStyleDefs}
-                        mapText={mapText}
-                        mutateMapText={mutateMapText}
-                        scaleFactor={scaleFactor}
-                        mapElementsClicked={mapElementsClicked}
-                        links={links}
-                        mapElements={mapElements}
-                        evolutionOffsets={evolutionOffsets}
-                        enableNewPipelines={enableNewPipelines}
-                        setHighlightLine={setHighlightLine}
-                        clicked={clicked}
-                        enableAccelerators={enableAccelerators}
-                        mapAccelerators={unifiedMap.accelerators.map((acc) => ({
-                            ...acc,
-                            type: 'accelerator' as const,
-                            label: { x: 0, y: 0 },
-                        }))}
-                        mapNotes={unifiedMap.notes}
-                        mapAnnotations={unifiedMap.annotations}
-                        mapAnnotationsPresentation={mapAnnotationsPresentation}
-                        launchUrl={launchUrl}
-                        mapMethods={unifiedMap.methods}
-                    />
-                </svg>
+                <UnifiedMapContent
+                    mapAttitudes={unifiedMap.attitudes}
+                    mapDimensions={mapDimensions}
+                    mapStyleDefs={mapStyleDefs}
+                    mapText={mapText}
+                    mutateMapText={mutateMapText}
+                    scaleFactor={scaleFactor}
+                    mapElementsClicked={mapElementsClicked}
+                    links={links}
+                    mapElements={mapElements}
+                    evolutionOffsets={evolutionOffsets}
+                    enableNewPipelines={enableNewPipelines}
+                    setHighlightLine={setHighlightLine}
+                    clicked={clicked}
+                    enableAccelerators={enableAccelerators}
+                    mapAccelerators={unifiedMap.accelerators.map((acc) => ({
+                        ...acc,
+                        type: 'accelerator' as const,
+                        label: { x: 0, y: 0 },
+                    }))}
+                    mapNotes={unifiedMap.notes}
+                    mapAnnotations={unifiedMap.annotations}
+                    mapAnnotationsPresentation={mapAnnotationsPresentation}
+                    launchUrl={launchUrl}
+                    mapMethods={unifiedMap.methods}
+                />
             </MapSVGContainer>
+            {showMapToolbar && (
+                <MapCanvasToolbar
+                    shouldHideNav={shouldHideNav}
+                    mapStyleDefs={mapStyleDefs}
+                    hideNav={false}
+                    tool={tool}
+                    handleChangeTool={handleChangeTool}
+                    _fitToViewer={fitToViewer}
+                />
+            )}
         </React.Fragment>
     );
 }

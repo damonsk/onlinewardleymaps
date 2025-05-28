@@ -142,6 +142,7 @@ export class UnifiedMapElements implements IProvideMapElements {
             type: component.type,
             maturity: component.maturity,
             visibility: component.visibility,
+            pipeline: component.pipeline, // Include pipeline property
         };
     }
 

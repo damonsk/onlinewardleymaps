@@ -110,39 +110,11 @@ const createLegacyMapElementsAdapter = (
 ) => {
     return {
         getMergedElements: () => {
-            // Replicate the original MapElements.getMergedElements() logic:
-            // 1. Get non-evolving components
-            // 2. Get evolved components (evolved versions of evolving components)
-            // 3. Get evolving components (original evolving components)
-            // 4. Combine them all
-            // 5. Filter out anchors to prevent double rendering (anchors have dedicated section)
-            const noneEvolving = unifiedMapElements
-                .getStaticComponents()
-                .map(adaptUnifiedComponentToLegacy);
-
-            const evolvedComponents = unifiedMapElements
-                .getEvolvedComponents()
-                .map(adaptUnifiedComponentToLegacy);
-
-            const evolvingComponents = unifiedMapElements
-                .getEvolvingComponents()
-                .map(adaptUnifiedComponentToLegacy);
-
-            const merged = noneEvolving
-                .concat(evolvedComponents)
-                .concat(evolvingComponents)
-                .filter((c) => !c.pseudoComponent)
+            // Use the UnifiedMapElements.getMergedElements() method directly
+            // This method correctly sets the pipeline property based on the pipelines array
+            return unifiedMapElements
+                .getMergedElements()
                 .filter((c) => c.type !== 'anchor'); // Filter out anchors to prevent double rendering
-
-            console.log('getMergedElements result:', {
-                noneEvolving: noneEvolving.length,
-                evolvedComponents: evolvedComponents.length,
-                evolvingComponents: evolvingComponents.length,
-                total: merged.length,
-                merged,
-            });
-
-            return merged;
         },
         getEvolveElements: () => {
             return unifiedMapElements

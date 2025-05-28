@@ -17,6 +17,7 @@ export interface MapElement {
     evolved?: boolean;
     evolving?: boolean;
     inertia?: boolean;
+    pipeline?: boolean;
     type?: string;
     maturity?: number;
     visibility?: number;
