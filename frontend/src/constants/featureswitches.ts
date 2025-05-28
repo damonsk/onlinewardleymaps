@@ -1,4 +1,6 @@
-export const featureSwitches: OwmFeatureSwitches = {
+import { IProvideFeatureSwitches } from '../types/base';
+
+export const featureSwitches: IProvideFeatureSwitches = {
     enableDashboard: false,
     enableNewPipelines: true,
     enableLinkContext: true,
@@ -9,15 +11,3 @@ export const featureSwitches: OwmFeatureSwitches = {
     showMiniMap: false,
     allowMapZoomMouseWheel: true,
 };
-
-export interface OwmFeatureSwitches {
-    enableDashboard: boolean;
-    enableNewPipelines: boolean;
-    enableLinkContext: boolean;
-    enableAccelerators: boolean;
-    enableDoubleClickRename: boolean;
-    showToggleFullscreen: boolean;
-    showMapToolbar: boolean;
-    showMiniMap: boolean;
-    allowMapZoomMouseWheel: boolean;
-}

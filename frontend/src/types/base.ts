@@ -1,4 +1,3 @@
-// Link Types
 export interface Link {
     start: string;
     end: string;
@@ -12,27 +11,20 @@ export interface MapElement {
     type: string;
     evolveMaturity?: number;
     maturity: number;
-    evolving: boolean; // Was optional
-    evolved: boolean; // Was optional
-    pseudoComponent: boolean; // Was optional
-    offsetY: number; // Was optional
+    evolving: boolean;
+    evolved: boolean;
+    pseudoComponent: boolean;
+    offsetY: number;
     label: ComponentLabel;
     override?: any;
     line?: any;
     decorators: ComponentDecorator;
-    increaseLabelSpacing: number; // Was optional
+    increaseLabelSpacing: number;
 }
 
 export interface LinkExtractionStrategy {
     getLinks(): LinkResult;
 }
-
-// export interface MapElements {
-//     getEvolveElements(): MapElement[];
-//     getEvolvedElements(): MapElement[];
-//     getNoneEvolvedOrEvolvingElements(): MapElement[];
-//     getNoneEvolvingElements(): MapElement[];
-// }
 
 export interface LinkStrategy {
     name: string;
@@ -52,9 +44,6 @@ export interface LinkResult {
     endElements: MapElement[];
 }
 
-// Core Component Types
-
-// Map Conversion Types
 export interface ComponentLabel {
     x: number;
     y: number;
@@ -67,11 +56,11 @@ export interface NamedComponent {
 }
 
 export interface MapLinks extends Link {
-    flow: boolean; // Was optional
-    future: boolean; // Was optional
-    past: boolean; // Was optional
-    context: string; // Was optional
-    flowValue: string; // Was optional
+    flow: boolean;
+    future: boolean;
+    past: boolean;
+    context: string;
+    flowValue: string;
 }
 
 export interface MapAnchors extends NamedComponent {
@@ -82,10 +71,10 @@ export interface MapAnchors extends NamedComponent {
     type: string;
     inertia: boolean;
     decorators: ComponentDecorator;
-    increaseLabelSpacing: number; // Was optional
-    pseudoComponent: boolean; // Was optional
-    offsetY: number; // Was optional
-    evolving: boolean; // Was optional
+    increaseLabelSpacing: number;
+    pseudoComponent: boolean;
+    offsetY: number;
+    evolving: boolean;
 }
 
 export interface MapEvolved {}
@@ -123,13 +112,12 @@ export interface MapAccelerators {
     name: string;
     maturity: number;
     visibility: number;
-    offsetY: number; // Was optional
-    evolved: boolean; // Was optional
+    offsetY: number;
+    evolved: boolean;
     deaccelerator: boolean;
     line: number;
 }
 
-// Main WardleyMap interface
 export interface WardleyMap {
     presentation: MapPresentationStyle;
     links: MapLinks[];
@@ -151,13 +139,11 @@ export interface WardleyMap {
     errors: Array<MapParseError>;
 }
 
-// Evolution Types
 export interface EvolutionLabel {
     line1: string;
     line2: string;
 }
 
-// Core Component Types
 export interface Component {
     url: MapUrls;
     decorators: ComponentDecorator;
@@ -168,20 +154,20 @@ export interface Component {
     type: string;
     maturity: number;
     evolveMaturity?: number;
-    evolving: boolean; // Maintained as non-optional
-    evolved: boolean; // Was optional
-    pseudoComponent: boolean; // Was optional
-    offsetY: number; // Was optional
+    evolving: boolean;
+    evolved: boolean;
+    pseudoComponent: boolean;
+    offsetY: number;
     inertia: boolean;
     label: ComponentLabel;
     line: number;
-    increaseLabelSpacing: number; // Was optional
+    increaseLabelSpacing: number;
 }
 
 export interface ComponentDecorator {
-    ecosystem: boolean; // Was optional
-    market: boolean; // Was optional
-    method: string; // Was optional
+    ecosystem: boolean;
+    market: boolean;
+    method: string;
 }
 
 export interface EvolvedElement {
@@ -189,7 +175,7 @@ export interface EvolvedElement {
     name: string;
     label: ComponentLabel;
     override?: Record<string, unknown>;
-    line: number; // Was optional
+    line: number;
     decorators: ComponentDecorator;
     increaseLabelSpacing: number;
 }
@@ -199,16 +185,15 @@ export interface Pipeline {
     components: Component[];
     inertia: boolean;
     visibility: number;
-    hidden: boolean; // Was optional
+    hidden: boolean;
 }
 
-// Strategy Types
 export interface IParseStrategy {
     apply(): any;
 }
 
 export interface IProvideDefaultAttributes {
-    increaseLabelSpacing: number; // Was optional
+    increaseLabelSpacing: number;
 }
 
 export interface IProvideBaseElement {
@@ -237,7 +222,7 @@ export interface IPipelineComponent extends IProvideBaseElement {
     components: MapComponent[];
     maturity1?: number;
     maturity2?: number;
-    hidden: boolean; // Was optional
+    hidden: boolean;
 }
 
 // Map Presentation Types
@@ -257,7 +242,6 @@ export interface MapPresentationStyle {
     size: MapSize;
 }
 
-// Position Updater Types
 export type MatcherFunction = (
     line: string,
     identifier: string,
@@ -276,7 +260,6 @@ export interface PositionUpdater {
     update(moved: any, identifier: string): void;
 }
 
-// Moved Types
 export interface Moved {
     param1: number;
     param2: number;
@@ -291,7 +274,6 @@ export interface SingleCoordMoved {
     param2: string;
 }
 
-// Map Parse Types
 export interface MapParseComponent {
     errors: MapParseError[];
 }
@@ -303,4 +285,16 @@ export interface MapParseError {
 
 export interface MapTitleComponent extends MapParseComponent {
     title: string;
+}
+
+export interface IProvideFeatureSwitches {
+    enableDashboard: boolean;
+    enableNewPipelines: boolean;
+    enableLinkContext: boolean;
+    enableAccelerators: boolean;
+    enableDoubleClickRename: boolean;
+    showToggleFullscreen: boolean;
+    showMapToolbar: boolean;
+    showMiniMap: boolean;
+    allowMapZoomMouseWheel: boolean;
 }

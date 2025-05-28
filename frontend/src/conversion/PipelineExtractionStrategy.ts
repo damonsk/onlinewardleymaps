@@ -1,6 +1,5 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-import { OwmFeatureSwitches } from '../constants/featureswitches';
-import { IParseStrategy } from '../types/base';
+import { IParseStrategy, IProvideFeatureSwitches } from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
 import PipelineStrategyRunner from './PipelineStrategyRunner';
 
@@ -9,7 +8,7 @@ export default class PipelineExtractionStrategy implements IParseStrategy {
     keyword: string;
     containerName: string;
     baseRunner: IParseStrategy;
-    constructor(data: string, featureSwitches: OwmFeatureSwitches) {
+    constructor(data: string, featureSwitches: IProvideFeatureSwitches) {
         this.data = data;
         this.keyword = 'pipeline';
         this.containerName = 'pipelines';

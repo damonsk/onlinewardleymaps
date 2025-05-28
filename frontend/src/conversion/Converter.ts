@@ -1,5 +1,4 @@
-import { OwmFeatureSwitches } from '../constants/featureswitches';
-import { WardleyMap } from '../types/base';
+import { IProvideFeatureSwitches, WardleyMap } from '../types/base';
 import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
@@ -19,8 +18,8 @@ import UrlExtractionStrategy from './UrlExtractionStrategy';
 import XAxisLabelsExtractionStrategy from './XAxisLabelsExtractionStrategy';
 
 export default class Converter {
-    featureSwitches: OwmFeatureSwitches;
-    constructor(featureSwitches: OwmFeatureSwitches) {
+    featureSwitches: IProvideFeatureSwitches;
+    constructor(featureSwitches: IProvideFeatureSwitches) {
         this.featureSwitches = featureSwitches;
     }
 

@@ -1,9 +1,9 @@
 import React, { ReactNode, createContext, useContext } from 'react';
-import { OwmFeatureSwitches } from '../constants/featureswitches';
+import { IProvideFeatureSwitches } from '../types/base';
 
 interface FeatureSwitchesProviderProps {
     children: ReactNode;
-    value: OwmFeatureSwitches;
+    value: IProvideFeatureSwitches;
 }
 
 const FeatureSwitchesContext = createContext<any>(null);

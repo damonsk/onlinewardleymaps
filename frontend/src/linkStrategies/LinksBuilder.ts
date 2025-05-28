@@ -1,5 +1,5 @@
 import MapElements from '../MapElements';
-import { MapAnchors } from '../types/conversion/converter';
+import { MapAnchors } from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
