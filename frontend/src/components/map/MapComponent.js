@@ -33,7 +33,7 @@ function MapComponent(props) {
     const notEvolvedNoLabelMatcher = {
         matcher: (line, identifier, type) => {
             return (
-                props.element.evolved === undefined &&
+                (!props.element.evolved || props.element.evolved === false) &&
                 ExistingCoordsMatcher.matcher(line, identifier, type) &&
                 !ExistingCoordsMatcher.matcher(line, '', 'label')
             );
@@ -46,7 +46,7 @@ function MapComponent(props) {
     const notEvolvedWithLabelMatcher = {
         matcher: (line, identifier, type) => {
             return (
-                props.element.evolved === undefined &&
+                (!props.element.evolved || props.element.evolved === false) &&
                 ExistingCoordsMatcher.matcher(line, identifier, type) &&
                 ExistingCoordsMatcher.matcher(line, '', 'label')
             );
@@ -82,7 +82,22 @@ function MapComponent(props) {
         ],
     );
 
+    console.log('MapComponent DefaultPositionUpdater created:', {
+        keyword: props.keyword,
+        elementType: props.element.type,
+        elementName: props.element.name,
+        mapTextPresent: !!props.mapText,
+        mutateMapTextPresent: !!props.mutateMapText,
+        mutateMapTextType: typeof props.mutateMapText,
+    });
+
     function endDrag(moved) {
+        console.log('MapComponent endDrag called:', {
+            moved,
+            element: props.element.name,
+            mapText: props.mapText ? 'present' : 'missing',
+            mutateMapText: props.mutateMapText ? 'present' : 'missing',
+        });
         const visibility = positionCalc.yToVisibility(
             moved.y,
             props.mapDimensions.height,
@@ -91,10 +106,16 @@ function MapComponent(props) {
             moved.x,
             props.mapDimensions.width,
         );
+        console.log('MapComponent calling positionUpdater.update:', {
+            visibility,
+            maturity,
+            elementName: props.element.name,
+        });
         positionUpdater.update(
-            { param1: visibility, param2: maturity },
+            { param1: parseFloat(visibility), param2: parseFloat(maturity) },
             props.element.name,
         );
+        console.log('MapComponent positionUpdater.update completed');
     }
 
     console.log('MapComponent', props);

@@ -27,6 +27,7 @@ import { MapTheme } from '../../types/map/styles';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import MapCanvas from './MapCanvas';
+import UnifiedMapCanvas from './UnifiedMapCanvas';
 import { DefaultThemes } from './foundation/Fill';
 
 export interface MapViewProps {
@@ -140,10 +141,17 @@ export const MapView: React.FunctionComponent<MapViewProps> = (props) => {
                 <CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
             )}
             <div id="map">
-                <MapCanvas
-                    handleMapCanvasClick={handleMapCanvasClick}
-                    {...props}
-                />
+                {featureSwitches.enableUnifiedMapCanvas ? (
+                    <UnifiedMapCanvas
+                        handleMapCanvasClick={handleMapCanvasClick}
+                        {...props}
+                    />
+                ) : (
+                    <MapCanvas
+                        handleMapCanvasClick={handleMapCanvasClick}
+                        {...props}
+                    />
+                )}
             </div>
         </div>
     );

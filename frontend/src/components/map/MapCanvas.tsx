@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ReactSVGPanZoom } from 'react-svg-pan-zoom';
 import { useMapInteractions } from '../../hooks/useMapInteractions';
 import { processLinks } from '../../utils/mapProcessing';
@@ -130,7 +130,9 @@ function MapCanvas(props: MapCanvasProps) {
         mapPipelines.map(convertToMapElementsPipeline),
     );
 
-    const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+    console.log('MapCanvas (legacy)', props);
+
+    const mousePositionRef = useRef({ x: 0, y: 0 });
 
     const {
         mapElementsClicked,
@@ -148,12 +150,12 @@ function MapCanvas(props: MapCanvasProps) {
         setHighlightLine,
         setNewComponentContext,
         mapDimensions,
-        mousePosition,
+        mousePositionRef,
     });
 
-    const handleMouseMove = (event: any) => {
-        setMousePosition({ x: event.x, y: event.y });
-    };
+    const handleMouseMove = useCallback((event: any) => {
+        mousePositionRef.current = { x: event.x, y: event.y };
+    }, []);
 
     const links = useMemo(
         () =>

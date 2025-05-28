@@ -10,7 +10,6 @@ export interface AnnotationElementSymbolProps {
 const AnnotationElementSymbol: React.FunctionComponent<
     AnnotationElementSymbolProps
 > = ({ annotation, styles }) => {
-    console.log('AnnotationElementSymbol', annotation);
     return (
         <>
             <circle
@@ -28,4 +27,12 @@ const AnnotationElementSymbol: React.FunctionComponent<
         </>
     );
 };
-export default memo(AnnotationElementSymbol);
+
+// Use React.memo with a custom equality function for props
+export default memo(AnnotationElementSymbol, (prevProps, nextProps) => {
+    // Only re-render when annotation number or styles change
+    return (
+        prevProps.annotation.number === nextProps.annotation.number &&
+        prevProps.styles === nextProps.styles
+    );
+});

@@ -1,6 +1,7 @@
 // Unified MapElements - Phase 1 of refactoring plan
 // This replaces the complex MapElements class with a cleaner, type-safe version
 
+import { IProvideMapElements, MapElement } from '../types/map/elements';
 import {
     EvolvedElementData,
     PipelineData,
@@ -13,7 +14,7 @@ import {
  * Unified MapElements processor with simplified, type-safe operations
  * This replaces the original MapElements class with cleaner architecture
  */
-export class UnifiedMapElements {
+export class UnifiedMapElements implements IProvideMapElements {
     private allComponents: UnifiedComponent[];
     private evolvedElements: EvolvedElementData[];
     private pipelines: PipelineData[];
@@ -71,7 +72,7 @@ export class UnifiedMapElements {
             return createUnifiedComponent({
                 ...component,
                 id: component.id + '_evolved',
-                maturity: component.evolveMaturity || component.maturity,
+                maturity: evolvedData.maturity, // Use maturity from evolved data
                 evolving: false,
                 evolved: true,
                 label: evolvedData.label || component.label,
@@ -99,6 +100,129 @@ export class UnifiedMapElements {
         return this.allComponents.filter(
             (c) => c.inertia && !c.evolved && !c.evolving,
         );
+    }
+
+    /**
+     * Convert UnifiedComponent to legacy MapElement format
+     */
+    private convertToMapElement(component: UnifiedComponent): MapElement {
+        return {
+            name: component.name,
+            label: component.label,
+            line: component.line ?? 0, // Provide default value for required field
+            id: component.id,
+            evolved: component.evolved,
+            evolving: component.evolving,
+            inertia: component.inertia,
+            type: component.type,
+            maturity: component.maturity,
+            visibility: component.visibility,
+        };
+    }
+
+    /**
+     * Convert UnifiedComponent array to legacy MapElement array
+     */
+    private convertToMapElements(components: UnifiedComponent[]): MapElement[] {
+        return components.map((c) => this.convertToMapElement(c));
+    }
+
+    // Backward compatibility methods for legacy code - implementing IProvideMapElements interface
+    /**
+     * Get components that are neither evolved nor evolving (legacy compatibility)
+     * This method maintains compatibility with the legacy MapElements interface
+     */
+    getNoneEvolvedOrEvolvingElements(): MapElement[] {
+        return this.convertToMapElements(
+            this.allComponents.filter((c) => !c.evolving && !c.evolved),
+        );
+    }
+
+    /**
+     * Get components that are not evolving (legacy compatibility)
+     */
+    getNoneEvolvingElements(): MapElement[] {
+        return this.convertToMapElements(
+            this.allComponents.filter((c) => !c.evolving),
+        );
+    }
+
+    /**
+     * Get components that are either evolved or evolving (legacy compatibility)
+     */
+    geEvolvedOrEvolvingElements(): MapElement[] {
+        return this.convertToMapElements(
+            this.allComponents.filter((c) => c.evolving || c.evolved),
+        );
+    }
+
+    /**
+     * Get non-evolved elements (legacy compatibility)
+     */
+    getNonEvolvedElements(): MapElement[] {
+        const noneEvolvingElements = this.allComponents.filter(
+            (c) => !c.evolving,
+        );
+        const evolvedComponents = this.getEvolvedComponents();
+        return this.convertToMapElements(
+            noneEvolvingElements.concat(evolvedComponents),
+        );
+    }
+
+    /**
+     * Get merged elements including evolved versions (legacy compatibility)
+     */
+    getMergedElements(): MapElement[] {
+        const evolvingComponents = this.getEvolvingComponents();
+        const noneEvolvingComponents = this.allComponents.filter(
+            (c) => !c.evolving,
+        );
+        const evolvedComponents = this.getEvolvedComponents();
+
+        // Match legacy behavior: static components + evolved components + original evolving components
+        // Filter out pseudo-components like in legacy implementation
+        const collection = [
+            ...noneEvolvingComponents,
+            ...evolvedComponents,
+            ...evolvingComponents,
+        ].filter((c) => !c.pseudoComponent);
+
+        // Add pipeline information like in legacy implementation
+        if (this.pipelines === undefined || this.pipelines.length === 0) {
+            return this.convertToMapElements(collection);
+        }
+
+        const collectionWithPipelines = collection.map((e) => ({
+            ...e,
+            pipeline: this.pipelines.some(
+                (pipeline) => pipeline.name === e.name,
+            ),
+        }));
+
+        return this.convertToMapElements(collectionWithPipelines);
+    }
+
+    /**
+     * Get evolving elements (legacy compatibility)
+     * Returns components that are marked as evolving
+     */
+    getEvolveElements(): MapElement[] {
+        return this.convertToMapElements(this.getEvolvingComponents());
+    }
+
+    /**
+     * Get evolved elements (legacy compatibility)
+     * Returns the actual evolved versions of components
+     */
+    getEvolvedElements(): MapElement[] {
+        return this.convertToMapElements(this.getEvolvedComponents());
+    }
+
+    /**
+     * Get map pipelines (legacy compatibility)
+     */
+    getMapPipelines(): any[] {
+        return this.pipelines;
     }
 
     /**

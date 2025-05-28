@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { TOOL_NONE } from 'react-svg-pan-zoom';
 import PositionCalculator from '../components/map/PositionCalculator';
 
@@ -8,8 +8,8 @@ export function useMapInteractions({
     mutateMapText,
     setHighlightLine,
     setNewComponentContext,
-    mapDimensions,
-    mousePosition, // Add mousePosition as a parameter instead of managing it internally
+    mapDimensions, // Consumed as an object with width/height
+    mousePositionRef,
 }) {
     const [mapElementsClicked, setMapElementsClicked] = useState([]);
     const [tool, setTool] = useState(TOOL_NONE);
@@ -21,42 +21,51 @@ export function useMapInteractions({
         }
     }, [isModKeyPressed]);
 
-    const handleZoom = (value) => {
+    const handleZoom = useCallback((value) => {
         setScaleFactor(value.a);
-    };
+    }, []); // setScaleFactor is stable and doesn't need to be in deps
 
-    const handleChangeTool = (event, newTool) => {
+    const handleChangeTool = useCallback((event, newTool) => {
         setTool(newTool);
-    };
+    }, []); // setTool is stable and doesn't need to be in deps
 
-    const newElementAt = () => {
+    const newElementAt = useCallback(() => {
         const positionCalc = new PositionCalculator();
         const x = positionCalc.xToMaturity(
-            mousePosition.x,
-            mapDimensions.width,
+            mousePositionRef.current.x,
+            mapDimensions.width, // Direct access
         );
         const y = positionCalc.yToVisibility(
-            mousePosition.y,
-            mapDimensions.height,
+            mousePositionRef.current.y,
+            mapDimensions.height, // Direct access
         );
         setNewComponentContext({ x, y });
-    };
+    }, [mousePositionRef, mapDimensions, setNewComponentContext]);
 
-    const handleElementClick = (ctx) => {
-        setHighlightLine(ctx.el.line);
-        if (isModKeyPressed === false) return;
+    const handleElementClick = useCallback(
+        (ctx) => {
+            setHighlightLine(ctx.el.line);
+            if (isModKeyPressed === false) return;
 
-        let s = [
-            ...mapElementsClicked,
-            { el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
-        ];
-        if (s.length === 2) {
-            mutateMapText(
-                mapText + '\r\n' + s.map((r) => r.el.name).join('->'),
-            );
-            setMapElementsClicked([]);
-        } else setMapElementsClicked(s);
-    };
+            let s = [
+                ...mapElementsClicked,
+                { el: ctx.el, e: { pageX: ctx.e.pageX, pageY: ctx.e.pageY } },
+            ];
+            if (s.length === 2) {
+                mutateMapText(
+                    mapText + '\r\n' + s.map((r) => r.el.name).join('->'),
+                );
+                setMapElementsClicked([]);
+            } else setMapElementsClicked(s);
+        },
+        [
+            isModKeyPressed,
+            mapElementsClicked,
+            mapText,
+            mutateMapText,
+            setHighlightLine,
+        ],
+    );
 
     return {
         mapElementsClicked,
@@ -66,6 +75,6 @@ export function useMapInteractions({
         handleChangeTool,
         newElementAt,
         handleElementClick,
-        setScaleFactor,
+        setScaleFactor, // setScaleFactor itself is stable, no useCallback needed here
     };
 }

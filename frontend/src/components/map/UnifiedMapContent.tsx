@@ -68,7 +68,12 @@ interface UnifiedMapContentProps {
  * This provides backward compatibility during the transition
  */
 const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
-    return {
+    console.log(
+        'adaptUnifiedComponentToLegacy called for:',
+        component.name,
+        component,
+    );
+    const adapted = {
         name: component.name,
         id: component.id,
         visibility: component.visibility,
@@ -87,6 +92,14 @@ const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
         evolveMaturity: component.evolveMaturity,
         increaseLabelSpacing: component.increaseLabelSpacing,
     };
+    console.log('adaptUnifiedComponentToLegacy result:', adapted);
+    console.log('adaptUnifiedComponentToLegacy type check:', {
+        originalType: component.type,
+        adaptedType: adapted.type,
+        name: adapted.name,
+        line: adapted.line,
+    });
+    return adapted;
 };
 
 /**

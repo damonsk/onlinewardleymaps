@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ReactSVGPanZoom } from 'react-svg-pan-zoom';
 import { useMapInteractions } from '../../hooks/useMapInteractions';
 import { processLinks } from '../../utils/mapProcessing';
@@ -24,13 +24,14 @@ interface UnifiedMapCanvasProps extends MapViewProps {
  * This eliminates the need for conversion functions and simplifies the data flow
  */
 function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
+    const featureSwitches = useFeatureSwitches();
     const {
         enableAccelerators,
         enableNewPipelines,
         showMapToolbar,
         showMiniMap,
         allowMapZoomMouseWheel,
-    } = useFeatureSwitches();
+    } = featureSwitches;
 
     const {
         mapText,
@@ -55,8 +56,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
 
     // Create unified converter and process map text directly
     const unifiedConverter = useMemo(() => {
-        return new UnifiedConverter(useFeatureSwitches());
-    }, []);
+        return new UnifiedConverter(featureSwitches);
+    }, [featureSwitches]);
 
     // Parse map text into unified types - no conversion needed!
     const unifiedMap = useMemo(() => {
@@ -97,7 +98,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         return new UnifiedMapElements(unifiedMap);
     }, [unifiedMap]);
 
-    const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+    const mousePositionRef = useRef({ x: 0, y: 0 });
+    // const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
 
     const {
         mapElementsClicked,
@@ -115,8 +117,16 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         setHighlightLine,
         setNewComponentContext,
         mapDimensions,
-        mousePosition,
+        mousePositionRef,
     });
+
+    // const handleMouseMove = React.useCallback((event: any) => {
+    //     setMousePosition({ x: event.x, y: event.y });
+    // }, []);
+
+    const handleMouseMove = useCallback((event: MouseEvent) => {
+        mousePositionRef.current = { x: event.x, y: event.y };
+    }, []);
 
     // Process links with new mapElements
     const links = useMemo(() => {
@@ -156,7 +166,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         props.handleMapCanvasClick && props.handleMapCanvasClick({ x, y });
-        setMousePosition({ x, y });
+        mousePositionRef.current = { x: x, y: y };
+        // setMousePosition({ x, y });
     };
 
     return (
@@ -182,7 +193,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 onDoubleClick={newElementAt}
                 onZoom={handleZoom}
                 onZoomReset={() => setScaleFactor(1)}
-                onMouseMove={(e: any) => setMousePosition({ x: e.x, y: e.y })}
+                onMouseMove={handleMouseMove}
             >
                 <svg
                     id="svgMap"

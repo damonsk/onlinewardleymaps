@@ -297,4 +297,5 @@ export interface IProvideFeatureSwitches {
     showMapToolbar: boolean;
     showMiniMap: boolean;
     allowMapZoomMouseWheel: boolean;
+    enableUnifiedMapCanvas: boolean;
 }

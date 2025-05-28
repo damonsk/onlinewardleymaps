@@ -1,4 +1,6 @@
+// filepath: /Users/damonskelhorn/Source/currentOwm/onlinewardleymaps-ts/frontend/src/components/map/MapSVGContainer.js
 import { makeStyles } from '@mui/styles';
+import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
 
 const useStyles = makeStyles(() => ({
@@ -7,7 +9,8 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export function MapSVGContainer({
+// Define component separately to properly set displayName
+const MapSVGContainerComponent = ({
     viewerRef,
     tool,
     mapCanvasDimensions,
@@ -20,7 +23,7 @@ export function MapSVGContainer({
     onZoomReset,
     onMouseMove,
     children,
-}) {
+}) => {
     const styles = useStyles();
 
     return (
@@ -45,7 +48,7 @@ export function MapSVGContainer({
             fontSize={mapStyleDefs.fontSize}
             background="#eee"
             onDoubleClick={onDoubleClick}
-            onMouseMove={onMouseMove}
+            onMouseMove={onMouseMove ? onMouseMove : undefined}
             onZoom={onZoom}
             onZoomReset={onZoomReset}
             style={{
@@ -66,4 +69,30 @@ export function MapSVGContainer({
             </svg>
         </UncontrolledReactSVGPanZoom>
     );
-}
+};
+
+// Set display name explicitly
+MapSVGContainerComponent.displayName = 'MapSVGContainer';
+
+// Now memoize the component with custom equality function
+export const MapSVGContainer = React.memo(
+    MapSVGContainerComponent,
+    (prevProps, nextProps) => {
+        // Skip re-render when onMouseMove triggers but other props remain the same
+        if (prevProps.onMouseMove && nextProps.onMouseMove) {
+            // Compare everything except children and onMouseMove
+            return (
+                prevProps.tool === nextProps.tool &&
+                prevProps.mapCanvasDimensions ===
+                    nextProps.mapCanvasDimensions &&
+                prevProps.mapDimensions === nextProps.mapDimensions &&
+                prevProps.allowMapZoomMouseWheel ===
+                    nextProps.allowMapZoomMouseWheel &&
+                prevProps.showMiniMap === nextProps.showMiniMap &&
+                prevProps.mapStyleDefs === nextProps.mapStyleDefs
+            );
+        }
+        // Default comparison for all props
+        return false;
+    },
+);

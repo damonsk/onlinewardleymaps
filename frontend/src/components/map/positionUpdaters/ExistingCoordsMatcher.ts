@@ -9,9 +9,15 @@ export const ExistingCoordsMatcher: Replacer = {
         );
     },
     action: (line: string, moved: Moved): string => {
-        return line.replace(
-            /\[(.?|.+?)\]/g,
-            `[${moved.param1}, ${moved.param2}]`,
-        );
+        const param1 =
+            typeof moved.param1 === 'number'
+                ? moved.param1.toFixed(2)
+                : parseFloat(moved.param1).toFixed(2);
+        const param2 =
+            typeof moved.param2 === 'number'
+                ? moved.param2.toFixed(2)
+                : parseFloat(moved.param2).toFixed(2);
+        const result = line.replace(/\[(.?|.+?)\]/g, `[${param1}, ${param2}]`);
+        return result;
     },
 };
