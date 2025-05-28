@@ -30,8 +30,33 @@ export class UnifiedMapElements implements IProvideMapElements {
         this.evolvedElements = map.evolved;
         this.pipelines = map.pipelines;
 
+        // Mark components as evolving based on evolvedElements array
+        this.markEvolvingComponents();
+
         // Process pipeline components if needed
         this.processPipelineComponents();
+    }
+
+    /**
+     * Mark components as evolving based on the evolvedElements array
+     * This is necessary because the parser creates components without the evolving flag,
+     * and evolving status is determined by presence in the evolvedElements array
+     */
+    private markEvolvingComponents(): void {
+        this.allComponents = this.allComponents.map((component) => {
+            const hasEvolvedElement = this.evolvedElements.some(
+                (evolved) => evolved.name === component.name,
+            );
+
+            if (hasEvolvedElement) {
+                return {
+                    ...component,
+                    evolving: true,
+                };
+            }
+
+            return component;
+        });
     }
 
     /**

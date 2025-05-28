@@ -2,6 +2,7 @@ import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
 import { MapElement } from '../../linkStrategies/LinkStrategiesInterfaces';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import Inertia from './Inertia';
 import PositionCalculator from './PositionCalculator';
@@ -59,16 +60,27 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     evolutionOffsets,
     mapStyleDefs,
 }) => {
+    const { enableUnifiedMapCanvas } = useFeatureSwitches();
+
     if (!startElement || !endElement) {
         return null;
     }
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
-    const x1 = positionCalc.maturityToX(
-        startElement.evolveMaturity ?? 0,
-        width,
-    );
-    const x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
+
+    // Handle the coordinate calculation based on whether we're using unified canvas or legacy
+    let x1, x2;
+    if (enableUnifiedMapCanvas) {
+        // In unified canvas: startElement is evolved component, endElement is evolving component
+        // startElement (evolved) should use its maturity, endElement (evolving) should use its maturity
+        x1 = positionCalc.maturityToX(startElement.maturity ?? 0, width);
+        x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
+    } else {
+        // Legacy behavior: startElement is evolving component with evolveMaturity, endElement is evolving component
+        x1 = positionCalc.maturityToX(startElement.evolveMaturity ?? 0, width);
+        x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
+    }
+
     const y1 =
         positionCalc.visibilityToY(startElement.visibility, height) +
         (startElement.offsetY ? startElement.offsetY : 0);

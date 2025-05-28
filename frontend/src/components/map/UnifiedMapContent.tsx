@@ -111,9 +111,37 @@ const createLegacyMapElementsAdapter = (
 ) => {
     return {
         getMergedElements: () => {
-            return unifiedMapElements
-                .getAllComponents()
+            // Replicate the original MapElements.getMergedElements() logic:
+            // 1. Get non-evolving components
+            // 2. Get evolved components (evolved versions of evolving components)
+            // 3. Get evolving components (original evolving components)
+            // 4. Combine them all
+            const noneEvolving = unifiedMapElements
+                .getStaticComponents()
                 .map(adaptUnifiedComponentToLegacy);
+
+            const evolvedComponents = unifiedMapElements
+                .getEvolvedComponents()
+                .map(adaptUnifiedComponentToLegacy);
+
+            const evolvingComponents = unifiedMapElements
+                .getEvolvingComponents()
+                .map(adaptUnifiedComponentToLegacy);
+
+            const merged = noneEvolving
+                .concat(evolvedComponents)
+                .concat(evolvingComponents)
+                .filter((c) => !c.pseudoComponent);
+
+            console.log('getMergedElements result:', {
+                noneEvolving: noneEvolving.length,
+                evolvedComponents: evolvedComponents.length,
+                evolvingComponents: evolvingComponents.length,
+                total: merged.length,
+                merged,
+            });
+
+            return merged;
         },
         getEvolveElements: () => {
             return unifiedMapElements
@@ -161,6 +189,7 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
 }) => {
     // Create legacy adapter for backward compatibility
     const legacyMapElements = useMemo(() => {
+        console.log('Creating legacy map elements adapter', mapElements);
         return createLegacyMapElementsAdapter(mapElements);
     }, [mapElements]);
 
@@ -242,7 +271,7 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                                     mapStyleDefs={mapStyleDefs}
                                     mapDimensions={mapDimensions}
                                     startElement={getElementByName(
-                                        legacyMapElements.getEvolveElements(),
+                                        legacyMapElements.getEvolvedElements(),
                                         e.name,
                                     )}
                                     endElement={getElementByName(
