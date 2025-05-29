@@ -140,12 +140,10 @@ export const MapView: React.FunctionComponent<MapViewProps> = (props) => {
                 <CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
             )}
             <div id="map">
-                {featureSwitches.enableUnifiedMapCanvas ? (
-                    <UnifiedMapCanvas
-                        handleMapCanvasClick={handleMapCanvasClick}
-                        {...props}
-                    />
-                ) : null}
+                <UnifiedMapCanvas
+                    handleMapCanvasClick={handleMapCanvasClick}
+                    {...props}
+                />
             </div>
         </div>
     );

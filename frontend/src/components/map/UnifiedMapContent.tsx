@@ -227,11 +227,11 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                                     key={i}
                                     mapStyleDefs={mapStyleDefs}
                                     mapDimensions={mapDimensions}
-                                    startElement={getElementByName(
+                                    endElement={getElementByName(
                                         legacyMapElements.getEvolvedElements(),
                                         e.name,
                                     )}
-                                    endElement={getElementByName(
+                                    startElement={getElementByName(
                                         legacyMapElements.getEvolveElements(),
                                         e.name,
                                     )}

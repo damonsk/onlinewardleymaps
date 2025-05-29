@@ -2,7 +2,6 @@ import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
 import { MapElement } from '../../linkStrategies/LinkStrategiesInterfaces';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import Inertia from './Inertia';
 import PositionCalculator from './PositionCalculator';
@@ -27,17 +26,19 @@ const setBoundary = (
         mapDimensions,
         evolutionOffsets,
         startElement,
+        endElement,
     }: {
         mapDimensions: MapDimensions;
         evolutionOffsets: EvolutionOffsets;
         startElement: MapElement;
+        endElement: MapElement;
     },
 ): number | null => {
     const boundWidth = mapDimensions.width / 20;
     const limits = [
-        evolutionOffsets.commodity,
-        evolutionOffsets.product,
         evolutionOffsets.custom,
+        evolutionOffsets.product,
+        evolutionOffsets.commodity,
     ];
     for (let i = 0; i < limits.length; i++) {
         const edge = parseFloat(
@@ -46,11 +47,11 @@ const setBoundary = (
                 mapDimensions.width,
             ),
         );
-        if (startElement.maturity >= edge) {
+        if (startElement.maturity <= edge && endElement.maturity >= edge) {
             return edge;
         }
     }
-    return null;
+    return startElement.maturity + 0.05;
 };
 
 const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
@@ -60,8 +61,6 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     evolutionOffsets,
     mapStyleDefs,
 }) => {
-    const { enableUnifiedMapCanvas } = useFeatureSwitches();
-
     if (!startElement || !endElement) {
         return null;
     }
@@ -69,17 +68,8 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     const positionCalc = new PositionCalculator();
 
     // Handle the coordinate calculation based on whether we're using unified canvas or legacy
-    let x1, x2;
-    if (enableUnifiedMapCanvas) {
-        // In unified canvas: startElement is evolved component, endElement is evolving component
-        // startElement (evolved) should use its maturity, endElement (evolving) should use its maturity
-        x1 = positionCalc.maturityToX(startElement.maturity ?? 0, width);
-        x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
-    } else {
-        // Legacy behavior: startElement is evolving component with evolveMaturity, endElement is evolving component
-        x1 = positionCalc.maturityToX(startElement.evolveMaturity ?? 0, width);
-        x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
-    }
+    const x1 = positionCalc.maturityToX(startElement.maturity ?? 0, width);
+    const x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
 
     const y1 =
         positionCalc.visibilityToY(startElement.visibility, height) +
@@ -87,14 +77,21 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     const y2 =
         positionCalc.visibilityToY(endElement.visibility, height) +
         (endElement.offsetY ? endElement.offsetY : 0);
+
     let boundary: number | undefined;
 
-    if (endElement.inertia) {
+    console.log('EvolvingComponentLink', {
+        start: startElement.maturity,
+        end: endElement.maturity,
+    });
+
+    if (startElement.inertia) {
         boundary =
             setBoundary(positionCalc, {
                 mapDimensions,
                 evolutionOffsets,
                 startElement,
+                endElement,
             }) || x1;
     }
 
@@ -106,7 +103,8 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
                 x2={x2}
                 y2={y2}
                 strokeDasharray="5 5"
-                markerStart="url(#arrow)"
+                marker="url(#arrow)"
+                isMarkerStart={false}
                 styles={mapStyleDefs.link}
                 evolved
             />

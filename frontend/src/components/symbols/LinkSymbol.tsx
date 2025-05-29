@@ -18,7 +18,8 @@ interface LinkSymbolProps {
     flow?: boolean;
     evolved?: boolean;
     strokeDasharray?: string;
-    markerStart?: string;
+    marker?: string;
+    isMarkerStart?: boolean;
     styles?: Partial<LinkStyles>;
     filter?: string;
 }
@@ -41,7 +42,8 @@ const LinkSymbol: React.FC<LinkSymbolProps> = ({
     flow,
     evolved,
     strokeDasharray,
-    markerStart,
+    isMarkerStart,
+    marker,
     styles = {},
     filter,
 }) => {
@@ -61,7 +63,8 @@ const LinkSymbol: React.FC<LinkSymbolProps> = ({
                 strokeDasharray={strokeDasharray}
                 stroke={stroke}
                 strokeWidth={strokeWidth}
-                markerStart={markerStart}
+                markerStart={isMarkerStart ? marker : undefined}
+                markerEnd={isMarkerStart ? undefined : marker}
                 filter={filter}
             />
             {flow && (
