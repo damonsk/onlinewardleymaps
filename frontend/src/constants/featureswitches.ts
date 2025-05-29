@@ -10,5 +10,4 @@ export const featureSwitches: IProvideFeatureSwitches = {
     showMapToolbar: true,
     showMiniMap: false,
     allowMapZoomMouseWheel: true,
-    enableUnifiedMapCanvas: true,
 };

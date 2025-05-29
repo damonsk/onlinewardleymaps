@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { TOOL_NONE } from 'react-svg-pan-zoom';
 import PositionCalculator from '../components/map/PositionCalculator';
 
@@ -15,10 +15,18 @@ export function useMapInteractions({
     const [tool, setTool] = useState(TOOL_NONE);
     const [scaleFactor, setScaleFactor] = useState(1);
 
+    // Use a ref to always get the current value of isModKeyPressed
+    const isModKeyPressedRef = useRef(isModKeyPressed);
+
+    // Keep the ref updated
     useEffect(() => {
-        if (isModKeyPressed === false) {
-            setMapElementsClicked([]);
-        }
+        isModKeyPressedRef.current = isModKeyPressed;
+    }, [isModKeyPressed]);
+
+    useEffect(() => {
+        console.log('🔥 isModKeyPressed changed to:', isModKeyPressed);
+        // Don't automatically clear mapElementsClicked when mod key is released
+        // FluidLink should persist until user clicks a second component or cancels with ESC
     }, [isModKeyPressed]);
 
     const handleZoom = useCallback((value) => {

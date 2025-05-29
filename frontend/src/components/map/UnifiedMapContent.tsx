@@ -67,11 +67,6 @@ interface UnifiedMapContentProps {
  * This provides backward compatibility during the transition
  */
 const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
-    console.log(
-        'adaptUnifiedComponentToLegacy called for:',
-        component.name,
-        component,
-    );
     const adapted = {
         name: component.name,
         id: component.id,
@@ -91,13 +86,6 @@ const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
         evolveMaturity: component.evolveMaturity,
         increaseLabelSpacing: component.increaseLabelSpacing,
     };
-    console.log('adaptUnifiedComponentToLegacy result:', adapted);
-    console.log('adaptUnifiedComponentToLegacy type check:', {
-        originalType: component.type,
-        adaptedType: adapted.type,
-        name: adapted.name,
-        line: adapted.line,
-    });
     return adapted;
 };
 
@@ -161,7 +149,6 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
 }) => {
     // Create legacy adapter for backward compatibility
     const legacyMapElements = useMemo(() => {
-        console.log('Creating legacy map elements adapter', mapElements);
         return createLegacyMapElementsAdapter(mapElements);
     }, [mapElements]);
 
@@ -169,8 +156,6 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
         () => processMapElements(mapMethods, legacyMapElements as any),
         [mapMethods, legacyMapElements],
     );
-
-    console.log('UnifiedMapContent', { mapElements, mapAnnotations });
 
     return (
         <g id="map">
@@ -329,7 +314,10 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                             <ComponentSymbol
                                 styles={mapStyleDefs.component}
                                 onClick={(e: MouseEvent<SVGElement>) =>
-                                    clicked({ el, e })
+                                    clicked({
+                                        el: adaptUnifiedComponentToLegacy(el),
+                                        e,
+                                    })
                                 }
                             />
                         )}
@@ -339,7 +327,12 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                                 id={'element_square_' + el.id}
                                 styles={mapStyleDefs.component}
                                 evolved={el.evolved}
-                                onClick={() => clicked({ el, e: null })}
+                                onClick={() =>
+                                    clicked({
+                                        el: adaptUnifiedComponentToLegacy(el),
+                                        e: null,
+                                    })
+                                }
                             />
                         )}
 
@@ -348,7 +341,12 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                             <EcosystemSymbol
                                 id={'ecosystem_circle_' + el.id}
                                 styles={mapStyleDefs.component}
-                                onClick={(e) => clicked({ el, e })}
+                                onClick={(e) =>
+                                    clicked({
+                                        el: adaptUnifiedComponentToLegacy(el),
+                                        e,
+                                    })
+                                }
                             />
                         ) : null}
 
@@ -357,7 +355,12 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                             <MarketSymbol
                                 id={'market_circle_' + el.id}
                                 styles={mapStyleDefs.component}
-                                onClick={(e) => clicked({ el, e })}
+                                onClick={(e) =>
+                                    clicked({
+                                        el: adaptUnifiedComponentToLegacy(el),
+                                        e,
+                                    })
+                                }
                             />
                         ) : null}
 
