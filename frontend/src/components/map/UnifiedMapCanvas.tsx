@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+    MouseEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { ReactSVGPanZoom } from 'react-svg-pan-zoom';
 import { useMapInteractions } from '../../hooks/useMapInteractions';
 import { processLinks } from '../../utils/mapProcessing';
@@ -6,6 +13,7 @@ import { processLinks } from '../../utils/mapProcessing';
 // Import unified system
 import { UnifiedConverter } from '../../conversion/UnifiedConverter';
 import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
+import { MapElement } from '../../types/base';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
@@ -102,30 +110,55 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     // const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
 
     const {
-        mapElementsClicked,
         tool,
         scaleFactor,
         handleZoom,
         handleChangeTool,
         newElementAt,
-        handleElementClick: clicked,
         setScaleFactor,
     } = useMapInteractions({
-        isModKeyPressed,
-        mapText,
-        mutateMapText,
-        setHighlightLine,
         setNewComponentContext,
         mapDimensions,
         mousePositionRef,
     });
 
-    // const handleMouseMove = React.useCallback((event: any) => {
-    //     setMousePosition({ x: event.x, y: event.y });
-    // }, []);
+    const [mapElementsClicked, setMapElementsClicked] = useState<
+        Array<{
+            el: MapElement;
+            e: MouseEvent<Element>;
+        }>
+    >([]);
+
+    useEffect(() => {
+        if (isModKeyPressed === false) {
+            setMapElementsClicked([]);
+        }
+        console.log('mapElementsClicked::isModKeyPressed', isModKeyPressed);
+    }, [isModKeyPressed]);
+
+    const clicked = function (ctx: {
+        el: MapElement;
+        e: MouseEvent<Element> | null;
+    }) {
+        console.log('mapElementsClicked::clicked', ctx);
+        setHighlightLine(ctx.el.line);
+        if (isModKeyPressed === false) return;
+        if (ctx.e === null) return;
+        const s = [...mapElementsClicked, { el: ctx.el, e: ctx.e }];
+        if (s.length === 2) {
+            mutateMapText(
+                mapText + '\r\n' + s.map((r) => r.el.name).join('->'),
+            );
+            setMapElementsClicked([]);
+        } else setMapElementsClicked(s);
+    };
+
+    useEffect(() => {
+        console.log('mapElementsClicked', mapElementsClicked);
+    }, [mapElementsClicked]);
 
     const handleMouseMove = useCallback((event: MouseEvent) => {
-        mousePositionRef.current = { x: event.x, y: event.y };
+        mousePositionRef.current = { x: event.clientX, y: event.clientY };
     }, []);
 
     // Process links with new mapElements
@@ -214,7 +247,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     evolutionOffsets={evolutionOffsets}
                     enableNewPipelines={enableNewPipelines}
                     setHighlightLine={setHighlightLine}
-                    clicked={clicked}
+                    clicked={(ctx: {
+                        el: MapElement;
+                        e: MouseEvent<Element> | null;
+                    }) => clicked(ctx)}
                     enableAccelerators={enableAccelerators}
                     mapAccelerators={unifiedMap.accelerators.map((acc) => ({
                         ...acc,

@@ -252,12 +252,17 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                             mapText={mapText}
                             mutateMapText={mutateMapText}
                             mapStyleDefs={mapStyleDefs}
-                            onClick={(e) =>
+                            onClick={(e) => {
+                                console.log(
+                                    'mapElementsClicked::anchor clicked',
+                                    el,
+                                    clicked,
+                                );
                                 clicked({
                                     el: adaptUnifiedComponentToLegacy(el),
                                     e,
-                                })
-                            }
+                                });
+                            }}
                         />
                     ))}
             </g>
