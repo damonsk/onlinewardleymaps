@@ -59,9 +59,6 @@ export function processMapElements(
     elements: MapMethods[],
     mapElements: UnifiedMapElements,
 ) {
-    // Use legacy adapter for compatibility with existing type expectations
-    const legacyAdapter = mapElements.createLegacyMapElementsAdapter();
-
     const asMethod = (m: MapElement): ProcessedMethodElement => ({
         id: m.id,
         name: m.name,
@@ -77,12 +74,12 @@ export function processMapElements(
         return elements.find((el) => el.name === name);
     };
 
-    const decoratedComponentsMethods = legacyAdapter
+    const decoratedComponentsMethods = mapElements
         .getMergedElements()
         .filter((m: MapElement) => m.decorators && 'method' in m.decorators)
         .map((m: MapElement) => asMethod(m));
 
-    const nonEvolvedElements = legacyAdapter.getNoneEvolvedOrEvolvingElements();
+    const nonEvolvedElements = mapElements.getNoneEvolvedOrEvolvingElements();
     const methods = elements
         .filter((m: any) => {
             const element = getElementByName(nonEvolvedElements, m.name);
@@ -92,7 +89,7 @@ export function processMapElements(
             const el = getElementByName(nonEvolvedElements, m.name);
             if (!el)
                 return {
-                    id: `method_${m.name}`, // Generate a unique ID for method elements without component
+                    id: `method_${m.name}`,
                     name: m.name,
                     visibility: m.visibility || 0,
                     method: m.method,

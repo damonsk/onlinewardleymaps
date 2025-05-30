@@ -18,7 +18,7 @@ export interface MapElement {
     label: ComponentLabel;
     override?: any;
     line?: any;
-    decorators: ComponentDecorator;
+    decorators?: ComponentDecorator;
     increaseLabelSpacing: number;
 }
 
