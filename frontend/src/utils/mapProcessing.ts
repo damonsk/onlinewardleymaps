@@ -76,36 +76,43 @@ export function processMapElements(
 
     const decoratedComponentsMethods = mapElements
         .getMergedElements()
-        .filter((m: MapElement) => m.decorators && 'method' in m.decorators)
+        .filter(
+            (m: MapElement) =>
+                m.decorators &&
+                'method' in m.decorators &&
+                (m.decorators.method ?? '').length > 0,
+        )
         .map((m: MapElement) => asMethod(m));
 
     const nonEvolvedElements = mapElements.getNoneEvolvedOrEvolvingElements();
-    const methods = elements
-        .filter((m: any) => {
-            const element = getElementByName(nonEvolvedElements, m.name);
-            return element !== undefined;
-        })
-        .map((m: any) => {
-            const el = getElementByName(nonEvolvedElements, m.name);
-            if (!el)
-                return {
-                    id: `method_${m.name}`,
-                    name: m.name,
-                    visibility: m.visibility || 0,
-                    method: m.method,
-                };
-            return asMethod({
-                ...el,
-                decorators: {
-                    method: m.method || '',
-                    ecosystem: false,
-                    market: false,
-                },
-            });
+    const m1 = elements.filter((m: any) => {
+        const element = getElementByName(nonEvolvedElements, m.name);
+        return element !== undefined;
+    });
+
+    console.log('m1', m1);
+
+    const m2 = m1.map((m: any) => {
+        const el = getElementByName(nonEvolvedElements, m.name);
+        if (!el)
+            return {
+                id: `method_${m.name}`,
+                name: m.name,
+                visibility: m.visibility || 0,
+                method: m.method,
+            };
+        return asMethod({
+            ...el,
+            decorators: {
+                method: m.method || '',
+                ecosystem: false,
+                market: false,
+            },
         });
+    });
 
     return {
-        allMethods: methods.concat(decoratedComponentsMethods),
+        allMethods: m2.concat(decoratedComponentsMethods),
         getElementByName,
     };
 }

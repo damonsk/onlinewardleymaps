@@ -1,4 +1,4 @@
-import React, { MouseEvent, useMemo } from 'react';
+import React, { MouseEvent, useEffect, useMemo } from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import {
     MapAnnotations,
@@ -185,6 +185,10 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
         () => processMapElements(mapMethods, mapElements),
         [mapMethods, mapElements],
     );
+
+    useEffect(() => {
+        console.log('allMeths', allMeths);
+    }, [allMeths]);
 
     return (
         <g id="map">
