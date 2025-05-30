@@ -19,7 +19,7 @@ export function MapSVGContainer({
     onDoubleClick,
     onZoom,
     onZoomReset,
-    onMouseMove,
+    // onMouseMove,
     children,
 }) {
     const styles = useStyles();
@@ -46,7 +46,7 @@ export function MapSVGContainer({
             fontSize={mapStyleDefs.fontSize}
             background="#eee"
             onDoubleClick={onDoubleClick}
-            onMouseMove={onMouseMove}
+            // onMouseMove={onMouseMove}
             onZoom={onZoom}
             onZoomReset={onZoomReset}
             style={{

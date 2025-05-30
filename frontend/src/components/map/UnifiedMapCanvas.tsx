@@ -1,19 +1,10 @@
-import React, {
-    MouseEvent,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import React, { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactSVGPanZoom } from 'react-svg-pan-zoom';
-import { useMapInteractions } from '../../hooks/useMapInteractions';
-import { processLinks } from '../../utils/mapProcessing';
-
-// Import unified system
 import { UnifiedConverter } from '../../conversion/UnifiedConverter';
+import { useMapInteractions } from '../../hooks/useMapInteractions';
 import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
 import { MapElement } from '../../types/base';
+import { processLinks } from '../../utils/mapProcessing';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
@@ -22,15 +13,10 @@ import { MapSVGContainer } from './MapSVGContainer';
 import { MapViewProps } from './MapView';
 import UnifiedMapContent from './UnifiedMapContent';
 
-// Add any missing properties that aren't in MapViewProps but are needed by MapCanvas
 interface UnifiedMapCanvasProps extends MapViewProps {
     handleMapCanvasClick?: (pos: { x: number; y: number }) => void;
 }
 
-/**
- * UnifiedMapCanvas - Updated version that uses the unified type system
- * This eliminates the need for conversion functions and simplifies the data flow
- */
 function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     const featureSwitches = useFeatureSwitches();
     const {
@@ -62,18 +48,15 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     const isModKeyPressed = useModKeyPressedConsumer();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
-    // Create unified converter and process map text directly
     const unifiedConverter = useMemo(() => {
         return new UnifiedConverter(featureSwitches);
     }, [featureSwitches]);
 
-    // Parse map text into unified types - no conversion needed!
     const unifiedMap = useMemo(() => {
         try {
             return unifiedConverter.parse(mapText);
         } catch (error) {
             console.error('Error parsing map text:', error);
-            // Return empty map if parsing fails
             return {
                 title: '',
                 components: [],
@@ -101,13 +84,11 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         }
     }, [mapText, unifiedConverter]);
 
-    // Create unified map elements processor - simplified!
     const mapElements = useMemo(() => {
         return new UnifiedMapElements(unifiedMap);
     }, [unifiedMap]);
 
-    const mousePositionRef = useRef({ x: 0, y: 0 });
-    // const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+    // const mousePositionRef = useRef({ x: 0, y: 0 });
 
     const {
         tool,
@@ -156,9 +137,9 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         console.log('mapElementsClicked', mapElementsClicked);
     }, [mapElementsClicked]);
 
-    const handleMouseMove = useCallback((event: MouseEvent) => {
-        mousePositionRef.current = { x: event.clientX, y: event.clientY };
-    }, []);
+    // const handleMouseMove = useCallback((event: MouseEvent) => {
+    //     mousePositionRef.current = { x: event.clientX, y: event.clientY };
+    // }, []);
 
     // Process links with new mapElements
     const links = useMemo(() => {
@@ -211,7 +192,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 onDoubleClick={newElementAt}
                 onZoom={handleZoom}
                 onZoomReset={() => setScaleFactor(1)}
-                onMouseMove={handleMouseMove}
+                // onMouseMove={handleMouseMove}
             >
                 <defs>
                     <filter id="dropshadow" width="200%" height="200%">
