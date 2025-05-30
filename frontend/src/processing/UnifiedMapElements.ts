@@ -96,13 +96,11 @@ export class UnifiedMapElements implements IProvideMapElements {
     }
 
     getStaticComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => !c.evolving && !c.evolved);
+        return this.allComponents.filter((c) => !c.evolved);
     }
 
     getInertiaComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(
-            (c) => c.inertia && !c.evolved && !c.evolving,
-        );
+        return this.allComponents.filter((c) => c.inertia && !c.evolved);
     }
 
     private convertToMapElement(component: UnifiedComponent): MapElement {
