@@ -96,7 +96,13 @@ export interface MapAnnotations {
 
 export interface MapNotes {}
 export interface MapEvolution extends Array<EvolutionLabel> {}
-export interface MapMethods {}
+export interface MapMethods {
+    id?: number | string;
+    line?: number;
+    increaseLabelSpacing?: number;
+    name: string;
+    method: string;
+}
 export interface MapSubmaps extends NamedComponent {}
 export interface MapMarkets extends NamedComponent {}
 export interface MapEcosystems {}
@@ -146,7 +152,7 @@ export interface EvolutionLabel {
 
 export interface Component {
     url: MapUrls;
-    decorators: ComponentDecorator;
+    decorators?: ComponentDecorator;
     pipeline: any;
     name: string;
     id: string;
@@ -167,7 +173,7 @@ export interface Component {
 export interface ComponentDecorator {
     ecosystem: boolean;
     market: boolean;
-    method: string;
+    method?: string;
 }
 
 export interface EvolvedElement {

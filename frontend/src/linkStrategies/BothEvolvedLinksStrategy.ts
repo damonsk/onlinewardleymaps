@@ -1,18 +1,17 @@
-import MapElements from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import {
     Link,
     LinkExtractionStrategy,
     LinkResult,
-    MapElement,
 } from './LinkStrategiesInterfaces';
 
 export default class BothEvolvedLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
-    private mapElements: MapElements;
+    private mapElements: UnifiedMapElements;
 
-    constructor(links: Link[], mapElements: MapElements) {
+    constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }
@@ -21,10 +20,10 @@ export default class BothEvolvedLinksStrategy
             (li: Link) =>
                 this.mapElements
                     .getEvolvedElements()
-                    .find((i: MapElement) => i.name === li.start) &&
+                    .find((i) => i.name === li.start) &&
                 this.mapElements
                     .getEvolvedElements()
-                    .find((i: MapElement) => i.name === li.end),
+                    .find((i) => i.name === li.end),
         );
 
         return {

@@ -1,5 +1,5 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import MapElements from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import { MapAnchors } from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
@@ -30,7 +30,8 @@ export default class LinksBuilder {
     ) {
         // Create legacy adapter for link strategies
         const legacyAdapter =
-            'createLegacyMapElementsAdapter' in mapElements
+            'createLegacyMapElementsAdapter' in mapElements &&
+            typeof mapElements.createLegacyMapElementsAdapter === 'function'
                 ? mapElements.createLegacyMapElementsAdapter()
                 : mapElements;
 

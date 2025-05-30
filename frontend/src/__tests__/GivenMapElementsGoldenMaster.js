@@ -3,8 +3,8 @@ const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 import { useContext } from 'react';
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),

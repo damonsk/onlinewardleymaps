@@ -1,4 +1,4 @@
-import MapElements from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import {
     Link,
     LinkExtractionStrategy,
@@ -9,9 +9,9 @@ export default class EvolvingToNoneEvolvingEndLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
-    private mapElements: MapElements;
+    private mapElements: UnifiedMapElements;
 
-    constructor(links: Link[], mapElements: MapElements) {
+    constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }

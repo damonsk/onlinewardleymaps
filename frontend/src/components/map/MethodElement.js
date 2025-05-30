@@ -22,7 +22,7 @@ function MethodElement({ element, mapDimensions, method, mapStyleDefs }) {
 
 MethodElement.propTypes = {
     element: PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         maturity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         visibility: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),

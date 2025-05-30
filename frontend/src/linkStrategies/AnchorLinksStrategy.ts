@@ -23,14 +23,22 @@ export default class AnchorLinksStrategy implements LinkExtractionStrategy {
                 this.anchors.find((i: Anchor) => i.name === li.start) &&
                 this.mapElements
                     .getNoneEvolvedOrEvolvingElements()
-                    .find((i: MapElement) => i.name === li.end),
+                    .find((i) => i.name === li.end),
         );
 
         return {
             name: 'anchorLinks',
             links: links,
             startElements: this.anchors.map((a) => a as MapElement),
-            endElements: this.mapElements.getNoneEvolvedOrEvolvingElements(),
+            endElements: this.mapElements
+                .getNoneEvolvedOrEvolvingElements()
+                .map((c) => ({
+                    ...c,
+                    decorators: c.decorators || {
+                        ecosystem: false,
+                        market: false,
+                    },
+                })) as MapElement[],
         };
     }
 }

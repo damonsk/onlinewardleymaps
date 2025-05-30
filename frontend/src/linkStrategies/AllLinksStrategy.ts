@@ -1,4 +1,5 @@
-import MapElements from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements'; // Changed to named import
+import { MapElement } from '../types/base'; // Added import for MapElement
 import {
     Link,
     LinkExtractionStrategy,
@@ -7,19 +8,21 @@ import {
 
 export default class AllLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
-    private mapElements: MapElements;
+    private mapElements: UnifiedMapElements;
 
-    constructor(links: Link[], mapElements: MapElements) {
+    constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }
 
     getLinks(): LinkResult {
+        const elements: MapElement[] =
+            this.mapElements.getNoneEvolvedOrEvolvingElements();
         return {
             name: 'links',
             links: this.links,
-            startElements: this.mapElements.getNoneEvolvedOrEvolvingElements(),
-            endElements: this.mapElements.getNoneEvolvedOrEvolvingElements(),
+            startElements: elements,
+            endElements: elements,
         };
     }
 }

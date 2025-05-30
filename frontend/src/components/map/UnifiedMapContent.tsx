@@ -96,14 +96,44 @@ const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
  */
 const createLegacyMapElementsAdapter = (
     unifiedMapElements: UnifiedMapElements,
+    mapMethods: MapMethods[],
 ) => {
     return {
         getMergedElements: () => {
             // Use the UnifiedMapElements.getMergedElements() method directly
             // This method correctly sets the pipeline property based on the pipelines array
-            return unifiedMapElements
-                .getMergedElements()
-                .filter((c) => c.type !== 'anchor'); // Filter out anchors to prevent double rendering
+            const mergedElements = unifiedMapElements.getMergedElements();
+
+            // Cross-reference with mapMethods to determine which components have method decorators
+            return mergedElements
+                .filter((c) => c.type !== 'anchor') // Filter out anchors to prevent double rendering
+                .filter((c: any) => {
+                    // Check if this component has a method decorator by cross-referencing mapMethods
+                    const hasMethodDecorator = mapMethods.some(
+                        (method) => method.name === c.name,
+                    );
+                    return !hasMethodDecorator; // Filter out components that are in mapMethods
+                })
+                .map((element: any) => {
+                    // Only set decorators that are explicitly present, don't set defaults
+                    const decorators: any = {
+                        ecosystem:
+                            element.type === 'ecosystem' ||
+                            element.decorators?.ecosystem ||
+                            false,
+                        market:
+                            element.type === 'market' ||
+                            element.decorators?.market ||
+                            false,
+                        // Always include method property even if undefined to satisfy ComponentDecorator interface
+                        method: element.decorators?.method,
+                    };
+
+                    return {
+                        ...element,
+                        decorators,
+                    };
+                });
         },
         getEvolveElements: () => {
             return unifiedMapElements
@@ -116,12 +146,10 @@ const createLegacyMapElementsAdapter = (
                 .map(adaptUnifiedComponentToLegacy);
         },
         getMapPipelines: () => {
-            return unifiedMapElements.getPipelines();
+            return unifiedMapElements.getMapPipelines();
         },
         getEvolvedElements: () => {
-            return unifiedMapElements
-                .getEvolvedComponents()
-                .map(adaptUnifiedComponentToLegacy);
+            return unifiedMapElements.getEvolvedElements();
         },
     };
 };
@@ -150,8 +178,8 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
 }) => {
     // Create legacy adapter for backward compatibility
     const legacyMapElements = useMemo(() => {
-        return createLegacyMapElementsAdapter(mapElements);
-    }, [mapElements]);
+        return createLegacyMapElementsAdapter(mapElements, mapMethods);
+    }, [mapElements, mapMethods]);
 
     const { allMethods: allMeths, getElementByName } = useMemo(
         () => processMapElements(mapMethods, mapElements),

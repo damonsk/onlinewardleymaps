@@ -1,4 +1,5 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+// filepath: /Users/damonskelhorn/Source/currentOwm/onlinewardleymaps-ts/frontend/src/linkStrategies/AnchorEvolvedLinksStrategy.ts
+import MapElements from '../MapElements';
 import {
     Anchor,
     Link,
@@ -11,14 +12,10 @@ export default class AnchorEvolvedLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
-    private mapElements: UnifiedMapElements;
+    private mapElements: MapElements;
     private anchors: Anchor[];
 
-    constructor(
-        links: Link[],
-        mapElements: UnifiedMapElements,
-        anchors: Anchor[],
-    ) {
+    constructor(links: Link[], mapElements: MapElements, anchors: Anchor[]) {
         this.links = links;
         this.mapElements = mapElements;
         this.anchors = anchors;

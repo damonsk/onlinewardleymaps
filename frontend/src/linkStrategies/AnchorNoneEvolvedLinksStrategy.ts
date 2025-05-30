@@ -1,4 +1,4 @@
-import MapElements from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import {
     Anchor,
     Link,
@@ -11,10 +11,14 @@ export default class AnchorNoneEvolvedLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
-    private mapElements: MapElements;
+    private mapElements: UnifiedMapElements;
     private anchors: Anchor[];
 
-    constructor(links: Link[], mapElements: MapElements, anchors: Anchor[]) {
+    constructor(
+        links: Link[],
+        mapElements: UnifiedMapElements,
+        anchors: Anchor[],
+    ) {
         this.links = links;
         this.mapElements = mapElements;
         this.anchors = anchors;
@@ -24,7 +28,7 @@ export default class AnchorNoneEvolvedLinksStrategy
             (li) =>
                 this.anchors.find((i) => i.name === li.start) &&
                 this.mapElements
-                    .getEvolveElements()
+                    .getEvolvedElements()
                     .find((i) => i.name === li.end),
         );
 
@@ -32,7 +36,7 @@ export default class AnchorNoneEvolvedLinksStrategy
             name: 'anchorNonEvolvedLinks',
             links: links,
             startElements: this.anchors.map((a) => a as MapElement),
-            endElements: this.mapElements.getEvolveElements(),
+            endElements: this.mapElements.getEvolvedElements(),
         };
     }
 }

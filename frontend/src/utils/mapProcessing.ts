@@ -48,6 +48,7 @@ export function processLinks(
 }
 
 interface ProcessedMethodElement {
+    id: string;
     name: string;
     maturity?: number;
     visibility: string | number;
@@ -62,6 +63,7 @@ export function processMapElements(
     const legacyAdapter = mapElements.createLegacyMapElementsAdapter();
 
     const asMethod = (m: MapElement): ProcessedMethodElement => ({
+        id: m.id,
         name: m.name,
         maturity: m.maturity,
         visibility: m.visibility,
@@ -90,6 +92,7 @@ export function processMapElements(
             const el = getElementByName(nonEvolvedElements, m.name);
             if (!el)
                 return {
+                    id: `method_${m.name}`, // Generate a unique ID for method elements without component
                     name: m.name,
                     visibility: m.visibility || 0,
                     method: m.method,

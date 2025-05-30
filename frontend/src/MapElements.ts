@@ -71,7 +71,7 @@ export default class MapElements implements IProvideMapElements {
                 line: v.line,
                 type: el.type,
                 offsetY: el.offsetY,
-                decorators: v.decorators,
+                decorators: v.decorators || { ecosystem: false, market: false },
                 increaseLabelSpacing: v.increaseLabelSpacing,
                 inertia: el.inertia,
                 url: el.url,

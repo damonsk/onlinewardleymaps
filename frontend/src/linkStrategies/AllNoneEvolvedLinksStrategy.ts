@@ -1,11 +1,17 @@
-import MapElements from '../MapElements';
-import { Link, LinkResult } from './LinkStrategiesInterfaces';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import {
+    Link,
+    LinkExtractionStrategy,
+    LinkResult,
+} from './LinkStrategiesInterfaces';
 
-export default class AllNoneEvolvedLinksStrategy {
+export default class AllNoneEvolvedLinksStrategy
+    implements LinkExtractionStrategy
+{
     private links: Link[];
-    private mapElements: MapElements;
+    private mapElements: UnifiedMapElements;
 
-    constructor(links: Link[], mapElements: MapElements) {
+    constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }

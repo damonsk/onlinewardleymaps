@@ -15,7 +15,8 @@ Phase 2 of the OnlineWardleyMaps refactoring focuses on eliminating the redundan
 ### ⚠️ What Still Uses Legacy MapElements
 
 #### Link Strategies (12 files)
-- `AllLinksStrategy.ts` 
+
+- `AllLinksStrategy.ts`
 - `AllNoneEvolvedLinksStrategy.ts`
 - `AnchorEvolvedLinksStrategy.ts`
 - `AnchorLinksStrategy.ts`
@@ -31,16 +32,19 @@ Phase 2 of the OnlineWardleyMaps refactoring focuses on eliminating the redundan
 - `NoneEvolvingToEvolvingLinksStrategy.ts`
 
 #### Utility Files (1 file)
+
 - `utils/mapProcessing.ts`
 
 #### Test Files (3 files)
+
 - `__tests__/GivenComponentsHavePipelines.js`
 - `__tests__/GivenMapElementsGoldenMaster.js`
 - `__tests__/GivenComponentsEvolve.js`
 
 #### Legacy Files Still Present
+
 - `MapElements.ts` (TypeScript version)
-- `MapElements.js` (JavaScript version) 
+- `MapElements.js` (JavaScript version)
 
 ## Phase 2 Migration Plan
 
@@ -65,7 +69,7 @@ Phase 2 of the OnlineWardleyMaps refactoring focuses on eliminating the redundan
 ### Phase 2D: Update Tests
 
 1. Convert test files to use UnifiedMapElements
-2. Update golden master tests  
+2. Update golden master tests
 3. Verify all tests pass
 
 ### Phase 2E: Remove Legacy Code
@@ -110,7 +114,7 @@ Phase 2 of the OnlineWardleyMaps refactoring focuses on eliminating the redundan
 
 **Changes Made**:
 
-1. **mapProcessing.ts**: 
+1. **mapProcessing.ts**:
    - Updated `processLinks()` to accept `UnifiedMapElements` instead of legacy MapElements
    - Updated `processMapElements()` to accept `UnifiedMapElements` and use legacy adapter internally
    - Fixed type annotations to resolve implicit `any` errors
@@ -130,7 +134,7 @@ Phase 2 of the OnlineWardleyMaps refactoring focuses on eliminating the redundan
    - File was not being used according to Phase 1D migration guide
    - Was causing confusion in build process
 2. **UnifiedMapContent.tsx**: Fixed processMapElements call
-   - Changed from `processMapElements(mapMethods, legacyMapElements as any)` 
+   - Changed from `processMapElements(mapMethods, legacyMapElements as any)`
    - To `processMapElements(mapMethods, mapElements)`
    - Function expects UnifiedMapElements and creates its own legacy adapter internally
 

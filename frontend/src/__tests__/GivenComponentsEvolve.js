@@ -1,6 +1,6 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
-import { UnifiedConverter } from '../conversion/UnifiedConverter';
 import { useContext } from 'react';
+import { UnifiedConverter } from '../conversion/UnifiedConverter';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
