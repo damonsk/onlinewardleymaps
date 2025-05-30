@@ -85,6 +85,7 @@ const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
         pseudoComponent: component.pseudoComponent,
         evolveMaturity: component.evolveMaturity,
         increaseLabelSpacing: component.increaseLabelSpacing,
+        override: component.override, // Missing property needed for evolved component label updates
     };
     return adapted;
 };

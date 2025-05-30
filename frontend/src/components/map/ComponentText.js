@@ -54,7 +54,9 @@ function ComponentText(props) {
         const processEvolvedLine = (line, normalizedLine) => {
             const evolveBase = 'evolve' + element.name.replace(/\s/g, '');
             const evolveOverride =
-                element.override?.length > 0 ? '->' + element.override : '';
+                element.override?.length > 0
+                    ? '->' + element.override.replace(/\s/g, '')
+                    : '';
             const evolveText = evolveBase + evolveOverride + element.maturity;
 
             if (normalizedLine.indexOf(evolveText) === 0) {
@@ -171,7 +173,10 @@ function ComponentText(props) {
     const renderComponentText = () => {
         if (showTextField) return null;
 
-        const textContent = element.override ? element.override : element.name;
+        const textContent =
+            element.override && element.evolved
+                ? element.override
+                : element.name;
         const showTextFieldValue = enableDoubleClickRename
             ? setShowTextField
             : null;

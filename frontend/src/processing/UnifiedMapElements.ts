@@ -44,14 +44,23 @@ export class UnifiedMapElements implements IProvideMapElements {
      */
     private markEvolvingComponents(): void {
         this.allComponents = this.allComponents.map((component) => {
+            if (this.evolvedElements.length === 0) {
+                return component;
+            }
+
             const hasEvolvedElement = this.evolvedElements.some(
                 (evolved) => evolved.name === component.name,
+            );
+
+            const evolved = this.evolvedElements.find(
+                (x) => x.name === component.name,
             );
 
             if (hasEvolvedElement) {
                 return {
                     ...component,
                     evolving: true,
+                    override: evolved?.override,
                 };
             }
 
@@ -143,6 +152,7 @@ export class UnifiedMapElements implements IProvideMapElements {
             maturity: component.maturity,
             visibility: component.visibility,
             pipeline: component.pipeline, // Include pipeline property
+            override: component.override,
         };
     }
 

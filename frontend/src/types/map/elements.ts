@@ -21,6 +21,7 @@ export interface MapElement {
     type?: string;
     maturity?: number;
     visibility?: number;
+    override?: string;
 }
 
 export interface Link {
