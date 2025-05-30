@@ -1,4 +1,4 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import MapElements from '../MapElements';
 import {
     Link,
     LinkExtractionStrategy,
@@ -7,9 +7,9 @@ import {
 
 export default class AllLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
-    private mapElements: UnifiedMapElements;
+    private mapElements: MapElements;
 
-    constructor(links: Link[], mapElements: UnifiedMapElements) {
+    constructor(links: Link[], mapElements: MapElements) {
         this.links = links;
         this.mapElements = mapElements;
     }

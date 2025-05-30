@@ -391,11 +391,12 @@ export class UnifiedMapElements implements IProvideMapElements {
         const convertToLegacy = (
             component: UnifiedComponent,
         ): import('../types/base').MapElement => {
-            const defaultDecorators: import('../types/base').ComponentDecorator = {
-                ecosystem: component.type === 'ecosystem',
-                market: component.type === 'market',
-                method: component.decorators?.method || 'build',
-            };
+            const defaultDecorators: import('../types/base').ComponentDecorator =
+                {
+                    ecosystem: component.type === 'ecosystem',
+                    market: component.type === 'market',
+                    method: component.decorators?.method || 'build',
+                };
 
             return {
                 inertia: component.inertia ?? false,
@@ -419,7 +420,7 @@ export class UnifiedMapElements implements IProvideMapElements {
 
         return {
             getMergedElements: (): import('../types/base').MapElement[] => {
-                return this.getMergedElements().map(convertToLegacy);
+                return this.allComponents.map(convertToLegacy);
             },
             getEvolvedElements: (): import('../types/base').MapElement[] => {
                 return this.getEvolvedComponents().map(convertToLegacy);
@@ -427,21 +428,24 @@ export class UnifiedMapElements implements IProvideMapElements {
             getEvolveElements: (): import('../types/base').MapElement[] => {
                 return this.getEvolvingComponents().map(convertToLegacy);
             },
-            getNoneEvolvingElements: (): import('../types/base').MapElement[] => {
-                return this.allComponents
-                    .filter((c) => !c.evolving)
-                    .map(convertToLegacy);
-            },
-            getNoneEvolvedOrEvolvingElements: (): import('../types/base').MapElement[] => {
-                return this.allComponents
-                    .filter((c) => !c.evolving && !c.evolved)
-                    .map(convertToLegacy);
-            },
-            geEvolvedOrEvolvingElements: (): import('../types/base').MapElement[] => {
-                return this.allComponents
-                    .filter((c) => c.evolving || c.evolved)
-                    .map(convertToLegacy);
-            },
+            getNoneEvolvingElements:
+                (): import('../types/base').MapElement[] => {
+                    return this.allComponents
+                        .filter((c) => !c.evolving)
+                        .map(convertToLegacy);
+                },
+            getNoneEvolvedOrEvolvingElements:
+                (): import('../types/base').MapElement[] => {
+                    return this.allComponents
+                        .filter((c) => !c.evolving && !c.evolved)
+                        .map(convertToLegacy);
+                },
+            geEvolvedOrEvolvingElements:
+                (): import('../types/base').MapElement[] => {
+                    return this.allComponents
+                        .filter((c) => c.evolving || c.evolved)
+                        .map(convertToLegacy);
+                },
             getNonEvolvedElements: (): import('../types/base').MapElement[] => {
                 const noneEvolvingElements = this.allComponents.filter(
                     (c) => !c.evolving,

@@ -1,4 +1,5 @@
 import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import MapElements from '../MapElements';
 import { MapAnchors } from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
@@ -23,13 +24,16 @@ export default class LinksBuilder {
     private linkStrategies: LinkExtractionStrategy[];
     constructor(
         mapLinks: Link[],
-        mapElements: UnifiedMapElements,
+        mapElements: UnifiedMapElements | MapElements,
         mapAnchors: MapAnchors[],
         showLinkedEvolved: boolean,
     ) {
         // Create legacy adapter for link strategies
-        const legacyAdapter = mapElements.createLegacyMapElementsAdapter();
-        
+        const legacyAdapter =
+            'createLegacyMapElementsAdapter' in mapElements
+                ? mapElements.createLegacyMapElementsAdapter()
+                : mapElements;
+
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
             showLinkedEvolved
                 ? [
@@ -43,7 +47,10 @@ export default class LinksBuilder {
                           legacyAdapter,
                       ),
                       new BothEvolvedLinksStrategy(mapLinks, legacyAdapter),
-                      new EvolvedToEvolvingLinksStrategy(mapLinks, legacyAdapter),
+                      new EvolvedToEvolvingLinksStrategy(
+                          mapLinks,
+                          legacyAdapter,
+                      ),
                       new AnchorEvolvedLinksStrategy(
                           mapLinks,
                           legacyAdapter,
