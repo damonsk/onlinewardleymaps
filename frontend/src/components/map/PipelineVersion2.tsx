@@ -1,4 +1,11 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapElement } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
+import {
+    PipelineComponentData,
+    PipelineData,
+} from '../../types/unified/components';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import PipelineBoxSymbol from '../symbols/PipelineBoxSymbol';
@@ -9,29 +16,51 @@ import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingMaturityMatcher } from './positionUpdaters/ExistingMaturityMatcher';
 import { NotDefinedMaturityMatcher } from './positionUpdaters/NotDefinedMaturityMatcher';
 
-function PipelineVersion2(props) {
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface MatcherFunction {
+    matcher: (line: string, identifier: string, type: string) => boolean;
+    action: (line: string, moved: { param1: string | number }) => string;
+}
+
+interface PipelineVersion2Props {
+    pipeline: PipelineData;
+    mapDimensions: MapDimensions;
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    mapStyleDefs: MapTheme;
+    setHighlightLine: (line?: number) => void;
+    linkingFunction: (data: { el: MapElement; e: MouseEvent<Element> }) => void;
+    scaleFactor: number;
+}
+
+function PipelineVersion2(props: PipelineVersion2Props): JSX.Element {
     const positionCalc = new PositionCalculator();
     const isModKeyPressed = useModKeyPressedConsumer();
-    const noLabelMatcher = {
-        matcher: (line, identifier, type) => {
+
+    const noLabelMatcher: MatcherFunction = {
+        matcher: (line: string, identifier: string, type: string): boolean => {
             return (
                 ExistingMaturityMatcher.matcher(line, identifier, type) &&
                 !ExistingMaturityMatcher.matcher(line, '', 'label')
             );
         },
-        action: (line, moved) => {
+        action: (line: string, moved: { param1: string | number }): string => {
             return ExistingMaturityMatcher.action(line, moved);
         },
     };
 
-    const withLabelMatcher = {
-        matcher: (line, identifier, type) => {
+    const withLabelMatcher: MatcherFunction = {
+        matcher: (line: string, identifier: string, type: string): boolean => {
             return (
                 ExistingMaturityMatcher.matcher(line, identifier, type) &&
                 ExistingMaturityMatcher.matcher(line, '', 'label')
             );
         },
-        action: (line, moved) => {
+        action: (line: string, moved: { param1: string | number }): string => {
             const parts = line.split('label');
             const newPart = ExistingMaturityMatcher.action(parts[0], moved);
             return newPart + 'label' + parts[1];
@@ -45,51 +74,54 @@ function PipelineVersion2(props) {
         [noLabelMatcher, withLabelMatcher, NotDefinedMaturityMatcher],
     );
 
-    function endDragForLabel(pipelineComponent, moved) {
+    function endDragForLabel(
+        pipelineComponent: PipelineComponentData,
+        moved: MovedPosition,
+    ): void {
         props.mutateMapText(
             props.mapText
                 .split('\n')
                 .map((line) => {
-                    {
-                        if (
-                            line
-                                .replace(/\s/g, '')
-                                .indexOf(
-                                    'component' +
-                                        pipelineComponent.name.replace(
-                                            /\s/g,
-                                            '',
-                                        ) +
-                                        '[',
-                                ) === 0
-                        ) {
-                            if (
-                                line.replace(/\s/g, '').indexOf('label[') > -1
-                            ) {
-                                return line.replace(
-                                    /\slabel\s\[(.?|.+?)\]+/g,
-                                    ` label [${parseFloat(moved.x).toFixed(
-                                        0,
-                                    )}, ${parseFloat(moved.y).toFixed(0)}]`,
-                                );
-                            } else {
-                                return (
-                                    line.trim() +
-                                    ` label [${parseFloat(moved.x).toFixed(
-                                        0,
-                                    )}, ${parseFloat(moved.y).toFixed(0)}]`
-                                );
-                            }
+                    if (
+                        line
+                            .replace(/\s/g, '')
+                            .indexOf(
+                                'component' +
+                                    pipelineComponent.name.replace(/\s/g, '') +
+                                    '[',
+                            ) === 0
+                    ) {
+                        if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+                            return line.replace(
+                                /\slabel\s\[(.?|.+?)\]+/g,
+                                ` label [${parseFloat(
+                                    moved.x.toString(),
+                                ).toFixed(
+                                    0,
+                                )}, ${parseFloat(moved.y.toString()).toFixed(0)}]`,
+                            );
                         } else {
-                            return line;
+                            return (
+                                line.trim() +
+                                ` label [${parseFloat(
+                                    moved.x.toString(),
+                                ).toFixed(
+                                    0,
+                                )}, ${parseFloat(moved.y.toString()).toFixed(0)}]`
+                            );
                         }
+                    } else {
+                        return line;
                     }
                 })
                 .join('\n'),
         );
     }
 
-    function endDragX2(component, moved) {
+    function endDragX2(
+        component: PipelineComponentData,
+        moved: MovedPosition,
+    ): void {
         positionUpdater.update(
             {
                 param1: positionCalc.xToMaturity(
@@ -100,24 +132,28 @@ function PipelineVersion2(props) {
             component.name,
         );
     }
+
     const x1 = positionCalc.maturityToX(
-        props.pipeline.maturity1,
+        props.pipeline.maturity1 || 0,
         props.mapDimensions.width,
     );
     const x2 = positionCalc.maturityToX(
-        props.pipeline.maturity2,
+        props.pipeline.maturity2 || 0,
         props.mapDimensions.width,
     );
 
-    const xCalc = (mat) =>
+    const xCalc = (mat: number): number =>
         positionCalc.maturityToX(mat, props.mapDimensions.width);
 
-    const allowLinking = (component, e) => {
-        const supplementObjectWithVisibilitt = Object.assign(component, {
+    const allowLinking = (
+        component: PipelineComponentData,
+        e: MouseEvent<SVGElement>,
+    ): void => {
+        const supplementObjectWithVisibility = Object.assign(component, {
             visibility: props.pipeline.visibility,
             offsetY: 12,
-        });
-        props.linkingFunction({ el: supplementObjectWithVisibilitt, e });
+        }) as MapElement;
+        props.linkingFunction({ el: supplementObjectWithVisibility, e });
     };
 
     const y =
@@ -140,7 +176,9 @@ function PipelineVersion2(props) {
                     <>
                         <Movable
                             id={'pipeline_' + props.pipeline.id + '_' + i}
-                            onMove={(m) => endDragX2(component, m)}
+                            onMove={(m: MovedPosition) =>
+                                endDragX2(component, m)
+                            }
                             x={xCalc(component.maturity)}
                             y={y + 12}
                             fixedY={true}
@@ -172,7 +210,7 @@ function PipelineVersion2(props) {
                             }
                         >
                             <ComponentText
-                                overrideDrag={(m) =>
+                                overrideDrag={(m: MovedPosition) =>
                                     endDragForLabel(component, m)
                                 }
                                 id={'pipelinecomponent_text_' + component.id}
