@@ -66,7 +66,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                 return {
                     ...component,
                     pipeline: true,
-                }; //foobar
+                };
             }
             return component;
         });
