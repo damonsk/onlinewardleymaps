@@ -11,12 +11,12 @@ export const ExistingCoordsMatcher: Replacer = {
     action: (line: string, moved: Moved): string => {
         const param1 =
             typeof moved.param1 === 'number'
-                ? moved.param1.toFixed(2)
-                : parseFloat(moved.param1).toFixed(2);
+                ? moved.param1.toString()
+                : parseFloat(moved.param1).toString();
         const param2 =
             typeof moved.param2 === 'number'
-                ? moved.param2.toFixed(2)
-                : parseFloat(moved.param2).toFixed(2);
+                ? moved.param2.toString()
+                : parseFloat(moved.param2).toString();
         const result = line.replace(/\[(.?|.+?)\]/g, `[${param1}, ${param2}]`);
         return result;
     },

@@ -195,4 +195,23 @@ export class UnifiedMapElements implements IProvideMapElements {
             // components: this.convertToMapElements(pipeline.components as UnifiedComponent[]),
         }));
     }
+
+    /**
+     * Create legacy MapElements adapter for backward compatibility
+     * This method provides the legacy interface expected by existing code
+     */
+    createLegacyMapElementsAdapter() {
+        return {
+            getMergedElements: () => this.getMergedElements(),
+            getMapPipelines: () => this.getMapPipelines(),
+            getEvolveElements: () => this.getEvolveElements(),
+            getEvolvedElements: () => this.getEvolvedElements(),
+            getNonEvolvedElements: () => this.getNonEvolvedElements(),
+            getNoneEvolvedOrEvolvingElements: () =>
+                this.getNoneEvolvedOrEvolvingElements(),
+            getNoneEvolvingElements: () => this.getNoneEvolvingElements(),
+            geEvolvedOrEvolvingElements: () =>
+                this.geEvolvedOrEvolvingElements(),
+        };
+    }
 }

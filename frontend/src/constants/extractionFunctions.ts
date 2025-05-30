@@ -313,10 +313,14 @@ export const decorators = (
         increaseLabelSpacing?: number;
     },
     element: string,
-): void => {
+): IProvideBaseElement & {
+    decorators?: any;
+    increaseLabelSpacing?: number;
+} => {
     [methodDecorator, marketDecorator, ecosystemDecorator].forEach((d) =>
         merge(baseElement, d(baseElement, element)),
     );
+    return baseElement;
 };
 
 export const setLabel = (

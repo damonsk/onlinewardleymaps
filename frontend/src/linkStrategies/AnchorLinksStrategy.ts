@@ -1,4 +1,4 @@
-import MapElements from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import {
     Anchor,
     Link,
@@ -9,10 +9,14 @@ import {
 
 export default class AnchorLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
-    private mapElements: MapElements;
+    private mapElements: UnifiedMapElements;
     private anchors: Anchor[];
 
-    constructor(links: Link[], mapElements: MapElements, anchors: Anchor[]) {
+    constructor(
+        links: Link[],
+        mapElements: UnifiedMapElements,
+        anchors: Anchor[],
+    ) {
         this.links = links;
         this.mapElements = mapElements;
         this.anchors = anchors;

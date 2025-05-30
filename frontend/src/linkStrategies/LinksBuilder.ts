@@ -1,4 +1,3 @@
-import MapElements from '../MapElements';
 import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import { MapAnchors } from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';
@@ -24,53 +23,43 @@ export default class LinksBuilder {
     private linkStrategies: LinkExtractionStrategy[];
     constructor(
         mapLinks: Link[],
-        mapElements: UnifiedMapElements | MapElements,
+        mapElements: UnifiedMapElements,
         mapAnchors: MapAnchors[],
         showLinkedEvolved: boolean,
     ) {
-        // Create legacy adapter for link strategies
-        const legacyAdapter =
-            'createLegacyMapElementsAdapter' in mapElements &&
-            typeof mapElements.createLegacyMapElementsAdapter === 'function'
-                ? mapElements.createLegacyMapElementsAdapter()
-                : mapElements;
-
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
             showLinkedEvolved
                 ? [
-                      new EvolveToEvolvedLinksStrategy(mapLinks, legacyAdapter),
+                      new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
                       new EvolvedToNoneEvolvingLinksStrategy(
                           mapLinks,
-                          legacyAdapter,
+                          mapElements,
                       ),
                       new NoneEvolvingToEvolvingLinksStrategy(
                           mapLinks,
-                          legacyAdapter,
+                          mapElements,
                       ),
-                      new BothEvolvedLinksStrategy(mapLinks, legacyAdapter),
-                      new EvolvedToEvolvingLinksStrategy(
-                          mapLinks,
-                          legacyAdapter,
-                      ),
+                      new BothEvolvedLinksStrategy(mapLinks, mapElements),
+                      new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
                       new AnchorEvolvedLinksStrategy(
                           mapLinks,
-                          legacyAdapter,
+                          mapElements,
                           mapAnchors,
                       ),
                   ]
                 : [];
 
         this.linkStrategies = linksThatAreEvolvingOfAnyKind.concat([
-            new AllLinksStrategy(mapLinks, legacyAdapter),
-            new EvolvingEndLinksStrategy(mapLinks, legacyAdapter),
-            new EvolvingToEvolvingLinksStrategy(mapLinks, legacyAdapter),
-            new AnchorLinksStrategy(mapLinks, legacyAdapter, mapAnchors),
+            new AllLinksStrategy(mapLinks, mapElements),
+            new EvolvingEndLinksStrategy(mapLinks, mapElements),
+            new EvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
+            new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
             new AnchorNoneEvolvedLinksStrategy(
                 mapLinks,
-                legacyAdapter,
+                mapElements,
                 mapAnchors,
             ),
-            new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, legacyAdapter),
+            new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, mapElements),
         ]);
     }
 

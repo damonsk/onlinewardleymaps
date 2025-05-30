@@ -135,9 +135,8 @@ describe('Given Components Have Pipelines', function () {
         '\n' + '}';
         let result = new UnifiedConverter(mockContextValue).parse(actual);
         let me = new UnifiedMapElements(result);
-        let legacyAdapter = me.createLegacyMapElementsAdapter();
-        let pipelines = legacyAdapter.getMapPipelines();
-        let components = legacyAdapter.getMergedElements();
+        let pipelines = me.getMapPipelines();
+        let components = me.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);
