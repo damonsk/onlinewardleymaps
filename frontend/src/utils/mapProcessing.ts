@@ -85,34 +85,33 @@ export function processMapElements(
         .map((m: MapElement) => asMethod(m));
 
     const nonEvolvedElements = mapElements.getNoneEvolvedOrEvolvingElements();
-    const m1 = elements.filter((m: any) => {
-        const element = getElementByName(nonEvolvedElements, m.name);
-        return element !== undefined;
-    });
 
-    console.log('m1', m1);
-
-    const m2 = m1.map((m: any) => {
-        const el = getElementByName(nonEvolvedElements, m.name);
-        if (!el)
-            return {
-                id: `method_${m.name}`,
-                name: m.name,
-                visibility: m.visibility || 0,
-                method: m.method,
-            };
-        return asMethod({
-            ...el,
-            decorators: {
-                method: m.method || '',
-                ecosystem: false,
-                market: false,
-            },
+    const meths = elements
+        .filter((m: any) => {
+            const element = getElementByName(nonEvolvedElements, m.name);
+            return element !== undefined;
+        })
+        .map((m: any) => {
+            const el = getElementByName(nonEvolvedElements, m.name);
+            if (!el)
+                return {
+                    id: `method_${m.name}`,
+                    name: m.name,
+                    visibility: m.visibility || 0,
+                    method: m.method,
+                };
+            return asMethod({
+                ...el,
+                decorators: {
+                    method: m.method || '',
+                    ecosystem: false,
+                    market: false,
+                },
+            });
         });
-    });
 
     return {
-        allMethods: m2.concat(decoratedComponentsMethods),
+        allMethods: meths.concat(decoratedComponentsMethods),
         getElementByName,
     };
 }
