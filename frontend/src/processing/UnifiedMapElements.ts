@@ -32,6 +32,7 @@ export class UnifiedMapElements implements IProvideMapElements {
         this.pipelines = map.pipelines;
 
         this.markEvolvingComponents();
+        this.markPipelineComponents();
     }
 
     private markEvolvingComponents(): void {
@@ -50,6 +51,21 @@ export class UnifiedMapElements implements IProvideMapElements {
                     ...component,
                     evolving: true,
                     override: evolved?.override,
+                };
+            }
+            return component;
+        });
+    }
+
+    private markPipelineComponents(): void {
+        this.allComponents = this.allComponents.map((component) => {
+            const isPipelineComponent = this.pipelines.some(
+                (pipeline) => pipeline.name === component.name,
+            );
+            if (isPipelineComponent) {
+                return {
+                    ...component,
+                    pipeline: true,
                 };
             }
             return component;
@@ -139,6 +155,7 @@ export class UnifiedMapElements implements IProvideMapElements {
             increaseLabelSpacing: component.increaseLabelSpacing ?? 0,
             evolveMaturity: component.evolveMaturity,
             override: component.override,
+            pipeline: component.pipeline ?? false,
         };
     }
 

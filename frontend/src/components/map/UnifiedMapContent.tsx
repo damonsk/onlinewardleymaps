@@ -187,8 +187,8 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
     );
 
     useEffect(() => {
-        console.log('allMeths', allMeths);
-    }, [allMeths]);
+        console.log('legacyMapElements', legacyMapElements.getMergedElements());
+    }, [legacyMapElements]);
 
     return (
         <g id="map">

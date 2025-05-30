@@ -20,6 +20,7 @@ export interface MapElement {
     line?: any;
     decorators?: ComponentDecorator;
     increaseLabelSpacing: number;
+    pipeline?: boolean;
 }
 
 export interface LinkExtractionStrategy {
