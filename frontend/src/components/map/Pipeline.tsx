@@ -1,13 +1,30 @@
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
+import { PipelineData } from '../../types/unified/components';
+import ComponentSymbol from '../symbols/ComponentSymbol';
+import PipelineBoxSymbol from '../symbols/PipelineBoxSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
-import ComponentSymbol from '../symbols/ComponentSymbol';
-import PipelineBoxSymbol from '../symbols/PipelineBoxSymbol';
+interface MovedPosition {
+    x: number;
+    y: number;
+}
 
-function Pipeline(props) {
+interface PipelineProps {
+    pipeline: PipelineData;
+    mapDimensions: MapDimensions;
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    mapStyleDefs: MapTheme;
+    setHighlightLine: (line?: number) => void;
+    scaleFactor: number;
+}
+
+function Pipeline(props: PipelineProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const positionUpdater = new DefaultPositionUpdater(
         'pipeline',
@@ -16,23 +33,23 @@ function Pipeline(props) {
         [ExistingCoordsMatcher, NotDefinedCoordsMatcher],
     );
 
-    function endDragX1(moved) {
+    function endDragX1(moved: MovedPosition): void {
         positionUpdater.update(
             {
                 param1: positionCalc.xToMaturity(
                     moved.x,
                     props.mapDimensions.width,
                 ),
-                param2: props.pipeline.maturity2,
+                param2: props.pipeline.maturity2 || 0,
             },
             props.pipeline.name,
         );
     }
 
-    function endDragX2(moved) {
+    function endDragX2(moved: MovedPosition): void {
         positionUpdater.update(
             {
-                param1: props.pipeline.maturity1,
+                param1: props.pipeline.maturity1 || 0,
                 param2: positionCalc.xToMaturity(
                     moved.x,
                     props.mapDimensions.width,
@@ -42,11 +59,11 @@ function Pipeline(props) {
         );
     }
     const x1 = positionCalc.maturityToX(
-        props.pipeline.maturity1,
+        props.pipeline.maturity1 || 0,
         props.mapDimensions.width,
     );
     const x2 = positionCalc.maturityToX(
-        props.pipeline.maturity2,
+        props.pipeline.maturity2 || 0,
         props.mapDimensions.width,
     );
     const y =
