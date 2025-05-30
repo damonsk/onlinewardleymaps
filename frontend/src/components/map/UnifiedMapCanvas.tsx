@@ -119,7 +119,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     } = useMapInteractions({
         setNewComponentContext,
         mapDimensions,
-        mousePositionRef,
     });
 
     const [mapElementsClicked, setMapElementsClicked] = useState<
