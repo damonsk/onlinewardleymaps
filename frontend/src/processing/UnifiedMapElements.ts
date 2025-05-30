@@ -381,4 +381,79 @@ export class UnifiedMapElements implements IProvideMapElements {
 
         return errors;
     }
+
+    /**
+     * Create a legacy MapElements adapter for link strategies compatibility
+     * Returns an object that implements the exact interface expected by legacy link strategies
+     */
+    createLegacyMapElementsAdapter(): any {
+        // Convert UnifiedComponent to legacy MapElement format
+        const convertToLegacy = (
+            component: UnifiedComponent,
+        ): import('../types/base').MapElement => {
+            const defaultDecorators: import('../types/base').ComponentDecorator = {
+                ecosystem: component.type === 'ecosystem',
+                market: component.type === 'market',
+                method: component.decorators?.method || 'build',
+            };
+
+            return {
+                inertia: component.inertia ?? false,
+                name: component.name,
+                id: component.id,
+                visibility: component.visibility ?? 0,
+                type: component.type ?? 'component',
+                evolveMaturity: component.evolveMaturity,
+                maturity: component.maturity ?? 0,
+                evolving: component.evolving ?? false,
+                evolved: component.evolved ?? false,
+                pseudoComponent: component.pseudoComponent ?? false,
+                offsetY: component.offsetY ?? 0,
+                label: component.label,
+                override: component.override,
+                line: component.line ?? 0,
+                decorators: component.decorators || defaultDecorators,
+                increaseLabelSpacing: component.increaseLabelSpacing ?? 0,
+            };
+        };
+
+        return {
+            getMergedElements: (): import('../types/base').MapElement[] => {
+                return this.getMergedElements().map(convertToLegacy);
+            },
+            getEvolvedElements: (): import('../types/base').MapElement[] => {
+                return this.getEvolvedComponents().map(convertToLegacy);
+            },
+            getEvolveElements: (): import('../types/base').MapElement[] => {
+                return this.getEvolvingComponents().map(convertToLegacy);
+            },
+            getNoneEvolvingElements: (): import('../types/base').MapElement[] => {
+                return this.allComponents
+                    .filter((c) => !c.evolving)
+                    .map(convertToLegacy);
+            },
+            getNoneEvolvedOrEvolvingElements: (): import('../types/base').MapElement[] => {
+                return this.allComponents
+                    .filter((c) => !c.evolving && !c.evolved)
+                    .map(convertToLegacy);
+            },
+            geEvolvedOrEvolvingElements: (): import('../types/base').MapElement[] => {
+                return this.allComponents
+                    .filter((c) => c.evolving || c.evolved)
+                    .map(convertToLegacy);
+            },
+            getNonEvolvedElements: (): import('../types/base').MapElement[] => {
+                const noneEvolvingElements = this.allComponents.filter(
+                    (c) => !c.evolving,
+                );
+                const evolvedComponents = this.getEvolvedComponents();
+                return [...noneEvolvingElements, ...evolvedComponents].map(
+                    convertToLegacy,
+                );
+            },
+            getMapPipelines: (): any[] => {
+                return this.pipelines;
+            },
+        };
+    }
 }
