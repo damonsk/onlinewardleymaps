@@ -106,7 +106,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint"
+            "pre-commit": "lint-staged"
         }
     },
     "packageManager": "yarn@4.5.1"
