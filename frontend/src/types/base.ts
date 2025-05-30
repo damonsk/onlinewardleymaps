@@ -94,7 +94,13 @@ export interface MapAnnotations {
     text: string;
 }
 
-export interface MapNotes {}
+export interface MapNotes {
+    id: string;
+    text: string;
+    visibility: number;
+    maturity: number;
+    line: number;
+}
 export interface MapEvolution extends Array<EvolutionLabel> {}
 export interface MapMethods {
     id?: number | string;

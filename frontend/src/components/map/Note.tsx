@@ -1,3 +1,6 @@
+import { MapDimensions } from '../../constants/defaults';
+import { MapNotes } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
@@ -5,7 +8,22 @@ import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher'
 import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
-function Note(props) {
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface NoteProps {
+    note: MapNotes;
+    mapDimensions: MapDimensions;
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    mapStyleDefs: MapTheme;
+    setHighlightLine: (line: number) => void;
+    scaleFactor: number;
+}
+
+function Note(props: NoteProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const positionUpdater = new LineNumberPositionUpdater(
         'note',
@@ -14,18 +32,18 @@ function Note(props) {
         [ExistingCoordsMatcher, NotDefinedCoordsMatcher],
     );
 
-    const x = () =>
+    const x = (): number =>
         positionCalc.maturityToX(
             props.note.maturity,
             props.mapDimensions.width,
         );
-    const y = () =>
+    const y = (): number =>
         positionCalc.visibilityToY(
             props.note.visibility,
             props.mapDimensions.height,
         );
 
-    function endDrag(moved) {
+    function endDrag(moved: MovedPosition): void {
         const visibility = positionCalc.yToVisibility(
             moved.y,
             props.mapDimensions.height,
@@ -35,7 +53,7 @@ function Note(props) {
             props.mapDimensions.width,
         );
         positionUpdater.update(
-            { param1: visibility, param2: maturity },
+            { param1: parseFloat(visibility), param2: parseFloat(maturity) },
             props.note.text,
             props.note.line,
         );
