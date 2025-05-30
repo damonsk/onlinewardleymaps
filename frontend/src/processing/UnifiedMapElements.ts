@@ -228,6 +228,11 @@ export class UnifiedMapElements implements IProvideMapElements {
             return this.convertToMapElements(collection);
         }
 
+        // Add pipeline information like in legacy implementation
+        if (this.pipelines === undefined || this.pipelines.length === 0) {
+            return this.convertToMapElements(collection);
+        }
+
         const collectionWithPipelines = collection.map((e) => ({
             ...e,
             pipeline: this.pipelines.some(
@@ -398,13 +403,18 @@ export class UnifiedMapElements implements IProvideMapElements {
                     method: component.decorators?.method || 'build',
                 };
 
+            // Find evolve maturity for evolving components
+            const evolvedData = component.evolving
+                ? this.evolvedElements.find((e) => e.name === component.name)
+                : undefined;
+
             return {
                 inertia: component.inertia ?? false,
                 name: component.name,
                 id: component.id,
                 visibility: component.visibility ?? 0,
                 type: component.type ?? 'component',
-                evolveMaturity: component.evolveMaturity,
+                evolveMaturity: evolvedData?.maturity ?? undefined,
                 maturity: component.maturity ?? 0,
                 evolving: component.evolving ?? false,
                 evolved: component.evolved ?? false,
@@ -419,8 +429,48 @@ export class UnifiedMapElements implements IProvideMapElements {
         };
 
         return {
-            getMergedElements: (): import('../types/base').MapElement[] => {
-                return this.allComponents.map(convertToLegacy);
+            getMergedElements: (): import('../types/base').Component[] => {
+                // Use the actual getMergedElements() method which includes pipeline processing
+                const mergedElements = this.getMergedElements();
+
+                // Convert from unified MapElement format to legacy Component format
+                return mergedElements.map(
+                    (element): import('../types/base').Component => {
+                        const defaultDecorators: import('../types/base').ComponentDecorator =
+                            {
+                                ecosystem: element.type === 'ecosystem',
+                                market: element.type === 'market',
+                                method: 'build',
+                            };
+
+                        // Find evolve maturity for evolving components
+                        const evolvedData = element.evolving
+                            ? this.evolvedElements.find(
+                                  (e) => e.name === element.name,
+                              )
+                            : undefined;
+
+                        return {
+                            name: element.name,
+                            id: element.id,
+                            visibility: element.visibility ?? 0,
+                            type: element.type ?? 'component',
+                            maturity: element.maturity ?? 0,
+                            evolveMaturity: evolvedData?.maturity ?? undefined,
+                            evolving: element.evolving ?? false,
+                            evolved: element.evolved ?? false,
+                            pseudoComponent: false,
+                            offsetY: 0,
+                            label: element.label,
+                            line: element.line ?? 0,
+                            decorators: defaultDecorators,
+                            increaseLabelSpacing: 0,
+                            inertia: element.inertia ?? false,
+                            pipeline: element.pipeline,
+                            url: { name: '', url: '' },
+                        };
+                    },
+                );
             },
             getEvolvedElements: (): import('../types/base').MapElement[] => {
                 return this.getEvolvedComponents().map(convertToLegacy);

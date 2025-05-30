@@ -1,5 +1,5 @@
 import LinksBuilder from '../linkStrategies/LinksBuilder';
-import MapElementsClass from '../MapElements';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
 import { MapAnchors, MapElement, MapLinks, MapMethods } from '../types/base';
 
 export interface ProcessedLink {
@@ -26,7 +26,7 @@ export interface LinksResult {
 
 export function processLinks(
     mapLinks: MapLinks[],
-    mapElements: MapElementsClass,
+    mapElements: UnifiedMapElements,
     mapAnchors: MapAnchors[],
     showLinkedEvolved: boolean,
 ): ProcessedLinkGroup[] {
@@ -56,8 +56,11 @@ interface ProcessedMethodElement {
 
 export function processMapElements(
     elements: MapMethods[],
-    mapElements: MapElementsClass,
+    mapElements: UnifiedMapElements,
 ) {
+    // Use legacy adapter for compatibility with existing type expectations
+    const legacyAdapter = mapElements.createLegacyMapElementsAdapter();
+
     const asMethod = (m: MapElement): ProcessedMethodElement => ({
         name: m.name,
         maturity: m.maturity,
@@ -72,12 +75,12 @@ export function processMapElements(
         return elements.find((el) => el.name === name);
     };
 
-    const decoratedComponentsMethods = mapElements
+    const decoratedComponentsMethods = legacyAdapter
         .getMergedElements()
         .filter((m: MapElement) => m.decorators && 'method' in m.decorators)
-        .map((m) => asMethod(m));
+        .map((m: MapElement) => asMethod(m));
 
-    const nonEvolvedElements = mapElements.getNoneEvolvedOrEvolvingElements();
+    const nonEvolvedElements = legacyAdapter.getNoneEvolvedOrEvolvingElements();
     const methods = elements
         .filter((m: any) => {
             const element = getElementByName(nonEvolvedElements, m.name);

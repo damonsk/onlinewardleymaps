@@ -1,5 +1,5 @@
-import MapElements from '../MapElements';
-import Converter from '../conversion/Converter';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { UnifiedConverter } from '../conversion/UnifiedConverter';
 import { useContext } from 'react';
 
 jest.mock('react', () => ({
@@ -17,11 +17,11 @@ describe('Given Components Have Pipelines', function () {
     test('When pipeline is specificed then convert output is correct', function () {
         let actual =
             'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo [0.15, 0.65]';
-        let result = new Converter(mockContextValue).parse(actual);
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        let me = new MapElements(mergeables, result.evolved, result.pipelines);
-        let pipelines = me.getMapPipelines();
-        let components = me.getMergedElements();
+        let result = new UnifiedConverter(mockContextValue).parse(actual);
+        let me = new UnifiedMapElements(result);
+        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let pipelines = legacyAdapter.getMapPipelines();
+        let components = legacyAdapter.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);
@@ -33,11 +33,11 @@ describe('Given Components Have Pipelines', function () {
 
     test('When pipeline is specificed but boundaries are not defined, pipeline should be hidden and returns', function () {
         let actual = 'component Foo [0.9, 0.1]' + '\n' + 'pipeline Foo';
-        let result = new Converter(mockContextValue).parse(actual);
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        let me = new MapElements(mergeables, result.evolved, result.pipelines);
-        let pipelines = me.getMapPipelines();
-        let components = me.getMergedElements();
+        let result = new UnifiedConverter(mockContextValue).parse(actual);
+        let me = new UnifiedMapElements(result);
+        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let pipelines = legacyAdapter.getMapPipelines();
+        let components = legacyAdapter.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);
@@ -57,11 +57,11 @@ describe('Given Components Have Pipelines', function () {
             'component FooBar [0.11]' +
             '\n' +
             '}';
-        let result = new Converter(mockContextValue).parse(actual);
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        let me = new MapElements(mergeables, result.evolved, result.pipelines);
-        let pipelines = me.getMapPipelines();
-        let components = me.getMergedElements();
+        let result = new UnifiedConverter(mockContextValue).parse(actual);
+        let me = new UnifiedMapElements(result);
+        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let pipelines = legacyAdapter.getMapPipelines();
+        let components = legacyAdapter.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);
@@ -81,11 +81,11 @@ describe('Given Components Have Pipelines', function () {
             'component FooBar [0.11]' +
             '\n' +
             '}';
-        let result = new Converter(mockContextValue).parse(actual);
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        let me = new MapElements(mergeables, result.evolved, result.pipelines);
-        let pipelines = me.getMapPipelines();
-        let components = me.getMergedElements();
+        let result = new UnifiedConverter(mockContextValue).parse(actual);
+        let me = new UnifiedMapElements(result);
+        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let pipelines = legacyAdapter.getMapPipelines();
+        let components = legacyAdapter.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);
@@ -106,11 +106,11 @@ describe('Given Components Have Pipelines', function () {
             'component Bar [0.65]' +
             '\n' +
             '}';
-        let result = new Converter(mockContextValue).parse(actual);
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        let me = new MapElements(mergeables, result.evolved, result.pipelines);
-        let pipelines = me.getMapPipelines();
-        let components = me.getMergedElements();
+        let result = new UnifiedConverter(mockContextValue).parse(actual);
+        let me = new UnifiedMapElements(result);
+        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let pipelines = legacyAdapter.getMapPipelines();
+        let components = legacyAdapter.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);
@@ -133,11 +133,11 @@ describe('Given Components Have Pipelines', function () {
             '\n' +
             'component FooBar [0.41]';
         '\n' + '}';
-        let result = new Converter(mockContextValue).parse(actual);
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        let me = new MapElements(mergeables, result.evolved, result.pipelines);
-        let pipelines = me.getMapPipelines();
-        let components = me.getMergedElements();
+        let result = new UnifiedConverter(mockContextValue).parse(actual);
+        let me = new UnifiedMapElements(result);
+        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let pipelines = legacyAdapter.getMapPipelines();
+        let components = legacyAdapter.getMergedElements();
 
         expect(result.pipelines.length).toEqual(1);
         expect(pipelines.length).toEqual(1);

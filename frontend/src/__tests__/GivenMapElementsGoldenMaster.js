@@ -3,8 +3,8 @@ const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 import { useContext } from 'react';
-import MapElements from '../MapElements';
-import Converter from '../conversion/Converter';
+import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { UnifiedConverter } from '../conversion/UnifiedConverter';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -39,44 +39,40 @@ describe('So that large refactors can be done without breaking output of mapElem
         const fileName = 'GoldenMasterMapText.txt';
         const fileContent = loadFileContent(fileName);
 
-        let result = new Converter(mockContextValue).parse(fileContent);
+        let result = new UnifiedConverter(mockContextValue).parse(fileContent);
         // console.log(JSON.stringify(result)); // Uncomment for debugging
         testResultEquality(result, 'GoldenMasterConverterOutput.txt');
 
-        const mergeables = [{ collection: result.elements, type: 'component' }];
-        const me = new MapElements(
-            mergeables,
-            result.evolved,
-            result.pipelines,
-        );
+        const me = new UnifiedMapElements(result);
+        const legacyAdapter = me.createLegacyMapElementsAdapter();
 
         const testCases = [
             {
-                fn: () => me.getMergedElements(),
+                fn: () => legacyAdapter.getMergedElements(),
                 fileName: 'GoldenMasterMapElementsMergedElements.txt',
             },
             {
-                fn: () => me.getMapPipelines(),
+                fn: () => legacyAdapter.getMapPipelines(),
                 fileName: 'GoldenMasterMapElementsPipeline.txt',
             },
             {
-                fn: () => me.getEvolveElements(),
+                fn: () => legacyAdapter.getEvolveElements(),
                 fileName: 'GoldenMasterMapElementsEvolve.txt',
             },
             {
-                fn: () => me.getEvolvedElements(),
+                fn: () => legacyAdapter.getEvolvedElements(),
                 fileName: 'GoldenMasterMapElementsEvolved.txt',
             },
             {
-                fn: () => me.getNonEvolvedElements(),
+                fn: () => legacyAdapter.getNonEvolvedElements(),
                 fileName: 'GoldenMasterMapElementsNonEvolved.txt',
             },
             {
-                fn: () => me.getNoneEvolvedOrEvolvingElements(),
+                fn: () => legacyAdapter.getNoneEvolvedOrEvolvingElements(),
                 fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
             },
             {
-                fn: () => me.getNoneEvolvingElements(),
+                fn: () => legacyAdapter.getNoneEvolvingElements(),
                 fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
             },
         ];
@@ -84,7 +80,8 @@ describe('So that large refactors can be done without breaking output of mapElem
         testCases.forEach((testCase) => {
             const { fn, fileName } = testCase;
             console.log(testCase);
-            testResultEquality(fn(), fileName);
+            const output = fn();
+            testResultEquality(output, fileName);
         });
     });
 });

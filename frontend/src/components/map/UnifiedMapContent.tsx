@@ -154,8 +154,8 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
     }, [mapElements]);
 
     const { allMethods: allMeths, getElementByName } = useMemo(
-        () => processMapElements(mapMethods, legacyMapElements as any),
-        [mapMethods, legacyMapElements],
+        () => processMapElements(mapMethods, mapElements),
+        [mapMethods, mapElements],
     );
 
     return (
