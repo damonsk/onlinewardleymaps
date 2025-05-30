@@ -75,9 +75,8 @@
         "styled-components": "6.1.8"
     },
     "lint-staged": {
-        "*.{js,jsx}": [
-            "yarn run format-staged",
-            "yarn run elint frontend/ --fix",
+        "*.{js,jsx,ts,tsx}": [
+            "yarn run lint",
             "git add"
         ]
     },
