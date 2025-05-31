@@ -1,6 +1,8 @@
+import React from 'react';
 import { makeStyles } from '@mui/styles';
-
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
+import { MapDimensions, MapCanvasDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
 
 const useStyles = makeStyles(() => ({
     mapCanvas: {
@@ -8,7 +10,20 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export function MapSVGContainer({
+interface MapSVGContainerProps {
+    viewerRef: React.RefObject<any>;
+    tool: any; // React SVG Pan Zoom tool type
+    mapCanvasDimensions: MapCanvasDimensions;
+    mapDimensions: MapDimensions;
+    allowMapZoomMouseWheel: boolean;
+    showMiniMap: boolean;
+    mapStyleDefs: MapTheme;
+    onDoubleClick: (event: any) => void;
+    onZoom: (value: any) => void;
+    children: React.ReactNode;
+}
+
+export const MapSVGContainer: React.FC<MapSVGContainerProps> = ({
     viewerRef,
     tool,
     mapCanvasDimensions,
@@ -18,37 +33,28 @@ export function MapSVGContainer({
     mapStyleDefs,
     onDoubleClick,
     onZoom,
-    onZoomReset,
-    // onMouseMove,
     children,
-}) {
+}) => {
     const styles = useStyles();
 
     return (
         <UncontrolledReactSVGPanZoom
             ref={viewerRef}
-            id="wm-svg-pan-zoom"
             SVGBackground="white"
             tool={tool}
             width={mapCanvasDimensions.width + 90}
             height={mapCanvasDimensions.height + 30}
             detectAutoPan={false}
             detectWheel={allowMapZoomMouseWheel}
-            miniatureProps={{ position: showMiniMap ? 'right' : 'none' }}
-            toolbarProps={{ position: 'none' }}
-            SVGStyle={{
-                x: '-30',
-                y: '-40',
-                height: mapDimensions.height + 90,
-                width: mapDimensions.width + 60,
+            miniatureProps={{
+                position: showMiniMap ? 'right' : 'none',
+                background: '#eee',
+                width: 100,
+                height: 80,
             }}
-            fontFamily={mapStyleDefs.fontFamily}
-            fontSize={mapStyleDefs.fontSize}
-            background="#eee"
+            toolbarProps={{ position: 'none' }}
             onDoubleClick={onDoubleClick}
-            // onMouseMove={onMouseMove}
             onZoom={onZoom}
-            onZoomReset={onZoomReset}
             style={{
                 userSelect: 'none',
                 fontFamily: mapStyleDefs.fontFamily,
@@ -67,4 +73,6 @@ export function MapSVGContainer({
             </svg>
         </UncontrolledReactSVGPanZoom>
     );
-}
+};
+
+export default MapSVGContainer;

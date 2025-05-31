@@ -9,7 +9,7 @@ import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
-import { MapSVGContainer } from './MapSVGContainer';
+import MapSVGContainer from './MapSVGContainer';
 import { MapViewProps } from './MapView';
 import UnifiedMapContent from './UnifiedMapContent';
 
@@ -90,17 +90,11 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
 
     // const mousePositionRef = useRef({ x: 0, y: 0 });
 
-    const {
-        tool,
-        scaleFactor,
-        handleZoom,
-        handleChangeTool,
-        newElementAt,
-        setScaleFactor,
-    } = useMapInteractions({
-        setNewComponentContext,
-        mapDimensions,
-    });
+    const { tool, scaleFactor, handleZoom, handleChangeTool, newElementAt } =
+        useMapInteractions({
+            setNewComponentContext,
+            mapDimensions,
+        });
 
     const [mapElementsClicked, setMapElementsClicked] = useState<
         Array<{
@@ -191,7 +185,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 mapStyleDefs={mapStyleDefs}
                 onDoubleClick={newElementAt}
                 onZoom={handleZoom}
-                onZoomReset={() => setScaleFactor(1)}
                 // onMouseMove={handleMouseMove}
             >
                 <defs>
