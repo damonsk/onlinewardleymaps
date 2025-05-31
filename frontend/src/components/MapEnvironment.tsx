@@ -18,8 +18,8 @@ import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import Converter from '../conversion/Converter';
 import {
-    useUnifiedMapState,
     useLegacyMapState,
+    useUnifiedMapState,
 } from '../hooks/useUnifiedMapState';
 import { LoadMap } from '../repository/LoadMap';
 import { MapIteration, OwnApiWardleyMap } from '../repository/OwnApiWardleyMap';
