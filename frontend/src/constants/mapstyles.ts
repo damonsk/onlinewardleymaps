@@ -151,9 +151,18 @@ export const Handwritten = mergeIntoDefault({
         text: '',
     },
     methods: {
-        buy: {},
-        build: {},
-        outsource: {},
+        buy: {
+            stroke: '#D6D6D6',
+            fill: '#AAA5A9',
+        },
+        build: {
+            stroke: '#000000',
+            fill: '#D6D6D6',
+        },
+        outsource: {
+            stroke: '#444444',
+            fill: '#444444',
+        },
     },
     note: {
         evolvedTextColor: '',
@@ -214,9 +223,18 @@ export const Wardley = mergeIntoDefault({
         text: '',
     },
     methods: {
-        buy: {},
-        build: {},
-        outsource: {},
+        buy: {
+            stroke: '#D6D6D6',
+            fill: '#AAA5A9',
+        },
+        build: {
+            stroke: '#000000',
+            fill: '#D6D6D6',
+        },
+        outsource: {
+            stroke: '#444444',
+            fill: '#444444',
+        },
     },
     note: {
         evolvedTextColor: 'red',
@@ -409,9 +427,18 @@ export const Colour = mergeIntoDefault({
         text: '',
     },
     methods: {
-        buy: {},
-        build: {},
-        outsource: {},
+        buy: {
+            stroke: '#D6D6D6',
+            fill: '#AAA5A9',
+        },
+        build: {
+            stroke: '#000000',
+            fill: '#D6D6D6',
+        },
+        outsource: {
+            stroke: '#444444',
+            fill: '#444444',
+        },
     },
     note: {
         evolvedTextColor: 'red',

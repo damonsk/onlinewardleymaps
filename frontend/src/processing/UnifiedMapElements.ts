@@ -104,7 +104,11 @@ export class UnifiedMapElements implements IProvideMapElements {
                 label: evolvedData.label || component.label,
                 override: evolvedData.override || component.override,
                 line: evolvedData.line || component.line,
-                decorators: evolvedData.decorators || component.decorators,
+                decorators:
+                    evolvedData.decorators &&
+                    Object.keys(evolvedData.decorators).length > 0
+                        ? evolvedData.decorators
+                        : component.decorators,
                 increaseLabelSpacing:
                     evolvedData.increaseLabelSpacing ||
                     component.increaseLabelSpacing,
@@ -147,10 +151,12 @@ export class UnifiedMapElements implements IProvideMapElements {
             result.evolveMaturity = component.evolveMaturity;
         }
 
-        // Set decorators based on component type (legacy format)
+        // Set decorators based on parsed decorators from DSL, not component type
         result.decorators = {
-            ecosystem: component.type === 'ecosystem',
-            market: component.type === 'market',
+            ecosystem:
+                component.decorators?.ecosystem ||
+                component.type === 'ecosystem',
+            market: component.decorators?.market || component.type === 'market',
             method: component.decorators?.method, // Only set method if explicitly defined
         };
 
