@@ -1,8 +1,28 @@
-import React, { useCallback, useEffect } from 'react';
+import { MouseEvent, useCallback, useEffect, useState } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapElement } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import LinkSymbol from '../symbols/LinkSymbol';
 import PositionCalculator from './PositionCalculator';
 
-function FluidLink(props) {
+interface FluidLinkProps {
+    mapStyleDefs: MapTheme;
+    mapDimensions: MapDimensions;
+    startElement: MapElement;
+    origClick: MouseEvent<Element>;
+    scaleFactor?: number;
+}
+
+interface Position {
+    x: number;
+    y: number;
+    coords: {
+        x?: number;
+        y?: number;
+    };
+}
+
+function FluidLink(props: FluidLinkProps): JSX.Element {
     const { mapStyleDefs, mapDimensions, startElement, origClick } = props;
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
@@ -11,24 +31,27 @@ function FluidLink(props) {
         positionCalc.visibilityToY(startElement.visibility, height) +
         (startElement.offsetY ? startElement.offsetY : 0);
 
-    const [position, setPosition] = React.useState({
+    const [position, setPosition] = useState<Position>({
         x: x1,
         y: y1,
         coords: {},
     });
 
     const handleMouseMove = useCallback(
-        (e) => {
+        (e: Event) => {
+            const mouseEvent = e as globalThis.MouseEvent;
             setPosition((position) => {
-                const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
-                const xDiff = (position.coords.x - e.pageX) / scaleFactor;
-                const yDiff = (position.coords.y - e.pageY) / scaleFactor;
+                const scaleFactor = props.scaleFactor || 1;
+                const xDiff =
+                    (position.coords.x! - mouseEvent.pageX) / scaleFactor;
+                const yDiff =
+                    (position.coords.y! - mouseEvent.pageY) / scaleFactor;
                 return {
                     x: position.x - xDiff,
                     y: position.y - yDiff,
                     coords: {
-                        x: e.pageX,
-                        y: e.pageY,
+                        x: mouseEvent.pageX,
+                        y: mouseEvent.pageY,
                     },
                 };
             });
@@ -37,8 +60,8 @@ function FluidLink(props) {
     );
 
     useEffect(() => {
-        const pageX = origClick.pageX;
-        const pageY = origClick.pageY;
+        const pageX = origClick.nativeEvent.pageX;
+        const pageY = origClick.nativeEvent.pageY;
 
         setPosition((position) =>
             Object.assign({}, position, {
@@ -52,7 +75,7 @@ function FluidLink(props) {
         return function cleanup() {
             document.removeEventListener('mousemove', handleMouseMove);
         };
-    }, [origClick]);
+    }, [origClick, handleMouseMove]);
 
     return (
         <LinkSymbol
@@ -63,9 +86,9 @@ function FluidLink(props) {
             y2={position.y}
             flow={false}
             evolved={false}
-            styles={mapStyleDefs.fluidLink}
+            styles={mapStyleDefs.fluidLink!}
             filter="url(#ctrlHighlight)"
-            strokeDasharray={mapStyleDefs.fluidLink.strokeDasharray}
+            strokeDasharray={mapStyleDefs.fluidLink?.strokeDasharray}
         />
     );
 }
