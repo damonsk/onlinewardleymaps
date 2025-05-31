@@ -31,7 +31,9 @@ import QuickAdd from './actions/QuickAdd';
 import { Breadcrumb } from './editor/Breadcrumb';
 import Editor from './editor/Editor';
 import { NewMapIterations } from './editor/MapIterations';
+import ModernEditor from './editor/ModernEditor';
 import { MapView } from './map/MapView';
+import { ModernMapView } from './map/ModernMapView';
 import { LeftNavigation } from './page/LeftNavigation';
 import NewHeader from './page/NewHeader';
 import { UsageInfo } from './page/UseageInfo';
@@ -514,21 +516,36 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                             borderRight: '2px solid rgba(0, 0, 0, 0.12)',
                         }}
                     >
-                        <Editor
-                            hideNav={hideNav}
-                            isLightTheme={isLightTheme}
-                            highlightLine={legacyState.highlightedLine}
-                            mapText={legacyState.mapText}
-                            invalid={invalid}
-                            mutateMapText={mutateMapText}
-                            mapComponents={legacyState.mapComponents}
-                            mapAnchors={legacyState.mapAnchors}
-                            mapDimensions={legacyState.mapDimensions}
-                            mapMarkets={legacyState.mapMarkets}
-                            mapSubMaps={legacyState.mapSubMaps}
-                            errorLine={errorLine}
-                            showLineNumbers={showLineNumbers}
-                        />
+                        {featureSwitches.enableModernComponents ? (
+                            <ModernEditor
+                                wardleyMap={unifiedMapState.getUnifiedMap()}
+                                hideNav={hideNav}
+                                isLightTheme={isLightTheme}
+                                highlightLine={legacyState.highlightedLine}
+                                mapText={legacyState.mapText}
+                                invalid={invalid}
+                                mutateMapText={mutateMapText}
+                                mapDimensions={legacyState.mapDimensions}
+                                errorLine={errorLine}
+                                showLineNumbers={showLineNumbers}
+                            />
+                        ) : (
+                            <Editor
+                                hideNav={hideNav}
+                                isLightTheme={isLightTheme}
+                                highlightLine={legacyState.highlightedLine}
+                                mapText={legacyState.mapText}
+                                invalid={invalid}
+                                mutateMapText={mutateMapText}
+                                mapComponents={legacyState.mapComponents}
+                                mapAnchors={legacyState.mapAnchors}
+                                mapDimensions={legacyState.mapDimensions}
+                                mapMarkets={legacyState.mapMarkets}
+                                mapSubMaps={legacyState.mapSubMaps}
+                                errorLine={errorLine}
+                                showLineNumbers={showLineNumbers}
+                            />
+                        )}
                     </Grid>
                 )}
                 <Grid
@@ -543,43 +560,79 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     }}
                 >
                     <ModKeyPressedProvider>
-                        <MapView
-                            shouldHideNav={shouldHideNav}
-                            hideNav={hideNav}
-                            mapTitle={mapTitle}
-                            mapComponents={legacyState.mapComponents}
-                            mapMarkets={legacyState.mapMarkets}
-                            mapEcosystems={legacyState.mapEcosystems}
-                            mapSubMaps={legacyState.mapSubMaps}
-                            mapEvolved={legacyState.mapEvolved}
-                            mapPipelines={legacyState.mapPipelines}
-                            mapAnchors={legacyState.mapAnchors}
-                            mapLinks={legacyState.mapLinks}
-                            mapAttitudes={legacyState.mapAttitudes}
-                            mapAccelerators={legacyState.mapAccelerators}
-                            launchUrl={launchUrl}
-                            mapNotes={legacyState.mapNotes}
-                            mapAnnotations={legacyState.mapAnnotations}
-                            mapAnnotationsPresentation={
-                                mapAnnotationsPresentation
-                            }
-                            mapMethods={legacyState.mapMethods}
-                            mapStyleDefs={legacyState.mapStyleDefs}
-                            mapCanvasDimensions={
-                                legacyState.mapCanvasDimensions
-                            }
-                            mapDimensions={legacyState.mapDimensions}
-                            mapEvolutionStates={legacyState.mapEvolutionStates}
-                            mapRef={mapRef}
-                            mapText={legacyState.mapText}
-                            mutateMapText={mutateMapText}
-                            evolutionOffsets={Defaults.EvoOffsets}
-                            setHighlightLine={legacyState.setHighlightLine}
-                            setNewComponentContext={
-                                legacyState.setNewComponentContext
-                            }
-                            showLinkedEvolved={legacyState.showLinkedEvolved}
-                        />
+                        {featureSwitches.enableModernComponents ? (
+                            <ModernMapView
+                                wardleyMap={unifiedMapState.getUnifiedMap()}
+                                shouldHideNav={shouldHideNav}
+                                hideNav={hideNav}
+                                mapTitle={mapTitle}
+                                mapAnnotationsPresentation={
+                                    mapAnnotationsPresentation
+                                }
+                                mapStyleDefs={legacyState.mapStyleDefs}
+                                mapCanvasDimensions={
+                                    legacyState.mapCanvasDimensions
+                                }
+                                mapDimensions={legacyState.mapDimensions}
+                                mapEvolutionStates={
+                                    legacyState.mapEvolutionStates
+                                }
+                                mapRef={mapRef}
+                                mapText={legacyState.mapText}
+                                mutateMapText={mutateMapText}
+                                evolutionOffsets={Defaults.EvoOffsets}
+                                launchUrl={launchUrl}
+                                setHighlightLine={legacyState.setHighlightLine}
+                                setNewComponentContext={
+                                    legacyState.setNewComponentContext
+                                }
+                                showLinkedEvolved={
+                                    legacyState.showLinkedEvolved
+                                }
+                            />
+                        ) : (
+                            <MapView
+                                shouldHideNav={shouldHideNav}
+                                hideNav={hideNav}
+                                mapTitle={mapTitle}
+                                mapComponents={legacyState.mapComponents}
+                                mapMarkets={legacyState.mapMarkets}
+                                mapEcosystems={legacyState.mapEcosystems}
+                                mapSubMaps={legacyState.mapSubMaps}
+                                mapEvolved={legacyState.mapEvolved}
+                                mapPipelines={legacyState.mapPipelines}
+                                mapAnchors={legacyState.mapAnchors}
+                                mapLinks={legacyState.mapLinks}
+                                mapAttitudes={legacyState.mapAttitudes}
+                                mapAccelerators={legacyState.mapAccelerators}
+                                launchUrl={launchUrl}
+                                mapNotes={legacyState.mapNotes}
+                                mapAnnotations={legacyState.mapAnnotations}
+                                mapAnnotationsPresentation={
+                                    mapAnnotationsPresentation
+                                }
+                                mapMethods={legacyState.mapMethods}
+                                mapStyleDefs={legacyState.mapStyleDefs}
+                                mapCanvasDimensions={
+                                    legacyState.mapCanvasDimensions
+                                }
+                                mapDimensions={legacyState.mapDimensions}
+                                mapEvolutionStates={
+                                    legacyState.mapEvolutionStates
+                                }
+                                mapRef={mapRef}
+                                mapText={legacyState.mapText}
+                                mutateMapText={mutateMapText}
+                                evolutionOffsets={Defaults.EvoOffsets}
+                                setHighlightLine={legacyState.setHighlightLine}
+                                setNewComponentContext={
+                                    legacyState.setNewComponentContext
+                                }
+                                showLinkedEvolved={
+                                    legacyState.showLinkedEvolved
+                                }
+                            />
+                        )}
                     </ModKeyPressedProvider>
                 </Grid>
             </Grid>

@@ -90,6 +90,7 @@ export interface UseMapStateResult {
     getAllComponents: () => UnifiedComponent[];
     getComponentsByType: (type: string) => UnifiedComponent[];
     findComponentByName: (name: string) => UnifiedComponent | undefined;
+    getUnifiedMap: () => UnifiedWardleyMap;
     resetToDefaults: () => void;
 }
 
@@ -217,6 +218,10 @@ export const useUnifiedMapState = (
         setState(createDefaultState());
     }, []);
 
+    const getUnifiedMap = useCallback(() => {
+        return state.map;
+    }, [state.map]);
+
     return {
         state,
         actions,
@@ -225,6 +230,7 @@ export const useUnifiedMapState = (
         getAllComponents,
         getComponentsByType,
         findComponentByName,
+        getUnifiedMap,
         resetToDefaults,
     };
 };

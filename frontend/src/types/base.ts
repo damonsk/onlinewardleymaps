@@ -311,4 +311,5 @@ export interface IProvideFeatureSwitches {
     showMapToolbar: boolean;
     showMiniMap: boolean;
     allowMapZoomMouseWheel: boolean;
+    enableModernComponents: boolean;
 }

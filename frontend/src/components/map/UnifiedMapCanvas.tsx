@@ -88,8 +88,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         return new UnifiedMapElements(unifiedMap);
     }, [unifiedMap]);
 
-    // const mousePositionRef = useRef({ x: 0, y: 0 });
-
     const { tool, scaleFactor, handleZoom, handleChangeTool, newElementAt } =
         useMapInteractions({
             setNewComponentContext,
@@ -131,11 +129,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         console.log('mapElementsClicked', mapElementsClicked);
     }, [mapElementsClicked]);
 
-    // const handleMouseMove = useCallback((event: MouseEvent) => {
-    //     mousePositionRef.current = { x: event.clientX, y: event.clientY };
-    // }, []);
-
-    // Process links with new mapElements
     const links = useMemo(() => {
         // Convert unified links to legacy format for processLinks function
         const legacyMapLinks = unifiedMap.links.map((link) => ({
@@ -185,7 +178,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 mapStyleDefs={mapStyleDefs}
                 onDoubleClick={newElementAt}
                 onZoom={handleZoom}
-                // onMouseMove={handleMouseMove}
             >
                 <defs>
                     <filter id="dropshadow" width="200%" height="200%">
