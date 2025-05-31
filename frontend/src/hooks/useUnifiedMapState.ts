@@ -16,6 +16,7 @@ import {
     createEmptyMap,
     groupComponentsByType,
 } from '../types/unified';
+import { FlowLink } from '../types/unified/links';
 
 /**
  * Consolidated map state that replaces multiple useState hooks
@@ -228,6 +229,46 @@ export const useUnifiedMapState = (
     };
 };
 
+// Type adapters for backward compatibility
+const convertToLegacyComponent = (unified: UnifiedComponent): any => ({
+    ...unified,
+    line: unified.line ?? 0,
+    evolved: unified.evolved ?? false,
+    evolving: unified.evolving ?? false,
+    inertia: unified.inertia ?? false,
+    pseudoComponent: unified.pseudoComponent ?? false,
+    offsetY: unified.offsetY ?? 0,
+    increaseLabelSpacing: unified.increaseLabelSpacing ?? 0,
+    decorators: unified.decorators ?? {},
+});
+
+const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] =>
+    flowLinks.map((link) => ({
+        ...link,
+        flow: link.flow ?? false,
+        future: link.future ?? false,
+        past: link.past ?? false,
+        context: link.context ?? '',
+        flowValue: link.flowValue ?? '',
+    }));
+
+// React-style setter adapters
+const createReactSetter = <T>(
+    setter: (value: T) => void,
+): React.Dispatch<React.SetStateAction<T>> => {
+    return (value: React.SetStateAction<T>) => {
+        if (typeof value === 'function') {
+            // For functional updates, we can't easily support this without state access
+            // For now, warn and use the current value
+            console.warn(
+                'Functional state updates not fully supported in legacy adapter',
+            );
+            return;
+        }
+        setter(value);
+    };
+};
+
 /**
  * Hook for backward compatibility during migration
  * This provides the individual state values that the old components expect
@@ -235,18 +276,36 @@ export const useUnifiedMapState = (
 export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
     const { state, actions, groupedComponents } = unifiedState;
 
+    // Convert unified types to legacy-compatible types
+    const legacyComponents = groupedComponents.components.map(
+        convertToLegacyComponent,
+    );
+    const legacyAnchors = groupedComponents.anchors.map(
+        convertToLegacyComponent,
+    );
+    const legacySubMaps = groupedComponents.submaps.map(
+        convertToLegacyComponent,
+    );
+    const legacyMarkets = groupedComponents.markets.map(
+        convertToLegacyComponent,
+    );
+    const legacyEcosystems = groupedComponents.ecosystems.map(
+        convertToLegacyComponent,
+    );
+    const legacyLinks = convertToLegacyLinks(state.map.links);
+
     return {
         // Legacy individual state values
         mapText: state.mapText,
         mapTitle: state.map.title,
-        mapComponents: groupedComponents.components,
-        mapAnchors: groupedComponents.anchors,
-        mapSubMaps: groupedComponents.submaps,
-        mapMarkets: groupedComponents.markets,
-        mapEcosystems: groupedComponents.ecosystems,
+        mapComponents: legacyComponents,
+        mapAnchors: legacyAnchors,
+        mapSubMaps: legacySubMaps,
+        mapMarkets: legacyMarkets,
+        mapEcosystems: legacyEcosystems,
         mapEvolved: state.map.evolved,
         mapPipelines: state.map.pipelines,
-        mapLinks: state.map.links,
+        mapLinks: legacyLinks,
         mapAnnotations: state.map.annotations,
         mapNotes: state.map.notes,
         mapMethods: state.map.methods,
@@ -262,10 +321,12 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
         evolutionOffsets: state.evolutionOffsets,
         mapEvolutionStates: state.mapEvolutionStates,
 
-        // Legacy individual setters
-        mutateMapText: actions.setMapText,
-        setHighlightLine: actions.setHighlightedLine,
-        setNewComponentContext: actions.setNewComponentContext,
-        setShowLinkedEvolved: actions.setShowLinkedEvolved,
+        // Legacy individual setters with React-compatible signatures
+        mutateMapText: createReactSetter(actions.setMapText),
+        setHighlightLine: createReactSetter(actions.setHighlightedLine),
+        setNewComponentContext: createReactSetter(
+            actions.setNewComponentContext,
+        ),
+        setShowLinkedEvolved: createReactSetter(actions.setShowLinkedEvolved),
     };
 };

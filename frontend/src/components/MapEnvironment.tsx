@@ -17,28 +17,14 @@ import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import Converter from '../conversion/Converter';
+import {
+    useUnifiedMapState,
+    useLegacyMapState,
+} from '../hooks/useUnifiedMapState';
 import { LoadMap } from '../repository/LoadMap';
 import { MapIteration, OwnApiWardleyMap } from '../repository/OwnApiWardleyMap';
 import { SaveMap } from '../repository/SaveMap';
-import {
-    MapAccelerators,
-    MapAnchors,
-    MapAnnotations,
-    MapAnnotationsPosition,
-    MapAttitudes,
-    MapComponents,
-    MapEcosystems,
-    MapEvolved,
-    MapLinks,
-    MapMarkets,
-    MapMethods,
-    MapNotes,
-    MapPipelines,
-    MapSize,
-    MapSubmaps,
-    MapUrls,
-} from '../types/base';
-import { MapTheme } from '../types/map/styles';
+import { MapAnnotationsPosition, MapSize } from '../types/base';
 import { useFeatureSwitches } from './FeatureSwitchesContext';
 import { ModKeyPressedProvider } from './KeyPressContext';
 import QuickAdd from './actions/QuickAdd';
@@ -104,57 +90,49 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 }) => {
     const featureSwitches = useFeatureSwitches();
     const mapRef = useRef<HTMLElement | null>(null);
+
+    // Initialize unified map state
+    const unifiedMapState = useUnifiedMapState({
+        mapText: '',
+        showUsage: false,
+        isLoading: false,
+        errors: [],
+        mapDimensions: Defaults.MapDimensions,
+        mapCanvasDimensions: Defaults.MapDimensions,
+        mapStyleDefs: MapStyles.Plain,
+        mapEvolutionStates: Defaults.EvolutionStages,
+        highlightedLine: 0,
+        newComponentContext: null,
+        showLinkedEvolved: false,
+    });
+
+    // Extract state and actions from unified state
+    const { state: mapState, actions: mapActions } = unifiedMapState;
+
+    // Extract individual values for backward compatibility using legacy hook
+    const legacyState = useLegacyMapState(unifiedMapState);
+
+    // Remaining individual state that's not part of unified state
     const [currentUrl, setCurrentUrl] = useState('');
-    const [showUsage, setShowUsage] = useState(false);
-    const [mapText, setMapText] = useState('');
     const [mapTitle, setMapTitle] = useState('Untitled Map');
     const [rawMapTitle, setRawMapTitle] = useState('Untitled Map');
-    const [mapComponents, setMapComponents] = useState<MapComponents[]>([]);
-    const [mapSubMaps, setMapSubMaps] = useState<MapSubmaps[]>([]);
-    const [mapMarkets, setMarkets] = useState<MapMarkets[]>([]);
-    const [mapEcosystems, setEcosystems] = useState<MapEcosystems[]>([]);
-    const [mapEvolved, setMapEvolved] = useState<MapEvolved[]>([]);
-    const [mapPipelines, setMapPipelines] = useState<MapPipelines[]>([]);
-    const [mapAnchors, setMapAnchors] = useState<MapAnchors[]>([]);
-    const [mapNotes, setMapNotes] = useState<MapNotes[]>([]);
-    const [mapUrls, setMapUrls] = useState<MapUrls[]>([]);
-    const [mapLinks, setMapLinks] = useState<MapLinks[]>([]);
-    const [mapAttitudes, setMapAttitudes] = useState<MapAttitudes[]>([]);
-    const [mapAnnotations, setMapAnnotations] = useState<MapAnnotations[]>([]);
-    const [mapAccelerators, setMapAccelerators] = useState<MapAccelerators[]>(
-        [],
-    );
-    const [mapMethods, setMapMethods] = useState<MapMethods[]>([]);
     const [invalid, setInvalid] = useState(false);
-    const [newComponentContext, setNewComponentContext] = useState<{
-        x: string;
-        y: string;
-    } | null>(null);
     const [mapAnnotationsPresentation, setMapAnnotationsPresentation] =
         useState<MapAnnotationsPosition>({ maturity: 0, visibility: 0 });
     const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
-    const [mapCanvasDimensions, setMapCanvasDimensions] = useState(
-        Defaults.MapDimensions,
-    );
-    const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
-    const [mapEvolutionStates, setMapEvolutionStates] =
-        useState<Defaults.EvolutionStages>(Defaults.EvolutionStages);
     const [mapSize, setMapSize] = useState<MapSize>({ width: 0, height: 0 });
     const [mapStyle, setMapStyle] = useState('plain');
-    const [mapStyleDefs, setMapStyleDefs] = useState<MapTheme>(MapStyles.Plain);
     const [saveOutstanding, setSaveOutstanding] = useState(false);
-    const [highlightLine, setHighlightLine] = useState(0);
-
     const [errorLine, setErrorLine] = useState<number[]>([]);
     const [showLineNumbers, setShowLineNumbers] = useState(false);
-    const [showLinkedEvolved, setShowLinkedEvolved] = useState(false);
     const [mapOnlyView, setMapOnlyView] = useState(false);
     const [currentIteration, setCurrentIteration] = useState(-1);
     const [actionInProgress, setActionInProgress] = useState(false);
     const [hideNav, setHideNav] = useState(false);
 
+    // Wrapper function for setting map text that also handles iterations and save state
     const mutateMapText = (newText: string) => {
-        setMapText(newText);
+        legacyState.mutateMapText(newText);
         setSaveOutstanding(true);
         if (currentIteration !== null && currentIteration > -1) {
             const newList = [...mapIterations];
@@ -167,20 +145,20 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     };
 
     const launchUrl = (urlId: string) => {
-        const mapUrl = mapUrls.find((u) => u.name === urlId);
+        const mapUrl = legacyState.mapUrls.find((u) => u.name === urlId);
         if (mapUrl) {
             window.open(mapUrl.url);
         }
     };
 
     const toggleUsage = () => {
-        setShowUsage(!showUsage);
+        mapActions.setShowUsage(!mapState.showUsage);
     };
 
     const saveToRemoteStorage = async function (hash: string) {
         setActionInProgress(true);
         const mapToPersist: OwnApiWardleyMap = {
-            mapText,
+            mapText: legacyState.mapText,
             imageData: '',
             mapIterations,
             readOnly: false,
@@ -225,11 +203,11 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         ) => {
             setMapPersistenceStrategy(mapPersistenceStrategy);
             setShouldLoad(false);
-            setMapText(map.mapText);
+            legacyState.mutateMapText(map.mapText);
             if (map.mapIterations && map.mapIterations.length > 0) {
                 setMapIterations(map.mapIterations);
                 setCurrentIteration(0);
-                setMapText(map.mapIterations[0].mapText);
+                legacyState.mutateMapText(map.mapIterations[0].mapText);
             }
             setCurrentUrl(window.location.href);
 
@@ -259,7 +237,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     };
 
     function newMap(mapPersistenceStrategy: string) {
-        setMapText('');
+        legacyState.mutateMapText('');
         setCurrentId('');
         setCurrentUrl('(unsaved)');
         setSaveOutstanding(false);
@@ -317,7 +295,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         const iterations = [...mapIterations];
         iterations.push({
             name: `Iteration ${iterations.length + 1}`,
-            mapText,
+            mapText: legacyState.mapText,
         });
         setMapIterations(iterations);
     };
@@ -347,27 +325,13 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         try {
             setErrorLine([]);
             setInvalid(false);
-            const r = new Converter(featureSwitches).parse(mapText);
+            const r = new Converter(featureSwitches).parse(legacyState.mapText);
             console.log('MapEnvironment', r);
             setRawMapTitle(r.title);
-            setMapAnnotations(r.annotations);
-            setMapAnchors(r.anchors);
-            setMapNotes(r.notes);
-            setMapComponents(r.elements);
-            setMapSubMaps(r.submaps);
-            setMarkets(r.markets);
-            setEcosystems(r.ecosystems);
-            setMapEvolved(r.evolved);
-            setMapPipelines(r.pipelines);
-            setMapLinks(r.links);
-            setMapUrls(r.urls);
-            setMapMethods(r.methods);
-            setMapAttitudes(r.attitudes);
+            setMapAnnotationsPresentation(r.presentation.annotations);
             setMapStyle(r.presentation.style);
             setMapSize(r.presentation.size);
-            setMapAccelerators(r.accelerators);
-            setMapAnnotationsPresentation(r.presentation.annotations);
-            setMapEvolutionStates({
+            mapActions.setMapEvolutionStates({
                 genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
                 custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
                 product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
@@ -382,18 +346,18 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         } catch (err) {
             console.log('Error:', err);
         }
-    }, [mapText]);
+    }, [legacyState.mapText, featureSwitches, mapActions]);
 
     useEffect(() => {
         document.title = mapTitle + ' - ' + Defaults.PageTitle;
     }, [mapTitle]);
 
     useEffect(() => {
-        setMapDimensions({
+        mapActions.setMapDimensions({
             width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
             height: mapSize.height > 0 ? mapSize.height : getHeight(),
         });
-    }, [mapOnlyView, hideNav, mapSize]);
+    }, [mapOnlyView, hideNav, mapSize, mapActions]);
 
     useEffect(() => {
         if (currentIteration > -1) {
@@ -409,21 +373,21 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         switch (mapStyle) {
             case 'colour':
             case 'color':
-                setMapStyleDefs(MapStyles.Colour);
+                mapActions.setMapStyleDefs(MapStyles.Colour);
                 break;
             case 'wardley':
-                setMapStyleDefs(MapStyles.Wardley);
+                mapActions.setMapStyleDefs(MapStyles.Wardley);
                 break;
             case 'dark':
-                setMapStyleDefs(MapStyles.Dark);
+                mapActions.setMapStyleDefs(MapStyles.Dark);
                 break;
             case 'handwritten':
-                setMapStyleDefs(MapStyles.Handwritten);
+                mapActions.setMapStyleDefs(MapStyles.Handwritten);
                 break;
             default:
-                setMapStyleDefs(MapStyles.Plain);
+                mapActions.setMapStyleDefs(MapStyles.Plain);
         }
-    }, [mapStyle]);
+    }, [mapStyle, mapActions]);
 
     useEffect(() => {
         if (shouldLoad) loadFromRemoteStorage();
@@ -435,7 +399,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
                 height: mapSize.height > 0 ? mapSize.height : getHeight(),
             };
-            setMapDimensions(dimensions);
+            mapActions.setMapDimensions(dimensions);
         }, 1);
 
         window.addEventListener('resize', debouncedHandleResize);
@@ -444,30 +408,30 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         return function cleanup() {
             window.removeEventListener('resize', debouncedHandleResize);
         };
-    }, [mapSize]);
+    }, [mapSize, mapActions]);
 
     useEffect(() => {
         const newDimensions = {
             width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
             height: mapSize.height > 0 ? mapSize.height : getHeight(),
         };
-        setMapDimensions(newDimensions);
-        setMapCanvasDimensions({
+        mapActions.setMapDimensions(newDimensions);
+        mapActions.setMapCanvasDimensions({
             width: getWidth(),
             height: getHeight(),
         });
-    }, [mapOnlyView, hideNav]);
+    }, [mapOnlyView, hideNav, mapActions]);
 
     useEffect(() => {
         const initialLoad = () => {
-            setMapCanvasDimensions({
+            mapActions.setMapCanvasDimensions({
                 width: getWidth(),
                 height: getHeight(),
             });
         };
 
         const debouncedHandleCanvasResize = debounce(() => {
-            setMapCanvasDimensions({
+            mapActions.setMapCanvasDimensions({
                 width: getWidth(),
                 height: getHeight(),
             });
@@ -480,11 +444,11 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             window.removeEventListener('resize', debouncedHandleCanvasResize);
             window.removeEventListener('load', initialLoad);
         };
-    }, []);
+    }, [mapActions]);
 
     const submenu = [
         {
-            name: showUsage ? 'Hide Usage' : 'Show Usage',
+            name: mapState.showUsage ? 'Hide Usage' : 'Show Usage',
             icon: <HelpCenterIcon />,
             action: () => {
                 toggleUsage();
@@ -521,8 +485,8 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     downloadMapImage={downloadMap}
                     showLineNumbers={showLineNumbers}
                     setShowLineNumbers={setShowLineNumbers}
-                    showLinkedEvolved={showLinkedEvolved}
-                    setShowLinkedEvolved={setShowLinkedEvolved}
+                    showLinkedEvolved={legacyState.showLinkedEvolved}
+                    setShowLinkedEvolved={legacyState.setShowLinkedEvolved}
                     downloadMapAsSVG={downloadMapAsSVG}
                     toggleMenu={toggleMenu}
                 />
@@ -533,7 +497,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     mapIterations={mapIterations}
                     currentIteration={currentIteration}
                     setMapIterations={setMapIterations}
-                    setMapText={setMapText}
+                    setMapText={legacyState.mutateMapText}
                     addIteration={addIteration}
                     setCurrentIteration={setCurrentIteration}
                 />
@@ -553,15 +517,15 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                         <Editor
                             hideNav={hideNav}
                             isLightTheme={isLightTheme}
-                            highlightLine={highlightLine}
-                            mapText={mapText}
+                            highlightLine={legacyState.highlightedLine}
+                            mapText={legacyState.mapText}
                             invalid={invalid}
                             mutateMapText={mutateMapText}
-                            mapComponents={mapComponents}
-                            mapAnchors={mapAnchors}
-                            mapDimensions={mapDimensions}
-                            mapMarkets={mapMarkets}
-                            mapSubMaps={mapSubMaps}
+                            mapComponents={legacyState.mapComponents}
+                            mapAnchors={legacyState.mapAnchors}
+                            mapDimensions={legacyState.mapDimensions}
+                            mapMarkets={legacyState.mapMarkets}
+                            mapSubMaps={legacyState.mapSubMaps}
                             errorLine={errorLine}
                             showLineNumbers={showLineNumbers}
                         />
@@ -573,41 +537,48 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     sm={mapOnlyView ? 12 : 8}
                     ml={mapOnlyView ? 2 : 0}
                     className="map-view"
-                    sx={{ backgroundColor: mapStyleDefs.containerBackground }}
+                    sx={{
+                        backgroundColor:
+                            legacyState.mapStyleDefs.containerBackground,
+                    }}
                 >
                     <ModKeyPressedProvider>
                         <MapView
                             shouldHideNav={shouldHideNav}
                             hideNav={hideNav}
                             mapTitle={mapTitle}
-                            mapComponents={mapComponents}
-                            mapMarkets={mapMarkets}
-                            mapEcosystems={mapEcosystems}
-                            mapSubMaps={mapSubMaps}
-                            mapEvolved={mapEvolved}
-                            mapPipelines={mapPipelines}
-                            mapAnchors={mapAnchors}
-                            mapLinks={mapLinks}
-                            mapAttitudes={mapAttitudes}
-                            mapAccelerators={mapAccelerators}
+                            mapComponents={legacyState.mapComponents}
+                            mapMarkets={legacyState.mapMarkets}
+                            mapEcosystems={legacyState.mapEcosystems}
+                            mapSubMaps={legacyState.mapSubMaps}
+                            mapEvolved={legacyState.mapEvolved}
+                            mapPipelines={legacyState.mapPipelines}
+                            mapAnchors={legacyState.mapAnchors}
+                            mapLinks={legacyState.mapLinks}
+                            mapAttitudes={legacyState.mapAttitudes}
+                            mapAccelerators={legacyState.mapAccelerators}
                             launchUrl={launchUrl}
-                            mapNotes={mapNotes}
-                            mapAnnotations={mapAnnotations}
+                            mapNotes={legacyState.mapNotes}
+                            mapAnnotations={legacyState.mapAnnotations}
                             mapAnnotationsPresentation={
                                 mapAnnotationsPresentation
                             }
-                            mapMethods={mapMethods}
-                            mapStyleDefs={mapStyleDefs}
-                            mapCanvasDimensions={mapCanvasDimensions}
-                            mapDimensions={mapDimensions}
-                            mapEvolutionStates={mapEvolutionStates}
+                            mapMethods={legacyState.mapMethods}
+                            mapStyleDefs={legacyState.mapStyleDefs}
+                            mapCanvasDimensions={
+                                legacyState.mapCanvasDimensions
+                            }
+                            mapDimensions={legacyState.mapDimensions}
+                            mapEvolutionStates={legacyState.mapEvolutionStates}
                             mapRef={mapRef}
-                            mapText={mapText}
+                            mapText={legacyState.mapText}
                             mutateMapText={mutateMapText}
                             evolutionOffsets={Defaults.EvoOffsets}
-                            setHighlightLine={setHighlightLine}
-                            setNewComponentContext={setNewComponentContext}
-                            showLinkedEvolved={showLinkedEvolved}
+                            setHighlightLine={legacyState.setHighlightLine}
+                            setNewComponentContext={
+                                legacyState.setNewComponentContext
+                            }
+                            showLinkedEvolved={legacyState.showLinkedEvolved}
                         />
                     </ModKeyPressedProvider>
                 </Grid>
@@ -615,8 +586,8 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
             <Dialog
                 maxWidth={'lg'}
-                open={showUsage}
-                onClose={() => setShowUsage(false)}
+                open={mapState.showUsage}
+                onClose={() => mapActions.setShowUsage(false)}
             >
                 <DialogTitle>Usage </DialogTitle>
                 <DialogContent>
@@ -627,23 +598,26 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     </DialogContentText>
                     <Box marginTop={2}>
                         <UsageInfo
-                            mapStyleDefs={mapStyleDefs}
+                            mapStyleDefs={legacyState.mapStyleDefs}
                             mutateMapText={mutateMapText}
-                            mapText={mapText}
+                            mapText={legacyState.mapText}
                         />
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setShowUsage(false)}> Close </Button>
+                    <Button onClick={() => mapActions.setShowUsage(false)}>
+                        {' '}
+                        Close{' '}
+                    </Button>
                 </DialogActions>
             </Dialog>
 
             <QuickAdd
-                newComponentContext={newComponentContext}
+                newComponentContext={legacyState.newComponentContext}
                 mutateMapText={mutateMapText}
-                setNewComponentContext={setNewComponentContext}
-                mapText={mapText}
-                mapStyleDefs={mapStyleDefs}
+                setNewComponentContext={legacyState.setNewComponentContext}
+                mapText={legacyState.mapText}
+                mapStyleDefs={legacyState.mapStyleDefs}
             />
 
             <Backdrop
