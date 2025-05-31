@@ -1,21 +1,46 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { MouseEvent, useCallback, useEffect } from 'react';
 
-function RelativeMovable(props) {
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface Position {
+    x: number;
+    y: number;
+    coords: {
+        x?: number;
+        y?: number;
+    };
+}
+
+interface RelativeMovableProps {
+    id: string;
+    x: number;
+    y: number;
+    onMove?: (moved: MovedPosition) => void;
+    fixedX?: boolean;
+    fixedY?: boolean;
+    scaleFactor?: number;
+    children: React.ReactNode;
+}
+
+const RelativeMovable: React.FC<RelativeMovableProps> = (props) => {
     const [moving, setMoving] = React.useState(false);
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);
-    const [position, setPosition] = React.useState({
+    const [position, setPosition] = React.useState<Position>({
         x: x(),
         y: y(),
         coords: {},
     });
 
     const handleMouseMove = useCallback(
-        (e) => {
+        (e: globalThis.MouseEvent) => {
             setPosition((position) => {
-                const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
-                const xDiff = (position.coords.x - e.pageX) / scaleFactor;
-                const yDiff = (position.coords.y - e.pageY) / scaleFactor;
+                const scaleFactor = props.scaleFactor || 1;
+                const xDiff = (position.coords.x! - e.pageX) / scaleFactor;
+                const yDiff = (position.coords.y! - e.pageY) / scaleFactor;
                 return {
                     x: position.x - xDiff,
                     y: position.y - yDiff,
@@ -29,17 +54,17 @@ function RelativeMovable(props) {
         [props.scaleFactor],
     );
 
-    const handleEscape = (k) => {
+    const handleEscape = (k: KeyboardEvent) => {
         if (k.key === 'Escape' && moving) {
             setMoving(false);
             endDrag();
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('keyup', handleEscape);
-            setPosition({ x: x(), y: y() });
+            setPosition({ x: x(), y: y(), coords: {} });
         }
     };
 
-    const handleMouseDown = (e) => {
+    const handleMouseDown = (e: MouseEvent<SVGGElement>) => {
         const pageX = e.pageX;
         const pageY = e.pageY;
         setMoving(true);
@@ -66,12 +91,14 @@ function RelativeMovable(props) {
         endDrag();
     };
 
-    function endDrag() {
-        let moved = {
-            x: parseFloat(position.x).toFixed(2),
-            y: parseFloat(position.y).toFixed(2),
-        };
-        props.onMove(moved);
+    function endDrag(): void {
+        if (props.onMove) {
+            const moved: MovedPosition = {
+                x: parseFloat(parseFloat(position.x.toString()).toFixed(2)),
+                y: parseFloat(parseFloat(position.y.toString()).toFixed(2)),
+            };
+            props.onMove(moved);
+        }
     }
 
     useEffect(() => {
@@ -88,7 +115,7 @@ function RelativeMovable(props) {
             className={'draggable'}
             style={{ cursor: moving ? 'grabbing' : 'grab' }}
             onMouseDown={(e) => handleMouseDown(e)}
-            onMouseUp={(e) => handleMouseUp(e)}
+            onMouseUp={() => handleMouseUp()}
             id={'movable_' + props.id}
             transform={
                 'translate(' +
@@ -101,6 +128,6 @@ function RelativeMovable(props) {
             {props.children}
         </g>
     );
-}
+};
 
 export default RelativeMovable;
