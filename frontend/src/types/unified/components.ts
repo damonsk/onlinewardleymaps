@@ -192,6 +192,7 @@ export const createUnifiedComponent = (
         inertia: false,
         pseudoComponent: false,
         offsetY: 0,
+        increaseLabelSpacing: 0,
         pipeline: false,
         ...partial,
     };

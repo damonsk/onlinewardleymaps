@@ -1,7 +1,7 @@
-import React from 'react';
 import { makeStyles } from '@mui/styles';
+import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
-import { MapDimensions, MapCanvasDimensions } from '../../constants/defaults';
+import { MapCanvasDimensions, MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../types/map/styles';
 
 const useStyles = makeStyles(() => ({

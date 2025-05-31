@@ -21,6 +21,7 @@ export interface MapElement {
     decorators?: ComponentDecorator;
     increaseLabelSpacing: number;
     pipeline?: boolean;
+    url?: { name: string; url: string };
 }
 
 export interface LinkExtractionStrategy {

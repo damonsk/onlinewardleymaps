@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
 import { MapElement } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import Pipeline from './Pipeline';
 import PipelineVersion2 from './PipelineVersion2';
 

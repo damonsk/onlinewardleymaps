@@ -1,7 +1,7 @@
-import { useState, MouseEvent, Dispatch, SetStateAction } from 'react';
+import { Dispatch, MouseEvent, SetStateAction, useState } from 'react';
 import { TOOL_NONE } from 'react-svg-pan-zoom';
-import { MapDimensions } from '../constants/defaults';
 import PositionCalculator from '../components/map/PositionCalculator';
+import { MapDimensions } from '../constants/defaults';
 
 interface UseMapInteractionsProps {
     setNewComponentContext: (context: { x: string; y: string } | null) => void;

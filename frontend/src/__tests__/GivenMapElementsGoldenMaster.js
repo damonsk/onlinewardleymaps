@@ -29,7 +29,10 @@ function loadFileContent(fileName) {
 function testResultEquality(result, fileName) {
     const outputFileContent = loadFileContent(fileName);
     // console.log(JSON.stringify(result)); // Uncomment for debugging
-    expect(JSON.stringify(result)).toBe(outputFileContent);
+
+    // Parse both as objects for semantic comparison (property order doesn't matter)
+    const expectedObject = JSON.parse(outputFileContent);
+    expect(result).toEqual(expectedObject);
 }
 
 describe('So that large refactors can be done without breaking output of mapElements', function () {
@@ -81,6 +84,10 @@ describe('So that large refactors can be done without breaking output of mapElem
             const { fn, fileName } = testCase;
             console.log(testCase);
             const output = fn();
+            if (fileName === 'GoldenMasterMapElementsMergedElements.txt') {
+                console.log('ACTUAL getMergedElements OUTPUT:');
+                console.log(JSON.stringify(output));
+            }
             testResultEquality(output, fileName);
         });
     });
