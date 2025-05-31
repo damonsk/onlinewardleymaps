@@ -103,7 +103,7 @@ import EvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingEndLinksS
 import EvolvingToEvolvingLinksStrategy from '../../src/linkStrategies/EvolvingToEvolvingLinksStrategy';
 import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingToNoneEvolvingEndLinksStrategy';
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
-import MapElements from '../../src/MapElements';
+import { UnifiedMapElements } from '../../src/processing/UnifiedMapElements';
 export {
     AccelerateSymbol,
     AcceleratorExtractionStrategy,
@@ -164,7 +164,6 @@ export {
     MapBackground,
     MapCanvas,
     MapComponent,
-    MapElements,
     MapEvolution,
     MapGraphics,
     MapGrid,
@@ -198,6 +197,7 @@ export {
     SubMapSymbol,
     SVGWrapper,
     TitleExtractionStrategy,
+    UnifiedMapElements,
     UrlExtractionStrategy,
     Usages,
     useFeatureSwitches,
