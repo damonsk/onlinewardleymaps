@@ -240,7 +240,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             {showMapToolbar && (
                 <MapCanvasToolbar
                     shouldHideNav={shouldHideNav}
-                    mapStyleDefs={mapStyleDefs}
                     hideNav={false}
                     tool={tool}
                     handleChangeTool={handleChangeTool}
