@@ -1,31 +1,62 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, MouseEvent } from 'react';
 
 const HIGHLIGHT_DEF = 'url(#ctrlHighlight)';
 
-const shouldHighlight = ({ isModKeyPressed }) => {
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface Position {
+    x: number;
+    y: number;
+    coords: {
+        x?: number;
+        y?: number;
+    };
+}
+
+interface MovableProps {
+    id: string;
+    x: number;
+    y: number;
+    onMove: (moved: MovedPosition) => void;
+    fixedX?: boolean;
+    fixedY?: boolean;
+    shouldShowMoving?: boolean;
+    isModKeyPressed?: boolean;
+    scaleFactor?: number;
+    children: React.ReactNode;
+}
+
+const shouldHighlight = ({
+    isModKeyPressed,
+}: {
+    isModKeyPressed?: boolean;
+}) => {
     if (isModKeyPressed) {
         return HIGHLIGHT_DEF;
     }
     return undefined;
 };
 
-function Movable(props) {
+const Movable: React.FC<MovableProps> = (props) => {
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);
     const [moving, setMoving] = React.useState(false);
     const shouldShowMoving = props.shouldShowMoving ?? false;
-    const [position, setPosition] = React.useState({
+    const [position, setPosition] = React.useState<Position>({
         x: x(),
         y: y(),
         coords: {},
     });
 
     const handleMouseMove = useCallback(
-        (e) => {
+        (e: globalThis.MouseEvent) => {
             setPosition((position) => {
                 const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
-                const xDiff = (position.coords.x - e.pageX) / scaleFactor;
-                const yDiff = (position.coords.y - e.pageY) / scaleFactor;
+                const xDiff = (position.coords.x! - e.pageX) / scaleFactor;
+                const yDiff = (position.coords.y! - e.pageY) / scaleFactor;
                 return {
                     x: position.x - xDiff,
                     y: position.y - yDiff,
@@ -39,7 +70,7 @@ function Movable(props) {
         [props.scaleFactor],
     );
 
-    const handleMouseDown = (e) => {
+    const handleMouseDown = (e: MouseEvent<SVGGElement>) => {
         if (props.isModKeyPressed) return;
         setMoving(true);
         const pageX = e.pageX;
@@ -57,13 +88,13 @@ function Movable(props) {
         document.addEventListener('keyup', handleEscape);
     };
 
-    const handleEscape = (k) => {
+    const handleEscape = (k: KeyboardEvent) => {
         if (k.key === 'Escape' && moving) {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('keyup', handleEscape);
             setMoving(false);
             endDrag();
-            setPosition({ x: x(), y: y() });
+            setPosition({ x: x(), y: y(), coords: {} });
         }
     };
 
@@ -80,7 +111,7 @@ function Movable(props) {
     };
 
     function endDrag() {
-        let moved = {
+        const moved: MovedPosition = {
             x: position.x,
             y: position.y,
         };
@@ -94,14 +125,15 @@ function Movable(props) {
             coords: {},
         });
     }, [x, y]);
+
     const filter = shouldHighlight(props);
+
     return (
         <g
-            is="custom"
-            class={'draggable'}
+            className={'draggable'}
             style={{ cursor: moving ? 'grabbing' : 'grab' }}
             onMouseDown={(e) => handleMouseDown(e)}
-            onMouseUp={(e) => handleMouseUp(e)}
+            onMouseUp={() => handleMouseUp()}
             id={'movable_' + props.id}
             filter={filter}
             transform={
@@ -124,6 +156,6 @@ function Movable(props) {
             {props.children}
         </g>
     );
-}
+};
 
 export default Movable;
