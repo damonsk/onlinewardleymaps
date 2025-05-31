@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, MouseEvent } from 'react';
+import React, { MouseEvent, useCallback, useEffect } from 'react';
 
 const HIGHLIGHT_DEF = 'url(#ctrlHighlight)';
 

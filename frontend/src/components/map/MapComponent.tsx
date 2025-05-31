@@ -1,3 +1,4 @@
+import React from 'react';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import Movable from './Movable';
@@ -7,9 +8,30 @@ import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher'
 import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoordMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
+import { MapDimensions } from '../../constants/defaults';
+import { MapElement, Replacer } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 
-function MapComponent(props) {
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface MapComponentProps {
+    keyword: string;
+    launchUrl?: (url: string) => void;
+    mapDimensions: MapDimensions;
+    element: MapElement;
+    mapText: string;
+    mutateMapText: (newText: string) => void;
+    mapStyleDefs: MapTheme;
+    setHighlightLine: (line: number) => void;
+    scaleFactor: number;
+    children: React.ReactNode;
+}
+
+const MapComponent: React.FC<MapComponentProps> = (props) => {
     const isModKeyPressed = useModKeyPressedConsumer();
 
     const positionCalc = new PositionCalculator();
@@ -25,47 +47,46 @@ function MapComponent(props) {
 
     const onElementClick = () => props.setHighlightLine(props.element.line);
     const canApplyInertia = () =>
-        (props.element.evolved === undefined ||
-            props.element.evolved === false) &&
+        !props.element.evolved &&
         props.element.evolving === false &&
         props.element.inertia === true;
 
-    const notEvolvedNoLabelMatcher = {
-        matcher: (line, identifier, type) => {
+    const notEvolvedNoLabelMatcher: Replacer = {
+        matcher: (line: string, identifier: string, type: string): boolean => {
             return (
-                (!props.element.evolved || props.element.evolved === false) &&
+                !props.element.evolved &&
                 ExistingCoordsMatcher.matcher(line, identifier, type) &&
                 !ExistingCoordsMatcher.matcher(line, '', 'label')
             );
         },
-        action: (line, moved) => {
+        action: (line: string, moved: any): string => {
             return ExistingCoordsMatcher.action(line, moved);
         },
     };
 
-    const notEvolvedWithLabelMatcher = {
-        matcher: (line, identifier, type) => {
+    const notEvolvedWithLabelMatcher: Replacer = {
+        matcher: (line: string, identifier: string, type: string): boolean => {
             return (
-                (!props.element.evolved || props.element.evolved === false) &&
+                !props.element.evolved &&
                 ExistingCoordsMatcher.matcher(line, identifier, type) &&
                 ExistingCoordsMatcher.matcher(line, '', 'label')
             );
         },
-        action: (line, moved) => {
+        action: (line: string, moved: any): string => {
             const parts = line.split('label');
             const newPart = ExistingCoordsMatcher.action(parts[0], moved);
             return newPart + 'label' + parts[1];
         },
     };
 
-    const evolvedMatcher = {
-        matcher: (line, identifier) => {
+    const evolvedMatcher: Replacer = {
+        matcher: (line: string, identifier: string): boolean => {
             return (
                 props.element.evolved &&
                 ExistingSingleCoordMatcher.matcher(line, identifier, 'evolve')
             );
         },
-        action: (line, moved) => {
+        action: (line: string, moved: any): string => {
             return ExistingSingleCoordMatcher.action(line, moved);
         },
     };
@@ -87,16 +108,19 @@ function MapComponent(props) {
         elementType: props.element.type,
         elementName: props.element.name,
         mapTextPresent: !!props.mapText,
-        mutateMapTextPresent: !!props.mutateMapText,
+        mutateMapTextPresent: typeof props.mutateMapText === 'function',
         mutateMapTextType: typeof props.mutateMapText,
     });
 
-    function endDrag(moved) {
+    function endDrag(moved: MovedPosition): void {
         console.log('MapComponent endDrag called:', {
             moved,
             element: props.element.name,
             mapText: props.mapText ? 'present' : 'missing',
-            mutateMapText: props.mutateMapText ? 'present' : 'missing',
+            mutateMapText:
+                typeof props.mutateMapText === 'function'
+                    ? 'present'
+                    : 'missing',
         });
         const visibility = positionCalc.yToVisibility(
             moved.y,
@@ -137,7 +161,7 @@ function MapComponent(props) {
             </Movable>
             {canApplyInertia() && (
                 <Inertia
-                    maturity={parseFloat(props.element.maturity) + 0.05}
+                    maturity={props.element.maturity + 0.05}
                     visibility={props.element.visibility}
                     mapDimensions={props.mapDimensions}
                 />
@@ -155,6 +179,6 @@ function MapComponent(props) {
             </g>
         </>
     );
-}
+};
 
 export default MapComponent;
