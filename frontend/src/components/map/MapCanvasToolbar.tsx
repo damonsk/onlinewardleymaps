@@ -7,6 +7,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 import { ButtonGroup, IconButton } from '@mui/material';
+import React, { MouseEvent } from 'react';
 import {
     TOOL_NONE,
     TOOL_PAN,
@@ -14,23 +15,26 @@ import {
     TOOL_ZOOM_OUT,
 } from 'react-svg-pan-zoom';
 
-function MapCanvasToolbar({
+interface MapCanvasToolbarProps {
+    shouldHideNav: () => void;
+    hideNav: boolean;
+    tool: string;
+    handleChangeTool: (
+        event: MouseEvent<HTMLButtonElement>,
+        newTool: string,
+    ) => void;
+    _fitToViewer: () => void;
+}
+
+const MapCanvasToolbar: React.FC<MapCanvasToolbarProps> = ({
     shouldHideNav,
-    mapStyleDefs,
     hideNav,
     tool,
     handleChangeTool,
     _fitToViewer,
-}) {
+}) => {
     const SelectedIconButtonStyle = { color: '#90caf9' };
     const IconButtonStyle = { color: 'rgba(0, 0, 0, 0.54)' };
-    const textColour = {
-        wardley: 'black',
-        colour: 'black',
-        plain: 'black',
-        handwritten: 'black',
-        dark: 'white',
-    };
 
     return (
         <ButtonGroup orientation="horizontal" aria-label="button group">
@@ -93,7 +97,6 @@ function MapCanvasToolbar({
             <IconButton
                 id="wm-map-fullscreen"
                 onClick={() => shouldHideNav()}
-                color={textColour[mapStyleDefs.className]}
                 aria-label={hideNav ? 'Exit Fullscreen' : 'Fullscreen'}
             >
                 {hideNav ? (
@@ -104,6 +107,6 @@ function MapCanvasToolbar({
             </IconButton>
         </ButtonGroup>
     );
-}
+};
 
 export default MapCanvasToolbar;
