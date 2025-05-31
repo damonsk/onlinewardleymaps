@@ -57,7 +57,9 @@ export interface MapViewProps {
     mutateMapText: (newText: string) => void;
     evolutionOffsets: Offsets;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    setNewComponentContext: React.Dispatch<React.SetStateAction<null>>;
+    setNewComponentContext: React.Dispatch<
+        React.SetStateAction<{ x: string; y: string } | null>
+    >;
     showLinkedEvolved: boolean;
 }
 

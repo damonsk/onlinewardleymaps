@@ -126,7 +126,10 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     );
     const [mapMethods, setMapMethods] = useState<MapMethods[]>([]);
     const [invalid, setInvalid] = useState(false);
-    const [newComponentContext, setNewComponentContext] = useState(null);
+    const [newComponentContext, setNewComponentContext] = useState<{
+        x: string;
+        y: string;
+    } | null>(null);
     const [mapAnnotationsPresentation, setMapAnnotationsPresentation] =
         useState<MapAnnotationsPosition>({ maturity: 0, visibility: 0 });
     const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);

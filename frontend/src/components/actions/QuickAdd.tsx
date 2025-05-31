@@ -32,9 +32,11 @@ import { MapTheme } from '../../constants/mapstyles';
 import { lightTheme } from '../../theme/index';
 
 export interface QuickAddProps {
-    newComponentContext: any;
+    newComponentContext: { x: string; y: string } | null;
     mutateMapText: (newText: string) => void;
-    setNewComponentContext: React.Dispatch<React.SetStateAction<null>>;
+    setNewComponentContext: React.Dispatch<
+        React.SetStateAction<{ x: string; y: string } | null>
+    >;
     mapText: string;
     mapStyleDefs: MapTheme;
 }
@@ -123,7 +125,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
     }, [newComponentContext, cancelShowAdd]);
 
     function addNewComponent() {
-        if (value.trim().length === 0) return;
+        if (value.trim().length === 0 || !newComponentContext) return;
         setShowAdd(false);
         const componentString = icons[typeToUse].template(
             value.trim(),
