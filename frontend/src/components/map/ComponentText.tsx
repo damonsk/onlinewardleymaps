@@ -1,11 +1,48 @@
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { rename } from '../../constants/rename';
+import { MapTheme } from '../../types/map/styles';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import RelativeMovable from './RelativeMovable';
 
-function ComponentText(props) {
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface ComponentElement {
+    id: string;
+    name: string;
+    type?: string;
+    line?: number;
+    evolved?: boolean;
+    evolving?: boolean;
+    override?: string;
+    maturity?: number;
+    label?: {
+        x: number;
+        y: number;
+    };
+}
+
+interface ComponentTextProps {
+    mutateMapText: (newText: string) => void;
+    mapText: string;
+    overrideDrag?: (moved: MovedPosition) => void;
+    element: ComponentElement;
+    mapStyleDefs: MapTheme;
+    onClick?: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void;
+    scaleFactor: number;
+    id?: string; // Optional prop for external ID assignment, not used internally
+}
+
+interface SizingState {
+    rows: number;
+    cols: number;
+}
+
+function ComponentText(props: ComponentTextProps): JSX.Element | null {
     const { enableDoubleClickRename } = useFeatureSwitches();
     const {
         mutateMapText,
@@ -21,10 +58,10 @@ function ComponentText(props) {
         return null;
     }
 
-    const [sizing, setSizing] = React.useState({ rows: 0, cols: 0 });
-    const [renameVal, setRenameVal] = React.useState('');
-    const [showTextField, setShowTextField] = React.useState(false);
-    const renameField = useRef();
+    const [sizing, setSizing] = useState<SizingState>({ rows: 0, cols: 0 });
+    const [renameVal, setRenameVal] = useState<string>('');
+    const [showTextField, setShowTextField] = useState<boolean>(false);
+    const renameField = useRef<HTMLTextAreaElement>(null);
     const charWidth = 8;
     const charHeight = 16;
 
@@ -42,22 +79,26 @@ function ComponentText(props) {
 
     useEffect(() => {
         if (enableDoubleClickRename && showTextField && element) {
-            renameField.current.select();
+            renameField.current?.select();
             setRenameVal(element.name || '');
         }
     }, [showTextField, element]);
 
-    function endDrag(moved) {
-        const getLabelText = (x, y) =>
-            ` label [${parseFloat(x).toFixed(2)}, ${y}]`;
+    function endDrag(moved: MovedPosition): void {
+        const getLabelText = (x: number, y: number): string =>
+            ` label [${parseFloat(x.toString()).toFixed(2)}, ${y}]`;
 
-        const processEvolvedLine = (line, normalizedLine) => {
+        const processEvolvedLine = (
+            line: string,
+            normalizedLine: string,
+        ): string => {
             const evolveBase = 'evolve' + element.name.replace(/\s/g, '');
             const evolveOverride =
-                element.override?.length > 0
+                element.override?.length && element.override.length > 0
                     ? '->' + element.override.replace(/\s/g, '')
                     : '';
-            const evolveText = evolveBase + evolveOverride + element.maturity;
+            const evolveText =
+                evolveBase + evolveOverride + (element.maturity || '');
 
             if (normalizedLine.indexOf(evolveText) === 0) {
                 if (normalizedLine.indexOf('label[') > -1) {
@@ -71,8 +112,12 @@ function ComponentText(props) {
             return line;
         };
 
-        const processNormalLine = (line, normalizedLine) => {
-            const baseText = element.type + element.name.replace(/\s/g, '');
+        const processNormalLine = (
+            line: string,
+            normalizedLine: string,
+        ): string => {
+            const baseText =
+                (element.type || '') + element.name.replace(/\s/g, '');
             const searchText = baseText + '[';
 
             if (normalizedLine.indexOf(searchText) === 0) {
@@ -87,7 +132,7 @@ function ComponentText(props) {
             return line;
         };
 
-        const processLine = (line) => {
+        const processLine = (line: string): string => {
             const normalizedLine = line.replace(/\s/g, '');
             return element.evolved
                 ? processEvolvedLine(line, normalizedLine)
@@ -97,7 +142,9 @@ function ComponentText(props) {
         mutateMapText(mapText.split('\n').map(processLine).join('\n'));
     }
 
-    const handleKeyUp = (event) => {
+    const handleKeyUp = (
+        event: React.KeyboardEvent<HTMLTextAreaElement>,
+    ): void => {
         event.stopPropagation();
         if (!element || !element.line || !element.name || !renameVal) {
             setShowTextField(false);
@@ -120,7 +167,7 @@ function ComponentText(props) {
         }
     };
 
-    const renderTextField = () => {
+    const renderTextField = (): JSX.Element | null => {
         if (!enableDoubleClickRename || !showTextField) return null;
 
         return (
@@ -131,46 +178,45 @@ function ComponentText(props) {
                 height={sizing.rows * charHeight}
             >
                 <TextareaAutosize
-                    variant="filled"
                     ref={renameField}
-                    color="primary"
-                    autoComplete="off"
-                    size="small"
-                    cols={sizing.cols}
-                    onChange={(e) => setRenameVal(e.target.value)}
-                    onKeyDown={(e) => {
+                    minRows={sizing.rows}
+                    maxRows={sizing.rows}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        setRenameVal(e.target.value)
+                    }
+                    onKeyDown={(
+                        e: React.KeyboardEvent<HTMLTextAreaElement>,
+                    ) => {
                         if (e.key === 'Enter') {
                             e.preventDefault();
                         }
                     }}
-                    sx={{
+                    style={{
                         position: 'fixed',
                         zIndex: 10000,
                         boxSizing: 'border-box',
                         flex: 1,
-                        '& textarea': {
-                            boxSizing: 'border-box',
-                            zIndex: 10001,
-                            position: 'relative',
-                            flex: 1,
-                            fontSize: '14px',
-                            fontFamily: 'Consolas, "Lucida Console", monospace',
-                            padding: 0,
-                            margin: '0',
-                            color: 'black',
-                        },
+                        fontSize: '14px',
+                        fontFamily: 'Consolas, "Lucida Console", monospace',
+                        padding: 0,
+                        margin: '0',
+                        color: 'black',
+                        width: `${sizing.cols * charWidth + 10}px`,
                     }}
-                    margin="dense"
                     onKeyUp={handleKeyUp}
                     defaultValue={element.name}
-                    onDoubleClick={(e) => e.stopPropagation()}
-                    onClick={(e) => e.stopPropagation()}
+                    onDoubleClick={(e: React.MouseEvent<HTMLTextAreaElement>) =>
+                        e.stopPropagation()
+                    }
+                    onClick={(e: React.MouseEvent<HTMLTextAreaElement>) =>
+                        e.stopPropagation()
+                    }
                 />
             </foreignObject>
         );
     };
 
-    const renderComponentText = () => {
+    const renderComponentText = (): JSX.Element | null => {
         if (showTextField) return null;
 
         const textContent =
@@ -179,7 +225,7 @@ function ComponentText(props) {
                 : element.name;
         const showTextFieldValue = enableDoubleClickRename
             ? setShowTextField
-            : null;
+            : undefined;
 
         return (
             <ComponentTextSymbol
@@ -200,8 +246,8 @@ function ComponentText(props) {
                 fixedY={false}
                 fixedX={false}
                 onMove={overrideDrag ? overrideDrag : endDrag}
-                x={element.label.x}
-                y={element.label.y}
+                x={element.label?.x || 0}
+                y={element.label?.y || 0}
                 scaleFactor={scaleFactor}
             >
                 {renderComponentText()}
