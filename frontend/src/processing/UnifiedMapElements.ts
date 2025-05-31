@@ -151,7 +151,7 @@ export class UnifiedMapElements implements IProvideMapElements {
         result.decorators = {
             ecosystem: component.type === 'ecosystem',
             market: component.type === 'market',
-            method: 'build',
+            method: component.decorators?.method, // Only set method if explicitly defined
         };
 
         // Always set increaseLabelSpacing to 0 for legacy format
