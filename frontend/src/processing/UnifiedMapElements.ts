@@ -50,6 +50,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                 return {
                     ...component,
                     evolving: true,
+                    evolveMaturity: evolved?.maturity,
                     override: evolved?.override,
                 };
             }
