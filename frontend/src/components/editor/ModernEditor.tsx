@@ -1,9 +1,7 @@
-// Modern Editor component that accepts UnifiedWardleyMap directly
-// This replaces individual prop drilling with unified data structures
-
 import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactAce from 'react-ace/lib/ace';
+import { EditorPrefixes } from '../../constants/editorPrefixes';
 import { UnifiedWardleyMap } from '../../types/unified/map';
 import { WrappedEditorProps } from './WrappedEditor';
 
@@ -70,9 +68,7 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
         };
     }, []);
 
-    // Extract completions from unified map data
     const completions = [
-        // Component completions from all component types
         ...wardleyMap.components.map((c: any) => ({
             caption: c.name,
             value: c.name,
@@ -98,15 +94,13 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
             value: s.name,
             meta: 'submap',
         })),
-        // Command completions
-        // ...EditorPrefixes.map((prefix: string) => ({
-        //     caption: prefix,
-        //     value: prefix,
-        //     meta: 'syntax',
-        // })),
+        ...EditorPrefixes.map((prefix: string) => ({
+            caption: prefix,
+            value: prefix,
+            meta: 'syntax',
+        })),
     ];
 
-    // Set up custom completer for ace editor
     useEffect(() => {
         const reactAceComponent = aceEditorRef.current;
         if (reactAceComponent !== null) {
