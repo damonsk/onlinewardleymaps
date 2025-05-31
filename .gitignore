@@ -8,3 +8,4 @@ frontend/src/ui-components
 frontend/ui-components
 frontend/.yarn
 frontend/sonar-project.js
+frontend/tsconfig.tsbuildinfo
