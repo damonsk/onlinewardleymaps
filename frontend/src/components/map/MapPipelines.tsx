@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
+import { MapElement } from '../../types/base';
 import Pipeline from './Pipeline';
 import PipelineVersion2 from './PipelineVersion2';
 
-function MapPipelines({
+interface MapPipelinesProps {
+    enableNewPipelines: boolean;
+    mapElements: {
+        getMapPipelines(): any[];
+    };
+    mapDimensions: MapDimensions;
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    mapStyleDefs: MapTheme;
+    setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
+    clicked: (data: { el: MapElement; e: MouseEvent<Element> | null }) => void;
+    scaleFactor: number;
+}
+
+const MapPipelines: React.FC<MapPipelinesProps> = ({
     enableNewPipelines,
     mapElements,
     mapDimensions,
@@ -12,7 +29,14 @@ function MapPipelines({
     setHighlightLine,
     clicked,
     scaleFactor,
-}) {
+}) => {
+    // Create wrapper function to handle optional line parameter
+    const handleSetHighlightLine = (line?: number) => {
+        if (line !== undefined) {
+            setHighlightLine(line);
+        }
+    };
+
     return (
         <g id="pipelines">
             {enableNewPipelines &&
@@ -31,7 +55,7 @@ function MapPipelines({
                                     mapText={mapText}
                                     mutateMapText={mutateMapText}
                                     mapStyleDefs={mapStyleDefs}
-                                    setHighlightLine={setHighlightLine}
+                                    setHighlightLine={handleSetHighlightLine}
                                     linkingFunction={clicked}
                                     scaleFactor={scaleFactor}
                                 />
@@ -43,7 +67,7 @@ function MapPipelines({
                                     mapText={mapText}
                                     mutateMapText={mutateMapText}
                                     mapStyleDefs={mapStyleDefs}
-                                    setHighlightLine={setHighlightLine}
+                                    setHighlightLine={handleSetHighlightLine}
                                     scaleFactor={scaleFactor}
                                 />
                             )}
@@ -51,6 +75,6 @@ function MapPipelines({
                     ))}
         </g>
     );
-}
+};
 
 export default MapPipelines;
