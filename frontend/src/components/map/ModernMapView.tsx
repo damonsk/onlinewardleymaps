@@ -85,23 +85,14 @@ export const ModernMapView: React.FunctionComponent<ModernMapViewProps> = (
 
     const setQuickAdd = (quickAdd: any) => {
         setQuickAddInProgress(true);
-        const i = svgToBase64Url(
-            ReactDOMServer.renderToString(quickAdd.cursor),
-            15,
-            15,
-        );
-        console.log('ModernMapView::setQuickAdd::icon', i);
+        svgToBase64Url(ReactDOMServer.renderToString(quickAdd.cursor), 15, 15);
         setQuickAddTemplate(() => () => quickAdd.template);
     };
 
-    const handleMapCanvasClick = (pos: any) => {
+    const handleMapCanvasClick = () => {
         if (featureSwitches.enableQuickAdd == false) return;
-        console.log('ModernMapView::handleMapCanvasClick', pos);
         if (quickAddInProgress) {
-            console.log(
-                'ModernMapView::handleMapCanvasClick::quickAddTemplate',
-                quickAddTemplate,
-            );
+            quickAddTemplate();
             setQuickAddInProgress(false);
         }
     };
@@ -125,9 +116,6 @@ export const ModernMapView: React.FunctionComponent<ModernMapViewProps> = (
                     mapCanvasDimensions={props.mapCanvasDimensions}
                     mapStyleDefs={props.mapStyleDefs}
                     mapEvolutionStates={props.mapEvolutionStates}
-                    mapAnnotationsPresentation={
-                        props.mapAnnotationsPresentation
-                    }
                     evolutionOffsets={props.evolutionOffsets}
                     mapText={props.mapText}
                     mutateMapText={props.mutateMapText}
@@ -135,6 +123,9 @@ export const ModernMapView: React.FunctionComponent<ModernMapViewProps> = (
                     setNewComponentContext={props.setNewComponentContext}
                     launchUrl={props.launchUrl}
                     showLinkedEvolved={props.showLinkedEvolved}
+                    mapAnnotationsPresentation={
+                        props.mapAnnotationsPresentation
+                    }
                     handleMapCanvasClick={handleMapCanvasClick}
                 />
             </div>

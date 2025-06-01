@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapAnchors } from '../../types/base';
 import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import Movable from './Movable';
@@ -10,16 +10,8 @@ import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
-export interface MapAchor {
-    evolved: boolean;
-    name: string;
-    maturity: number;
-    visibility: number;
-    id: string;
-}
-
 interface AnchorProps {
-    anchor: MapAnchors;
+    anchor: UnifiedComponent;
     mapDimensions: MapDimensions;
     mapText: string;
     mutateMapText: (...args: any[]) => any;

@@ -10,5 +10,5 @@ export const featureSwitches: IProvideFeatureSwitches = {
     showMapToolbar: true,
     showMiniMap: false,
     allowMapZoomMouseWheel: true,
-    enableModernComponents: false, // Phase 4: Set to true to enable modern unified components
+    enableModernComponents: true, // Phase 4: Enabled modern unified components by default
 };

@@ -8,7 +8,7 @@ interface MapDimensions {
     width: number;
     height: number;
 }
-interface AnnotationElementProps {
+interface AnnotationElementItemProps {
     occurance: MapAnnotation;
     annotation: MapAnnotations;
     mapDimensions: MapDimensions;
@@ -24,7 +24,7 @@ interface MovedPosition {
     y: number;
 }
 
-function AnnotationElement(props: AnnotationElementProps): JSX.Element {
+function AnnotationElement(props: AnnotationElementItemProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const x = (): number =>
         positionCalc.maturityToX(

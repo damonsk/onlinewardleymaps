@@ -11,7 +11,6 @@ import {
     Offsets,
 } from '../../constants/defaults';
 import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
-import { MapAnnotationsPosition } from '../../types/base';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedWardleyMap } from '../../types/unified/map';
 import { processLinks } from '../../utils/mapProcessing';
@@ -20,7 +19,7 @@ import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import MapSVGContainer from './MapSVGContainer';
-import UnifiedMapContent from './UnifiedMapContent';
+import ModernUnifiedMapContent from './ModernUnifiedMapContent';
 
 interface ModernUnifiedMapCanvasProps {
     // Core unified data
@@ -31,7 +30,6 @@ interface ModernUnifiedMapCanvasProps {
     mapCanvasDimensions: MapCanvasDimensions;
     mapStyleDefs: MapTheme;
     mapEvolutionStates: EvolutionStages;
-    mapAnnotationsPresentation: MapAnnotationsPosition;
     evolutionOffsets: Offsets;
 
     // Text and mutations
@@ -45,6 +43,9 @@ interface ModernUnifiedMapCanvasProps {
     >;
     launchUrl: (urlId: string) => void;
     showLinkedEvolved: boolean;
+
+    // Annotations
+    mapAnnotationsPresentation: any;
 
     // Optional handlers
     handleMapCanvasClick?: (pos: { x: number; y: number }) => void;
@@ -71,7 +72,6 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         mapAnnotationsPresentation,
     } = props;
 
-    console.log('ModernUnifiedMapCanvas', props);
     const isModKeyPressed = useModKeyPressedConsumer();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
@@ -114,6 +114,7 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     const [enableZoomOnClick] = useState(true);
     const [tool, setTool] = useState(TOOL_NONE as any);
+    const [scaleFactor, setScaleFactor] = useState(1);
     const [value, setValue] = useState({
         version: 2 as const,
         mode: TOOL_NONE as any,
@@ -130,6 +131,11 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         SVGHeight: mapDimensions.height + 4,
         miniatureOpen: false,
     });
+
+    // Update scale factor when zoom value changes
+    useEffect(() => {
+        setScaleFactor(value.a);
+    }, [value.a]);
 
     // For modern interface, we don't need the complex interaction handlers
     // We'll use a simplified approach that focuses on the map interactions we need
@@ -188,24 +194,6 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     return (
         <div id="map-canvas">
-            {showMapToolbar && (
-                <MapCanvasToolbar
-                    shouldHideNav={() => {}}
-                    hideNav={false}
-                    tool={tool}
-                    handleChangeTool={(event, newTool) => setTool(newTool)}
-                    _fitToViewer={() => {
-                        if (Viewer.current) {
-                            Viewer.current.fitSelection(
-                                -35,
-                                -45,
-                                mapDimensions.width + 70,
-                                mapDimensions.height + 92,
-                            );
-                        }
-                    }}
-                />
-            )}
             <ReactSVGPanZoom
                 ref={Viewer}
                 width={mapCanvasDimensions.width}
@@ -248,16 +236,15 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         evolutionOffsets={evolutionOffsets}
                         mapTitle={wardleyMap.title}
                     />
-                    <UnifiedMapContent
+                    <ModernUnifiedMapContent
                         mapElements={mapElements}
                         mapDimensions={mapDimensions}
                         mapStyleDefs={mapStyleDefs}
-                        mapAnnotationsPresentation={mapAnnotationsPresentation}
                         launchUrl={launchUrl}
                         mapAttitudes={wardleyMap.attitudes}
                         mapText={mapText}
                         mutateMapText={mutateMapText}
-                        scaleFactor={1}
+                        scaleFactor={scaleFactor}
                         mapElementsClicked={mapElementsClicked}
                         links={processedLinks}
                         evolutionOffsets={evolutionOffsets}
@@ -276,10 +263,29 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         )}
                         mapNotes={wardleyMap.notes}
                         mapAnnotations={wardleyMap.annotations}
+                        mapAnnotationsPresentation={mapAnnotationsPresentation}
                         mapMethods={wardleyMap.methods}
                     />
                 </MapSVGContainer>
             </ReactSVGPanZoom>
+            {showMapToolbar && (
+                <MapCanvasToolbar
+                    shouldHideNav={() => {}}
+                    hideNav={false}
+                    tool={tool}
+                    handleChangeTool={(event, newTool) => setTool(newTool)}
+                    _fitToViewer={() => {
+                        if (Viewer.current) {
+                            Viewer.current.fitSelection(
+                                -35,
+                                -45,
+                                mapDimensions.width + 70,
+                                mapDimensions.height + 92,
+                            );
+                        }
+                    }}
+                />
+            )}
         </div>
     );
 }

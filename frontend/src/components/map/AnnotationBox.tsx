@@ -23,6 +23,7 @@ interface AnnotationElementProps {
     mapStyleDefs: MapTheme;
     annotations: MapAnnotations[];
     scaleFactor: number;
+    setHighlightLine?: (line: number) => void;
 }
 
 function AnnotationBox(props: AnnotationElementProps) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
-
-import { MapAccelerators } from '../../types/base';
+import { UnifiedComponent } from '../../types/unified';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
@@ -9,7 +8,7 @@ import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher'
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 interface MapAcceleratorProps {
-    element: MapAccelerators;
+    element: UnifiedComponent;
     mapDimensions: MapDimensions;
     mapText: string;
     mutateMapText: (text: string) => void;
@@ -32,7 +31,7 @@ const MapAccelerator: React.FC<MapAcceleratorProps> = ({
         (element.offsetY ? element.offsetY : 0);
 
     const positionUpdater = new DefaultPositionUpdater(
-        element.deaccelerator ? 'deaccelerator' : 'accelerator',
+        element.type === 'deaccelerator' ? 'deaccelerator' : 'accelerator',
         mapText,
         mutateMapText,
         [NotDefinedCoordsMatcher, ExistingCoordsMatcher],

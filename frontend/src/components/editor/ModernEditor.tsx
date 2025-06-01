@@ -50,23 +50,34 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
     const [editorHeight, setEditorHeight] = useState(500);
     const aceEditorRef = useRef<ReactAce>(null);
 
+    // Use the same height calculation logic as the original Editor
+    const getHeight = () => {
+        const winHeight = window.innerHeight;
+        const topNavHeight =
+            document.getElementById('top-nav-wrapper')?.clientHeight;
+        const titleHeight = document.getElementById('title')?.clientHeight;
+        return winHeight - (topNavHeight ?? 0) - (titleHeight ?? 0) + 35;
+    };
+
     useEffect(() => {
-        const resizeObserver = new ResizeObserver(() => {
-            const container = document.getElementById('editor-container');
-            if (container) {
-                setEditorHeight(container.offsetHeight - 140);
-            }
-        });
+        const handleResize = () => {
+            setEditorHeight(getHeight());
+        };
 
-        const editorContainer = document.getElementById('editor-container');
-        if (editorContainer) {
-            resizeObserver.observe(editorContainer);
-        }
+        window.addEventListener('load', handleResize);
+        window.addEventListener('resize', handleResize);
 
-        return () => {
-            resizeObserver.disconnect();
+        handleResize();
+
+        return function cleanup() {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('load', handleResize);
         };
     }, []);
+
+    useEffect(() => {
+        setEditorHeight(getHeight());
+    }, [hideNav]);
 
     const completions = [
         ...wardleyMap.components.map((c: any) => ({
@@ -132,16 +143,14 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
             id="editor-container"
             style={{
                 width: '100%',
-                height: hideNav
-                    ? window.innerHeight - 200
-                    : window.innerHeight - 250,
+                height: editorHeight,
                 paddingBottom: '10px',
             }}
         >
             <ForwardedRefComponent
                 ref={aceEditorRef}
                 mode="owm"
-                theme={isLightTheme ? 'github' : 'monokai'}
+                theme={isLightTheme ? 'eclipse' : 'dracula'}
                 name="map_editor"
                 onChange={mutateMapText}
                 fontSize={13}
@@ -155,7 +164,6 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
                     enableSnippets: false,
                     showLineNumbers: showLineNumbers,
                     tabSize: 2,
-                    wrap: true,
                 }}
                 style={{
                     height: editorHeight,

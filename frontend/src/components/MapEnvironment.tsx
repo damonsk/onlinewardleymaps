@@ -17,6 +17,7 @@ import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import Converter from '../conversion/Converter';
+import { UnifiedConverter } from '../conversion/UnifiedConverter';
 import {
     useLegacyMapState,
     useUnifiedMapState,
@@ -345,6 +346,11 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             if (r.errors.length > 0) {
                 setErrorLine(r.errors.map((e) => e.line));
             }
+
+            // CRITICAL FIX: Also update the unified map state
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+            const unifiedMap = unifiedConverter.parse(legacyState.mapText);
+            mapActions.setMap(unifiedMap);
         } catch (err) {
             console.log('Error:', err);
         }
