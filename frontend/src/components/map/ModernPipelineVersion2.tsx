@@ -1,0 +1,252 @@
+import React, { MouseEvent } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
+import {
+    PipelineComponentData,
+    PipelineData,
+    UnifiedComponent,
+} from '../../types/unified/components';
+import { useModKeyPressedConsumer } from '../KeyPressContext';
+import ModernComponentSymbol from '../symbols/ModernComponentSymbol';
+import ModernPipelineBoxSymbol from '../symbols/ModernPipelineBoxSymbol';
+import ModernComponentText from './ModernComponentText';
+import Movable from './Movable';
+import PositionCalculator from './PositionCalculator';
+import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
+import { ExistingMaturityMatcher } from './positionUpdaters/ExistingMaturityMatcher';
+import { NotDefinedMaturityMatcher } from './positionUpdaters/NotDefinedMaturityMatcher';
+
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
+interface MatcherFunction {
+    matcher: (line: string, identifier: string, type: string) => boolean;
+    action: (line: string, moved: { param1: string | number }) => string;
+}
+
+interface ModernPipelineVersion2Props {
+    pipeline: PipelineData;
+    mapDimensions: MapDimensions;
+    mapText: string;
+    mutateMapText: (text: string) => void;
+    mapStyleDefs: MapTheme;
+    setHighlightLine: (line?: number) => void;
+    linkingFunction: (data: {
+        el: UnifiedComponent;
+        e: MouseEvent<Element>;
+    }) => void;
+    scaleFactor: number;
+}
+
+/**
+ * ModernPipelineVersion2 - Modern implementation using unified types directly
+ * Part of Phase 4 Component Interface Modernization
+ */
+function ModernPipelineVersion2(
+    props: ModernPipelineVersion2Props,
+): JSX.Element {
+    const positionCalc = new PositionCalculator();
+    const isModKeyPressed = useModKeyPressedConsumer();
+
+    const noLabelMatcher: MatcherFunction = {
+        matcher: (line: string, identifier: string, type: string): boolean => {
+            return (
+                ExistingMaturityMatcher.matcher(line, identifier, type) &&
+                !ExistingMaturityMatcher.matcher(line, '', 'label')
+            );
+        },
+        action: (line: string, moved: { param1: string | number }): string => {
+            return ExistingMaturityMatcher.action(line, moved);
+        },
+    };
+
+    const withLabelMatcher: MatcherFunction = {
+        matcher: (line: string, identifier: string, type: string): boolean => {
+            return (
+                ExistingMaturityMatcher.matcher(line, identifier, type) &&
+                ExistingMaturityMatcher.matcher(line, '', 'label')
+            );
+        },
+        action: (line: string, moved: { param1: string | number }): string => {
+            const parts = line.split('label');
+            const newPart = ExistingMaturityMatcher.action(parts[0], moved);
+            return newPart + 'label' + parts[1];
+        },
+    };
+
+    const positionUpdater = new DefaultPositionUpdater(
+        'component',
+        props.mapText,
+        props.mutateMapText,
+        [noLabelMatcher, withLabelMatcher, NotDefinedMaturityMatcher],
+    );
+
+    // Not currently used but keeping for future label dragging support
+    // function endDragForLabel(
+    //     pipelineComponent: PipelineComponentData,
+    //     moved: MovedPosition,
+    // ): void {
+    //     props.mutateMapText(
+    //         props.mapText
+    //             .split('\n')
+    //             .map((line) => {
+    //                 if (
+    //                     line
+    //                         .replace(/\s/g, '')
+    //                         .indexOf(
+    //                             'component' +
+    //                                 pipelineComponent.name.replace(/\s/g, '') +
+    //                                 '[',
+    //                         ) === 0
+    //                 ) {
+    //                     if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+    //                         return line.replace(
+    //                             /\slabel\s\[(.?|.+?)\]+/g,
+    //                             ` label [${parseFloat(
+    //                                 moved.x.toString(),
+    //                             ).toFixed(0)},${parseFloat(
+    //                                 moved.y.toString(),
+    //                             ).toFixed(0)}]`,
+    //                         );
+    //                     }
+    //                     return (
+    //                         line +
+    //                         ` label [${parseFloat(moved.x.toString()).toFixed(
+    //                             0,
+    //                         )},${parseFloat(moved.y.toString()).toFixed(0)}]`
+    //                     );
+    //                 }
+    //                 return line;
+    //             })
+    //             .join('\n'),
+    //     );
+    // }
+
+    function endDragForComponent(
+        pipelineComponent: PipelineComponentData,
+        moved: MovedPosition,
+    ): void {
+        const maturity = positionCalc.xToMaturity(
+            moved.x,
+            props.mapDimensions.width,
+        );
+        positionUpdater.update(
+            {
+                param1: maturity,
+            },
+            pipelineComponent.name,
+        );
+    }
+
+    // Commenting out as this is not currently used but may be needed in future
+    // function handlePipelineBoxClick(): void {
+    //     props.setHighlightLine(props.pipeline.line);
+    // }
+
+    const calculatedComponents: Array<{
+        pipelineComponent: PipelineComponentData;
+        x: number;
+        y: number;
+    }> = props.pipeline.components
+        .filter((pc) => pc.name !== '')
+        .map((pc: PipelineComponentData) => {
+            const x = positionCalc.maturityToX(
+                pc.maturity,
+                props.mapDimensions.width,
+            );
+            const y = positionCalc.visibilityToY(
+                props.pipeline.visibility,
+                props.mapDimensions.height,
+            );
+            return {
+                pipelineComponent: pc,
+                x,
+                y,
+            };
+        })
+        .sort((a, b) => a.x - b.x);
+
+    const componentSymbols = calculatedComponents.map((c, i) => {
+        const component = {
+            id: c.pipelineComponent.id || `pipeline_comp_${i}`,
+            name: c.pipelineComponent.name,
+            type: 'component',
+            maturity: c.pipelineComponent.maturity,
+            visibility: props.pipeline.visibility,
+            line: c.pipelineComponent.line,
+            label: c.pipelineComponent.label || { x: 0, y: 0 },
+            pipeline: true,
+        } as UnifiedComponent;
+
+        return (
+            <Movable
+                key={i}
+                id={`pipeline_v2_${c.pipelineComponent.name}_${i}`}
+                onMove={(moved: MovedPosition) =>
+                    endDragForComponent(c.pipelineComponent, moved)
+                }
+                x={c.x}
+                y={c.y}
+                fixedY={true}
+                fixedX={false}
+                scaleFactor={props.scaleFactor}
+            >
+                <ModernComponentSymbol
+                    id={`pipeline_v2_circle_${props.pipeline.id}_${i}`}
+                    styles={props.mapStyleDefs.component}
+                    component={component}
+                    onClick={(e: MouseEvent<SVGElement>) => {
+                        if (isModKeyPressed) {
+                            props.linkingFunction({
+                                el: component,
+                                e,
+                            });
+                            return;
+                        }
+                        props.setHighlightLine(c.pipelineComponent.line);
+                    }}
+                />
+                {c.pipelineComponent.label && (
+                    <ModernComponentText
+                        component={component}
+                        cx={0}
+                        cy={0}
+                        styles={props.mapStyleDefs.component}
+                        mapText={props.mapText}
+                        mutateMapText={props.mutateMapText}
+                    />
+                )}
+            </Movable>
+        );
+    });
+
+    const x1 = positionCalc.maturityToX(
+        calculatedComponents[0]?.x || 0,
+        props.mapDimensions.width,
+    );
+    const x2 = positionCalc.maturityToX(
+        calculatedComponents[calculatedComponents.length - 1]?.x || 0,
+        props.mapDimensions.width,
+    );
+    const y = positionCalc.visibilityToY(
+        props.pipeline.visibility,
+        props.mapDimensions.height,
+    );
+
+    return (
+        <>
+            <ModernPipelineBoxSymbol
+                id={`pipeline_v2_box_${props.pipeline.id}`}
+                y={y}
+                x1={x1 - 15}
+                x2={x2 + 15}
+                styles={props.mapStyleDefs.component}
+            />
+            {componentSymbols}
+        </>
+    );
+}
+
+export default React.memo(ModernPipelineVersion2);

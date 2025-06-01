@@ -4,8 +4,8 @@ import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
 import { PipelineData } from '../../types/unified/components';
-import Pipeline from './Pipeline';
-import PipelineVersion2 from './PipelineVersion2';
+import ModernPipeline from './ModernPipeline';
+import ModernPipelineVersion2 from './ModernPipelineVersion2';
 
 /**
  * ModernMapPipelines Props - using unified type system directly
@@ -77,7 +77,7 @@ const ModernMapPipelines: React.FC<ModernMapPipelinesProps> = ({
                     .map((p, i) => (
                         <React.Fragment key={i}>
                             {p.components && p.components.length > 0 ? (
-                                <PipelineVersion2
+                                <ModernPipelineVersion2
                                     key={'pipeline_' + i}
                                     mapDimensions={mapDimensions}
                                     pipeline={p}
@@ -91,7 +91,7 @@ const ModernMapPipelines: React.FC<ModernMapPipelinesProps> = ({
                                     scaleFactor={scaleFactor}
                                 />
                             ) : (
-                                <Pipeline
+                                <ModernPipeline
                                     key={i}
                                     mapDimensions={mapDimensions}
                                     pipeline={p}
