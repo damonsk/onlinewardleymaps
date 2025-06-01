@@ -146,6 +146,13 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }>
     >([]);
 
+    // Clear mapElementsClicked when mod key is released
+    useEffect(() => {
+        if (!isModKeyPressed && mapElementsClicked.length > 0) {
+            setMapElementsClicked([]);
+        }
+    }, [isModKeyPressed, mapElementsClicked]);
+
     const handleMapClick = (event: any) => {
         if (enableZoomOnClick && props.handleMapCanvasClick) {
             // Extract position from event and call the handler
