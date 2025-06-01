@@ -19,7 +19,7 @@ import EvolvingComponentLink from './EvolvingComponentLink';
 import FluidLink from './FluidLink';
 import MapAccelerator from './MapAccelerator';
 import MapComponent from './MapComponent';
-import MapPipelines from './MapPipelines';
+import ModernMapPipelines from './ModernMapPipelines';
 import Note from './Note';
 
 // Phase 4: Component Interface Modernization
@@ -333,32 +333,9 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                         ))}
             </g>
 
-            <MapPipelines
+            <ModernMapPipelines
                 enableNewPipelines={props.enableNewPipelines || false}
-                mapElements={
-                    (() => {
-                        return {
-                            getMergedElements: () =>
-                                mapElements
-                                    .getMergedElements()
-                                    .map(passComponent),
-                            getEvolveElements: () =>
-                                mapElements
-                                    .getEvolvingComponents()
-                                    .map(passComponent),
-                            getNoneEvolvedOrEvolvingElements: () =>
-                                mapElements
-                                    .getStaticComponents()
-                                    .map(passComponent),
-                            getMapPipelines: () =>
-                                mapElements.getMapPipelines(),
-                            getEvolvedElements: () =>
-                                mapElements
-                                    .getEvolvedElements()
-                                    .map(passComponent),
-                        };
-                    })() as any
-                }
+                mapElements={mapElements}
                 mapDimensions={mapDimensions}
                 mapText={mapText}
                 mutateMapText={mutateMapText}
