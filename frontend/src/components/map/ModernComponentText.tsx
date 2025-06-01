@@ -6,10 +6,11 @@ import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import RelativeMovable from './RelativeMovable';
 
-interface MovedPosition {
-    x: number;
-    y: number;
-}
+// Interface not used in this version but retained for future position updates
+// interface MovedPosition {
+//     x: number;
+//     y: number;
+// }
 
 /**
  * ModernComponentText Props
@@ -20,7 +21,6 @@ interface ModernComponentTextProps {
     cx: string | number;
     cy: string | number;
     styles: any;
-    valueChain?: string;
     mutateMapText?: (newText: string) => void;
     mapText?: string;
 }
@@ -35,7 +35,6 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
     cx,
     cy,
     styles,
-    valueChain,
     mutateMapText,
     mapText,
 }) => {
@@ -63,9 +62,20 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
 
     const handleBlur = () => {
         setEditMode(false);
-        if (mutateMapText && mapText && text !== component.name) {
-            const updatedText = rename(mapText, component.name, text);
-            mutateMapText(updatedText);
+        if (
+            mutateMapText &&
+            mapText &&
+            text !== component.name &&
+            component.line
+        ) {
+            // Using the rename function with the correct parameters
+            rename(
+                component.line,
+                component.name,
+                text,
+                mapText,
+                mutateMapText,
+            );
         }
     };
 
@@ -77,9 +87,20 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
         if (e.key === 'Enter') {
             e.preventDefault();
             setEditMode(false);
-            if (mutateMapText && mapText && text !== component.name) {
-                const updatedText = rename(mapText, component.name, text);
-                mutateMapText(updatedText);
+            if (
+                mutateMapText &&
+                mapText &&
+                text !== component.name &&
+                component.line
+            ) {
+                // Using the rename function with the correct parameters
+                rename(
+                    component.line,
+                    component.name,
+                    text,
+                    mapText,
+                    mutateMapText,
+                );
             }
         }
     };
@@ -93,10 +114,6 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
         return (
             (component.label?.y || 0) + (component.increaseLabelSpacing || 0)
         );
-    };
-
-    const updatePosition = (movedPosition: MovedPosition) => {
-        // Implementation for position updates if needed
     };
 
     const textFill = component.evolved ? styles.evolvedText : styles.text;
@@ -129,15 +146,21 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
     );
 
     const renderText = () => (
-        <RelativeMovable x={getX()} y={getY()}>
+        <RelativeMovable
+            id={`${component.id}-text-movable`}
+            x={getX()}
+            y={getY()}
+        >
             <ComponentTextSymbol
                 id={`${component.id}-text`}
                 text={component.name}
-                cx={cx}
-                cy={cy}
-                fill={textFill}
-                fontSize={fontSize}
-                onDoubleClick={handleDoubleClick}
+                textTheme={{
+                    fontSize: fontSize,
+                    fontWeight: 'normal',
+                    evolvedTextColor: textFill,
+                    textColor: textFill,
+                }}
+                onClick={handleDoubleClick}
             />
         </RelativeMovable>
     );

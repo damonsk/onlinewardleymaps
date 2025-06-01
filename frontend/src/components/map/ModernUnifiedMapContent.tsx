@@ -89,6 +89,14 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
     const getElementByName = (elements: UnifiedComponent[], name: string) =>
         elements.find((e) => e.name === name);
 
+    // Direct component passing function - no need for adaptation since we're using unified types
+    // This is part of Phase 4A migration - eliminate adapter functions
+    const passComponent = (component: any): any => {
+        // Simply return the component as is - unified components have all needed properties
+        // In a future phase, this function can be removed completely and components used directly
+        return component;
+    };
+
     return (
         <g id="mapContent">
             <g id="attitudes">
@@ -142,7 +150,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                             e.name,
                                         );
                                         return element
-                                            ? adaptUnifiedToMapElement(element)
+                                            ? passComponent(element)
                                             : undefined;
                                     })()}
                                     startElement={(() => {
@@ -151,7 +159,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                             e.name,
                                         );
                                         return element
-                                            ? adaptUnifiedToMapElement(element)
+                                            ? passComponent(element)
                                             : undefined;
                                     })()}
                                     evolutionOffsets={
@@ -187,7 +195,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                             key={`fluid-${i}`}
                             mapStyleDefs={mapStyleDefs}
                             mapDimensions={mapDimensions}
-                            startElement={adaptUnifiedToMapElement(current.el)}
+                            startElement={passComponent(current.el)}
                             origClick={current.e}
                             scaleFactor={scaleFactor}
                         />
@@ -213,7 +221,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                     component={el}
                                     onClick={() =>
                                         clicked({
-                                            el: adaptUnifiedToMapElement(el),
+                                            el: passComponent(el),
                                             e: null,
                                         })
                                     }
@@ -234,7 +242,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                 keyword={el.type}
                                 launchUrl={launchUrl}
                                 mapDimensions={mapDimensions}
-                                element={adaptUnifiedToMapElement(el)}
+                                element={passComponent(el)}
                                 mapText={mapText}
                                 mutateMapText={mutateMapText}
                                 mapStyleDefs={mapStyleDefs}
@@ -247,9 +255,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                         component={el}
                                         onClick={(e: MouseEvent<SVGElement>) =>
                                             clicked({
-                                                el: adaptUnifiedToMapElement(
-                                                    el,
-                                                ),
+                                                el: passComponent(el),
                                                 e,
                                             })
                                         }
@@ -263,9 +269,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                         component={el}
                                         onClick={() =>
                                             clicked({
-                                                el: adaptUnifiedToMapElement(
-                                                    el,
-                                                ),
+                                                el: passComponent(el),
                                                 e: null,
                                             })
                                         }
@@ -280,9 +284,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                         component={el}
                                         onClick={(e: MouseEvent<SVGGElement>) =>
                                             clicked({
-                                                el: adaptUnifiedToMapElement(
-                                                    el,
-                                                ),
+                                                el: passComponent(el),
                                                 e,
                                             })
                                         }
@@ -297,9 +299,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                         component={el}
                                         onClick={(e: MouseEvent<SVGElement>) =>
                                             clicked({
-                                                el: adaptUnifiedToMapElement(
-                                                    el,
-                                                ),
+                                                el: passComponent(el),
                                                 e,
                                             })
                                         }
@@ -312,9 +312,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                         component={el}
                                         onClick={(e: MouseEvent<SVGElement>) =>
                                             clicked({
-                                                el: adaptUnifiedToMapElement(
-                                                    el,
-                                                ),
+                                                el: passComponent(el),
                                                 e,
                                             })
                                         }
@@ -343,21 +341,21 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                             getMergedElements: () =>
                                 mapElements
                                     .getMergedElements()
-                                    .map(adaptUnifiedToMapElement),
+                                    .map(passComponent),
                             getEvolveElements: () =>
                                 mapElements
                                     .getEvolvingComponents()
-                                    .map(adaptUnifiedToMapElement),
+                                    .map(passComponent),
                             getNoneEvolvedOrEvolvingElements: () =>
                                 mapElements
                                     .getStaticComponents()
-                                    .map(adaptUnifiedToMapElement),
+                                    .map(passComponent),
                             getMapPipelines: () =>
                                 mapElements.getMapPipelines(),
                             getEvolvedElements: () =>
                                 mapElements
                                     .getEvolvedElements()
-                                    .map(adaptUnifiedToMapElement),
+                                    .map(passComponent),
                         };
                     })() as any
                 }

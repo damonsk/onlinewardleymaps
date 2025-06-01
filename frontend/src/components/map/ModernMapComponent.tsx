@@ -2,15 +2,10 @@ import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
-import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoordMatcher';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 interface MovedPosition {
     x: number;
@@ -22,7 +17,6 @@ interface MovedPosition {
  * This component uses UnifiedComponent directly without adapters
  */
 interface ModernMapComponentProps {
-    keyword: string;
     launchUrl?: (url: string) => void;
     mapDimensions: MapDimensions;
     component: UnifiedComponent; // Changed from element: MapElement to component: UnifiedComponent
@@ -31,7 +25,6 @@ interface ModernMapComponentProps {
     mapStyleDefs: MapTheme;
     setHighlightLine: (line: number) => void;
     scaleFactor: number;
-    valueChainStage?: string;
 }
 
 /**
@@ -39,7 +32,6 @@ interface ModernMapComponentProps {
  * This implements Phase 4A of the migration plan
  */
 const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
-    keyword,
     launchUrl,
     mapDimensions,
     component, // Using component instead of element
@@ -48,18 +40,16 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
     mapStyleDefs,
     setHighlightLine,
     scaleFactor,
-    valueChainStage,
 }) => {
-    const { modKeyPressed } = useModKeyPressedConsumer();
-    const calculatedPosition = new PositionCalculator(
+    const calculatedPosition = new PositionCalculator();
+    const posX = calculatedPosition.maturityToX(
         component.maturity,
-        component.visibility,
-        mapDimensions,
+        mapDimensions.width,
     );
-    const posX = calculatedPosition.getX();
-    const posY = calculatedPosition.getY();
-
-    let componentStyles = mapStyleDefs.component;
+    const posY = calculatedPosition.visibilityToY(
+        component.visibility,
+        mapDimensions.height,
+    );
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -81,47 +71,41 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
     const updatePosition = (movedPosition: MovedPosition) => {
         if (component.line === undefined) return;
 
-        let replacers = [];
+        // Calculate new maturity and visibility from moved position
+        const calculator = new PositionCalculator();
+        const newMaturity = parseFloat(
+            calculator.xToMaturity(movedPosition.x, mapDimensions.width),
+        );
+        const newVisibility = parseFloat(
+            calculator.yToVisibility(movedPosition.y, mapDimensions.height),
+        );
 
-        if (!modKeyPressed) {
-            // When pressing just left mouse button - add corrected maturity and visibility
-            replacers.push(
-                new ExistingCoordsMatcher(
-                    component.name,
-                    component.maturity,
-                    component.visibility,
-                    movedPosition.x,
-                    movedPosition.y,
-                ),
-            );
-            replacers.push(
-                new ExistingSingleCoordMatcher(
-                    component.name,
-                    movedPosition.x,
-                    movedPosition.y,
-                ),
-            );
-            replacers.push(
-                new NotDefinedCoordsMatcher(
-                    component.name,
-                    movedPosition.x,
-                    movedPosition.y,
-                ),
-            );
-        }
+        // Find and replace the component position in the map text
+        const lines = mapText.split('\n');
+        const updatedLines = lines.map((line) => {
+            // Check if this is our component line
+            const isComponent =
+                line.includes(`component ${component.name}`) ||
+                line.includes(`component ${component.name} [`);
 
-        const newText = new DefaultPositionUpdater(mapText, replacers).update();
+            if (isComponent) {
+                // Replace coordinates with new values
+                return line.replace(
+                    /\[(.?|.+?)\]/g,
+                    `[${newMaturity.toFixed(2)}, ${newVisibility.toFixed(2)}]`,
+                );
+            }
+            return line;
+        });
+
+        const newText = updatedLines.join('\n');
+        mutateMapText(newText);
 
         mutateMapText(newText);
     };
 
     return (
-        <Movable
-            id={component.id}
-            x={posX}
-            y={posY}
-            updatePosition={updatePosition}
-        >
+        <Movable id={component.id} x={posX} y={posY} onMove={updatePosition}>
             <g
                 id={component.id}
                 onClick={handleClick}
@@ -129,17 +113,28 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
             >
                 {component.inertia && (
                     <Inertia
-                        cx={posX}
-                        cy={posY}
-                        radius={componentStyles.radius}
+                        maturity={component.maturity}
+                        visibility={component.visibility}
+                        mapDimensions={mapDimensions}
                     />
                 )}
+                {/* Use ModernComponentText if available, otherwise adapt to ComponentText interface */}
                 <ComponentText
-                    component={component}
-                    cx={posX}
-                    cy={posY}
-                    styles={componentStyles}
-                    valueChain={valueChainStage}
+                    element={{
+                        id: component.id,
+                        name: component.name,
+                        type: component.type,
+                        line: component.line,
+                        evolved: component.evolved,
+                        evolving: component.evolving,
+                        override: component.override,
+                        maturity: component.maturity,
+                        label: component.label,
+                    }}
+                    mapStyleDefs={mapStyleDefs}
+                    scaleFactor={scaleFactor}
+                    mapText={mapText}
+                    mutateMapText={mutateMapText}
                 />
             </g>
         </Movable>
