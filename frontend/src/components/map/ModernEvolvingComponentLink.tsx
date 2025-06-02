@@ -4,7 +4,7 @@ import { MapTheme } from '../../constants/mapstyles';
 import { UnifiedComponent } from '../../types/unified/components';
 import ModernLinkSymbol from '../symbols/ModernLinkSymbol';
 import ModernInertia from './ModernInertia';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface EvolutionOffsets {
     commodity: number;
@@ -24,7 +24,7 @@ interface ModernEvolvingComponentLinkProps {
  * Calculate the boundary point for inertia visualization
  */
 const setBoundary = (
-    positionCalc: PositionCalculator,
+    positionCalc: ModernPositionCalculator,
     {
         mapDimensions,
         evolutionOffsets,
@@ -80,7 +80,7 @@ const ModernEvolvingComponentLink: React.FC<
     }
 
     const { height, width } = mapDimensions;
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
 
     // Handle the coordinate calculation based on unified component types
     const x1 = positionCalc.maturityToX(startElement.maturity ?? 0, width);

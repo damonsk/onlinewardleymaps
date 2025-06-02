@@ -4,8 +4,8 @@ import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
-import Movable from './Movable';
-import PositionCalculator from './PositionCalculator';
+import ModernMovable from './ModernMovable';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface MovedPosition {
     x: number;
@@ -41,7 +41,7 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
     setHighlightLine,
     scaleFactor,
 }) => {
-    const calculatedPosition = new PositionCalculator();
+    const calculatedPosition = new ModernPositionCalculator();
     const posX = calculatedPosition.maturityToX(
         component.maturity,
         mapDimensions.width,
@@ -72,7 +72,7 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
         if (component.line === undefined) return;
 
         // Calculate new maturity and visibility from moved position
-        const calculator = new PositionCalculator();
+        const calculator = new ModernPositionCalculator();
         const newMaturity = parseFloat(
             calculator.xToMaturity(movedPosition.x, mapDimensions.width),
         );
@@ -105,7 +105,12 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
     };
 
     return (
-        <Movable id={component.id} x={posX} y={posY} onMove={updatePosition}>
+        <ModernMovable
+            id={component.id}
+            x={posX}
+            y={posY}
+            onMove={updatePosition}
+        >
             <g
                 id={component.id}
                 onClick={handleClick}
@@ -137,7 +142,7 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
                     mutateMapText={mutateMapText}
                 />
             </g>
-        </Movable>
+        </ModernMovable>
     );
 };
 

@@ -1,6 +1,20 @@
 # Phase 4C Integration Plan
 
-This document outlines the incremental approach to integrate modern components into the OnlineWardleyMaps codebase.
+This document outlines the i| Component | Status | Issues Found | Date |
+|-----------|--------|--------------|------|
+| ModernPositionCalculator | Complete | No issues found | June 2, 2025 |
+| ModernFluidLink | Complete | No issues found | June 2, 2025 |
+| ModernAttitude | Complete | No issues found | June 2, 2025 |
+| ModernAnnotationBox | Complete | No issues found | June 2, 2025 |
+| ModernAnnotationElement | Complete | No issues found | June 2, 2025 |
+| ModernNote | Complete | No issues found | June 2, 2025 |
+| ModernDefaultPositionUpdater | Partially Integrated | Used in ModernAnnotationBox | June 2, 2025 |
+| ModernLineNumberPositionUpdater | Partially Integrated | Used in ModernAttitude, ModernNote | June 2, 2025 |
+| ModernSingletonPositionUpdater | Partially Integrated | Used in ModernAnnotationBox | June 2, 2025 |
+| ModernExistingCoordsMatcher | Partially Integrated | Used in several components | June 2, 2025 |
+| ModernExistingManyCoordsMatcher | Partially Integrated | Used in several components | June 2, 2025 |
+| ModernEvolvingComponentLink | Not Started | | |
+| ModernInertia | Not Started | | |oach to integrate modern components into the OnlineWardleyMaps codebase.
 
 ## Integration Strategy
 
@@ -60,13 +74,17 @@ If an issue occurs:
 | ModernPositionCalculator | Complete | No issues found | June 2, 2025 |
 | ModernFluidLink | Complete | No issues found | June 2, 2025 |
 | ModernAttitude | Complete | No issues found | June 2, 2025 |
-| ModernAnnotationBox | Not Started | | |
-| ModernAnnotationElement | Not Started | | |
+| ModernAnnotationBox | Complete | No issues found | June 2, 2025 |
+| ModernAnnotationElement | Complete | No issues found | June 2, 2025 |
 | ModernNote | Complete | No issues found | June 2, 2025 |
-| ModernDefaultPositionUpdater | Not Started | | |
-| ModernLineNumberPositionUpdater | Not Started | | |
-| ModernSingletonPositionUpdater | Not Started | | |
-| ModernExistingCoordsMatcher | Not Started | | |
-| ModernExistingManyCoordsMatcher | Not Started | | |
-| ModernEvolvingComponentLink | Not Started | | |
+| ModernComponentLink | Complete | No issues found | June 2, 2025 |
+| ModernAnchor | Complete | No issues found | June 2, 2025 |
+| ModernMapComponent | Complete | No issues found | June 2, 2025 |
+| ModernDefaultPositionUpdater | Partially Integrated | Used in ModernAnnotationBox, ModernAnchor | June 2, 2025 |
+| ModernLineNumberPositionUpdater | Partially Integrated | Used in ModernAttitude, ModernNote | June 2, 2025 |
+| ModernSingletonPositionUpdater | Partially Integrated | Used in ModernAnnotationBox | June 2, 2025 |
+| ModernExistingCoordsMatcher | Partially Integrated | Used in several components | June 2, 2025 |
+| ModernExistingManyCoordsMatcher | Partially Integrated | Used in several components | June 2, 2025 |
+| ModernNotDefinedCoordsMatcher | Complete | No issues found | June 2, 2025 |
+| ModernEvolvingComponentLink | Complete | No issues found | June 2, 2025 |
 | ModernInertia | Not Started | | |

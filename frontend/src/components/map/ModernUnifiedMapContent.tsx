@@ -11,10 +11,10 @@ import ModernMarketSymbol from '../symbols/ModernMarketSymbol';
 import ModernPipelineComponentSymbol from '../symbols/ModernPipelineComponentSymbol';
 import ModernSubMapSymbol from '../symbols/ModernSubMapSymbol';
 import Anchor from './Anchor';
-import AnnotationBox from './AnnotationBox';
-import AnnotationElement from './AnnotationElement';
+import ModernAnnotationBox from './ModernAnnotationBox';
+import ModernAnnotationElement from './ModernAnnotationElement';
 import ComponentLink from './ComponentLink';
-import EvolvingComponentLink from './EvolvingComponentLink';
+import ModernEvolvingComponentLink from './ModernEvolvingComponentLink';
 import MapAccelerator from './MapAccelerator';
 import MapComponent from './MapComponent';
 import ModernAttitude from './ModernAttitude';
@@ -140,7 +140,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                 mapElements.getEvolveElements(),
                                 e.name,
                             ) && (
-                                <EvolvingComponentLink
+                                <ModernEvolvingComponentLink
                                     key={i}
                                     mapStyleDefs={mapStyleDefs}
                                     mapDimensions={mapDimensions}
@@ -365,7 +365,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                     props.mapAnnotations.map((a: any, i: number) => (
                         <React.Fragment key={i}>
                             {a.occurances?.map((occurance: any, i1: number) => (
-                                <AnnotationElement
+                                <ModernAnnotationElement
                                     mapStyleDefs={mapStyleDefs}
                                     key={'mapAnnotation_' + i + '_' + i1}
                                     occurance={occurance}
@@ -382,7 +382,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
                 {props.mapAnnotations &&
                 props.mapAnnotations.length === 0 ? null : (
-                    <AnnotationBox
+                    <ModernAnnotationBox
                         mapStyleDefs={mapStyleDefs}
                         mutateMapText={mutateMapText}
                         mapText={mapText}

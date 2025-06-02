@@ -3,11 +3,11 @@ import { MapTheme } from '../../constants/mapstyles';
 import { MapAnnotations } from '../../types/base';
 import ModernAnnotationBoxSymbol from '../symbols/ModernAnnotationBoxSymbol';
 import ModernAnnotationTextSymbol from '../symbols/ModernAnnotationTextSymbol';
-import ModernMovable from './ModernMovable'; // Will need to create this component
-import PositionCalculator from './PositionCalculator';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import SingletonPositionUpdater from './positionUpdaters/SingletonPositionUpdater';
+import ModernMovable from './ModernMovable';
+import ModernPositionCalculator from './ModernPositionCalculator';
+import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
+import ModernSingletonPositionUpdater from './positionUpdaters/ModernSingletonPositionUpdater';
 
 interface ModernAnnotationBoxProps {
     mapText: any;
@@ -33,16 +33,16 @@ interface ModernAnnotationBoxProps {
  * This component renders an annotation box with all annotations
  */
 const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
     const identifier = 'annotations';
 
-    const defaultPositionUpdater = new DefaultPositionUpdater(
+    const defaultPositionUpdater = new ModernDefaultPositionUpdater(
         identifier,
         props.mapText,
         props.mutateMapText,
-        [ExistingCoordsMatcher],
+        [ModernExistingCoordsMatcher],
     );
-    const positionUpdater = new SingletonPositionUpdater(
+    const positionUpdater = new ModernSingletonPositionUpdater(
         identifier,
         props.mapText,
         props.mutateMapText,

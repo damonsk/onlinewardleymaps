@@ -6,7 +6,7 @@ import { FlowLink } from '../../types/unified/links';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ModernLinkSymbol from '../symbols/ModernLinkSymbol';
 import ModernFlowText from './ModernFlowText';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernComponentLinkProps {
     mapStyleDefs: MapTheme;
@@ -31,7 +31,7 @@ const ModernComponentLink: React.FC<ModernComponentLinkProps> = ({
 }) => {
     const { enableLinkContext } = useFeatureSwitches();
     const { height, width } = mapDimensions;
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
     const isFlow = link.flow !== false;
     const isEvolved = startElement.evolved || endElement.evolved;
 

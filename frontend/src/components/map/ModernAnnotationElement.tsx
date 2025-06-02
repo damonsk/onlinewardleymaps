@@ -3,7 +3,7 @@ import { MapTheme } from '../../constants/mapstyles';
 import { MapAnnotation, MapAnnotations } from '../../types/base';
 import ModernAnnotationElementSymbol from '../symbols/ModernAnnotationElementSymbol';
 import ModernMovable from './ModernMovable';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface MapDimensions {
     width: number;
@@ -42,7 +42,7 @@ const ModernAnnotationElement: React.FC<ModernAnnotationElementProps> = ({
     scaleFactor,
     mapStyleDefs,
 }) => {
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
 
     const x = (): number =>
         positionCalc.maturityToX(occurance.maturity, mapDimensions.width);
