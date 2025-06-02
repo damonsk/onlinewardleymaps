@@ -8,6 +8,7 @@ interface ModernPipelineBoxSymbolProps {
     stroke?: string;
     styles?: {
         stroke?: string;
+        pipelineStrokeWidth?: number;
     };
 }
 
@@ -23,7 +24,11 @@ const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({
     stroke,
     styles = {},
 }) => {
-    const str = stroke || styles.stroke;
+    // Use explicitly provided stroke, or from styles, or default to black
+    const str = stroke || styles.stroke || 'black';
+    // Use pipelineStrokeWidth from styles if available, or default to 1
+    const strokeWidth = styles.pipelineStrokeWidth || 1;
+
     return (
         <g id={id} transform={`translate(${x1},${y})`}>
             <line
@@ -31,7 +36,7 @@ const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({
                 y1={0}
                 x2={x2 - x1}
                 y2={0}
-                strokeWidth={1}
+                strokeWidth={strokeWidth}
                 stroke={str}
             />
             <line
@@ -39,7 +44,7 @@ const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({
                 y1={0}
                 x2={x2 - x1}
                 y2={22}
-                strokeWidth={1}
+                strokeWidth={strokeWidth}
                 stroke={str}
             />
             <line
@@ -47,10 +52,17 @@ const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({
                 y1={22}
                 x2={0}
                 y2={22}
-                strokeWidth={1}
+                strokeWidth={strokeWidth}
                 stroke={str}
             />
-            <line x1={0} y1={22} x2={0} y2={0} strokeWidth={1} stroke={str} />
+            <line
+                x1={0}
+                y1={22}
+                x2={0}
+                y2={0}
+                strokeWidth={strokeWidth}
+                stroke={str}
+            />
         </g>
     );
 };

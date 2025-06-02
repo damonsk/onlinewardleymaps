@@ -222,19 +222,35 @@ function ModernPipelineVersion2(
         );
     });
 
-    const x1 = positionCalc.maturityToX(
-        calculatedComponents[0]?.x || 0,
-        props.mapDimensions.width,
-    );
-    const x2 = positionCalc.maturityToX(
-        calculatedComponents[calculatedComponents.length - 1]?.x || 0,
-        props.mapDimensions.width,
-    );
+    // Pipeline box should only render if there are components
+    if (calculatedComponents.length === 0) {
+        // No components to render for this pipeline
+        console.warn(`Pipeline ${props.pipeline.name} has no components to render`);
+        return <></>;
+    }
+
+    // Use maturity values directly, not x coordinates which are already transformed
+    const x1 = calculatedComponents.length > 0 ? 
+        calculatedComponents[0].x : 
+        positionCalc.maturityToX(0, props.mapDimensions.width);
+    
+    const x2 = calculatedComponents.length > 0 ? 
+        calculatedComponents[calculatedComponents.length - 1].x : 
+        positionCalc.maturityToX(0, props.mapDimensions.width);
     const y = positionCalc.visibilityToY(
         props.pipeline.visibility,
         props.mapDimensions.height,
     );
 
+    // Ensure we have valid dimensions for the box
+    if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
+        console.warn(`Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`);
+        return <></>;
+    }
+
+    // Log the calculated coordinates for debugging
+    console.log(`Pipeline ${props.pipeline.name} box: x1=${x1 - 15}, x2=${x2 + 15}, y=${y}`);
+    
     return (
         <>
             <ModernPipelineBoxSymbol
@@ -243,6 +259,8 @@ function ModernPipelineVersion2(
                 x1={x1 - 15}
                 x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
+                // Explicitly pass stroke for backward compatibility
+                stroke={props.mapStyleDefs.component.stroke}
             />
             {componentSymbols}
         </>
