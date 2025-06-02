@@ -80,13 +80,17 @@ function ModernPipeline(props: ModernPipelineProps): JSX.Element {
 
     // Ensure we have valid dimensions for the pipeline box
     if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
-        console.warn(`Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`);
+        console.warn(
+            `Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`,
+        );
         return <></>;
     }
 
     // Log the calculated coordinates for debugging
-    console.log(`Pipeline ${props.pipeline.name} box: x1=${x1}, x2=${x2}, y=${y}`);
-    
+    console.log(
+        `Pipeline ${props.pipeline.name} box: x1=${x1}, x2=${x2}, y=${y}`,
+    );
+
     return (
         <>
             <ModernPipelineBoxSymbol

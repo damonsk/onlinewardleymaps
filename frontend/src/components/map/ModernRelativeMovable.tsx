@@ -101,10 +101,16 @@ const ModernRelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
 
     function endDrag(): void {
         if (props.onMove) {
+            // For labels, we want integer coordinates
             const moved: MovedPosition = {
-                x: parseFloat(parseFloat(position.x.toString()).toFixed(2)),
-                y: parseFloat(parseFloat(position.y.toString()).toFixed(2)),
+                x: parseInt(position.x.toString(), 10),
+                y: parseInt(position.y.toString(), 10),
             };
+            console.log('ModernRelativeMovable endDrag:', {
+                id: props.id,
+                rawPosition: position,
+                movedResult: moved,
+            });
             props.onMove(moved);
         }
     }

@@ -16,6 +16,11 @@ import ModernRelativeMovable from './ModernRelativeMovable';
  * ModernComponentText Props
  * Uses UnifiedComponent directly instead of ComponentElement
  */
+interface MovedPosition {
+    x: number;
+    y: number;
+}
+
 interface ModernComponentTextProps {
     component: UnifiedComponent; // Using UnifiedComponent directly
     cx: string | number;
@@ -23,6 +28,7 @@ interface ModernComponentTextProps {
     styles: any;
     mutateMapText?: (newText: string) => void;
     mapText?: string;
+    onLabelMove?: (moved: MovedPosition) => void; // Optional callback for label movement
 }
 
 /**
@@ -37,6 +43,7 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
     styles,
     mutateMapText,
     mapText,
+    onLabelMove,
 }) => {
     const { enableRenameLabels } = useFeatureSwitches();
     const [editMode, setEditMode] = useState(false);
@@ -150,6 +157,30 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
             id={`${component.id}-text-movable`}
             x={getX()}
             y={getY()}
+            onMove={(moved) => {
+                // Log the move action to help debug
+                console.log('Label move:', {
+                    component: component.name,
+                    moved,
+                    currentLabelPos: { x: getX(), y: getY() },
+                    isPipelineComponent: component.pipeline,
+                });
+
+                // For pipeline components, we need to ensure we're passing relative offsets
+                // rather than absolute positions
+                const adjustedMoved = component.pipeline
+                    ? {
+                          // For pipeline components, we want relative positions from the component
+                          x: Math.round(moved.x),
+                          y: Math.round(moved.y),
+                      }
+                    : moved;
+
+                // Call the passed onLabelMove handler if available
+                if (onLabelMove) {
+                    onLabelMove(adjustedMoved);
+                }
+            }}
         >
             <ComponentTextSymbol
                 id={`${component.id}-text`}

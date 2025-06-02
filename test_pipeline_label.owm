@@ -1,0 +1,7 @@
+title Pipeline Test Map
+component Kettle [0.45, 0.57]
+pipeline Kettle
+{
+  component Campfire Kettle [0.50]
+  component Electric Kettle [0.63] label [-40, -30]
+}

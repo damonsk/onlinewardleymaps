@@ -3,7 +3,11 @@
 // This component reduces the prop drilling with a clean unified interface
 
 import React, { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { ReactSVGPanZoom, TOOL_NONE } from 'react-svg-pan-zoom';
+import {
+    ReactSVGPanZoom,
+    TOOL_NONE,
+    UncontrolledReactSVGPanZoom,
+} from 'react-svg-pan-zoom';
 import {
     EvolutionStages,
     MapCanvasDimensions,
@@ -18,8 +22,8 @@ import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
-import MapSVGContainer from './MapSVGContainer';
 import ModernUnifiedMapContent from './ModernUnifiedMapContent';
+import PositionCalculator from './PositionCalculator';
 
 interface ModernUnifiedMapCanvasProps {
     // Core unified data
@@ -115,6 +119,9 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const [enableZoomOnClick] = useState(true);
     const [tool, setTool] = useState(TOOL_NONE as any);
     const [scaleFactor, setScaleFactor] = useState(1);
+
+    // We'll keep the value state for reference but won't use it with UncontrolledReactSVGPanZoom
+    // This helps us track zoom level for other component needs
     const [value, setValue] = useState({
         version: 2 as const,
         mode: TOOL_NONE as any,
@@ -132,10 +139,11 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         miniatureOpen: false,
     });
 
-    // Update scale factor when zoom value changes
-    useEffect(() => {
-        setScaleFactor(value.a);
-    }, [value.a]);
+    // Handle zoom changes by updating our local scaleFactor state
+    const handleZoomChange = (newValue: any) => {
+        setValue(newValue);
+        setScaleFactor(newValue.a); // a is the scale factor
+    };
 
     // For modern interface, we don't need the complex interaction handlers
     // We'll use a simplified approach that focuses on the map interactions we need
@@ -164,10 +172,28 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const handleMapDoubleClick = (event: any) => {
         if (enableZoomOnClick) {
             // Handle double click to add new component
-            const pos = { x: event.x || 0, y: event.y || 0 };
+            const svgPos = { x: event.x || 0, y: event.y || 0 };
+
+            // Convert SVG coordinates to maturity/visibility values
+            const positionCalc = new PositionCalculator();
+            const maturity = parseFloat(
+                positionCalc.xToMaturity(svgPos.x, mapDimensions.width),
+            );
+            const visibility = parseFloat(
+                positionCalc.yToVisibility(svgPos.y, mapDimensions.height),
+            );
+
+            console.log('Double-click coordinates:', {
+                svgX: svgPos.x,
+                svgY: svgPos.y,
+                maturity,
+                visibility,
+            });
+
+            // Pass maturity and visibility values directly
             setNewComponentContext({
-                x: pos.x.toString(),
-                y: pos.y.toString(),
+                x: maturity.toFixed(2),
+                y: visibility.toFixed(2),
             });
         }
     };
@@ -199,42 +225,61 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     }, [value]);
 
+    // Get the correct background fill based on the map style
+    const fill = {
+        wardley: 'url(#wardleyGradient)',
+        colour: 'none',
+        plain: 'none',
+        handwritten: 'none',
+        dark: '#353347',
+    };
+
+    const svgBackground =
+        mapStyleDefs.className === 'wardley'
+            ? 'white'
+            : fill[mapStyleDefs.className as keyof typeof fill] || 'white';
+
     return (
         <div id="map-canvas">
-            <ReactSVGPanZoom
+            {/* Use UncontrolledReactSVGPanZoom directly instead of nested components */}
+            <UncontrolledReactSVGPanZoom
                 ref={Viewer}
-                width={mapCanvasDimensions.width}
-                height={mapCanvasDimensions.height}
-                value={value}
-                onChangeValue={setValue}
+                SVGBackground={svgBackground}
                 tool={tool}
-                onChangeTool={setTool}
+                width={mapCanvasDimensions.width + 90}
+                height={mapCanvasDimensions.height + 30}
+                // Removed value and onChangeValue props to prevent infinite update loop
+                // UncontrolledReactSVGPanZoom manages its state internally
+                detectAutoPan={false}
+                detectWheel={allowMapZoomMouseWheel}
                 miniatureProps={{
                     position: 'none',
-                    background: '#fff',
+                    background: '#eee',
                     width: 200,
                     height: 200,
                 }}
                 toolbarProps={{
                     position: 'none',
                 }}
-                detectAutoPan={false}
                 preventPanOutside={false}
                 onClick={handleMapClick}
                 onDoubleClick={handleMapDoubleClick}
                 onMouseMove={handleMapMouseMove}
+                onZoom={handleZoomChange}
                 scaleFactorOnWheel={allowMapZoomMouseWheel ? 1.1 : 1}
+                style={{
+                    userSelect: 'none',
+                    fontFamily: mapStyleDefs.fontFamily,
+                }}
             >
-                <MapSVGContainer
-                    viewerRef={Viewer}
-                    tool={tool}
-                    mapCanvasDimensions={mapCanvasDimensions}
-                    mapDimensions={mapDimensions}
-                    allowMapZoomMouseWheel={allowMapZoomMouseWheel}
-                    showMiniMap={false}
-                    mapStyleDefs={mapStyleDefs}
-                    onDoubleClick={handleMapDoubleClick}
-                    onZoom={(value) => setValue(value)}
+                <svg
+                    className={[mapStyleDefs.className, 'mapCanvas'].join(' ')}
+                    width={mapDimensions.width + 2}
+                    height={mapDimensions.height + 4}
+                    id="svgMap"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
                 >
                     <MapGridGroup
                         mapDimensions={mapDimensions}
@@ -273,8 +318,8 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         mapAnnotationsPresentation={mapAnnotationsPresentation}
                         mapMethods={wardleyMap.methods}
                     />
-                </MapSVGContainer>
-            </ReactSVGPanZoom>
+                </svg>
+            </UncontrolledReactSVGPanZoom>
             {showMapToolbar && (
                 <MapCanvasToolbar
                     shouldHideNav={() => {}}
@@ -282,13 +327,9 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                     tool={tool}
                     handleChangeTool={(event, newTool) => setTool(newTool)}
                     _fitToViewer={() => {
-                        if (Viewer.current) {
-                            Viewer.current.fitSelection(
-                                -35,
-                                -45,
-                                mapDimensions.width + 70,
-                                mapDimensions.height + 92,
-                            );
+                        if (Viewer.current && Viewer.current.fitToViewer) {
+                            // Use fitToViewer which is supported by UncontrolledReactSVGPanZoom
+                            Viewer.current.fitToViewer();
                         }
                     }}
                 />

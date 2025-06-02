@@ -234,6 +234,20 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                     )}
             </g>
 
+            {/* Render annotations box first (background) followed by pipelines and then components */}
+            {props.mapAnnotations && props.mapAnnotations.length > 0 && (
+                <ModernAnnotationBox
+                    mapStyleDefs={mapStyleDefs}
+                    mutateMapText={mutateMapText}
+                    mapText={mapText}
+                    annotations={props.mapAnnotations}
+                    position={props.mapAnnotationsPresentation}
+                    mapDimensions={mapDimensions}
+                    scaleFactor={scaleFactor}
+                    setHighlightLine={setHighlightLineDispatch}
+                />
+            )}
+
             <ModernMapPipelines
                 enableNewPipelines={props.enableNewPipelines || false}
                 mapElements={mapElements}
@@ -382,19 +396,6 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                             ))}
                         </React.Fragment>
                     ))}
-
-                {props.mapAnnotations &&
-                props.mapAnnotations.length === 0 ? null : (
-                    <ModernAnnotationBox
-                        mapStyleDefs={mapStyleDefs}
-                        mutateMapText={mutateMapText}
-                        mapText={mapText}
-                        annotations={props.mapAnnotations}
-                        position={props.mapAnnotationsPresentation}
-                        mapDimensions={mapDimensions}
-                        scaleFactor={scaleFactor}
-                    />
-                )}
             </g>
         </g>
     );

@@ -127,11 +127,15 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
     function addNewComponent() {
         if (value.trim().length === 0 || !newComponentContext) return;
         setShowAdd(false);
+
+        // Use the coordinates directly - they're already in the correct format
         const componentString = icons[typeToUse].template(
             value.trim(),
             newComponentContext.y,
             newComponentContext.x,
         );
+
+        // Add the new component to the map text
         mutateMapText(mapText + `\r\n${componentString}`);
         setValue('');
     }

@@ -56,17 +56,18 @@ const ModernMapPipelines: React.FC<ModernMapPipelinesProps> = ({
 
     // If pipelines are provided directly, use those, otherwise get from mapElements
     const pipelinesToRender = pipelines || mapElements.getMapPipelines();
-    
+
     // Log the pipeline data for debugging
     if (pipelinesToRender.length === 0) {
         console.warn('No pipelines to render');
     } else {
-        console.log(`Rendering ${pipelinesToRender.length} pipelines:`, 
-            pipelinesToRender.map(p => ({
-                name: p.name, 
-                visibility: p.visibility, 
-                components: p.components?.length || 0
-            }))
+        console.log(
+            `Rendering ${pipelinesToRender.length} pipelines:`,
+            pipelinesToRender.map((p) => ({
+                name: p.name,
+                visibility: p.visibility,
+                components: p.components?.length || 0,
+            })),
         );
     }
 

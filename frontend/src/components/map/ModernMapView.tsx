@@ -89,12 +89,15 @@ export const ModernMapView: React.FunctionComponent<ModernMapViewProps> = (
         setQuickAddTemplate(() => () => quickAdd.template);
     };
 
+    // We ignore the position parameter since we don't need it
     const handleMapCanvasClick = () => {
         if (featureSwitches.enableQuickAdd == false) return;
         if (quickAddInProgress) {
+            // When in quick add mode, execute the template
             quickAddTemplate();
             setQuickAddInProgress(false);
         }
+        // Note: The actual coordinate handling for double-click is now in ModernUnifiedMapCanvas
     };
 
     return (
