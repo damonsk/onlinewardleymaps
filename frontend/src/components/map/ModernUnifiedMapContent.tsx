@@ -234,6 +234,18 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                     )}
             </g>
 
+            <ModernMapPipelines
+                enableNewPipelines={props.enableNewPipelines || false}
+                mapElements={mapElements}
+                mapDimensions={mapDimensions}
+                mapText={mapText}
+                mutateMapText={mutateMapText}
+                mapStyleDefs={mapStyleDefs}
+                setHighlightLine={setHighlightLineDispatch}
+                clicked={clicked}
+                scaleFactor={scaleFactor}
+            />
+
             <g id="elements">
                 {mapElements.getMergedElements &&
                     mapElements
@@ -335,18 +347,6 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                             </ModernMapComponent>
                         ))}
             </g>
-
-            <ModernMapPipelines
-                enableNewPipelines={props.enableNewPipelines || false}
-                mapElements={mapElements}
-                mapDimensions={mapDimensions}
-                mapText={mapText}
-                mutateMapText={mutateMapText}
-                mapStyleDefs={mapStyleDefs}
-                setHighlightLine={setHighlightLineDispatch}
-                clicked={clicked}
-                scaleFactor={scaleFactor}
-            />
 
             <g id="notes">
                 {props.mapNotes.map((n: any, i: number) => (
