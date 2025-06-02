@@ -228,9 +228,9 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     // Get the correct background fill based on the map style
     const fill = {
         wardley: 'url(#wardleyGradient)',
-        colour: 'none',
-        plain: 'none',
-        handwritten: 'none',
+        colour: 'white',
+        plain: 'white',
+        handwritten: 'white',
         dark: '#353347',
     };
 
@@ -245,6 +245,7 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
                 SVGBackground={svgBackground}
+                background='white'
                 tool={tool}
                 width={mapCanvasDimensions.width + 90}
                 height={mapCanvasDimensions.height + 30}

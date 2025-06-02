@@ -8,3 +8,4 @@
 - moveable annotations with many coords ends up setting both to the same moved position. This needs to distinguish which instance was moved. Works for the first one.
 - It's possible a evolved componenet to be included in the modkey + click fluid linking. This shouldn't happen.
 - Improvement - modify decorators and be explicit on buy = bool, build = bool, outsource = bool, similar to market and ecosystem. Remove the use of strings.
+- backgrounds are broken,
