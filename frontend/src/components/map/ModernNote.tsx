@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapNotes } from '../../types/base';
 import { MapTheme } from '../../constants/mapstyles';
+import { MapNotes } from '../../types/base';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import ModernMovable from './ModernMovable';
 import PositionCalculator from './PositionCalculator';
@@ -37,7 +37,7 @@ const ModernNote: React.FC<ModernNoteProps> = ({
     mutateMapText,
     mapStyleDefs,
     setHighlightLine,
-    scaleFactor
+    scaleFactor,
 }) => {
     const positionCalc = new PositionCalculator();
     const positionUpdater = new LineNumberPositionUpdater(
@@ -48,26 +48,17 @@ const ModernNote: React.FC<ModernNoteProps> = ({
     );
 
     const x = (): number =>
-        positionCalc.maturityToX(
-            note.maturity,
-            mapDimensions.width,
-        );
-        
+        positionCalc.maturityToX(note.maturity, mapDimensions.width);
+
     const y = (): number =>
-        positionCalc.visibilityToY(
-            note.visibility,
-            mapDimensions.height,
-        );
+        positionCalc.visibilityToY(note.visibility, mapDimensions.height);
 
     function endDrag(moved: MovedPosition): void {
         const visibility = positionCalc.yToVisibility(
             moved.y,
             mapDimensions.height,
         );
-        const maturity = positionCalc.xToMaturity(
-            moved.x,
-            mapDimensions.width,
-        );
+        const maturity = positionCalc.xToMaturity(moved.x, mapDimensions.width);
         positionUpdater.update(
             { param1: parseFloat(visibility), param2: parseFloat(maturity) },
             note.text,

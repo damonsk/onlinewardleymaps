@@ -14,11 +14,9 @@ interface ModernAnnotationElementSymbolProps {
  *
  * This component renders an annotation element number in a circle
  */
-const ModernAnnotationElementSymbol: React.FC<ModernAnnotationElementSymbolProps> = ({
-    id,
-    annotation,
-    styles,
-}) => {
+const ModernAnnotationElementSymbol: React.FC<
+    ModernAnnotationElementSymbolProps
+> = ({ id, annotation, styles }) => {
     return (
         <>
             <circle

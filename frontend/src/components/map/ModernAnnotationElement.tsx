@@ -1,6 +1,6 @@
 import React from 'react';
-import { MapAnnotation, MapAnnotations } from '../../types/base';
 import { MapTheme } from '../../constants/mapstyles';
+import { MapAnnotation, MapAnnotations } from '../../types/base';
 import ModernAnnotationElementSymbol from '../symbols/ModernAnnotationElementSymbol';
 import ModernMovable from './ModernMovable';
 import PositionCalculator from './PositionCalculator';
@@ -40,21 +40,15 @@ const ModernAnnotationElement: React.FC<ModernAnnotationElementProps> = ({
     mapText,
     occuranceIndex,
     scaleFactor,
-    mapStyleDefs
+    mapStyleDefs,
 }) => {
     const positionCalc = new PositionCalculator();
-    
+
     const x = (): number =>
-        positionCalc.maturityToX(
-            occurance.maturity,
-            mapDimensions.width,
-        );
-        
+        positionCalc.maturityToX(occurance.maturity, mapDimensions.width);
+
     const y = (): number =>
-        positionCalc.visibilityToY(
-            occurance.visibility,
-            mapDimensions.height,
-        );
+        positionCalc.visibilityToY(occurance.visibility, mapDimensions.height);
 
     function endDrag(moved: MovedPosition): void {
         mutateMapText(
@@ -64,9 +58,8 @@ const ModernAnnotationElement: React.FC<ModernAnnotationElementProps> = ({
                     if (
                         line
                             .replace(/\s/g, '')
-                            .indexOf(
-                                'annotation' + annotation.number + '[',
-                            ) !== -1
+                            .indexOf('annotation' + annotation.number + '[') !==
+                        -1
                     ) {
                         if (line.replace(/\s/g, '').indexOf(']]') > -1) {
                             const extractedOccurances = line

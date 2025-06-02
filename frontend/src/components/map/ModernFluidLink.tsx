@@ -34,20 +34,22 @@ const ModernFluidLink: React.FC<ModernFluidLinkProps> = ({
     mapDimensions,
     startElement,
     origClick,
-    scaleFactor = 1
+    scaleFactor = 1,
 }) => {
     const { height, width } = mapDimensions;
     const positionCalc = new PositionCalculator();
-    
-    const startMaturity = startElement.maturity ?? startElement.evolveMaturity ?? 0;
+
+    const startMaturity =
+        startElement.maturity ?? startElement.evolveMaturity ?? 0;
     const x1 = positionCalc.maturityToX(startMaturity, width);
-    
-    const y1 = positionCalc.visibilityToY(
-        typeof startElement.visibility === 'string'
-            ? parseFloat(startElement.visibility)
-            : startElement.visibility,
-        height
-    ) + (startElement.offsetY ?? 0);
+
+    const y1 =
+        positionCalc.visibilityToY(
+            typeof startElement.visibility === 'string'
+                ? parseFloat(startElement.visibility)
+                : startElement.visibility,
+            height,
+        ) + (startElement.offsetY ?? 0);
 
     const [position, setPosition] = useState<Position>({
         x: x1,
@@ -59,8 +61,10 @@ const ModernFluidLink: React.FC<ModernFluidLinkProps> = ({
         (e: Event) => {
             const mouseEvent = e as globalThis.MouseEvent;
             setPosition((position) => {
-                const xDiff = (position.coords.x! - mouseEvent.pageX) / scaleFactor;
-                const yDiff = (position.coords.y! - mouseEvent.pageY) / scaleFactor;
+                const xDiff =
+                    (position.coords.x! - mouseEvent.pageX) / scaleFactor;
+                const yDiff =
+                    (position.coords.y! - mouseEvent.pageY) / scaleFactor;
                 return {
                     x: position.x - xDiff,
                     y: position.y - yDiff,

@@ -43,7 +43,7 @@ const ModernAttitude: React.FC<ModernAttitudeProps> = ({
     mapText,
     mutateMapText,
     mapStyleDefs,
-    scaleFactor
+    scaleFactor,
 }) => {
     const { height, width } = mapDimensions;
     const type = attitude.attitude;
@@ -54,7 +54,7 @@ const ModernAttitude: React.FC<ModernAttitudeProps> = ({
         mutateMapText,
         [ExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher],
     );
-    
+
     const x = positionCalc.maturityToX(attitude.maturity, width);
     const x2 = positionCalc.maturityToX(attitude.maturity2, width);
     const y = positionCalc.visibilityToY(attitude.visibility, height);
@@ -67,7 +67,7 @@ const ModernAttitude: React.FC<ModernAttitudeProps> = ({
         const maturity = parseFloat(positionCalc.xToMaturity(moved.x, width));
         let visibility2 = attitude.visibility2;
         let maturity2 = attitude.maturity2;
-        
+
         if (attitude.visibility < visibility) {
             visibility2 =
                 visibility - attitude.visibility + attitude.visibility2;
