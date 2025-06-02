@@ -13,14 +13,14 @@ import ModernSubMapSymbol from '../symbols/ModernSubMapSymbol';
 import Anchor from './Anchor';
 import AnnotationBox from './AnnotationBox';
 import AnnotationElement from './AnnotationElement';
-import Attitude from './Attitude';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
-import FluidLink from './FluidLink';
 import MapAccelerator from './MapAccelerator';
 import MapComponent from './MapComponent';
+import ModernAttitude from './ModernAttitude';
+import ModernFluidLink from './ModernFluidLink';
 import ModernMapPipelines from './ModernMapPipelines';
-import Note from './Note';
+import ModernNote from './ModernNote';
 
 // Phase 4: Component Interface Modernization
 // All adapter functions have been removed
@@ -102,7 +102,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             <g id="attitudes">
                 {props.mapAttitudes &&
                     props.mapAttitudes.map((a: any, i: number) => (
-                        <Attitude
+                        <ModernAttitude
                             key={i}
                             attitude={a}
                             mapDimensions={mapDimensions}
@@ -191,7 +191,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             <g id="fluidLinks">
                 {props.mapElementsClicked &&
                     props.mapElementsClicked.map((current: any, i: number) => (
-                        <FluidLink
+                        <ModernFluidLink
                             key={`fluid-${i}`}
                             mapStyleDefs={mapStyleDefs}
                             mapDimensions={mapDimensions}
@@ -347,7 +347,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
             <g id="notes">
                 {props.mapNotes.map((n: any, i: number) => (
-                    <Note
+                    <ModernNote
                         key={i}
                         mapDimensions={mapDimensions}
                         note={n}

@@ -3,7 +3,7 @@ import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
 import { UnifiedComponent } from '../../types/unified/components';
 import ModernLinkSymbol from '../symbols/ModernLinkSymbol';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernFluidLinkProps {
     mapStyleDefs: MapTheme;
@@ -37,7 +37,7 @@ const ModernFluidLink: React.FC<ModernFluidLinkProps> = ({
     scaleFactor = 1,
 }) => {
     const { height, width } = mapDimensions;
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
 
     const startMaturity =
         startElement.maturity ?? startElement.evolveMaturity ?? 0;

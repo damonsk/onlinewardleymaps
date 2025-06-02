@@ -2,9 +2,9 @@ import React from 'react';
 import { MapTheme } from '../../constants/mapstyles';
 import ModernAttitudeSymbol from '../symbols/ModernAttitudeSymbol';
 import ModernMovable from './ModernMovable';
-import PositionCalculator from './PositionCalculator';
-import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoordsMatcher';
-import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
+import ModernPositionCalculator from './ModernPositionCalculator';
+import { ModernExistingManyCoordsMatcher } from './positionUpdaters/ModernExistingManyCoordsMatcher';
+import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 
 interface ModernAttitudeProps {
@@ -47,12 +47,12 @@ const ModernAttitude: React.FC<ModernAttitudeProps> = ({
 }) => {
     const { height, width } = mapDimensions;
     const type = attitude.attitude;
-    const positionCalc = new PositionCalculator();
-    const positionUpdater = new LineNumberPositionUpdater(
+    const positionCalc = new ModernPositionCalculator();
+    const positionUpdater = new ModernLineNumberPositionUpdater(
         type,
         mapText,
         mutateMapText,
-        [ExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher],
+        [ModernExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher],
     );
 
     const x = positionCalc.maturityToX(attitude.maturity, width);

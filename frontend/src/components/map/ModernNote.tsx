@@ -4,9 +4,9 @@ import { MapTheme } from '../../constants/mapstyles';
 import { MapNotes } from '../../types/base';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import ModernMovable from './ModernMovable';
-import PositionCalculator from './PositionCalculator';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
+import ModernPositionCalculator from './ModernPositionCalculator';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
+import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 interface MovedPosition {
@@ -39,12 +39,12 @@ const ModernNote: React.FC<ModernNoteProps> = ({
     setHighlightLine,
     scaleFactor,
 }) => {
-    const positionCalc = new PositionCalculator();
-    const positionUpdater = new LineNumberPositionUpdater(
+    const positionCalc = new ModernPositionCalculator();
+    const positionUpdater = new ModernLineNumberPositionUpdater(
         'note',
         mapText,
         mutateMapText,
-        [ExistingCoordsMatcher, NotDefinedCoordsMatcher],
+        [ModernExistingCoordsMatcher, NotDefinedCoordsMatcher],
     );
 
     const x = (): number =>
