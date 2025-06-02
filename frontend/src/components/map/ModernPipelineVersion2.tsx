@@ -156,10 +156,15 @@ function ModernPipelineVersion2(
                 pc.maturity,
                 props.mapDimensions.width,
             );
-            const y = positionCalc.visibilityToY(
+            // Calculate base Y position of the pipeline
+            const baseY = positionCalc.visibilityToY(
                 props.pipeline.visibility,
                 props.mapDimensions.height,
             );
+            
+            // Center components vertically within the pipeline box (11px offset for 22px height)
+            const y = baseY + 11;
+            
             return {
                 pipelineComponent: pc,
                 x,
