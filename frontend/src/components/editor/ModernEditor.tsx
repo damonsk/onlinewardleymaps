@@ -79,6 +79,36 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
         setEditorHeight(getHeight());
     }, [hideNav]);
 
+    // Highlight the selected line by moving the cursor to it
+    useEffect(() => {
+        const gotoLine = (line: number) => {
+            const reactAceComponent = aceEditorRef.current;
+            if (reactAceComponent !== null && line > 0) {
+                const editor = reactAceComponent.editor;
+                editor.gotoLine(line, 0, true);
+            }
+        };
+        gotoLine(highlightLine);
+    }, [highlightLine]);
+
+    // Add error indicators to the gutter for error lines
+    useEffect(() => {
+        const reactAceComponent = aceEditorRef.current;
+        if (reactAceComponent !== null) {
+            const editor = reactAceComponent.editor;
+            // Clear all previous error decorations
+            for (let x = 0; x < editor.session.getLength(); x++) {
+                editor.session.removeGutterDecoration(x, 'ace_error');
+            }
+            // Add error decorations to the specified error lines
+            if (errorLine.length > 0) {
+                errorLine.forEach((e: number) =>
+                    editor.session.addGutterDecoration(e, 'ace_error'),
+                );
+            }
+        }
+    }, [errorLine]);
+
     const completions = [
         ...wardleyMap.components.map((c: any) => ({
             caption: c.name,
@@ -176,20 +206,6 @@ export const ModernEditor: React.FunctionComponent<ModernEditorProps> = ({
                     type: 'error',
                     text: 'Map element not found or invalid syntax',
                 }))}
-                markers={
-                    highlightLine
-                        ? [
-                              {
-                                  startRow: highlightLine - 1,
-                                  startCol: 0,
-                                  endRow: highlightLine - 1,
-                                  endCol: 1000,
-                                  className: 'ace_active-line',
-                                  type: 'fullLine',
-                              },
-                          ]
-                        : []
-                }
             />
         </div>
     );

@@ -75,8 +75,11 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
     // Create a dispatcher wrapper to handle prop type conflicts
     const setHighlightLineDispatch = (value: any) => {
         if (typeof value === 'function') {
+            // If we're given a function, evaluate it
             setHighlightLine(value(0));
         } else {
+            // Simply set the highlight line to the provided value
+            // The cursor will be moved to this line in the editor
             setHighlightLine(value);
         }
     };

@@ -61,6 +61,7 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
         e.stopPropagation();
 
         if (component.line) {
+            // Always set the highlight line to move the cursor to this line
             setHighlightLine(component.line);
         }
 
@@ -173,9 +174,12 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
                     scaleFactor={scaleFactor}
                     mapText={mapText}
                     mutateMapText={mutateMapText}
-                    onClick={() =>
-                        component.line && setHighlightLine(component.line)
-                    }
+                    onClick={() => {
+                        if (component.line) {
+                            // Simply set the highlight line to move the cursor
+                            setHighlightLine(component.line);
+                        }
+                    }}
                 />
             </g>
         </>
