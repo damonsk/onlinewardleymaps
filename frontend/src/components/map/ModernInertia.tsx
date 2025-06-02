@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import ModernInertiaSymbol from '../symbols/ModernInertiaSymbol';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernInertiaProps {
     maturity: number;
@@ -20,7 +20,7 @@ const ModernInertia: React.FC<ModernInertiaProps> = ({
     visibility,
     mapDimensions,
 }) => {
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
     const x = positionCalc.maturityToX(maturity, mapDimensions.width);
     const y = positionCalc.visibilityToY(
         typeof visibility === 'string' ? parseFloat(visibility) : visibility,

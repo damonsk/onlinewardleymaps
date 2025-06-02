@@ -2,6 +2,7 @@ import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
+import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import ModernMovable from './ModernMovable';
@@ -25,6 +26,7 @@ interface ModernMapComponentProps {
     mapStyleDefs: MapTheme;
     setHighlightLine: (line: number) => void;
     scaleFactor: number;
+    children?: React.ReactNode;
 }
 
 /**
@@ -40,16 +42,19 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
     mapStyleDefs,
     setHighlightLine,
     scaleFactor,
+    children,
 }) => {
+    const isModKeyPressed = useModKeyPressedConsumer();
     const calculatedPosition = new ModernPositionCalculator();
     const posX = calculatedPosition.maturityToX(
         component.maturity,
         mapDimensions.width,
     );
-    const posY = calculatedPosition.visibilityToY(
-        component.visibility,
-        mapDimensions.height,
-    );
+    const posY =
+        calculatedPosition.visibilityToY(
+            component.visibility,
+            mapDimensions.height,
+        ) + (component.offsetY ? component.offsetY : 0);
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -82,49 +87,77 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
 
         // Find and replace the component position in the map text
         const lines = mapText.split('\n');
-        const updatedLines = lines.map((line) => {
-            // Check if this is our component line
-            const isComponent =
-                line.includes(`component ${component.name}`) ||
-                line.includes(`component ${component.name} [`);
-
-            if (isComponent) {
-                // Replace coordinates with new values
-                return line.replace(
-                    /\[(.?|.+?)\]/g,
-                    `[${newMaturity.toFixed(2)}, ${newVisibility.toFixed(2)}]`,
+        const updatedLines = lines.map((line, index) => {
+            // Only update the specific line that matches this component's line number
+            if (index + 1 === component.line) {
+                // Check for component with exact name match using regex to avoid partial matches
+                const regex = new RegExp(
+                    `component\\s+${component.name}\\b`,
+                    'i',
                 );
+                if (regex.test(line)) {
+                    // Handle lines with or without label differently
+                    if (line.includes('label')) {
+                        // Split the line at "label" to separate component coordinates from label coordinates
+                        const parts = line.split(/\blabel\b/);
+                        // Only replace the first set of coordinates (component position)
+                        const updatedFirstPart = parts[0].replace(
+                            /\[(.?|.+?)\]/,
+                            `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
+                        );
+                        // Rejoin with the label part unchanged
+                        return updatedFirstPart + 'label' + parts[1];
+                    } else {
+                        // No label in the line, safe to replace the only coordinate pair
+                        return line.replace(
+                            /\[(.?|.+?)\]/,
+                            `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
+                        );
+                    }
+                }
             }
             return line;
         });
 
         const newText = updatedLines.join('\n');
         mutateMapText(newText);
-
-        mutateMapText(newText);
     };
 
     return (
-        <ModernMovable
-            id={component.id}
-            x={posX}
-            y={posY}
-            onMove={updatePosition}
-        >
-            <g
-                id={component.id}
-                onClick={handleClick}
-                style={{ cursor: 'pointer' }}
+        <>
+            <ModernMovable
+                id={`element_${component.id}`}
+                x={posX}
+                y={posY}
+                onMove={updatePosition}
+                fixedY={component.evolved}
+                fixedX={false}
+                shouldShowMoving={true}
+                isModKeyPressed={isModKeyPressed}
+                scaleFactor={scaleFactor}
             >
-                {component.inertia && (
+                <g
+                    id={component.id}
+                    onClick={handleClick}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {children}
+                </g>
+            </ModernMovable>
+
+            {component.inertia &&
+                !component.evolved &&
+                component.evolving === false && (
                     <Inertia
                         maturity={component.maturity}
                         visibility={component.visibility}
                         mapDimensions={mapDimensions}
                     />
                 )}
-                {/* Use ModernComponentText if available, otherwise adapt to ComponentText interface */}
+
+            <g transform={`translate(${posX},${posY})`}>
                 <ComponentText
+                    id={`component_text_${component.id}`}
                     element={{
                         id: component.id,
                         name: component.name,
@@ -140,9 +173,12 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
                     scaleFactor={scaleFactor}
                     mapText={mapText}
                     mutateMapText={mutateMapText}
+                    onClick={() =>
+                        component.line && setHighlightLine(component.line)
+                    }
                 />
             </g>
-        </ModernMovable>
+        </>
     );
 };
 

@@ -80,6 +80,8 @@ If an issue occurs:
 | ModernComponentLink | Complete | No issues found | June 2, 2025 |
 | ModernAnchor | Complete | No issues found | June 2, 2025 |
 | ModernMapComponent | Complete | No issues found | June 2, 2025 |
+| ModernInertia | Complete | No issues found | June 2, 2025 |
+| ModernComponentText | Complete | No issues found | June 2, 2025 |
 | ModernDefaultPositionUpdater | Partially Integrated | Used in ModernAnnotationBox, ModernAnchor | June 2, 2025 |
 | ModernLineNumberPositionUpdater | Partially Integrated | Used in ModernAttitude, ModernNote | June 2, 2025 |
 | ModernSingletonPositionUpdater | Partially Integrated | Used in ModernAnnotationBox | June 2, 2025 |
@@ -87,4 +89,3 @@ If an issue occurs:
 | ModernExistingManyCoordsMatcher | Partially Integrated | Used in several components | June 2, 2025 |
 | ModernNotDefinedCoordsMatcher | Complete | No issues found | June 2, 2025 |
 | ModernEvolvingComponentLink | Complete | No issues found | June 2, 2025 |
-| ModernInertia | Not Started | | |

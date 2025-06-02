@@ -10,15 +10,15 @@ import ModernEcosystemSymbol from '../symbols/ModernEcosystemSymbol';
 import ModernMarketSymbol from '../symbols/ModernMarketSymbol';
 import ModernPipelineComponentSymbol from '../symbols/ModernPipelineComponentSymbol';
 import ModernSubMapSymbol from '../symbols/ModernSubMapSymbol';
-import Anchor from './Anchor';
+import MapAccelerator from './MapAccelerator';
+import ModernAnchor from './ModernAnchor';
 import ModernAnnotationBox from './ModernAnnotationBox';
 import ModernAnnotationElement from './ModernAnnotationElement';
-import ComponentLink from './ComponentLink';
-import ModernEvolvingComponentLink from './ModernEvolvingComponentLink';
-import MapAccelerator from './MapAccelerator';
-import MapComponent from './MapComponent';
 import ModernAttitude from './ModernAttitude';
+import ModernComponentLink from './ModernComponentLink';
+import ModernEvolvingComponentLink from './ModernEvolvingComponentLink';
 import ModernFluidLink from './ModernFluidLink';
+import ModernMapComponent from './ModernMapComponent';
 import ModernMapPipelines from './ModernMapPipelines';
 import ModernNote from './ModernNote';
 
@@ -118,7 +118,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                 {props.links.map((current: any) => (
                     <g id={current.name} key={current.name}>
                         {current.links.map((l: any, i: number) => (
-                            <ComponentLink
+                            <ModernComponentLink
                                 mapStyleDefs={mapStyleDefs}
                                 key={i}
                                 mapDimensions={mapDimensions}
@@ -176,7 +176,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
             <g id="anchors">
                 {mapAnchors.map((a: UnifiedComponent, i: number) => (
-                    <Anchor
+                    <ModernAnchor
                         key={i}
                         mapDimensions={mapDimensions}
                         anchor={a}
@@ -237,12 +237,11 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                         .getMergedElements()
                         .filter((c: UnifiedComponent) => c.type !== 'anchor')
                         .map((el: UnifiedComponent, i: number) => (
-                            <MapComponent
+                            <ModernMapComponent
                                 key={i}
-                                keyword={el.type}
                                 launchUrl={launchUrl}
                                 mapDimensions={mapDimensions}
-                                element={passComponent(el)}
+                                component={passComponent(el)}
                                 mapText={mapText}
                                 mutateMapText={mutateMapText}
                                 mapStyleDefs={mapStyleDefs}
@@ -251,6 +250,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                             >
                                 {el.type === 'component' && !el.pipeline && (
                                     <ModernComponentSymbol
+                                        id={`element_circle_${el.id}`}
                                         styles={mapStyleDefs.component}
                                         component={el}
                                         onClick={(e: MouseEvent<SVGElement>) =>
@@ -264,7 +264,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
                                 {el.pipeline && (
                                     <ModernPipelineComponentSymbol
-                                        id={'element_square_' + el.id}
+                                        id={`element_square_${el.id}`}
                                         styles={mapStyleDefs.component}
                                         component={el}
                                         onClick={() =>
@@ -279,7 +279,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                 {(el.decorators?.ecosystem ||
                                     el.type === 'ecosystem') && (
                                     <ModernEcosystemSymbol
-                                        id={'ecosystem_circle_' + el.id}
+                                        id={`ecosystem_circle_${el.id}`}
                                         styles={mapStyleDefs.component}
                                         component={el}
                                         onClick={(e: MouseEvent<SVGGElement>) =>
@@ -294,7 +294,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                 {(el.decorators?.market ||
                                     el.type === 'market') && (
                                     <ModernMarketSymbol
-                                        id={'market_circle_' + el.id}
+                                        id={`market_circle_${el.id}`}
                                         styles={mapStyleDefs.component}
                                         component={el}
                                         onClick={(e: MouseEvent<SVGElement>) =>
@@ -329,7 +329,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                         }
                                     />
                                 )}
-                            </MapComponent>
+                            </ModernMapComponent>
                         ))}
             </g>
 

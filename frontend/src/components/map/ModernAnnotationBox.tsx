@@ -76,13 +76,20 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
         if (elem !== null) elem.parentNode?.removeChild(elem);
 
         const ctx = document.getElementById(
-                'movable_annotationsBox',
-            ) as unknown as SVGGraphicsElement,
-            SVGRect = ctx.getBBox(),
-            rect = document.createElementNS(
-                'http://www.w3.org/2000/svg',
-                'rect',
-            );
+            'movable_annotationsBox',
+        ) as unknown as SVGGraphicsElement;
+
+        // Add null check before calling getBBox()
+        if (!ctx) {
+            console.warn('Element with ID "movable_annotationsBox" not found');
+            return;
+        }
+
+        const SVGRect = ctx.getBBox();
+        const rect = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'rect',
+        );
 
         rect.setAttribute('x', (SVGRect.x - 2).toString());
         rect.setAttribute('id', 'annotationsBoxWrap');
@@ -123,21 +130,23 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
             y={y()}
             scaleFactor={props.scaleFactor}
         >
-            <ModernAnnotationBoxSymbol
-                id={'annotationsBoxTextContainer'}
-                dy={0}
-                x={2}
-                theme={props.mapStyleDefs.annotation}
-            >
-                {props.annotations &&
-                    props.annotations.map((a, i) => (
-                        <ModernAnnotationTextSymbol
-                            key={i}
-                            annotation={a}
-                            styles={props.mapStyleDefs.annotation}
-                        />
-                    ))}
-            </ModernAnnotationBoxSymbol>
+            <g id="movable_annotationsBox">
+                <ModernAnnotationBoxSymbol
+                    id={'annotationsBoxTextContainer'}
+                    dy={0}
+                    x={2}
+                    theme={props.mapStyleDefs.annotation}
+                >
+                    {props.annotations &&
+                        props.annotations.map((a, i) => (
+                            <ModernAnnotationTextSymbol
+                                key={i}
+                                annotation={a}
+                                styles={props.mapStyleDefs.annotation}
+                            />
+                        ))}
+                </ModernAnnotationBoxSymbol>
+            </g>
         </ModernMovable>
     );
 };

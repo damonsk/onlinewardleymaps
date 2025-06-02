@@ -4,7 +4,7 @@ import { rename } from '../../constants/rename';
 import { UnifiedComponent } from '../../types/unified';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
-import RelativeMovable from './RelativeMovable';
+import ModernRelativeMovable from './ModernRelativeMovable';
 
 // Interface not used in this version but retained for future position updates
 // interface MovedPosition {
@@ -146,7 +146,7 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
     );
 
     const renderText = () => (
-        <RelativeMovable
+        <ModernRelativeMovable
             id={`${component.id}-text-movable`}
             x={getX()}
             y={getY()}
@@ -162,7 +162,7 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
                 }}
                 onClick={handleDoubleClick}
             />
-        </RelativeMovable>
+        </ModernRelativeMovable>
     );
 
     return <>{editMode ? renderEditMode() : renderText()}</>;
