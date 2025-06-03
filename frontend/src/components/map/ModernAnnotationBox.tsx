@@ -70,6 +70,7 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
         );
 
     // Function to handle dragging the entire annotation box
+    // Now handles both the box position and updates label position
     function endDrag(moved: MovedPosition): void {
         const visibility = parseFloat(
             positionCalc.yToVisibility(moved.y, props.mapDimensions.height),
@@ -77,19 +78,12 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
         const maturity = parseFloat(
             positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
         );
+        
+        // Update both the box position and the label position in one operation
+        // First update using the position updater
         positionUpdater.update({ param1: visibility, param2: maturity }, '');
-    }
-
-    // Function to handle dragging just the text label
-    function endDragForLabel(moved: MovedPosition): void {
-        // Only update the label position, not the entire annotation box
-        const visibility = parseFloat(
-            positionCalc.yToVisibility(moved.y, props.mapDimensions.height),
-        );
-        const maturity = parseFloat(
-            positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
-        );
-
+        
+        // Then update the annotation text coordinates in the mapText
         props.mutateMapText(
             props.mapText
                 .split('\n')
@@ -166,6 +160,8 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
         redraw,
     ]);
 
+    // Simplified structure - using a single Movable component
+    // Instead of nesting ModernRelativeMovable inside ModernMovable
     return (
         <ModernMovable
             id={'annotationsBox'}
@@ -178,31 +174,21 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
         >
             <g id="movable_annotationsBox">
                 {/* The annotation box rect will be inserted here via redraw() */}
-                <ModernRelativeMovable
-                    id={'annotationsBoxText'}
-                    onMove={endDragForLabel}
-                    fixedY={false}
-                    fixedX={false}
-                    x={0}
-                    y={0}
-                    scaleFactor={props.scaleFactor}
+                <ModernAnnotationBoxSymbol
+                    id={'annotationsBoxTextContainer'}
+                    dy={0}
+                    x={2}
+                    theme={props.mapStyleDefs.annotation}
                 >
-                    <ModernAnnotationBoxSymbol
-                        id={'annotationsBoxTextContainer'}
-                        dy={0}
-                        x={2}
-                        theme={props.mapStyleDefs.annotation}
-                    >
-                        {props.annotations &&
-                            props.annotations.map((a, i) => (
-                                <ModernAnnotationTextSymbol
-                                    key={i}
-                                    annotation={a}
-                                    styles={props.mapStyleDefs.annotation}
-                                />
-                            ))}
-                    </ModernAnnotationBoxSymbol>
-                </ModernRelativeMovable>
+                    {props.annotations &&
+                        props.annotations.map((a, i) => (
+                            <ModernAnnotationTextSymbol
+                                key={i}
+                                annotation={a}
+                                styles={props.mapStyleDefs.annotation}
+                            />
+                        ))}
+                </ModernAnnotationBoxSymbol>
             </g>
         </ModernMovable>
     );
