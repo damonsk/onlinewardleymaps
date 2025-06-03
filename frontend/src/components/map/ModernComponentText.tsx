@@ -29,6 +29,7 @@ interface ModernComponentTextProps {
     mutateMapText?: (newText: string) => void;
     mapText?: string;
     onLabelMove?: (moved: MovedPosition) => void; // Optional callback for label movement
+    scaleFactor?: number; // Added scale factor for zooming
 }
 
 /**
@@ -44,6 +45,7 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
     mutateMapText,
     mapText,
     onLabelMove,
+    scaleFactor = 1, // Default to 1 if not provided
 }) => {
     const { enableRenameLabels } = useFeatureSwitches();
     const [editMode, setEditMode] = useState(false);
@@ -157,6 +159,7 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
             id={`${component.id}-text-movable`}
             x={getX()}
             y={getY()}
+            scaleFactor={scaleFactor} // Pass scale factor to ModernRelativeMovable
             onMove={(moved) => {
                 // Log the move action to help debug
                 console.log('Label move:', {
@@ -164,6 +167,7 @@ const ModernComponentText: React.FC<ModernComponentTextProps> = ({
                     moved,
                     currentLabelPos: { x: getX(), y: getY() },
                     isPipelineComponent: component.pipeline,
+                    scaleFactor,
                 });
 
                 // For pipeline components, we need to ensure we're passing relative offsets

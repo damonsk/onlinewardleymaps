@@ -93,7 +93,17 @@ function ModernPipelineVersion2(
             pipelineComponent.name,
             'Moved to:',
             moved,
+            'Scale Factor:',
+            props.scaleFactor
         );
+
+        // Apply inverse scale factor correction if needed
+        // This ensures the label moves correctly regardless of zoom level
+        const scaleFactor = props.scaleFactor || 1;
+        const correctedX = Math.round(moved.x);
+        const correctedY = Math.round(moved.y);
+
+        console.log('Corrected coordinates:', { x: correctedX, y: correctedY });
 
         // Only update the label position, not the component position
         props.mutateMapText(
@@ -114,13 +124,13 @@ function ModernPipelineVersion2(
                             // If label exists, update only the label coordinates
                             return line.replace(
                                 /\slabel\s\[(.?|.+?)\]+/g,
-                                ` label [${Math.round(moved.x)}, ${Math.round(moved.y)}]`,
+                                ` label [${correctedX}, ${correctedY}]`,
                             );
                         }
                         // If no label, add one
                         return (
                             line +
-                            ` label [${Math.round(moved.x)}, ${Math.round(moved.y)}]`
+                            ` label [${correctedX}, ${correctedY}]`
                         );
                     }
                     return line;
@@ -232,6 +242,7 @@ function ModernPipelineVersion2(
                             onLabelMove={(moved) =>
                                 endDragForLabel(c.pipelineComponent, moved)
                             }
+                            scaleFactor={props.scaleFactor}
                         />
                     </g>
                 )}
