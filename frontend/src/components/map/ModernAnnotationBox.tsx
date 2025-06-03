@@ -5,7 +5,6 @@ import ModernAnnotationBoxSymbol from '../symbols/ModernAnnotationBoxSymbol';
 import ModernAnnotationTextSymbol from '../symbols/ModernAnnotationTextSymbol';
 import ModernMovable from './ModernMovable';
 import ModernPositionCalculator from './ModernPositionCalculator';
-import ModernRelativeMovable from './ModernRelativeMovable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
 import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
 import ModernSingletonPositionUpdater from './positionUpdaters/ModernSingletonPositionUpdater';
@@ -78,11 +77,11 @@ const ModernAnnotationBox: React.FC<ModernAnnotationBoxProps> = (props) => {
         const maturity = parseFloat(
             positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
         );
-        
+
         // Update both the box position and the label position in one operation
         // First update using the position updater
         positionUpdater.update({ param1: visibility, param2: maturity }, '');
-        
+
         // Then update the annotation text coordinates in the mapText
         props.mutateMapText(
             props.mapText

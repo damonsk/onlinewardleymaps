@@ -93,13 +93,10 @@ function ModernPipelineVersion2(
             pipelineComponent.name,
             'Moved to:',
             moved,
-            'Scale Factor:',
-            props.scaleFactor
         );
 
-        // Apply inverse scale factor correction if needed
-        // This ensures the label moves correctly regardless of zoom level
-        const scaleFactor = props.scaleFactor || 1;
+        // Round the moved coordinates for clean integer values
+        // The scaling is already handled by the ModernRelativeMovable component
         const correctedX = Math.round(moved.x);
         const correctedY = Math.round(moved.y);
 
@@ -128,10 +125,7 @@ function ModernPipelineVersion2(
                             );
                         }
                         // If no label, add one
-                        return (
-                            line +
-                            ` label [${correctedX}, ${correctedY}]`
-                        );
+                        return line + ` label [${correctedX}, ${correctedY}]`;
                     }
                     return line;
                 })

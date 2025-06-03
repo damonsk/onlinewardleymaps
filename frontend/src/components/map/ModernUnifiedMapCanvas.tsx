@@ -245,7 +245,7 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
                 SVGBackground={svgBackground}
-                background='white'
+                background="white"
                 tool={tool}
                 width={mapCanvasDimensions.width + 90}
                 height={mapCanvasDimensions.height + 30}

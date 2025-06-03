@@ -150,7 +150,7 @@ const ModernMapComponent: React.FC<ModernMapComponentProps> = ({
                 !component.evolved &&
                 component.evolving === false && (
                     <Inertia
-                        maturity={component.maturity}
+                        maturity={component.maturity + 0.05} // Added 0.05 offset to match legacy implementation
                         visibility={component.visibility}
                         mapDimensions={mapDimensions}
                     />

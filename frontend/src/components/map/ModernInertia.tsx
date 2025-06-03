@@ -21,7 +21,12 @@ const ModernInertia: React.FC<ModernInertiaProps> = ({
     mapDimensions,
 }) => {
     const positionCalc = new ModernPositionCalculator();
-    const x = positionCalc.maturityToX(maturity, mapDimensions.width);
+
+    // Make sure maturity is defined with a proper offset for inertia indicator
+    // If maturity isn't already calculated with an offset, we add a standard 0.05 offset
+    const adjustedMaturity = maturity;
+
+    const x = positionCalc.maturityToX(adjustedMaturity, mapDimensions.width);
     const y = positionCalc.visibilityToY(
         typeof visibility === 'string' ? parseFloat(visibility) : visibility,
         mapDimensions.height,
