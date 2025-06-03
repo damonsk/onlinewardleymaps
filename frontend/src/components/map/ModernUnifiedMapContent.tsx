@@ -5,6 +5,7 @@ import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
 
 // Import required components
+import { processMapElements } from '../../utils/mapProcessing';
 import ModernComponentSymbol from '../symbols/ModernComponentSymbol';
 import ModernEcosystemSymbol from '../symbols/ModernEcosystemSymbol';
 import ModernMarketSymbol from '../symbols/ModernMarketSymbol';
@@ -20,6 +21,7 @@ import ModernEvolvingComponentLink from './ModernEvolvingComponentLink';
 import ModernFluidLink from './ModernFluidLink';
 import ModernMapComponent from './ModernMapComponent';
 import ModernMapPipelines from './ModernMapPipelines';
+import ModernMethodElement from './ModernMethodElement';
 import ModernNote from './ModernNote';
 
 // Phase 4: Component Interface Modernization
@@ -259,6 +261,39 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                 clicked={clicked}
                 scaleFactor={scaleFactor}
             />
+
+            {/* IMPORTANT: Method elements appear BEFORE regular elements */}
+            {/* This ensures elements are rendered on top of method indicators */}
+            <g id="methods">
+                {/* Process all methods using the same logic from the legacy implementation */}
+                {(() => {
+                    // Process all methods using the utility from mapProcessing.ts
+                    const processedMethodsData = processMapElements(
+                        props.mapMethods || [],
+                        mapElements,
+                    );
+
+                    // Get all methods: both standalone and decorated components
+                    const allMethods = processedMethodsData.allMethods || [];
+
+                    // Let's use the methods exactly as they come from processMapElements
+                    // without adding extra properties
+
+                    console.log('Rendering methods:', allMethods.length);
+
+                    // Render all methods
+                    return allMethods.map((methodComp: any, i: number) => (
+                        <ModernMethodElement
+                            key={`method_${i}`}
+                            methodComponent={methodComp}
+                            mapDimensions={mapDimensions}
+                            method={methodComp.method || 'build'} // Default to 'build' if no method specified
+                            mapStyleDefs={mapStyleDefs}
+                            setHighlightLine={setHighlightLineDispatch}
+                        />
+                    ));
+                })()}
+            </g>
 
             <g id="elements">
                 {mapElements.getMergedElements &&
