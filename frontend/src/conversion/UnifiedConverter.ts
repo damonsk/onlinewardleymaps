@@ -1,5 +1,20 @@
-// Unified Converter - Phase 1 of refactoring plan
-// This creates a cleaner conversion interface using unified types
+/**
+ * UnifiedConverter - Phase 1 of refactoring plan
+ * 
+ * This converter acts as an adapter between the legacy conversion system and the
+ * new unified types structure. It transforms the output from the legacy Converter
+ * into the cleaner, more consistent UnifiedWardleyMap format.
+ * 
+ * The code is organized according to the Single Responsibility Principle:
+ * - Each method has a focused purpose
+ * - Helper methods extract common logic
+ * - Type transformations are handled systematically
+ * 
+ * Flow:
+ * 1. Legacy text is parsed by the legacy Converter
+ * 2. Legacy WardleyMap structure is transformed to UnifiedWardleyMap
+ * 3. Component types, links, pipelines, etc. are converted with proper typing
+ */
 
 import { defaultLabelOffset } from '../constants/defaults';
 import { IProvideFeatureSwitches, WardleyMap } from '../types/base';
@@ -12,9 +27,16 @@ import {
     createEmptyMap,
     createUnifiedComponent,
 } from '../types/unified';
-
 // Import existing extraction strategies (will be refactored in Phase 2)
 import Converter from './Converter';
+
+/**
+ * Interface for label offset coordinates
+ */
+interface LabelOffset {
+    x: number;
+    y: number;
+}
 
 /**
  * Unified Converter that produces clean, consolidated types
@@ -43,22 +65,89 @@ export class UnifiedConverter {
         const unifiedMap = createEmptyMap();
 
         // Set basic properties
-        unifiedMap.title = legacyMap.title || '';
-        unifiedMap.presentation = legacyMap.presentation;
-        unifiedMap.errors = legacyMap.errors || [];
-        unifiedMap.evolution = legacyMap.evolution || [];
+        this.copyBasicProperties(legacyMap, unifiedMap);
 
-        // First process methods to identify components that need label adjustments
+        // Extract method components for label handling
+        const methodComponents = this.extractMethodComponents(legacyMap);
+
+        // Transform components to unified format, passing along method component info
+        this.transformAllComponentTypes(
+            legacyMap,
+            unifiedMap,
+            methodComponents,
+        );
+
+        // Transform evolved elements
+        unifiedMap.evolved = this.transformEvolvedElements(
+            legacyMap.evolved || [],
+        );
+
+        // Transform pipelines (must be done after components for visibility processing)
+        unifiedMap.pipelines = this.transformPipelines(
+            legacyMap.pipelines || [],
+            this.getAllComponents(unifiedMap),
+        );
+
+        // Transform links
+        unifiedMap.links = this.transformLinks(legacyMap.links || []);
+
+        // Copy other properties as-is for now
+        this.copyAdditionalProperties(legacyMap, unifiedMap);
+
+        return unifiedMap;
+    }
+
+    /**
+     * Copy basic map properties
+     */
+    private copyBasicProperties(
+        source: WardleyMap,
+        target: UnifiedWardleyMap,
+    ): void {
+        target.title = source.title || '';
+        target.presentation = source.presentation;
+        target.errors = source.errors || [];
+        target.evolution = source.evolution || [];
+    }
+
+    /**
+     * Copy additional map properties
+     */
+    private copyAdditionalProperties(
+        source: WardleyMap,
+        target: UnifiedWardleyMap,
+    ): void {
+        target.annotations = source.annotations || [];
+        target.notes = source.notes || [];
+        target.methods = source.methods || [];
+        target.urls = source.urls || [];
+        target.attitudes = source.attitudes || [];
+        target.accelerators = source.accelerators || [];
+    }
+
+    /**
+     * Extract component names referenced in methods
+     */
+    private extractMethodComponents(map: WardleyMap): Set<string> {
         const methodComponents = new Set<string>();
-        if (legacyMap.methods && legacyMap.methods.length > 0) {
-            legacyMap.methods.forEach((method) => {
+        if (map.methods && map.methods.length > 0) {
+            map.methods.forEach((method) => {
                 if (method.name) {
                     methodComponents.add(method.name);
                 }
             });
         }
+        return methodComponents;
+    }
 
-        // Transform components to unified format, passing along method component info
+    /**
+     * Transform all component types
+     */
+    private transformAllComponentTypes(
+        legacyMap: WardleyMap,
+        unifiedMap: UnifiedWardleyMap,
+        methodComponents: Set<string>,
+    ): void {
         unifiedMap.components = this.transformComponents(
             legacyMap.elements || [],
             'component',
@@ -84,30 +173,6 @@ export class UnifiedConverter {
             'ecosystem',
             methodComponents,
         );
-
-        // Transform evolved elements
-        unifiedMap.evolved = this.transformEvolvedElements(
-            legacyMap.evolved || [],
-        );
-
-        // Transform pipelines (must be done after components for visibility processing)
-        unifiedMap.pipelines = this.transformPipelines(
-            legacyMap.pipelines || [],
-            this.getAllComponents(unifiedMap),
-        );
-
-        // Transform links
-        unifiedMap.links = this.transformLinks(legacyMap.links || []);
-
-        // Copy other properties as-is for now
-        unifiedMap.annotations = legacyMap.annotations || [];
-        unifiedMap.notes = legacyMap.notes || [];
-        unifiedMap.methods = legacyMap.methods || [];
-        unifiedMap.urls = legacyMap.urls || [];
-        unifiedMap.attitudes = legacyMap.attitudes || [];
-        unifiedMap.accelerators = legacyMap.accelerators || [];
-
-        return unifiedMap;
     }
 
     /**
@@ -122,22 +187,11 @@ export class UnifiedConverter {
         methodComponents?: Set<string>,
     ): UnifiedComponent[] {
         return legacyComponents.map((component) => {
-            // Set label spacing for components based on their state
-            let increaseLabelSpacing = component.increaseLabelSpacing || 0;
-
-            // Determine if this component needs special label handling
-            const isEvolvingComponent = component.evolving || component.evolved;
-            const isMethodComponent =
-                methodComponents && methodComponents.has(component.name);
-
-            // Apply increased label spacing for evolution or method components
-            if (isEvolvingComponent || isMethodComponent) {
-                increaseLabelSpacing = Math.max(increaseLabelSpacing, 2);
-            }
-            let label = component.label || defaultLabelOffset;
-            if (isEvolvingComponent || isMethodComponent) {
-                label = this.createOffset(label, increaseLabelSpacing);
-            }
+            const { increaseLabelSpacing, label } = this.processLabelSpacing(
+                component,
+                component.name,
+                methodComponents,
+            );
 
             return createUnifiedComponent({
                 id: component.id || this.generateId(component.name, type),
@@ -162,14 +216,51 @@ export class UnifiedConverter {
         });
     }
 
-    private createOffset(label: any, increaseLabelSpacing: any) {
-        if (increaseLabelSpacing > 0) {
-            label = {
-                ...label,
-                y: (label.y * increaseLabelSpacing), // Position below
-            };
+    /**
+     * Process label spacing and offsets for components and evolved elements
+     */
+    private processLabelSpacing(
+        element: any,
+        name: string = '',
+        methodComponents?: Set<string>,
+    ): { increaseLabelSpacing: number; label: LabelOffset } {
+        let increaseLabelSpacing = element.increaseLabelSpacing || 0;
+
+        // Determine if this element needs special label handling
+        const isEvolvingElement = element.evolving || element.evolved;
+        const isMethodComponent =
+            methodComponents && methodComponents.has(name);
+        const needsIncreasedSpacing = isEvolvingElement || isMethodComponent;
+
+        // Apply increased label spacing for evolution or method components
+        if (needsIncreasedSpacing) {
+            increaseLabelSpacing = Math.max(increaseLabelSpacing, 2);
         }
-        return label;
+
+        // Get base label and apply offset if needed
+        let label = element.label || defaultLabelOffset;
+        if (needsIncreasedSpacing) {
+            label = this.createOffset(label, increaseLabelSpacing);
+        }
+
+        return { increaseLabelSpacing, label };
+    }
+
+    /**
+     * Create an offset for label positioning
+     */
+    private createOffset(
+        label: LabelOffset,
+        increaseLabelSpacing: number,
+    ): LabelOffset {
+        if (increaseLabelSpacing <= 0) {
+            return label;
+        }
+
+        return {
+            ...label,
+            y: label.y * increaseLabelSpacing, // Position below
+        };
     }
 
     /**
@@ -179,14 +270,9 @@ export class UnifiedConverter {
         legacyEvolved: any[],
     ): EvolvedElementData[] {
         return legacyEvolved.map((evolved) => {
-            const increaseLabelSpacing = Math.max(
-                evolved.increaseLabelSpacing || 0,
-                2,
-            );
+            const { increaseLabelSpacing, label } =
+                this.processLabelSpacing(evolved);
 
-            let label = evolved.label || defaultLabelOffset;
-            label = this.createOffset(label, increaseLabelSpacing);
-            
             return {
                 name: evolved.name || '',
                 maturity: evolved.maturity || 0,
@@ -212,37 +298,61 @@ export class UnifiedConverter {
                 name: pipeline.name || '',
                 visibility: pipeline.visibility || 0,
                 line: pipeline.line,
-                components: (pipeline.components || []).map((comp: any) => ({
-                    id:
-                        comp.id ||
-                        this.generateId(comp.name, 'pipelinecomponent'),
-                    name: comp.name || '',
-                    maturity: comp.maturity || 0,
-                    visibility: comp.visibility || 0,
-                    line: comp.line,
-                    label: comp.label || { x: 0, y: 0 },
-                })),
+                components: this.transformPipelineComponents(
+                    pipeline.components || [],
+                ),
                 inertia: pipeline.inertia || false,
                 hidden: pipeline.hidden || false,
                 maturity1: pipeline.maturity1,
                 maturity2: pipeline.maturity2,
             };
 
-            // Apply processPipelines logic similar to legacy MapElements.ts
-            if (allComponents) {
-                const matchingComponent = allComponents.find(
-                    (component) => component.name === pipeline.name,
-                );
-                if (matchingComponent) {
-                    transformedPipeline.visibility =
-                        matchingComponent.visibility;
-                } else {
-                    transformedPipeline.hidden = true;
-                }
-            }
+            // Apply visibility processing from parent component
+            this.processPipelineVisibility(transformedPipeline, allComponents);
 
             return transformedPipeline;
         });
+    }
+
+    /**
+     * Transform pipeline components
+     */
+    private transformPipelineComponents(components: any[]): {
+        id: string;
+        name: string;
+        maturity: number;
+        visibility: number;
+        line: number;
+        label: LabelOffset;
+    }[] {
+        return components.map((comp) => ({
+            id: comp.id || this.generateId(comp.name, 'pipelinecomponent'),
+            name: comp.name || '',
+            maturity: comp.maturity || 0,
+            visibility: comp.visibility || 0,
+            line: comp.line,
+            label: comp.label || { x: 0, y: 0 },
+        }));
+    }
+
+    /**
+     * Process visibility for a pipeline based on its parent component
+     */
+    private processPipelineVisibility(
+        pipeline: PipelineData,
+        allComponents?: UnifiedComponent[],
+    ): void {
+        if (!allComponents) return;
+
+        const matchingComponent = allComponents.find(
+            (component) => component.name === pipeline.name,
+        );
+
+        if (matchingComponent) {
+            pipeline.visibility = matchingComponent.visibility;
+        } else {
+            pipeline.hidden = true;
+        }
     }
 
     /**
