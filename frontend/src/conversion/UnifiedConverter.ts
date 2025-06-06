@@ -1,15 +1,15 @@
 /**
  * UnifiedConverter - Phase 1 of refactoring plan
- * 
+ *
  * This converter acts as an adapter between the legacy conversion system and the
  * new unified types structure. It transforms the output from the legacy Converter
  * into the cleaner, more consistent UnifiedWardleyMap format.
- * 
+ *
  * The code is organized according to the Single Responsibility Principle:
  * - Each method has a focused purpose
  * - Helper methods extract common logic
  * - Type transformations are handled systematically
- * 
+ *
  * Flow:
  * 1. Legacy text is parsed by the legacy Converter
  * 2. Legacy WardleyMap structure is transformed to UnifiedWardleyMap
