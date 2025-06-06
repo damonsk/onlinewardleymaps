@@ -282,16 +282,20 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                     console.log('Rendering methods:', allMethods.length);
 
                     // Render all methods
-                    return allMethods.map((methodComp: any, i: number) => (
-                        <ModernMethodElement
-                            key={`method_${i}`}
-                            methodComponent={methodComp}
-                            mapDimensions={mapDimensions}
-                            method={methodComp.method || 'build'} // Default to 'build' if no method specified
-                            mapStyleDefs={mapStyleDefs}
-                            setHighlightLine={setHighlightLineDispatch}
-                        />
-                    ));
+                    return allMethods.map((methodComp: any, i: number) => {
+                        // Don't adjust position here - we want methods to appear exactly at their component position
+                        // The component's label has already been adjusted with increaseLabelSpacing
+                        return (
+                            <ModernMethodElement
+                                key={`method_${i}`}
+                                methodComponent={methodComp}
+                                mapDimensions={mapDimensions}
+                                method={methodComp.method || 'build'} // Default to 'build' if no method specified
+                                mapStyleDefs={mapStyleDefs}
+                                setHighlightLine={setHighlightLineDispatch}
+                            />
+                        );
+                    });
                 })()}
             </g>
 

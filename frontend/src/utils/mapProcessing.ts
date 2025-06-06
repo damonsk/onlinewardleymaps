@@ -53,6 +53,7 @@ interface ProcessedMethodElement {
     maturity?: number;
     visibility: string | number;
     method?: string;
+    increaseLabelSpacing?: number; // Add this property to preserve label spacing
 }
 
 export function processMapElements(
@@ -65,6 +66,7 @@ export function processMapElements(
         maturity: m.maturity,
         visibility: m.visibility,
         method: m.decorators?.method,
+        increaseLabelSpacing: m.increaseLabelSpacing, // Keep any existing increaseLabelSpacing without adding a default
     });
 
     const getElementByName = (
@@ -99,6 +101,7 @@ export function processMapElements(
                     name: m.name,
                     visibility: m.visibility || 0,
                     method: m.method,
+                    increaseLabelSpacing: m.increaseLabelSpacing, // Keep any existing increaseLabelSpacing
                 };
             return asMethod({
                 ...el,

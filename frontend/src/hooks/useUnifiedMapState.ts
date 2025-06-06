@@ -19,6 +19,143 @@ import {
 import { FlowLink } from '../types/unified/links';
 
 /**
+ * Ensures that components involved in evolution or methods have consistent label spacing and positioning
+ */
+const applyConsistentLabelSpacingForEvolution = (
+    map: UnifiedWardleyMap,
+): UnifiedWardleyMap => {
+    // Create a set of component names that are referenced in methods
+    const methodComponents = new Set<string>();
+    if (map.methods && map.methods.length > 0) {
+        map.methods.forEach((method) => {
+            if (method.name) {
+                methodComponents.add(method.name);
+            }
+        });
+    }
+
+    // Early return if no evolution or methods to process
+    if (
+        (map.evolved?.length === 0 || !map.evolved) &&
+        methodComponents.size === 0
+    ) {
+        return map;
+    }
+
+    // Create a map of evolved components with their evolved data
+    const evolvedComponents = map.evolved
+        ? new Map(map.evolved.map((e) => [e.name, e]))
+        : new Map();
+
+    // Process all component types to ensure consistent label spacing and positioning
+    const processComponents = (
+        components: UnifiedComponent[],
+    ): UnifiedComponent[] => {
+        return components.map((component) => {
+            // Determine if this component needs special label handling
+            const isEvolved = evolvedComponents.has(component.name);
+            const isMethodComponent = methodComponents.has(component.name);
+
+            // If this component requires special handling
+            if (isEvolved || isMethodComponent) {
+                // Ensure appropriate label spacing
+                const increaseLabelSpacing = Math.max(
+                    component.increaseLabelSpacing || 0,
+                    2,
+                );
+
+                // Calculate appropriate label position
+                let label = component.label || { x: 0, y: 0 };
+
+                // Apply consistent vertical position if not already specified
+                if (!label.y || Math.abs(label.y) <= 10) {
+                    label = {
+                        ...label,
+                        // Position label below the component
+                        y: increaseLabelSpacing * 10,
+                    };
+                }
+
+                // Apply consistent horizontal position if not already specified
+                // and apply appropriate positioning based on component type
+                const evolvedData = isEvolved
+                    ? evolvedComponents.get(component.name)
+                    : null;
+                if (!label.x || Math.abs(label.x) <= 10) {
+                    // Calculate appropriate horizontal position
+                    let xOffset = 5; // Default slight offset to the right
+
+                    // If this is an evolved component with override, increase offset
+                    if (evolvedData && evolvedData.override) {
+                        xOffset = 16;
+                    }
+
+                    label = {
+                        ...label,
+                        x: xOffset,
+                    };
+                }
+
+                return {
+                    ...component,
+                    increaseLabelSpacing,
+                    label,
+                };
+            }
+            return component;
+        });
+    };
+
+    // Process evolved elements to ensure consistent label positioning
+    const processedEvolved = map.evolved.map((evolvedElement) => {
+        const increaseLabelSpacing = Math.max(
+            evolvedElement.increaseLabelSpacing || 0,
+            2,
+        );
+
+        // Calculate appropriate label position
+        let label = evolvedElement.label || { x: 0, y: 0 };
+
+        // Apply consistent vertical position if not already specified
+        if (!label.y || Math.abs(label.y) <= 10) {
+            label = {
+                ...label,
+                // Position label below the component
+                y: increaseLabelSpacing * 10,
+            };
+        }
+
+        // Apply consistent horizontal position if not already specified
+        if (!label.x || Math.abs(label.x) <= 10) {
+            // Calculate horizontal offset - default slight offset to the right
+            const xOffset = evolvedElement.override ? 16 : 5;
+
+            label = {
+                ...label,
+                x: xOffset,
+            };
+        }
+
+        return {
+            ...evolvedElement,
+            increaseLabelSpacing,
+            label,
+        };
+    });
+
+    // Return a new map with processed components and evolved elements
+    return {
+        ...map,
+        components: processComponents(map.components),
+        anchors: processComponents(map.anchors),
+        submaps: processComponents(map.submaps),
+        markets: processComponents(map.markets),
+        ecosystems: processComponents(map.ecosystems),
+        evolved: processedEvolved,
+    };
+};
+
+/**
  * Consolidated map state that replaces multiple useState hooks
  */
 interface ConsolidatedMapState {
@@ -130,8 +267,12 @@ export const useUnifiedMapState = (
         () => ({
             setMapText: (text: string) =>
                 setState((prev) => ({ ...prev, mapText: text })),
-            setMap: (map: UnifiedWardleyMap) =>
-                setState((prev) => ({ ...prev, map })),
+            setMap: (map: UnifiedWardleyMap) => {
+                // Process the map to ensure consistent label spacing for evolution components
+                const processedMap =
+                    applyConsistentLabelSpacingForEvolution(map);
+                setState((prev) => ({ ...prev, map: processedMap }));
+            },
             setHighlightedLine: (line: number) =>
                 setState((prev) => ({ ...prev, highlightedLine: line })),
             setNewComponentContext: (context: any | null) =>
@@ -248,8 +389,8 @@ const convertToLegacyComponent = (unified: UnifiedComponent): any => ({
     decorators: unified.decorators ?? {},
 });
 
-const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] =>
-    flowLinks.map((link) => ({
+const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] => {
+    return flowLinks.map((link) => ({
         ...link,
         flow: link.flow ?? false,
         future: link.future ?? false,
@@ -257,6 +398,7 @@ const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] =>
         context: link.context ?? '',
         flowValue: link.flowValue ?? '',
     }));
+};
 
 // React-style setter adapters
 const createReactSetter = <T>(

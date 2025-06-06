@@ -82,9 +82,18 @@ const ModernMethodElement: React.FC<ModernMethodElementProps> = ({
         yValue = 0;
     }
 
-    // Let's not modify the position directly - the method elements
-    // should use the exact position from mapProcessing.ts
-    // The positions are already properly calculated there
+    // We no longer need to adjust the method's y position
+    // The referenced component already has increaseLabelSpacing applied
+    // This ensures the component's label is positioned properly and the method appears at the component's position
+    console.log(`Method component position for ${methodComponent.name}:`, {
+        maturity,
+        visibility: visibilityValue,
+        targetComponentName:
+            'targetComponentName' in methodComponent
+                ? (methodComponent as MethodComponent).targetComponentName
+                : undefined,
+        increaseLabelSpacing: methodComponent.increaseLabelSpacing || 0,
+    });
 
     const y = positionCalc.visibilityToY(
         isNaN(yValue) ? 0 : yValue,

@@ -1,6 +1,7 @@
 // Unified Converter - Phase 1 of refactoring plan
 // This creates a cleaner conversion interface using unified types
 
+import { defaultLabelOffset } from '../constants/defaults';
 import { IProvideFeatureSwitches, WardleyMap } from '../types/base';
 import {
     EvolvedElementData,
@@ -47,26 +48,41 @@ export class UnifiedConverter {
         unifiedMap.errors = legacyMap.errors || [];
         unifiedMap.evolution = legacyMap.evolution || [];
 
-        // Transform components to unified format
+        // First process methods to identify components that need label adjustments
+        const methodComponents = new Set<string>();
+        if (legacyMap.methods && legacyMap.methods.length > 0) {
+            legacyMap.methods.forEach((method) => {
+                if (method.name) {
+                    methodComponents.add(method.name);
+                }
+            });
+        }
+
+        // Transform components to unified format, passing along method component info
         unifiedMap.components = this.transformComponents(
             legacyMap.elements || [],
             'component',
+            methodComponents,
         );
         unifiedMap.anchors = this.transformComponents(
             legacyMap.anchors || [],
             'anchor',
+            methodComponents,
         );
         unifiedMap.submaps = this.transformComponents(
             legacyMap.submaps || [],
             'submap',
+            methodComponents,
         );
         unifiedMap.markets = this.transformComponents(
             legacyMap.markets || [],
             'market',
+            methodComponents,
         );
         unifiedMap.ecosystems = this.transformComponents(
             legacyMap.ecosystems || [],
             'ecosystem',
+            methodComponents,
         );
 
         // Transform evolved elements
@@ -96,12 +112,33 @@ export class UnifiedConverter {
 
     /**
      * Transform legacy components to unified components
+     * @param legacyComponents The legacy components to transform
+     * @param type The component type
+     * @param methodComponents Optional set of component names that are referenced in methods
      */
     private transformComponents(
         legacyComponents: any[],
         type: string,
+        methodComponents?: Set<string>,
     ): UnifiedComponent[] {
         return legacyComponents.map((component) => {
+            // Set label spacing for components based on their state
+            let increaseLabelSpacing = component.increaseLabelSpacing || 0;
+
+            // Determine if this component needs special label handling
+            const isEvolvingComponent = component.evolving || component.evolved;
+            const isMethodComponent =
+                methodComponents && methodComponents.has(component.name);
+
+            // Apply increased label spacing for evolution or method components
+            if (isEvolvingComponent || isMethodComponent) {
+                increaseLabelSpacing = Math.max(increaseLabelSpacing, 2);
+            }
+            let label = component.label || defaultLabelOffset;
+            if (isEvolvingComponent || isMethodComponent) {
+                label = this.createOffset(label, increaseLabelSpacing);
+            }
+
             return createUnifiedComponent({
                 id: component.id || this.generateId(component.name, type),
                 name: component.name || '',
@@ -109,7 +146,7 @@ export class UnifiedConverter {
                 maturity: component.maturity || 0,
                 visibility: component.visibility || 0,
                 line: component.line,
-                label: component.label || { x: 0, y: 0 },
+                label: label,
                 evolving: component.evolving || false,
                 evolved: component.evolved || false,
                 evolveMaturity: component.evolveMaturity,
@@ -120,9 +157,19 @@ export class UnifiedConverter {
                 override: component.override,
                 url: component.url,
                 pipeline: component.pipeline || false,
-                increaseLabelSpacing: component.increaseLabelSpacing || 0,
+                increaseLabelSpacing: increaseLabelSpacing,
             });
         });
+    }
+
+    private createOffset(label: any, increaseLabelSpacing: any) {
+        if (increaseLabelSpacing > 0) {
+            label = {
+                ...label,
+                y: (label.y * increaseLabelSpacing), // Position below
+            };
+        }
+        return label;
     }
 
     /**
@@ -131,15 +178,25 @@ export class UnifiedConverter {
     private transformEvolvedElements(
         legacyEvolved: any[],
     ): EvolvedElementData[] {
-        return legacyEvolved.map((evolved) => ({
-            name: evolved.name || '',
-            maturity: evolved.maturity || 0,
-            label: evolved.label || { x: 0, y: 0 },
-            override: evolved.override,
-            line: evolved.line,
-            decorators: evolved.decorators,
-            increaseLabelSpacing: evolved.increaseLabelSpacing || 0,
-        }));
+        return legacyEvolved.map((evolved) => {
+            const increaseLabelSpacing = Math.max(
+                evolved.increaseLabelSpacing || 0,
+                2,
+            );
+
+            let label = evolved.label || defaultLabelOffset;
+            label = this.createOffset(label, increaseLabelSpacing);
+            
+            return {
+                name: evolved.name || '',
+                maturity: evolved.maturity || 0,
+                label: label,
+                override: evolved.override,
+                line: evolved.line,
+                decorators: evolved.decorators,
+                increaseLabelSpacing: increaseLabelSpacing,
+            };
+        });
     }
 
     /**

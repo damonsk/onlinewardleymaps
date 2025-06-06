@@ -63,14 +63,29 @@ export function processStandaloneMethods(
         );
 
         // Find the referenced component
-        const targetComponent = components.find(
+        const targetComponentIndex = components.findIndex(
             (c) =>
                 c.name &&
                 c.name.trim().toLowerCase() ===
                     method.name.trim().toLowerCase(),
         );
 
-        if (targetComponent) {
+        if (targetComponentIndex >= 0) {
+            const targetComponent = components[targetComponentIndex];
+
+            // Apply increaseLabelSpacing to the target component itself
+            if (!targetComponent.increaseLabelSpacing) {
+                // Only update if not already set to avoid double-spacing
+                components[targetComponentIndex] = {
+                    ...targetComponent,
+                    increaseLabelSpacing: 2, // Apply the same spacing as with decorated components
+                };
+
+                console.log(
+                    `Applied increaseLabelSpacing to target component "${targetComponent.name}"`,
+                );
+            }
+
             // Create a method component with the target component's position
             result.push({
                 ...method,
@@ -78,12 +93,15 @@ export function processStandaloneMethods(
                 type: 'method',
                 maturity: targetComponent.maturity,
                 visibility: targetComponent.visibility,
+                increaseLabelSpacing: 2, // Also keep the spacing in the method component for reference
                 targetComponentName: method.name,
             } as MethodComponent);
 
             console.log(`Found target component for method "${method.name}":`, {
                 maturity: targetComponent.maturity,
                 visibility: targetComponent.visibility,
+                increasedLabelSpacing:
+                    components[targetComponentIndex].increaseLabelSpacing,
             });
         } else {
             console.warn(
@@ -95,6 +113,7 @@ export function processStandaloneMethods(
                 ...method,
                 id: `method_standalone_${method.id || Math.random().toString(36).substring(2, 9)}`,
                 type: 'method',
+                increaseLabelSpacing: 2, // Add increased label spacing even for fallback positioning
             } as MethodComponent);
         }
     });

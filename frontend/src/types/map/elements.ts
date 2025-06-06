@@ -60,7 +60,7 @@ export interface IProvideMapElements {
     getEvolvedElements(): BaseMapElement[];
     getEvolveElements(): BaseMapElement[];
     getMergedElements(): BaseMapElement[];
-    geEvolvedOrEvolvingElements(): BaseMapElement[];
+    getEvolvedOrEvolvingElements(): BaseMapElement[];
     getNoneEvolvedOrEvolvingElements(): BaseMapElement[]; // Changed to use BaseMapElement
     getNoneEvolvingElements(): BaseMapElement[];
     getMapPipelines(): any[]; // Return type for pipelines can be refined later if needed

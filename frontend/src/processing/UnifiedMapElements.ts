@@ -36,24 +36,106 @@ export class UnifiedMapElements implements IProvideMapElements {
     }
 
     private markEvolvingComponents(): void {
+        // First create a set of components referenced in methods
+        const methodComponents = new Set<string>();
+        if (this.allComponents.some((c) => c.decorators?.method)) {
+            this.allComponents.forEach((component) => {
+                if (component.decorators?.method && component.name) {
+                    methodComponents.add(component.name);
+                }
+            });
+        }
+
         this.allComponents = this.allComponents.map((component) => {
-            if (this.evolvedElements.length === 0) {
-                return component;
+            // Handle evolving components
+            if (this.evolvedElements.length > 0) {
+                const hasEvolvedElement = this.evolvedElements.some(
+                    (evolved) => evolved.name === component.name,
+                );
+                const evolved = this.evolvedElements.find(
+                    (x) => x.name === component.name,
+                );
+
+                if (hasEvolvedElement) {
+                    // Apply consistent label spacing for evolving components
+                    const increaseLabelSpacing = Math.max(
+                        component.increaseLabelSpacing || 0,
+                        evolved?.increaseLabelSpacing || 0,
+                        2,
+                    );
+
+                    // Calculate appropriate label position
+                    let label = component.label || { x: 0, y: 0 };
+
+                    // For labels with the default value or no meaningful vertical position,
+                    // place the label below the componen
+                    if (!label.y || Math.abs(label.y) <= 10) {
+                        label = {
+                            ...label,
+                            // Position label below the component for better readability
+                            y: increaseLabelSpacing * 10,
+                        };
+                    }
+
+                    // Apply consistent horizontal position if not already specified
+                    if (!label.x || Math.abs(label.x) <= 10) {
+                        // Calculate horizontal offset - slight offset to the righ
+                        const xOffset = evolved?.override ? 16 : 5;
+
+                        label = {
+                            ...label,
+                            x: xOffset,
+                        };
+                    }
+
+                    return {
+                        ...component,
+                        evolving: true,
+                        evolveMaturity: evolved?.maturity,
+                        override: evolved?.override,
+                        increaseLabelSpacing: increaseLabelSpacing,
+                        label: label,
+                    };
+                }
             }
-            const hasEvolvedElement = this.evolvedElements.some(
-                (evolved) => evolved.name === component.name,
-            );
-            const evolved = this.evolvedElements.find(
-                (x) => x.name === component.name,
-            );
-            if (hasEvolvedElement) {
+
+            // Handle method components
+            if (methodComponents.has(component.name)) {
+                // Apply consistent label spacing for method components
+                const increaseLabelSpacing = Math.max(
+                    component.increaseLabelSpacing || 0,
+                    2,
+                );
+
+                // Calculate appropriate label position
+                let label = component.label || { x: 0, y: 0 };
+
+                // If no y offset is specified or it's within the default range,
+                // place the label below the componen
+                if (!label.y || Math.abs(label.y) <= 10) {
+                    label = {
+                        ...label,
+                        // Position label below the component for better readability
+                        y: increaseLabelSpacing * 10,
+                    };
+                }
+
+                // Apply consistent horizontal position if not already specified
+                if (!label.x || Math.abs(label.x) <= 10) {
+                    label = {
+                        ...label,
+                        // Position label with slight offset to the righ
+                        x: 5,
+                    };
+                }
+
                 return {
                     ...component,
-                    evolving: true,
-                    evolveMaturity: evolved?.maturity,
-                    override: evolved?.override,
+                    increaseLabelSpacing: increaseLabelSpacing,
+                    label: label,
                 };
             }
+
             return component;
         });
     }
@@ -95,13 +177,41 @@ export class UnifiedMapElements implements IProvideMapElements {
                     `Evolved element not found for ${component.name}`,
                 );
             }
+            // Calculate appropriate label spacing
+            const increaseLabelSpacing = Math.max(
+                evolvedData.increaseLabelSpacing || 0,
+                component.increaseLabelSpacing || 0,
+                2,
+            );
+
+            // Calculate appropriate label position
+            let label = evolvedData.label || component.label || { x: 0, y: 0 };
+
+            // If no y offset is specified, calculate appropriate vertical position for evolved componen
+            if (!label.y || Math.abs(label.y) <= 10) {
+                label = {
+                    ...label,
+                    // Position label below the componen
+                    y: increaseLabelSpacing * 10,
+                };
+            }
+
+            // If no x offset is specified and there's an override, adjust horizontal position
+            if ((!label.x || Math.abs(label.x) <= 10) && evolvedData.override) {
+                label = {
+                    ...label,
+                    // Position label with slight offset to accommodate override tex
+                    x: 16,
+                };
+            }
+
             return createUnifiedComponent({
                 ...component,
                 id: component.id + '_evolved',
                 maturity: evolvedData.maturity,
                 evolving: false,
                 evolved: true,
-                label: evolvedData.label || component.label,
+                label: label,
                 override: evolvedData.override || component.override,
                 line: evolvedData.line || component.line,
                 decorators:
@@ -109,9 +219,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                     Object.keys(evolvedData.decorators).length > 0
                         ? evolvedData.decorators
                         : component.decorators,
-                increaseLabelSpacing:
-                    evolvedData.increaseLabelSpacing ||
-                    component.increaseLabelSpacing,
+                increaseLabelSpacing: increaseLabelSpacing,
             });
         });
     }
@@ -160,10 +268,10 @@ export class UnifiedMapElements implements IProvideMapElements {
             method: component.decorators?.method, // Only set method if explicitly defined
         };
 
-        // Always set increaseLabelSpacing to 0 for legacy format
+        // Always set increaseLabelSpacing to 0 for legacy forma
         result.increaseLabelSpacing = 0;
 
-        // Always include URL object for legacy format
+        // Always include URL object for legacy forma
         result.url = { name: '', url: '' };
 
         return result as MapElement;
@@ -185,7 +293,7 @@ export class UnifiedMapElements implements IProvideMapElements {
         );
     }
 
-    geEvolvedOrEvolvingElements(): MapElement[] {
+    getEvolvedOrEvolvingElements(): MapElement[] {
         return this.convertToMapElements(
             this.allComponents.filter((c) => c.evolving || c.evolved),
         );
@@ -237,7 +345,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                 this.getNoneEvolvedOrEvolvingElements(),
             getNoneEvolvingElements: () => this.getNoneEvolvingElements(),
             geEvolvedOrEvolvingElements: () =>
-                this.geEvolvedOrEvolvingElements(),
+                this.getEvolvedOrEvolvingElements(),
         };
     }
 }

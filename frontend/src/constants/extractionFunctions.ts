@@ -207,12 +207,21 @@ export const extractManyLocations = (
 };
 
 export const setMethod = (
-    baseElement: IProvideBaseElement & { name?: string; method?: string },
+    baseElement: IProvideBaseElement & {
+        name?: string;
+        method?: string;
+        increaseLabelSpacing?: number;
+    },
     element: string,
     config: IProvideDecoratorsConfig,
 ): void => {
     const name = element.split(`${config.keyword} `)[1].trim();
-    Object.assign(baseElement, { name, method: config.keyword });
+    // We set method and name, but NOT increaseLabelSpacing here
+    // The increaseLabelSpacing will be applied to the referenced component in methodExtractor.ts
+    Object.assign(baseElement, {
+        name,
+        method: config.keyword,
+    });
 };
 
 export const setAttitude = (
