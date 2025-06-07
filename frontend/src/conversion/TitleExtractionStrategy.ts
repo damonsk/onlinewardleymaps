@@ -1,4 +1,4 @@
-import { IParseStrategy } from './IParseStrategy';
+import { IParseStrategy } from '../types/base';
 
 export default class TitleExtractionStrategy implements IParseStrategy {
     data: string;

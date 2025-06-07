@@ -1,4 +1,4 @@
-import { IParseStrategy } from './IParseStrategy';
+import { IParseStrategy } from '../types/base';
 import ParseError from './ParseError';
 
 export default class LinksExtractionStrategy implements IParseStrategy {

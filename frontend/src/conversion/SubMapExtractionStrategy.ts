@@ -1,6 +1,6 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
-import { IParseStrategy } from './IParseStrategy';
+import { IParseStrategy } from '../types/base';
 
 export default class SubMapExtractionStrategy implements IParseStrategy {
     data: string;
