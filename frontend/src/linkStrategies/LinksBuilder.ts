@@ -82,7 +82,7 @@ export default class LinksBuilder {
         elements: MapElement[],
         name: string,
     ): MapElement | undefined {
-        return elements.find((element) => element.name === name);
+        return elements?.find((element) => element.name === name);
     }
 
     private canSatisfyLink(

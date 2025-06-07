@@ -7,6 +7,10 @@ import {
     MapElement,
 } from './LinkStrategiesInterfaces';
 
+/**
+ * AnchorEvolvedLinksStrategy
+ * Updated to use ModernMapElements in Phase 4C
+ */
 export default class AnchorEvolvedLinksStrategy
     implements LinkExtractionStrategy
 {
@@ -14,9 +18,13 @@ export default class AnchorEvolvedLinksStrategy
     private mapElements: any; // Using any for adapter compatibility
     private anchors: Anchor[];
 
-    constructor(links: Link[], mapElements: any, anchors: Anchor[]) {
+    constructor(
+        links: Link[] = [],
+        mapElements: any = {},
+        anchors: Anchor[] = [],
+    ) {
         this.links = links || []; // Initialize links with empty array if undefined
-        this.mapElements = mapElements.getLegacyAdapter
+        this.mapElements = mapElements?.getLegacyAdapter
             ? mapElements.getLegacyAdapter()
             : mapElements;
         this.anchors = anchors;
@@ -24,7 +32,7 @@ export default class AnchorEvolvedLinksStrategy
     getLinks(): LinkStrategy {
         const links = this.links.filter(
             (li) =>
-                this.anchors.find((i: any) => i.name === li.start) &&
+                this.anchors?.find((i: any) => i.name === li.start) &&
                 this.mapElements
                     .getEvolvedElements()
                     .filter((i: any) => i.name === li.end),

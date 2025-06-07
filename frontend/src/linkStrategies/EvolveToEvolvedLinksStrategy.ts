@@ -6,15 +6,19 @@ import {
     MapElement,
 } from './LinkStrategiesInterfaces';
 
+/**
+ * EvolveToEvolvedLinksStrategy
+ * Updated to use ModernMapElements in Phase 4C
+ */
 export default class EvolveToEvolvedLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility
 
-    constructor(links: Link[], mapElements: any) {
+    constructor(links: Link[] = [], mapElements: any = {}) {
         this.links = links || []; // Initialize links with empty array if undefined
-        this.mapElements = mapElements.getLegacyAdapter
+        this.mapElements = mapElements?.getLegacyAdapter
             ? mapElements.getLegacyAdapter()
             : mapElements;
     }
@@ -23,10 +27,10 @@ export default class EvolveToEvolvedLinksStrategy
             (li: Link) =>
                 this.mapElements
                     .getEvolveElements()
-                    .find((i: MapElement) => i.name === li.start) &&
+                    ?.find((i: MapElement) => i.name === li.start) &&
                 this.mapElements
                     .getEvolvedElements()
-                    .find((i: MapElement) => i.name === li.end),
+                    ?.find((i: MapElement) => i.name === li.end),
         );
 
         return {

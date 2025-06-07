@@ -7,6 +7,10 @@ import {
     MapElement,
 } from './LinkStrategiesInterfaces';
 
+/**
+ * AnchorNoneEvolvedLinksStrategy
+ * Updated to use ModernMapElements in Phase 4C
+ */
 export default class AnchorNoneEvolvedLinksStrategy
     implements LinkExtractionStrategy
 {
@@ -14,20 +18,39 @@ export default class AnchorNoneEvolvedLinksStrategy
     private mapElements: any; // Using any for adapter compatibility
     private anchors: Anchor[];
 
-    constructor(links: Link[], mapElements: any, anchors: Anchor[]) {
+    constructor(
+        links: Link[] = [],
+        mapElements: any = {},
+        anchors: Anchor[] = [],
+    ) {
         this.links = links || []; // Initialize links with empty array if undefined
-        this.mapElements = mapElements.getLegacyAdapter
+        this.mapElements = mapElements?.getLegacyAdapter
             ? mapElements.getLegacyAdapter()
             : mapElements;
         this.anchors = anchors;
     }
+    /**
+     * Get links according to this strategy
+     * @returns Link result containing links and elements
+     */
+
     getLinks(): LinkResult {
+        // Handle edge cases where links or mapElements might be undefined
+        if (!this.links || !this.mapElements) {
+            return {
+                name: 'empty',
+                links: [],
+                startElements: [],
+                endElements: [],
+            };
+        }
+
         const links = this.links.filter(
             (li) =>
-                this.anchors.find((i: any) => i.name === li.start) &&
+                this.anchors?.find((i: any) => i.name === li.start) &&
                 this.mapElements
                     .getEvolvedElements()
-                    .find((i: any) => i.name === li.end),
+                    ?.find((i: any) => i.name === li.end),
         );
 
         return {
