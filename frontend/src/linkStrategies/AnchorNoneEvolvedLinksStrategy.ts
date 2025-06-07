@@ -14,11 +14,7 @@ export default class AnchorNoneEvolvedLinksStrategy
     private mapElements: any; // Using any for adapter compatibility
     private anchors: Anchor[];
 
-    constructor(
-        links: Link[],
-        mapElements: UnifiedMapElements,
-        anchors: Anchor[],
-    ) {
+    constructor(links: Link[], mapElements: any, anchors: Anchor[]) {
         this.links = links || []; // Initialize links with empty array if undefined
         this.mapElements = mapElements.getLegacyAdapter
             ? mapElements.getLegacyAdapter()

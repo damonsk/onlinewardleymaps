@@ -2,7 +2,7 @@
 /**
  * Script to fix link strategies to use ModernMapElements
  * Part of Phase 4C Migration
- * 
+ *
  * This script will:
  * 1. Update imports to use ModernMapElements
  * 2. Update constructor parameter types
@@ -14,7 +14,6 @@
 
 const fs = require('fs');
 const path = require('path');
-
 
 const fs = require('fs');
 const path = require('path');

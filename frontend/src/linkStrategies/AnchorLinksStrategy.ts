@@ -16,11 +16,7 @@ export default class AnchorLinksStrategy implements LinkExtractionStrategy {
     private mapElements: any; // Using any for adapter compatibility
     private anchors: Anchor[];
 
-    constructor(
-        links: Link[],
-        mapElements: UnifiedMapElements,
-        anchors: Anchor[],
-    ) {
+    constructor(links: Link[], mapElements: any, anchors: Anchor[]) {
         this.links = links || []; // Initialize links with empty array if undefined
         this.mapElements = mapElements.getLegacyAdapter
             ? mapElements.getLegacyAdapter()
@@ -42,7 +38,7 @@ export default class AnchorLinksStrategy implements LinkExtractionStrategy {
             startElements: this.anchors.map((a) => a as MapElement),
             endElements: this.mapElements
                 .getNoneEvolvedOrEvolvingElements()
-                .map((c) => ({
+                .map((c: any) => ({
                     ...c,
                     decorators: c.decorators || {
                         ecosystem: false,
