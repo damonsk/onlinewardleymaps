@@ -29,14 +29,17 @@ import NoneEvolvingToEvolvingLinksStrategy from './NoneEvolvingToEvolvingLinksSt
 export default class LinksBuilder {
     private linkStrategies: LinkExtractionStrategy[];
     constructor(
-        mapLinks: Link[],
-        modernMapElements: ModernMapElements,
-        mapAnchors: MapAnchors[],
-        showLinkedEvolved: boolean,
+        mapLinks: Link[] = [], // Default to empty array if undefined
+        modernMapElements: any = {}, // Default to empty object if undefined
+        mapAnchors: MapAnchors[] = [], // Default to empty array if undefined
+        showLinkedEvolved: boolean = false, // Default to false if undefined
     ) {
+        // Ensure mapLinks is initialized
+        mapLinks = mapLinks || [];
+        
         // Use the legacy adapter for compatibility with link strategies if available
         // Otherwise pass modernMapElements directly
-        const mapElements = modernMapElements.getLegacyAdapter ? modernMapElements.getLegacyAdapter() : modernMapElements;
+        const mapElements = modernMapElements?.getLegacyAdapter ? modernMapElements.getLegacyAdapter() : modernMapElements;
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
             showLinkedEvolved
                 ? [

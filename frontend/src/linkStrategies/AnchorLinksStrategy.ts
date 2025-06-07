@@ -21,7 +21,7 @@ export default class AnchorLinksStrategy implements LinkExtractionStrategy {
         mapElements: UnifiedMapElements,
         anchors: Anchor[],
     ) {
-        this.links = links;
+        this.links = links || []; // Initialize links with empty array if undefined
         this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
         this.anchors = anchors;
     }

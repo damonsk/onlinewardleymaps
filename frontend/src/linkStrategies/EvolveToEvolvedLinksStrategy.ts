@@ -13,7 +13,7 @@ export default class EvolveToEvolvedLinksStrategy
     private mapElements: any; // Using any for adapter compatibility
 
     constructor(links: Link[], mapElements: UnifiedMapElements) {
-        this.links = links;
+        this.links = links || []; // Initialize links with empty array if undefined
         this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
     }
     getLinks(): LinkStrategy {
