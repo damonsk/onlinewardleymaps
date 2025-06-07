@@ -34,8 +34,9 @@ export default class LinksBuilder {
         mapAnchors: MapAnchors[],
         showLinkedEvolved: boolean,
     ) {
-        // Use the legacy adapter for compatibility with link strategies
-        const mapElements = modernMapElements.getLegacyAdapter();
+        // Use the legacy adapter for compatibility with link strategies if available
+        // Otherwise pass modernMapElements directly
+        const mapElements = modernMapElements.getLegacyAdapter ? modernMapElements.getLegacyAdapter() : modernMapElements;
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
             showLinkedEvolved
                 ? [

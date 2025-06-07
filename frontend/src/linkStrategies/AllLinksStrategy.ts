@@ -14,10 +14,10 @@ export default class AllLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility
 
-    constructor(links: Link[], mapElements: ModernMapElements) {
-        this.links = links;
-        // Use the legacy adapter for compatibility
-        this.mapElements = mapElements.getLegacyAdapter();
+    constructor(links: Link[], mapElements: any) {
+        this.links = links || []; // Initialize links with empty array if undefined
+        // Either use the legacy adapter if available or use mapElements directly
+        this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
     }
 
     getLinks(): LinkResult {

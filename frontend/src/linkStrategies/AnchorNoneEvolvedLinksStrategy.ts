@@ -20,7 +20,7 @@ export default class AnchorNoneEvolvedLinksStrategy
         anchors: Anchor[],
     ) {
         this.links = links;
-        this.mapElements = mapElements;
+        this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
         this.anchors = anchors;
     }
     getLinks(): LinkResult {

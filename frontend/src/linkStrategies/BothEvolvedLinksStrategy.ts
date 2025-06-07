@@ -13,7 +13,7 @@ export default class BothEvolvedLinksStrategy
 
     constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links;
-        this.mapElements = mapElements;
+        this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
     }
     getLinks(): LinkResult {
         const links = this.links.filter(
