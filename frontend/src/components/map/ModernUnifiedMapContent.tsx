@@ -1,6 +1,6 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
+import { ModernMapElements } from '../../processing/ModernMapElements';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
 
@@ -40,7 +40,7 @@ interface ModernUnifiedMapContentProps {
         e: MouseEvent<Element>;
     }>;
     links: any[];
-    mapElements: UnifiedMapElements;
+    mapElements: ModernMapElements;
     evolutionOffsets: {
         commodity: number;
         product: number;
@@ -138,11 +138,11 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             </g>
 
             <g id="evolvedLinks">
-                {mapElements.getEvolveElements &&
-                    mapElements.getEvolveElements().map(
-                        (e: any, i: number) =>
+                {mapElements.getEvolvingComponents &&
+                    mapElements.getEvolvingComponents().map(
+                        (e: UnifiedComponent, i: number) =>
                             getElementByName(
-                                mapElements.getEvolveElements(),
+                                mapElements.getEvolvingComponents(),
                                 e.name,
                             ) && (
                                 <ModernEvolvingComponentLink
@@ -151,7 +151,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                     mapDimensions={mapDimensions}
                                     endElement={(() => {
                                         const element = getElementByName(
-                                            mapElements.getEvolvedElements(),
+                                            mapElements.getEvolvedComponents(),
                                             e.name,
                                         );
                                         return element
@@ -160,7 +160,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                                     })()}
                                     startElement={(() => {
                                         const element = getElementByName(
-                                            mapElements.getEvolveElements(),
+                                            mapElements.getEvolvingComponents(),
                                             e.name,
                                         );
                                         return element
@@ -252,7 +252,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
             <ModernMapPipelines
                 enableNewPipelines={props.enableNewPipelines || false}
-                mapElements={mapElements}
+                mapElements={mapElements.getLegacyAdapter()} /* Using adapter for backward compatibility */
                 mapDimensions={mapDimensions}
                 mapText={mapText}
                 mutateMapText={mutateMapText}
@@ -270,7 +270,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                     // Process all methods using the utility from mapProcessing.ts
                     const processedMethodsData = processMapElements(
                         props.mapMethods || [],
-                        mapElements,
+                        mapElements.getLegacyAdapter() /* Using adapter for backward compatibility */,
                     );
 
                     // Get all methods: both standalone and decorated components
@@ -300,9 +300,9 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             </g>
 
             <g id="elements">
-                {mapElements.getMergedElements &&
+                {mapElements.getMergedComponents &&
                     mapElements
-                        .getMergedElements()
+                        .getMergedComponents()
                         .filter((c: UnifiedComponent) => c.type !== 'anchor')
                         .map((el: UnifiedComponent, i: number) => (
                             <ModernMapComponent

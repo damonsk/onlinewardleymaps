@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactSVGPanZoom } from 'react-svg-pan-zoom';
 import { UnifiedConverter } from '../../conversion/UnifiedConverter';
 import { useMapInteractions } from '../../hooks/useMapInteractions';
-import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
+import { ModernMapElements } from '../../processing/ModernMapElements';
 import { MapElement } from '../../types/base';
 import { processLinks } from '../../utils/mapProcessing';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
@@ -85,7 +85,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     }, [mapText, unifiedConverter]);
 
     const mapElements = useMemo(() => {
-        return new UnifiedMapElements(unifiedMap);
+        return new ModernMapElements(unifiedMap);
     }, [unifiedMap]);
 
     const { tool, scaleFactor, handleZoom, handleChangeTool, newElementAt } =

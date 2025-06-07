@@ -3,9 +3,9 @@ import '@testing-library/jest-dom';
 import { ModernMapElements } from '../processing/ModernMapElements';
 import {
     UnifiedWardleyMap,
-    createUnifiedComponent,
     createEvolvedElement,
     createPipeline,
+    createUnifiedComponent,
 } from '../types/unified';
 
 describe('ModernMapElements', () => {
@@ -232,5 +232,65 @@ describe('ModernMapElements', () => {
 
         // No component should be marked as a pipeline
         expect(components.every((c) => !c.pipeline)).toBe(true);
+    });
+
+    test('should correctly handle method components', () => {
+        // Add a component with method decorator
+        const methodMap = {
+            ...testMap,
+            components: [
+                ...testMap.components,
+                createUnifiedComponent({
+                    id: 'method_comp',
+                    name: 'Method Component',
+                    type: 'component',
+                    maturity: 0.4,
+                    visibility: 0.6,
+                    line: 7,
+                    decorators: {
+                        method: 'build',
+                        ecosystem: false,
+                        market: false,
+                    },
+                }),
+            ],
+        };
+
+        const mapElements = new ModernMapElements(methodMap);
+        const allComponents = mapElements.getAllComponents();
+
+        // Find the method component
+        const methodComponent = allComponents.find(
+            (c) => c.name === 'Method Component',
+        );
+        expect(methodComponent).toBeDefined();
+        expect(methodComponent?.decorators?.method).toBe('build');
+
+        // Check label spacing is set for method components
+        expect(methodComponent?.increaseLabelSpacing).toBeGreaterThan(0);
+    });
+
+    test('should provide a getLegacyAdapter for backward compatibility', () => {
+        const mapElements = new ModernMapElements(testMap);
+        const adapter = mapElements.getLegacyAdapter();
+
+        // Check that adapter has legacy method names
+        expect(adapter.getEvolveElements).toBeDefined();
+        expect(adapter.getEvolvedElements).toBeDefined();
+        expect(adapter.getMergedElements).toBeDefined();
+        expect(adapter.getMapPipelines).toBeDefined();
+        expect(adapter.getNoneEvolvedOrEvolvingElements).toBeDefined();
+
+        // Check adapter methods work correctly
+        expect(adapter.getEvolveElements().length).toBe(1);
+        expect(adapter.getEvolvedElements().length).toBe(1);
+        expect(adapter.getMergedElements().length).toBe(5);
+        expect(adapter.getMapPipelines().length).toBe(1);
+        expect(adapter.getNoneEvolvedOrEvolvingElements().length).toBe(3);
+
+        // Check legacy conversion methods
+        const component = testMap.components[0];
+        expect(adapter.convertToMapElement(component)).toBe(component);
+        expect(adapter.convertToMapElements([component])).toEqual([component]);
     });
 });

@@ -1,6 +1,6 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
+import { ModernMapElements } from '../../processing/ModernMapElements';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
 import { PipelineData } from '../../types/unified/components';
@@ -20,8 +20,8 @@ interface ModernMapPipelinesProps {
     scaleFactor?: number;
     enableNewPipelines?: boolean;
 
-    // Direct reference to UnifiedMapElements and PipelineData
-    mapElements: UnifiedMapElements;
+    // Direct reference to ModernMapElements and PipelineData
+    mapElements: ModernMapElements;
     pipelines?: PipelineData[];
 
     // Optional click handler for linking functionality
@@ -55,7 +55,7 @@ const ModernMapPipelines: React.FC<ModernMapPipelinesProps> = ({
     };
 
     // If pipelines are provided directly, use those, otherwise get from mapElements
-    const pipelinesToRender = pipelines || mapElements.getMapPipelines();
+    const pipelinesToRender = pipelines || mapElements.getPipelineComponents();
 
     // Log the pipeline data for debugging
     if (pipelinesToRender.length === 0) {

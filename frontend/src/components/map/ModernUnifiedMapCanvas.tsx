@@ -14,7 +14,7 @@ import {
     MapDimensions,
     Offsets,
 } from '../../constants/defaults';
-import { UnifiedMapElements } from '../../processing/UnifiedMapElements';
+import { ModernMapElements } from '../../processing/ModernMapElements';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedWardleyMap } from '../../types/unified/map';
 import { processLinks } from '../../utils/mapProcessing';
@@ -79,9 +79,9 @@ function ModernUnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const isModKeyPressed = useModKeyPressedConsumer();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
-    // Create UnifiedMapElements instance from the wardley map data
+    // Create ModernMapElements instance from the wardley map data
     const mapElements = useMemo(() => {
-        return new UnifiedMapElements(wardleyMap);
+        return new ModernMapElements(wardleyMap);
     }, [wardleyMap]);
 
     // Process links using the UnifiedMapElements instance

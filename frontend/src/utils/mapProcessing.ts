@@ -1,5 +1,5 @@
 import LinksBuilder from '../linkStrategies/LinksBuilder';
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { ModernMapElements } from '../processing/ModernMapElements';
 import { MapAnchors, MapElement, MapLinks, MapMethods } from '../types/base';
 
 export interface ProcessedLink {
@@ -26,13 +26,15 @@ export interface LinksResult {
 
 export function processLinks(
     mapLinks: MapLinks[],
-    mapElements: UnifiedMapElements,
+    mapElements: ModernMapElements,
     mapAnchors: MapAnchors[],
     showLinkedEvolved: boolean,
 ): ProcessedLinkGroup[] {
+    // Use the legacy adapter for compatibility with LinksBuilder
+    const legacyAdapter = mapElements.getLegacyAdapter();
     const linksBuilder = new LinksBuilder(
         mapLinks,
-        mapElements,
+        legacyAdapter,
         mapAnchors,
         showLinkedEvolved,
     );
@@ -58,9 +60,9 @@ interface ProcessedMethodElement {
 
 export function processMapElements(
     elements: MapMethods[],
-    mapElements: UnifiedMapElements,
+    mapElements: any, // Accept either ModernMapElements or its adapter
 ) {
-    const asMethod = (m: MapElement): ProcessedMethodElement => ({
+    const asMethod = (m: any): ProcessedMethodElement => ({
         id: m.id,
         name: m.name,
         maturity: m.maturity,
@@ -70,14 +72,14 @@ export function processMapElements(
     });
 
     const getElementByName = (
-        elements: MapElement[],
+        elements: any[],
         name: string,
-    ): MapElement | undefined => {
+    ): any | undefined => {
         return elements.find((el) => el.name === name);
     };
 
     const decoratedComponentsMethods = mapElements
-        .getMergedElements()
+        .getMergedComponents()
         .filter(
             (m: MapElement) =>
                 m.decorators &&
@@ -86,7 +88,8 @@ export function processMapElements(
         )
         .map((m: MapElement) => asMethod(m));
 
-    const nonEvolvedElements = mapElements.getNoneEvolvedOrEvolvingElements();
+    const nonEvolvedElements =
+        mapElements.getNeitherEvolvedNorEvolvingComponents();
 
     const meths = elements
         .filter((m: any) => {

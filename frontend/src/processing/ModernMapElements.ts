@@ -320,4 +320,41 @@ export class ModernMapElements {
     getPipelineComponents(): PipelineData[] {
         return this.pipelines;
     }
+
+    /**
+     * TEMPORARY: Creates a legacy UnifiedMapElements-compatible adapter
+     * This is for backward compatibility during the transition period.
+     * It will be removed once all components are updated to use ModernMapElements directly.
+     *
+     * @deprecated Use ModernMapElements methods directly instead
+     */
+    getLegacyAdapter(): any {
+        // Create an adapter object with methods that match UnifiedMapElements API
+        return {
+            getAllComponents: () => this.getAllComponents(),
+            getComponentsByType: (type: string) =>
+                this.getComponentsByType(type),
+            getEvolvingComponents: () => this.getEvolvingComponents(),
+            getEvolvedComponents: () => this.getEvolvedComponents(),
+            getMergedComponents: () => this.getMergedComponents(),
+            getPipelineComponents: () => this.getPipelineComponents(),
+
+            // Legacy method names mapped to modern methods
+            getEvolveElements: () => this.getEvolvingComponents(),
+            getEvolvedElements: () => this.getEvolvedComponents(),
+            getMergedElements: () => this.getMergedComponents(),
+            getMapPipelines: () => this.getPipelineComponents(),
+            getNoneEvolvedOrEvolvingElements: () =>
+                this.getNeitherEvolvedNorEvolvingComponents(),
+            getNoneEvolvingElements: () => this.getNonEvolvingComponents(),
+            getNeitherEvolvedNorEvolvingComponents: () =>
+                this.getNeitherEvolvedNorEvolvingComponents(),
+
+            // Legacy adapter methods
+            convertToMapElement: (component: UnifiedComponent) => component,
+            convertToMapElements: (components: UnifiedComponent[]) =>
+                components,
+            getEvolvedUnifiedComponents: () => this.getEvolvedComponents(),
+        };
+    }
 }

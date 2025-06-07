@@ -4,12 +4,12 @@
 // This component is the entry point for the modern map rendering pipeline.
 // It creates a ModernMapElements instance from the map text and passes it to ModernMapView.
 
-import React, { useState, useMemo } from 'react';
-import { ModernMapElements } from '../../processing/ModernMapElements';
-import { UnifiedConverter } from '../../conversion/UnifiedConverter';
-import { ModernMapView } from './ModernMapView';
+import React, { useMemo, useState } from 'react';
 import { useFeatureSwitches } from '../../components/FeatureSwitchesContext';
+import { UnifiedConverter } from '../../conversion/UnifiedConverter';
+import { ModernMapElements } from '../../processing/ModernMapElements';
 import { UnifiedWardleyMap } from '../../types/unified/map';
+import { ModernMapView } from './ModernMapView';
 
 // Define the HighlightCallback type locally
 type HighlightCallback = (line: number) => void;
