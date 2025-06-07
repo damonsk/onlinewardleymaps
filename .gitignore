@@ -9,3 +9,7 @@ frontend/ui-components
 frontend/.yarn
 frontend/sonar-project.js
 frontend/tsconfig.tsbuildinfo
+
+# Cleanup script artifacts
+*.bak
+frontend/src/archived_legacy_components/

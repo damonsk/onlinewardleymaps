@@ -147,9 +147,12 @@ function moveFile(sourcePath, destPath, importFixes = {}) {
   
   if (!TEST_MODE) {
     fs.writeFileSync(destPath, content);
+    // Delete the source file after copying
+    fs.unlinkSync(sourcePath);
     log(`Moved file: ${sourcePath} -> ${destPath}`, 'success');
   } else {
     log(`[TEST] Would move file: ${sourcePath} -> ${destPath}`, 'info');
+    log(`[TEST] Would delete original file after move: ${sourcePath}`, 'info');
   }
   return true;
 }
