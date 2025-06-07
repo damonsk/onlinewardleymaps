@@ -37,11 +37,9 @@ export default class LinksBuilder {
         // Ensure mapLinks is initialized
         mapLinks = mapLinks || [];
 
-        // Use the legacy adapter for compatibility with link strategies if available
-        // Otherwise pass modernMapElements directly
-        const mapElements = modernMapElements?.getLegacyAdapter
-            ? modernMapElements.getLegacyAdapter()
-            : modernMapElements;
+        // Use modernMapElements directly without the legacy adapter
+        // This completes the Phase 4C modernization by removing adapter usage
+        const mapElements = modernMapElements;
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
             showLinkedEvolved
                 ? [

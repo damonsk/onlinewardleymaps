@@ -252,7 +252,7 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
             <ModernMapPipelines
                 enableNewPipelines={props.enableNewPipelines || false}
-                mapElements={mapElements.getLegacyAdapter()} /* Using adapter for backward compatibility */
+                mapElements={mapElements} /* Using ModernMapElements directly */
                 mapDimensions={mapDimensions}
                 mapText={mapText}
                 mutateMapText={mutateMapText}
@@ -267,10 +267,10 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             <g id="methods">
                 {/* Process all methods using the same logic from the legacy implementation */}
                 {(() => {
-                    // Process all methods using the utility from mapProcessing.ts
+                    // Process all methods using the utility from mapProcessing.ts with ModernMapElements directly
                     const processedMethodsData = processMapElements(
                         props.mapMethods || [],
-                        mapElements.getLegacyAdapter() /* Using adapter for backward compatibility */,
+                        mapElements /* Using ModernMapElements directly */,
                     );
 
                     // Get all methods: both standalone and decorated components

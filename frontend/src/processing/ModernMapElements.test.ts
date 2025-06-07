@@ -3,10 +3,10 @@
 
 import { ModernMapElements } from '../processing/ModernMapElements';
 import {
+    PipelineData,
     UnifiedComponent,
     createUnifiedComponent,
 } from '../types/unified/components';
-import { PipelineData } from '../types/unified/components';
 
 // Create a mock of UnifiedWardleyMap with only the properties needed for testing
 interface TestMap {

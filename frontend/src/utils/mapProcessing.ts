@@ -59,7 +59,7 @@ interface ProcessedMethodElement {
 
 export function processMapElements(
     elements: MapMethods[],
-    mapElements: any, // Accept either ModernMapElements or its adapter
+    mapElements: ModernMapElements, // Now directly accepting ModernMapElements for full Phase 4C compatibility
 ) {
     const asMethod = (m: any): ProcessedMethodElement => ({
         id: m.id,
@@ -80,12 +80,12 @@ export function processMapElements(
     const decoratedComponentsMethods = mapElements
         .getMergedComponents()
         .filter(
-            (m: MapElement) =>
+            (m: any) =>
                 m.decorators &&
                 'method' in m.decorators &&
                 (m.decorators.method ?? '').length > 0,
         )
-        .map((m: MapElement) => asMethod(m));
+        .map((m: any) => asMethod(m));
 
     const nonEvolvedElements =
         mapElements.getNeitherEvolvedNorEvolvingComponents();
