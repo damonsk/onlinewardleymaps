@@ -88,7 +88,9 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
 
     // Get elements from UnifiedMapElements
     // Use ModernMapElements directly - Phase 4C modernization
-    const mapAnchors: UnifiedComponent[] = mapElements.getAllComponents().filter((c) => c.type === 'anchor');
+    const mapAnchors: UnifiedComponent[] = mapElements
+        .getAllComponents()
+        .filter((c) => c.type === 'anchor');
 
     const getElementByName = (elements: UnifiedComponent[], name: string) =>
         elements.find((e) => e.name === name);
@@ -143,38 +145,38 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
                             mapElements.getEvolvingComponents(),
                             e.name,
                         ) && (
-                                <ModernEvolvingComponentLink
-                                    key={i}
-                                    mapStyleDefs={mapStyleDefs}
-                                    mapDimensions={mapDimensions}
-                                    endElement={(() => {
-                                        const element = getElementByName(
-                                            mapElements.getEvolvedComponents(),
-                                            e.name,
-                                        );
-                                        return element
-                                            ? passComponent(element)
-                                            : undefined;
-                                    })()}
-                                    startElement={(() => {
-                                        const element = getElementByName(
-                                            mapElements.getEvolvingComponents(),
-                                            e.name,
-                                        );
-                                        return element
-                                            ? passComponent(element)
-                                            : undefined;
-                                    })()}
-                                    evolutionOffsets={
-                                        props.evolutionOffsets || {
-                                            commodity: 0,
-                                            product: 0,
-                                            custom: 0,
-                                        }
+                            <ModernEvolvingComponentLink
+                                key={i}
+                                mapStyleDefs={mapStyleDefs}
+                                mapDimensions={mapDimensions}
+                                endElement={(() => {
+                                    const element = getElementByName(
+                                        mapElements.getEvolvedComponents(),
+                                        e.name,
+                                    );
+                                    return element
+                                        ? passComponent(element)
+                                        : undefined;
+                                })()}
+                                startElement={(() => {
+                                    const element = getElementByName(
+                                        mapElements.getEvolvingComponents(),
+                                        e.name,
+                                    );
+                                    return element
+                                        ? passComponent(element)
+                                        : undefined;
+                                })()}
+                                evolutionOffsets={
+                                    props.evolutionOffsets || {
+                                        commodity: 0,
+                                        product: 0,
+                                        custom: 0,
                                     }
-                                />
-                            ),
-                    )}
+                                }
+                            />
+                        ),
+                )}
             </g>
 
             <g id="anchors">
@@ -300,102 +302,102 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             <g id="elements">
                 {mapElements
                     .getMergedComponents()
-                        .filter((c: UnifiedComponent) => c.type !== 'anchor')
-                        .map((el: UnifiedComponent, i: number) => (
-                            <ModernMapComponent
-                                key={i}
-                                launchUrl={launchUrl}
-                                mapDimensions={mapDimensions}
-                                component={passComponent(el)}
-                                mapText={mapText}
-                                mutateMapText={mutateMapText}
-                                mapStyleDefs={mapStyleDefs}
-                                setHighlightLine={setHighlightLineDispatch}
-                                scaleFactor={scaleFactor}
-                            >
-                                {el.type === 'component' && !el.pipeline && (
-                                    <ModernComponentSymbol
-                                        id={`element_circle_${el.id}`}
-                                        styles={mapStyleDefs.component}
-                                        component={el}
-                                        onClick={(e: MouseEvent<SVGElement>) =>
-                                            clicked({
-                                                el: passComponent(el),
-                                                e,
-                                            })
-                                        }
-                                    />
-                                )}
+                    .filter((c: UnifiedComponent) => c.type !== 'anchor')
+                    .map((el: UnifiedComponent, i: number) => (
+                        <ModernMapComponent
+                            key={i}
+                            launchUrl={launchUrl}
+                            mapDimensions={mapDimensions}
+                            component={passComponent(el)}
+                            mapText={mapText}
+                            mutateMapText={mutateMapText}
+                            mapStyleDefs={mapStyleDefs}
+                            setHighlightLine={setHighlightLineDispatch}
+                            scaleFactor={scaleFactor}
+                        >
+                            {el.type === 'component' && !el.pipeline && (
+                                <ModernComponentSymbol
+                                    id={`element_circle_${el.id}`}
+                                    styles={mapStyleDefs.component}
+                                    component={el}
+                                    onClick={(e: MouseEvent<SVGElement>) =>
+                                        clicked({
+                                            el: passComponent(el),
+                                            e,
+                                        })
+                                    }
+                                />
+                            )}
 
-                                {el.pipeline && (
-                                    <ModernPipelineComponentSymbol
-                                        id={`element_square_${el.id}`}
-                                        styles={mapStyleDefs.component}
-                                        component={el}
-                                        onClick={() =>
-                                            clicked({
-                                                el: passComponent(el),
-                                                e: null,
-                                            })
-                                        }
-                                    />
-                                )}
+                            {el.pipeline && (
+                                <ModernPipelineComponentSymbol
+                                    id={`element_square_${el.id}`}
+                                    styles={mapStyleDefs.component}
+                                    component={el}
+                                    onClick={() =>
+                                        clicked({
+                                            el: passComponent(el),
+                                            e: null,
+                                        })
+                                    }
+                                />
+                            )}
 
-                                {(el.decorators?.ecosystem ||
-                                    el.type === 'ecosystem') && (
-                                    <ModernEcosystemSymbol
-                                        id={`ecosystem_circle_${el.id}`}
-                                        styles={mapStyleDefs.component}
-                                        component={el}
-                                        onClick={(e: MouseEvent<SVGGElement>) =>
-                                            clicked({
-                                                el: passComponent(el),
-                                                e,
-                                            })
-                                        }
-                                    />
-                                )}
+                            {(el.decorators?.ecosystem ||
+                                el.type === 'ecosystem') && (
+                                <ModernEcosystemSymbol
+                                    id={`ecosystem_circle_${el.id}`}
+                                    styles={mapStyleDefs.component}
+                                    component={el}
+                                    onClick={(e: MouseEvent<SVGGElement>) =>
+                                        clicked({
+                                            el: passComponent(el),
+                                            e,
+                                        })
+                                    }
+                                />
+                            )}
 
-                                {(el.decorators?.market ||
-                                    el.type === 'market') && (
-                                    <ModernMarketSymbol
-                                        id={`market_circle_${el.id}`}
-                                        styles={mapStyleDefs.component}
-                                        component={el}
-                                        onClick={(e: MouseEvent<SVGElement>) =>
-                                            clicked({
-                                                el: passComponent(el),
-                                                e,
-                                            })
-                                        }
-                                    />
-                                )}
+                            {(el.decorators?.market ||
+                                el.type === 'market') && (
+                                <ModernMarketSymbol
+                                    id={`market_circle_${el.id}`}
+                                    styles={mapStyleDefs.component}
+                                    component={el}
+                                    onClick={(e: MouseEvent<SVGElement>) =>
+                                        clicked({
+                                            el: passComponent(el),
+                                            e,
+                                        })
+                                    }
+                                />
+                            )}
 
-                                {el.type === 'submap' && (
-                                    <ModernSubMapSymbol
-                                        styles={mapStyleDefs.component}
-                                        component={el}
-                                        onClick={(e: MouseEvent<SVGElement>) =>
-                                            clicked({
-                                                el: passComponent(el),
-                                                e,
-                                            })
-                                        }
-                                        launchUrl={
-                                            el.url &&
-                                            typeof el.url === 'object' &&
-                                            'url' in el.url &&
-                                            (el.url as any).url
-                                                ? () =>
-                                                      launchUrl?.(
-                                                          (el.url as any).url,
-                                                      )
-                                                : undefined
-                                        }
-                                    />
-                                )}
-                            </ModernMapComponent>
-                        ))}
+                            {el.type === 'submap' && (
+                                <ModernSubMapSymbol
+                                    styles={mapStyleDefs.component}
+                                    component={el}
+                                    onClick={(e: MouseEvent<SVGElement>) =>
+                                        clicked({
+                                            el: passComponent(el),
+                                            e,
+                                        })
+                                    }
+                                    launchUrl={
+                                        el.url &&
+                                        typeof el.url === 'object' &&
+                                        'url' in el.url &&
+                                        (el.url as any).url
+                                            ? () =>
+                                                  launchUrl?.(
+                                                      (el.url as any).url,
+                                                  )
+                                            : undefined
+                                    }
+                                />
+                            )}
+                        </ModernMapComponent>
+                    ))}
             </g>
 
             <g id="notes">

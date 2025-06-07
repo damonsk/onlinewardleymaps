@@ -71,7 +71,7 @@ describe('So that large refactors can be done without breaking output of mapElem
                 fn: () => {
                     // Filter out evolved elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolved);
+                    return mergedElements.filter((el) => !el.evolved);
                 },
                 fileName: 'GoldenMasterMapElementsNonEvolved.txt',
             },
@@ -79,7 +79,9 @@ describe('So that large refactors can be done without breaking output of mapElem
                 fn: () => {
                     // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolved && !el.evolving);
+                    return mergedElements.filter(
+                        (el) => !el.evolved && !el.evolving,
+                    );
                 },
                 fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
             },
@@ -87,7 +89,7 @@ describe('So that large refactors can be done without breaking output of mapElem
                 fn: () => {
                     // Filter out evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolving);
+                    return mergedElements.filter((el) => !el.evolving);
                 },
                 fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
             },
@@ -100,12 +102,15 @@ describe('So that large refactors can be done without breaking output of mapElem
             // Always log the output for debugging
             console.log(`ACTUAL ${fileName} OUTPUT:`);
             console.log(JSON.stringify(output));
-            
+
             // Write the new output to a file for comparison and updating golden masters
             fs.writeFileSync(
-                path.resolve(__dirname, `${fileName.replace('.txt', '')}_new.txt`),
+                path.resolve(
+                    __dirname,
+                    `${fileName.replace('.txt', '')}_new.txt`,
+                ),
                 JSON.stringify(output),
-                'utf-8'
+                'utf-8',
             );
             testResultEquality(output, fileName);
         });

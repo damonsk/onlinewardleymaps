@@ -32,14 +32,19 @@ describe('Golden Master File Updater', () => {
         const fileContent = loadFileContent(fileName);
 
         // Parse using UnifiedConverter (same as test)
-        const result = new UnifiedConverter(mockContextValue).parse(fileContent);
-        
+        const result = new UnifiedConverter(mockContextValue).parse(
+            fileContent,
+        );
+
         // Create ModernMapElements
         const me = new ModernMapElements(result);
         const legacyAdapter = me.getLegacyAdapter();
 
         // Converter Output - Update only if needed
-        const converterOutputFile = path.resolve(__dirname, 'GoldenMasterConverterOutput.txt');
+        const converterOutputFile = path.resolve(
+            __dirname,
+            'GoldenMasterConverterOutput.txt',
+        );
         fs.writeFileSync(converterOutputFile, JSON.stringify(result), 'utf-8');
         console.log(`Updated: GoldenMasterConverterOutput.txt`);
 
@@ -65,7 +70,7 @@ describe('Golden Master File Updater', () => {
                 fn: () => {
                     // Filter out evolved elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolved);
+                    return mergedElements.filter((el) => !el.evolved);
                 },
                 fileName: 'GoldenMasterMapElementsNonEvolved.txt',
             },
@@ -73,7 +78,9 @@ describe('Golden Master File Updater', () => {
                 fn: () => {
                     // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolved && !el.evolving);
+                    return mergedElements.filter(
+                        (el) => !el.evolved && !el.evolving,
+                    );
                 },
                 fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
             },
@@ -81,7 +88,7 @@ describe('Golden Master File Updater', () => {
                 fn: () => {
                     // Filter out evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolving);
+                    return mergedElements.filter((el) => !el.evolving);
                 },
                 fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
             },
@@ -97,7 +104,7 @@ describe('Golden Master File Updater', () => {
         });
 
         console.log('All golden master files updated successfully!');
-        
+
         // Test passes if we get to this point without errors
         expect(true).toBe(true);
     });

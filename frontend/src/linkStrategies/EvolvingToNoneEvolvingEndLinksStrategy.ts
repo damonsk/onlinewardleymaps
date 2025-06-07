@@ -18,7 +18,9 @@ export default class EvolvingToNoneEvolvingEndLinksStrategy
     constructor(links: Link[], mapElements: any) {
         this.links = links || []; // Initialize links with empty array if undefined
         // Either use the legacy adapter if available or use mapElements directly
-        this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
+        this.mapElements = mapElements.getLegacyAdapter
+            ? mapElements.getLegacyAdapter()
+            : mapElements;
     }
     getLinks(): LinkResult {
         const links = this.links.filter(

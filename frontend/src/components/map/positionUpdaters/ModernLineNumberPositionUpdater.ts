@@ -42,7 +42,7 @@ export default class ModernLineNumberPositionUpdater {
      */
     update(moved: any, identifier: string, line: number): void {
         const splitArray = this.mapText.split('\n');
-        
+
         // Handle out-of-bounds line numbers
         if (line > splitArray.length) {
             // If line is out of bounds, pad the array with empty lines and add "undefined"
@@ -54,11 +54,11 @@ export default class ModernLineNumberPositionUpdater {
             this.mutator(splitArray.join('\n'));
             return;
         }
-        
+
         // Get the line content (adjust for 0-based array index)
         const lineIndex = line - 1;
         let getLine = splitArray[lineIndex];
-        
+
         // Apply replacers in order until we find a match
         for (const replacer of this.replacers) {
             // Explicitly coerce matcher result to boolean to handle undefined/null
@@ -69,7 +69,7 @@ export default class ModernLineNumberPositionUpdater {
                 break; // Stop after first match
             }
         }
-        
+
         // Always call the mutator with the current state of the text
         this.mutator(splitArray.join('\n'));
     }

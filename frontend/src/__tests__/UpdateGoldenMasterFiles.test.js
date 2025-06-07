@@ -39,21 +39,26 @@ function saveFileContent(fileName, content) {
 describe('Update Golden Master Files', () => {
     test('Update all golden master files with ModernMapElements output', () => {
         console.log('Starting golden master file update...');
-        
+
         // Load map text from the golden master file
         const mapTextFileName = 'GoldenMasterMapText.txt';
         const fileContent = loadFileContent(mapTextFileName);
-        
+
         // Parse the text with UnifiedConverter
-        const parsedMap = new UnifiedConverter(mockContextValue).parse(fileContent);
-        
+        const parsedMap = new UnifiedConverter(mockContextValue).parse(
+            fileContent,
+        );
+
         // Save converter output for reference
-        saveFileContent('GoldenMasterConverterOutput.txt', JSON.stringify(parsedMap));
-        
+        saveFileContent(
+            'GoldenMasterConverterOutput.txt',
+            JSON.stringify(parsedMap),
+        );
+
         // Create ModernMapElements from the parsed map
         const modernMapElements = new ModernMapElements(parsedMap);
         const legacyAdapter = modernMapElements.getLegacyAdapter();
-        
+
         // Define all the test cases we need to update
         const testCases = [
             {
@@ -76,7 +81,7 @@ describe('Update Golden Master Files', () => {
                 fn: () => {
                     // Filter out evolved elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolved);
+                    return mergedElements.filter((el) => !el.evolved);
                 },
                 fileName: 'GoldenMasterMapElementsNonEvolved.txt',
             },
@@ -84,7 +89,9 @@ describe('Update Golden Master Files', () => {
                 fn: () => {
                     // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolved && !el.evolving);
+                    return mergedElements.filter(
+                        (el) => !el.evolved && !el.evolving,
+                    );
                 },
                 fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
             },
@@ -92,12 +99,12 @@ describe('Update Golden Master Files', () => {
                 fn: () => {
                     // Filter out evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(el => !el.evolving);
+                    return mergedElements.filter((el) => !el.evolving);
                 },
                 fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
             },
         ];
-        
+
         // Update each golden master file
         testCases.forEach((testCase) => {
             const { fn, fileName } = testCase;
@@ -105,9 +112,9 @@ describe('Update Golden Master Files', () => {
             const output = fn();
             saveFileContent(fileName, JSON.stringify(output));
         });
-        
+
         console.log('Golden master file update completed successfully!');
-        
+
         // This test always passes - it's just to run the update
         expect(true).toBe(true);
     });

@@ -22,7 +22,7 @@ import NoneEvolvingToEvolvingLinksStrategy from './NoneEvolvingToEvolvingLinksSt
 /**
  * LinksBuilder - Updated to use ModernMapElements
  * Part of Phase 4C Modernization
- * 
+ *
  * This class coordinates the different link strategies to build all links
  * that need to be rendered on the Wardley Map.
  */
@@ -36,10 +36,12 @@ export default class LinksBuilder {
     ) {
         // Ensure mapLinks is initialized
         mapLinks = mapLinks || [];
-        
+
         // Use the legacy adapter for compatibility with link strategies if available
         // Otherwise pass modernMapElements directly
-        const mapElements = modernMapElements?.getLegacyAdapter ? modernMapElements.getLegacyAdapter() : modernMapElements;
+        const mapElements = modernMapElements?.getLegacyAdapter
+            ? modernMapElements.getLegacyAdapter()
+            : modernMapElements;
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
             showLinkedEvolved
                 ? [

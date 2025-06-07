@@ -13,7 +13,9 @@ export default class BothEvolvedLinksStrategy
 
     constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links || []; // Initialize links with empty array if undefined
-        this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
+        this.mapElements = mapElements.getLegacyAdapter
+            ? mapElements.getLegacyAdapter()
+            : mapElements;
     }
     getLinks(): LinkResult {
         const links = this.links.filter(
