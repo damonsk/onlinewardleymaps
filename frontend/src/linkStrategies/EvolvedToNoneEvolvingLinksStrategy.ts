@@ -1,4 +1,4 @@
-import { ModernMapElements } from '../processing/ModernMapElements';
+// Using any type instead of ModernMapElements for compatibility with both modern and legacy elements
 import {
     Link,
     LinkExtractionStrategy,

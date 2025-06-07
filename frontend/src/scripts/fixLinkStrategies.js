@@ -1,7 +1,11 @@
+/* eslint-disable */
 /**
  * Script to fix link strategy constructors for ModernMapElements compatibility
  * This makes sure they handle both direct ModernMapElements and adapter cases
  */
+
+// Disable ESLint for Node.js require statements
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const fs = require('fs');
 const path = require('path');

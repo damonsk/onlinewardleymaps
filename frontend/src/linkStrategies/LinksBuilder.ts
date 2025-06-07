@@ -1,3 +1,4 @@
+// We need the import for type checking, but we handle both legacy and modern elements
 import { ModernMapElements } from '../processing/ModernMapElements';
 import { MapAnchors } from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';

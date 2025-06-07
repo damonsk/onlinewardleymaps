@@ -1,8 +1,12 @@
+/* eslint-disable */
 /**
  * Script to fix all link strategy files for ModernMapElements compatibility
  * - Sets this.links = links || [] to handle undefined links
  * - Fixes the mapElements assignment to handle both legacy and modern APIs
  */
+
+// Disable ESLint for Node.js require statements
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const fs = require('fs');
 const path = require('path');
