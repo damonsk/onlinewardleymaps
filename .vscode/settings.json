@@ -14,7 +14,8 @@
     "node_modules": true,
     "*/node_modules": true,
     "*/.next": true,
-    "*/.yarn": true
+    "*/.yarn": true,
+    "**/**.bak": true,
   },
   "jestrunner.configPath": "frontend/jest.config.js",
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
