@@ -30,11 +30,10 @@ export function processLinks(
     mapAnchors: MapAnchors[],
     showLinkedEvolved: boolean,
 ): ProcessedLinkGroup[] {
-    // Use the legacy adapter for compatibility with LinksBuilder
-    const legacyAdapter = mapElements.getLegacyAdapter();
+    // Use ModernMapElements directly with the LinksBuilder
     const linksBuilder = new LinksBuilder(
         mapLinks,
-        legacyAdapter,
+        mapElements,
         mapAnchors,
         showLinkedEvolved,
     );

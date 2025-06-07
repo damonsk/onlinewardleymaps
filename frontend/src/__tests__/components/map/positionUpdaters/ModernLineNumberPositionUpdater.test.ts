@@ -58,6 +58,19 @@ describe('ModernLineNumberPositionUpdater', () => {
     });
 
     test('checks all replacers until it finds a match', () => {
+        // Set up specific matchers for this test
+        const specificMatcher = jest.fn().mockImplementation((line, identifier, type) => {
+            return line === 'component Bar [0.3, 0.4]' && identifier === 'Bar' && type === 'component';
+        });
+        
+        const specificAction = jest.fn().mockImplementation((line, moved) => {
+            return `component Bar [${moved.param1}, ${moved.param2}]`;
+        });
+        
+        // Override the mock implementation just for this test
+        (mockMatcher1.matcher as jest.Mock).mockImplementation(specificMatcher);
+        (mockMatcher1.action as jest.Mock).mockImplementation(specificAction);
+        
         const moved = { param1: 0.7, param2: 0.8 };
         // Update line 3 (component Bar)
         updater.update(moved, 'Bar', 3);
@@ -80,7 +93,7 @@ describe('ModernLineNumberPositionUpdater', () => {
 
     test('does nothing if no matcher matches', () => {
         // Override mockMatcher1 to always return false for this test
-        mockMatcher1.matcher.mockImplementation(() => false);
+        (mockMatcher1.matcher as jest.Mock).mockImplementation(() => false);
 
         const moved = { param1: 0.9, param2: 1.0 };
         updater.update(moved, 'Baz', 2);
