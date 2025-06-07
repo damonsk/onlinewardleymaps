@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { MapElements } from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -17,7 +17,7 @@ const mockContextValue = {
 
 useContext.mockReturnValue(mockContextValue);
 
-describe('DSL Component Decorators in UnifiedMapElements', function () {
+describe('DSL Component Decorators in MapElements', function () {
     test('When components have DSL decorators, they should preserve decorator properties correctly', function () {
         const mapText = `
 title Test Map with Decorators
@@ -32,8 +32,8 @@ component MultipleDecorators [0.9, 0.9] (market, buy)
 
         // Parse the map text
         const result = new UnifiedConverter(mockContextValue).parse(mapText);
-        const me = new UnifiedMapElements(result);
-        const mergedElements = me.getMergedElements();
+        const me = new MapElements(result);
+        const mergedElements = me.getMergedComponents();
 
         // Find components by name
         const findComponent = (name) =>
@@ -50,37 +50,41 @@ component MultipleDecorators [0.9, 0.9] (market, buy)
         const multipleDecorators = findComponent('MultipleDecorators');
 
         // Regular component should not have any decorators
-        expect(regularComponent.decorators.market).toBe(false);
-        expect(regularComponent.decorators.ecosystem).toBe(false);
+        expect(regularComponent.decorators?.market || false).toBe(false);
+        expect(regularComponent.decorators?.ecosystem || false).toBe(false);
         expect(regularComponent.decorators.method).toBeUndefined();
 
         // Market decorated component should have market decorator
-        expect(marketDecorated.decorators.market).toBe(true);
-        expect(marketDecorated.decorators.ecosystem).toBe(false);
+        expect(marketDecorated.decorators?.market || false).toBe(true);
+        expect(marketDecorated.decorators?.ecosystem || false).toBe(false);
         expect(marketDecorated.decorators.method).toBeUndefined();
 
         // Ecosystem decorated component should have ecosystem decorator
-        expect(ecosystemDecorated.decorators.ecosystem).toBe(true);
-        expect(ecosystemDecorated.decorators.market).toBe(false);
+        expect(ecosystemDecorated.decorators?.ecosystem || false).toBe(true);
+        expect(ecosystemDecorated.decorators?.market || false).toBe(false);
         expect(ecosystemDecorated.decorators.method).toBeUndefined();
 
         // Method decorated components should have method decorator
         expect(buyMethodDecorated.decorators.method).toBe('buy');
-        expect(buyMethodDecorated.decorators.market).toBe(false);
-        expect(buyMethodDecorated.decorators.ecosystem).toBe(false);
+        expect(buyMethodDecorated.decorators?.market || false).toBe(false);
+        expect(buyMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
         expect(buildMethodDecorated.decorators.method).toBe('build');
-        expect(buildMethodDecorated.decorators.market).toBe(false);
-        expect(buildMethodDecorated.decorators.ecosystem).toBe(false);
+        expect(buildMethodDecorated.decorators?.market || false).toBe(false);
+        expect(buildMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
         expect(outsourceMethodDecorated.decorators.method).toBe('outsource');
-        expect(outsourceMethodDecorated.decorators.market).toBe(false);
-        expect(outsourceMethodDecorated.decorators.ecosystem).toBe(false);
+        expect(outsourceMethodDecorated.decorators?.market || false).toBe(
+            false,
+        );
+        expect(outsourceMethodDecorated.decorators?.ecosystem || false).toBe(
+            false,
+        );
 
         // Multiple decorators should preserve both
-        expect(multipleDecorators.decorators.market).toBe(true);
+        expect(multipleDecorators.decorators?.market || false).toBe(true);
         expect(multipleDecorators.decorators.method).toBe('buy');
-        expect(multipleDecorators.decorators.ecosystem).toBe(false);
+        expect(multipleDecorators.decorators?.ecosystem || false).toBe(false);
     });
 
     test('When components have type-based classification, they should still get correct decorators', function () {
@@ -93,8 +97,8 @@ component RegularComponent [0.7, 0.7]
 
         // Parse the map text
         const result = new UnifiedConverter(mockContextValue).parse(mapText);
-        const me = new UnifiedMapElements(result);
-        const mergedElements = me.getMergedElements();
+        const me = new MapElements(result);
+        const mergedElements = me.getMergedComponents();
 
         // Find components by name
         const findComponent = (name) =>
@@ -105,18 +109,18 @@ component RegularComponent [0.7, 0.7]
         const regularComponent = findComponent('RegularComponent');
 
         // Type-based market should have market decorator via fallback logic
-        expect(typeBasedMarket.decorators.market).toBe(true);
-        expect(typeBasedMarket.decorators.ecosystem).toBe(false);
+        expect(typeBasedMarket.decorators?.market || false).toBe(true);
+        expect(typeBasedMarket.decorators?.ecosystem || false).toBe(false);
         expect(typeBasedMarket.decorators.method).toBeUndefined();
 
         // Type-based ecosystem should have ecosystem decorator via fallback logic
-        expect(typeBasedEcosystem.decorators.ecosystem).toBe(true);
-        expect(typeBasedEcosystem.decorators.market).toBe(false);
+        expect(typeBasedEcosystem.decorators?.ecosystem || false).toBe(true);
+        expect(typeBasedEcosystem.decorators?.market || false).toBe(false);
         expect(typeBasedEcosystem.decorators.method).toBeUndefined();
 
         // Regular component should not have any decorators
-        expect(regularComponent.decorators.market).toBe(false);
-        expect(regularComponent.decorators.ecosystem).toBe(false);
+        expect(regularComponent.decorators?.market || false).toBe(false);
+        expect(regularComponent.decorators?.ecosystem || false).toBe(false);
         expect(regularComponent.decorators.method).toBeUndefined();
     });
 
@@ -132,8 +136,8 @@ ecosystem TypeEcoWithMarketDecorator [0.6, 0.6] (market)
 
         // Parse the map text
         const result = new UnifiedConverter(mockContextValue).parse(mapText);
-        const me = new UnifiedMapElements(result);
-        const mergedElements = me.getMergedElements();
+        const me = new MapElements(result);
+        const mergedElements = me.getMergedComponents();
 
         // Find components by name
         const findComponent = (name) =>
@@ -149,18 +153,26 @@ ecosystem TypeEcoWithMarketDecorator [0.6, 0.6] (market)
         );
 
         // DSL decorators should work correctly
-        expect(foobar.decorators.market).toBe(true);
-        expect(foobar.decorators.ecosystem).toBe(false);
+        expect(foobar.decorators?.market || false).toBe(true);
+        expect(foobar.decorators?.ecosystem || false).toBe(false);
 
-        expect(barbaz.decorators.ecosystem).toBe(true);
-        expect(barbaz.decorators.market).toBe(false);
+        expect(barbaz.decorators?.ecosystem || false).toBe(true);
+        expect(barbaz.decorators?.market || false).toBe(false);
 
         // DSL decorators should override component type
-        expect(typeMarketWithEcoDecorator.decorators.ecosystem).toBe(true);
-        expect(typeMarketWithEcoDecorator.decorators.market).toBe(true); // Should still be true due to type fallback
+        expect(typeMarketWithEcoDecorator.decorators?.ecosystem || false).toBe(
+            true,
+        );
+        expect(typeMarketWithEcoDecorator.decorators?.market || false).toBe(
+            true,
+        ); // Should still be true due to type fallback
 
-        expect(typeEcoWithMarketDecorator.decorators.market).toBe(true);
-        expect(typeEcoWithMarketDecorator.decorators.ecosystem).toBe(true); // Should still be true due to type fallback
+        expect(typeEcoWithMarketDecorator.decorators?.market || false).toBe(
+            true,
+        );
+        expect(typeEcoWithMarketDecorator.decorators?.ecosystem || false).toBe(
+            true,
+        ); // Should still be true due to type fallback
     });
 
     test('When evolved components preserve decorators from base component', function () {
@@ -176,8 +188,9 @@ evolve EvolvedMethod 0.75
 
         // Parse the map text
         const result = new UnifiedConverter(mockContextValue).parse(mapText);
-        const me = new UnifiedMapElements(result);
-        const evolvedElements = me.getEvolvedElements();
+        const me = new MapElements(result);
+        const legacyAdapter = me.getLegacyAdapter();
+        const evolvedElements = legacyAdapter.getEvolvedElements();
 
         // Find evolved components by name (they get '_evolved' suffix)
         const findComponent = (name) =>
@@ -188,17 +201,17 @@ evolve EvolvedMethod 0.75
         const evolvedMethod = findComponent('EvolvedMethod');
 
         // Evolved components should preserve decorators from base component
-        expect(evolvedMarket.decorators.market).toBe(true);
-        expect(evolvedMarket.decorators.ecosystem).toBe(false);
+        expect(evolvedMarket.decorators?.market || false).toBe(true);
+        expect(evolvedMarket.decorators?.ecosystem || false).toBe(false);
         expect(evolvedMarket.decorators.method).toBeUndefined();
 
-        expect(evolvedEcosystem.decorators.ecosystem).toBe(true);
-        expect(evolvedEcosystem.decorators.market).toBe(false);
+        expect(evolvedEcosystem.decorators?.ecosystem || false).toBe(true);
+        expect(evolvedEcosystem.decorators?.market || false).toBe(false);
         expect(evolvedEcosystem.decorators.method).toBeUndefined();
 
         expect(evolvedMethod.decorators.method).toBe('buy');
-        expect(evolvedMethod.decorators.market).toBe(false);
-        expect(evolvedMethod.decorators.ecosystem).toBe(false);
+        expect(evolvedMethod.decorators?.market || false).toBe(false);
+        expect(evolvedMethod.decorators?.ecosystem || false).toBe(false);
     });
 
     test('When components have no decorators, they should have false/undefined decorator values', function () {
@@ -210,13 +223,13 @@ component AnotherComponent [0.6, 0.6]
 
         // Parse the map text
         const result = new UnifiedConverter(mockContextValue).parse(mapText);
-        const me = new UnifiedMapElements(result);
-        const mergedElements = me.getMergedElements();
+        const me = new MapElements(result);
+        const mergedElements = me.getMergedComponents();
 
         // All components should have proper default decorator values
         mergedElements.forEach((component) => {
-            expect(component.decorators.market).toBe(false);
-            expect(component.decorators.ecosystem).toBe(false);
+            expect(component.decorators?.market || false).toBe(false);
+            expect(component.decorators?.ecosystem || false).toBe(false);
             expect(component.decorators.method).toBeUndefined();
         });
     });

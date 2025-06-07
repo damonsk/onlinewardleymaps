@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { MapElements } from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -14,8 +14,8 @@ describe('Given Components Evolve', function () {
     test('When evolve text is supplied then convert output is correct', function () {
         let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo 0.9';
         let result = new UnifiedConverter(mockContextValue).parse(actual);
-        let me = new UnifiedMapElements(result);
-        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let me = new MapElements(result);
+        let legacyAdapter = me.getLegacyAdapter();
         let evolved = legacyAdapter.getEvolveElements();
 
         expect(result.evolved.length).toEqual(1);
@@ -27,8 +27,8 @@ describe('Given Components Evolve', function () {
     test('When evolve text is supplied with overriding label, ensure label is mutated', function () {
         let actual = 'component Foo [0.9, 0.1]' + '\n' + 'evolve Foo->Bar 0.9';
         let result = new UnifiedConverter(mockContextValue).parse(actual);
-        let me = new UnifiedMapElements(result);
-        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let me = new MapElements(result);
+        let legacyAdapter = me.getLegacyAdapter();
         let evolved = legacyAdapter.getEvolveElements();
 
         expect(result.evolved.length).toEqual(1);
@@ -44,8 +44,8 @@ describe('Given Components Evolve', function () {
             '\n' +
             'evolve Foo 0.9 label [-33, -55]';
         let result = new UnifiedConverter(mockContextValue).parse(actual);
-        let me = new UnifiedMapElements(result);
-        let legacyAdapter = me.createLegacyMapElementsAdapter();
+        let me = new MapElements(result);
+        let legacyAdapter = me.getLegacyAdapter();
         let evolving = legacyAdapter.getEvolveElements();
         let evolved = legacyAdapter.getEvolvedElements();
 
