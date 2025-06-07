@@ -1,4 +1,4 @@
-// Using any type instead of ModernMapElements for compatibility with both modern and legacy elements
+// Using any type instead of MapElements for compatibility with both modern and legacy elements
 import { MapElement } from '../types/base';
 import {
     Link,
@@ -8,7 +8,7 @@ import {
 
 /**
  * AllLinksStrategy
- * Updated to use ModernMapElements in Phase 4C
+ * Updated to use MapElements in Phase 4C
  */
 export default class AllLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];

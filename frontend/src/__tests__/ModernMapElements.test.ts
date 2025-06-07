@@ -1,6 +1,6 @@
-// ModernMapElements.test.ts
+// MapElements.test.ts
 import '@testing-library/jest-dom';
-import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElements } from '../processing/MapElements';
 import {
     UnifiedWardleyMap,
     createEvolvedElement,
@@ -8,7 +8,7 @@ import {
     createUnifiedComponent,
 } from '../types/unified';
 
-describe('ModernMapElements', () => {
+describe('MapElements', () => {
     let testMap: UnifiedWardleyMap;
 
     beforeEach(() => {
@@ -89,18 +89,18 @@ describe('ModernMapElements', () => {
     });
 
     test('should initialize correctly', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         expect(mapElements).toBeDefined();
     });
 
     test('should return all components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const allComponents = mapElements.getAllComponents();
         expect(allComponents.length).toBe(4); // 3 components + 1 anchor
     });
 
     test('should filter components by type', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const components = mapElements.getComponentsByType('component');
         expect(components.length).toBe(3);
         expect(components[0].name).toBe('Component A');
@@ -113,7 +113,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should mark evolving components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const evolvingComponents = mapElements.getEvolvingComponents();
         expect(evolvingComponents.length).toBe(1);
         expect(evolvingComponents[0].name).toBe('Component A');
@@ -122,7 +122,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should create evolved components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const evolvedComponents = mapElements.getEvolvedComponents();
         expect(evolvedComponents.length).toBe(1);
         expect(evolvedComponents[0].name).toBe('Component A');
@@ -132,7 +132,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should mark pipeline components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const components = mapElements.getComponentsByType('component');
         const pipelineComponent = components.find(
             (c) => c.name === 'Component B',
@@ -142,7 +142,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should return merged components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const mergedComponents = mapElements.getMergedComponents();
         expect(mergedComponents.length).toBe(5); // 3 original components + 1 anchor + 1 evolved
 
@@ -155,7 +155,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should return static components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const staticComponents = mapElements.getStaticComponents();
         expect(staticComponents.length).toBe(4); // all components except evolved ones
 
@@ -164,7 +164,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should return inertia components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const inertiaComponents = mapElements.getInertiaComponents();
         expect(inertiaComponents.length).toBe(1);
         expect(inertiaComponents[0].name).toBe('Component C');
@@ -172,21 +172,21 @@ describe('ModernMapElements', () => {
     });
 
     test('should return components that are neither evolved nor evolving', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const components = mapElements.getNeitherEvolvedNorEvolvingComponents();
         expect(components.length).toBe(3); // Component B, C, and Anchor A
         expect(components.some((c) => c.name === 'Component A')).toBe(false);
     });
 
     test('should return non-evolving components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const components = mapElements.getNonEvolvingComponents();
         expect(components.length).toBe(3); // Component B, C, and Anchor A
         expect(components.some((c) => c.name === 'Component A')).toBe(false);
     });
 
     test('should return non-evolved components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const components = mapElements.getNonEvolvedComponents();
         expect(components.length).toBe(4); // All original components (no evolved components)
 
@@ -195,14 +195,14 @@ describe('ModernMapElements', () => {
     });
 
     test('should return components that are either evolved or evolving', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const components = mapElements.getEitherEvolvedOrEvolvingComponents();
         expect(components.length).toBe(1); // Only Component A is evolving
         expect(components[0].name).toBe('Component A');
     });
 
     test('should return pipeline components', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const pipelines = mapElements.getPipelineComponents();
         expect(pipelines.length).toBe(1);
         expect(pipelines[0].name).toBe('Component B');
@@ -215,7 +215,7 @@ describe('ModernMapElements', () => {
             evolved: [],
         };
 
-        const mapElements = new ModernMapElements(emptyEvolvedMap);
+        const mapElements = new MapElements(emptyEvolvedMap);
         const evolvedComponents = mapElements.getEvolvedComponents();
         expect(evolvedComponents.length).toBe(0);
     });
@@ -227,7 +227,7 @@ describe('ModernMapElements', () => {
             pipelines: [],
         };
 
-        const mapElements = new ModernMapElements(emptyPipelinesMap);
+        const mapElements = new MapElements(emptyPipelinesMap);
         const components = mapElements.getComponentsByType('component');
 
         // No component should be marked as a pipeline
@@ -256,7 +256,7 @@ describe('ModernMapElements', () => {
             ],
         };
 
-        const mapElements = new ModernMapElements(methodMap);
+        const mapElements = new MapElements(methodMap);
         const allComponents = mapElements.getAllComponents();
 
         // Find the method component
@@ -271,7 +271,7 @@ describe('ModernMapElements', () => {
     });
 
     test('should provide a getLegacyAdapter for backward compatibility', () => {
-        const mapElements = new ModernMapElements(testMap);
+        const mapElements = new MapElements(testMap);
         const adapter = mapElements.getLegacyAdapter();
 
         // Check that adapter has legacy method names

@@ -1,5 +1,5 @@
 import LinksBuilder from '../linkStrategies/LinksBuilder';
-import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElements } from '../processing/MapElements';
 import { MapAnchors, MapElement, MapLinks, MapMethods } from '../types/base';
 
 export interface ProcessedLink {
@@ -26,11 +26,11 @@ export interface LinksResult {
 
 export function processLinks(
     mapLinks: MapLinks[],
-    mapElements: ModernMapElements,
+    mapElements: MapElements,
     mapAnchors: MapAnchors[],
     showLinkedEvolved: boolean,
 ): ProcessedLinkGroup[] {
-    // Use ModernMapElements directly with the LinksBuilder
+    // Use MapElements directly with the LinksBuilder
     const linksBuilder = new LinksBuilder(
         mapLinks,
         mapElements,
@@ -59,7 +59,7 @@ interface ProcessedMethodElement {
 
 export function processMapElements(
     elements: MapMethods[],
-    mapElements: ModernMapElements, // Now directly accepting ModernMapElements for full Phase 4C compatibility
+    mapElements: MapElements, // Now directly accepting MapElements for full Phase 4C compatibility
 ) {
     const asMethod = (m: any): ProcessedMethodElement => ({
         id: m.id,

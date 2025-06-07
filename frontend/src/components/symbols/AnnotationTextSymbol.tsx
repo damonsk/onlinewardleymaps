@@ -2,15 +2,23 @@ import React, { memo } from 'react';
 import { MapAnnotationTheme } from '../../constants/mapstyles';
 import { MapAnnotations } from '../../types/base';
 
-export interface AnnotationTextSymbolProps {
+interface ModernAnnotationTextSymbolProps {
     id?: string;
     annotation: MapAnnotations;
     styles: MapAnnotationTheme;
 }
 
-const AnnotationTextSymbol: React.FunctionComponent<
-    AnnotationTextSymbolProps
-> = ({ id, annotation, styles }) => {
+/**
+ * AnnotationTextSymbol - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders a single annotation text line
+ */
+const AnnotationTextSymbol: React.FC<ModernAnnotationTextSymbolProps> = ({
+    id,
+    annotation,
+    styles,
+}) => {
     return (
         <tspan
             id={id}

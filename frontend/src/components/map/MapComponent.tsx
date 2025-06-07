@@ -1,180 +1,189 @@
 import React from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
+import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import Movable from './Movable';
-import PositionCalculator from './PositionCalculator';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import { ExistingSingleCoordMatcher } from './positionUpdaters/ExistingSingleCoordMatcher';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
-
-import { MapDimensions } from '../../constants/defaults';
-import { MapElement, Replacer } from '../../types/base';
-import { MapTheme } from '../../types/map/styles';
-import { useModKeyPressedConsumer } from '../KeyPressContext';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface MovedPosition {
     x: number;
     y: number;
 }
 
-interface MapComponentProps {
-    keyword: string;
+/**
+ * Modern Map Component - Phase 4A: Core Component Type Migration
+ * This component uses UnifiedComponent directly without adapters
+ */
+interface ModernMapComponentProps {
     launchUrl?: (url: string) => void;
     mapDimensions: MapDimensions;
-    element: MapElement;
+    component: UnifiedComponent; // Changed from element: MapElement to component: UnifiedComponent
     mapText: string;
     mutateMapText: (newText: string) => void;
     mapStyleDefs: MapTheme;
     setHighlightLine: (line: number) => void;
     scaleFactor: number;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
-const MapComponent: React.FC<MapComponentProps> = (props) => {
+/**
+ * MapComponent uses UnifiedComponent directly for rendering
+ * This implements Phase 4A of the migration plan
+ */
+const MapComponent: React.FC<ModernMapComponentProps> = ({
+    launchUrl,
+    mapDimensions,
+    component, // Using component instead of element
+    mapText,
+    mutateMapText,
+    mapStyleDefs,
+    setHighlightLine,
+    scaleFactor,
+    children,
+}) => {
     const isModKeyPressed = useModKeyPressedConsumer();
-
-    const positionCalc = new PositionCalculator();
-    const x = positionCalc.maturityToX(
-        props.element.maturity,
-        props.mapDimensions.width,
+    const calculatedPosition = new ModernPositionCalculator();
+    const posX = calculatedPosition.maturityToX(
+        component.maturity,
+        mapDimensions.width,
     );
-    const y =
-        positionCalc.visibilityToY(
-            props.element.visibility,
-            props.mapDimensions.height,
-        ) + (props.element.offsetY ? props.element.offsetY : 0);
+    const posY =
+        calculatedPosition.visibilityToY(
+            component.visibility,
+            mapDimensions.height,
+        ) + (component.offsetY ? component.offsetY : 0);
 
-    const onElementClick = () => props.setHighlightLine(props.element.line);
-    const canApplyInertia = () =>
-        !props.element.evolved &&
-        props.element.evolving === false &&
-        props.element.inertia === true;
+    const handleClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-    const notEvolvedNoLabelMatcher: Replacer = {
-        matcher: (line: string, identifier: string, type: string): boolean => {
-            return (
-                !props.element.evolved &&
-                ExistingCoordsMatcher.matcher(line, identifier, type) &&
-                !ExistingCoordsMatcher.matcher(line, '', 'label')
-            );
-        },
-        action: (line: string, moved: any): string => {
-            return ExistingCoordsMatcher.action(line, moved);
-        },
+        if (component.line) {
+            // Always set the highlight line to move the cursor to this line
+            setHighlightLine(component.line);
+        }
+
+        if (component.url && launchUrl) {
+            if (typeof component.url === 'string') {
+                launchUrl(component.url);
+            } else if (component.url.url) {
+                launchUrl(component.url.url);
+            }
+        }
     };
 
-    const notEvolvedWithLabelMatcher: Replacer = {
-        matcher: (line: string, identifier: string, type: string): boolean => {
-            return (
-                !props.element.evolved &&
-                ExistingCoordsMatcher.matcher(line, identifier, type) &&
-                ExistingCoordsMatcher.matcher(line, '', 'label')
-            );
-        },
-        action: (line: string, moved: any): string => {
-            const parts = line.split('label');
-            const newPart = ExistingCoordsMatcher.action(parts[0], moved);
-            return newPart + 'label' + parts[1];
-        },
-    };
+    const updatePosition = (movedPosition: MovedPosition) => {
+        if (component.line === undefined) return;
 
-    const evolvedMatcher: Replacer = {
-        matcher: (line: string, identifier: string): boolean => {
-            return (
-                props.element.evolved &&
-                ExistingSingleCoordMatcher.matcher(line, identifier, 'evolve')
-            );
-        },
-        action: (line: string, moved: any): string => {
-            return ExistingSingleCoordMatcher.action(line, moved);
-        },
-    };
+        // Calculate new maturity and visibility from moved position
+        const calculator = new ModernPositionCalculator();
+        const newMaturity = parseFloat(
+            calculator.xToMaturity(movedPosition.x, mapDimensions.width),
+        );
+        const newVisibility = parseFloat(
+            calculator.yToVisibility(movedPosition.y, mapDimensions.height),
+        );
 
-    const positionUpdater = new DefaultPositionUpdater(
-        props.keyword,
-        props.mapText,
-        props.mutateMapText,
-        [
-            notEvolvedNoLabelMatcher,
-            notEvolvedWithLabelMatcher,
-            evolvedMatcher,
-            NotDefinedCoordsMatcher,
-        ],
-    );
-
-    console.log('MapComponent DefaultPositionUpdater created:', {
-        keyword: props.keyword,
-        elementType: props.element.type,
-        elementName: props.element.name,
-        mapTextPresent: !!props.mapText,
-        mutateMapTextPresent: typeof props.mutateMapText === 'function',
-        mutateMapTextType: typeof props.mutateMapText,
-    });
-
-    function endDrag(moved: MovedPosition): void {
-        console.log('MapComponent endDrag called:', {
-            moved,
-            element: props.element.name,
-            mapText: props.mapText ? 'present' : 'missing',
-            mutateMapText:
-                typeof props.mutateMapText === 'function'
-                    ? 'present'
-                    : 'missing',
+        // Find and replace the component position in the map text
+        const lines = mapText.split('\n');
+        const updatedLines = lines.map((line, index) => {
+            // Only update the specific line that matches this component's line number
+            if (index + 1 === component.line) {
+                // Check for component with exact name match using regex to avoid partial matches
+                const regex = new RegExp(
+                    `component\\s+${component.name}\\b`,
+                    'i',
+                );
+                if (regex.test(line)) {
+                    // Handle lines with or without label differently
+                    if (line.includes('label')) {
+                        // Split the line at "label" to separate component coordinates from label coordinates
+                        const parts = line.split(/\blabel\b/);
+                        // Only replace the first set of coordinates (component position)
+                        const updatedFirstPart = parts[0].replace(
+                            /\[(.?|.+?)\]/,
+                            `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
+                        );
+                        // Rejoin with the label part unchanged
+                        return updatedFirstPart + 'label' + parts[1];
+                    } else {
+                        // No label in the line, safe to replace the only coordinate pair
+                        return line.replace(
+                            /\[(.?|.+?)\]/,
+                            `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
+                        );
+                    }
+                }
+            }
+            return line;
         });
-        const visibility = positionCalc.yToVisibility(
-            moved.y,
-            props.mapDimensions.height,
-        );
-        const maturity = positionCalc.xToMaturity(
-            moved.x,
-            props.mapDimensions.width,
-        );
-        console.log('MapComponent calling positionUpdater.update:', {
-            visibility,
-            maturity,
-            elementName: props.element.name,
-        });
-        positionUpdater.update(
-            { param1: parseFloat(visibility), param2: parseFloat(maturity) },
-            props.element.name,
-        );
-        console.log('MapComponent positionUpdater.update completed');
-    }
 
-    console.log('MapComponent', props);
+        const newText = updatedLines.join('\n');
+        mutateMapText(newText);
+    };
 
     return (
         <>
             <Movable
-                id={'element_' + props.element.id}
-                onMove={endDrag}
-                x={x}
-                y={y}
-                fixedY={props.element.evolved}
+                id={`element_${component.id}`}
+                x={posX}
+                y={posY}
+                onMove={updatePosition}
+                fixedY={component.evolved}
                 fixedX={false}
                 shouldShowMoving={true}
                 isModKeyPressed={isModKeyPressed}
-                scaleFactor={props.scaleFactor}
+                scaleFactor={scaleFactor}
             >
-                <>{props.children}</>
+                <g
+                    id={component.id}
+                    onClick={handleClick}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {children}
+                </g>
             </Movable>
-            {canApplyInertia() && (
-                <Inertia
-                    maturity={props.element.maturity + 0.05}
-                    visibility={props.element.visibility}
-                    mapDimensions={props.mapDimensions}
-                />
-            )}
-            <g transform={'translate(' + x + ',' + y + ')'}>
+
+            {component.inertia &&
+                !component.evolved &&
+                component.evolving === false && (
+                    <Inertia
+                        maturity={component.maturity + 0.05} // Added 0.05 offset to match legacy implementation
+                        visibility={component.visibility}
+                        mapDimensions={mapDimensions}
+                    />
+                )}
+
+            <g transform={`translate(${posX},${posY})`}>
                 <ComponentText
-                    id={'component_text_' + props.element.id}
-                    mapStyleDefs={props.mapStyleDefs}
-                    element={props.element}
-                    mapText={props.mapText}
-                    mutateMapText={props.mutateMapText}
-                    onClick={onElementClick}
-                    scaleFactor={props.scaleFactor}
+                    component={component}
+                    cx={0}
+                    cy={0}
+                    styles={mapStyleDefs?.component}
+                    id={`component_text_${component.id}`}
+                    element={{
+                        id: component.id,
+                        name: component.name,
+                        type: component.type,
+                        line: component.line,
+                        evolved: component.evolved,
+                        evolving: component.evolving,
+                        override: component.override,
+                        maturity: component.maturity,
+                        label: component.label,
+                    }}
+                    mapStyleDefs={mapStyleDefs}
+                    scaleFactor={scaleFactor}
+                    mapText={mapText}
+                    mutateMapText={mutateMapText}
+                    onClick={() => {
+                        if (component.line) {
+                            // Simply set the highlight line to move the cursor
+                            setHighlightLine(component.line);
+                        }
+                    }}
                 />
             </g>
         </>

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 import { useContext } from 'react';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElements } from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -46,8 +46,8 @@ describe('So that large refactors can be done without breaking output of mapElem
         // console.log(JSON.stringify(result)); // Uncomment for debugging
         testResultEquality(result, 'GoldenMasterConverterOutput.txt');
 
-        // Use ModernMapElements instead of UnifiedMapElements
-        const me = new ModernMapElements(result);
+        // Use MapElements instead of UnifiedMapElements
+        const me = new MapElements(result);
         const legacyAdapter = me.getLegacyAdapter();
 
         const testCases = [

@@ -1,24 +1,17 @@
-import React, { MouseEvent, useEffect, useMemo } from 'react';
+import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import {
-    MapAnnotations,
-    MapMethods,
-    MapNotes,
-} from '../../linkStrategies/LinkStrategiesInterfaces';
-import { ModernMapElements } from '../../processing/ModernMapElements';
-import { MapElement } from '../../types/base';
+import { MapElements } from '../../processing/MapElements';
 import { MapTheme } from '../../types/map/styles';
 import { UnifiedComponent } from '../../types/unified';
-import {
-    ProcessedLinkGroup,
-    processMapElements,
-} from '../../utils/mapProcessing';
-import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
+
+// Import required components
+import { processMapElements } from '../../utils/mapProcessing';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import SubMapSymbol from '../symbols/SubMapSymbol';
+import MapAccelerator from './MapAccelerator';
 import Anchor from './Anchor';
 import AnnotationBox from './AnnotationBox';
 import AnnotationElement from './AnnotationElement';
@@ -26,13 +19,16 @@ import Attitude from './Attitude';
 import ComponentLink from './ComponentLink';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import FluidLink from './FluidLink';
-import MapAccelerator from './MapAccelerator';
 import MapComponent from './MapComponent';
 import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
 import Note from './Note';
 
-interface UnifiedMapContentProps {
+// Phase 4: Component Interface Modernization
+// All adapter functions have been removed
+// Components now use UnifiedComponent type directly
+
+interface ModernUnifiedMapContentProps {
     mapAttitudes: any[];
     mapDimensions: MapDimensions;
     mapStyleDefs: MapTheme;
@@ -40,11 +36,11 @@ interface UnifiedMapContentProps {
     mutateMapText: (text: string) => void;
     scaleFactor: number;
     mapElementsClicked: Array<{
-        el: MapElement;
+        el: UnifiedComponent;
         e: MouseEvent<Element>;
     }>;
-    links: ProcessedLinkGroup[];
-    mapElements: ModernMapElements; // Using ModernMapElements instead of legacy MapElements
+    links: any[];
+    mapElements: MapElements;
     evolutionOffsets: {
         commodity: number;
         product: number;
@@ -52,251 +48,279 @@ interface UnifiedMapContentProps {
     };
     enableNewPipelines: boolean;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    clicked: (data: { el: MapElement; e: MouseEvent<Element> | null }) => void;
+    clicked: (data: { el: any; e: MouseEvent<Element> | null }) => void;
     enableAccelerators: boolean;
-    mapAccelerators: UnifiedComponent[]; // Using unified types
-    mapNotes: MapNotes[];
-    mapAnnotations: MapAnnotations[];
+    mapAccelerators: UnifiedComponent[];
+    mapNotes: any[];
+    mapAnnotations: any[];
     mapAnnotationsPresentation: any;
-    launchUrl: (url: string) => void;
-    mapMethods: MapMethods[];
+    launchUrl?: (url: string) => void;
+    mapMethods: any[];
 }
 
-/**
- * Adapter function to convert UnifiedComponent to legacy Component interface
- * This provides backward compatibility during the transition
- */
-const adaptUnifiedComponentToLegacy = (component: UnifiedComponent): any => {
-    const adapted = {
-        name: component.name,
-        id: component.id,
-        visibility: component.visibility,
-        maturity: component.maturity,
-        type: component.type,
-        inertia: component.inertia,
-        url: component.url,
-        decorators: component.decorators,
-        pipeline: component.pipeline,
-        evolving: component.evolving,
-        label: component.label,
-        line: component.line,
-        evolved: component.evolved,
-        offsetY: component.offsetY,
-        pseudoComponent: component.pseudoComponent,
-        evolveMaturity: component.evolveMaturity,
-        increaseLabelSpacing: component.increaseLabelSpacing,
-        override: component.override, // Missing property needed for evolved component label updates
+const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
+    const {
+        mapDimensions,
+        mapStyleDefs,
+        mapText,
+        mutateMapText,
+        scaleFactor,
+        mapElements,
+        setHighlightLine,
+        clicked,
+        enableAccelerators,
+        launchUrl,
+    } = props;
+
+    // Create a dispatcher wrapper to handle prop type conflicts
+    const setHighlightLineDispatch = (value: any) => {
+        if (typeof value === 'function') {
+            // If we're given a function, evaluate it
+            setHighlightLine(value(0));
+        } else {
+            // Simply set the highlight line to the provided value
+            // The cursor will be moved to this line in the editor
+            setHighlightLine(value);
+        }
     };
-    return adapted;
-};
 
-// Legacy adapter code has been removed in favor of using ModernMapElements.getLegacyAdapter
+    // Get elements from UnifiedMapElements
+    // Use MapElements directly - Phase 4C modernization
+    const mapAnchors: UnifiedComponent[] = mapElements
+        .getAllComponents()
+        .filter((c) => c.type === 'anchor');
 
-const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
-    mapAttitudes,
-    mapDimensions,
-    mapStyleDefs,
-    mapText,
-    mutateMapText,
-    scaleFactor,
-    mapElementsClicked,
-    links,
-    mapElements,
-    evolutionOffsets,
-    setHighlightLine,
-    clicked,
-    enableAccelerators,
-    mapAccelerators,
-    enableNewPipelines,
-    mapNotes,
-    mapAnnotations,
-    mapAnnotationsPresentation,
-    launchUrl,
-    mapMethods,
-}) => {
-    // Create legacy adapter for backward compatibility
-    const legacyMapElements = useMemo(() => {
-        // Use the built-in legacy adapter
-        return mapElements.getLegacyAdapter();
-    }, [mapElements]);
+    const getElementByName = (elements: UnifiedComponent[], name: string) =>
+        elements.find((e) => e.name === name);
 
-    const { allMethods: allMeths, getElementByName } = useMemo(
-        () => processMapElements(mapMethods, mapElements.getLegacyAdapter()),
-        [mapMethods, mapElements],
-    );
-
-    useEffect(() => {
-        console.log('legacyMapElements', legacyMapElements.getMergedElements());
-    }, [legacyMapElements]);
+    // Direct component passing function - no need for adaptation since we're using unified types
+    // This is part of Phase 4A migration - eliminate adapter functions
+    const passComponent = (component: any): any => {
+        // Simply return the component as is - unified components have all needed properties
+        // In a future phase, this function can be removed completely and components used directly
+        return component;
+    };
 
     return (
-        <g id="map">
+        <g id="mapContent">
             <g id="attitudes">
-                {mapAttitudes.map((a, i) => (
-                    <Attitude
-                        key={i}
-                        mapDimensions={mapDimensions}
-                        mapStyleDefs={mapStyleDefs}
-                        mapText={mapText}
-                        mutateMapText={mutateMapText}
-                        attitude={a}
-                        scaleFactor={scaleFactor}
-                    />
-                ))}
-            </g>
-
-            <g id="methods">
-                {allMeths.map((m, i) => (
-                    <MethodElement
-                        key={i}
-                        element={m}
-                        mapStyleDefs={mapStyleDefs}
-                        mapDimensions={mapDimensions}
-                        method={m.method}
-                    />
-                ))}
-            </g>
-
-            <g id="fluids" key="fluids">
-                {mapElementsClicked.map((current, i) => (
-                    <FluidLink
-                        key={i}
-                        mapStyleDefs={mapStyleDefs}
-                        mapDimensions={mapDimensions}
-                        startElement={current.el}
-                        origClick={current.e}
-                        scaleFactor={scaleFactor}
-                    />
-                ))}
-            </g>
-
-            {links.map((current) => (
-                <g id={current.name} key={current.name}>
-                    {current.links.map((l, i) => (
-                        <ComponentLink
-                            mapStyleDefs={mapStyleDefs}
+                {props.mapAttitudes &&
+                    props.mapAttitudes.map((a: any, i: number) => (
+                        <Attitude
                             key={i}
+                            attitude={a}
                             mapDimensions={mapDimensions}
-                            startElement={l.startElement}
-                            endElement={l.endElement}
-                            link={l.link}
-                            scaleFactor={scaleFactor}
-                        />
-                    ))}
-                </g>
-            ))}
-
-            <g id="evolvedLinks">
-                {legacyMapElements
-                    .getEvolveElements()
-                    .map(
-                        (e: any, i: number) =>
-                            getElementByName(
-                                legacyMapElements.getEvolveElements(),
-                                e.name,
-                            ) && (
-                                <EvolvingComponentLink
-                                    key={i}
-                                    mapStyleDefs={mapStyleDefs}
-                                    mapDimensions={mapDimensions}
-                                    endElement={getElementByName(
-                                        legacyMapElements.getEvolvedElements(),
-                                        e.name,
-                                    )}
-                                    startElement={getElementByName(
-                                        legacyMapElements.getEvolveElements(),
-                                        e.name,
-                                    )}
-                                    evolutionOffsets={evolutionOffsets}
-                                />
-                            ),
-                    )}
-            </g>
-
-            <g id="anchors">
-                {mapElements
-                    .getComponentsByType('anchor')
-                    .map((el: UnifiedComponent, i) => (
-                        <Anchor
-                            key={i}
-                            mapDimensions={mapDimensions}
-                            anchor={adaptUnifiedComponentToLegacy(el)}
                             mapText={mapText}
                             mutateMapText={mutateMapText}
                             mapStyleDefs={mapStyleDefs}
-                            onClick={(e) => {
-                                console.log(
-                                    'mapElementsClicked::anchor clicked',
-                                    el,
-                                    clicked,
-                                );
-                                clicked({
-                                    el: adaptUnifiedComponentToLegacy(el),
-                                    e,
-                                });
-                            }}
+                            scaleFactor={scaleFactor}
+                        />
+                    ))}
+            </g>
+
+            <g id="links">
+                {props.links.map((current: any) => (
+                    <g id={current.name} key={current.name}>
+                        {current.links.map((l: any, i: number) => (
+                            <ComponentLink
+                                mapStyleDefs={mapStyleDefs}
+                                key={i}
+                                mapDimensions={mapDimensions}
+                                startElement={l.startElement}
+                                endElement={l.endElement}
+                                link={l.link}
+                                scaleFactor={scaleFactor}
+                            />
+                        ))}
+                    </g>
+                ))}
+            </g>
+
+            <g id="evolvedLinks">
+                {mapElements.getEvolvingComponents().map(
+                    (e: UnifiedComponent, i: number) =>
+                        getElementByName(
+                            mapElements.getEvolvingComponents(),
+                            e.name,
+                        ) && (
+                            <EvolvingComponentLink
+                                key={i}
+                                mapStyleDefs={mapStyleDefs}
+                                mapDimensions={mapDimensions}
+                                endElement={(() => {
+                                    const element = getElementByName(
+                                        mapElements.getEvolvedComponents(),
+                                        e.name,
+                                    );
+                                    return element
+                                        ? passComponent(element)
+                                        : undefined;
+                                })()}
+                                startElement={(() => {
+                                    const element = getElementByName(
+                                        mapElements.getEvolvingComponents(),
+                                        e.name,
+                                    );
+                                    return element
+                                        ? passComponent(element)
+                                        : undefined;
+                                })()}
+                                evolutionOffsets={
+                                    props.evolutionOffsets || {
+                                        commodity: 0,
+                                        product: 0,
+                                        custom: 0,
+                                    }
+                                }
+                            />
+                        ),
+                )}
+            </g>
+
+            <g id="anchors">
+                {mapAnchors.map((a: UnifiedComponent, i: number) => (
+                    <Anchor
+                        key={i}
+                        mapDimensions={mapDimensions}
+                        anchor={a}
+                        mapText={mapText}
+                        mutateMapText={mutateMapText}
+                        mapStyleDefs={mapStyleDefs}
+                        onClick={() => setHighlightLine(a.line || 0)}
+                    />
+                ))}
+            </g>
+
+            <g id="fluidLinks">
+                {props.mapElementsClicked &&
+                    props.mapElementsClicked.map((current: any, i: number) => (
+                        <FluidLink
+                            key={`fluid-${i}`}
+                            mapStyleDefs={mapStyleDefs}
+                            mapDimensions={mapDimensions}
+                            startElement={passComponent(current.el)}
+                            origClick={current.e}
+                            scaleFactor={scaleFactor}
                         />
                     ))}
             </g>
 
             <g id="accelerators">
                 {enableAccelerators &&
-                    mapAccelerators.map((el, l) => (
-                        <MapAccelerator
-                            key={l}
-                            element={adaptUnifiedComponentToLegacy(el)}
-                            mapDimensions={mapDimensions}
-                            mapText={mapText}
-                            mutateMapText={mutateMapText}
-                            scaleFactor={scaleFactor}
-                        >
-                            <AcceleratorSymbol
-                                id={'market_circle_' + el.id}
-                                isDeAccelerator={
-                                    (el as any).deaccelerator || false
-                                }
-                                onClick={() => setHighlightLine(el.line || 0)}
-                            />
-                        </MapAccelerator>
-                    ))}
+                    props.mapAccelerators &&
+                    props.mapAccelerators.map(
+                        (el: UnifiedComponent, i: number) => (
+                            <MapAccelerator
+                                key={i}
+                                element={el}
+                                mapDimensions={mapDimensions}
+                                mapText={mapText}
+                                mutateMapText={mutateMapText}
+                                scaleFactor={scaleFactor}
+                            >
+                                <ComponentSymbol
+                                    id={'accelerator_circle_' + el.id}
+                                    styles={mapStyleDefs.component}
+                                    component={el}
+                                    onClick={() =>
+                                        clicked({
+                                            el: passComponent(el),
+                                            e: null,
+                                        })
+                                    }
+                                />
+                            </MapAccelerator>
+                        ),
+                    )}
             </g>
 
+            {/* Render annotations box first (background) followed by pipelines and then components */}
+            {props.mapAnnotations && props.mapAnnotations.length > 0 && (
+                <AnnotationBox
+                    mapStyleDefs={mapStyleDefs}
+                    mutateMapText={mutateMapText}
+                    mapText={mapText}
+                    annotations={props.mapAnnotations}
+                    position={props.mapAnnotationsPresentation}
+                    mapDimensions={mapDimensions}
+                    scaleFactor={scaleFactor}
+                    setHighlightLine={setHighlightLineDispatch}
+                />
+            )}
+
             <MapPipelines
-                enableNewPipelines={enableNewPipelines}
-                mapElements={legacyMapElements as any}
+                enableNewPipelines={props.enableNewPipelines || false}
+                mapElements={mapElements} /* Using MapElements directly */
                 mapDimensions={mapDimensions}
                 mapText={mapText}
                 mutateMapText={mutateMapText}
                 mapStyleDefs={mapStyleDefs}
-                setHighlightLine={setHighlightLine}
+                setHighlightLine={setHighlightLineDispatch}
                 clicked={clicked}
                 scaleFactor={scaleFactor}
             />
 
+            {/* IMPORTANT: Method elements appear BEFORE regular elements */}
+            {/* This ensures elements are rendered on top of method indicators */}
+            <g id="methods">
+                {/* Process all methods using the same logic from the legacy implementation */}
+                {(() => {
+                    // Process all methods using the utility from mapProcessing.ts with MapElements directly
+                    const processedMethodsData = processMapElements(
+                        props.mapMethods || [],
+                        mapElements /* Using MapElements directly */,
+                    );
+
+                    // Get all methods: both standalone and decorated components
+                    const allMethods = processedMethodsData.allMethods || [];
+
+                    // Let's use the methods exactly as they come from processMapElements
+                    // without adding extra properties
+
+                    console.log('Rendering methods:', allMethods.length);
+
+                    // Render all methods
+                    return allMethods.map((methodComp: any, i: number) => {
+                        // Don't adjust position here - we want methods to appear exactly at their component position
+                        // The component's label has already been adjusted with increaseLabelSpacing
+                        return (
+                            <MethodElement
+                                key={`method_${i}`}
+                                methodComponent={methodComp}
+                                mapDimensions={mapDimensions}
+                                method={methodComp.method || 'build'} // Default to 'build' if no method specified
+                                mapStyleDefs={mapStyleDefs}
+                                setHighlightLine={setHighlightLineDispatch}
+                            />
+                        );
+                    });
+                })()}
+            </g>
+
             <g id="elements">
-                {legacyMapElements
-                    .getMergedElements()
-                    .map((el: any, i: number) => (
+                {mapElements
+                    .getMergedComponents()
+                    .filter((c: UnifiedComponent) => c.type !== 'anchor')
+                    .map((el: UnifiedComponent, i: number) => (
                         <MapComponent
                             key={i}
-                            keyword={el.type}
                             launchUrl={launchUrl}
                             mapDimensions={mapDimensions}
-                            element={el}
+                            component={passComponent(el)}
                             mapText={mapText}
                             mutateMapText={mutateMapText}
                             mapStyleDefs={mapStyleDefs}
-                            setHighlightLine={setHighlightLine}
+                            setHighlightLine={setHighlightLineDispatch}
                             scaleFactor={scaleFactor}
                         >
                             {el.type === 'component' && !el.pipeline && (
                                 <ComponentSymbol
+                                    id={`element_circle_${el.id}`}
                                     styles={mapStyleDefs.component}
+                                    component={el}
                                     onClick={(e: MouseEvent<SVGElement>) =>
                                         clicked({
-                                            el: adaptUnifiedComponentToLegacy(
-                                                el,
-                                            ),
+                                            el: passComponent(el),
                                             e,
                                         })
                                     }
@@ -305,61 +329,67 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
 
                             {el.pipeline && (
                                 <PipelineComponentSymbol
-                                    id={'element_square_' + el.id}
+                                    id={`element_square_${el.id}`}
                                     styles={mapStyleDefs.component}
-                                    evolved={el.evolved}
+                                    component={el}
                                     onClick={() =>
                                         clicked({
-                                            el: adaptUnifiedComponentToLegacy(
-                                                el,
-                                            ),
+                                            el: passComponent(el),
                                             e: null,
                                         })
                                     }
                                 />
                             )}
 
-                            {(el.decorators && el.decorators.ecosystem) ||
-                            el.type === 'ecosystem' ? (
+                            {(el.decorators?.ecosystem ||
+                                el.type === 'ecosystem') && (
                                 <EcosystemSymbol
-                                    id={'ecosystem_circle_' + el.id}
+                                    id={`ecosystem_circle_${el.id}`}
                                     styles={mapStyleDefs.component}
-                                    onClick={(e) =>
+                                    component={el}
+                                    onClick={(e: MouseEvent<SVGGElement>) =>
                                         clicked({
-                                            el: adaptUnifiedComponentToLegacy(
-                                                el,
-                                            ),
+                                            el: passComponent(el),
                                             e,
                                         })
                                     }
                                 />
-                            ) : null}
+                            )}
 
-                            {(el.decorators && el.decorators.market) ||
-                            el.type === 'market' ? (
+                            {(el.decorators?.market ||
+                                el.type === 'market') && (
                                 <MarketSymbol
-                                    id={'market_circle_' + el.id}
+                                    id={`market_circle_${el.id}`}
                                     styles={mapStyleDefs.component}
-                                    onClick={(e) =>
+                                    component={el}
+                                    onClick={(e: MouseEvent<SVGElement>) =>
                                         clicked({
-                                            el: adaptUnifiedComponentToLegacy(
-                                                el,
-                                            ),
+                                            el: passComponent(el),
                                             e,
                                         })
                                     }
                                 />
-                            ) : null}
+                            )}
 
                             {el.type === 'submap' && (
                                 <SubMapSymbol
                                     styles={mapStyleDefs.component}
+                                    component={el}
                                     onClick={(e: MouseEvent<SVGElement>) =>
-                                        clicked({ el, e })
+                                        clicked({
+                                            el: passComponent(el),
+                                            e,
+                                        })
                                     }
                                     launchUrl={
-                                        el.url
-                                            ? () => launchUrl(el.url.url!)
+                                        el.url &&
+                                        typeof el.url === 'object' &&
+                                        'url' in el.url &&
+                                        (el.url as any).url
+                                            ? () =>
+                                                  launchUrl?.(
+                                                      (el.url as any).url,
+                                                  )
                                             : undefined
                                     }
                                 />
@@ -369,25 +399,25 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
             </g>
 
             <g id="notes">
-                {mapNotes.map((el, i) => (
+                {props.mapNotes.map((n: any, i: number) => (
                     <Note
                         key={i}
                         mapDimensions={mapDimensions}
-                        note={el}
+                        note={n}
                         mapText={mapText}
                         mutateMapText={mutateMapText}
                         mapStyleDefs={mapStyleDefs}
-                        setHighlightLine={setHighlightLine}
                         scaleFactor={scaleFactor}
+                        setHighlightLine={setHighlightLineDispatch}
                     />
                 ))}
             </g>
 
             <g id="annotations">
-                {mapAnnotations &&
-                    mapAnnotations.map((a, i) => (
+                {props.mapAnnotations &&
+                    props.mapAnnotations.map((a: any, i: number) => (
                         <React.Fragment key={i}>
-                            {a.occurances.map((occurance, i1) => (
+                            {a.occurances?.map((occurance: any, i1: number) => (
                                 <AnnotationElement
                                     mapStyleDefs={mapStyleDefs}
                                     key={'mapAnnotation_' + i + '_' + i1}
@@ -402,18 +432,6 @@ const UnifiedMapContent: React.FC<UnifiedMapContentProps> = ({
                             ))}
                         </React.Fragment>
                     ))}
-
-                {mapAnnotations && mapAnnotations.length === 0 ? null : (
-                    <AnnotationBox
-                        mapStyleDefs={mapStyleDefs}
-                        mutateMapText={mutateMapText}
-                        mapText={mapText}
-                        annotations={mapAnnotations}
-                        position={mapAnnotationsPresentation}
-                        mapDimensions={mapDimensions}
-                        scaleFactor={scaleFactor}
-                    />
-                )}
             </g>
         </g>
     );

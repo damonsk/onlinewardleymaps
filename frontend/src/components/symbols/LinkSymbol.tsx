@@ -7,9 +7,10 @@ interface LinkStyles {
     strokeWidth: number;
     flowStrokeWidth: number;
     flow: string;
+    contextFontSize?: string;
 }
 
-interface LinkSymbolProps {
+interface ModernLinkSymbolProps {
     id?: string;
     x1: string | number;
     x2: string | number;
@@ -33,7 +34,11 @@ const defaultStyles: LinkStyles = {
     flow: 'none',
 };
 
-const LinkSymbol: React.FC<LinkSymbolProps> = ({
+/**
+ * LinkSymbol - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ */
+const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     id,
     x1,
     x2,

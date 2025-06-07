@@ -1,14 +1,14 @@
-import { MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapElement } from '../../types/base';
-import { MapTheme } from '../../types/map/styles';
+import { MapTheme } from '../../constants/mapstyles';
+import { UnifiedComponent } from '../../types/unified/components';
 import LinkSymbol from '../symbols/LinkSymbol';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
-interface FluidLinkProps {
+interface ModernFluidLinkProps {
     mapStyleDefs: MapTheme;
     mapDimensions: MapDimensions;
-    startElement: MapElement;
+    startElement: UnifiedComponent;
     origClick: MouseEvent<Element>;
     scaleFactor?: number;
 }
@@ -22,14 +22,34 @@ interface Position {
     };
 }
 
-function FluidLink(props: FluidLinkProps): JSX.Element {
-    const { mapStyleDefs, mapDimensions, startElement, origClick } = props;
+/**
+ * FluidLink - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders a fluid link that follows the mouse cursor
+ * Used during the component linking process
+ */
+const FluidLink: React.FC<ModernFluidLinkProps> = ({
+    mapStyleDefs,
+    mapDimensions,
+    startElement,
+    origClick,
+    scaleFactor = 1,
+}) => {
     const { height, width } = mapDimensions;
-    const positionCalc = new PositionCalculator();
-    const x1 = positionCalc.maturityToX(startElement.maturity, width);
+    const positionCalc = new ModernPositionCalculator();
+
+    const startMaturity =
+        startElement.maturity ?? startElement.evolveMaturity ?? 0;
+    const x1 = positionCalc.maturityToX(startMaturity, width);
+
     const y1 =
-        positionCalc.visibilityToY(startElement.visibility, height) +
-        (startElement.offsetY ? startElement.offsetY : 0);
+        positionCalc.visibilityToY(
+            typeof startElement.visibility === 'string'
+                ? parseFloat(startElement.visibility)
+                : startElement.visibility,
+            height,
+        ) + (startElement.offsetY ?? 0);
 
     const [position, setPosition] = useState<Position>({
         x: x1,
@@ -41,7 +61,6 @@ function FluidLink(props: FluidLinkProps): JSX.Element {
         (e: Event) => {
             const mouseEvent = e as globalThis.MouseEvent;
             setPosition((position) => {
-                const scaleFactor = props.scaleFactor || 1;
                 const xDiff =
                     (position.coords.x! - mouseEvent.pageX) / scaleFactor;
                 const yDiff =
@@ -56,7 +75,7 @@ function FluidLink(props: FluidLinkProps): JSX.Element {
                 };
             });
         },
-        [props.scaleFactor],
+        [scaleFactor],
     );
 
     useEffect(() => {
@@ -79,7 +98,7 @@ function FluidLink(props: FluidLinkProps): JSX.Element {
 
     return (
         <LinkSymbol
-            id={`link_${startElement.id}_fluid`}
+            id={`modern_link_${startElement.id}_fluid`}
             x1={x1}
             x2={position.x}
             y1={y1}
@@ -91,6 +110,6 @@ function FluidLink(props: FluidLinkProps): JSX.Element {
             strokeDasharray={mapStyleDefs.fluidLink?.strokeDasharray}
         />
     );
-}
+};
 
 export default FluidLink;

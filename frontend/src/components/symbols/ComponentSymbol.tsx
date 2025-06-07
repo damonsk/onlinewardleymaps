@@ -1,23 +1,35 @@
-import React, { memo } from 'react';
+import React, { memo, MouseEvent } from 'react';
 import { MapComponentTheme } from '../../constants/mapstyles';
+import { UnifiedComponent } from '../../types/unified';
 
-export interface ComponentSymbolProps {
-    onClick?: (...args: any[]) => any;
+/**
+ * ComponentSymbol Props - using unified type system directly
+ * This interface eliminates legacy types and improves type safety
+ */
+interface ModernComponentSymbolProps {
+    onClick?: (e: MouseEvent<SVGElement>) => void;
     id?: string;
     cx?: string;
     cy?: string;
     styles: MapComponentTheme;
-    evolved?: boolean;
+    component?: UnifiedComponent; // Direct reference to UnifiedComponent
+    evolved?: boolean; // Support for evolved prop used in icons.tsx
 }
 
-const ComponentSymbol: React.FunctionComponent<ComponentSymbolProps> = ({
+/**
+ * ComponentSymbol - Component symbol representation using unified types
+ * This component eliminates legacy type dependencies and improves rendering performance
+ */
+const ComponentSymbol: React.FunctionComponent<ModernComponentSymbolProps> = ({
     id,
     cx,
     cy,
-    evolved,
+    component,
     onClick,
     styles,
 }) => {
+    // Use component properties directly from unified type
+    const evolved = component?.evolved || false;
     const fill = evolved ? styles.evolvedFill : styles.fill;
     const stroke = evolved ? styles.evolved : styles.stroke;
 

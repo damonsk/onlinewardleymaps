@@ -1,7 +1,7 @@
-// Integration test for ModernMapElements
+// Integration test for MapElements
 // Part of Phase 4C: Component Interface Modernization
 
-import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElements } from '../processing/MapElements';
 import {
     PipelineData,
     UnifiedComponent,
@@ -22,7 +22,7 @@ interface TestMap {
 /**
  * Creates a test Wardley Map with various components
  *
- * @returns A simplified map for testing ModernMapElements
+ * @returns A simplified map for testing MapElements
  */
 function createTestMap(): TestMap {
     // Create basic components
@@ -103,7 +103,7 @@ function createTestMap(): TestMap {
         },
     ];
 
-    // Return simplified map with only fields needed for ModernMapElements
+    // Return simplified map with only fields needed for MapElements
     return {
         components,
         anchors,
@@ -115,12 +115,12 @@ function createTestMap(): TestMap {
     };
 }
 
-describe('ModernMapElements Integration Tests', () => {
-    let mapElements: ModernMapElements;
+describe('MapElements Integration Tests', () => {
+    let mapElements: MapElements;
 
     beforeEach(() => {
         const testMap = createTestMap();
-        mapElements = new ModernMapElements(testMap as any);
+        mapElements = new MapElements(testMap as any);
     });
 
     describe('Basic Component Access', () => {

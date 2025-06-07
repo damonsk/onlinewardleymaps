@@ -1,9 +1,9 @@
-// Script to update golden master files based on current ModernMapElements output
+// Script to update golden master files based on current MapElements output
 import fs from 'fs';
 import path from 'path';
 import { useContext } from 'react';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElements } from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -27,7 +27,7 @@ function loadFileContent(fileName) {
 }
 
 describe('Golden Master File Updater', () => {
-    test('Updates all golden master files with current ModernMapElements output', () => {
+    test('Updates all golden master files with current MapElements output', () => {
         const fileName = 'GoldenMasterMapText.txt';
         const fileContent = loadFileContent(fileName);
 
@@ -36,8 +36,8 @@ describe('Golden Master File Updater', () => {
             fileContent,
         );
 
-        // Create ModernMapElements
-        const me = new ModernMapElements(result);
+        // Create MapElements
+        const me = new MapElements(result);
         const legacyAdapter = me.getLegacyAdapter();
 
         // Converter Output - Update only if needed

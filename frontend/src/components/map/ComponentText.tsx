@@ -1,260 +1,230 @@
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import React, { useEffect, useRef, useState } from 'react';
 import { rename } from '../../constants/rename';
-import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import RelativeMovable from './RelativeMovable';
 
+// Interface not used in this version but retained for future position updates
+// interface MovedPosition {
+//     x: number;
+//     y: number;
+// }
+
+/**
+ * ComponentText Props
+ * Uses UnifiedComponent directly instead of ComponentElement
+ */
 interface MovedPosition {
     x: number;
     y: number;
 }
 
-interface ComponentElement {
-    id: string;
-    name: string;
-    type?: string;
-    line?: number;
-    evolved?: boolean;
-    evolving?: boolean;
-    override?: string;
-    maturity?: number;
-    label?: {
-        x: number;
-        y: number;
+interface ModernComponentTextProps {
+    // Original props
+    component: UnifiedComponent; // Using UnifiedComponent directly
+    cx: string | number;
+    cy: string | number;
+    styles: any;
+    mutateMapText?: (newText: string) => void;
+    mapText?: string;
+
+    // Legacy props to maintain compatibility
+    id?: string;
+    element?: any; // Using any for the element to maintain compatibility
+    onLabelMove?: (moved: MovedPosition) => void; // Optional callback for label movement
+    scaleFactor?: number; // Added scale factor for zooming
+    mapStyleDefs?: any; // Map style definitions
+    onClick?: () => void; // Click handler for component text
+}
+
+/**
+ * ComponentText
+ * Phase 4A: Component Interface Modernization
+ * This component accepts UnifiedComponent directly without adapters
+ */
+const ComponentText: React.FC<ModernComponentTextProps> = ({
+    component,
+    cx,
+    cy,
+    styles,
+    mutateMapText,
+    mapText,
+    onLabelMove,
+    scaleFactor = 1, // Default to 1 if not provided
+    mapStyleDefs, // eslint-disable-line @typescript-eslint/no-unused-vars
+    onClick,
+
+    // Legacy props
+    id, // eslint-disable-line @typescript-eslint/no-unused-vars
+    element,
+}) => {
+    const { enableRenameLabels } = useFeatureSwitches();
+    const [editMode, setEditMode] = useState(false);
+
+    // Handle either modern or legacy component props
+    const actualComponent = element
+        ? {
+              name: element.name,
+              // Add other properties as needed
+          }
+        : component;
+
+    const [text, setText] = useState(actualComponent.name);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        setText(actualComponent.name);
+    }, [actualComponent.name]);
+
+    useEffect(() => {
+        if (editMode && textareaRef.current) {
+            textareaRef.current.focus();
+            textareaRef.current.select();
+        }
+    }, [editMode]);
+
+    const handleDoubleClick = () => {
+        if (onClick) {
+            onClick();
+        } else if (enableRenameLabels && mutateMapText && mapText) {
+            setEditMode(true);
+        }
     };
-}
 
-interface ComponentTextProps {
-    mutateMapText: (newText: string) => void;
-    mapText: string;
-    overrideDrag?: (moved: MovedPosition) => void;
-    element: ComponentElement;
-    mapStyleDefs: MapTheme;
-    onClick?: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void;
-    scaleFactor: number;
-    id?: string; // Optional prop for external ID assignment, not used internally
-}
-
-interface SizingState {
-    rows: number;
-    cols: number;
-}
-
-function ComponentText(props: ComponentTextProps): JSX.Element | null {
-    const { enableDoubleClickRename } = useFeatureSwitches();
-    const {
-        mutateMapText,
-        mapText,
-        overrideDrag,
-        element,
-        mapStyleDefs,
-        onClick,
-        scaleFactor,
-    } = props;
-
-    if (!element) {
-        return null;
-    }
-
-    const [sizing, setSizing] = useState<SizingState>({ rows: 0, cols: 0 });
-    const [renameVal, setRenameVal] = useState<string>('');
-    const [showTextField, setShowTextField] = useState<boolean>(false);
-    const renameField = useRef<HTMLTextAreaElement>(null);
-    const charWidth = 8;
-    const charHeight = 16;
-
-    useEffect(() => {
-        const splits = renameVal.split('\n');
-        const rows = splits.length + 1;
-        const longestRowLength = Math.max(
-            ...renameVal.split('\n').map((row) => row.length),
-        );
-        setSizing({
-            rows: rows < 1 ? 1 : rows,
-            cols: longestRowLength < 5 ? 5 : longestRowLength,
-        });
-    }, [renameVal]);
-
-    useEffect(() => {
-        if (enableDoubleClickRename && showTextField && element) {
-            renameField.current?.select();
-            setRenameVal(element.name || '');
-        }
-    }, [showTextField, element]);
-
-    function endDrag(moved: MovedPosition): void {
-        const getLabelText = (x: number, y: number): string =>
-            ` label [${parseFloat(x.toString()).toFixed(2)}, ${y}]`;
-
-        const processEvolvedLine = (
-            line: string,
-            normalizedLine: string,
-        ): string => {
-            const evolveBase = 'evolve' + element.name.replace(/\s/g, '');
-            const evolveOverride =
-                element.override?.length && element.override.length > 0
-                    ? '->' + element.override.replace(/\s/g, '')
-                    : '';
-            const evolveText =
-                evolveBase + evolveOverride + (element.maturity || '');
-
-            if (normalizedLine.indexOf(evolveText) === 0) {
-                if (normalizedLine.indexOf('label[') > -1) {
-                    return line.replace(
-                        /\slabel\s\[(.?|.+?)\]+/g,
-                        getLabelText(moved.x, moved.y),
-                    );
-                }
-                return line.trim() + getLabelText(moved.x, moved.y);
-            }
-            return line;
-        };
-
-        const processNormalLine = (
-            line: string,
-            normalizedLine: string,
-        ): string => {
-            const baseText =
-                (element.type || '') + element.name.replace(/\s/g, '');
-            const searchText = baseText + '[';
-
-            if (normalizedLine.indexOf(searchText) === 0) {
-                if (normalizedLine.indexOf('label[') > -1) {
-                    return line.replace(
-                        /\slabel\s\[(.?|.+?)\]+/g,
-                        getLabelText(moved.x, moved.y),
-                    );
-                }
-                return line.trim() + getLabelText(moved.x, moved.y);
-            }
-            return line;
-        };
-
-        const processLine = (line: string): string => {
-            const normalizedLine = line.replace(/\s/g, '');
-            return element.evolved
-                ? processEvolvedLine(line, normalizedLine)
-                : processNormalLine(line, normalizedLine);
-        };
-
-        mutateMapText(mapText.split('\n').map(processLine).join('\n'));
-    }
-
-    const handleKeyUp = (
-        event: React.KeyboardEvent<HTMLTextAreaElement>,
-    ): void => {
-        event.stopPropagation();
-        if (!element || !element.line || !element.name || !renameVal) {
-            setShowTextField(false);
-            return;
-        }
-
-        if (event.key === 'Enter') {
-            console.log('Enter key pressed!');
+    const handleBlur = () => {
+        setEditMode(false);
+        if (
+            mutateMapText &&
+            mapText &&
+            text !== component.name &&
+            component.line
+        ) {
+            // Using the rename function with the correct parameters
             rename(
-                element.line,
-                element.name,
-                renameVal.replace('\n', ''),
+                component.line,
+                component.name,
+                text,
                 mapText,
                 mutateMapText,
             );
-            setShowTextField(false);
-        }
-        if (event.key === 'Escape') {
-            setShowTextField(false);
         }
     };
 
-    const renderTextField = (): JSX.Element | null => {
-        if (!enableDoubleClickRename || !showTextField) return null;
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setText(e.target.value);
+    };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            setEditMode(false);
+            if (
+                mutateMapText &&
+                mapText &&
+                text !== component.name &&
+                component.line
+            ) {
+                // Using the rename function with the correct parameters
+                rename(
+                    component.line,
+                    component.name,
+                    text,
+                    mapText,
+                    mutateMapText,
+                );
+            }
+        }
+    };
+
+    // Calculate label position
+    const getX = () => {
+        return component.label?.x || 0;
+    };
+
+    const getY = () => {
         return (
-            <foreignObject
-                x="0"
-                y="-20"
-                width={sizing.cols * charWidth + 10}
-                height={sizing.rows * charHeight}
-            >
-                <TextareaAutosize
-                    ref={renameField}
-                    minRows={sizing.rows}
-                    maxRows={sizing.rows}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setRenameVal(e.target.value)
-                    }
-                    onKeyDown={(
-                        e: React.KeyboardEvent<HTMLTextAreaElement>,
-                    ) => {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                        }
-                    }}
-                    style={{
-                        position: 'fixed',
-                        zIndex: 10000,
-                        boxSizing: 'border-box',
-                        flex: 1,
-                        fontSize: '14px',
-                        fontFamily: 'Consolas, "Lucida Console", monospace',
-                        padding: 0,
-                        margin: '0',
-                        color: 'black',
-                        width: `${sizing.cols * charWidth + 10}px`,
-                    }}
-                    onKeyUp={handleKeyUp}
-                    defaultValue={element.name}
-                    onDoubleClick={(e: React.MouseEvent<HTMLTextAreaElement>) =>
-                        e.stopPropagation()
-                    }
-                    onClick={(e: React.MouseEvent<HTMLTextAreaElement>) =>
-                        e.stopPropagation()
-                    }
-                />
-            </foreignObject>
+            (component.label?.y || 0) + (component.increaseLabelSpacing || 0)
         );
     };
 
-    const renderComponentText = (): JSX.Element | null => {
-        if (showTextField) return null;
+    const textFill = component.evolved ? styles.evolvedText : styles.text;
+    const fontSize = styles?.fontSize || '14px';
 
-        const textContent =
-            element.override && element.evolved
-                ? element.override
-                : element.name;
-        const showTextFieldValue = enableDoubleClickRename
-            ? setShowTextField
-            : undefined;
-
-        return (
-            <ComponentTextSymbol
-                id={'element_text_' + element.id}
-                text={textContent}
-                evolved={element.evolved}
-                textTheme={mapStyleDefs.component}
-                onClick={onClick}
-                setShowTextField={showTextFieldValue}
+    const renderEditMode = () => (
+        <foreignObject
+            x={Number(cx) + getX() - 50}
+            y={Number(cy) + getY() - 25}
+            width="100"
+            height="50"
+            style={{ overflow: 'visible' }}
+        >
+            <TextareaAutosize
+                ref={textareaRef}
+                value={text}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                style={{
+                    width: '100%',
+                    resize: 'none',
+                    fontFamily: 'Arial',
+                    fontSize: fontSize,
+                    border: '1px solid #ccc',
+                    padding: '2px',
+                }}
             />
-        );
-    };
-
-    return (
-        <React.Fragment>
-            <RelativeMovable
-                id={'rm_element_text_' + element.id}
-                fixedY={false}
-                fixedX={false}
-                onMove={overrideDrag ? overrideDrag : endDrag}
-                x={element.label?.x || 0}
-                y={element.label?.y || 0}
-                scaleFactor={scaleFactor}
-            >
-                {renderComponentText()}
-                {renderTextField()}
-            </RelativeMovable>
-        </React.Fragment>
+        </foreignObject>
     );
-}
+
+    const renderText = () => (
+        <RelativeMovable
+            id={`${component.id}-text-movable`}
+            x={getX()}
+            y={getY()}
+            scaleFactor={scaleFactor} // Pass scale factor to RelativeMovable
+            onMove={(moved) => {
+                // Log the move action to help debug
+                console.log('Label move:', {
+                    component: component.name,
+                    moved,
+                    currentLabelPos: { x: getX(), y: getY() },
+                    isPipelineComponent: component.pipeline,
+                    scaleFactor,
+                });
+
+                // For pipeline components, we need to ensure we're passing relative offsets
+                // rather than absolute positions
+                const adjustedMoved = component.pipeline
+                    ? {
+                          // For pipeline components, we want relative positions from the component
+                          x: Math.round(moved.x),
+                          y: Math.round(moved.y),
+                      }
+                    : moved;
+
+                // Call the passed onLabelMove handler if available
+                if (onLabelMove) {
+                    onLabelMove(adjustedMoved);
+                }
+            }}
+        >
+            <ComponentTextSymbol
+                id={`${component.id}-text`}
+                text={component.name}
+                textTheme={{
+                    fontSize: fontSize,
+                    fontWeight: 'normal',
+                    evolvedTextColor: textFill,
+                    textColor: textFill,
+                }}
+                onClick={handleDoubleClick}
+            />
+        </RelativeMovable>
+    );
+
+    return <>{editMode ? renderEditMode() : renderText()}</>;
+};
 
 export default ComponentText;

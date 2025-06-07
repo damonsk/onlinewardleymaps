@@ -1,6 +1,7 @@
+/* eslint-disable */
 // finalJSDocFix.js
 // Fix final JSDoc formatting issues in link strategy files
-// Part of Phase 4C: ModernMapElements Integration
+// Part of Phase 4C: MapElements Integration
 
 const fs = require('fs');
 const path = require('path');
@@ -34,11 +35,11 @@ strategyFiles.forEach((fileName) => {
         updated = true;
     }
 
-    // Add ModernMapElements support comment
-    if (!content.includes('* Updated to use ModernMapElements')) {
+    // Add MapElements support comment
+    if (!content.includes('* Updated to use MapElements')) {
         content = content.replace(
             /export default class ([A-Za-z]+)\s+implements LinkExtractionStrategy/,
-            '/**\n * $1\n * Updated to use ModernMapElements in Phase 4C\n */\nexport default class $1 implements LinkExtractionStrategy',
+            '/**\n * $1\n * Updated to use MapElements in Phase 4C\n */\nexport default class $1 implements LinkExtractionStrategy',
         );
         updated = true;
     }

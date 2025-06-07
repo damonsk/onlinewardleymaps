@@ -1,34 +1,51 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapElement } from '../../types/base';
+import { MapElements } from '../../processing/MapElements';
 import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
+import { PipelineData } from '../../types/unified/components';
 import Pipeline from './Pipeline';
 import PipelineVersion2 from './PipelineVersion2';
 
-interface MapPipelinesProps {
-    enableNewPipelines: boolean;
-    mapElements: {
-        getMapPipelines(): any[];
-    };
+/**
+ * MapPipelines Props - using unified type system directly
+ * This interface eliminates legacy types and improves type safety
+ */
+interface ModernMapPipelinesProps {
     mapDimensions: MapDimensions;
     mapText: string;
     mutateMapText: (text: string) => void;
     mapStyleDefs: MapTheme;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    clicked: (data: { el: MapElement; e: MouseEvent<Element> | null }) => void;
-    scaleFactor: number;
+    scaleFactor?: number;
+    enableNewPipelines?: boolean;
+
+    // Direct reference to MapElements and PipelineData
+    mapElements: MapElements;
+    pipelines?: PipelineData[];
+
+    // Optional click handler for linking functionality
+    clicked?: (data: {
+        el: UnifiedComponent;
+        e: MouseEvent<Element> | null;
+    }) => void;
 }
 
-const MapPipelines: React.FC<MapPipelinesProps> = ({
-    enableNewPipelines,
-    mapElements,
+/**
+ * MapPipelines - Pipeline manager component using unified types directly
+ * This component eliminates legacy type dependencies and improves rendering performance
+ */
+const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
     mapDimensions,
     mapText,
     mutateMapText,
     mapStyleDefs,
     setHighlightLine,
+    mapElements,
+    pipelines,
+    enableNewPipelines = true,
+    scaleFactor = 1,
     clicked,
-    scaleFactor,
 }) => {
     // Create wrapper function to handle optional line parameter
     const handleSetHighlightLine = (line?: number) => {
@@ -37,17 +54,43 @@ const MapPipelines: React.FC<MapPipelinesProps> = ({
         }
     };
 
+    // If pipelines are provided directly, use those, otherwise get from mapElements
+    const pipelinesToRender = pipelines || mapElements.getPipelineComponents();
+
+    // Log the pipeline data for debugging
+    if (pipelinesToRender.length === 0) {
+        console.warn('No pipelines to render');
+    } else {
+        console.log(
+            `Rendering ${pipelinesToRender.length} pipelines:`,
+            pipelinesToRender.map((p) => ({
+                name: p.name,
+                visibility: p.visibility,
+                components: p.components?.length || 0,
+            })),
+        );
+    }
+
+    // Helper function to adapt UnifiedComponent to the expected format for linking
+    const linkingFunction = clicked
+        ? (data: { el: any; e: MouseEvent<Element> }) => {
+              // Create a component with the necessary pipeline properties to match MapElement
+              const componentWithVisibility = {
+                  ...data.el,
+                  visibility: data.el.visibility || 0,
+              };
+              clicked({ el: componentWithVisibility, e: data.e });
+          }
+        : undefined;
+
     return (
         <g id="pipelines">
             {enableNewPipelines &&
-                mapElements
-                    .getMapPipelines()
-                    .filter((p) => p.hidden == false)
+                pipelinesToRender
+                    .filter((p) => p.hidden !== true)
                     .map((p, i) => (
                         <React.Fragment key={i}>
-                            {enableNewPipelines &&
-                            p.components != undefined &&
-                            p.components.length > 0 ? (
+                            {p.components && p.components.length > 0 ? (
                                 <PipelineVersion2
                                     key={'pipeline_' + i}
                                     mapDimensions={mapDimensions}
@@ -56,7 +99,9 @@ const MapPipelines: React.FC<MapPipelinesProps> = ({
                                     mutateMapText={mutateMapText}
                                     mapStyleDefs={mapStyleDefs}
                                     setHighlightLine={handleSetHighlightLine}
-                                    linkingFunction={clicked}
+                                    linkingFunction={
+                                        linkingFunction || (() => {})
+                                    }
                                     scaleFactor={scaleFactor}
                                 />
                             ) : (
@@ -77,4 +122,4 @@ const MapPipelines: React.FC<MapPipelinesProps> = ({
     );
 };
 
-export default MapPipelines;
+export default React.memo(MapPipelines);

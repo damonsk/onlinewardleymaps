@@ -1,25 +1,36 @@
-import React, { memo } from 'react';
+import React, { memo, MouseEvent } from 'react';
 import { MapComponentTheme } from '../../constants/mapstyles';
+import { UnifiedComponent } from '../../types/unified';
 
-interface SubMapSymbolProps {
+/**
+ * SubMapSymbol Props - using unified type system directly
+ * This interface eliminates legacy types and improves type safety
+ */
+interface ModernSubMapSymbolProps {
     id?: string;
     cx?: string;
     cy?: string;
-    evolved?: boolean;
-    onClick: (e: React.MouseEvent<SVGElement>) => void;
+    onClick: (e: MouseEvent<SVGElement>) => void;
     styles: MapComponentTheme;
     launchUrl?: () => void;
+    component?: UnifiedComponent; // Direct reference to UnifiedComponent
 }
 
-const SubMapSymbol: React.FC<SubMapSymbolProps> = ({
+/**
+ * SubMapSymbol - SubMap symbol representation using unified types
+ * This component eliminates legacy type dependencies and improves rendering performance
+ */
+const SubMapSymbol: React.FC<ModernSubMapSymbolProps> = ({
     id,
     cx,
     cy,
-    evolved,
     onClick,
     styles,
     launchUrl,
+    component, // Direct access to UnifiedComponent
 }) => {
+    // Use component properties directly from unified type
+    const evolved = component?.evolved || false;
     const fill = evolved ? styles.evolvedFill : styles.fill;
     const stroke = evolved ? styles.evolved : styles.stroke;
 

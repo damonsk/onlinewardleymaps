@@ -1,7 +1,7 @@
 /* eslint-disable */
 /**
- * Script to fix link strategy constructors for ModernMapElements compatibility
- * This makes sure they handle both direct ModernMapElements and adapter cases
+ * Script to fix link strategy constructors for MapElements compatibility
+ * This makes sure they handle both direct MapElements and adapter cases
  */
 
 // Disable ESLint for Node.js require statements
@@ -30,7 +30,7 @@ files.forEach((file) => {
     if (content.includes('mapElements.getLegacyAdapter()')) {
         // Update constructor to accept 'any' type and check for getLegacyAdapter
         content = content.replace(
-            /(constructor.*?mapElements:\s*)(ModernMapElements)(\s*\).*?\{[\s\n]*)(.*?this\.mapElements\s*=\s*mapElements\.getLegacyAdapter\(\);)/s,
+            /(constructor.*?mapElements:\s*)(MapElements)(\s*\).*?\{[\s\n]*)(.*?this\.mapElements\s*=\s*mapElements\.getLegacyAdapter\(\);)/s,
             `$1any$3// Either use the legacy adapter if available or use mapElements directly
         this.mapElements = mapElements.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;`,
         );

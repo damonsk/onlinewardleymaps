@@ -1,8 +1,9 @@
+import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../types/map/styles';
 import { PipelineData } from '../../types/unified/components';
 import ComponentSymbol from '../symbols/ComponentSymbol';
-import PipelineBoxSymbol from '../symbols/PipelineBoxSymbol';
+import ModernPipelineBoxSymbol from '../symbols/ModernPipelineBoxSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
@@ -14,7 +15,7 @@ interface MovedPosition {
     y: number;
 }
 
-interface PipelineProps {
+interface ModernPipelineProps {
     pipeline: PipelineData;
     mapDimensions: MapDimensions;
     mapText: string;
@@ -24,7 +25,11 @@ interface PipelineProps {
     scaleFactor: number;
 }
 
-function Pipeline(props: PipelineProps): JSX.Element {
+/**
+ * Pipeline - Modern implementation using unified types directly
+ * Part of Phase 4 Component Interface Modernization
+ */
+function Pipeline(props: ModernPipelineProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const positionUpdater = new DefaultPositionUpdater(
         'pipeline',
@@ -58,6 +63,7 @@ function Pipeline(props: PipelineProps): JSX.Element {
             props.pipeline.name,
         );
     }
+
     const x1 = positionCalc.maturityToX(
         props.pipeline.maturity1 || 0,
         props.mapDimensions.width,
@@ -72,14 +78,28 @@ function Pipeline(props: PipelineProps): JSX.Element {
             props.mapDimensions.height,
         ) + 2;
 
+    // Ensure we have valid dimensions for the pipeline box
+    if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
+        console.warn(
+            `Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`,
+        );
+        return <></>;
+    }
+
+    // Log the calculated coordinates for debugging
+    console.log(
+        `Pipeline ${props.pipeline.name} box: x1=${x1}, x2=${x2}, y=${y}`,
+    );
+
     return (
         <>
-            <PipelineBoxSymbol
+            <ModernPipelineBoxSymbol
                 id={'pipeline_box_' + props.pipeline.id}
                 y={y}
                 x1={x1}
                 x2={x2}
                 styles={props.mapStyleDefs.component}
+                stroke={props.mapStyleDefs.component.stroke}
             />
             <Movable
                 id={'pipeline_x1_' + props.pipeline.id}
@@ -92,9 +112,16 @@ function Pipeline(props: PipelineProps): JSX.Element {
             >
                 <ComponentSymbol
                     id={'pipeline_circle_x1_' + props.pipeline.id}
-                    cx="10"
-                    cy="12"
                     styles={props.mapStyleDefs.component}
+                    component={{
+                        id: `pipeline_circle_x1_${props.pipeline.id}`,
+                        name: props.pipeline.name,
+                        type: 'component',
+                        maturity: props.pipeline.maturity1 || 0,
+                        visibility: props.pipeline.visibility,
+                        line: props.pipeline.line,
+                        label: { x: 0, y: 0 },
+                    }}
                     onClick={() => props.setHighlightLine(props.pipeline.line)}
                 />
             </Movable>
@@ -109,9 +136,16 @@ function Pipeline(props: PipelineProps): JSX.Element {
             >
                 <ComponentSymbol
                     id={'pipeline_circle_x2_' + props.pipeline.id}
-                    cx={'-10'}
-                    cy="12"
                     styles={props.mapStyleDefs.component}
+                    component={{
+                        id: `pipeline_circle_x2_${props.pipeline.id}`,
+                        name: props.pipeline.name,
+                        type: 'component',
+                        maturity: props.pipeline.maturity2 || 0,
+                        visibility: props.pipeline.visibility,
+                        line: props.pipeline.line,
+                        label: { x: 0, y: 0 },
+                    }}
                     onClick={() => props.setHighlightLine(props.pipeline.line)}
                 />
             </Movable>
@@ -119,4 +153,4 @@ function Pipeline(props: PipelineProps): JSX.Element {
     );
 }
 
-export default Pipeline;
+export default React.memo(Pipeline);

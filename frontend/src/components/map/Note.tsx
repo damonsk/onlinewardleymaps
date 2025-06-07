@@ -1,11 +1,12 @@
+import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../constants/mapstyles';
 import { MapNotes } from '../../types/base';
-import { MapTheme } from '../../types/map/styles';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import Movable from './Movable';
-import PositionCalculator from './PositionCalculator';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
+import ModernPositionCalculator from './ModernPositionCalculator';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
+import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 interface MovedPosition {
@@ -13,7 +14,7 @@ interface MovedPosition {
     y: number;
 }
 
-interface NoteProps {
+interface ModernNoteProps {
     note: MapNotes;
     mapDimensions: MapDimensions;
     mapText: string;
@@ -23,60 +24,66 @@ interface NoteProps {
     scaleFactor: number;
 }
 
-function Note(props: NoteProps): JSX.Element {
-    const positionCalc = new PositionCalculator();
-    const positionUpdater = new LineNumberPositionUpdater(
+/**
+ * Note - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders a movable note on the map
+ */
+const Note: React.FC<ModernNoteProps> = ({
+    note,
+    mapDimensions,
+    mapText,
+    mutateMapText,
+    mapStyleDefs,
+    setHighlightLine,
+    scaleFactor,
+}) => {
+    const positionCalc = new ModernPositionCalculator();
+    const positionUpdater = new ModernLineNumberPositionUpdater(
         'note',
-        props.mapText,
-        props.mutateMapText,
-        [ExistingCoordsMatcher, NotDefinedCoordsMatcher],
+        mapText,
+        mutateMapText,
+        [ModernExistingCoordsMatcher, NotDefinedCoordsMatcher],
     );
 
     const x = (): number =>
-        positionCalc.maturityToX(
-            props.note.maturity,
-            props.mapDimensions.width,
-        );
+        positionCalc.maturityToX(note.maturity, mapDimensions.width);
+
     const y = (): number =>
-        positionCalc.visibilityToY(
-            props.note.visibility,
-            props.mapDimensions.height,
-        );
+        positionCalc.visibilityToY(note.visibility, mapDimensions.height);
 
     function endDrag(moved: MovedPosition): void {
         const visibility = positionCalc.yToVisibility(
             moved.y,
-            props.mapDimensions.height,
+            mapDimensions.height,
         );
-        const maturity = positionCalc.xToMaturity(
-            moved.x,
-            props.mapDimensions.width,
-        );
+        const maturity = positionCalc.xToMaturity(moved.x, mapDimensions.width);
         positionUpdater.update(
             { param1: parseFloat(visibility), param2: parseFloat(maturity) },
-            props.note.text,
-            props.note.line,
+            note.text,
+            note.line,
         );
     }
 
     return (
         <Movable
-            id={'note_' + props.note.id}
+            id={`modern_note_${note.id}`}
             onMove={endDrag}
             x={x()}
             y={y()}
             fixedY={false}
             fixedX={false}
-            scaleFactor={props.scaleFactor}
+            scaleFactor={scaleFactor}
         >
             <ComponentTextSymbol
-                id={'note_text_' + props.note.id}
-                note={props.note.text}
-                textTheme={props?.mapStyleDefs?.note}
-                onClick={() => props.setHighlightLine(props.note.line)}
+                id={`modern_note_text_${note.id}`}
+                note={note.text}
+                textTheme={mapStyleDefs?.note}
+                onClick={() => setHighlightLine(note.line)}
             />
         </Movable>
     );
-}
+};
 
 export default Note;

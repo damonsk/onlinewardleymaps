@@ -1,6 +1,7 @@
+/* eslint-disable */
 // fixRedundantOptionalChaining.js
 // Fix redundant optional chaining in link strategy files
-// Part of Phase 4C: ModernMapElements Integration
+// Part of Phase 4C: MapElements Integration
 
 const fs = require('fs');
 const path = require('path');

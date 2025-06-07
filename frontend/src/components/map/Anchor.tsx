@@ -5,12 +5,12 @@ import { UnifiedComponent } from '../../types/unified';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import Movable from './Movable';
-import PositionCalculator from './PositionCalculator';
-import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
+import ModernPositionCalculator from './ModernPositionCalculator';
+import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
+import { ModernNotDefinedCoordsMatcher } from './positionUpdaters/ModernNotDefinedCoordsMatcher';
 
-interface AnchorProps {
+interface ModernAnchorProps {
     anchor: UnifiedComponent;
     mapDimensions: MapDimensions;
     mapText: string;
@@ -19,7 +19,13 @@ interface AnchorProps {
     onClick: (event: MouseEvent) => void;
 }
 
-const Anchor: React.FunctionComponent<AnchorProps> = ({
+/**
+ * Anchor - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders anchors (user needs) on a Wardley Map
+ */
+const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
     anchor,
     mapText,
     mutateMapText,
@@ -35,17 +41,18 @@ const Anchor: React.FunctionComponent<AnchorProps> = ({
         }${suffix !== undefined ? '_' + suffix : ''}`;
     };
 
-    const positionCalc = new PositionCalculator();
-    const positionUpdater = new DefaultPositionUpdater(
+    const positionCalc = new ModernPositionCalculator();
+    const positionUpdater = new ModernDefaultPositionUpdater(
         identity,
         mapText,
         mutateMapText,
-        [ExistingCoordsMatcher, NotDefinedCoordsMatcher],
+        [ModernExistingCoordsMatcher, ModernNotDefinedCoordsMatcher],
     );
     const x = () =>
         positionCalc.maturityToX(anchor.maturity, mapDimensions.width);
     const y = () =>
         positionCalc.visibilityToY(anchor.visibility, mapDimensions.height);
+
     function endDrag(moved: { y: number; x: number }) {
         const visibility = positionCalc.yToVisibility(
             moved.y,
@@ -57,6 +64,7 @@ const Anchor: React.FunctionComponent<AnchorProps> = ({
             anchor.name,
         );
     }
+
     return (
         <>
             <Movable
@@ -82,4 +90,5 @@ const Anchor: React.FunctionComponent<AnchorProps> = ({
         </>
     );
 };
-export default Anchor;
+
+export default React.memo(Anchor);

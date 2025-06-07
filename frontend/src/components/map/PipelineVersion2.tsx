@@ -1,14 +1,14 @@
 import React, { MouseEvent } from 'react';
 import { MapDimensions } from '../../constants/defaults';
-import { MapElement } from '../../types/base';
 import { MapTheme } from '../../types/map/styles';
 import {
     PipelineComponentData,
     PipelineData,
+    UnifiedComponent,
 } from '../../types/unified/components';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentSymbol from '../symbols/ComponentSymbol';
-import PipelineBoxSymbol from '../symbols/PipelineBoxSymbol';
+import ModernPipelineBoxSymbol from '../symbols/ModernPipelineBoxSymbol';
 import ComponentText from './ComponentText';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
@@ -26,18 +26,25 @@ interface MatcherFunction {
     action: (line: string, moved: { param1: string | number }) => string;
 }
 
-interface PipelineVersion2Props {
+interface ModernPipelineVersion2Props {
     pipeline: PipelineData;
     mapDimensions: MapDimensions;
     mapText: string;
     mutateMapText: (text: string) => void;
     mapStyleDefs: MapTheme;
     setHighlightLine: (line?: number) => void;
-    linkingFunction: (data: { el: MapElement; e: MouseEvent<Element> }) => void;
+    linkingFunction: (data: {
+        el: UnifiedComponent;
+        e: MouseEvent<Element>;
+    }) => void;
     scaleFactor: number;
 }
 
-function PipelineVersion2(props: PipelineVersion2Props): JSX.Element {
+/**
+ * PipelineVersion2 - Modern implementation using unified types directly
+ * Part of Phase 4 Component Interface Modernization
+ */
+function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
     const positionCalc = new PositionCalculator();
     const isModKeyPressed = useModKeyPressedConsumer();
 
@@ -74,158 +81,218 @@ function PipelineVersion2(props: PipelineVersion2Props): JSX.Element {
         [noLabelMatcher, withLabelMatcher, NotDefinedMaturityMatcher],
     );
 
+    // Not currently used but keeping for future label dragging support
     function endDragForLabel(
         pipelineComponent: PipelineComponentData,
         moved: MovedPosition,
     ): void {
+        console.log(
+            'Pipeline label drag - Component:',
+            pipelineComponent.name,
+            'Moved to:',
+            moved,
+        );
+
+        // Round the moved coordinates for clean integer values
+        // The scaling is already handled by the RelativeMovable component
+        const correctedX = Math.round(moved.x);
+        const correctedY = Math.round(moved.y);
+
+        console.log('Corrected coordinates:', { x: correctedX, y: correctedY });
+
+        // Only update the label position, not the component position
         props.mutateMapText(
             props.mapText
                 .split('\n')
-                .map((line) => {
-                    if (
-                        line
-                            .replace(/\s/g, '')
-                            .indexOf(
-                                'component' +
-                                    pipelineComponent.name.replace(/\s/g, '') +
-                                    '[',
-                            ) === 0
-                    ) {
-                        if (line.replace(/\s/g, '').indexOf('label[') > -1) {
+                .map((line: string) => {
+                    // Exact match for the component name using RegExp
+                    // We need to match the exact component name with word boundaries
+                    const regex = new RegExp(
+                        `component\\s+${pipelineComponent.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
+                        'i',
+                    );
+
+                    if (regex.test(line)) {
+                        console.log('Found line to update:', line);
+
+                        if (line.includes('label')) {
+                            // If label exists, update only the label coordinates
                             return line.replace(
                                 /\slabel\s\[(.?|.+?)\]+/g,
-                                ` label [${parseFloat(
-                                    moved.x.toString(),
-                                ).toFixed(
-                                    0,
-                                )}, ${parseFloat(moved.y.toString()).toFixed(0)}]`,
-                            );
-                        } else {
-                            return (
-                                line.trim() +
-                                ` label [${parseFloat(
-                                    moved.x.toString(),
-                                ).toFixed(
-                                    0,
-                                )}, ${parseFloat(moved.y.toString()).toFixed(0)}]`
+                                ` label [${correctedX}, ${correctedY}]`,
                             );
                         }
-                    } else {
-                        return line;
+                        // If no label, add one
+                        return line + ` label [${correctedX}, ${correctedY}]`;
                     }
+                    return line;
                 })
                 .join('\n'),
         );
     }
 
-    function endDragX2(
-        component: PipelineComponentData,
+    function endDragForComponent(
+        pipelineComponent: PipelineComponentData,
         moved: MovedPosition,
     ): void {
+        const maturity = positionCalc.xToMaturity(
+            moved.x,
+            props.mapDimensions.width,
+        );
         positionUpdater.update(
             {
-                param1: positionCalc.xToMaturity(
-                    moved.x,
-                    props.mapDimensions.width,
-                ),
+                param1: maturity,
             },
-            component.name,
+            pipelineComponent.name,
         );
     }
 
-    const x1 = positionCalc.maturityToX(
-        props.pipeline.maturity1 || 0,
-        props.mapDimensions.width,
-    );
-    const x2 = positionCalc.maturityToX(
-        props.pipeline.maturity2 || 0,
-        props.mapDimensions.width,
-    );
+    // Commenting out as this is not currently used but may be needed in future
+    // function handlePipelineBoxClick(): void {
+    //     props.setHighlightLine(props.pipeline.line);
+    // }
 
-    const xCalc = (mat: number): number =>
-        positionCalc.maturityToX(mat, props.mapDimensions.width);
+    const calculatedComponents: Array<{
+        pipelineComponent: PipelineComponentData;
+        x: number;
+        y: number;
+    }> = props.pipeline.components
+        .filter((pc) => pc.name !== '')
+        .map((pc: PipelineComponentData) => {
+            const x = positionCalc.maturityToX(
+                pc.maturity,
+                props.mapDimensions.width,
+            );
+            // Calculate base Y position of the pipeline
+            const baseY = positionCalc.visibilityToY(
+                props.pipeline.visibility,
+                props.mapDimensions.height,
+            );
 
-    const allowLinking = (
-        component: PipelineComponentData,
-        e: MouseEvent<SVGElement>,
-    ): void => {
-        const supplementObjectWithVisibility = Object.assign(component, {
+            // Center components vertically within the pipeline box (11px offset for 22px height)
+            const y = baseY + 11;
+
+            return {
+                pipelineComponent: pc,
+                x,
+                y,
+            };
+        })
+        .sort((a, b) => a.x - b.x);
+
+    const componentSymbols = calculatedComponents.map((c, i) => {
+        const component = {
+            id: c.pipelineComponent.id || `pipeline_comp_${i}`,
+            name: c.pipelineComponent.name,
+            type: 'component',
+            maturity: c.pipelineComponent.maturity,
             visibility: props.pipeline.visibility,
-            offsetY: 12,
-        }) as MapElement;
-        props.linkingFunction({ el: supplementObjectWithVisibility, e });
-    };
+            line: c.pipelineComponent.line,
+            label: c.pipelineComponent.label || { x: 0, y: 0 },
+            pipeline: true,
+        } as UnifiedComponent;
 
-    const y =
-        positionCalc.visibilityToY(
-            props.pipeline.visibility,
-            props.mapDimensions.height,
-        ) + 2;
+        return (
+            <>
+                <Movable
+                    key={i}
+                    id={`pipeline_v2_${c.pipelineComponent.name}_${i}`}
+                    onMove={(moved: MovedPosition) =>
+                        endDragForComponent(c.pipelineComponent, moved)
+                    }
+                    x={c.x}
+                    y={c.y}
+                    fixedY={true}
+                    fixedX={false}
+                    scaleFactor={props.scaleFactor}
+                >
+                    <ComponentSymbol
+                        id={`pipeline_v2_circle_${props.pipeline.id}_${i}`}
+                        styles={props.mapStyleDefs.component}
+                        component={component}
+                        onClick={(e: MouseEvent<SVGElement>) => {
+                            if (isModKeyPressed) {
+                                props.linkingFunction({
+                                    el: component,
+                                    e,
+                                });
+                                return;
+                            }
+                            props.setHighlightLine(c.pipelineComponent.line);
+                        }}
+                    />
+                </Movable>
+                {c.pipelineComponent.label && (
+                    <g transform={`translate(${c.x},${c.y})`}>
+                        <ComponentText
+                            component={component}
+                            cx={0}
+                            cy={0}
+                            styles={props.mapStyleDefs.component}
+                            mapText={props.mapText}
+                            mutateMapText={props.mutateMapText}
+                            onLabelMove={(moved) =>
+                                endDragForLabel(c.pipelineComponent, moved)
+                            }
+                            scaleFactor={props.scaleFactor}
+                        />
+                    </g>
+                )}
+            </>
+        );
+    });
+
+    // Pipeline box should only render if there are components
+    if (calculatedComponents.length === 0) {
+        // No components to render for this pipeline
+        console.warn(
+            `Pipeline ${props.pipeline.name} has no components to render`,
+        );
+        return <></>;
+    }
+
+    // Use maturity values directly, not x coordinates which are already transformed
+    const x1 =
+        calculatedComponents.length > 0
+            ? calculatedComponents[0].x
+            : positionCalc.maturityToX(0, props.mapDimensions.width);
+
+    const x2 =
+        calculatedComponents.length > 0
+            ? calculatedComponents[calculatedComponents.length - 1].x
+            : positionCalc.maturityToX(0, props.mapDimensions.width);
+    const y = positionCalc.visibilityToY(
+        props.pipeline.visibility,
+        props.mapDimensions.height,
+    );
+
+    // Ensure we have valid dimensions for the box
+    if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
+        console.warn(
+            `Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`,
+        );
+        return <></>;
+    }
+
+    // Log the calculated coordinates for debugging
+    console.log(
+        `Pipeline ${props.pipeline.name} box: x1=${x1 - 15}, x2=${x2 + 15}, y=${y}`,
+    );
 
     return (
-        <React.Fragment key={'pipeline_box_' + props.pipeline.id}>
-            <PipelineBoxSymbol
+        <>
+            <ModernPipelineBoxSymbol
+                id={`pipeline_v2_box_${props.pipeline.id}`}
                 y={y}
-                id={'pipeline_box_' + props.pipeline.id}
-                x1={x1 - 10}
-                x2={x2 + 10}
+                x1={x1 - 15}
+                x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
+                // Explicitly pass stroke for backward compatibility
+                stroke={props.mapStyleDefs.component.stroke}
             />
-            {props.pipeline.components.map((component, i) => (
-                <React.Fragment key={i}>
-                    <>
-                        <Movable
-                            id={'pipeline_' + props.pipeline.id + '_' + i}
-                            onMove={(m: MovedPosition) =>
-                                endDragX2(component, m)
-                            }
-                            x={xCalc(component.maturity)}
-                            y={y + 12}
-                            fixedY={true}
-                            fixedX={false}
-                            shouldShowMoving={true}
-                            isModKeyPressed={isModKeyPressed}
-                            scaleFactor={props.scaleFactor}
-                        >
-                            <ComponentSymbol
-                                id={
-                                    'pipeline_circle_' +
-                                    props.pipeline.id +
-                                    '_' +
-                                    i
-                                }
-                                cx={'0'}
-                                cy="0"
-                                styles={props.mapStyleDefs.component}
-                                onClick={(e) => allowLinking(component, e)}
-                            />
-                        </Movable>
-                        <g
-                            transform={
-                                'translate(' +
-                                xCalc(component.maturity) +
-                                ',' +
-                                y +
-                                ')'
-                            }
-                        >
-                            <ComponentText
-                                overrideDrag={(m: MovedPosition) =>
-                                    endDragForLabel(component, m)
-                                }
-                                id={'pipelinecomponent_text_' + component.id}
-                                mapStyleDefs={props.mapStyleDefs}
-                                element={component}
-                                mapText={props.mapText}
-                                mutateMapText={props.mutateMapText}
-                                scaleFactor={props.scaleFactor}
-                            />
-                        </g>
-                    </>
-                </React.Fragment>
-            ))}
-        </React.Fragment>
+            {componentSymbols}
+        </>
     );
 }
 
-export default PipelineVersion2;
+export default React.memo(PipelineVersion2);

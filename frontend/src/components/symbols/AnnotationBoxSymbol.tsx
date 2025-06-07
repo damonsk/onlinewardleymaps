@@ -1,7 +1,7 @@
 import React, { ReactNode, memo } from 'react';
 import { MapAnnotationTheme } from '../../constants/mapstyles';
 
-export interface AnnotationBoxSymbolProps {
+interface ModernAnnotationBoxSymbolProps {
     id?: string;
     x?: string | number;
     dy?: string | number;
@@ -13,9 +13,13 @@ export interface AnnotationBoxSymbolProps {
     children: ReactNode;
 }
 
-const AnnotationBoxSymbol: React.FunctionComponent<
-    AnnotationBoxSymbolProps
-> = ({
+/**
+ * AnnotationBoxSymbol - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders the container for annotations
+ */
+const AnnotationBoxSymbol: React.FC<ModernAnnotationBoxSymbolProps> = ({
     id,
     dy = '0',
     x = '2',

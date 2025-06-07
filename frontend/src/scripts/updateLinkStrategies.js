@@ -1,10 +1,10 @@
 /* eslint-disable */
 /**
- * Script to fix link strategies to use ModernMapElements
+ * Script to fix link strategies to use MapElements
  * Part of Phase 4C Migration
  *
  * This script will:
- * 1. Update imports to use ModernMapElements
+ * 1. Update imports to use MapElements
  * 2. Update constructor parameter types
  * 3. Add code to use getLegacyAdapter()
  */
@@ -35,7 +35,7 @@ files.forEach((file) => {
     let content = fs.readFileSync(filePath, 'utf8');
 
     // Skip already updated files
-    if (content.includes('ModernMapElements')) {
+    if (content.includes('MapElements')) {
         console.log(`${file} - Already updated, skipping`);
         return;
     }
@@ -43,7 +43,7 @@ files.forEach((file) => {
     // Update imports
     content = content.replace(
         /import\s+{\s*UnifiedMapElements\s*}\s+from\s+['"]\.\.\/processing\/UnifiedMapElements['"];/,
-        `import { ModernMapElements } from '../processing/ModernMapElements';`,
+        `import { MapElements } from '../processing/MapElements';`,
     );
 
     // Update class header with comment
@@ -51,7 +51,7 @@ files.forEach((file) => {
         /(export default class \w+ implements LinkExtractionStrategy)/,
         `/**
  * ${file.replace('.ts', '')}
- * Updated to use ModernMapElements in Phase 4C
+ * Updated to use MapElements in Phase 4C
  */
 $1`,
     );

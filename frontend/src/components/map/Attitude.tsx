@@ -2,12 +2,12 @@ import React from 'react';
 import { MapTheme } from '../../constants/mapstyles';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 import Movable from './Movable';
-import PositionCalculator from './PositionCalculator';
-import { ExistingManyCoordsMatcher } from './positionUpdaters/ExistingManyCoordsMatcher';
-import LineNumberPositionUpdater from './positionUpdaters/LineNumberPositionUpdater';
+import ModernPositionCalculator from './ModernPositionCalculator';
+import { ModernExistingManyCoordsMatcher } from './positionUpdaters/ModernExistingManyCoordsMatcher';
+import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
 
-interface AttitudeProps {
+interface ModernAttitudeProps {
     attitude: {
         attitude: string;
         maturity: number;
@@ -31,17 +31,30 @@ interface MovedPosition {
     y: number;
 }
 
-const Attitude: React.FC<AttitudeProps> = (props) => {
-    const { attitude, mapDimensions } = props;
+/**
+ * Attitude - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders a movable attitude area on the map
+ */
+const Attitude: React.FC<ModernAttitudeProps> = ({
+    attitude,
+    mapDimensions,
+    mapText,
+    mutateMapText,
+    mapStyleDefs,
+    scaleFactor,
+}) => {
     const { height, width } = mapDimensions;
     const type = attitude.attitude;
-    const positionCalc = new PositionCalculator();
-    const positionUpdater = new LineNumberPositionUpdater(
+    const positionCalc = new ModernPositionCalculator();
+    const positionUpdater = new ModernLineNumberPositionUpdater(
         type,
-        props.mapText,
-        props.mutateMapText,
-        [ExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher],
+        mapText,
+        mutateMapText,
+        [ModernExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher],
     );
+
     const x = positionCalc.maturityToX(attitude.maturity, width);
     const x2 = positionCalc.maturityToX(attitude.maturity2, width);
     const y = positionCalc.visibilityToY(attitude.visibility, height);
@@ -54,6 +67,7 @@ const Attitude: React.FC<AttitudeProps> = (props) => {
         const maturity = parseFloat(positionCalc.xToMaturity(moved.x, width));
         let visibility2 = attitude.visibility2;
         let maturity2 = attitude.maturity2;
+
         if (attitude.visibility < visibility) {
             visibility2 =
                 visibility - attitude.visibility + attitude.visibility2;
@@ -84,21 +98,20 @@ const Attitude: React.FC<AttitudeProps> = (props) => {
     return (
         <>
             <Movable
-                id={`attitude_${type}_movable`}
+                id={`modern_attitude_${type}_movable`}
                 onMove={endDrag}
                 x={x}
                 y={y}
                 fixedY={false}
                 fixedX={false}
-                scaleFactor={props.scaleFactor}
+                scaleFactor={scaleFactor}
             >
                 <AttitudeSymbol
-                    id={`attitude_${type}`}
+                    id={`modern_attitude_${type}`}
                     attitude={type}
                     height={y2 - y}
                     width={x2 - x}
-                    // textAnchor="middle"
-                    styles={props.mapStyleDefs.attitudes}
+                    styles={mapStyleDefs.attitudes}
                 />
             </Movable>
         </>

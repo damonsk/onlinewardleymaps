@@ -1,7 +1,7 @@
 /* eslint-disable */
 /**
  * Script to fix linting issues in link strategy files
- * - Removes the unused ModernMapElements import
+ * - Removes the unused MapElements import
  * - Fixes the parameter type definitions
  */
 
@@ -28,36 +28,34 @@ files.forEach((file) => {
     // If the file is LinksBuilder.ts, handle it differently since we need the import
     if (file === 'LinksBuilder.ts') {
         content = content.replace(
-            /(import { ModernMapElements } from '\.\.\/processing\/ModernMapElements';)/,
+            /(import { MapElements } from '\.\.\/processing\/MapElements';)/,
             '// We need the import for type checking, but we handle both legacy and modern elements\n$1',
         );
 
         // Fix the constructor parameter type
         content = content.replace(
             /(constructor\s*\(\s*mapLinks: Link\[\] = \[\],\s*)modernMapElements: any( = \{\},)/,
-            '$1modernMapElements: ModernMapElements$2',
+            '$1modernMapElements: MapElements$2',
         );
 
         fs.writeFileSync(filePath, content);
         console.log(`${file} - Fixed comments and parameter types`);
     } else {
-        // For other files, replace the ModernMapElements import with a comment
+        // For other files, replace the MapElements import with a comment
         if (
             content.includes(
-                "import { ModernMapElements } from '../processing/ModernMapElements';",
+                "import { MapElements } from '../processing/MapElements';",
             )
         ) {
             content = content.replace(
-                /import { ModernMapElements } from '\.\.\/processing\/ModernMapElements';/,
-                '// Using any type instead of ModernMapElements for compatibility with both modern and legacy elements',
+                /import { MapElements } from '\.\.\/processing\/MapElements';/,
+                '// Using any type instead of MapElements for compatibility with both modern and legacy elements',
             );
 
             fs.writeFileSync(filePath, content);
             console.log(`${file} - Removed unused import`);
         } else {
-            console.log(
-                `${file} - No ModernMapElements import found, skipping`,
-            );
+            console.log(`${file} - No MapElements import found, skipping`);
         }
     }
 });

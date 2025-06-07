@@ -16,7 +16,7 @@ interface Position {
     };
 }
 
-interface MovableProps {
+interface ModernMovableProps {
     id: string;
     x: number;
     y: number;
@@ -29,6 +29,9 @@ interface MovableProps {
     children: React.ReactNode;
 }
 
+/**
+ * Helper function to determine whether to highlight the component
+ */
 const shouldHighlight = ({
     isModKeyPressed,
 }: {
@@ -40,7 +43,13 @@ const shouldHighlight = ({
     return undefined;
 };
 
-const Movable: React.FC<MovableProps> = (props) => {
+/**
+ * Movable - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component handles draggable elements that can be moved by the user
+ */
+const Movable: React.FC<ModernMovableProps> = (props) => {
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);
     const [moving, setMoving] = React.useState(false);
@@ -54,7 +63,7 @@ const Movable: React.FC<MovableProps> = (props) => {
     const handleMouseMove = useCallback(
         (e: globalThis.MouseEvent) => {
             setPosition((position) => {
-                const scaleFactor = props.scaleFactor || 1; // Use scaleFactor from props, default to 1 if not provided
+                const scaleFactor = props.scaleFactor || 1;
                 const xDiff = (position.coords.x! - e.pageX) / scaleFactor;
                 const yDiff = (position.coords.y! - e.pageY) / scaleFactor;
                 return {
@@ -134,7 +143,7 @@ const Movable: React.FC<MovableProps> = (props) => {
             style={{ cursor: moving ? 'grabbing' : 'grab' }}
             onMouseDown={(e) => handleMouseDown(e)}
             onMouseUp={() => handleMouseUp()}
-            id={'movable_' + props.id}
+            id={`modern_movable_${props.id}`}
             filter={filter}
             transform={
                 'translate(' +

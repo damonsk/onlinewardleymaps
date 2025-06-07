@@ -1,4 +1,4 @@
-// Using any type instead of ModernMapElements for compatibility with both modern and legacy elements
+// Using any type instead of MapElements for compatibility with both modern and legacy elements
 import {
     Anchor,
     Link,
@@ -9,7 +9,7 @@ import {
 
 /**
  * AnchorLinksStrategy
- * Updated to use ModernMapElements in Phase 4C
+ * Updated to use MapElements in Phase 4C
  */
 export default class AnchorLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];

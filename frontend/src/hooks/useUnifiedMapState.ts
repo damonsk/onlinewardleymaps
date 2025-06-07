@@ -244,7 +244,7 @@ const createDefaultState = (): ConsolidatedMapState => ({
     mapCanvasDimensions: { width: 500, height: 400 },
     mapStyleDefs: {} as MapTheme,
     evolutionOffsets: { commodity: 0, product: 0, custom: 0 },
-    mapEvolutionStates: {} as EvolutionStages,
+    mapEvolutionStates: EvolutionStages,
     isLoading: false,
     errors: [],
     showUsage: false,

@@ -1,29 +1,25 @@
 import React from 'react';
 import { MapTheme, TextTheme } from '../../constants/mapstyles';
-import {
-    Link,
-    MapElement,
-} from '../../linkStrategies/LinkStrategiesInterfaces';
-import RelativeMovable from '../map/RelativeMovable';
+import { UnifiedComponent } from '../../types/unified/components';
+import { FlowLink } from '../../types/unified/links';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import RelativeMovable from './RelativeMovable';
 
-interface FlowTextProps {
+interface ModernFlowTextProps {
     mapStyleDefs: MapTheme;
-    startElement: MapElement;
-    endElement: MapElement;
-    link: Link & {
-        flow?: boolean;
-        future?: boolean;
-        past?: boolean;
-        context?: string;
-        flowValue?: string;
-    };
+    startElement: UnifiedComponent;
+    endElement: UnifiedComponent;
+    link: FlowLink;
     x: number;
     y: number;
     scaleFactor: number;
 }
 
-const FlowText: React.FC<FlowTextProps> = ({
+/**
+ * FlowText - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ */
+const FlowText: React.FC<ModernFlowTextProps> = ({
     mapStyleDefs,
     startElement,
     endElement,
@@ -48,28 +44,15 @@ const FlowText: React.FC<FlowTextProps> = ({
         <g id={'flow_' + endElement.name} transform={`translate(${x},${y})`}>
             <RelativeMovable
                 id={flowLabelElementId}
-                fixedX={false}
-                fixedY={false}
-                y={
-                    (() => {
-                        return { x: 0, y: -30 };
-                    })().y
-                }
-                x={
-                    (() => {
-                        return { x: 0, y: -30 };
-                    })().x
-                }
+                x={0}
+                y={0}
                 scaleFactor={scaleFactor}
+                relativeToElementId={`link_${startElement.id}_${endElement.id}`}
             >
                 <ComponentTextSymbol
-                    className="draggable label"
-                    id={flowLabelElementId}
-                    x="5"
-                    y="5"
-                    textAnchor="start"
-                    fill={mapStyleDefs.link?.flowText}
-                    text={link.flowValue}
+                    id={`flow_text_symbol_${startElement.id}_${endElement.id}`}
+                    evolved={endElement.evolved || startElement.evolved}
+                    text={link.flowValue || ''}
                     textTheme={theme}
                 />
             </RelativeMovable>
@@ -77,4 +60,4 @@ const FlowText: React.FC<FlowTextProps> = ({
     );
 };
 
-export default React.memo(FlowText);
+export default FlowText;

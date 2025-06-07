@@ -1,2 +1,4 @@
 .yarn/*
 .jest
+./src/scripts/finalJSDocFix.js
+./src/scripts/fixConstructorSyntaxError.js

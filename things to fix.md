@@ -10,3 +10,4 @@
 - Improvement - modify decorators and be explicit on buy = bool, build = bool, outsource = bool, similar to market and ecosystem. Remove the use of strings.
 - backgrounds are broken,
 - drag meth label, seems to be taking the increaselabelspacing when moving the label making it move more than intended.
+- dragging evolved components doesn't update mapText with coords.

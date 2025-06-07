@@ -20,7 +20,7 @@ import {
 import NoneEvolvingToEvolvingLinksStrategy from './NoneEvolvingToEvolvingLinksStrategy';
 
 /**
- * LinksBuilder - Updated to use ModernMapElements
+ * LinksBuilder - Updated to use MapElements
  * Part of Phase 4C Modernization
  *
  * This class coordinates the different link strategies to build all links

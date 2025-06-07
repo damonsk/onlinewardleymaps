@@ -3,10 +3,11 @@ import {
     MapAttitudeTheme,
     MapAttitudeTypeTheme,
 } from '../../constants/mapstyles';
+
 const defaultHeight = '100';
 const defaultWidth = '200';
 
-type AttitudeSymbolProps = {
+interface ModernAttitudeSymbolProps {
     id?: string;
     fill?: string;
     stroke?: string;
@@ -16,9 +17,15 @@ type AttitudeSymbolProps = {
     styles: MapAttitudeTheme;
     height: number;
     width: number;
-};
+}
 
-const AttitudeSymbol: React.FunctionComponent<AttitudeSymbolProps> = ({
+/**
+ * AttitudeSymbol - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders an attitude rectangle on the map
+ */
+const AttitudeSymbol: React.FC<ModernAttitudeSymbolProps> = ({
     id,
     height,
     width,

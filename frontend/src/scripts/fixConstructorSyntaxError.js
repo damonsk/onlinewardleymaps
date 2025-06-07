@@ -1,6 +1,7 @@
+/* eslint-disable */
 // fixConstructorSyntaxError.js
 // Fix the syntax error in link strategy constructors
-// Part of Phase 4C: ModernMapElements Integration
+// Part of Phase 4C: MapElements Integration
 
 const fs = require('fs');
 const path = require('path');

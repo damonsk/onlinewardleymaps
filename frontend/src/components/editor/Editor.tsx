@@ -1,14 +1,8 @@
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactAce from 'react-ace/lib/ace';
-import { MapDimensions } from '../../constants/defaults';
 import { EditorPrefixes } from '../../constants/editorPrefixes';
-import {
-    MapAnchors,
-    MapComponents,
-    MapMarkets,
-    MapSubmaps,
-} from '../../types/base';
+import { UnifiedWardleyMap } from '../../types/unified/map';
 import { WrappedEditorProps } from './WrappedEditor';
 
 const TextEditor = dynamic(() => import('./WrappedEditor'), {
@@ -23,74 +17,40 @@ const ForwardedRefComponent = React.forwardRef<ReactAce, WrappedEditorProps>(
 
 ForwardedRefComponent.displayName = 'ForwardedRefComponent';
 
-export interface EditorProps {
+export interface ModernEditorProps {
+    // Core unified data
+    wardleyMap: UnifiedWardleyMap; // UnifiedWardleyMap;
+
+    // UI state and configuration
     hideNav: any;
     highlightLine: any;
     errorLine: number[];
-    mapComponents: MapComponents[];
-    mapAnchors: MapAnchors[];
-    mapSubMaps: MapSubmaps[];
-    mapMarkets: MapMarkets[];
     isLightTheme: boolean;
     invalid: boolean;
-    mutateMapText: any;
-    mapText: string;
     showLineNumbers: boolean;
-    mapDimensions: MapDimensions;
+    mapDimensions: any;
+
+    // Text and mutations
+    mapText: string;
+    mutateMapText: any;
 }
 
-export const Editor: React.FunctionComponent<EditorProps> = ({
+export const Editor: React.FunctionComponent<ModernEditorProps> = ({
+    wardleyMap,
     hideNav,
     highlightLine,
     errorLine,
-    mapComponents,
-    mapAnchors,
-    mapSubMaps,
-    mapMarkets,
     isLightTheme,
     invalid,
     mutateMapText,
     mapText,
     showLineNumbers,
+    mapDimensions, // eslint-disable-line @typescript-eslint/no-unused-vars
 }) => {
-    const [height, setHeight] = useState(10);
-    const [editorCompletions, setEditorCompletions] = useState({
-        prefix: EditorPrefixes,
-        elements: [] as string[],
-    });
-    const aceEditor = React.createRef<ReactAce>();
+    const [editorHeight, setEditorHeight] = useState(500);
+    const aceEditorRef = useRef<ReactAce>(null);
 
-    const customAceEditorCompleter = (ed: { prefix: any; elements: any }) => {
-        return {
-            getCompletions: function (
-                _editor: any,
-                _session: any,
-                _pos: any,
-                _prefix: any,
-                callback: (arg0: null, arg1: any) => void,
-            ) {
-                const components = ed.elements.map((item: any) => {
-                    return {
-                        name: item,
-                        value: item,
-                        score: 1,
-                        meta: 'Element',
-                    };
-                });
-                const prefixes = ed.prefix.map((item: any) => {
-                    return {
-                        name: item,
-                        value: item,
-                        score: 1,
-                        meta: 'Syntax',
-                    };
-                });
-
-                callback(null, prefixes.concat(components));
-            },
-        };
-    };
-
+    // Use the same height calculation logic as the original Editor
     const getHeight = () => {
         const winHeight = window.innerHeight;
         const topNavHeight =
@@ -101,7 +61,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
     useEffect(() => {
         const handleResize = () => {
-            setHeight(getHeight());
+            setEditorHeight(getHeight());
         };
 
         window.addEventListener('load', handleResize);
@@ -116,13 +76,14 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
     }, []);
 
     useEffect(() => {
-        setHeight(getHeight());
+        setEditorHeight(getHeight());
     }, [hideNav]);
 
+    // Highlight the selected line by moving the cursor to it
     useEffect(() => {
         const gotoLine = (line: number) => {
-            const reactAceComponent = aceEditor.current;
-            if (reactAceComponent !== null) {
+            const reactAceComponent = aceEditorRef.current;
+            if (reactAceComponent !== null && line > 0) {
                 const editor = reactAceComponent.editor;
                 editor.gotoLine(line, 0, true);
             }
@@ -130,13 +91,16 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
         gotoLine(highlightLine);
     }, [highlightLine]);
 
+    // Add error indicators to the gutter for error lines
     useEffect(() => {
-        const reactAceComponent = aceEditor.current;
+        const reactAceComponent = aceEditorRef.current;
         if (reactAceComponent !== null) {
             const editor = reactAceComponent.editor;
+            // Clear all previous error decorations
             for (let x = 0; x < editor.session.getLength(); x++) {
                 editor.session.removeGutterDecoration(x, 'ace_error');
             }
+            // Add error decorations to the specified error lines
             if (errorLine.length > 0) {
                 errorLine.forEach((e: number) =>
                     editor.session.addGutterDecoration(e, 'ace_error'),
@@ -145,83 +109,103 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
         }
     }, [errorLine]);
 
-    useEffect(() => {
-        const concatenatedUserComponents = mapComponents
-            .map((c) => {
-                return c.name;
-            })
-            .concat(
-                mapAnchors.map((_) => {
-                    return _.name;
-                }),
-            )
-            .concat(
-                mapSubMaps.map((_) => {
-                    return _.name;
-                }),
-            )
-            .concat(
-                mapMarkets.map((_) => {
-                    return _.name;
-                }),
-            );
-        setEditorCompletions(
-            createExpressionSuggester(concatenatedUserComponents),
-        );
-    }, [mapComponents, mapAnchors, mapSubMaps, mapMarkets]);
+    const completions = [
+        ...wardleyMap.components.map((c: any) => ({
+            caption: c.name,
+            value: c.name,
+            meta: 'component',
+        })),
+        ...wardleyMap.anchors.map((a: any) => ({
+            caption: a.name,
+            value: a.name,
+            meta: 'anchor',
+        })),
+        ...wardleyMap.markets.map((m: any) => ({
+            caption: m.name,
+            value: m.name,
+            meta: 'market',
+        })),
+        ...wardleyMap.ecosystems.map((e: any) => ({
+            caption: e.name,
+            value: e.name,
+            meta: 'ecosystem',
+        })),
+        ...wardleyMap.submaps.map((s: any) => ({
+            caption: s.name,
+            value: s.name,
+            meta: 'submap',
+        })),
+        ...EditorPrefixes.map((prefix: string) => ({
+            caption: prefix,
+            value: prefix,
+            meta: 'syntax',
+        })),
+    ];
 
     useEffect(() => {
-        const reactAceComponent = aceEditor.current;
+        const reactAceComponent = aceEditorRef.current;
         if (reactAceComponent !== null) {
             const editor = reactAceComponent.editor;
-            editor.setTheme(
-                'ace/theme/' + (isLightTheme ? 'eclipse' : 'dracula'),
-            );
+            editor.completers = [
+                {
+                    getCompletions: function (
+                        _editor: any,
+                        _session: any,
+                        _pos: any,
+                        _prefix: any,
+                        callback: (arg0: null, arg1: any) => void,
+                    ) {
+                        const suggestions = completions.map((item) => ({
+                            name: item.caption,
+                            value: item.value,
+                            score: 1,
+                            meta: item.meta,
+                        }));
+                        callback(null, suggestions);
+                    },
+                },
+            ];
         }
-    }, [isLightTheme, aceEditor]);
-
-    useEffect(() => {
-        const reactAceComponent = aceEditor.current;
-        if (reactAceComponent !== null) {
-            const editor = reactAceComponent.editor;
-            editor.completers = [customAceEditorCompleter(editorCompletions)];
-        }
-    }, [editorCompletions, aceEditor]);
-
-    const createExpressionSuggester = (userSpecifiedComponents: string[]) => {
-        // const c = userSpecifiedComponents.map(_ => {
-        //     return _.name;
-        // });
-        return {
-            elements: userSpecifiedComponents,
-            prefix: EditorPrefixes,
-        };
-    };
+    }, [completions]);
 
     return (
-        <div id="htmPane" className={invalid ? ' invalid' : ''}>
+        <div
+            id="editor-container"
+            style={{
+                width: '100%',
+                height: editorHeight,
+                paddingBottom: '10px',
+            }}
+        >
             <ForwardedRefComponent
-                ref={aceEditor}
+                ref={aceEditorRef}
                 mode="owm"
-                keyboardHandler="vscode"
                 theme={isLightTheme ? 'eclipse' : 'dracula'}
+                name="map_editor"
                 onChange={mutateMapText}
-                name="htmEditor"
-                value={mapText}
-                showGutter={showLineNumbers || errorLine.length > 0}
-                width={''}
-                height={height + 'px'}
+                fontSize={13}
                 showPrintMargin={false}
-                debounceChangePeriod={500}
-                editorProps={{
-                    $blockScrolling: true,
-                    getCompletions: customAceEditorCompleter(editorCompletions),
-                }}
+                showGutter={showLineNumbers}
+                highlightActiveLine={false}
+                value={mapText}
                 setOptions={{
-                    showLineNumbers: showLineNumbers,
                     enableBasicAutocompletion: true,
                     enableLiveAutocompletion: true,
+                    enableSnippets: false,
+                    showLineNumbers: showLineNumbers,
+                    tabSize: 2,
                 }}
+                style={{
+                    height: editorHeight,
+                    width: '100%',
+                    border: invalid ? '2px solid red' : '0px',
+                }}
+                annotations={errorLine.map((line) => ({
+                    row: line,
+                    column: 0,
+                    type: 'error',
+                    text: 'Map element not found or invalid syntax',
+                }))}
             />
         </div>
     );

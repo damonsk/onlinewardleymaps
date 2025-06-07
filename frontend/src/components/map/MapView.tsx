@@ -1,3 +1,7 @@
+// Phase 4: Component Interface Modernization
+// Modern MapView component that accepts UnifiedWardleyMap directly
+// This replaces the legacy MapView component with a cleaner, unified interface
+
 import React, { LegacyRef, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import {
@@ -7,55 +11,36 @@ import {
     Offsets,
 } from '../../constants/defaults';
 
-import {
-    MapAccelerators,
-    MapAnchors,
-    MapAnnotations,
-    MapAnnotationsPosition,
-    MapAttitudes,
-    MapComponents,
-    MapEcosystems,
-    MapEvolved,
-    MapLinks,
-    MapMarkets,
-    MapMethods,
-    MapNotes,
-    MapPipelines,
-    MapSubmaps,
-} from '../../types/base';
+import { MapAnnotationsPosition } from '../../types/base';
 import { MapTheme } from '../../types/map/styles';
+import { UnifiedWardleyMap } from '../../types/unified/map';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
 import { DefaultThemes } from './foundation/Fill';
 
-export interface MapViewProps {
+export interface ModernMapViewProps {
+    // Core unified data
+    wardleyMap: UnifiedWardleyMap;
+
+    // UI state and configuration
     shouldHideNav: () => void;
     hideNav: boolean;
     mapTitle: string;
-    mapComponents: MapComponents[];
-    mapMarkets: MapMarkets[];
-    mapEcosystems: MapEcosystems[];
-    mapSubMaps: MapSubmaps[];
-    mapEvolved: MapEvolved[];
-    mapPipelines: MapPipelines[];
-    mapAnchors: MapAnchors[];
-    mapLinks: MapLinks[];
-    mapAttitudes: MapAttitudes[];
-    mapAccelerators: MapAccelerators[];
-    launchUrl: (urlId: string) => void;
-    mapNotes: MapNotes[];
-    mapAnnotations: MapAnnotations[];
     mapAnnotationsPresentation: MapAnnotationsPosition;
-    mapMethods: MapMethods[];
     mapStyleDefs: MapTheme;
     mapCanvasDimensions: MapCanvasDimensions;
     mapDimensions: MapDimensions;
     mapEvolutionStates: EvolutionStages;
     mapRef: React.MutableRefObject<HTMLElement | null>;
+
+    // Text and mutations
     mapText: string;
     mutateMapText: (newText: string) => void;
     evolutionOffsets: Offsets;
+
+    // Interaction handlers
+    launchUrl: (urlId: string) => void;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     setNewComponentContext: React.Dispatch<
         React.SetStateAction<{ x: string; y: string } | null>
@@ -63,9 +48,8 @@ export interface MapViewProps {
     showLinkedEvolved: boolean;
 }
 
-export const MapView: React.FunctionComponent<MapViewProps> = (props) => {
+export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
     const featureSwitches = useFeatureSwitches();
-    // const [quickAddCursor, setQuickAddCursor] = useState('default');
     const [quickAddTemplate, setQuickAddTemplate] = useState(
         () => () => console.log('nullTemplate'),
     );
@@ -99,25 +83,19 @@ export const MapView: React.FunctionComponent<MapViewProps> = (props) => {
 
     const setQuickAdd = (quickAdd: any) => {
         setQuickAddInProgress(true);
-        const i = svgToBase64Url(
-            ReactDOMServer.renderToString(quickAdd.cursor),
-            15,
-            15,
-        );
-        console.log('MapView::setQuickAdd::icon', i);
+        svgToBase64Url(ReactDOMServer.renderToString(quickAdd.cursor), 15, 15);
         setQuickAddTemplate(() => () => quickAdd.template);
     };
 
-    const handleMapCanvasClick = (pos: any) => {
+    // We ignore the position parameter since we don't need it
+    const handleMapCanvasClick = () => {
         if (featureSwitches.enableQuickAdd == false) return;
-        console.log('MapView::handleMapCanvasClick', pos);
         if (quickAddInProgress) {
-            console.log(
-                'MapView::handleMapCanvasClick::quickAddTemplate',
-                quickAddTemplate,
-            );
+            // When in quick add mode, execute the template
+            quickAddTemplate();
             setQuickAddInProgress(false);
         }
+        // Note: The actual coordinate handling for double-click is now in UnifiedMapCanvas
     };
 
     return (
@@ -127,12 +105,29 @@ export const MapView: React.FunctionComponent<MapViewProps> = (props) => {
             style={containerStyle}
         >
             {featureSwitches.enableQuickAdd && (
-                <CanvasSpeedDial setQuickAdd={setQuickAdd} {...props} />
+                <CanvasSpeedDial
+                    setQuickAdd={setQuickAdd}
+                    mapStyleDefs={props.mapStyleDefs}
+                />
             )}
             <div id="map">
                 <UnifiedMapCanvas
+                    wardleyMap={props.wardleyMap}
+                    mapDimensions={props.mapDimensions}
+                    mapCanvasDimensions={props.mapCanvasDimensions}
+                    mapStyleDefs={props.mapStyleDefs}
+                    mapEvolutionStates={props.mapEvolutionStates}
+                    evolutionOffsets={props.evolutionOffsets}
+                    mapText={props.mapText}
+                    mutateMapText={props.mutateMapText}
+                    setHighlightLine={props.setHighlightLine}
+                    setNewComponentContext={props.setNewComponentContext}
+                    launchUrl={props.launchUrl}
+                    showLinkedEvolved={props.showLinkedEvolved}
+                    mapAnnotationsPresentation={
+                        props.mapAnnotationsPresentation
+                    }
                     handleMapCanvasClick={handleMapCanvasClick}
-                    {...props}
                 />
             </div>
         </div>

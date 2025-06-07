@@ -14,7 +14,7 @@ interface Position {
     };
 }
 
-interface RelativeMovableProps {
+interface ModernRelativeMovableProps {
     id: string;
     x: number;
     y: number;
@@ -22,10 +22,18 @@ interface RelativeMovableProps {
     fixedX?: boolean;
     fixedY?: boolean;
     scaleFactor?: number;
+    relativeToElementId?: string;
     children: React.ReactNode;
 }
 
-const RelativeMovable: React.FC<RelativeMovableProps> = (props) => {
+/**
+ * RelativeMovable - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component handles draggable elements that move relative to a position
+ * Used primarily for flow text, annotations, and other movable map elements
+ */
+const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
     const [moving, setMoving] = React.useState(false);
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);
@@ -93,10 +101,16 @@ const RelativeMovable: React.FC<RelativeMovableProps> = (props) => {
 
     function endDrag(): void {
         if (props.onMove) {
+            // For labels, we want integer coordinates
             const moved: MovedPosition = {
-                x: parseFloat(parseFloat(position.x.toString()).toFixed(2)),
-                y: parseFloat(parseFloat(position.y.toString()).toFixed(2)),
+                x: parseInt(position.x.toString(), 10),
+                y: parseInt(position.y.toString(), 10),
             };
+            console.log('RelativeMovable endDrag:', {
+                id: props.id,
+                rawPosition: position,
+                movedResult: moved,
+            });
             props.onMove(moved);
         }
     }
@@ -111,12 +125,12 @@ const RelativeMovable: React.FC<RelativeMovableProps> = (props) => {
 
     return (
         <g
-            key={'movable_' + props.id}
+            key={`modern_movable_${props.id}`}
             className={'draggable'}
             style={{ cursor: moving ? 'grabbing' : 'grab' }}
             onMouseDown={(e) => handleMouseDown(e)}
             onMouseUp={() => handleMouseUp()}
-            id={'movable_' + props.id}
+            id={`modern_movable_${props.id}`}
             transform={
                 'translate(' +
                 (props.fixedX ? x() : position.x) +

@@ -1,6 +1,7 @@
+/* eslint-disable */
 // fixReturnStatements.js
 // Add defensive coding to return statements in link strategy files
-// Part of Phase 4C: ModernMapElements Integration
+// Part of Phase 4C: MapElements Integration
 
 const fs = require('fs');
 const path = require('path');

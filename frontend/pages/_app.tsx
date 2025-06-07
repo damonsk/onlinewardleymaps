@@ -5,6 +5,7 @@ import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
 import { FeatureSwitchesProvider } from '../src/components/FeatureSwitchesContext';
+import { ModKeyPressedProvider } from '../src/components/KeyPressContext';
 import Footer from '../src/components/page/Footer';
 import { featureSwitches } from '../src/constants/featureswitches';
 import { lightTheme, theme } from '../src/theme';
@@ -48,22 +49,24 @@ const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
                 />
             </Head>
             <FeatureSwitchesProvider value={featureSwitches}>
-                <StylesProvider injectFirst>
-                    <MaterialUIThemeProvider theme={currentTheme}>
-                        <StyledComponentsThemeProvider theme={currentTheme}>
-                            <CssBaseline />
+                <ModKeyPressedProvider>
+                    <StylesProvider injectFirst>
+                        <MaterialUIThemeProvider theme={currentTheme}>
+                            <StyledComponentsThemeProvider theme={currentTheme}>
+                                <CssBaseline />
 
-                            <Component
-                                {...pageProps}
-                                toggleTheme={toggleTheme}
-                                toggleMenu={toggleMenu}
-                                menuVisible={menuVisible}
-                                isLightTheme={isLightTheme}
-                            />
-                            <Footer />
-                        </StyledComponentsThemeProvider>
-                    </MaterialUIThemeProvider>
-                </StylesProvider>
+                                <Component
+                                    {...pageProps}
+                                    toggleTheme={toggleTheme}
+                                    toggleMenu={toggleMenu}
+                                    menuVisible={menuVisible}
+                                    isLightTheme={isLightTheme}
+                                />
+                                <Footer />
+                            </StyledComponentsThemeProvider>
+                        </MaterialUIThemeProvider>
+                    </StylesProvider>
+                </ModKeyPressedProvider>
             </FeatureSwitchesProvider>
         </>
     );

@@ -1,5 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, MouseEvent } from 'react';
 import { MapComponentTheme } from '../../constants/mapstyles';
+import { UnifiedComponent } from '../../types/unified';
+
 const SM_CIRC_RADIUS = 10;
 const polarCoord = (radius: number, angle: number): [number, number] => [
     Math.round(radius * Math.cos((angle * Math.PI) / 180)),
@@ -32,23 +34,42 @@ const drawInsideCircles = (
         />
     ));
 
-interface MarketSymbolProps {
+/**
+ * MarketSymbol Props - using unified type system directly
+ * This interface eliminates legacy types and improves type safety
+ */
+interface ModernMarketSymbolProps {
     id?: string;
     styles: MapComponentTheme;
     cx?: string;
     cy?: string;
-    onClick: (e: React.MouseEvent<SVGElement>) => void;
+    component?: UnifiedComponent; // Direct reference to UnifiedComponent
+    onClick: (e: MouseEvent<SVGElement>) => void;
 }
 
-const MarketSymbol: React.FC<MarketSymbolProps> = ({ id, styles, onClick }) => {
+/**
+ * MarketSymbol - Market symbol representation using unified types
+ * This component eliminates legacy type dependencies and improves rendering performance
+ */
+const MarketSymbol: React.FC<ModernMarketSymbolProps> = ({
+    id,
+    styles,
+    onClick,
+    component, // Direct access to UnifiedComponent
+}) => {
     const coords = rotatePoints();
+
+    // Could use component properties directly if needed
+    const fill = component?.evolved ? styles.evolvedFill : styles.fill;
+    const stroke = component?.evolved ? styles.evolved : styles.stroke;
+
     return (
         <g id={id} onClick={onClick}>
             <circle
                 r={SM_CIRC_RADIUS * 1.8}
-                fill={styles.fill}
+                fill={fill}
                 strokeWidth="1"
-                stroke={styles.stroke}
+                stroke={stroke}
             />
             <path
                 strokeWidth="2"

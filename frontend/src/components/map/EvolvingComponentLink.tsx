@@ -1,10 +1,10 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
-import { MapElement } from '../../linkStrategies/LinkStrategiesInterfaces';
+import { UnifiedComponent } from '../../types/unified/components';
 import LinkSymbol from '../symbols/LinkSymbol';
 import Inertia from './Inertia';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface EvolutionOffsets {
     commodity: number;
@@ -12,16 +12,19 @@ interface EvolutionOffsets {
     custom: number;
 }
 
-interface EvolvingComponentLinkProps {
-    startElement: MapElement | undefined;
-    endElement: MapElement | undefined;
+interface ModernEvolvingComponentLinkProps {
+    startElement: UnifiedComponent;
+    endElement: UnifiedComponent;
     mapDimensions: MapDimensions;
     evolutionOffsets: EvolutionOffsets;
     mapStyleDefs: MapTheme;
 }
 
+/**
+ * Calculate the boundary point for inertia visualization
+ */
 const setBoundary = (
-    positionCalc: PositionCalculator,
+    positionCalc: ModernPositionCalculator,
     {
         mapDimensions,
         evolutionOffsets,
@@ -30,8 +33,8 @@ const setBoundary = (
     }: {
         mapDimensions: MapDimensions;
         evolutionOffsets: EvolutionOffsets;
-        startElement: MapElement;
-        endElement: MapElement;
+        startElement: UnifiedComponent;
+        endElement: UnifiedComponent;
     },
 ): number | null => {
     const boundWidth = mapDimensions.width / 20;
@@ -47,14 +50,23 @@ const setBoundary = (
                 mapDimensions.width,
             ),
         );
-        if (startElement.maturity <= edge && endElement.maturity >= edge) {
+        if (
+            (startElement.maturity ?? 0) <= edge &&
+            (endElement.maturity ?? 0) >= edge
+        ) {
             return edge;
         }
     }
-    return startElement.maturity + 0.05;
+    return (startElement.maturity ?? 0) + 0.05;
 };
 
-const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
+/**
+ * EvolvingComponentLink - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders an evolving component link with inertia indicators
+ */
+const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
     startElement,
     endElement,
     mapDimensions,
@@ -64,26 +76,32 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     if (!startElement || !endElement) {
         return null;
     }
-    const { height, width } = mapDimensions;
-    const positionCalc = new PositionCalculator();
 
-    // Handle the coordinate calculation based on whether we're using unified canvas or legacy
+    const { height, width } = mapDimensions;
+    const positionCalc = new ModernPositionCalculator();
+
+    // Handle the coordinate calculation based on unified component types
     const x1 = positionCalc.maturityToX(startElement.maturity ?? 0, width);
     const x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
 
     const y1 =
-        positionCalc.visibilityToY(startElement.visibility, height) +
-        (startElement.offsetY ? startElement.offsetY : 0);
+        positionCalc.visibilityToY(
+            typeof startElement.visibility === 'string'
+                ? parseFloat(startElement.visibility)
+                : startElement.visibility,
+            height,
+        ) + (startElement.offsetY ?? 0);
+
     const y2 =
-        positionCalc.visibilityToY(endElement.visibility, height) +
-        (endElement.offsetY ? endElement.offsetY : 0);
+        positionCalc.visibilityToY(
+            typeof endElement.visibility === 'string'
+                ? parseFloat(endElement.visibility)
+                : endElement.visibility,
+            height,
+        ) + (endElement.offsetY ?? 0);
 
+    // Calculate boundary point for inertia
     let boundary: number | undefined;
-
-    console.log('EvolvingComponentLink', {
-        start: startElement.maturity,
-        end: endElement.maturity,
-    });
 
     if (startElement.inertia) {
         boundary =
@@ -98,6 +116,7 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
     return (
         <>
             <LinkSymbol
+                id={`modern_evolving_link_${startElement.id}_${endElement.id}`}
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -106,11 +125,11 @@ const EvolvingComponentLink: React.FC<EvolvingComponentLinkProps> = ({
                 marker="url(#arrow)"
                 isMarkerStart={false}
                 styles={mapStyleDefs.link}
-                evolved
+                evolved={true}
             />
-            {endElement.inertia && (
+            {endElement.inertia && boundary !== undefined && (
                 <Inertia
-                    maturity={boundary!}
+                    maturity={boundary}
                     visibility={endElement.visibility}
                     mapDimensions={mapDimensions}
                 />

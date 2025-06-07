@@ -1,8 +1,10 @@
-// Unified MapElements - Phase 1 of refactoring plan
-// This replaces the complex MapElements class with a cleaner, type-safe version
+// MapElements.ts - Modern implementation of map element processing
+// Part of Phase 4C: Component Interface Modernization
+//
+// This class replaces UnifiedMapElements with a fully modern implementation
+// that works directly with unified types and doesn't convert to legacy MapElement types.
+// It provides a clean, type-safe interface for modern components.
 
-import { MapElement } from '../types/base'; // Use MapElement and ComponentDecorator from base.ts. Removed ComponentLabel.
-import { IProvideMapElements } from '../types/map/elements';
 import {
     EvolvedElementData,
     PipelineData,
@@ -12,14 +14,22 @@ import {
 } from '../types/unified';
 
 /**
- * Unified MapElements processor with simplified, type-safe operations
- * This replaces the original MapElements class with cleaner architecture
+ * Modern MapElements processor with clean, type-safe operations
+ *
+ * This class provides methods for accessing and manipulating map elements,
+ * working directly with UnifiedComponent types without conversion to legacy types.
  */
-export class UnifiedMapElements implements IProvideMapElements {
+export class MapElements {
     private allComponents: UnifiedComponent[];
     private evolvedElements: EvolvedElementData[];
     private pipelines: PipelineData[];
 
+    /**
+     * Creates an instance of MapElements.
+     * Initializes the components, marks evolving components, and processes pipelines.
+     *
+     * @param map The UnifiedWardleyMap containing all map data
+     */
     constructor(map: UnifiedWardleyMap) {
         this.allComponents = [
             ...map.components,
@@ -35,6 +45,10 @@ export class UnifiedMapElements implements IProvideMapElements {
         this.markPipelineComponents();
     }
 
+    /**
+     * Marks components as evolving based on the evolvedElements collection
+     * Also applies label positioning rules for evolving components
+     */
     private markEvolvingComponents(): void {
         // First create a set of components referenced in methods
         const methodComponents = new Set<string>();
@@ -68,7 +82,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                     let label = component.label || { x: 0, y: 0 };
 
                     // For labels with the default value or no meaningful vertical position,
-                    // place the label below the componen
+                    // place the label below the component
                     if (!label.y || Math.abs(label.y) <= 10) {
                         label = {
                             ...label,
@@ -79,7 +93,7 @@ export class UnifiedMapElements implements IProvideMapElements {
 
                     // Apply consistent horizontal position if not already specified
                     if (!label.x || Math.abs(label.x) <= 10) {
-                        // Calculate horizontal offset - slight offset to the righ
+                        // Calculate horizontal offset - slight offset to the right
                         const xOffset = evolved?.override ? 16 : 5;
 
                         label = {
@@ -111,7 +125,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                 let label = component.label || { x: 0, y: 0 };
 
                 // If no y offset is specified or it's within the default range,
-                // place the label below the componen
+                // place the label below the component
                 if (!label.y || Math.abs(label.y) <= 10) {
                     label = {
                         ...label,
@@ -124,7 +138,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                 if (!label.x || Math.abs(label.x) <= 10) {
                     label = {
                         ...label,
-                        // Position label with slight offset to the righ
+                        // Position label with slight offset to the right
                         x: 5,
                     };
                 }
@@ -140,6 +154,10 @@ export class UnifiedMapElements implements IProvideMapElements {
         });
     }
 
+    /**
+     * Marks components as pipeline components based on the pipelines collection
+     * Sets the pipeline property to true for components that are pipelines
+     */
     private markPipelineComponents(): void {
         this.allComponents = this.allComponents.map((component) => {
             const isPipelineComponent = this.pipelines.some(
@@ -155,19 +173,35 @@ export class UnifiedMapElements implements IProvideMapElements {
         });
     }
 
+    /**
+     * Gets all components in the map
+     */
     getAllComponents(): UnifiedComponent[] {
         return this.allComponents;
     }
 
+    /**
+     * Gets components of a specific type
+     *
+     * @param type Component type ('component', 'anchor', 'submap', etc)
+     */
     getComponentsByType(type: string): UnifiedComponent[] {
         return this.allComponents.filter((c) => c.type === type);
     }
 
+    /**
+     * Gets components that are evolving (have an evolve declaration)
+     * These are the source components that are evolving into another position
+     */
     getEvolvingComponents(): UnifiedComponent[] {
         return this.allComponents.filter((c) => c.evolving);
     }
 
-    private getEvolvedUnifiedComponents(): UnifiedComponent[] {
+    /**
+     * Gets the evolved versions of components
+     * Creates evolved components based on evolving components and evolved data
+     */
+    getEvolvedComponents(): UnifiedComponent[] {
         return this.getEvolvingComponents().map((component) => {
             const evolvedData = this.evolvedElements.find(
                 (e) => e.name === component.name,
@@ -177,6 +211,7 @@ export class UnifiedMapElements implements IProvideMapElements {
                     `Evolved element not found for ${component.name}`,
                 );
             }
+
             // Calculate appropriate label spacing
             const increaseLabelSpacing = Math.max(
                 evolvedData.increaseLabelSpacing || 0,
@@ -187,11 +222,11 @@ export class UnifiedMapElements implements IProvideMapElements {
             // Calculate appropriate label position
             let label = evolvedData.label || component.label || { x: 0, y: 0 };
 
-            // If no y offset is specified, calculate appropriate vertical position for evolved componen
+            // If no y offset is specified, calculate appropriate vertical position for evolved component
             if (!label.y || Math.abs(label.y) <= 10) {
                 label = {
                     ...label,
-                    // Position label below the componen
+                    // Position label below the component
                     y: increaseLabelSpacing * 10,
                 };
             }
@@ -200,7 +235,7 @@ export class UnifiedMapElements implements IProvideMapElements {
             if ((!label.x || Math.abs(label.x) <= 10) && evolvedData.override) {
                 label = {
                     ...label,
-                    // Position label with slight offset to accommodate override tex
+                    // Position label with slight offset to accommodate override text
                     x: 16,
                 };
             }
@@ -224,128 +259,103 @@ export class UnifiedMapElements implements IProvideMapElements {
         });
     }
 
+    /**
+     * Gets components that are not evolved
+     * These include regular components and evolving components
+     */
     getStaticComponents(): UnifiedComponent[] {
         return this.allComponents.filter((c) => !c.evolved);
     }
 
+    /**
+     * Gets components with inertia but not evolved
+     */
     getInertiaComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => c.inertia && !c.evolved);
-    }
-
-    private convertToMapElement(component: UnifiedComponent): MapElement {
-        // Create result object with properties in the exact order expected by golden master
-        const result: any = {
-            maturity: component.maturity ?? 0,
-            visibility: component.visibility ?? 0,
-            label: component.label ?? { x: 0, y: 0 },
-            evolving: component.evolving ?? false,
-            evolved: component.evolved ?? false,
-            inertia: component.inertia ?? false,
-            pseudoComponent: component.pseudoComponent ?? false,
-            offsetY: component.offsetY ?? 0,
-            pipeline: component.pipeline ?? false,
-            id: component.id,
-            name: component.name,
-            type: component.type ?? '',
-            line: component.line,
-        };
-
-        // Only include evolveMaturity if component is actually evolving
-        if (
-            component.evolving &&
-            component.evolveMaturity !== null &&
-            component.evolveMaturity !== undefined
-        ) {
-            result.evolveMaturity = component.evolveMaturity;
-        }
-
-        // Set decorators based on parsed decorators from DSL, not component type
-        result.decorators = {
-            ecosystem:
-                component.decorators?.ecosystem ||
-                component.type === 'ecosystem',
-            market: component.decorators?.market || component.type === 'market',
-            method: component.decorators?.method, // Only set method if explicitly defined
-        };
-
-        // Always set increaseLabelSpacing to 0 for legacy forma
-        result.increaseLabelSpacing = 0;
-
-        // Always include URL object for legacy forma
-        result.url = { name: '', url: '' };
-
-        return result as MapElement;
-    }
-
-    private convertToMapElements(components: UnifiedComponent[]): MapElement[] {
-        return components.map((c) => this.convertToMapElement(c));
-    }
-
-    getNoneEvolvedOrEvolvingElements(): MapElement[] {
-        return this.convertToMapElements(
-            this.allComponents.filter((c) => !c.evolving && !c.evolved),
-        );
-    }
-
-    getNoneEvolvingElements(): MapElement[] {
-        return this.convertToMapElements(
-            this.allComponents.filter((c) => !c.evolving),
-        );
-    }
-
-    getEvolvedOrEvolvingElements(): MapElement[] {
-        return this.convertToMapElements(
-            this.allComponents.filter((c) => c.evolving || c.evolved),
-        );
-    }
-
-    getNonEvolvedElements(): MapElement[] {
-        // Legacy behavior: non-evolved includes non-evolving + evolving (but not evolved)
-        return this.convertToMapElements(
-            this.allComponents.filter((c) => !c.evolved),
-        );
-    }
-
-    getEvolvedElements(): MapElement[] {
-        return this.convertToMapElements(this.getEvolvedUnifiedComponents());
-    }
-
-    getEvolveElements(): MapElement[] {
-        return this.convertToMapElements(this.getEvolvingComponents());
-    }
-
-    getMergedElements(): MapElement[] {
-        const staticElements = this.getStaticComponents();
-        const evolvedElements = this.getEvolvedUnifiedComponents();
-        return this.convertToMapElements([
-            ...staticElements,
-            ...evolvedElements,
-        ]);
-    }
-
-    getMapPipelines(): any[] {
-        return this.pipelines.map((pipeline) => ({
-            ...pipeline,
-            // components: this.convertToMapElements(pipeline.components as UnifiedComponent[]),
-        }));
+        return this.allComponents.filter((c) => c.inertia === true);
     }
 
     /**
-     * Create legacy MapElements adapter for backward compatibility
-     * This method provides the legacy interface expected by existing code
+     * Gets components that are neither evolved nor evolving
      */
-    createLegacyMapElementsAdapter() {
+    getNeitherEvolvedNorEvolvingComponents(): UnifiedComponent[] {
+        return this.allComponents.filter((c) => !c.evolving && !c.evolved);
+    }
+
+    /**
+     * Gets components that are not evolving
+     * These include static components and evolved components
+     */
+    getNonEvolvingComponents(): UnifiedComponent[] {
+        return this.allComponents.filter((c) => !c.evolving);
+    }
+
+    /**
+     * Gets components that are not evolved
+     * These include static components and evolving components
+     */
+    getNonEvolvedComponents(): UnifiedComponent[] {
+        return this.allComponents.filter((c) => !c.evolved);
+    }
+
+    /**
+     * Gets components that are either evolved or evolving
+     */
+    getEitherEvolvedOrEvolvingComponents(): UnifiedComponent[] {
+        return this.allComponents.filter((c) => c.evolving || c.evolved);
+    }
+
+    /**
+     * Gets all components merged with their evolved versions
+     * This provides a complete set of components for rendering
+     */
+    getMergedComponents(): UnifiedComponent[] {
+        const staticComponents = this.getStaticComponents();
+        const evolvedComponents = this.getEvolvedComponents();
+        return [...staticComponents, ...evolvedComponents];
+    }
+
+    /**
+     * Gets pipeline components
+     */
+    getPipelineComponents(): PipelineData[] {
+        return this.pipelines;
+    }
+
+    /**
+     * TEMPORARY: Creates a legacy UnifiedMapElements-compatible adapter
+     * This is for backward compatibility during the transition period.
+     * It will be removed once all components are updated to use MapElements directly.
+     *
+     * @deprecated Use MapElements methods directly instead
+     */
+    getLegacyAdapter(): any {
+        // Create an adapter object with methods that match UnifiedMapElements API
         return {
-            getMergedElements: () => this.getMergedElements(),
-            getMapPipelines: () => this.getMapPipelines(),
-            getEvolveElements: () => this.getEvolveElements(),
-            getEvolvedElements: () => this.getEvolvedElements(),
-            getNonEvolvedElements: () => this.getNonEvolvedElements(),
+            getAllComponents: () => this.getAllComponents(),
+            getComponentsByType: (type: string) =>
+                this.getComponentsByType(type),
+            getEvolvingComponents: () => this.getEvolvingComponents(),
+            getEvolvedComponents: () => this.getEvolvedComponents(),
+            getMergedComponents: () => this.getMergedComponents(),
+            getPipelineComponents: () => this.getPipelineComponents(),
+            getInertiaComponents: () => this.getInertiaComponents(),
+
+            // Legacy method names mapped to modern methods
+            getEvolveElements: () => this.getEvolvingComponents(),
+            getEvolvedElements: () => this.getEvolvedComponents(),
+            getMergedElements: () => this.getMergedComponents(),
+            getMapPipelines: () => this.getPipelineComponents(),
             getNoneEvolvedOrEvolvingElements: () =>
-                this.getNoneEvolvedOrEvolvingElements(),
-            getNoneEvolvingElements: () => this.getNoneEvolvingElements(),
-            geEvolvedOrEvolvingElements: () =>
-                this.getEvolvedOrEvolvingElements(),
+                this.getNeitherEvolvedNorEvolvingComponents(),
+            getNoneEvolvingElements: () => this.getNonEvolvingComponents(),
+            getNeitherEvolvedNorEvolvingComponents: () =>
+                this.getNeitherEvolvedNorEvolvingComponents(),
+
+            // Legacy adapter methods
+            convertToMapElement: (component: UnifiedComponent) => component,
+            convertToMapElements: (components: UnifiedComponent[]) =>
+                components,
+            getEvolvedUnifiedComponents: () => this.getEvolvedComponents(),
         };
     }
 }

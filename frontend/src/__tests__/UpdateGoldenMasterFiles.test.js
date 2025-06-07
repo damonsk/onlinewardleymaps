@@ -1,12 +1,12 @@
 /**
- * A Jest test that updates all golden master files with the new output from ModernMapElements
+ * A Jest test that updates all golden master files with the new output from MapElements
  * This is a one-time migration script for Phase 4C
  */
 import fs from 'fs';
 import path from 'path';
 import { useContext } from 'react';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElements } from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -37,7 +37,7 @@ function saveFileContent(fileName, content) {
 }
 
 describe('Update Golden Master Files', () => {
-    test('Update all golden master files with ModernMapElements output', () => {
+    test('Update all golden master files with MapElements output', () => {
         console.log('Starting golden master file update...');
 
         // Load map text from the golden master file
@@ -55,8 +55,8 @@ describe('Update Golden Master Files', () => {
             JSON.stringify(parsedMap),
         );
 
-        // Create ModernMapElements from the parsed map
-        const modernMapElements = new ModernMapElements(parsedMap);
+        // Create MapElements from the parsed map
+        const modernMapElements = new MapElements(parsedMap);
         const legacyAdapter = modernMapElements.getLegacyAdapter();
 
         // Define all the test cases we need to update

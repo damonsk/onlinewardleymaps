@@ -1,31 +1,27 @@
 import React from 'react';
 import { MapDimensions } from '../../constants/defaults';
 import { MapTheme } from '../../constants/mapstyles';
-import {
-    Link,
-    MapElement,
-} from '../../linkStrategies/LinkStrategiesInterfaces';
+import { UnifiedComponent } from '../../types/unified/components';
+import { FlowLink } from '../../types/unified/links';
 import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import FlowText from './FlowText';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
-interface ComponentLinkProps {
+interface ModernComponentLinkProps {
     mapStyleDefs: MapTheme;
     mapDimensions: MapDimensions;
-    startElement: MapElement;
-    endElement: MapElement;
-    link: Link & {
-        flow?: boolean;
-        future?: boolean;
-        past?: boolean;
-        context?: string;
-        flowValue?: string;
-    };
+    startElement: UnifiedComponent;
+    endElement: UnifiedComponent;
+    link: FlowLink;
     scaleFactor: number;
 }
 
-const ComponentLink: React.FC<ComponentLinkProps> = ({
+/**
+ * ComponentLink - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ */
+const ComponentLink: React.FC<ModernComponentLinkProps> = ({
     mapStyleDefs,
     mapDimensions,
     startElement,
@@ -35,7 +31,7 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
 }) => {
     const { enableLinkContext } = useFeatureSwitches();
     const { height, width } = mapDimensions;
-    const positionCalc = new PositionCalculator();
+    const positionCalc = new ModernPositionCalculator();
     const isFlow = link.flow !== false;
     const isEvolved = startElement.evolved || endElement.evolved;
 
@@ -74,7 +70,7 @@ const ComponentLink: React.FC<ComponentLinkProps> = ({
     return (
         <>
             <LinkSymbol
-                id={`link_${startElement.id}_${endElement.id}`}
+                id={`modern_link_${startElement.id}_${endElement.id}`}
                 x1={x1}
                 x2={x2}
                 y1={y1}

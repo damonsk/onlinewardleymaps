@@ -380,7 +380,12 @@ export const setInertia = (
     baseElement: IProvideBaseElement & { inertia?: boolean },
     element: string,
 ): void => {
-    Object.assign(baseElement, { inertia: element.indexOf('inertia') !== -1 });
+    // Support both 'inertia' and '(inertia)' syntax in the DSL
+    Object.assign(baseElement, {
+        inertia:
+            element.indexOf('inertia') !== -1 ||
+            element.indexOf('(inertia)') !== -1,
+    });
 };
 
 export const setText = (

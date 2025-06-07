@@ -1,14 +1,16 @@
+import React from 'react';
+import { MapTheme } from '../../constants/mapstyles';
 import { MapAnnotation, MapAnnotations } from '../../types/base';
-import { MapTheme } from '../../types/map/styles';
-import AnnotationElementSymbol from '../symbols/AnnotationElementSymbol';
+import ModernAnnotationElementSymbol from '../symbols/ModernAnnotationElementSymbol';
 import Movable from './Movable';
-import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface MapDimensions {
     width: number;
     height: number;
 }
-interface AnnotationElementItemProps {
+
+interface ModernAnnotationElementProps {
     occurance: MapAnnotation;
     annotation: MapAnnotations;
     mapDimensions: MapDimensions;
@@ -24,30 +26,40 @@ interface MovedPosition {
     y: number;
 }
 
-function AnnotationElement(props: AnnotationElementItemProps): JSX.Element {
-    const positionCalc = new PositionCalculator();
+/**
+ * AnnotationElement - Modern implementation using unified types
+ * Part of Phase 4 Component Interface Modernization
+ *
+ * This component renders a movable annotation element with number indicator
+ */
+const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
+    occurance,
+    annotation,
+    mapDimensions,
+    mutateMapText,
+    mapText,
+    occuranceIndex,
+    scaleFactor,
+    mapStyleDefs,
+}) => {
+    const positionCalc = new ModernPositionCalculator();
+
     const x = (): number =>
-        positionCalc.maturityToX(
-            props.occurance.maturity,
-            props.mapDimensions.width,
-        );
+        positionCalc.maturityToX(occurance.maturity, mapDimensions.width);
+
     const y = (): number =>
-        positionCalc.visibilityToY(
-            props.occurance.visibility,
-            props.mapDimensions.height,
-        );
+        positionCalc.visibilityToY(occurance.visibility, mapDimensions.height);
 
     function endDrag(moved: MovedPosition): void {
-        props.mutateMapText(
-            props.mapText
+        mutateMapText(
+            mapText
                 .split('\n')
                 .map((line) => {
                     if (
                         line
                             .replace(/\s/g, '')
-                            .indexOf(
-                                'annotation' + props.annotation.number + '[',
-                            ) !== -1
+                            .indexOf('annotation' + annotation.number + '[') !==
+                        -1
                     ) {
                         if (line.replace(/\s/g, '').indexOf(']]') > -1) {
                             const extractedOccurances = line
@@ -55,15 +67,15 @@ function AnnotationElement(props: AnnotationElementItemProps): JSX.Element {
                                 .split('[[')[1]
                                 .split(']]')[0]
                                 .split('],[');
-                            extractedOccurances[props.occuranceIndex] =
+                            extractedOccurances[occuranceIndex] =
                                 positionCalc.yToVisibility(
                                     moved.y,
-                                    props.mapDimensions.height,
+                                    mapDimensions.height,
                                 ) +
                                 ',' +
                                 positionCalc.xToMaturity(
                                     moved.x,
-                                    props.mapDimensions.width,
+                                    mapDimensions.width,
                                 );
                             const beforeCoords = line.split('[')[0].trim();
                             const afterCoords = line.substr(
@@ -89,10 +101,10 @@ function AnnotationElement(props: AnnotationElementItemProps): JSX.Element {
                                 /\[(.+?)\]/g,
                                 `[${positionCalc.yToVisibility(
                                     moved.y,
-                                    props.mapDimensions.height,
+                                    mapDimensions.height,
                                 )}, ${positionCalc.xToMaturity(
                                     moved.x,
-                                    props.mapDimensions.width,
+                                    mapDimensions.width,
                                 )}]`,
                             );
                         }
@@ -103,23 +115,24 @@ function AnnotationElement(props: AnnotationElementItemProps): JSX.Element {
                 .join('\n'),
         );
     }
-    console.log('AnnotationElement::render', props.occurance);
+
     return (
         <Movable
-            id={'annotation_element_' + props.annotation.number}
+            id={`modern_annotation_element_${annotation.number}`}
             onMove={endDrag}
             x={x()}
             y={y()}
             fixedY={false}
             fixedX={false}
-            scaleFactor={props.scaleFactor}
+            scaleFactor={scaleFactor}
         >
-            <AnnotationElementSymbol
-                annotation={props.annotation}
-                styles={props.mapStyleDefs.annotation}
+            <ModernAnnotationElementSymbol
+                id={`modern_annotation_element_symbol_${annotation.number}`}
+                annotation={annotation}
+                styles={mapStyleDefs.annotation}
             />
         </Movable>
     );
-}
+};
 
 export default AnnotationElement;

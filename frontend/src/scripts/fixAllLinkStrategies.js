@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * Script to fix all link strategy files for ModernMapElements compatibility
+ * Script to fix all link strategy files for MapElements compatibility
  * - Sets this.links = links || [] to handle undefined links
  * - Fixes the mapElements assignment to handle both legacy and modern APIs
  */
@@ -31,7 +31,7 @@ files.forEach((file) => {
     if (content.includes('constructor(')) {
         // First, change parameter type to 'any'
         content = content.replace(
-            /(constructor\s*\(\s*links\s*:\s*Link\[\]\s*,\s*mapElements\s*:)\s*ModernMapElements(\s*\))/g,
+            /(constructor\s*\(\s*links\s*:\s*Link\[\]\s*,\s*mapElements\s*:)\s*MapElements(\s*\))/g,
             '$1 any$2',
         );
 

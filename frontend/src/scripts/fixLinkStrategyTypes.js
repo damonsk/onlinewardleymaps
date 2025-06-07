@@ -1,6 +1,7 @@
+/* eslint-disable */
 // fixLinkStrategyTypes.js
 // Script to update link strategy files with proper TypeScript typing
-// Part of Phase 4C: ModernMapElements Integration
+// Part of Phase 4C: MapElements Integration
 
 const fs = require('fs');
 const path = require('path');
@@ -39,10 +40,10 @@ strategyFiles.forEach((fileName) => {
     let content = fs.readFileSync(filePath, 'utf8');
     let updated = false;
 
-    // Add import for ModernMapElements if not present
-    if (!content.includes('ModernMapElements')) {
+    // Add import for MapElements if not present
+    if (!content.includes('MapElements')) {
         const importStatement =
-            '// Using any type instead of ModernMapElements for compatibility with both modern and legacy elements';
+            '// Using any type instead of MapElements for compatibility with both modern and legacy elements';
         if (!content.includes(importStatement)) {
             content = content.replace(
                 /import {[^}]*} from [^\n]*;/,
@@ -68,10 +69,10 @@ strategyFiles.forEach((fileName) => {
     }
 
     // Add documentation comment for updated class
-    if (!content.includes('Updated to use ModernMapElements')) {
+    if (!content.includes('Updated to use MapElements')) {
         content = content.replace(
             /export default class ([A-Za-z]+) implements LinkExtractionStrategy/,
-            '/**\n * $1\n * Updated to use ModernMapElements in Phase 4C\n */\nexport default class $1 implements LinkExtractionStrategy',
+            '/**\n * $1\n * Updated to use MapElements in Phase 4C\n */\nexport default class $1 implements LinkExtractionStrategy',
         );
         updated = true;
     }
