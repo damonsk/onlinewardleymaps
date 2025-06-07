@@ -496,7 +496,7 @@ The migration has been executed in phases as planned, with significant progress 
 
 ## Next Steps
 
-1. **Complete Phase 4** by addressing the remaining ModernLineNumberPositionUpdater test failures and ensuring all components use the ModernMapElements interface.
+1. **Finish Phase 4** by updating the GivenMapElementsGoldenMaster test to match the new ModernMapElements structure and ensuring all components use the ModernMapElements interface.
 
 2. **Prepare for Phase 5** by analyzing the Converter output and identifying opportunities for optimization.
 
