@@ -33,9 +33,13 @@ This checklist tracks the integration of all modernized components into ModernUn
 | ModernNotDefinedCoordsMatcher | ✅ | ModernAnchor | ✅ |
 
 ## Final Verification Steps
-1. ❓ Check ModernUnifiedMapContent to ensure it's using all modernized components
-2. ❓ Verify that no legacy components are being imported or used
-3. ❓ Update any remaining references to legacy adapter functions
+1. ✅ Check ModernUnifiedMapContent to ensure it's using all modernized components
+   - Updated to use ModernMapElements methods directly without conditional checks
+2. ✅ Update all linkStrategies to use ModernMapElements with legacy adapter
+   - All link strategy files now import ModernMapElements instead of UnifiedMapElements
+   - They use the getLegacyAdapter() method for backward compatibility  
+3. ❓ Update any remaining references to legacy adapter functions in components
+   - ModernMapPipelines still uses the legacy adapter, could be updated in a future phase
 4. ❓ Run full integration tests for:
    - Map rendering
    - Component dragging

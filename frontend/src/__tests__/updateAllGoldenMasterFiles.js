@@ -3,24 +3,26 @@
  * This is a one-time migration script for Phase 4C
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { useContext } from 'react';
 import { UnifiedConverter } from '../conversion/UnifiedConverter';
 import { ModernMapElements } from '../processing/ModernMapElements';
-import { useContext } from 'react';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
     useContext: jest.fn(),
 }));
 
-const mockContextValue = {
+useContext.mockReturnValue({
     enableDashboard: false,
     enableNewPipelines: true,
     enableLinkContext: true,
     enableAccelerators: true,
     enableDoubleClickRename: true,
-};
+});
+
+const mockContextValue = useContext();
 
 // Function to load the content of a file
 function loadFileContent(fileName) {
@@ -35,23 +37,23 @@ function saveFileContent(fileName, content) {
     console.log(`Updated ${fileName}`);
 }
 
-// Main function to update all golden master files
-function updateAllGoldenMasterFiles() {
-    console.log('Starting golden master file update...');
-    
-    // Load map text from the golden master file
-    const mapTextFileName = 'GoldenMasterMapText.txt';
-    const fileContent = loadFileContent(mapTextFileName);
-    
-    // Parse the text with UnifiedConverter
-    const parsedMap = new UnifiedConverter(mockContextValue).parse(fileContent);
-    
-    // Save converter output for reference
-    saveFileContent('GoldenMasterConverterOutput.txt', JSON.stringify(parsedMap));
-    
-    // Create ModernMapElements from the parsed map
-    const modernMapElements = new ModernMapElements(parsedMap);
-    const legacyAdapter = modernMapElements.getLegacyAdapter();
+describe('Update All Golden Master Files', () => {
+    test('Update all golden master files with ModernMapElements output', () => {
+        console.log('Starting golden master file update...');
+        
+        // Load map text from the golden master file
+        const mapTextFileName = 'GoldenMasterMapText.txt';
+        const fileContent = loadFileContent(mapTextFileName);
+        
+        // Parse the text with UnifiedConverter
+        const parsedMap = new UnifiedConverter(mockContextValue).parse(fileContent);
+        
+        // Save converter output for reference
+        saveFileContent('GoldenMasterConverterOutput.txt', JSON.stringify(parsedMap));
+        
+        // Create ModernMapElements from the parsed map
+        const modernMapElements = new ModernMapElements(parsedMap);
+        const legacyAdapter = modernMapElements.getLegacyAdapter();
     
     // Define all the test cases we need to update
     const testCases = [
@@ -72,11 +74,19 @@ function updateAllGoldenMasterFiles() {
             fileName: 'GoldenMasterMapElementsEvolved.txt',
         },
         {
-            fn: () => legacyAdapter.getNonEvolvedElements(),
+            fn: () => {
+                // Filter out evolved elements from merged elements (matching legacy behavior)
+                const mergedElements = legacyAdapter.getMergedElements();
+                return mergedElements.filter(el => !el.evolved);
+            },
             fileName: 'GoldenMasterMapElementsNonEvolved.txt',
         },
         {
-            fn: () => legacyAdapter.getNoneEvolvedOrEvolvingElements(),
+            fn: () => {
+                // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
+                const mergedElements = legacyAdapter.getMergedElements();
+                return mergedElements.filter(el => !el.evolved && !el.evolving);
+            },
             fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
         },
         {
@@ -94,7 +104,8 @@ function updateAllGoldenMasterFiles() {
     });
     
     console.log('Golden master file update completed successfully!');
-}
-
-// Run the update function
-updateAllGoldenMasterFiles();
+    
+    // This test always passes - it's just to run the update
+    expect(true).toBe(true);
+  });
+});

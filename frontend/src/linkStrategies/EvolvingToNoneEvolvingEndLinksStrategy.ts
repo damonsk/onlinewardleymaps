@@ -1,29 +1,34 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { ModernMapElements } from '../processing/ModernMapElements';
 import {
     Link,
     LinkExtractionStrategy,
     LinkResult,
 } from './LinkStrategiesInterfaces';
 
+/**
+ * EvolvingToNoneEvolvingEndLinksStrategy
+ * Updated to use ModernMapElements in Phase 4C
+ */
 export default class EvolvingToNoneEvolvingEndLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
-    private mapElements: UnifiedMapElements;
+    private mapElements: any; // Using any for adapter compatibility
 
-    constructor(links: Link[], mapElements: UnifiedMapElements) {
+    constructor(links: Link[], mapElements: ModernMapElements) {
         this.links = links;
-        this.mapElements = mapElements;
+        // Use the legacy adapter for compatibility
+        this.mapElements = mapElements.getLegacyAdapter();
     }
     getLinks(): LinkResult {
         const links = this.links.filter(
             (li) =>
                 this.mapElements
                     .getEvolveElements()
-                    .find((i) => i.name === li.start) &&
+                    .find((i: any) => i.name === li.start) &&
                 this.mapElements
                     .getNoneEvolvingElements()
-                    .find((i) => i.name === li.end),
+                    .find((i: any) => i.name === li.end),
         );
         return {
             name: 'evolvingToNoneEvolvingEndLinks',

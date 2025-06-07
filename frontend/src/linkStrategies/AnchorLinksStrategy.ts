@@ -1,4 +1,4 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { ModernMapElements } from '../processing/ModernMapElements';
 import {
     Anchor,
     Link,
@@ -7,9 +7,13 @@ import {
     MapElement,
 } from './LinkStrategiesInterfaces';
 
+/**
+ * AnchorLinksStrategy
+ * Updated to use ModernMapElements in Phase 4C
+ */
 export default class AnchorLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
-    private mapElements: UnifiedMapElements;
+    private mapElements: any; // Using any for adapter compatibility
     private anchors: Anchor[];
 
     constructor(
@@ -27,7 +31,7 @@ export default class AnchorLinksStrategy implements LinkExtractionStrategy {
                 this.anchors.find((i: Anchor) => i.name === li.start) &&
                 this.mapElements
                     .getNoneEvolvedOrEvolvingElements()
-                    .find((i) => i.name === li.end),
+                    .find((i: any) => i.name === li.end),
         );
 
         return {

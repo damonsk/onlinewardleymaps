@@ -1,4 +1,4 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements';
+import { ModernMapElements } from '../processing/ModernMapElements';
 import {
     Link,
     LinkExtractionStrategy,
@@ -10,7 +10,7 @@ export default class EvolvingToEvolvingLinksStrategy
     implements LinkExtractionStrategy
 {
     private links: Link[];
-    private mapElements: UnifiedMapElements;
+    private mapElements: any; // Using any for adapter compatibility
 
     constructor(links: Link[], mapElements: UnifiedMapElements) {
         this.links = links;

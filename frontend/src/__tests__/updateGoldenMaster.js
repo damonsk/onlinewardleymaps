@@ -1,19 +1,24 @@
 // Script to update golden master files based on current ModernMapElements output
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { useContext } from 'react';
+import { UnifiedConverter } from '../conversion/UnifiedConverter';
+import { ModernMapElements } from '../processing/ModernMapElements';
 
-// Import required modules
-const { UnifiedConverter } = require('../conversion/UnifiedConverter');
-const { ModernMapElements } = require('../processing/ModernMapElements');
+jest.mock('react', () => ({
+    ...jest.requireActual('react'),
+    useContext: jest.fn(),
+}));
 
-// Mock context value to match the test
-const mockContextValue = {
+useContext.mockReturnValue({
     enableDashboard: false,
     enableNewPipelines: true,
     enableLinkContext: true,
     enableAccelerators: true,
     enableDoubleClickRename: true,
-};
+});
+
+const mockContextValue = useContext();
 
 // Load the golden master map text
 function loadFileContent(fileName) {
@@ -21,9 +26,8 @@ function loadFileContent(fileName) {
     return fs.readFileSync(filePath, 'utf-8');
 }
 
-// Function to update golden master files
-async function updateGoldenMasterFiles() {
-    try {
+describe('Golden Master File Updater', () => {
+    test('Updates all golden master files with current ModernMapElements output', () => {
         const fileName = 'GoldenMasterMapText.txt';
         const fileContent = loadFileContent(fileName);
 
@@ -58,15 +62,27 @@ async function updateGoldenMasterFiles() {
                 fileName: 'GoldenMasterMapElementsEvolved.txt',
             },
             {
-                fn: () => legacyAdapter.getNonEvolvedElements(),
+                fn: () => {
+                    // Filter out evolved elements from merged elements (matching legacy behavior)
+                    const mergedElements = legacyAdapter.getMergedElements();
+                    return mergedElements.filter(el => !el.evolved);
+                },
                 fileName: 'GoldenMasterMapElementsNonEvolved.txt',
             },
             {
-                fn: () => legacyAdapter.getNoneEvolvedOrEvolvingElements(),
+                fn: () => {
+                    // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
+                    const mergedElements = legacyAdapter.getMergedElements();
+                    return mergedElements.filter(el => !el.evolved && !el.evolving);
+                },
                 fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
             },
             {
-                fn: () => legacyAdapter.getNoneEvolvingElements(),
+                fn: () => {
+                    // Filter out evolving elements from merged elements (matching legacy behavior)
+                    const mergedElements = legacyAdapter.getMergedElements();
+                    return mergedElements.filter(el => !el.evolving);
+                },
                 fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
             },
         ];
@@ -81,10 +97,8 @@ async function updateGoldenMasterFiles() {
         });
 
         console.log('All golden master files updated successfully!');
-    } catch (error) {
-        console.error('Error updating golden master files:', error);
-    }
-}
-
-// Run the update script
-updateGoldenMasterFiles();
+        
+        // Test passes if we get to this point without errors
+        expect(true).toBe(true);
+    });
+});

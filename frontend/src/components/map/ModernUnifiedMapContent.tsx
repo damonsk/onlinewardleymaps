@@ -87,9 +87,8 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
     };
 
     // Get elements from UnifiedMapElements
-    const mapAnchors: UnifiedComponent[] = mapElements.getAllComponents
-        ? mapElements.getAllComponents().filter((c) => c.type === 'anchor')
-        : [];
+    // Use ModernMapElements directly - Phase 4C modernization
+    const mapAnchors: UnifiedComponent[] = mapElements.getAllComponents().filter((c) => c.type === 'anchor');
 
     const getElementByName = (elements: UnifiedComponent[], name: string) =>
         elements.find((e) => e.name === name);
@@ -138,13 +137,12 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             </g>
 
             <g id="evolvedLinks">
-                {mapElements.getEvolvingComponents &&
-                    mapElements.getEvolvingComponents().map(
-                        (e: UnifiedComponent, i: number) =>
-                            getElementByName(
-                                mapElements.getEvolvingComponents(),
-                                e.name,
-                            ) && (
+                {mapElements.getEvolvingComponents().map(
+                    (e: UnifiedComponent, i: number) =>
+                        getElementByName(
+                            mapElements.getEvolvingComponents(),
+                            e.name,
+                        ) && (
                                 <ModernEvolvingComponentLink
                                     key={i}
                                     mapStyleDefs={mapStyleDefs}
@@ -300,9 +298,8 @@ const ModernUnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (
             </g>
 
             <g id="elements">
-                {mapElements.getMergedComponents &&
-                    mapElements
-                        .getMergedComponents()
+                {mapElements
+                    .getMergedComponents()
                         .filter((c: UnifiedComponent) => c.type !== 'anchor')
                         .map((el: UnifiedComponent, i: number) => (
                             <ModernMapComponent

@@ -1,18 +1,23 @@
-import { UnifiedMapElements } from '../processing/UnifiedMapElements'; // Changed to named import
-import { MapElement } from '../types/base'; // Added import for MapElement
+import { ModernMapElements } from '../processing/ModernMapElements';
+import { MapElement } from '../types/base';
 import {
     Link,
     LinkExtractionStrategy,
     LinkResult,
 } from './LinkStrategiesInterfaces';
 
+/**
+ * AllLinksStrategy
+ * Updated to use ModernMapElements in Phase 4C
+ */
 export default class AllLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
-    private mapElements: UnifiedMapElements;
+    private mapElements: any; // Using any for adapter compatibility
 
-    constructor(links: Link[], mapElements: UnifiedMapElements) {
+    constructor(links: Link[], mapElements: ModernMapElements) {
         this.links = links;
-        this.mapElements = mapElements;
+        // Use the legacy adapter for compatibility
+        this.mapElements = mapElements.getLegacyAdapter();
     }
 
     getLinks(): LinkResult {
