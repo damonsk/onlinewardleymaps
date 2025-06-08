@@ -88,16 +88,11 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 
         const lines = mapText.split('\n');
         
-        // Handle evolved components differently - they update the "evolve ..." line
         if (component.evolved) {
             const updatedLines = lines.map((line) => {
-                // Look for the evolve line for this component
                 const normalizedLine = line.replace(/\s/g, '');
                 const componentNameNormalized = component.name.replace(/\s/g, '');
-                
-                // Check if this is the evolve line for this component
                 if (normalizedLine.indexOf(`evolve${componentNameNormalized}`) === 0) {
-                    // Replace the maturity value (the number at the end of the evolve line)
                     return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
                 }
                 return line;
@@ -108,29 +103,21 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
             return;
         }
 
-        // Handle regular components - update the component line coordinates
         const updatedLines = lines.map((line, index) => {
-            // Only update the specific line that matches this component's line number
             if (index + 1 === component.line) {
-                // Check for component with exact name match using regex to avoid partial matches
                 const regex = new RegExp(
                     `component\\s+${component.name}\\b`,
                     'i',
                 );
                 if (regex.test(line)) {
-                    // Handle lines with or without label differently
                     if (line.includes('label')) {
-                        // Split the line at "label" to separate component coordinates from label coordinates
                         const parts = line.split(/\blabel\b/);
-                        // Only replace the first set of coordinates (component position)
                         const updatedFirstPart = parts[0].replace(
                             /\[(.?|.+?)\]/,
                             `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
                         );
-                        // Rejoin with the label part unchanged
                         return updatedFirstPart + 'label' + parts[1];
                     } else {
-                        // No label in the line, safe to replace the only coordinate pair
                         return line.replace(
                             /\[(.?|.+?)\]/,
                             `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
@@ -201,7 +188,6 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     mutateMapText={mutateMapText}
                     onClick={() => {
                         if (component.line) {
-                            // Simply set the highlight line to move the cursor
                             setHighlightLine(component.line);
                         }
                     }}
