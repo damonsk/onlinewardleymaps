@@ -5,8 +5,8 @@ import { UnifiedComponent } from '../../types/unified';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
-import Movable from './Movable';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import Movable from './Movable';
 
 interface MovedPosition {
     x: number;
@@ -86,8 +86,29 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
             calculator.yToVisibility(movedPosition.y, mapDimensions.height),
         );
 
-        // Find and replace the component position in the map text
         const lines = mapText.split('\n');
+        
+        // Handle evolved components differently - they update the "evolve ..." line
+        if (component.evolved) {
+            const updatedLines = lines.map((line) => {
+                // Look for the evolve line for this component
+                const normalizedLine = line.replace(/\s/g, '');
+                const componentNameNormalized = component.name.replace(/\s/g, '');
+                
+                // Check if this is the evolve line for this component
+                if (normalizedLine.indexOf(`evolve${componentNameNormalized}`) === 0) {
+                    // Replace the maturity value (the number at the end of the evolve line)
+                    return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
+                }
+                return line;
+            });
+            
+            const newText = updatedLines.join('\n');
+            mutateMapText(newText);
+            return;
+        }
+
+        // Handle regular components - update the component line coordinates
         const updatedLines = lines.map((line, index) => {
             // Only update the specific line that matches this component's line number
             if (index + 1 === component.line) {
