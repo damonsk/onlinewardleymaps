@@ -62,12 +62,12 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
         {
             Icon: MarketIcon,
             template: (val: string, y: string, x: string) =>
-                `market ${val} [${y}, ${x}]`,
+                `component ${val} [${y}, ${x}] (market)`,
         },
         {
             Icon: EcosystemIcon,
             template: (val: string, y: string, x: string) =>
-                `ecosystem ${val} [${y}, ${x}]`,
+                `component ${val} [${y}, ${x}] (ecosystem)`,
         },
         {
             Icon: BuyMethodIcon,

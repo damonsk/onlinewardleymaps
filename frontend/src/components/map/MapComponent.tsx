@@ -87,17 +87,27 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
         );
 
         const lines = mapText.split('\n');
-        
+
         if (component.evolved) {
             const updatedLines = lines.map((line) => {
                 const normalizedLine = line.replace(/\s/g, '');
-                const componentNameNormalized = component.name.replace(/\s/g, '');
-                if (normalizedLine.indexOf(`evolve${componentNameNormalized}`) === 0) {
-                    return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
+                const componentNameNormalized = component.name.replace(
+                    /\s/g,
+                    '',
+                );
+                if (
+                    normalizedLine.indexOf(
+                        `evolve${componentNameNormalized}`,
+                    ) === 0
+                ) {
+                    return line.replace(
+                        /\s([0-9]?\.[0-9]+[0-9]?)+/g,
+                        ` ${newMaturity.toFixed(2)}`,
+                    );
                 }
                 return line;
             });
-            
+
             const newText = updatedLines.join('\n');
             mutateMapText(newText);
             return;

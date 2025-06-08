@@ -219,23 +219,10 @@ export class MapElements {
                 2,
             );
 
-            // Calculate appropriate label position
             let label = evolvedData.label || component.label || { x: 0, y: 0 };
-
-            // If no y offset is specified, calculate appropriate vertical position for evolved component
-            if (!label.y || Math.abs(label.y) <= 10) {
-                label = {
-                    ...label,
-                    // Position label below the component
-                    y: increaseLabelSpacing * 10,
-                };
-            }
-
-            // If no x offset is specified and there's an override, adjust horizontal position
             if ((!label.x || Math.abs(label.x) <= 10) && evolvedData.override) {
                 label = {
                     ...label,
-                    // Position label with slight offset to accommodate override text
                     x: 16,
                 };
             }
@@ -259,10 +246,6 @@ export class MapElements {
         });
     }
 
-    /**
-     * Gets components that are not evolved
-     * These include regular components and evolving components
-     */
     getStaticComponents(): UnifiedComponent[] {
         return this.allComponents.filter((c) => !c.evolved);
     }

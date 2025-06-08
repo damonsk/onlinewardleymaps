@@ -36,7 +36,6 @@ const usages: Usage[] = [
         examples: [
             'component Customer [0.95, 0.5] inertia',
             'component Cup of Tea [0.9, 0.5] inertia',
-            'market Cup of Tea [0.9, 0.5] inertia',
         ],
     },
     {
@@ -65,10 +64,11 @@ const usages: Usage[] = [
         toolbarButtonText: 'Create Market',
         Icon: ComponentIcon,
         title: 'To create a market',
-        summary: 'market Name [Visibility (Y Axis), Maturity (X Axis)]',
+        summary:
+            'component Name [Visibility (Y Axis), Maturity (X Axis)] (market)',
         examples: [
-            'market Customer [0.9, 0.5]',
-            'market Cup of Tea [0.9, 0.5]',
+            'component Customer [0.9, 0.5] (market)',
+            'component Cup of Tea [0.9, 0.5] (market)',
             'evolve Customer 0.9 (market)',
         ],
     },
@@ -110,9 +110,6 @@ const usages: Usage[] = [
         summary:
             'Highlight a component with a build, buy, or outsource method of execution',
         examples: [
-            'build <component>',
-            'buy <component>',
-            'outsource <component>',
             'component Customer [0.9, 0.2] (buy)',
             'component Customer [0.9, 0.2] (build)',
             'component Customer [0.9, 0.2] (outsource)',

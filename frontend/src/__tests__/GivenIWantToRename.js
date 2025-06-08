@@ -117,14 +117,18 @@ describe('Given I Want To Rename', function () {
             const mapText =
                 'component foobar [0.9, 0.1]' +
                 '\n' +
-                `${t} foo [0.9, 0.1]` +
+                `component foo [0.9, 0.1] (${t})` +
                 '\n' +
-                `${t} foobarbaz [0.9, 0.1]`;
+                `component foobarbaz [0.9, 0.1] (${t})`;
             rename(2, 'foo', 'some thing', mapText, (result) => {
                 const lines = result.split('\n');
                 expect(lines[0]).toEqual('component foobar [0.9, 0.1]');
-                expect(lines[1]).toEqual(`${t} some thing [0.9, 0.1]`);
-                expect(lines[2]).toEqual(`${t} foobarbaz [0.9, 0.1]`);
+                expect(lines[1]).toEqual(
+                    `component some thing [0.9, 0.1] (${t})`,
+                );
+                expect(lines[2]).toEqual(
+                    `component foobarbaz [0.9, 0.1] (${t})`,
+                );
             });
         });
     });

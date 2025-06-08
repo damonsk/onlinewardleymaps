@@ -142,11 +142,11 @@ export interface WardleyMap {
     annotations: MapAnnotations[];
     notes: MapNotes[];
     evolution: MapEvolution;
-    methods: MapMethods[];
+    // methods: MapMethods[];
     title: string;
     submaps: MapSubmaps[];
-    markets: MapMarkets[];
-    ecosystems: MapEcosystems[];
+    // markets: MapMarkets[];
+    // ecosystems: MapEcosystems[];
     urls: MapUrls[];
     attitudes: MapAttitudes[];
     accelerators: MapAccelerators[];

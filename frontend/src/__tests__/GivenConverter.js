@@ -1,5 +1,5 @@
-import Converter from '../conversion/Converter';
 import { useContext } from 'react';
+import Converter from '../conversion/Converter';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -13,7 +13,6 @@ describe('Convert test suite', function () {
 
     const genericMapComponents = [
         { keyword: 'component', container: 'elements' },
-        { keyword: 'market', container: 'markets' },
     ];
 
     test('should create mapJson Object with title property', function () {
@@ -355,13 +354,4 @@ describe('Convert test suite', function () {
             expect(result.attitudes[0].visibility2).toEqual(0.6);
         },
     );
-
-    test.each(['build', 'buy', 'outsource'])('methods are extracted', (k) => {
-        let actual = `${k} Foo Bar`;
-        let result = new Converter(mockContextValue).parse(actual);
-
-        expect(result.methods.length).toEqual(1);
-        expect(result.methods[0].name).toEqual('Foo Bar');
-        expect(result.methods[0].method).toEqual(k);
-    });
 });

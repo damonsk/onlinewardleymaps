@@ -7,14 +7,11 @@ component FooWithCoords [0.91, 0.23] label [15, 4]
 
 //Methods
 //Build
-component BuildComponent [0.70, 0.09] 
-build BuildComponent
+component BuildComponent [0.70, 0.09] (build)
 //Buy
-component BuyComponent [0.59, 0.09] 
-buy BuyComponent
+component BuyComponent [0.59, 0.09] (buy)
 //Outsource
-component OutsourceComponent [0.51, 0.09] label [37, -23]
-outsource OutsourceComponent
+component OutsourceComponent [0.51, 0.09] label [37, -23] (outsource)
 //End Methods
 
 //Styles
@@ -39,13 +36,13 @@ townplanners [0.81, 0.83, 0.75, 0.98]
 //EndPST
 
 //Eco
-ecosystem EcoSystemNoCoords
-ecosystem EcoSystemWithCoords [0.1,0.9] label [-9, -41]
+component EcoSystemNoCoords (ecosystem)
+component EcoSystemWithCoords [0.1,0.9] label [-9, -41] (ecosystem)
 //EndEco
 
 //Market
-market MarketNoCoords
-market MarketWithCoords [0.3,0.9] label [-21, 18]
+component MarketNoCoords (market)
+component MarketWithCoords [0.3,0.9] label [-21, 18] (market)
 //EndMarket
 
 //Evolve 

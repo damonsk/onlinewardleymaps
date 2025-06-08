@@ -167,13 +167,13 @@ export const isSubmap = (
 export const isMarket = (
     component: UnifiedComponent,
 ): component is MapMarketData => {
-    return component.type === 'market';
+    return component.decorators?.market ?? false;
 };
 
 export const isEcosystem = (
     component: UnifiedComponent,
 ): component is MapEcosystemData => {
-    return component.type === 'ecosystem';
+    return component.decorators?.ecosystem ?? false;
 };
 
 /**

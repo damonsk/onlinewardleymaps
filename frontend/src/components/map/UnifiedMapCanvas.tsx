@@ -236,24 +236,30 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             console.log('Initial fit effect triggered', {
                 width: mapDimensions.width,
                 height: mapDimensions.height,
-                components: wardleyMap.components.length
+                components: wardleyMap.components.length,
             });
-            
+
             const performDelayedFit = () => {
                 console.log('performDelayedFit called');
                 if (Viewer.current && Viewer.current.fitSelection) {
                     // Check if map has actually rendered components
                     const mapContainer = document.getElementById('map');
-                    const renderedComponents = mapContainer?.querySelectorAll('circle, rect');
-                    
-                    console.log('Checking rendered components:', renderedComponents?.length);
-                    
+                    const renderedComponents =
+                        mapContainer?.querySelectorAll('circle, rect');
+
+                    console.log(
+                        'Checking rendered components:',
+                        renderedComponents?.length,
+                    );
+
                     if (renderedComponents && renderedComponents.length > 0) {
                         console.log('Components found, scheduling fit');
                         // Wait for any localStorage restoration or other initialization to complete
                         setTimeout(() => {
                             if (Viewer.current && Viewer.current.fitSelection) {
-                                console.log('EXECUTING INITIAL FIT TO SELECTION');
+                                console.log(
+                                    'EXECUTING INITIAL FIT TO SELECTION',
+                                );
                                 // Gentle fit with conservative margins
                                 Viewer.current.fitSelection(
                                     -60, // Margin for value chain labels on left
@@ -280,7 +286,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             console.log('Initial fit conditions not met', {
                 width: mapDimensions.width,
                 height: mapDimensions.height,
-                components: wardleyMap.components.length
+                components: wardleyMap.components.length,
             });
         }
     }, [mapDimensions.width, mapDimensions.height]); // Removed wardleyMap.components.length dependency

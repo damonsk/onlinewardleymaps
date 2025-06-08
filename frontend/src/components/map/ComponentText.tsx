@@ -114,16 +114,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             }
         }
     };
-
-    // Calculate label position
     const getX = () => {
         return component.label?.x || 0;
     };
 
     const getY = () => {
-        return (
-            (component.label?.y || 0) + (component.increaseLabelSpacing || 0)
-        );
+        return component.label?.y || 0;
     };
 
     const textFill = component.evolved ? styles.evolvedText : styles.text;
@@ -178,7 +174,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         }
 
         const getLabelText = (x: number, y: number): string =>
-            ` label [${parseFloat(x.toString()).toFixed(2)}, ${y}]`;
+            ` label [${x.toFixed(2)}, ${y.toFixed(2)}]`;
 
         const processEvolvedLine = (
             line: string,

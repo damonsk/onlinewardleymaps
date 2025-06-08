@@ -55,7 +55,7 @@ function debounce<T extends (...args: any[]) => void>(
 const getHeight = () => {
     const mapElement = document.getElementById('map');
     const clientHeight = mapElement?.clientHeight;
-    
+
     // If map element doesn't exist or has no height, fall back to window calculation
     if (!clientHeight || clientHeight < 100) {
         const winHeight = window.innerHeight;
@@ -64,7 +64,7 @@ const getHeight = () => {
         const titleHeight = document.getElementById('title')?.clientHeight;
         return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 65; // Fallback calculation
     }
-    
+
     // Use the actual map container height with margin for toolbar area
     // The toolbar is positioned absolutely at bottom: 20px, so we need some space for it
     return Math.max(clientHeight - 60, 400); // Increased margin to account for toolbar
@@ -472,14 +472,14 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             setTimeout(() => {
                 const newWidth = getWidth();
                 const newHeight = getHeight();
-                
+
                 // Update map dimensions (like window resize does)
                 const dimensions = {
                     width: mapSize.width > 0 ? mapSize.width : 100 + newWidth,
                     height: mapSize.height > 0 ? mapSize.height : newHeight,
                 };
                 mapActions.setMapDimensions(dimensions);
-                
+
                 // Update canvas dimensions
                 mapActions.setMapCanvasDimensions({
                     width: newWidth,
@@ -497,12 +497,18 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
         window.addEventListener('load', initialLoad);
         window.addEventListener('resize', handleWindowResize);
-        window.addEventListener('panelResize', handlePanelResize as EventListener);
+        window.addEventListener(
+            'panelResize',
+            handlePanelResize as EventListener,
+        );
 
         return function cleanup() {
             window.removeEventListener('resize', handleWindowResize);
             window.removeEventListener('load', initialLoad);
-            window.removeEventListener('panelResize', handlePanelResize as EventListener);
+            window.removeEventListener(
+                'panelResize',
+                handlePanelResize as EventListener,
+            );
         };
     }, [mapActions]);
 

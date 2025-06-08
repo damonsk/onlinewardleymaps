@@ -51,16 +51,18 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         console.log('ResizableSplitPane: localStorage check', {
             initialWidth,
             defaultLeftWidth,
-            willRestore: initialWidth !== defaultLeftWidth
+            willRestore: initialWidth !== defaultLeftWidth,
         });
-        
+
         if (initialWidth !== defaultLeftWidth) {
             setLeftWidth(initialWidth);
             onResize?.(initialWidth);
-            
+
             // Simple delayed panel resize event - let map handle its own zoom state
             setTimeout(() => {
-                console.log('ResizableSplitPane: Dispatching panelResize event');
+                console.log(
+                    'ResizableSplitPane: Dispatching panelResize event',
+                );
                 const mapContainer = document.getElementById('map');
                 if (mapContainer) {
                     const panelResizeEvent = new CustomEvent('panelResize', {
@@ -69,10 +71,12 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                             rightWidthPercent: 100 - initialWidth,
                             mapContainerWidth: mapContainer.clientWidth,
                             mapContainerHeight: mapContainer.clientHeight,
-                        }
+                        },
                     });
                     window.dispatchEvent(panelResizeEvent);
-                    console.log('ResizableSplitPane: panelResize event dispatched');
+                    console.log(
+                        'ResizableSplitPane: panelResize event dispatched',
+                    );
                 } else {
                     console.log('ResizableSplitPane: map container not found');
                 }
@@ -81,31 +85,34 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     }, []);
 
     // Dispatch resize events when width changes to notify the map
-    const updateWidth = useCallback((newWidth: number) => {
-        setLeftWidth(newWidth);
-        onResize?.(newWidth);
-        
-        // Debounced dispatch of resize events to avoid excessive updates
-        if (resizeTimeoutRef.current) {
-            clearTimeout(resizeTimeoutRef.current);
-        }
-        resizeTimeoutRef.current = setTimeout(() => {
-            // Only dispatch the custom panelResize event to avoid conflicts
-            // Don't dispatch generic 'resize' event to prevent double-handling
-            const mapContainer = document.getElementById('map');
-            if (mapContainer) {
-                const panelResizeEvent = new CustomEvent('panelResize', {
-                    detail: {
-                        leftWidthPercent: newWidth,
-                        rightWidthPercent: 100 - newWidth,
-                        mapContainerWidth: mapContainer.clientWidth,
-                        mapContainerHeight: mapContainer.clientHeight,
-                    }
-                });
-                window.dispatchEvent(panelResizeEvent);
+    const updateWidth = useCallback(
+        (newWidth: number) => {
+            setLeftWidth(newWidth);
+            onResize?.(newWidth);
+
+            // Debounced dispatch of resize events to avoid excessive updates
+            if (resizeTimeoutRef.current) {
+                clearTimeout(resizeTimeoutRef.current);
             }
-        }, 150); // 150ms debounce
-    }, [onResize]);
+            resizeTimeoutRef.current = setTimeout(() => {
+                // Only dispatch the custom panelResize event to avoid conflicts
+                // Don't dispatch generic 'resize' event to prevent double-handling
+                const mapContainer = document.getElementById('map');
+                if (mapContainer) {
+                    const panelResizeEvent = new CustomEvent('panelResize', {
+                        detail: {
+                            leftWidthPercent: newWidth,
+                            rightWidthPercent: 100 - newWidth,
+                            mapContainerWidth: mapContainer.clientWidth,
+                            mapContainerHeight: mapContainer.clientHeight,
+                        },
+                    });
+                    window.dispatchEvent(panelResizeEvent);
+                }
+            }, 150); // 150ms debounce
+        },
+        [onResize],
+    );
 
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
@@ -201,9 +208,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         : 'rgba(0, 133, 208, 0.1)',
                     borderLeft: '1px solid rgba(0, 133, 208, 0.3)',
                     borderRight: '1px solid rgba(0, 133, 208, 0.3)',
-                    transition: isDragging
-                        ? 'none'
-                        : 'all 0.2s ease',
+                    transition: isDragging ? 'none' : 'all 0.2s ease',
                     '&:hover': {
                         backgroundColor: 'rgba(0, 133, 208, 0.25)',
                         borderLeft: '1px solid rgba(0, 133, 208, 0.6)',
@@ -217,8 +222,8 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         content: '"⋮"',
                         position: 'absolute',
                         fontSize: '24px',
-                        color: isDarkTheme 
-                            ? 'rgba(255, 255, 255, 0.6)' 
+                        color: isDarkTheme
+                            ? 'rgba(255, 255, 255, 0.6)'
                             : 'rgba(0, 0, 0, 0.6)',
                         fontWeight: 'bold',
                         lineHeight: 1,
@@ -236,8 +241,8 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         transition: 'opacity 0.2s ease',
                     },
                     '&:hover::before': {
-                        color: isDarkTheme 
-                            ? 'rgba(255, 255, 255, 0.9)' 
+                        color: isDarkTheme
+                            ? 'rgba(255, 255, 255, 0.9)'
                             : 'rgba(0, 0, 0, 0.9)',
                     },
                     '&:hover::after': {

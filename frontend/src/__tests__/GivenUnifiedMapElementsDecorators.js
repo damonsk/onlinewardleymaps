@@ -90,8 +90,6 @@ component MultipleDecorators [0.9, 0.9] (market, buy)
     test('When components have type-based classification, they should still get correct decorators', function () {
         const mapText = `
 title Test Map with Type-based Components
-market TypeBasedMarket [0.5, 0.5]
-ecosystem TypeBasedEcosystem [0.6, 0.6]
 component RegularComponent [0.7, 0.7]
         `;
 
@@ -104,20 +102,7 @@ component RegularComponent [0.7, 0.7]
         const findComponent = (name) =>
             mergedElements.find((c) => c.name === name);
 
-        const typeBasedMarket = findComponent('TypeBasedMarket');
-        const typeBasedEcosystem = findComponent('TypeBasedEcosystem');
         const regularComponent = findComponent('RegularComponent');
-
-        // Type-based market should have market decorator via fallback logic
-        expect(typeBasedMarket.decorators?.market || false).toBe(true);
-        expect(typeBasedMarket.decorators?.ecosystem || false).toBe(false);
-        expect(typeBasedMarket.decorators.method).toBeUndefined();
-
-        // Type-based ecosystem should have ecosystem decorator via fallback logic
-        expect(typeBasedEcosystem.decorators?.ecosystem || false).toBe(true);
-        expect(typeBasedEcosystem.decorators?.market || false).toBe(false);
-        expect(typeBasedEcosystem.decorators.method).toBeUndefined();
-
         // Regular component should not have any decorators
         expect(regularComponent.decorators?.market || false).toBe(false);
         expect(regularComponent.decorators?.ecosystem || false).toBe(false);
@@ -130,8 +115,6 @@ component RegularComponent [0.7, 0.7]
 title Test Map with DSL Override
 component Foobar [0.9, 0.1] (market)
 component Barbaz [0.9, 0.1] (ecosystem)
-market TypeMarketWithEcoDecorator [0.5, 0.5] (ecosystem)
-ecosystem TypeEcoWithMarketDecorator [0.6, 0.6] (market)
         `;
 
         // Parse the map text
@@ -145,12 +128,6 @@ ecosystem TypeEcoWithMarketDecorator [0.6, 0.6] (market)
 
         const foobar = findComponent('Foobar');
         const barbaz = findComponent('Barbaz');
-        const typeMarketWithEcoDecorator = findComponent(
-            'TypeMarketWithEcoDecorator',
-        );
-        const typeEcoWithMarketDecorator = findComponent(
-            'TypeEcoWithMarketDecorator',
-        );
 
         // DSL decorators should work correctly
         expect(foobar.decorators?.market || false).toBe(true);
@@ -158,21 +135,6 @@ ecosystem TypeEcoWithMarketDecorator [0.6, 0.6] (market)
 
         expect(barbaz.decorators?.ecosystem || false).toBe(true);
         expect(barbaz.decorators?.market || false).toBe(false);
-
-        // DSL decorators should override component type
-        expect(typeMarketWithEcoDecorator.decorators?.ecosystem || false).toBe(
-            true,
-        );
-        expect(typeMarketWithEcoDecorator.decorators?.market || false).toBe(
-            true,
-        ); // Should still be true due to type fallback
-
-        expect(typeEcoWithMarketDecorator.decorators?.market || false).toBe(
-            true,
-        );
-        expect(typeEcoWithMarketDecorator.decorators?.ecosystem || false).toBe(
-            true,
-        ); // Should still be true due to type fallback
     });
 
     test('When evolved components preserve decorators from base component', function () {

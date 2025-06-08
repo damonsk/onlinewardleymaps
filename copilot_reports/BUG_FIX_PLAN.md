@@ -78,7 +78,7 @@ This document outlines the plan for addressing the issues listed in "things to f
 - Update position updater to handle method labels properly
 - Test with various label positions
 
-### 10. Evolved Component Dragging Update Issue
+### 10. Evolved Component Dragging Update Issue [FIXED]
 **Problem:** Dragging evolved components doesn't update coords properly. These only move on the maturitiy axis. 
 **Plan:**
 - Review position updating for evolved components

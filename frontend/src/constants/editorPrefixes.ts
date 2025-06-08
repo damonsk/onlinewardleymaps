@@ -26,9 +26,9 @@ const iterations: string[] = [
     .flat();
 
 export const EditorPrefixes: string[] = [
-    'outsource <component>',
-    'build <component>',
-    'buy <component>',
+    'component <name> [<visibility>, <maturity>] (outsource)',
+    'component <name> [<visibility>, <maturity>] (build)',
+    'component <name> [<visibility>, <maturity>] (buy)',
     ...iterations,
     'anchor',
     'annotation',
@@ -39,8 +39,11 @@ export const EditorPrefixes: string[] = [
     'style handwritten',
     'style plain',
     'style dark',
-    'ecosystem',
-    'market',
+    '(ecosystem)',
+    '(market)',
+    '(build)',
+    '(buy)',
+    '(outsource)',
     'evolve',
     'inertia',
     'pipeline',

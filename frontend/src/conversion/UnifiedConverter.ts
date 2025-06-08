@@ -16,7 +16,6 @@
  * 3. Component types, links, pipelines, etc. are converted with proper typing
  */
 
-import { defaultLabelOffset } from '../constants/defaults';
 import { IProvideFeatureSwitches, WardleyMap } from '../types/base';
 import {
     EvolvedElementData,
@@ -187,12 +186,6 @@ export class UnifiedConverter {
         methodComponents?: Set<string>,
     ): UnifiedComponent[] {
         return legacyComponents.map((component) => {
-            const { increaseLabelSpacing, label } = this.processLabelSpacing(
-                component,
-                component.name,
-                methodComponents,
-            );
-
             return createUnifiedComponent({
                 id: component.id || this.generateId(component.name, type),
                 name: component.name || '',
@@ -200,7 +193,7 @@ export class UnifiedConverter {
                 maturity: component.maturity || 0,
                 visibility: component.visibility || 0,
                 line: component.line,
-                label: label,
+                label: component.label,
                 evolving: component.evolving || false,
                 evolved: component.evolved || false,
                 evolveMaturity: component.evolveMaturity,
@@ -211,56 +204,9 @@ export class UnifiedConverter {
                 override: component.override,
                 url: component.url,
                 pipeline: component.pipeline || false,
-                increaseLabelSpacing: increaseLabelSpacing,
+                increaseLabelSpacing: component.increaseLabelSpacing,
             });
         });
-    }
-
-    /**
-     * Process label spacing and offsets for components and evolved elements
-     */
-    private processLabelSpacing(
-        element: any,
-        name: string = '',
-        methodComponents?: Set<string>,
-    ): { increaseLabelSpacing: number; label: LabelOffset } {
-        let increaseLabelSpacing = element.increaseLabelSpacing || 0;
-
-        // Determine if this element needs special label handling
-        const isEvolvingElement = element.evolving || element.evolved;
-        const isMethodComponent =
-            methodComponents && methodComponents.has(name);
-        const needsIncreasedSpacing = isEvolvingElement || isMethodComponent;
-
-        // Apply increased label spacing for evolution or method components
-        if (needsIncreasedSpacing) {
-            increaseLabelSpacing = Math.max(increaseLabelSpacing, 2);
-        }
-
-        // Get base label and apply offset if needed
-        let label = element.label || defaultLabelOffset;
-        if (needsIncreasedSpacing) {
-            label = this.createOffset(label, increaseLabelSpacing);
-        }
-
-        return { increaseLabelSpacing, label };
-    }
-
-    /**
-     * Create an offset for label positioning
-     */
-    private createOffset(
-        label: LabelOffset,
-        increaseLabelSpacing: number,
-    ): LabelOffset {
-        if (increaseLabelSpacing <= 0) {
-            return label;
-        }
-
-        return {
-            ...label,
-            y: label.y * increaseLabelSpacing, // Position below
-        };
     }
 
     /**
@@ -270,17 +216,14 @@ export class UnifiedConverter {
         legacyEvolved: any[],
     ): EvolvedElementData[] {
         return legacyEvolved.map((evolved) => {
-            const { increaseLabelSpacing, label } =
-                this.processLabelSpacing(evolved);
-
             return {
                 name: evolved.name || '',
                 maturity: evolved.maturity || 0,
-                label: label,
+                label: evolved.label,
                 override: evolved.override,
                 line: evolved.line,
                 decorators: evolved.decorators,
-                increaseLabelSpacing: increaseLabelSpacing,
+                increaseLabelSpacing: evolved.increaseLabelSpacing,
             };
         });
     }

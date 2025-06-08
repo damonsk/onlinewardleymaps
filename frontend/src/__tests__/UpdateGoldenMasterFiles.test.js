@@ -37,7 +37,6 @@ function saveFileContent(fileName, content) {
 
 describe('Update Golden Master Files', () => {
     test('Update all golden master files with MapElements output', () => {
-
         // Load map text from the golden master file
         const mapTextFileName = 'GoldenMasterMapText.txt';
         const fileContent = loadFileContent(mapTextFileName);
@@ -109,7 +108,6 @@ describe('Update Golden Master Files', () => {
             const output = fn();
             saveFileContent(fileName, JSON.stringify(output));
         });
-
 
         // This test always passes - it's just to run the update
         expect(true).toBe(true);

@@ -4,11 +4,8 @@ import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
 import AttitudeExtractionStrategy from './AttitudeExtractionStrategy';
 import ComponentExtractionStrategy from './ComponentExtractionStrategy';
-import EcosystemExtractionStrategy from './EcosystemExtractionStrategy';
 import EvolveExtractionStrategy from './EvolveExtractionStrategy';
 import LinksExtractionStrategy from './LinksExtractionStrategy';
-import MarketExtractionStrategy from './MarketExtractionStrategy';
-import MethodExtractionStrategy from './MethodExtractionStrategy';
 import NoteExtractionStrategy from './NoteExtractionStrategy';
 import PipelineExtractionStrategy from './PipelineExtractionStrategy';
 import PresentationExtractionStrategy from './PresentationExtractionStrategy';
@@ -27,14 +24,14 @@ export default class Converter {
         const t = this.stripComments(data);
         const strategies = [
             new TitleExtractionStrategy(t),
-            new MethodExtractionStrategy(t),
+            // new MethodExtractionStrategy(t),
             new XAxisLabelsExtractionStrategy(t),
             new PresentationExtractionStrategy(t),
             new NoteExtractionStrategy(t),
             new AnnotationExtractionStrategy(t),
             new ComponentExtractionStrategy(t),
-            new MarketExtractionStrategy(t),
-            new EcosystemExtractionStrategy(t),
+            // new MarketExtractionStrategy(t),
+            // new EcosystemExtractionStrategy(t),
             new PipelineExtractionStrategy(t, this.featureSwitches),
             new EvolveExtractionStrategy(t),
             new AnchorExtractionStrategy(t),
@@ -61,10 +58,10 @@ export default class Converter {
             notes: [],
             presentation: nullPresentation,
             evolution: [],
-            methods: [],
+            // methods: [],
             submaps: [],
-            markets: [],
-            ecosystems: [],
+            // markets: [],
+            // ecosystems: [],
             urls: [],
             attitudes: [],
             accelerators: [],
