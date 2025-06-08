@@ -136,18 +136,29 @@ export const extractManyLocations = (
 export const setMethod = (
     baseElement: IProvideBaseElement & {
         name?: string;
-        method?: string;
+        buy?: boolean;
+        build?: boolean;
+        outsource?: boolean;
+        market?: boolean;
+        ecosystem?: boolean;
         increaseLabelSpacing?: number;
     },
     element: string,
     config: IProvideDecoratorsConfig,
 ): void => {
     const name = element.split(`${config.keyword} `)[1].trim();
-    // We set method and name, but NOT increaseLabelSpacing here
+    // We set the appropriate boolean flag and name, but NOT increaseLabelSpacing here
     // The increaseLabelSpacing will be applied to the referenced component in methodExtractor.ts
     Object.assign(baseElement, {
         name,
-        method: config.keyword,
+        // Initialize all decorator flags to false
+        buy: false,
+        build: false,
+        outsource: false,
+        market: false,
+        ecosystem: false,
+        // Set the specific flag based on the keyword
+        [config.keyword]: true,
     });
 };
 
@@ -247,6 +258,22 @@ export const decorators = (
     decorators?: any;
     increaseLabelSpacing?: number;
 } => {
+    // Initialize all decorator flags to false to ensure we have explicit boolean values
+    const defaultDecorators = {
+        ecosystem: false,
+        market: false,
+        buy: false,
+        build: false,
+        outsource: false,
+    };
+
+    // Set default decorators on baseElement if not already present
+    if (!baseElement.decorators) {
+        baseElement.decorators = {...defaultDecorators};
+    } else {
+        baseElement.decorators = {...defaultDecorators, ...baseElement.decorators};
+    }
+
     [methodDecorator, marketDecorator, ecosystemDecorator].forEach(d => merge(baseElement, d(baseElement, element)));
     return baseElement;
 };
@@ -337,18 +364,22 @@ export const setNumber = (
 
 const methodDecorator = (
     baseElement: IProvideBaseElement & {
-        decorators?: {method?: string};
+        decorators?: {
+            buy?: boolean;
+            build?: boolean;
+            outsource?: boolean;
+        };
         increaseLabelSpacing?: number;
     },
     element: string,
 ) => {
     const meths = ['build', 'buy', 'outsource'];
-    let decs = {};
+    const decs: {[key: string]: boolean} = {};
     let parentAttributes = {};
     for (let i = 0; i < meths.length; i++) {
         const meth = meths[i];
         if (element.indexOf(meth) > -1 && element.indexOf('(') < element.indexOf(meth) && element.indexOf(')') > element.indexOf(meth)) {
-            decs = {method: meth};
+            decs[meth] = true;
             parentAttributes = {increaseLabelSpacing: 2};
             break;
         }
@@ -363,7 +394,7 @@ const marketDecorator = (
     },
     element: string,
 ) => {
-    let decs = {};
+    const decs: {[key: string]: boolean} = {};
     let parentAttributes = {};
     if (
         (element.indexOf('market') > -1 &&
@@ -371,7 +402,7 @@ const marketDecorator = (
             element.indexOf(')') > element.indexOf('market')) ||
         element.indexOf('market') === 0
     ) {
-        decs = {market: true};
+        decs.market = true;
         parentAttributes = {increaseLabelSpacing: 2};
     }
     return {decorators: decs, ...parentAttributes};
@@ -384,7 +415,7 @@ const ecosystemDecorator = (
     },
     element: string,
 ) => {
-    let decs = {};
+    const decs: {[key: string]: boolean} = {};
     let parentAttributes = {};
     if (
         (element.indexOf('ecosystem') > -1 &&
@@ -392,7 +423,7 @@ const ecosystemDecorator = (
             element.indexOf(')') > element.indexOf('ecosystem')) ||
         element.indexOf('ecosystem') === 0
     ) {
-        decs = {ecosystem: true};
+        decs.ecosystem = true;
         parentAttributes = {increaseLabelSpacing: 3};
     }
     return {decorators: decs, ...parentAttributes};

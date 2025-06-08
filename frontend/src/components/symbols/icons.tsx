@@ -123,29 +123,39 @@ export const MarketIcon: React.FunctionComponent<IconProps> = ({id, hideLabel, m
 );
 
 export interface MethodIconProps extends IconProps {
-    method: string;
+    buy?: boolean;
+    build?: boolean;
+    outsource?: boolean;
 }
 
-export const MethodIcon: React.FunctionComponent<MethodIconProps> = ({hideLabel, id, onClick, mapStyleDefs, method}) => (
-    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
-        {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text={method} x="45" y="15" />}
-        <g transform="translate(21 21) scale(0.8)">
-            <MethodSymbol method={method.toLowerCase()} styles={mapStyleDefs.methods} x="0" y="0" />
-        </g>
-        <ComponentSymbol styles={mapStyleDefs.component} cx="21px" cy="21px" />
-    </IconWrapper>
-);
+export const MethodIcon: React.FunctionComponent<MethodIconProps> = ({hideLabel, id, onClick, mapStyleDefs, buy, build, outsource}) => {
+    // Determine method type from boolean flags
+    let methodText = 'Build'; // Default
+    if (buy) methodText = 'Buy';
+    else if (outsource) methodText = 'Outsource';
+    else if (build) methodText = 'Build';
+
+    return (
+        <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
+            {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text={methodText} x="45" y="15" />}
+            <g transform="translate(21 21) scale(0.8)">
+                <MethodSymbol buy={buy} build={build} outsource={outsource} styles={mapStyleDefs.methods} x="0" y="0" />
+            </g>
+            <ComponentSymbol styles={mapStyleDefs.component} cx="21px" cy="21px" />
+        </IconWrapper>
+    );
+};
 
 export const BuyMethodIcon: React.FunctionComponent<IconProps> = ({onClick, hideLabel, id, mapStyleDefs}) => (
-    <MethodIcon id={id} method={'Buy'} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
+    <MethodIcon id={id} buy={true} build={false} outsource={false} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
 export const BuildMethodIcon: React.FunctionComponent<IconProps> = ({id, onClick, mapStyleDefs, hideLabel}) => (
-    <MethodIcon id={id} method={'Build'} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
+    <MethodIcon id={id} buy={false} build={true} outsource={false} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
 export const OutSourceMethodIcon: React.FunctionComponent<IconProps> = ({id, onClick, hideLabel, mapStyleDefs}) => (
-    <MethodIcon id={id} method={'Outsource'} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
+    <MethodIcon id={id} buy={false} build={false} outsource={true} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
 export const EcosystemIcon: React.FunctionComponent<IconProps> = ({hideLabel, mapStyleDefs, onClick, id}) => (

@@ -6,7 +6,9 @@ export interface ModernMethodSymbolProps {
     id?: string;
     x?: string | number;
     y?: string | number;
-    method: string;
+    buy?: boolean;
+    build?: boolean;
+    outsource?: boolean;
     styles: MapMethodsTheme;
 }
 
@@ -16,8 +18,14 @@ export interface ModernMethodSymbolProps {
  *
  * This component displays a method indicator (build/buy/outsource) on the map
  */
-const MethodSymbol: React.FC<ModernMethodSymbolProps> = ({id, x, y, method, styles, onClick}) => {
-    const style = (styles[method as keyof MapMethodsTheme] || styles.build) as MapMethodTheme;
+const MethodSymbol: React.FC<ModernMethodSymbolProps> = ({id, x, y, buy, build, outsource, styles, onClick}) => {
+    // Determine the method type from boolean flags
+    let methodType = 'build'; // Default
+    if (buy) methodType = 'buy';
+    else if (outsource) methodType = 'outsource';
+    else if (build) methodType = 'build';
+
+    const style = (styles[methodType as keyof MapMethodsTheme] || styles.build) as MapMethodTheme;
 
     return (
         <g id={id} transform={`translate(${x},${y})`} onClick={onClick} style={{cursor: onClick ? 'pointer' : 'default'}}>

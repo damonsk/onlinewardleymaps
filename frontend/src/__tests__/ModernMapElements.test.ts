@@ -239,7 +239,9 @@ describe('MapElements', () => {
                     visibility: 0.6,
                     line: 7,
                     decorators: {
-                        method: 'build',
+                        buy: false,
+                        build: true,
+                        outsource: false,
                         ecosystem: false,
                         market: false,
                     },
@@ -253,7 +255,9 @@ describe('MapElements', () => {
         // Find the method component
         const methodComponent = allComponents.find(c => c.name === 'Method Component');
         expect(methodComponent).toBeDefined();
-        expect(methodComponent?.decorators?.method).toBe('build');
+        expect(methodComponent?.decorators?.build).toBe(true);
+        expect(methodComponent?.decorators?.buy).toBe(false);
+        expect(methodComponent?.decorators?.outsource).toBe(false);
 
         // Check label spacing is set for method components
         expect(methodComponent?.increaseLabelSpacing).toBeGreaterThan(0);

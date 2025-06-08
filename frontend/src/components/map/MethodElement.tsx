@@ -9,9 +9,24 @@ import ModernPositionCalculator from './ModernPositionCalculator';
 interface ModernMethodElementProps {
     methodComponent: UnifiedComponent | MethodComponent; // Accept both regular and method components
     mapDimensions: MapDimensions;
-    method: string;
     mapStyleDefs: MapTheme;
     setHighlightLine?: (line: number) => void;
+}
+
+/**
+ * Helper function to determine the method type from component decorators
+ * Uses the new boolean flags approach
+ */
+function getMethodType(methodComponent: UnifiedComponent | MethodComponent): string {
+    // Check for new boolean flags (only approach now)
+    if (methodComponent.decorators) {
+        if (methodComponent.decorators.buy) return 'buy';
+        if (methodComponent.decorators.build) return 'build';
+        if (methodComponent.decorators.outsource) return 'outsource';
+    }
+
+    // Default to 'build'
+    return 'build';
 }
 
 /**
@@ -20,8 +35,11 @@ interface ModernMethodElementProps {
  *
  * This component positions and renders method indicators on the map
  */
-const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, mapDimensions, method, mapStyleDefs, setHighlightLine}) => {
+const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, mapDimensions, mapStyleDefs, setHighlightLine}) => {
     const positionCalc = new ModernPositionCalculator();
+
+    // Determine the method type using new boolean flags
+    const methodType = getMethodType(methodComponent);
 
     console.log('Method component:', methodComponent);
 
@@ -85,7 +103,7 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, map
     if (isNaN(x) || isNaN(y)) {
         console.warn('Invalid coordinates for method element:', {
             name: methodComponent.name,
-            method,
+            method: methodType,
             maturity,
             visibility: visibilityValue,
             x,
@@ -99,7 +117,7 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, map
         visibility: visibilityValue,
         x,
         y,
-        method,
+        method: methodType,
     });
 
     // Handle click to highlight the line in the editor
@@ -110,7 +128,16 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, map
     };
 
     return (
-        <MethodSymbol id={`method_${methodComponent.id}`} x={x} y={y} method={method} styles={mapStyleDefs.methods} onClick={handleClick} />
+        <MethodSymbol
+            id={`method_${methodComponent.id}`}
+            x={x}
+            y={y}
+            buy={methodComponent.decorators?.buy || false}
+            build={methodComponent.decorators?.build || false}
+            outsource={methodComponent.decorators?.outsource || false}
+            styles={mapStyleDefs.methods}
+            onClick={handleClick}
+        />
     );
 };
 

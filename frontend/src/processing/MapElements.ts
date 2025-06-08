@@ -40,13 +40,16 @@ export class MapElements {
     private markEvolvingComponents(): void {
         // First create a set of components referenced in methods
         const methodComponents = new Set<string>();
-        if (this.allComponents.some(c => c.decorators?.method)) {
-            this.allComponents.forEach(component => {
-                if (component.decorators?.method && component.name) {
-                    methodComponents.add(component.name);
-                }
-            });
-        }
+
+        // Check for method decorator boolean flags
+        this.allComponents.forEach(component => {
+            const hasMethodDecorator =
+                component.decorators && (component.decorators.buy || component.decorators.build || component.decorators.outsource);
+
+            if (hasMethodDecorator && component.name) {
+                methodComponents.add(component.name);
+            }
+        });
 
         this.allComponents = this.allComponents.map(component => {
             // Handle evolving components
@@ -203,10 +206,8 @@ export class MapElements {
                 label: label,
                 override: evolvedData.override || component.override,
                 line: evolvedData.line || component.line,
-                decorators:
-                    evolvedData.decorators && Object.keys(evolvedData.decorators).length > 0
-                        ? evolvedData.decorators
-                        : component.decorators,
+                // Always preserve component decorators unless evolvedData has explicit decorators
+                decorators: component.decorators,
                 increaseLabelSpacing: increaseLabelSpacing,
             });
         });

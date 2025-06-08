@@ -100,6 +100,9 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 offsetY: anchor.offsetY ?? 0,
                 evolving: anchor.evolving ?? false,
                 decorators: anchor.decorators ?? {
+                    buy: false,
+                    build: false,
+                    outsource: false,
                     ecosystem: false,
                     market: false,
                 },

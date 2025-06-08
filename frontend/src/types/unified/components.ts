@@ -159,6 +159,20 @@ export const isEcosystem = (component: UnifiedComponent): component is MapEcosys
 export const createUnifiedComponent = (
     partial: Partial<UnifiedComponent> & Pick<UnifiedComponent, 'id' | 'name' | 'type'>,
 ): UnifiedComponent => {
+    const defaultDecorators = {
+        ecosystem: false,
+        market: false,
+        buy: false,
+        build: false,
+        outsource: false,
+    };
+
+    // Merge decorators first, before spreading partial
+    const mergedDecorators = {
+        ...defaultDecorators,
+        ...(partial.decorators || {}),
+    };
+
     return {
         maturity: 0,
         visibility: 0,
@@ -171,6 +185,8 @@ export const createUnifiedComponent = (
         increaseLabelSpacing: 0,
         pipeline: false,
         ...partial,
+        // Set merged decorators after partial spread to ensure they're properly set
+        decorators: mergedDecorators,
     };
 };
 

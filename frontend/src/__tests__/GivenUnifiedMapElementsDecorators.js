@@ -49,34 +49,48 @@ component MultipleDecorators [0.9, 0.9] (market, buy)
         // Regular component should not have any decorators
         expect(regularComponent.decorators?.market || false).toBe(false);
         expect(regularComponent.decorators?.ecosystem || false).toBe(false);
-        expect(regularComponent.decorators.method).toBeUndefined();
+        expect(regularComponent.decorators?.buy || false).toBe(false);
+        expect(regularComponent.decorators?.build || false).toBe(false);
+        expect(regularComponent.decorators?.outsource || false).toBe(false);
 
         // Market decorated component should have market decorator
         expect(marketDecorated.decorators?.market || false).toBe(true);
         expect(marketDecorated.decorators?.ecosystem || false).toBe(false);
-        expect(marketDecorated.decorators.method).toBeUndefined();
+        expect(marketDecorated.decorators?.buy || false).toBe(false);
+        expect(marketDecorated.decorators?.build || false).toBe(false);
+        expect(marketDecorated.decorators?.outsource || false).toBe(false);
 
         // Ecosystem decorated component should have ecosystem decorator
         expect(ecosystemDecorated.decorators?.ecosystem || false).toBe(true);
         expect(ecosystemDecorated.decorators?.market || false).toBe(false);
-        expect(ecosystemDecorated.decorators.method).toBeUndefined();
+        expect(ecosystemDecorated.decorators?.buy || false).toBe(false);
+        expect(ecosystemDecorated.decorators?.build || false).toBe(false);
+        expect(ecosystemDecorated.decorators?.outsource || false).toBe(false);
 
-        // Method decorated components should have method decorator
-        expect(buyMethodDecorated.decorators.method).toBe('buy');
+        // Method decorated components should have method decorator boolean flags
+        expect(buyMethodDecorated.decorators?.buy || false).toBe(true);
+        expect(buyMethodDecorated.decorators?.build || false).toBe(false);
+        expect(buyMethodDecorated.decorators?.outsource || false).toBe(false);
         expect(buyMethodDecorated.decorators?.market || false).toBe(false);
         expect(buyMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
-        expect(buildMethodDecorated.decorators.method).toBe('build');
+        expect(buildMethodDecorated.decorators?.build || false).toBe(true);
+        expect(buildMethodDecorated.decorators?.buy || false).toBe(false);
+        expect(buildMethodDecorated.decorators?.outsource || false).toBe(false);
         expect(buildMethodDecorated.decorators?.market || false).toBe(false);
         expect(buildMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
-        expect(outsourceMethodDecorated.decorators.method).toBe('outsource');
+        expect(outsourceMethodDecorated.decorators?.outsource || false).toBe(true);
+        expect(outsourceMethodDecorated.decorators?.buy || false).toBe(false);
+        expect(outsourceMethodDecorated.decorators?.build || false).toBe(false);
         expect(outsourceMethodDecorated.decorators?.market || false).toBe(false);
         expect(outsourceMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
         // Multiple decorators should preserve both
         expect(multipleDecorators.decorators?.market || false).toBe(true);
-        expect(multipleDecorators.decorators.method).toBe('buy');
+        expect(multipleDecorators.decorators?.buy || false).toBe(true);
+        expect(multipleDecorators.decorators?.build || false).toBe(false);
+        expect(multipleDecorators.decorators?.outsource || false).toBe(false);
         expect(multipleDecorators.decorators?.ecosystem || false).toBe(false);
     });
 
@@ -98,7 +112,9 @@ component RegularComponent [0.7, 0.7]
         // Regular component should not have any decorators
         expect(regularComponent.decorators?.market || false).toBe(false);
         expect(regularComponent.decorators?.ecosystem || false).toBe(false);
-        expect(regularComponent.decorators.method).toBeUndefined();
+        expect(regularComponent.decorators?.buy || false).toBe(false);
+        expect(regularComponent.decorators?.build || false).toBe(false);
+        expect(regularComponent.decorators?.outsource || false).toBe(false);
     });
 
     test('When DSL decorators take precedence over component type', function () {
@@ -155,13 +171,21 @@ evolve EvolvedMethod 0.75
         // Evolved components should preserve decorators from base component
         expect(evolvedMarket.decorators?.market || false).toBe(true);
         expect(evolvedMarket.decorators?.ecosystem || false).toBe(false);
-        expect(evolvedMarket.decorators.method).toBeUndefined();
+        expect(evolvedMarket.decorators?.buy || false).toBe(false);
+        expect(evolvedMarket.decorators?.build || false).toBe(false);
+        expect(evolvedMarket.decorators?.outsource || false).toBe(false);
 
         expect(evolvedEcosystem.decorators?.ecosystem || false).toBe(true);
         expect(evolvedEcosystem.decorators?.market || false).toBe(false);
-        expect(evolvedEcosystem.decorators.method).toBeUndefined();
+        expect(evolvedEcosystem.decorators?.buy || false).toBe(false);
+        expect(evolvedEcosystem.decorators?.build || false).toBe(false);
+        expect(evolvedEcosystem.decorators?.outsource || false).toBe(false);
 
-        expect(evolvedMethod.decorators.method).toBe('buy');
+        expect(evolvedMethod.decorators?.buy || false).toBe(true);
+        expect(evolvedMethod.decorators?.build || false).toBe(false);
+        expect(evolvedMethod.decorators?.outsource || false).toBe(false);
+        expect(evolvedMethod.decorators?.market || false).toBe(false);
+        expect(evolvedMethod.decorators?.ecosystem || false).toBe(false);
         expect(evolvedMethod.decorators?.market || false).toBe(false);
         expect(evolvedMethod.decorators?.ecosystem || false).toBe(false);
     });
@@ -182,7 +206,9 @@ component AnotherComponent [0.6, 0.6]
         mergedElements.forEach(component => {
             expect(component.decorators?.market || false).toBe(false);
             expect(component.decorators?.ecosystem || false).toBe(false);
-            expect(component.decorators.method).toBeUndefined();
+            expect(component.decorators?.buy || false).toBe(false);
+            expect(component.decorators?.build || false).toBe(false);
+            expect(component.decorators?.outsource || false).toBe(false);
         });
     });
 });

@@ -28,7 +28,7 @@ This document outlines the plan for addressing the issues listed in "things to f
 - Ensure font is properly applied to all text elements
 - Check for any font overrides in component styles
 
-### 4. React-ACE Editor Styling Issues
+### 4. React-ACE Editor Styling Issues [FIXED]
 **Problem:** Mode-owm format doesn't style quoted parts in component labels and evolve statements
 **Plan:**
 - Review mode-owm syntax highlighting rules
@@ -44,7 +44,7 @@ This document outlines the plan for addressing the issues listed in "things to f
 - Implement unique identifiers for each coordinate point
 - Update position logic to track which point was actually moved
 
-### 6. Evolved Component Fluid Linking Issue
+### 6. Evolved Component Fluid Linking Issue [FIXED]
 **Problem:** Evolved component included in modkey + click fluid linking incorrectly
 **Plan:**
 - Add condition to check if component is evolved before allowing fluid linking

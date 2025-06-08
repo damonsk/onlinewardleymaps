@@ -2,7 +2,6 @@ import {UnifiedComponent} from '../types/unified';
 
 // Define an interface for method components that extends UnifiedComponent
 export interface MethodComponent extends UnifiedComponent {
-    method: string; // Add the method property
     targetComponentName?: string; // For "buy Water" style methods, stores the target component name
 }
 
@@ -19,20 +18,54 @@ export function extractMethodsFromComponents(components: UnifiedComponent[]): Me
     components.forEach(component => {
         if (!component.name) return;
 
-        const match = component.name.match(methodRegex);
-        if (match) {
-            const methodType = match[1].toLowerCase();
+        // Check for boolean flags (only approach now)
+        let hasMethodFlag = false;
+        if (component.decorators?.buy || component.decorators?.build || component.decorators?.outsource) {
+            hasMethodFlag = true;
+        }
 
-            // Create a method object based on the component
+        // If we found a method via decorators, use it
+        if (hasMethodFlag) {
             methods.push({
                 ...component,
                 id: `method_${component.id}`,
                 type: 'method',
-                method: methodType,
                 name: component.name.replace(methodRegex, '').trim(),
             } as MethodComponent);
 
-            console.log(`Found method decoration in component "${component.name}":`, methodType);
+            console.log(`Found method decoration in component "${component.name}" with flags:`, {
+                buy: component.decorators?.buy,
+                build: component.decorators?.build,
+                outsource: component.decorators?.outsource,
+            });
+            return;
+        }
+
+        // Fall back to regex parsing for backward compatibility
+        const match = component.name.match(methodRegex);
+        if (match) {
+            const legacyMethodType = match[1].toLowerCase();
+
+            // Create a method object based on the component - need to convert legacy to boolean flags
+            const methodComponent: MethodComponent = {
+                ...component,
+                id: `method_${component.id}`,
+                type: 'method',
+                name: component.name.replace(methodRegex, '').trim(),
+                decorators: {
+                    // Ensure all flags are present
+                    buy: legacyMethodType === 'buy',
+                    build: legacyMethodType === 'build',
+                    outsource: legacyMethodType === 'outsource',
+                    market: false,
+                    ecosystem: false,
+                    ...component.decorators, // Preserve any existing decorators
+                },
+            };
+
+            methods.push(methodComponent);
+
+            console.log(`Found legacy method decoration in component "${component.name}":`, legacyMethodType);
         }
     });
 
@@ -51,9 +84,17 @@ export function processStandaloneMethods(
     const result: MethodComponent[] = [];
 
     methods.forEach(method => {
-        if (!method.name || !method.method) return;
+        if (!method.name) return;
 
-        console.log(`Processing standalone method: ${method.method} ${method.name}`);
+        // Get method type from boolean flags
+        let methodType = '';
+        if (method.buy) methodType = 'buy';
+        else if (method.build) methodType = 'build';
+        else if (method.outsource) methodType = 'outsource';
+
+        if (!methodType) return; // No valid method type found
+
+        console.log(`Processing standalone method: ${methodType} ${method.name}`);
 
         // Find the referenced component
         const targetComponentIndex = components.findIndex(c => c.name && c.name.trim().toLowerCase() === method.name.trim().toLowerCase());
@@ -89,7 +130,7 @@ export function processStandaloneMethods(
                 increasedLabelSpacing: components[targetComponentIndex].increaseLabelSpacing,
             });
         } else {
-            console.warn(`Could not find target component for method: ${method.method} ${method.name}`);
+            console.warn(`Could not find target component for method: ${methodType} ${method.name}`);
 
             // Still include the method so we can at least render something
             result.push({

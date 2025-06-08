@@ -109,7 +109,11 @@ export interface MapMethods {
     line?: number;
     increaseLabelSpacing?: number;
     name: string;
-    method: string;
+    buy: boolean;
+    build: boolean;
+    outsource: boolean;
+    market: boolean;
+    ecosystem: boolean;
 }
 export type MapSubmaps = NamedComponent;
 export type MapMarkets = NamedComponent;
@@ -181,7 +185,9 @@ export interface Component {
 export interface ComponentDecorator {
     ecosystem: boolean;
     market: boolean;
-    method?: string;
+    buy: boolean;
+    build: boolean;
+    outsource: boolean;
 }
 
 export interface EvolvedElement {

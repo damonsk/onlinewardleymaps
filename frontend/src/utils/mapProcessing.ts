@@ -46,7 +46,11 @@ interface ProcessedMethodElement {
     name: string;
     maturity?: number;
     visibility: string | number;
-    method?: string;
+    buy: boolean;
+    build: boolean;
+    outsource: boolean;
+    market: boolean;
+    ecosystem: boolean;
     increaseLabelSpacing?: number; // Add this property to preserve label spacing
 }
 
@@ -54,14 +58,21 @@ export function processMapElements(
     elements: MapMethods[],
     mapElements: MapElements, // Now directly accepting MapElements for full Phase 4C compatibility
 ) {
-    const asMethod = (m: any): ProcessedMethodElement => ({
-        id: m.id,
-        name: m.name,
-        maturity: m.maturity,
-        visibility: m.visibility,
-        method: m.decorators?.method,
-        increaseLabelSpacing: m.increaseLabelSpacing, // Keep any existing increaseLabelSpacing without adding a default
-    });
+    const asMethod = (m: any): ProcessedMethodElement => {
+        return {
+            id: m.id,
+            name: m.name,
+            maturity: m.maturity,
+            visibility: m.visibility,
+            // Use boolean flags from decorators or the element itself
+            buy: m.decorators?.buy || m.buy || false,
+            build: m.decorators?.build || m.build || false,
+            outsource: m.decorators?.outsource || m.outsource || false,
+            market: m.decorators?.market || m.market || false,
+            ecosystem: m.decorators?.ecosystem || m.ecosystem || false,
+            increaseLabelSpacing: m.increaseLabelSpacing, // Keep any existing increaseLabelSpacing without adding a default
+        };
+    };
 
     const getElementByName = (elements: any[], name: string): any | undefined => {
         return elements.find(el => el.name === name);
@@ -69,7 +80,12 @@ export function processMapElements(
 
     const decoratedComponentsMethods = mapElements
         .getMergedComponents()
-        .filter((m: any) => m.decorators && 'method' in m.decorators && (m.decorators.method ?? '').length > 0)
+        .filter((m: any) => {
+            // Check for method decorator boolean flags
+            if (!m.decorators) return false;
+
+            return m.decorators.buy || m.decorators.build || m.decorators.outsource;
+        })
         .map((m: any) => asMethod(m));
 
     const nonEvolvedElements = mapElements.getNeitherEvolvedNorEvolvingComponents();
@@ -92,7 +108,9 @@ export function processMapElements(
             return asMethod({
                 ...el,
                 decorators: {
-                    method: m.method || '',
+                    buy: m.method === 'buy',
+                    build: m.method === 'build',
+                    outsource: m.method === 'outsource',
                     ecosystem: false,
                     market: false,
                 },

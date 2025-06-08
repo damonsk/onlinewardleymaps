@@ -266,7 +266,6 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 key={`method_${i}`}
                                 methodComponent={methodComp}
                                 mapDimensions={mapDimensions}
-                                method={methodComp.method || 'build'} // Default to 'build' if no method specified
                                 mapStyleDefs={mapStyleDefs}
                                 setHighlightLine={setHighlightLineDispatch}
                             />
