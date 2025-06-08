@@ -87,7 +87,6 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             e.preventDefault();
             setEditMode(false);
             if (mutateMapText && mapText && text !== component.name && component.line) {
-                // Using the rename function with the correct parameters
                 rename(component.line, component.name, text, mapText, mutateMapText);
             }
         }
@@ -123,9 +122,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         </foreignObject>
     );
 
-    // Function to handle label dragging and update map text
     function endDrag(moved: MovedPosition): void {
-        // If we have a specific onLabelMove handler (e.g., for pipeline components), use it
         if (onLabelMove) {
             const adjustedMoved = component.pipeline
                 ? {
@@ -137,7 +134,6 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             return;
         }
 
-        // Otherwise, handle the label update directly in the map text
         if (!mutateMapText || !mapText || !component.line) {
             console.warn('Cannot update label position: missing required props');
             return;

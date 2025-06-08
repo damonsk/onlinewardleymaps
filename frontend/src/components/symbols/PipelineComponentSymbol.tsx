@@ -2,10 +2,6 @@ import React, {memo, MouseEvent} from 'react';
 import {MapComponentTheme} from '../../constants/mapstyles';
 import {UnifiedComponent} from '../../types/unified';
 
-/**
- * PipelineComponentSymbol Props - using unified type system directly
- * This interface eliminates legacy types and improves type safety
- */
 interface ModernPipelineComponentSymbolProps {
     id?: string;
     x?: string;
@@ -17,10 +13,6 @@ interface ModernPipelineComponentSymbolProps {
     component?: UnifiedComponent; // Direct reference to UnifiedComponent
 }
 
-/**
- * PipelineComponentSymbol - Pipeline component representation using unified types
- * This component eliminates legacy type dependencies and improves rendering performance
- */
 const PipelineComponentSymbol: React.FC<ModernPipelineComponentSymbolProps> = ({
     id,
     x = '-5',
@@ -31,7 +23,6 @@ const PipelineComponentSymbol: React.FC<ModernPipelineComponentSymbolProps> = ({
     styles,
     component, // Direct access to UnifiedComponent
 }) => {
-    // Use component properties directly from unified type
     const evolved = component?.evolved || false;
     const fill = evolved ? styles.evolvedFill : styles.fill;
     const stroke = evolved ? styles.evolved : styles.stroke;

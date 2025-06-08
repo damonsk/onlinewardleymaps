@@ -22,13 +22,6 @@ interface Position {
     };
 }
 
-/**
- * FluidLink - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders a fluid link that follows the mouse cursor
- * Used during the component linking process
- */
 const FluidLink: React.FC<ModernFluidLinkProps> = ({mapStyleDefs, mapDimensions, startElement, origClick, scaleFactor = 1}) => {
     const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();

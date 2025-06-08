@@ -26,13 +26,6 @@ interface ModernRelativeMovableProps {
     children: React.ReactNode;
 }
 
-/**
- * RelativeMovable - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component handles draggable elements that move relative to a position
- * Used primarily for flow text, annotations, and other movable map elements
- */
 const RelativeMovable: React.FC<ModernRelativeMovableProps> = props => {
     const [moving, setMoving] = React.useState(false);
     const x = useCallback(() => props.x, [props.x]);

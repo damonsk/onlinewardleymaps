@@ -1,7 +1,3 @@
-// Phase 4: Component Interface Modernization
-// Modern MapView component that accepts UnifiedWardleyMap directly
-// This replaces the legacy MapView component with a cleaner, unified interface
-
 import React, {LegacyRef, useState} from 'react';
 import ReactDOMServer from 'react-dom/server';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
@@ -15,10 +11,7 @@ import UnifiedMapCanvas from './UnifiedMapCanvas';
 import {DefaultThemes} from './foundation/Fill';
 
 export interface ModernMapViewProps {
-    // Core unified data
     wardleyMap: UnifiedWardleyMap;
-
-    // UI state and configuration
     shouldHideNav: () => void;
     hideNav: boolean;
     mapTitle: string;
@@ -28,13 +21,9 @@ export interface ModernMapViewProps {
     mapDimensions: MapDimensions;
     mapEvolutionStates: EvolutionStages;
     mapRef: React.MutableRefObject<HTMLElement | null>;
-
-    // Text and mutations
     mapText: string;
     mutateMapText: (newText: string) => void;
     evolutionOffsets: Offsets;
-
-    // Interaction handlers
     launchUrl: (urlId: string) => void;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     setNewComponentContext: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
@@ -58,15 +47,15 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         backgroundColor: fill[props.mapStyleDefs.className as keyof DefaultThemes],
         position: 'relative',
         width: '100%',
-        height: '100%', // Changed from 100vh to 100% to respect parent container
-        overflow: 'hidden', // Prevent scrollbars
+        height: '100%',
+        overflow: 'hidden',
     };
 
     const mapStyle: React.CSSProperties = {
         width: '100%',
         height: '100%',
-        overflow: 'hidden', // Prevent scrollbars on the map container
-        position: 'relative', // Add relative positioning for toolbar placement
+        overflow: 'hidden',
+        position: 'relative',
     };
 
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as LegacyRef<HTMLDivElement> | undefined;
@@ -85,15 +74,12 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         setQuickAddTemplate(() => () => quickAdd.template);
     };
 
-    // We ignore the position parameter since we don't need it
     const handleMapCanvasClick = () => {
         if (featureSwitches.enableQuickAdd == false) return;
         if (quickAddInProgress) {
-            // When in quick add mode, execute the template
             quickAddTemplate();
             setQuickAddInProgress(false);
         }
-        // Note: The actual coordinate handling for double-click is now in UnifiedMapCanvas
     };
 
     return (

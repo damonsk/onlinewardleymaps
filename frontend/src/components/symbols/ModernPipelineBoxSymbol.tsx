@@ -12,14 +12,8 @@ interface ModernPipelineBoxSymbolProps {
     };
 }
 
-/**
- * ModernPipelineBoxSymbol - Modern implementation of pipeline box
- * Part of Phase 4 Component Interface Modernization
- */
 const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({id, y, x1, x2, stroke, styles = {}}) => {
-    // Use explicitly provided stroke, or from styles, or default to black
     const str = stroke || styles.stroke || 'black';
-    // Use pipelineStrokeWidth from styles if available, or default to 1
     const strokeWidth = styles.pipelineStrokeWidth || 1;
 
     return (

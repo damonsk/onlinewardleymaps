@@ -13,14 +13,10 @@ interface MovedPosition {
     y: number;
 }
 
-/**
- * Modern Map Component - Phase 4A: Core Component Type Migration
- * This component uses UnifiedComponent directly without adapters
- */
 interface ModernMapComponentProps {
     launchUrl?: (url: string) => void;
     mapDimensions: MapDimensions;
-    component: UnifiedComponent; // Changed from element: MapElement to component: UnifiedComponent
+    component: UnifiedComponent;
     mapText: string;
     mutateMapText: (newText: string) => void;
     mapStyleDefs: MapTheme;
@@ -29,14 +25,10 @@ interface ModernMapComponentProps {
     children?: React.ReactNode;
 }
 
-/**
- * MapComponent uses UnifiedComponent directly for rendering
- * This implements Phase 4A of the migration plan
- */
 const MapComponent: React.FC<ModernMapComponentProps> = ({
     launchUrl,
     mapDimensions,
-    component, // Using component instead of element
+    component,
     mapText,
     mutateMapText,
     mapStyleDefs,
@@ -54,7 +46,6 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
         e.stopPropagation();
 
         if (component.line) {
-            // Always set the highlight line to move the cursor to this line
             setHighlightLine(component.line);
         }
 
@@ -70,7 +61,6 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
     const updatePosition = (movedPosition: MovedPosition) => {
         if (component.line === undefined) return;
 
-        // Calculate new maturity and visibility from moved position
         const calculator = new ModernPositionCalculator();
         const newMaturity = parseFloat(calculator.xToMaturity(movedPosition.x, mapDimensions.width));
         const newVisibility = parseFloat(calculator.yToVisibility(movedPosition.y, mapDimensions.height));

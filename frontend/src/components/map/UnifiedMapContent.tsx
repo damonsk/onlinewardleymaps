@@ -67,29 +67,19 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
         launchUrl,
     } = props;
 
-    // Create a dispatcher wrapper to handle prop type conflicts
     const setHighlightLineDispatch = (value: any) => {
         if (typeof value === 'function') {
-            // If we're given a function, evaluate it
             setHighlightLine(value(0));
         } else {
-            // Simply set the highlight line to the provided value
-            // The cursor will be moved to this line in the editor
             setHighlightLine(value);
         }
     };
 
-    // Get elements from UnifiedMapElements
-    // Use MapElements directly - Phase 4C modernization
     const mapAnchors: UnifiedComponent[] = mapElements.getAllComponents().filter(c => c.type === 'anchor');
 
     const getElementByName = (elements: UnifiedComponent[], name: string) => elements.find(e => e.name === name);
 
-    // Direct component passing function - no need for adaptation since we're using unified types
-    // This is part of Phase 4A migration - eliminate adapter functions
     const passComponent = (component: any): any => {
-        // Simply return the component as is - unified components have all needed properties
-        // In a future phase, this function can be removed completely and components used directly
         return component;
     };
 

@@ -3,8 +3,8 @@ import {MapTheme} from '../../constants/mapstyles';
 import {MapAnnotations} from '../../types/base';
 import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
-import Movable from './Movable';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
 import ModernSingletonPositionUpdater from './positionUpdaters/ModernSingletonPositionUpdater';
@@ -31,16 +31,9 @@ interface MovedPosition {
     y: number;
 }
 
-/**
- * AnnotationBox - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders an annotation box with all annotations
- */
 const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
     const positionCalc = new ModernPositionCalculator();
     const identifier = 'annotations';
-    // Removed unused state variable boxBounds
     const [, setBoxBounds] = useState<DOMRect | null>(null);
 
     const defaultPositionUpdater = new ModernDefaultPositionUpdater(identifier, props.mapText, props.mutateMapText, [
@@ -52,23 +45,15 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
     const x = (): number => positionCalc.maturityToX(props.position.maturity, props.mapDimensions.width);
 
     const y = (): number => positionCalc.visibilityToY(props.position.visibility, props.mapDimensions.height);
-
-    // Function to handle dragging the entire annotation box
-    // Now handles both the box position and updates label position
     function endDrag(moved: MovedPosition): void {
         const visibility = parseFloat(positionCalc.yToVisibility(moved.y, props.mapDimensions.height));
         const maturity = parseFloat(positionCalc.xToMaturity(moved.x, props.mapDimensions.width));
-
-        // Update both the box position and the label position in one operation
-        // First update using the position updater
         positionUpdater.update({param1: visibility, param2: maturity}, '');
 
-        // Then update the annotation text coordinates in the mapText
         props.mutateMapText(
             props.mapText
                 .split('\n')
                 .map((line: string) => {
-                    // Match the annotations line specifically
                     if (line.trim().indexOf('annotations') === 0) {
                         return line.replace(/\[(.+?)\]/g, `[${visibility.toFixed(2)}, ${maturity.toFixed(2)}]`);
                     }
@@ -84,7 +69,6 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
 
         const ctx = document.getElementById('movable_annotationsBox') as unknown as SVGGraphicsElement;
 
-        // Add null check before calling getBBox()
         if (!ctx) {
             console.warn('Element with ID "movable_annotationsBox" not found');
             return;
@@ -105,7 +89,6 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
         rect.setAttribute('stroke-width', props.mapStyleDefs.annotation.boxStrokeWidth.toString());
         rect.setAttribute('fill', props.mapStyleDefs.annotation.boxFill);
 
-        // Insert before text container to ensure box is behind text
         if (ctx.firstChild) {
             ctx.insertBefore(rect, ctx.firstChild);
         } else {
@@ -114,7 +97,6 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
     }, [props.mapStyleDefs]);
 
     useEffect(() => {
-        // Use a short timeout to ensure the DOM is ready
         const timer = setTimeout(() => {
             redraw();
         }, 50);
@@ -122,12 +104,9 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
         return () => clearTimeout(timer);
     }, [props.position.maturity, props.position.visibility, props.mapDimensions, props.mapStyleDefs, props.annotations, redraw]);
 
-    // Simplified structure - using a single Movable component
-    // Instead of nesting RelativeMovable inside Movable
     return (
         <Movable id={'annotationsBox'} onMove={endDrag} fixedY={false} fixedX={false} x={x()} y={y()} scaleFactor={props.scaleFactor}>
             <g id="movable_annotationsBox">
-                {/* The annotation box rect will be inserted here via redraw() */}
                 <AnnotationBoxSymbol id={'annotationsBoxTextContainer'} dy={0} x={2} theme={props.mapStyleDefs.annotation}>
                     {props.annotations &&
                         props.annotations.map((a, i) => (

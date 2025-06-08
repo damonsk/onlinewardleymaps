@@ -6,7 +6,7 @@ import MethodSymbol from '../symbols/MethodSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernMethodElementProps {
-    methodComponent: UnifiedComponent; // Accept both regular and method components
+    methodComponent: UnifiedComponent;
     mapDimensions: MapDimensions;
     mapStyleDefs: MapTheme;
     setHighlightLine?: (line: number) => void;

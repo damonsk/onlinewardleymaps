@@ -4,8 +4,8 @@ import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
 import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
-import Movable from './Movable';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
 import {ModernNotDefinedCoordsMatcher} from './positionUpdaters/ModernNotDefinedCoordsMatcher';
@@ -19,12 +19,6 @@ interface ModernAnchorProps {
     onClick: (event: MouseEvent) => void;
 }
 
-/**
- * Anchor - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders anchors (user needs) on a Wardley Map
- */
 const Anchor: React.FunctionComponent<ModernAnchorProps> = ({anchor, mapText, mutateMapText, mapDimensions, mapStyleDefs, onClick}) => {
     const isModKeyPressed = useModKeyPressedConsumer();
     const identity = 'anchor';

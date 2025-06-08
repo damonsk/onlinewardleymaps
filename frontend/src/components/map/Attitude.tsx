@@ -1,8 +1,8 @@
 import React from 'react';
 import {MapTheme} from '../../constants/mapstyles';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
-import Movable from './Movable';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import Movable from './Movable';
 import {ModernExistingManyCoordsMatcher} from './positionUpdaters/ModernExistingManyCoordsMatcher';
 import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import {NotDefinedManyCoordsMatcher} from './positionUpdaters/NotDefinedManyCoordsMatcher';
@@ -31,12 +31,6 @@ interface MovedPosition {
     y: number;
 }
 
-/**
- * Attitude - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders a movable attitude area on the map
- */
 const Attitude: React.FC<ModernAttitudeProps> = ({attitude, mapDimensions, mapText, mutateMapText, mapStyleDefs, scaleFactor}) => {
     const {height, width} = mapDimensions;
     const type = attitude.attitude;

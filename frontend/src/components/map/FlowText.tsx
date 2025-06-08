@@ -15,10 +15,6 @@ interface ModernFlowTextProps {
     scaleFactor: number;
 }
 
-/**
- * FlowText - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- */
 const FlowText: React.FC<ModernFlowTextProps> = ({mapStyleDefs, startElement, endElement, link, x, y, scaleFactor}) => {
     const flowLabelElementId = `flow_text_${startElement.id}_${endElement.id}`;
 

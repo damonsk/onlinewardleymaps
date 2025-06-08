@@ -1,7 +1,3 @@
-// Phase 4: Component Interface Modernization
-// Modern UnifiedMapCanvas that accepts UnifiedWardleyMap directly
-// This component reduces the prop drilling with a clean unified interface
-
 import React, {MouseEvent, useEffect, useMemo, useRef, useState} from 'react';
 import {ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
@@ -17,34 +13,21 @@ import PositionCalculator from './PositionCalculator';
 import UnifiedMapContent from './UnifiedMapContent';
 
 interface ModernUnifiedMapCanvasProps {
-    // Core unified data
     wardleyMap: UnifiedWardleyMap;
-
-    // Display configuration
     mapDimensions: MapDimensions;
     mapCanvasDimensions: MapCanvasDimensions;
     mapStyleDefs: MapTheme;
     mapEvolutionStates: EvolutionStages;
     evolutionOffsets: Offsets;
-
-    // Text and mutations
     mapText: string;
     mutateMapText: (newText: string) => void;
-
-    // Interaction handlers
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     setNewComponentContext: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
     launchUrl: (urlId: string) => void;
     showLinkedEvolved: boolean;
-
-    // Navigation control
     shouldHideNav?: () => void;
     hideNav?: boolean;
-
-    // Annotations
     mapAnnotationsPresentation: any;
-
-    // Optional handlers
     handleMapCanvasClick?: (pos: {x: number; y: number}) => void;
 }
 
@@ -71,12 +54,10 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const isModKeyPressed = useModKeyPressedConsumer();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
-    // Create MapElements instance from the wardley map data
     const mapElements = useMemo(() => {
         return new MapElements(wardleyMap);
     }, [wardleyMap]);
 
-    // Process links using the UnifiedMapElements instance
     const processedLinks = useMemo(() => {
         return processLinks(
             wardleyMap.links.map(link => ({
@@ -114,9 +95,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const [enableZoomOnClick] = useState(true);
     const [tool, setTool] = useState(TOOL_NONE as any);
     const [scaleFactor, setScaleFactor] = useState(1);
-
-    // We'll keep the value state for reference but won't use it with UncontrolledReactSVGPanZoom
-    // This helps us track zoom level for other component needs
     const [value, setValue] = useState({
         version: 2 as const,
         mode: TOOL_NONE as any,
@@ -134,14 +112,11 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         miniatureOpen: false,
     });
 
-    // Handle zoom changes by updating our local scaleFactor state
     const handleZoomChange = (newValue: any) => {
         setValue(newValue);
         setScaleFactor(newValue.a); // a is the scale factor
     };
 
-    // For modern interface, we don't need the complex interaction handlers
-    // We'll use a simplified approach that focuses on the map interactions we need
     const [mapElementsClicked, setMapElementsClicked] = useState<
         Array<{
             el: any;
@@ -149,7 +124,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }>
     >([]);
 
-    // Clear mapElementsClicked when mod key is released
     useEffect(() => {
         if (!isModKeyPressed && mapElementsClicked.length > 0) {
             setMapElementsClicked([]);
@@ -158,7 +132,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     const handleMapClick = (event: any) => {
         if (enableZoomOnClick && props.handleMapCanvasClick) {
-            // Extract position from event and call the handler
             const pos = {x: event.x || 0, y: event.y || 0};
             props.handleMapCanvasClick(pos);
         }
@@ -166,10 +139,8 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     const handleMapDoubleClick = (event: any) => {
         if (enableZoomOnClick) {
-            // Handle double click to add new component
             const svgPos = {x: event.x || 0, y: event.y || 0};
 
-            // Convert SVG coordinates to maturity/visibility values
             const positionCalc = new PositionCalculator();
             const maturity = parseFloat(positionCalc.xToMaturity(svgPos.x, mapDimensions.width));
             const visibility = parseFloat(positionCalc.yToVisibility(svgPos.y, mapDimensions.height));
@@ -181,7 +152,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 visibility,
             });
 
-            // Pass maturity and visibility values directly
             setNewComponentContext({
                 x: maturity.toFixed(2),
                 y: visibility.toFixed(2),
@@ -189,9 +159,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     };
 
-    const handleMapMouseMove = () => {
-        // Handle mouse move if needed
-    };
+    const handleMapMouseMove = () => {};
 
     const clicked = function (ctx: {el: any; e: MouseEvent<Element> | null}) {
         console.log('mapElementsClicked::clicked', ctx);
@@ -214,9 +182,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     }, [value]);
 
-    // Gentle initial fit that happens after all initialization is complete
     useEffect(() => {
-        // Only run when we have valid dimensions and components to render
         if (mapDimensions.width > 0 && mapDimensions.height > 0) {
             console.log('Initial fit effect triggered', {
                 width: mapDimensions.width,
@@ -268,13 +234,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 components: wardleyMap.components.length,
             });
         }
-    }, [mapDimensions.width, mapDimensions.height]); // Removed wardleyMap.components.length dependency
-
-    // Note: Panel resize is now handled by dimension updates in MapEnvironment
-    // Dimension updates will automatically trigger re-render with proper scaling
-    // No need for manual fitSelection calls on panel resize
-
-    // Get the correct background fill based on the map style
+    }, [mapDimensions.width, mapDimensions.height]);
     const fill = {
         wardley: 'url(#wardleyGradient)',
         colour: 'white',
@@ -287,7 +247,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     return (
         <div id="map-canvas" style={{width: '100%', height: '100%', position: 'relative'}}>
-            {/* Use UncontrolledReactSVGPanZoom directly instead of nested components */}
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
                 SVGBackground={svgBackground}
@@ -295,8 +254,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 tool={tool}
                 width={mapCanvasDimensions.width || window.innerWidth - 100} // Use larger fallback width
                 height={mapCanvasDimensions.height || window.innerHeight - 200} // Use larger fallback height
-                // Removed value and onChangeValue props to prevent infinite update loop
-                // UncontrolledReactSVGPanZoom manages its state internally
                 detectAutoPan={false}
                 detectWheel={allowMapZoomMouseWheel}
                 miniatureProps={{

@@ -1,26 +1,17 @@
 import React, {memo, MouseEvent} from 'react';
 import {UnifiedComponent} from '../../types/unified';
 
-/**
- * AcceleratorSymbol Props - using unified type system directly
- * This interface eliminates legacy types and improves type safety
- */
 export interface ModernAcceleratorSymbolProps {
     onClick?: (e: MouseEvent<SVGGElement>) => void;
     id?: string;
     component?: UnifiedComponent; // Direct reference to UnifiedComponent
 }
 
-/**
- * AcceleratorSymbol - Accelerator symbol representation using unified types
- * This component eliminates legacy type dependencies and improves rendering performance
- */
 const AcceleratorSymbol: React.FunctionComponent<ModernAcceleratorSymbolProps> = ({
     id,
     onClick,
     component, // Direct access to UnifiedComponent
 }) => {
-    // Get deaccelerator state directly from the component
     const isDeAccelerator = component?.type === 'deaccelerator';
 
     return (

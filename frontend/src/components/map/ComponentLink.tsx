@@ -17,10 +17,6 @@ interface ModernComponentLinkProps {
     scaleFactor: number;
 }
 
-/**
- * ComponentLink - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- */
 const ComponentLink: React.FC<ModernComponentLinkProps> = ({mapStyleDefs, mapDimensions, startElement, endElement, link, scaleFactor}) => {
     const {enableLinkContext} = useFeatureSwitches();
     const {height, width} = mapDimensions;

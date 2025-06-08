@@ -1,17 +1,10 @@
-// Unified Map State Hook - Phase 1 of refactoring plan
-// This consolidates the 15+ useState hooks from MapEnvironment into a cleaner state management system
-
 import {useCallback, useMemo, useState} from 'react';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../constants/defaults';
 import {MapTheme} from '../types/map/styles';
 import {MapRenderState, UnifiedComponent, UnifiedWardleyMap, createEmptyMap, groupComponentsByType} from '../types/unified';
 import {FlowLink} from '../types/unified/links';
 
-/**
- * Ensures that components involved in evolution or methods have consistent label spacing and positioning
- */
 const applyConsistentLabelSpacingForEvolution = (map: UnifiedWardleyMap): UnifiedWardleyMap => {
-    // Create a set of component names that are referenced in methods
     const methodComponents = new Set<string>();
     if (map.methods && map.methods.length > 0) {
         map.methods.forEach(method => {
@@ -21,46 +14,31 @@ const applyConsistentLabelSpacingForEvolution = (map: UnifiedWardleyMap): Unifie
         });
     }
 
-    // Early return if no evolution or methods to process
     if ((map.evolved?.length === 0 || !map.evolved) && methodComponents.size === 0) {
         return map;
     }
 
-    // Create a map of evolved components with their evolved data
     const evolvedComponents = map.evolved ? new Map(map.evolved.map(e => [e.name, e])) : new Map();
 
-    // Process all component types to ensure consistent label spacing and positioning
     const processComponents = (components: UnifiedComponent[]): UnifiedComponent[] => {
         return components.map(component => {
-            // Determine if this component needs special label handling
             const isEvolved = evolvedComponents.has(component.name);
             const isMethodComponent = methodComponents.has(component.name);
 
-            // If this component requires special handling
             if (isEvolved || isMethodComponent) {
-                // Ensure appropriate label spacing
                 const increaseLabelSpacing = Math.max(component.increaseLabelSpacing || 0, 2);
 
-                // Calculate appropriate label position
                 let label = component.label || {x: 0, y: 0};
 
-                // Apply consistent vertical position if not already specified
                 if (!label.y || Math.abs(label.y) <= 10) {
                     label = {
                         ...label,
-                        // Position label below the component
                         y: increaseLabelSpacing * 10,
                     };
                 }
-
-                // Apply consistent horizontal position if not already specified
-                // and apply appropriate positioning based on component type
                 const evolvedData = isEvolved ? evolvedComponents.get(component.name) : null;
                 if (!label.x || Math.abs(label.x) <= 10) {
-                    // Calculate appropriate horizontal position
                     let xOffset = 5; // Default slight offset to the right
-
-                    // If this is an evolved component with override, increase offset
                     if (evolvedData && evolvedData.override) {
                         xOffset = 16;
                     }
@@ -81,25 +59,19 @@ const applyConsistentLabelSpacingForEvolution = (map: UnifiedWardleyMap): Unifie
         });
     };
 
-    // Process evolved elements to ensure consistent label positioning
     const processedEvolved = map.evolved.map(evolvedElement => {
         const increaseLabelSpacing = Math.max(evolvedElement.increaseLabelSpacing || 0, 2);
 
-        // Calculate appropriate label position
         let label = evolvedElement.label || {x: 0, y: 0};
 
-        // Apply consistent vertical position if not already specified
         if (!label.y || Math.abs(label.y) <= 10) {
             label = {
                 ...label,
-                // Position label below the component
                 y: increaseLabelSpacing * 10,
             };
         }
 
-        // Apply consistent horizontal position if not already specified
         if (!label.x || Math.abs(label.x) <= 10) {
-            // Calculate horizontal offset - default slight offset to the right
             const xOffset = evolvedElement.override ? 16 : 5;
 
             label = {
@@ -115,7 +87,6 @@ const applyConsistentLabelSpacingForEvolution = (map: UnifiedWardleyMap): Unifie
         };
     });
 
-    // Return a new map with processed components and evolved elements
     return {
         ...map,
         components: processComponents(map.components),
@@ -127,38 +98,23 @@ const applyConsistentLabelSpacingForEvolution = (map: UnifiedWardleyMap): Unifie
     };
 };
 
-/**
- * Consolidated map state that replaces multiple useState hooks
- */
 interface ConsolidatedMapState {
-    // Core map data
     mapText: string;
     map: UnifiedWardleyMap;
-
-    // UI state
     highlightedLine: number;
     newComponentContext: any | null;
     showLinkedEvolved: boolean;
-
-    // Display dimensions and styling
     mapDimensions: MapDimensions;
     mapCanvasDimensions: MapCanvasDimensions;
     mapStyleDefs: MapTheme;
     evolutionOffsets: Offsets;
     mapEvolutionStates: EvolutionStages;
-
-    // Loading and error states
     isLoading: boolean;
     errors: string[];
-
-    // Feature flags and UI preferences
     showUsage: boolean;
     actionInProgress: boolean;
 }
 
-/**
- * Actions for updating map state
- */
 interface MapStateActions {
     setMapText: (text: string) => void;
     setMap: (map: UnifiedWardleyMap) => void;
@@ -178,14 +134,9 @@ interface MapStateActions {
     setActionInProgress: (inProgress: boolean) => void;
 }
 
-/**
- * Complete map state and actions
- */
 export interface UseMapStateResult {
     state: ConsolidatedMapState;
     actions: MapStateActions;
-
-    // Computed values
     renderState: MapRenderState;
     groupedComponents: {
         components: UnifiedComponent[];
@@ -195,7 +146,6 @@ export interface UseMapStateResult {
         ecosystems: UnifiedComponent[];
     };
 
-    // Utility functions
     getAllComponents: () => UnifiedComponent[];
     getComponentsByType: (type: string) => UnifiedComponent[];
     findComponentByName: (name: string) => UnifiedComponent | undefined;
@@ -203,9 +153,6 @@ export interface UseMapStateResult {
     resetToDefaults: () => void;
 }
 
-/**
- * Default state values
- */
 const createDefaultState = (): ConsolidatedMapState => ({
     mapText: '',
     map: createEmptyMap(),
@@ -223,9 +170,6 @@ const createDefaultState = (): ConsolidatedMapState => ({
     actionInProgress: false,
 });
 
-/**
- * Unified map state hook that consolidates all map-related state
- */
 export const useUnifiedMapState = (initialState?: Partial<ConsolidatedMapState>): UseMapStateResult => {
     const [state, setState] = useState<ConsolidatedMapState>(() => ({
         ...createDefaultState(),
@@ -267,7 +211,6 @@ export const useUnifiedMapState = (initialState?: Partial<ConsolidatedMapState>)
         [],
     );
 
-    // Computed values
     const groupedComponents = useMemo(() => groupComponentsByType(state.map), [state.map]);
 
     const renderState = useMemo<MapRenderState>(
@@ -281,7 +224,6 @@ export const useUnifiedMapState = (initialState?: Partial<ConsolidatedMapState>)
         [state.map, groupedComponents, state.highlightedLine, state.newComponentContext, state.showLinkedEvolved],
     );
 
-    // Utility functions
     const getAllComponents = useCallback(
         () => [...state.map.components, ...state.map.anchors, ...state.map.submaps, ...state.map.markets, ...state.map.ecosystems],
         [state.map],
@@ -312,7 +254,6 @@ export const useUnifiedMapState = (initialState?: Partial<ConsolidatedMapState>)
     };
 };
 
-// Type adapters for backward compatibility
 const convertToLegacyComponent = (unified: UnifiedComponent): any => ({
     ...unified,
     line: unified.line ?? 0,
@@ -336,7 +277,6 @@ const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] => {
     }));
 };
 
-// React-style setter adapters
 const createReactSetter = <T>(setter: (value: T) => void): React.Dispatch<React.SetStateAction<T>> => {
     return (value: React.SetStateAction<T>) => {
         if (typeof value === 'function') {
@@ -349,14 +289,8 @@ const createReactSetter = <T>(setter: (value: T) => void): React.Dispatch<React.
     };
 };
 
-/**
- * Hook for backward compatibility during migration
- * This provides the individual state values that the old components expect
- */
 export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
     const {state, actions, groupedComponents} = unifiedState;
-
-    // Convert unified types to legacy-compatible types
     const legacyComponents = groupedComponents.components.map(convertToLegacyComponent);
     const legacyAnchors = groupedComponents.anchors.map(convertToLegacyComponent);
     const legacySubMaps = groupedComponents.submaps.map(convertToLegacyComponent);
@@ -365,7 +299,6 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
     const legacyLinks = convertToLegacyLinks(state.map.links);
 
     return {
-        // Legacy individual state values
         mapText: state.mapText,
         mapTitle: state.map.title,
         mapComponents: legacyComponents,
@@ -391,7 +324,6 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
         evolutionOffsets: state.evolutionOffsets,
         mapEvolutionStates: state.mapEvolutionStates,
 
-        // Legacy individual setters with React-compatible signatures
         mutateMapText: createReactSetter(actions.setMapText),
         setHighlightLine: createReactSetter(actions.setHighlightedLine),
         setNewComponentContext: createReactSetter(actions.setNewComponentContext),

@@ -2,10 +2,6 @@ import React, {memo, MouseEvent} from 'react';
 import {MapComponentTheme} from '../../constants/mapstyles';
 import {UnifiedComponent} from '../../types/unified';
 
-/**
- * SubMapSymbol Props - using unified type system directly
- * This interface eliminates legacy types and improves type safety
- */
 interface ModernSubMapSymbolProps {
     id?: string;
     cx?: string;
@@ -16,10 +12,6 @@ interface ModernSubMapSymbolProps {
     component?: UnifiedComponent; // Direct reference to UnifiedComponent
 }
 
-/**
- * SubMapSymbol - SubMap symbol representation using unified types
- * This component eliminates legacy type dependencies and improves rendering performance
- */
 const SubMapSymbol: React.FC<ModernSubMapSymbolProps> = ({
     id,
     cx,
@@ -29,7 +21,6 @@ const SubMapSymbol: React.FC<ModernSubMapSymbolProps> = ({
     launchUrl,
     component, // Direct access to UnifiedComponent
 }) => {
-    // Use component properties directly from unified type
     const evolved = component?.evolved || false;
     const fill = evolved ? styles.evolvedFill : styles.fill;
     const stroke = evolved ? styles.evolved : styles.stroke;

@@ -3,8 +3,8 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../constants/mapstyles';
 import {MapNotes} from '../../types/base';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
-import Movable from './Movable';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import Movable from './Movable';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
 import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import {NotDefinedCoordsMatcher} from './positionUpdaters/NotDefinedCoordsMatcher';
@@ -24,12 +24,6 @@ interface ModernNoteProps {
     scaleFactor: number;
 }
 
-/**
- * Note - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders a movable note on the map
- */
 const Note: React.FC<ModernNoteProps> = ({note, mapDimensions, mapText, mutateMapText, mapStyleDefs, setHighlightLine, scaleFactor}) => {
     const positionCalc = new ModernPositionCalculator();
     const positionUpdater = new ModernLineNumberPositionUpdater('note', mapText, mutateMapText, [

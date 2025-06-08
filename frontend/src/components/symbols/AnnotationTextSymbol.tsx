@@ -8,12 +8,6 @@ interface ModernAnnotationTextSymbolProps {
     styles: MapAnnotationTheme;
 }
 
-/**
- * AnnotationTextSymbol - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders a single annotation text line
- */
 const AnnotationTextSymbol: React.FC<ModernAnnotationTextSymbolProps> = ({id, annotation, styles}) => {
     return (
         <tspan id={id} className="label" textAnchor="start" dy={18} x={0} fill={styles.boxTextColour}>

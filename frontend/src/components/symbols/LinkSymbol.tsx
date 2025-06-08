@@ -34,10 +34,6 @@ const defaultStyles: LinkStyles = {
     flow: 'none',
 };
 
-/**
- * LinkSymbol - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- */
 const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     id,
     x1,

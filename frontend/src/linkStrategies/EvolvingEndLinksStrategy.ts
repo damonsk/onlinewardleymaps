@@ -1,10 +1,5 @@
-// Using any type instead of MapElements for compatibility with both modern and legacy elements
 import {Link, LinkExtractionStrategy, LinkResult, MapElement} from './LinkStrategiesInterfaces';
 
-/**
- * EvolvingEndLinksStrategy
- * Updated to use MapElements in Phase 4C
- */
 export default class EvolvingEndLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility
@@ -13,10 +8,6 @@ export default class EvolvingEndLinksStrategy implements LinkExtractionStrategy 
         this.links = links || []; // Initialize links with empty array if undefined
         this.mapElements = mapElements?.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
     }
-    /**
-     * Get links according to this strategy
-     * @returns Link result containing links and elements
-     */
 
     getLinks(): LinkResult {
         // Handle edge cases where links or mapElements might be undefined

@@ -1,4 +1,3 @@
-// Re-export all types from styles.ts
 export * from '../types/map/styles';
 import {MapTheme} from '../types/map/styles';
 

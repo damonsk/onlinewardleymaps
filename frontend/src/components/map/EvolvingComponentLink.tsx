@@ -20,9 +20,6 @@ interface ModernEvolvingComponentLinkProps {
     mapStyleDefs: MapTheme;
 }
 
-/**
- * Calculate the boundary point for inertia visualization
- */
 const setBoundary = (
     positionCalc: ModernPositionCalculator,
     {
@@ -48,12 +45,6 @@ const setBoundary = (
     return (startElement.maturity ?? 0) + 0.05;
 };
 
-/**
- * EvolvingComponentLink - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders an evolving component link with inertia indicators
- */
 const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
     startElement,
     endElement,
@@ -68,7 +59,6 @@ const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
     const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
 
-    // Handle the coordinate calculation based on unified component types
     const x1 = positionCalc.maturityToX(startElement.maturity ?? 0, width);
     const x2 = positionCalc.maturityToX(endElement.maturity ?? 0, width);
 
@@ -84,7 +74,6 @@ const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
             height,
         ) + (endElement.offsetY ?? 0);
 
-    // Calculate boundary point for inertia
     let boundary: number | undefined;
 
     if (startElement.inertia) {

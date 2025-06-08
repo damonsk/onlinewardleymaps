@@ -1,21 +1,3 @@
-/**
- * UnifiedConverter - Phase 1 of refactoring plan
- *
- * This converter acts as an adapter between the legacy conversion system and the
- * new unified types structure. It transforms the output from the legacy Converter
- * into the cleaner, more consistent UnifiedWardleyMap format.
- *
- * The code is organized according to the Single Responsibility Principle:
- * - Each method has a focused purpose
- * - Helper methods extract common logic
- * - Type transformations are handled systematically
- *
- * Flow:
- * 1. Legacy text is parsed by the legacy Converter
- * 2. Legacy WardleyMap structure is transformed to UnifiedWardleyMap
- * 3. Component types, links, pipelines, etc. are converted with proper typing
- */
-
 import {IProvideFeatureSwitches, WardleyMap} from '../types/base';
 import {
     EvolvedElementData,
@@ -26,21 +8,13 @@ import {
     createEmptyMap,
     createUnifiedComponent,
 } from '../types/unified';
-// Import existing extraction strategies (will be refactored in Phase 2)
 import Converter from './Converter';
 
-/**
- * Interface for label offset coordinates
- */
 interface LabelOffset {
     x: number;
     y: number;
 }
 
-/**
- * Unified Converter that produces clean, consolidated types
- * This acts as an adapter during the transition from old to new types
- */
 export class UnifiedConverter {
     private legacyConverter: Converter;
 
@@ -48,18 +22,11 @@ export class UnifiedConverter {
         this.legacyConverter = new Converter(featureSwitches);
     }
 
-    /**
-     * Main parsing method that returns unified types
-     */
     parse(mapText: string): UnifiedWardleyMap {
-        // Use legacy converter for now, then transform to unified types
         const legacyMap = this.legacyConverter.parse(mapText);
         return this.transformToUnifiedMap(legacyMap);
     }
 
-    /**
-     * Transform legacy WardleyMap to unified structure
-     */
     private transformToUnifiedMap(legacyMap: WardleyMap): UnifiedWardleyMap {
         const unifiedMap = createEmptyMap();
         this.copyBasicProperties(legacyMap, unifiedMap);
@@ -71,9 +38,6 @@ export class UnifiedConverter {
         return unifiedMap;
     }
 
-    /**
-     * Copy basic map properties
-     */
     private copyBasicProperties(source: WardleyMap, target: UnifiedWardleyMap): void {
         target.title = source.title || '';
         target.presentation = source.presentation;
@@ -81,9 +45,6 @@ export class UnifiedConverter {
         target.evolution = source.evolution || [];
     }
 
-    /**
-     * Copy additional map properties
-     */
     private copyAdditionalProperties(source: WardleyMap, target: UnifiedWardleyMap): void {
         target.annotations = source.annotations || [];
         target.notes = source.notes || [];
@@ -92,21 +53,12 @@ export class UnifiedConverter {
         target.accelerators = source.accelerators || [];
     }
 
-    /**
-     * Transform all component types
-     */
     private transformAllComponentTypes(legacyMap: WardleyMap, unifiedMap: UnifiedWardleyMap): void {
         unifiedMap.components = this.transformComponents(legacyMap.elements || [], 'component');
         unifiedMap.anchors = this.transformComponents(legacyMap.anchors || [], 'anchor');
         unifiedMap.submaps = this.transformComponents(legacyMap.submaps || [], 'submap');
     }
 
-    /**
-     * Transform legacy components to unified components
-     * @param legacyComponents The legacy components to transform
-     * @param type The component type
-     * @param methodComponents Optional set of component names that are referenced in methods
-     */
     private transformComponents(legacyComponents: any[], type: string): UnifiedComponent[] {
         return legacyComponents.map(component => {
             return createUnifiedComponent({
@@ -132,9 +84,6 @@ export class UnifiedConverter {
         });
     }
 
-    /**
-     * Transform legacy evolved elements
-     */
     private transformEvolvedElements(legacyEvolved: any[]): EvolvedElementData[] {
         return legacyEvolved.map(evolved => {
             return {
@@ -149,9 +98,6 @@ export class UnifiedConverter {
         });
     }
 
-    /**
-     * Transform legacy pipelines with visibility processing
-     */
     private transformPipelines(legacyPipelines: any[], allComponents?: UnifiedComponent[]): PipelineData[] {
         return legacyPipelines.map(pipeline => {
             const transformedPipeline: PipelineData = {
@@ -166,16 +112,12 @@ export class UnifiedConverter {
                 maturity2: pipeline.maturity2,
             };
 
-            // Apply visibility processing from parent component
             this.processPipelineVisibility(transformedPipeline, allComponents);
 
             return transformedPipeline;
         });
     }
 
-    /**
-     * Transform pipeline components
-     */
     private transformPipelineComponents(components: any[]): {
         id: string;
         name: string;
@@ -194,9 +136,6 @@ export class UnifiedConverter {
         }));
     }
 
-    /**
-     * Process visibility for a pipeline based on its parent component
-     */
     private processPipelineVisibility(pipeline: PipelineData, allComponents?: UnifiedComponent[]): void {
         if (!allComponents) return;
 
@@ -209,9 +148,6 @@ export class UnifiedConverter {
         }
     }
 
-    /**
-     * Transform legacy links to unified flow links
-     */
     private transformLinks(legacyLinks: any[]): FlowLink[] {
         return legacyLinks.map(link => ({
             start: link.start || '',
@@ -225,23 +161,14 @@ export class UnifiedConverter {
         }));
     }
 
-    /**
-     * Generate a consistent ID for components
-     */
     private generateId(name: string, type: string): string {
         return `${type}_${name.replace(/\s+/g, '_').toLowerCase()}`;
     }
 
-    /**
-     * Get all components from the map regardless of type
-     */
     getAllComponents(map: UnifiedWardleyMap): UnifiedComponent[] {
         return [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
     }
 
-    /**
-     * Strip comments from map text (same as legacy converter)
-     */
     stripComments(data: string): string {
         return this.legacyConverter.stripComments(data);
     }

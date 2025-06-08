@@ -16,12 +16,6 @@ interface ModernAttitudeSymbolProps {
     width: number;
 }
 
-/**
- * AttitudeSymbol - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders an attitude rectangle on the map
- */
 const AttitudeSymbol: React.FC<ModernAttitudeSymbolProps> = ({
     id,
     height,

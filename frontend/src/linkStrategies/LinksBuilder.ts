@@ -1,4 +1,3 @@
-// We need the import for type checking, but we handle both legacy and modern elements
 import {MapAnchors} from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
@@ -14,13 +13,6 @@ import EvolvingToNoneEvolvingEndLinksStrategy from './EvolvingToNoneEvolvingEndL
 import {Link, LinkExtractionStrategy, LinkResult, MapElement} from './LinkStrategiesInterfaces';
 import NoneEvolvingToEvolvingLinksStrategy from './NoneEvolvingToEvolvingLinksStrategy';
 
-/**
- * LinksBuilder - Updated to use MapElements
- * Part of Phase 4C Modernization
- *
- * This class coordinates the different link strategies to build all links
- * that need to be rendered on the Wardley Map.
- */
 export default class LinksBuilder {
     private linkStrategies: LinkExtractionStrategy[];
     constructor(
@@ -29,11 +21,8 @@ export default class LinksBuilder {
         mapAnchors: MapAnchors[] = [], // Default to empty array if undefined
         showLinkedEvolved: boolean = false, // Default to false if undefined
     ) {
-        // Ensure mapLinks is initialized
         mapLinks = mapLinks || [];
 
-        // Use modernMapElements directly without the legacy adapter
-        // This completes the Phase 4C modernization by removing adapter usage
         const mapElements = modernMapElements;
         const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] = showLinkedEvolved
             ? [

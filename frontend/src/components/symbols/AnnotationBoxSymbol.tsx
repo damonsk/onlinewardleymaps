@@ -13,12 +13,6 @@ interface ModernAnnotationBoxSymbolProps {
     children: ReactNode;
 }
 
-/**
- * AnnotationBoxSymbol - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders the container for annotations
- */
 const AnnotationBoxSymbol: React.FC<ModernAnnotationBoxSymbolProps> = ({
     id,
     dy = '0',

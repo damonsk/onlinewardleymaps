@@ -9,13 +9,6 @@ interface InertiaSymbolProps {
     className?: string;
 }
 
-/**
- * InertiaSymbol - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component displays the visual representation of inertia on the map
- * Represented as a vertical line indicating resistance to change
- */
 const InertiaSymbol: React.FC<InertiaSymbolProps> = ({id, x, y, stroke = 'black', strokeWidth = 6, className = ''}) => {
     return (
         <line

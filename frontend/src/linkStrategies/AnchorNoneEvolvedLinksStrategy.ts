@@ -1,10 +1,5 @@
-// Using any type instead of MapElements for compatibility with both modern and legacy elements
 import {Anchor, Link, LinkExtractionStrategy, LinkResult, MapElement} from './LinkStrategiesInterfaces';
 
-/**
- * AnchorNoneEvolvedLinksStrategy
- * Updated to use MapElements in Phase 4C
- */
 export default class AnchorNoneEvolvedLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility
@@ -15,10 +10,6 @@ export default class AnchorNoneEvolvedLinksStrategy implements LinkExtractionStr
         this.mapElements = mapElements?.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
         this.anchors = anchors;
     }
-    /**
-     * Get links according to this strategy
-     * @returns Link result containing links and elements
-     */
 
     getLinks(): LinkResult {
         // Handle edge cases where links or mapElements might be undefined

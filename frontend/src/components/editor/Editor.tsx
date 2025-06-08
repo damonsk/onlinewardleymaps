@@ -67,7 +67,6 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
         setEditorHeight(getHeight());
     }, [hideNav]);
 
-    // Highlight the selected line by moving the cursor to it
     useEffect(() => {
         const gotoLine = (line: number) => {
             const reactAceComponent = aceEditorRef.current;
@@ -79,16 +78,13 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
         gotoLine(highlightLine);
     }, [highlightLine]);
 
-    // Add error indicators to the gutter for error lines
     useEffect(() => {
         const reactAceComponent = aceEditorRef.current;
         if (reactAceComponent !== null) {
             const editor = reactAceComponent.editor;
-            // Clear all previous error decorations
             for (let x = 0; x < editor.session.getLength(); x++) {
                 editor.session.removeGutterDecoration(x, 'ace_error');
             }
-            // Add error decorations to the specified error lines
             if (errorLine.length > 0) {
                 errorLine.forEach((e: number) => editor.session.addGutterDecoration(e, 'ace_error'));
             }

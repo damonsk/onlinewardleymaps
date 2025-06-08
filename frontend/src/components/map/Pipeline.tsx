@@ -25,10 +25,6 @@ interface ModernPipelineProps {
     scaleFactor: number;
 }
 
-/**
- * Pipeline - Modern implementation using unified types directly
- * Part of Phase 4 Component Interface Modernization
- */
 function Pipeline(props: ModernPipelineProps): JSX.Element {
     const positionCalc = new PositionCalculator();
     const positionUpdater = new DefaultPositionUpdater('pipeline', props.mapText, props.mutateMapText, [

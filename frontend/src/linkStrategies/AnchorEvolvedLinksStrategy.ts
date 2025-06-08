@@ -1,10 +1,5 @@
-// Using any type instead of MapElements for compatibility with both modern and legacy elements
 import {Anchor, Link, LinkExtractionStrategy, LinkStrategy, MapElement} from './LinkStrategiesInterfaces';
 
-/**
- * AnchorEvolvedLinksStrategy
- * Updated to use MapElements in Phase 4C
- */
 export default class AnchorEvolvedLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility

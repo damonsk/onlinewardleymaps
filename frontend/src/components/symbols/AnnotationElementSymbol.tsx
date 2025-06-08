@@ -28,6 +28,5 @@ const AnnotationElementSymbol: React.FunctionComponent<AnnotationElementSymbolPr
 
 // Use React.memo with a custom equality function for props
 export default memo(AnnotationElementSymbol, (prevProps, nextProps) => {
-    // Only re-render when annotation number or styles change
     return prevProps.annotation.number === nextProps.annotation.number && prevProps.styles === nextProps.styles;
 });

@@ -33,10 +33,6 @@ interface ModernPipelineVersion2Props {
     scaleFactor: number;
 }
 
-/**
- * PipelineVersion2 - Modern implementation using unified types directly
- * Part of Phase 4 Component Interface Modernization
- */
 function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
     const positionCalc = new PositionCalculator();
     const isModKeyPressed = useModKeyPressedConsumer();
@@ -67,34 +63,20 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
         NotDefinedMaturityMatcher,
     ]);
 
-    // Not currently used but keeping for future label dragging support
     function endDragForLabel(pipelineComponent: PipelineComponentData, moved: MovedPosition): void {
-        console.log('Pipeline label drag - Component:', pipelineComponent.name, 'Moved to:', moved);
-
-        // Round the moved coordinates for clean integer values
-        // The scaling is already handled by the RelativeMovable component
         const correctedX = Math.round(moved.x);
         const correctedY = Math.round(moved.y);
-
-        console.log('Corrected coordinates:', {x: correctedX, y: correctedY});
-
-        // Only update the label position, not the component position
         props.mutateMapText(
             props.mapText
                 .split('\n')
                 .map((line: string) => {
-                    // Exact match for the component name using RegExp
-                    // We need to match the exact component name with word boundaries
                     const regex = new RegExp(`component\\s+${pipelineComponent.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-
                     if (regex.test(line)) {
                         console.log('Found line to update:', line);
 
                         if (line.includes('label')) {
-                            // If label exists, update only the label coordinates
                             return line.replace(/\slabel\s\[([^[\]]+)\]/g, ` label [${correctedX}, ${correctedY}]`);
                         }
-                        // If no label, add one
                         return line + ` label [${correctedX}, ${correctedY}]`;
                     }
                     return line;
@@ -113,11 +95,6 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
         );
     }
 
-    // Commenting out as this is not currently used but may be needed in future
-    // function handlePipelineBoxClick(): void {
-    //     props.setHighlightLine(props.pipeline.line);
-    // }
-
     const calculatedComponents: Array<{
         pipelineComponent: PipelineComponentData;
         x: number;
@@ -126,10 +103,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
         .filter(pc => pc.name !== '')
         .map((pc: PipelineComponentData) => {
             const x = positionCalc.maturityToX(pc.maturity, props.mapDimensions.width);
-            // Calculate base Y position of the pipeline
             const baseY = positionCalc.visibilityToY(props.pipeline.visibility, props.mapDimensions.height);
-
-            // Center components vertically within the pipeline box (11px offset for 22px height)
             const y = baseY + 11;
 
             return {
@@ -197,14 +171,10 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
         );
     });
 
-    // Pipeline box should only render if there are components
     if (calculatedComponents.length === 0) {
-        // No components to render for this pipeline
-        console.warn(`Pipeline ${props.pipeline.name} has no components to render`);
         return <></>;
     }
 
-    // Use maturity values directly, not x coordinates which are already transformed
     const x1 = calculatedComponents.length > 0 ? calculatedComponents[0].x : positionCalc.maturityToX(0, props.mapDimensions.width);
 
     const x2 =
@@ -213,14 +183,9 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
             : positionCalc.maturityToX(0, props.mapDimensions.width);
     const y = positionCalc.visibilityToY(props.pipeline.visibility, props.mapDimensions.height);
 
-    // Ensure we have valid dimensions for the box
     if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
-        console.warn(`Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`);
         return <></>;
     }
-
-    // Log the calculated coordinates for debugging
-    console.log(`Pipeline ${props.pipeline.name} box: x1=${x1 - 15}, x2=${x2 + 15}, y=${y}`);
 
     return (
         <>
@@ -230,7 +195,6 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
                 x1={x1 - 15}
                 x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
-                // Explicitly pass stroke for backward compatibility
                 stroke={props.mapStyleDefs.component.stroke}
             />
             {componentSymbols}

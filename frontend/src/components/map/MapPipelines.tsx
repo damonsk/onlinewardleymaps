@@ -7,10 +7,6 @@ import {PipelineData} from '../../types/unified/components';
 import Pipeline from './Pipeline';
 import PipelineVersion2 from './PipelineVersion2';
 
-/**
- * MapPipelines Props - using unified type system directly
- * This interface eliminates legacy types and improves type safety
- */
 interface ModernMapPipelinesProps {
     mapDimensions: MapDimensions;
     mapText: string;
@@ -19,19 +15,11 @@ interface ModernMapPipelinesProps {
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     scaleFactor?: number;
     enableNewPipelines?: boolean;
-
-    // Direct reference to MapElements and PipelineData
     mapElements: MapElements;
     pipelines?: PipelineData[];
-
-    // Optional click handler for linking functionality
     clicked?: (data: {el: UnifiedComponent; e: MouseEvent<Element> | null}) => void;
 }
 
-/**
- * MapPipelines - Pipeline manager component using unified types directly
- * This component eliminates legacy type dependencies and improves rendering performance
- */
 const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
     mapDimensions,
     mapText,
@@ -44,17 +32,13 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
     scaleFactor = 1,
     clicked,
 }) => {
-    // Create wrapper function to handle optional line parameter
     const handleSetHighlightLine = (line?: number) => {
         if (line !== undefined) {
             setHighlightLine(line);
         }
     };
 
-    // If pipelines are provided directly, use those, otherwise get from mapElements
     const pipelinesToRender = pipelines || mapElements.getPipelineComponents();
-
-    // Log the pipeline data for debugging
     if (pipelinesToRender.length === 0) {
         console.warn('No pipelines to render');
     } else {
@@ -67,11 +51,8 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
             })),
         );
     }
-
-    // Helper function to adapt UnifiedComponent to the expected format for linking
     const linkingFunction = clicked
         ? (data: {el: any; e: MouseEvent<Element>}) => {
-              // Create a component with the necessary pipeline properties to match MapElement
               const componentWithVisibility = {
                   ...data.el,
                   visibility: data.el.visibility || 0,

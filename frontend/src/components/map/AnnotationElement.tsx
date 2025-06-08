@@ -58,15 +58,11 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
 
                     if (normalizedLine.indexOf(searchPattern) !== -1) {
                         if (normalizedLine.indexOf(']]') > -1) {
-                            // Handle multiple occurrences format: annotation 1 [[x,y],[x,y]]
                             const extractedOccurances = line.replace(/\s/g, '').split('[[')[1].split(']]')[0].split('],[');
 
-                            // Update only the specific occurrence that was moved
                             const newVisibility = positionCalc.yToVisibility(moved.y, mapDimensions.height);
                             const newMaturity = positionCalc.xToMaturity(moved.x, mapDimensions.width);
-
                             extractedOccurances[occuranceIndex] = `${newVisibility},${newMaturity}`;
-
                             const beforeCoords = line.split('[')[0].trim();
                             const afterCoords = line.substr(line.lastIndexOf(']'), line.length - line.lastIndexOf(']'));
                             const newCoords = `[${extractedOccurances
@@ -76,7 +72,6 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
                                 .join(',')}`;
                             return `${beforeCoords} ${newCoords}${afterCoords}`;
                         }
-                        // Handle single occurrence format: annotation 1 [x,y]
                         return line.replace(
                             /\[(.+?)\]/g,
                             `[${positionCalc.yToVisibility(

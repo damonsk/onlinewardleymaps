@@ -8,12 +8,6 @@ interface ModernAnnotationElementSymbolProps {
     styles: MapAnnotationTheme;
 }
 
-/**
- * ModernAnnotationElementSymbol - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders an annotation element number in a circle
- */
 const ModernAnnotationElementSymbol: React.FC<ModernAnnotationElementSymbolProps> = ({id, annotation, styles}) => {
     return (
         <>
@@ -34,8 +28,6 @@ const ModernAnnotationElementSymbol: React.FC<ModernAnnotationElementSymbolProps
     );
 };
 
-// Use memo with custom equality function for performance
 export default memo(ModernAnnotationElementSymbol, (prevProps, nextProps) => {
-    // Only re-render when annotation number or styles change
     return prevProps.annotation.number === nextProps.annotation.number && prevProps.styles === nextProps.styles;
 });

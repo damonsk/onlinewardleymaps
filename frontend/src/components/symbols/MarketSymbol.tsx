@@ -21,10 +21,6 @@ const rotatePoints = (): [number, number][] => {
 const drawInsideCircles = (coords: [number, number][], styles: MapComponentTheme) =>
     coords.map((cxy, i) => <circle key={i} cx={cxy[0]} cy={cxy[1]} r="5" fill={styles.fill} strokeWidth="3" stroke={styles.stroke} />);
 
-/**
- * MarketSymbol Props - using unified type system directly
- * This interface eliminates legacy types and improves type safety
- */
 interface ModernMarketSymbolProps {
     id?: string;
     styles: MapComponentTheme;
@@ -34,10 +30,6 @@ interface ModernMarketSymbolProps {
     onClick: (e: MouseEvent<SVGElement>) => void;
 }
 
-/**
- * MarketSymbol - Market symbol representation using unified types
- * This component eliminates legacy type dependencies and improves rendering performance
- */
 const MarketSymbol: React.FC<ModernMarketSymbolProps> = ({
     id,
     styles,

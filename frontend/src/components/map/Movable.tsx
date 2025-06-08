@@ -29,9 +29,6 @@ interface ModernMovableProps {
     children: React.ReactNode;
 }
 
-/**
- * Helper function to determine whether to highlight the component
- */
 const shouldHighlight = ({isModKeyPressed}: {isModKeyPressed?: boolean}) => {
     if (isModKeyPressed) {
         return HIGHLIGHT_DEF;
@@ -39,12 +36,6 @@ const shouldHighlight = ({isModKeyPressed}: {isModKeyPressed?: boolean}) => {
     return undefined;
 };
 
-/**
- * Movable - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component handles draggable elements that can be moved by the user
- */
 const Movable: React.FC<ModernMovableProps> = props => {
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);

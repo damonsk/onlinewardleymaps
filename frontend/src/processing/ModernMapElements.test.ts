@@ -1,10 +1,6 @@
-// Integration test for MapElements
-// Part of Phase 4C: Component Interface Modernization
-
 import {MapElements} from '../processing/MapElements';
 import {PipelineData, UnifiedComponent, createUnifiedComponent} from '../types/unified/components';
 
-// Create a mock of UnifiedWardleyMap with only the properties needed for testing
 interface TestMap {
     components: UnifiedComponent[];
     anchors: UnifiedComponent[];
@@ -15,13 +11,7 @@ interface TestMap {
     pipelines: PipelineData[];
 }
 
-/**
- * Creates a test Wardley Map with various components
- *
- * @returns A simplified map for testing MapElements
- */
 function createTestMap(): TestMap {
-    // Create basic components
     const components: UnifiedComponent[] = [
         createUnifiedComponent({
             id: '1',
@@ -50,7 +40,6 @@ function createTestMap(): TestMap {
         }),
     ];
 
-    // Create an anchor
     const anchors: UnifiedComponent[] = [
         createUnifiedComponent({
             id: '4',
@@ -62,7 +51,6 @@ function createTestMap(): TestMap {
         }),
     ];
 
-    // Create a submap
     const submaps: UnifiedComponent[] = [
         createUnifiedComponent({
             id: '5',
@@ -74,7 +62,6 @@ function createTestMap(): TestMap {
         }),
     ];
 
-    // Create evolved data
     const evolved = [
         {
             name: 'Component1',
@@ -84,7 +71,6 @@ function createTestMap(): TestMap {
         },
     ];
 
-    // Create pipelines
     const pipelines: PipelineData[] = [
         {
             id: 'pipeline1',
@@ -99,7 +85,6 @@ function createTestMap(): TestMap {
         },
     ];
 
-    // Return simplified map with only fields needed for MapElements
     return {
         components,
         anchors,
