@@ -33,12 +33,10 @@ function loadFileContent(fileName) {
 function saveFileContent(fileName, content) {
     const filePath = path.resolve(__dirname, fileName);
     fs.writeFileSync(filePath, content);
-    console.log(`Updated ${fileName}`);
 }
 
 describe('Update Golden Master Files', () => {
     test('Update all golden master files with MapElements output', () => {
-        console.log('Starting golden master file update...');
 
         // Load map text from the golden master file
         const mapTextFileName = 'GoldenMasterMapText.txt';
@@ -108,12 +106,10 @@ describe('Update Golden Master Files', () => {
         // Update each golden master file
         testCases.forEach((testCase) => {
             const { fn, fileName } = testCase;
-            console.log(`Processing ${fileName}...`);
             const output = fn();
             saveFileContent(fileName, JSON.stringify(output));
         });
 
-        console.log('Golden master file update completed successfully!');
 
         // This test always passes - it's just to run the update
         expect(true).toBe(true);
