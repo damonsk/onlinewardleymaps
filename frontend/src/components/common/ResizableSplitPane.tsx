@@ -1,16 +1,16 @@
-import {Box} from '@mui/material';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import { Box } from '@mui/material';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface ResizableSplitPaneProps {
     leftPanel: React.ReactNode;
     rightPanel: React.ReactNode;
-    defaultLeftWidth?: number; // percentage (0-100)
-    minLeftWidth?: number; // percentage (0-100)
-    maxLeftWidth?: number; // percentage (0-100)
-    resizerWidth?: number; // pixels
+    defaultLeftWidth?: number; 
+    minLeftWidth?: number; 
+    maxLeftWidth?: number; 
+    resizerWidth?: number; 
     onResize?: (leftWidth: number) => void;
-    storageKey?: string; // localStorage key for persisting width
-    isDarkTheme?: boolean; // for theme-aware styling
+    storageKey?: string; 
+    isDarkTheme?: boolean; 
 }
 
 export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
@@ -24,7 +24,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     storageKey = 'resizableSplitPane_leftWidth',
     isDarkTheme = false,
 }) => {
-    // Initialize width from localStorage if available
     const getInitialWidth = () => {
         if (typeof window !== 'undefined' && storageKey) {
             const saved = localStorage.getItem(storageKey);
@@ -85,14 +84,10 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         (newWidth: number) => {
             setLeftWidth(newWidth);
             onResize?.(newWidth);
-
-            // Debounced dispatch of resize events to avoid excessive updates
             if (resizeTimeoutRef.current) {
                 clearTimeout(resizeTimeoutRef.current);
             }
             resizeTimeoutRef.current = setTimeout(() => {
-                // Only dispatch the custom panelResize event to avoid conflicts
-                // Don't dispatch generic 'resize' event to prevent double-handling
                 const mapContainer = document.getElementById('map');
                 if (mapContainer) {
                     const panelResizeEvent = new CustomEvent('panelResize', {
@@ -182,7 +177,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     width: `${leftWidth}%`,
                     height: '100%',
                     overflow: 'hidden',
-                    borderRight: '2px solid rgba(0, 133, 208, 0.2)',
                 }}>
                 {leftPanel}
             </Box>
@@ -194,14 +188,10 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     width: `${resizerWidth}px`,
                     height: '100%',
                     cursor: 'col-resize',
-                    backgroundColor: isDragging ? 'rgba(0, 133, 208, 0.4)' : 'rgba(0, 133, 208, 0.1)',
-                    borderLeft: '1px solid rgba(0, 133, 208, 0.3)',
-                    borderRight: '1px solid rgba(0, 133, 208, 0.3)',
+                    backgroundColor: isDragging ? 'rgba(0, 133, 208, 1)' : 'rgba(0, 133, 208, 0.1)',
                     transition: isDragging ? 'none' : 'all 0.2s ease',
                     '&:hover': {
-                        backgroundColor: 'rgba(0, 133, 208, 0.25)',
-                        borderLeft: '1px solid rgba(0, 133, 208, 0.6)',
-                        borderRight: '1px solid rgba(0, 133, 208, 0.6)',
+                        backgroundColor: ' rgba(0, 133, 208, 1)',
                     },
                     position: 'relative',
                     display: 'flex',
@@ -211,7 +201,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         content: '"⋮"',
                         position: 'absolute',
                         fontSize: '24px',
-                        color: isDarkTheme ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
+                        color: isDarkTheme ? 'white' : 'rgba(0, 0, 0, 0.6)',
                         fontWeight: 'bold',
                         lineHeight: 1,
                         userSelect: 'none',
