@@ -231,6 +231,22 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         token: [
                             'keyword',
                             'variable.parameter.function.asp',
+                            'punctuation',
+                            'variable.parameter.function.asp',
+                            'constant.numeric',
+                            'keyword',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                        ],
+                        regex: '(evolve)(\\s+[a-zA-Z0-9\\s]+)(->)([a-zA-Z0-9\\s]+)(\\s+\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                    },
+                    {
+                        token: [
+                            'keyword',
+                            'variable.parameter.function.asp',
                             'constant.numeric',
                         ],
                         regex: '(evolve)(\\s*[a-zA-Z0-9\\s*]+)(-?\\d+(?:\\.\\d+)?)',
