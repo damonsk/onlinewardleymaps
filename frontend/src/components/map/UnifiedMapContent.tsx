@@ -1,11 +1,11 @@
-import React, {MouseEvent} from 'react';
-import {MapDimensions} from '../../constants/defaults';
-import {MapElements} from '../../processing/MapElements';
-import {MapTheme} from '../../types/map/styles';
-import {UnifiedComponent} from '../../types/unified';
+import React, { MouseEvent } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapElements } from '../../processing/MapElements';
+import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
 
 // Import required components
-import {processMapElements} from '../../utils/mapProcessing';
+import { getMapElementsDecorated } from '../../utils/mapProcessing';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
@@ -242,21 +242,16 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
             />
 
             <g id="methods">
-                {(() => {
-                    const processedMethodsData = processMapElements(props.mapMethods || [], mapElements);
-                    const allMethods = processedMethodsData.allMethods || [];
-                    return allMethods.map((methodComp: any, i: number) => {
-                        return (
-                            <MethodElement
-                                key={`method_${i}`}
-                                methodComponent={methodComp}
-                                mapDimensions={mapDimensions}
-                                mapStyleDefs={mapStyleDefs}
-                                setHighlightLine={setHighlightLineDispatch}
-                            />
-                        );
-                    });
-                })()}
+                {(() => getMapElementsDecorated(mapElements).map((methodComp: UnifiedComponent, i: number) => {
+                    return (
+                        <MethodElement
+                            key={`method_${i}`}
+                            methodComponent={methodComp}
+                            mapDimensions={mapDimensions}
+                            mapStyleDefs={mapStyleDefs}
+                            setHighlightLine={setHighlightLineDispatch} />
+                    );
+                }))()}
             </g>
 
             <g id="elements">
