@@ -109,11 +109,12 @@ export interface MapMethods {
     line?: number;
     increaseLabelSpacing?: number;
     name: string;
-    buy: boolean;
-    build: boolean;
-    outsource: boolean;
-    market: boolean;
-    ecosystem: boolean;
+    decorators: ComponentDecorator;
+    // buy: boolean;
+    // build: boolean;
+    // outsource: boolean;
+    // market: boolean;
+    // ecosystem: boolean;
 }
 export type MapSubmaps = NamedComponent;
 export type MapMarkets = NamedComponent;
@@ -146,11 +147,8 @@ export interface WardleyMap {
     annotations: MapAnnotations[];
     notes: MapNotes[];
     evolution: MapEvolution;
-    // methods: MapMethods[];
     title: string;
     submaps: MapSubmaps[];
-    // markets: MapMarkets[];
-    // ecosystems: MapEcosystems[];
     urls: MapUrls[];
     attitudes: MapAttitudes[];
     accelerators: MapAccelerators[];

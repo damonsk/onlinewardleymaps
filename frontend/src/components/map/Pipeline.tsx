@@ -93,7 +93,6 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                     component={{
                         id: `pipeline_circle_x1_${props.pipeline.id}`,
                         name: props.pipeline.name,
-                        type: 'component',
                         maturity: props.pipeline.maturity1 || 0,
                         visibility: props.pipeline.visibility,
                         line: props.pipeline.line,
@@ -116,7 +115,6 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                     component={{
                         id: `pipeline_circle_x2_${props.pipeline.id}`,
                         name: props.pipeline.name,
-                        type: 'component',
                         maturity: props.pipeline.maturity2 || 0,
                         visibility: props.pipeline.visibility,
                         line: props.pipeline.line,

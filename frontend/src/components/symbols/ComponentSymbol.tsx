@@ -1,6 +1,6 @@
 import React, {memo, MouseEvent} from 'react';
 import {MapComponentTheme} from '../../constants/mapstyles';
-import {UnifiedComponent} from '../../types/unified';
+import {BaseMapElement, EvolvableElement, LabelableElement} from '../../types/unified';
 
 /**
  * ComponentSymbol Props - using unified type system directly
@@ -12,7 +12,7 @@ interface ModernComponentSymbolProps {
     cx?: string;
     cy?: string;
     styles: MapComponentTheme;
-    component?: UnifiedComponent; // Direct reference to UnifiedComponent
+    component?: BaseMapElement & EvolvableElement & LabelableElement;
     evolved?: boolean; // Support for evolved prop used in icons.tsx
 }
 

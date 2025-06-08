@@ -1,6 +1,6 @@
 import LinksBuilder from '../linkStrategies/LinksBuilder';
 import {MapElements} from '../processing/MapElements';
-import {MapAnchors, MapElement, MapLinks, MapMethods} from '../types/base';
+import {ComponentDecorator, MapAnchors, MapElement, MapLinks, MapMethods} from '../types/base';
 
 export interface ProcessedLink {
     key: number;
@@ -46,11 +46,12 @@ interface ProcessedMethodElement {
     name: string;
     maturity?: number;
     visibility: string | number;
-    buy: boolean;
-    build: boolean;
-    outsource: boolean;
-    market: boolean;
-    ecosystem: boolean;
+    decorators?: ComponentDecorator;
+    // buy: boolean;
+    // build: boolean;
+    // outsource: boolean;
+    // market: boolean;
+    // ecosystem: boolean;
     increaseLabelSpacing?: number; // Add this property to preserve label spacing
 }
 
@@ -64,13 +65,8 @@ export function processMapElements(
             name: m.name,
             maturity: m.maturity,
             visibility: m.visibility,
-            // Use boolean flags from decorators or the element itself
-            buy: m.decorators?.buy || m.buy || false,
-            build: m.decorators?.build || m.build || false,
-            outsource: m.decorators?.outsource || m.outsource || false,
-            market: m.decorators?.market || m.market || false,
-            ecosystem: m.decorators?.ecosystem || m.ecosystem || false,
-            increaseLabelSpacing: m.increaseLabelSpacing, // Keep any existing increaseLabelSpacing without adding a default
+            decorators: m.decorators,
+            increaseLabelSpacing: m.increaseLabelSpacing,
         };
     };
 

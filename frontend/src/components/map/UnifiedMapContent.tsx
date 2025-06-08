@@ -241,26 +241,11 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                 scaleFactor={scaleFactor}
             />
 
-            {/* IMPORTANT: Method elements appear BEFORE regular elements */}
-            {/* This ensures elements are rendered on top of method indicators */}
             <g id="methods">
-                {/* Process all methods using the same logic from the legacy implementation */}
                 {(() => {
-                    // Process all methods using the utility from mapProcessing.ts with MapElements directly
-                    const processedMethodsData = processMapElements(props.mapMethods || [], mapElements /* Using MapElements directly */);
-
-                    // Get all methods: both standalone and decorated components
+                    const processedMethodsData = processMapElements(props.mapMethods || [], mapElements);
                     const allMethods = processedMethodsData.allMethods || [];
-
-                    // Let's use the methods exactly as they come from processMapElements
-                    // without adding extra properties
-
-                    console.log('Rendering methods:', allMethods.length);
-
-                    // Render all methods
                     return allMethods.map((methodComp: any, i: number) => {
-                        // Don't adjust position here - we want methods to appear exactly at their component position
-                        // The component's label has already been adjusted with increaseLabelSpacing
                         return (
                             <MethodElement
                                 key={`method_${i}`}

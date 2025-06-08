@@ -35,7 +35,7 @@ export interface EvolvableElement {
  * Interface for elements that can have decorators and special properties
  */
 export interface DecoratedElement {
-    decorators?: ComponentDecorator;
+    decorators: ComponentDecorator;
     inertia?: boolean;
     pseudoComponent?: boolean;
     offsetY?: number;

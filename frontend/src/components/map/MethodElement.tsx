@@ -2,125 +2,20 @@ import React from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
-import {MethodComponent} from '../../utils/methodExtractor';
 import MethodSymbol from '../symbols/MethodSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernMethodElementProps {
-    methodComponent: UnifiedComponent | MethodComponent; // Accept both regular and method components
+    methodComponent: UnifiedComponent; // Accept both regular and method components
     mapDimensions: MapDimensions;
     mapStyleDefs: MapTheme;
     setHighlightLine?: (line: number) => void;
 }
 
-/**
- * Helper function to determine the method type from component decorators
- * Uses the new boolean flags approach
- */
-function getMethodType(methodComponent: UnifiedComponent | MethodComponent): string {
-    // Check for new boolean flags (only approach now)
-    if (methodComponent.decorators) {
-        if (methodComponent.decorators.buy) return 'buy';
-        if (methodComponent.decorators.build) return 'build';
-        if (methodComponent.decorators.outsource) return 'outsource';
-    }
-
-    // Default to 'build'
-    return 'build';
-}
-
-/**
- * MethodElement - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component positions and renders method indicators on the map
- */
 const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, mapDimensions, mapStyleDefs, setHighlightLine}) => {
     const positionCalc = new ModernPositionCalculator();
-
-    // Determine the method type using new boolean flags
-    const methodType = getMethodType(methodComponent);
-
-    console.log('Method component:', methodComponent);
-
-    // Calculate position values, handling undefined cases
-    let maturity = methodComponent.maturity;
-    let visibilityValue = methodComponent.visibility;
-
-    // Check if this is a MethodComponent type
-    const isMethodComponent = 'method' in methodComponent;
-
-    if (maturity === undefined && methodComponent.name) {
-        console.log('Method without explicit position:', methodComponent.name);
-
-        // This component doesn't have a position - it needs to use the position
-        // of the component it references. This matches the legacy implementation.
-
-        // Only check targetComponentName if this is a MethodComponent
-        if (isMethodComponent && 'targetComponentName' in methodComponent) {
-            console.log('Method has a target component:', (methodComponent as MethodComponent).targetComponentName);
-        } else {
-            console.log('Method has no target component information');
-        }
-
-        // If the component has a targetComponentName and still no maturity,
-        // it means processStandaloneMethods failed to find its target.
-        // Use fallback positioning to ensure something renders.
-        if (maturity === undefined) {
-            maturity = 0.5;
-            visibilityValue = 0.5;
-            console.warn(`Using fallback position for "${methodComponent.name}": [${maturity}, ${visibilityValue}]`);
-        }
-    }
-
-    // Convert maturity to x position with safeguards against NaN
-    const x = positionCalc.maturityToX(isNaN(maturity as number) ? 0 : (maturity as number), mapDimensions.width);
-
-    // Convert visibility to y position, handling string vs number
-    let yValue: number;
-    if (typeof visibilityValue === 'string') {
-        yValue = parseFloat(visibilityValue);
-    } else if (visibilityValue !== undefined) {
-        yValue = visibilityValue as number;
-    } else {
-        yValue = 0;
-    }
-
-    // We no longer need to adjust the method's y position
-    // The referenced component already has increaseLabelSpacing applied
-    // This ensures the component's label is positioned properly and the method appears at the component's position
-    console.log(`Method component position for ${methodComponent.name}:`, {
-        maturity,
-        visibility: visibilityValue,
-        targetComponentName:
-            'targetComponentName' in methodComponent ? (methodComponent as MethodComponent).targetComponentName : undefined,
-        increaseLabelSpacing: methodComponent.increaseLabelSpacing || 0,
-    });
-
-    const y = positionCalc.visibilityToY(isNaN(yValue) ? 0 : yValue, mapDimensions.height);
-
-    // Add debug logging to identify positioning issues
-    if (isNaN(x) || isNaN(y)) {
-        console.warn('Invalid coordinates for method element:', {
-            name: methodComponent.name,
-            method: methodType,
-            maturity,
-            visibility: visibilityValue,
-            x,
-            y,
-        });
-    }
-
-    // Log the final position for all method elements
-    console.log(`Method ${methodComponent.name} position:`, {
-        maturity,
-        visibility: visibilityValue,
-        x,
-        y,
-        method: methodType,
-    });
-
-    // Handle click to highlight the line in the editor
+    const x = positionCalc.maturityToX(methodComponent.maturity, mapDimensions.width);
+    const y = positionCalc.visibilityToY(methodComponent.visibility, mapDimensions.height);
     const handleClick = () => {
         if (setHighlightLine && methodComponent.line) {
             setHighlightLine(methodComponent.line);
@@ -132,9 +27,9 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, map
             id={`method_${methodComponent.id}`}
             x={x}
             y={y}
-            buy={methodComponent.decorators?.buy || false}
-            build={methodComponent.decorators?.build || false}
-            outsource={methodComponent.decorators?.outsource || false}
+            buy={methodComponent.decorators.buy || false}
+            build={methodComponent.decorators.build || false}
+            outsource={methodComponent.decorators.outsource || false}
             styles={mapStyleDefs.methods}
             onClick={handleClick}
         />
