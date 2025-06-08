@@ -16,8 +16,8 @@ interface ModernComponentTextProps {
     cx: string | number;
     cy: string | number;
     styles: any;
-    mutateMapText?: (newText: string) => void;
-    mapText?: string;
+    mutateMapText: (newText: string) => void;
+    mapText: string;
     id?: string;
     element?: any;
     onLabelMove?: (moved: MovedPosition) => void;
@@ -40,7 +40,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     id, // eslint-disable-line @typescript-eslint/no-unused-vars
     element,
 }) => {
-    const {enableRenameLabels} = useFeatureSwitches();
+    const {enableDoubleClickRename} = useFeatureSwitches();
     const [editMode, setEditMode] = useState(false);
 
     const actualComponent = element
@@ -66,7 +66,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const handleDoubleClick = () => {
         if (onClick) {
             onClick();
-        } else if (enableRenameLabels && mutateMapText && mapText) {
+        } else if (enableDoubleClickRename && mapText) {
             setEditMode(true);
         }
     };
@@ -198,6 +198,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     textColor: textFill,
                 }}
                 onClick={handleDoubleClick}
+                setShowTextField={enableDoubleClickRename && mapText ? setEditMode : undefined}
             />
         </RelativeMovable>
     );

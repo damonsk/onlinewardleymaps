@@ -5,11 +5,12 @@
 			"label": "clean",
 			"type": "shell",
 			"command": "rm",
+			"detail": "Remove node_modules, yarn.lock, and .next",
 			"args": [
 				"-rf",
 				"${workspaceFolder}/frontend/node_modules/",
 				"${workspaceFolder}/frontend/yarn.lock",
-				"${workspaceFolder}/frontend/.next/",
+				"${workspaceFolder}/frontend/.next/"
 			],
 			"group": {
 				"kind": "build",
@@ -21,40 +22,72 @@
 			"problemMatcher": []
 		},
 		{
-			"type": "npm",
-			"script": "dev",
-			"path": "frontend",
-			"problemMatcher": [],
+			"type": "shell",
 			"label": "dev - frontend",
-			"detail": "next dev",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		},
-		{
-			"type": "npm",
-			"script": "build",
-			"path": "frontend",
+			"command": "yarn",
+			"args": [
+				"dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"problemMatcher": [],
-			"label": "build - frontend",
-			"detail": "next build",
+			"detail": "yarn dev",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			}
 		},
 		{
-			"type": "npm",
-			"script": "test:watch",
-			"path": "frontend",
+			"type": "shell",
+			"label": "build - frontend",
+			"command": "yarn",
+			"args": [
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": [],
+			"detail": "yarn build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint - frontend",
+			"command": "yarn",
+			"args": [
+				"lint"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": [],
+			"detail": "yarn lint",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "test - frontend",
+			"command": "yarn",
+			"args": [
+				"test:watch"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"group": {
 				"kind": "test",
 				"isDefault": true
 			},
 			"problemMatcher": [],
-			"label": "test - frontend",
-			"detail": "jest --watchAll --env=jsdom"
+			"detail": "yarn test:watch"
 		}
 	]
 }
