@@ -263,8 +263,8 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 SVGBackground={svgBackground}
                 background="white"
                 tool={tool}
-                width={mapCanvasDimensions.width || 800} // Fallback width
-                height={mapCanvasDimensions.height || 600} // Fallback height
+                width={mapCanvasDimensions.width || window.innerWidth - 100} // Use larger fallback width
+                height={mapCanvasDimensions.height || window.innerHeight - 200} // Use larger fallback height
                 // Removed value and onChangeValue props to prevent infinite update loop
                 // UncontrolledReactSVGPanZoom manages its state internally
                 detectAutoPan={false}
@@ -343,9 +343,9 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             </UncontrolledReactSVGPanZoom>
             {showMapToolbar && (
                 <div style={{ 
-                    position: 'fixed', 
-                    bottom: '20px', 
-                    right: '20px', 
+                    position: 'absolute', 
+                    bottom: '60px', 
+                    left: '20px', 
                     zIndex: 1000,
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
                     borderRadius: '8px',

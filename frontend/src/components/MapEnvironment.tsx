@@ -66,7 +66,7 @@ const getWidth = () => {
     if (!clientWidth || clientWidth < 100) {
         return Math.max(window.innerWidth - 100, 800); // Fallback to reasonable minimum
     }
-    return clientWidth - 50;
+    return Math.max(clientWidth - 10, 600); // Minimal margin, ensure reasonable minimum
 };
 
 interface MapEnvironmentProps {
