@@ -1,13 +1,11 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.insertSpaces": true,
   "editor.tabSize": 4,
   "typescript.tsc.autoDetect": "on",
   "typescript.preferences.quoteStyle": "single",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
   "files.exclude": {
@@ -27,6 +25,9 @@
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
   "eslint.lintTask.enable": true,
   "eslint.run": "onSave",
-  "eslint.workingDirectories": ["/frontend/"],
-  "eslint.debug": true
+  "eslint.workingDirectories": ["frontend"],
+  "eslint.debug": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off"
 }

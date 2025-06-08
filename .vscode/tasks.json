@@ -12,10 +12,7 @@
 				"${workspaceFolder}/frontend/yarn.lock",
 				"${workspaceFolder}/frontend/.next/"
 			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"group": "build",
 			"presentation": {
 				"reveal": "always"
 			},
@@ -33,10 +30,7 @@
 			},
 			"problemMatcher": [],
 			"detail": "yarn dev",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
+			"group": "build"
 		},
 		{
 			"type": "shell",
@@ -65,11 +59,100 @@
 			"options": {
 				"cwd": "${workspaceFolder}/frontend"
 			},
-			"problemMatcher": [],
-			"detail": "yarn lint",
-			"group": {
-				"kind": "build",
-				"isDefault": true
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "🔧 yarn lint - ESLint with auto-fix and progress",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:check - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:check"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "🔍 yarn lint:check - ESLint check-only with progress",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:simple - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:simple"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "⚡ yarn lint:simple - ESLint without progress indicators",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:verbose - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:verbose"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "🔬 yarn lint:verbose - ESLint with detailed debug output",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:watch - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:watch"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "👀 yarn lint:watch - ESLint file watcher with auto-fix",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"clear": true
+			},
+			"isBackground": true,
+			"runOptions": {
+				"runOn": "default"
 			}
 		},
 		{

@@ -560,7 +560,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                                 mapText={legacyState.mapText}
                                 invalid={invalid}
                                 mutateMapText={mutateMapText}
-                                mapDimensions={legacyState.mapDimensions}
                                 errorLine={errorLine}
                                 showLineNumbers={showLineNumbers}
                             />

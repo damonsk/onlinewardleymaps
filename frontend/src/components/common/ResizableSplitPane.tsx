@@ -131,7 +131,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 
     const handleMouseUp = useCallback(() => {
         setIsDragging(false);
-        // Save to localStorage when dragging ends
         if (typeof window !== 'undefined' && storageKey) {
             localStorage.setItem(storageKey, leftWidth.toString());
         }
@@ -153,7 +152,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         }
     }, [isDragging, handleMouseMove, handleMouseUp]);
 
-    // Cleanup timeout on unmount
     useEffect(() => {
         return () => {
             if (resizeTimeoutRef.current) {
@@ -171,7 +169,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                 height: '100%',
                 overflow: 'hidden',
             }}>
-            {/* Left Panel */}
             <Box
                 sx={{
                     width: `${leftWidth}%`,
@@ -180,8 +177,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                 }}>
                 {leftPanel}
             </Box>
-
-            {/* Resizer */}
             <Box
                 onMouseDown={handleMouseDown}
                 sx={{
@@ -226,8 +221,6 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     },
                 }}
             />
-
-            {/* Right Panel */}
             <Box
                 sx={{
                     width: `${100 - leftWidth}%`,

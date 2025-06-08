@@ -16,19 +16,13 @@ const ForwardedRefComponent = React.forwardRef<ReactAce, WrappedEditorProps>((pr
 ForwardedRefComponent.displayName = 'ForwardedRefComponent';
 
 export interface ModernEditorProps {
-    // Core unified data
-    wardleyMap: UnifiedWardleyMap; // UnifiedWardleyMap;
-
-    // UI state and configuration
+    wardleyMap: UnifiedWardleyMap;
     hideNav: any;
     highlightLine: any;
     errorLine: number[];
     isLightTheme: boolean;
     invalid: boolean;
     showLineNumbers: boolean;
-    mapDimensions: any;
-
-    // Text and mutations
     mapText: string;
     mutateMapText: any;
 }
@@ -43,12 +37,9 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
     mutateMapText,
     mapText,
     showLineNumbers,
-    mapDimensions, // eslint-disable-line @typescript-eslint/no-unused-vars
 }) => {
     const [editorHeight, setEditorHeight] = useState(500);
     const aceEditorRef = useRef<ReactAce>(null);
-
-    // Use the same height calculation logic as the original Editor
     const getHeight = () => {
         const winHeight = window.innerHeight;
         const topNavHeight = document.getElementById('top-nav-wrapper')?.clientHeight;
