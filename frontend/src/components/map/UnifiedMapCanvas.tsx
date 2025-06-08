@@ -229,25 +229,61 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     }, [value]);
 
-    // Initial fit to viewer when map dimensions are available
+    // Gentle initial fit that happens after all initialization is complete
     useEffect(() => {
-        // Only run initial fit once when mapDimensions are first set and have actual values
+        // Only run when we have valid dimensions and components to render
         if (mapDimensions.width > 0 && mapDimensions.height > 0) {
-            const timer = setTimeout(() => {
+            console.log('Initial fit effect triggered', {
+                width: mapDimensions.width,
+                height: mapDimensions.height,
+                components: wardleyMap.components.length
+            });
+            
+            const performDelayedFit = () => {
+                console.log('performDelayedFit called');
                 if (Viewer.current && Viewer.current.fitSelection) {
-                    // Use conservative margins to avoid clipping while still reducing whitespace
-                    Viewer.current.fitSelection(
-                        -40, // Margin for value chain labels on left
-                        -50, // Margin for title at top  
-                        mapDimensions.width + 40, // Margin for evolution labels on right
-                        mapDimensions.height + 60, // Margin for evolution labels at bottom
-                    );
+                    // Check if map has actually rendered components
+                    const mapContainer = document.getElementById('map');
+                    const renderedComponents = mapContainer?.querySelectorAll('circle, rect');
+                    
+                    console.log('Checking rendered components:', renderedComponents?.length);
+                    
+                    if (renderedComponents && renderedComponents.length > 0) {
+                        console.log('Components found, scheduling fit');
+                        // Wait for any localStorage restoration or other initialization to complete
+                        setTimeout(() => {
+                            if (Viewer.current && Viewer.current.fitSelection) {
+                                console.log('EXECUTING INITIAL FIT TO SELECTION');
+                                // Gentle fit with conservative margins
+                                Viewer.current.fitSelection(
+                                    -60, // Margin for value chain labels on left
+                                    -70, // Margin for title at top
+                                    mapDimensions.width + 80, // Margin for evolution labels on right
+                                    mapDimensions.height + 90, // Margin for evolution labels at bottom
+                                );
+                            }
+                        }, 1500); // Wait for localStorage restoration to complete
+                    } else {
+                        console.log('Components not rendered yet, retrying...');
+                        // Components not rendered yet, try again
+                        setTimeout(performDelayedFit, 300);
+                    }
+                } else {
+                    console.log('Viewer.current or fitSelection not available');
                 }
-            }, 300);
+            };
 
+            // Start the fit process after a delay
+            const timer = setTimeout(performDelayedFit, 800);
             return () => clearTimeout(timer);
+        } else {
+            console.log('Initial fit conditions not met', {
+                width: mapDimensions.width,
+                height: mapDimensions.height,
+                components: wardleyMap.components.length
+            });
         }
-    }, [mapDimensions.width, mapDimensions.height]); // Depend on actual dimension values
+    }, [mapDimensions.width, mapDimensions.height]); // Removed wardleyMap.components.length dependency
 
     // Note: Panel resize is now handled by dimension updates in MapEnvironment
     // Dimension updates will automatically trigger re-render with proper scaling

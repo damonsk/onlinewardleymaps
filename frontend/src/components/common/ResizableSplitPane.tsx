@@ -48,16 +48,21 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     // Load width from localStorage on mount
     useEffect(() => {
         const initialWidth = getInitialWidth();
+        console.log('ResizableSplitPane: localStorage check', {
+            initialWidth,
+            defaultLeftWidth,
+            willRestore: initialWidth !== defaultLeftWidth
+        });
+        
         if (initialWidth !== defaultLeftWidth) {
             setLeftWidth(initialWidth);
             onResize?.(initialWidth);
             
-            // Wait for map to be properly initialized before triggering resize
-            const checkMapReady = () => {
+            // Simple delayed panel resize event - let map handle its own zoom state
+            setTimeout(() => {
+                console.log('ResizableSplitPane: Dispatching panelResize event');
                 const mapContainer = document.getElementById('map');
-                const mapCanvas = mapContainer?.querySelector('svg');
-                
-                if (mapContainer && mapCanvas) {
+                if (mapContainer) {
                     const panelResizeEvent = new CustomEvent('panelResize', {
                         detail: {
                             leftWidthPercent: initialWidth,
@@ -67,14 +72,11 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         }
                     });
                     window.dispatchEvent(panelResizeEvent);
+                    console.log('ResizableSplitPane: panelResize event dispatched');
                 } else {
-                    // Map not ready yet, check again in a bit
-                    setTimeout(checkMapReady, 200);
+                    console.log('ResizableSplitPane: map container not found');
                 }
-            };
-            
-            // Start checking after a reasonable delay
-            setTimeout(checkMapReady, 800);
+            }, 1000); // Simpler delay, let map handle its own initial state
         }
     }, []);
 
