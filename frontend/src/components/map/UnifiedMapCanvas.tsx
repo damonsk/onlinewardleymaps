@@ -134,8 +134,8 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         f: 0,
         viewerWidth: mapCanvasDimensions.width,
         viewerHeight: mapCanvasDimensions.height,
-        SVGWidth: mapDimensions.width + 2,
-        SVGHeight: mapDimensions.height + 4,
+        SVGWidth: mapDimensions.width + 105,
+        SVGHeight: mapDimensions.height + 137,
         miniatureOpen: false,
     });
 
@@ -225,6 +225,22 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     }, [value]);
 
+    // Initial fit to viewer on mount
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (Viewer.current && Viewer.current.fitSelection) {
+                Viewer.current.fitSelection(
+                    -35,
+                    -45,
+                    mapDimensions.width + 70,
+                    mapDimensions.height + 92,
+                );
+            }
+        }, 300); // Longer delay to ensure the viewer is fully ready
+
+        return () => clearTimeout(timer);
+    }, [mapDimensions.width, mapDimensions.height]);
+
     // Get the correct background fill based on the map style
     const fill = {
         wardley: 'url(#wardleyGradient)',
@@ -240,15 +256,15 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             : fill[mapStyleDefs.className as keyof typeof fill] || 'white';
 
     return (
-        <div id="map-canvas">
+        <div id="map-canvas" style={{ width: '100%', height: '100%', position: 'relative' }}>
             {/* Use UncontrolledReactSVGPanZoom directly instead of nested components */}
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
                 SVGBackground={svgBackground}
                 background="white"
                 tool={tool}
-                width={mapCanvasDimensions.width + 90}
-                height={mapCanvasDimensions.height + 30}
+                width={mapCanvasDimensions.width || 800} // Fallback width
+                height={mapCanvasDimensions.height || 600} // Fallback height
                 // Removed value and onChangeValue props to prevent infinite update loop
                 // UncontrolledReactSVGPanZoom manages its state internally
                 detectAutoPan={false}
@@ -271,12 +287,16 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 style={{
                     userSelect: 'none',
                     fontFamily: mapStyleDefs.fontFamily,
+                    width: '100%',
+                    height: '100%', // Use full height since toolbar is now fixed position
+                    display: 'block',
                 }}
             >
                 <svg
                     className={[mapStyleDefs.className, 'mapCanvas'].join(' ')}
-                    width={mapDimensions.width + 2}
-                    height={mapDimensions.height + 4}
+                    width={mapDimensions.width + 105}
+                    height={mapDimensions.height + 137}
+                    viewBox={`-35 -45 ${mapDimensions.width + 105} ${mapDimensions.height + 137}`}
                     id="svgMap"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -322,18 +342,35 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 </svg>
             </UncontrolledReactSVGPanZoom>
             {showMapToolbar && (
-                <MapCanvasToolbar
-                    shouldHideNav={() => {}}
-                    hideNav={false}
-                    tool={tool}
-                    handleChangeTool={(event, newTool) => setTool(newTool)}
-                    _fitToViewer={() => {
-                        if (Viewer.current && Viewer.current.fitToViewer) {
-                            // Use fitToViewer which is supported by UncontrolledReactSVGPanZoom
-                            Viewer.current.fitToViewer();
-                        }
-                    }}
-                />
+                <div style={{ 
+                    position: 'fixed', 
+                    bottom: '20px', 
+                    right: '20px', 
+                    zIndex: 1000,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    border: '1px solid rgba(0,0,0,0.1)'
+                }}>
+                    <MapCanvasToolbar
+                        shouldHideNav={() => {}}
+                        hideNav={false}
+                        tool={tool}
+                        handleChangeTool={(event, newTool) => setTool(newTool)}
+                        _fitToViewer={() => {
+                            if (Viewer.current && Viewer.current.fitSelection) {
+                                // Use the same coordinates as the legacy implementation
+                                Viewer.current.fitSelection(
+                                    -35,
+                                    -45,
+                                    mapDimensions.width + 70,
+                                    mapDimensions.height + 92,
+                                );
+                            }
+                        }}
+                    />
+                </div>
             )}
         </div>
     );

@@ -67,6 +67,16 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
         backgroundColor:
             fill[props.mapStyleDefs.className as keyof DefaultThemes],
         position: 'relative',
+        width: '100%',
+        height: '100%', // Changed from 100vh to 100% to respect parent container
+        overflow: 'hidden', // Prevent scrollbars
+    };
+
+    const mapStyle: React.CSSProperties = {
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden', // Prevent scrollbars on the map container
+        position: 'relative', // Add relative positioning for toolbar placement
     };
 
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as
@@ -110,7 +120,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
                     mapStyleDefs={props.mapStyleDefs}
                 />
             )}
-            <div id="map">
+            <div id="map" style={mapStyle}>
                 <UnifiedMapCanvas
                     wardleyMap={props.wardleyMap}
                     mapDimensions={props.mapDimensions}

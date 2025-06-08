@@ -60,8 +60,13 @@ const getHeight = () => {
     return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 95;
 };
 const getWidth = () => {
-    const clientWidth = document.getElementById('map')?.clientWidth;
-    return (clientWidth || 0) - 50;
+    const mapElement = document.getElementById('map');
+    const clientWidth = mapElement?.clientWidth;
+    // If map element doesn't exist or has no width, use window width with some margin
+    if (!clientWidth || clientWidth < 100) {
+        return Math.max(window.innerWidth - 100, 800); // Fallback to reasonable minimum
+    }
+    return clientWidth - 50;
 };
 
 interface MapEnvironmentProps {
