@@ -423,7 +423,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
                                     key={'mapAnnotation_' + i + '_' + i1}
                                     occurance={occurance}
                                     annotation={a}
-                                    occuranceIndex={i}
+                                    occuranceIndex={i1}
                                     mapDimensions={mapDimensions}
                                     mutateMapText={mutateMapText}
                                     mapText={mapText}
