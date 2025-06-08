@@ -134,6 +134,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
                     setNewComponentContext={props.setNewComponentContext}
                     launchUrl={props.launchUrl}
                     showLinkedEvolved={props.showLinkedEvolved}
+                    shouldHideNav={props.shouldHideNav}
+                    hideNav={props.hideNav}
                     mapAnnotationsPresentation={
                         props.mapAnnotationsPresentation
                     }

@@ -9,7 +9,6 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Grid,
 } from '@mui/material';
 import html2canvas from 'html2canvas';
 import Router from 'next/router';
@@ -36,6 +35,7 @@ import { MapView } from './map/MapView';
 import { LeftNavigation } from './page/LeftNavigation';
 import NewHeader from './page/NewHeader';
 import { UsageInfo } from './page/UseageInfo';
+import { ResizableSplitPane } from './common/ResizableSplitPane';
 
 function debounce<T extends (...args: any[]) => void>(
     fn: T,
@@ -57,7 +57,7 @@ const getHeight = () => {
     const topNavHeight =
         document.getElementById('top-nav-wrapper')?.clientHeight;
     const titleHeight = document.getElementById('title')?.clientHeight;
-    return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 95;
+    return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 65; // Reduced from 95 to 65, saving 30px
 };
 const getWidth = () => {
     const mapElement = document.getElementById('map');
@@ -413,11 +413,18 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             mapActions.setMapDimensions(dimensions);
         }, 1);
 
-        window.addEventListener('resize', debouncedHandleResize);
+        // Handle standard window resize events (but not panel resizes)
+        const handleWindowResize = (event: Event) => {
+            // Only handle if it's not a programmatically dispatched event from panel resize
+            if (!event.isTrusted) return;
+            debouncedHandleResize();
+        };
+
+        window.addEventListener('resize', handleWindowResize);
         debouncedHandleResize();
 
         return function cleanup() {
-            window.removeEventListener('resize', debouncedHandleResize);
+            window.removeEventListener('resize', handleWindowResize);
         };
     }, [mapSize, mapActions]);
 
@@ -448,12 +455,32 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             });
         }, 500);
 
+        // Handle panel resize events specifically
+        const handlePanelResize = (event: CustomEvent) => {
+            // Update canvas dimensions when panel resizes
+            setTimeout(() => {
+                mapActions.setMapCanvasDimensions({
+                    width: getWidth(),
+                    height: getHeight(),
+                });
+            }, 50); // Small delay to ensure DOM has updated
+        };
+
+        // Handle standard window resize events (but not panel resizes)
+        const handleWindowResize = (event: Event) => {
+            // Only handle if it's not a programmatically dispatched event from panel resize
+            if (!event.isTrusted) return;
+            debouncedHandleCanvasResize();
+        };
+
         window.addEventListener('load', initialLoad);
-        window.addEventListener('resize', debouncedHandleCanvasResize);
+        window.addEventListener('resize', handleWindowResize);
+        window.addEventListener('panelResize', handlePanelResize as EventListener);
 
         return function cleanup() {
-            window.removeEventListener('resize', debouncedHandleCanvasResize);
+            window.removeEventListener('resize', handleWindowResize);
             window.removeEventListener('load', initialLoad);
+            window.removeEventListener('panelResize', handlePanelResize as EventListener);
         };
     }, [mapActions]);
 
@@ -472,7 +499,14 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     };
 
     return (
-        <React.Fragment>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100vh',
+                overflow: 'hidden',
+            }}
+        >
             <LeftNavigation
                 toggleMenu={toggleMenu}
                 menuVisible={menuVisible}
@@ -483,7 +517,10 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
             <Box
                 id="top-nav-wrapper"
-                sx={{ display: hideNav ? 'none' : 'block' }}
+                sx={{
+                    display: hideNav ? 'none' : 'block',
+                    flexShrink: 0,
+                }}
             >
                 <NewHeader
                     mapOnlyView={mapOnlyView}
@@ -514,71 +551,121 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 />
             </Box>
 
-            <Grid container spacing={2} id="main" sx={{ marginTop: 0 }}>
-                {mapOnlyView === false && (
-                    <Grid
-                        item
-                        xs={12}
-                        sm={4}
+            <Box sx={{ flexGrow: 1, height: '100%', overflow: 'hidden' }}>
+                {mapOnlyView === false ? (
+                    <ResizableSplitPane
+                        defaultLeftWidth={33}
+                        minLeftWidth={20}
+                        maxLeftWidth={60}
+                        storageKey="wardleyMapEditor_splitPaneWidth"
+                        isDarkTheme={!isLightTheme}
+                        leftPanel={
+                            <Editor
+                                wardleyMap={unifiedMapState.getUnifiedMap()}
+                                hideNav={hideNav}
+                                isLightTheme={isLightTheme}
+                                highlightLine={legacyState.highlightedLine}
+                                mapText={legacyState.mapText}
+                                invalid={invalid}
+                                mutateMapText={mutateMapText}
+                                mapDimensions={legacyState.mapDimensions}
+                                errorLine={errorLine}
+                                showLineNumbers={showLineNumbers}
+                            />
+                        }
+                        rightPanel={
+                            <Box
+                                className="map-view"
+                                sx={{
+                                    backgroundColor:
+                                        legacyState.mapStyleDefs
+                                            .containerBackground,
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                            >
+                                <ModKeyPressedProvider>
+                                    <MapView
+                                        wardleyMap={unifiedMapState.getUnifiedMap()}
+                                        shouldHideNav={shouldHideNav}
+                                        hideNav={hideNav}
+                                        mapTitle={mapTitle}
+                                        mapAnnotationsPresentation={
+                                            mapAnnotationsPresentation
+                                        }
+                                        mapStyleDefs={legacyState.mapStyleDefs}
+                                        mapCanvasDimensions={
+                                            legacyState.mapCanvasDimensions
+                                        }
+                                        mapDimensions={
+                                            legacyState.mapDimensions
+                                        }
+                                        mapEvolutionStates={
+                                            legacyState.mapEvolutionStates
+                                        }
+                                        mapRef={mapRef}
+                                        mapText={legacyState.mapText}
+                                        mutateMapText={mutateMapText}
+                                        evolutionOffsets={Defaults.EvoOffsets}
+                                        launchUrl={launchUrl}
+                                        setHighlightLine={
+                                            legacyState.setHighlightLine
+                                        }
+                                        setNewComponentContext={
+                                            legacyState.setNewComponentContext
+                                        }
+                                        showLinkedEvolved={
+                                            legacyState.showLinkedEvolved
+                                        }
+                                    />
+                                </ModKeyPressedProvider>
+                            </Box>
+                        }
+                    />
+                ) : (
+                    <Box
+                        className="map-view"
                         sx={{
-                            paddingTop: '0!important',
-                            borderRight: '2px solid rgba(0, 0, 0, 0.12)',
+                            backgroundColor:
+                                legacyState.mapStyleDefs.containerBackground,
+                            width: '100%',
+                            height: '100%',
                         }}
                     >
-                        <Editor
-                            wardleyMap={unifiedMapState.getUnifiedMap()}
-                            hideNav={hideNav}
-                            isLightTheme={isLightTheme}
-                            highlightLine={legacyState.highlightedLine}
-                            mapText={legacyState.mapText}
-                            invalid={invalid}
-                            mutateMapText={mutateMapText}
-                            mapDimensions={legacyState.mapDimensions}
-                            errorLine={errorLine}
-                            showLineNumbers={showLineNumbers}
-                        />
-                    </Grid>
+                        <ModKeyPressedProvider>
+                            <MapView
+                                wardleyMap={unifiedMapState.getUnifiedMap()}
+                                shouldHideNav={shouldHideNav}
+                                hideNav={hideNav}
+                                mapTitle={mapTitle}
+                                mapAnnotationsPresentation={
+                                    mapAnnotationsPresentation
+                                }
+                                mapStyleDefs={legacyState.mapStyleDefs}
+                                mapCanvasDimensions={
+                                    legacyState.mapCanvasDimensions
+                                }
+                                mapDimensions={legacyState.mapDimensions}
+                                mapEvolutionStates={
+                                    legacyState.mapEvolutionStates
+                                }
+                                mapRef={mapRef}
+                                mapText={legacyState.mapText}
+                                mutateMapText={mutateMapText}
+                                evolutionOffsets={Defaults.EvoOffsets}
+                                launchUrl={launchUrl}
+                                setHighlightLine={legacyState.setHighlightLine}
+                                setNewComponentContext={
+                                    legacyState.setNewComponentContext
+                                }
+                                showLinkedEvolved={
+                                    legacyState.showLinkedEvolved
+                                }
+                            />
+                        </ModKeyPressedProvider>
+                    </Box>
                 )}
-                <Grid
-                    item
-                    xs={12}
-                    sm={mapOnlyView ? 12 : 8}
-                    ml={mapOnlyView ? 2 : 0}
-                    className="map-view"
-                    sx={{
-                        backgroundColor:
-                            legacyState.mapStyleDefs.containerBackground,
-                    }}
-                >
-                    <ModKeyPressedProvider>
-                        <MapView
-                            wardleyMap={unifiedMapState.getUnifiedMap()}
-                            shouldHideNav={shouldHideNav}
-                            hideNav={hideNav}
-                            mapTitle={mapTitle}
-                            mapAnnotationsPresentation={
-                                mapAnnotationsPresentation
-                            }
-                            mapStyleDefs={legacyState.mapStyleDefs}
-                            mapCanvasDimensions={
-                                legacyState.mapCanvasDimensions
-                            }
-                            mapDimensions={legacyState.mapDimensions}
-                            mapEvolutionStates={legacyState.mapEvolutionStates}
-                            mapRef={mapRef}
-                            mapText={legacyState.mapText}
-                            mutateMapText={mutateMapText}
-                            evolutionOffsets={Defaults.EvoOffsets}
-                            launchUrl={launchUrl}
-                            setHighlightLine={legacyState.setHighlightLine}
-                            setNewComponentContext={
-                                legacyState.setNewComponentContext
-                            }
-                            showLinkedEvolved={legacyState.showLinkedEvolved}
-                        />
-                    </ModKeyPressedProvider>
-                </Grid>
-            </Grid>
+            </Box>
 
             <Dialog
                 maxWidth={'lg'}
@@ -625,7 +712,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-        </React.Fragment>
+        </Box>
     );
 };
 

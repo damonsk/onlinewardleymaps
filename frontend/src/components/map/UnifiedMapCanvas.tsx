@@ -22,8 +22,8 @@ import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import { useModKeyPressedConsumer } from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
-import UnifiedMapContent from './UnifiedMapContent';
 import PositionCalculator from './PositionCalculator';
+import UnifiedMapContent from './UnifiedMapContent';
 
 interface ModernUnifiedMapCanvasProps {
     // Core unified data
@@ -47,6 +47,10 @@ interface ModernUnifiedMapCanvasProps {
     >;
     launchUrl: (urlId: string) => void;
     showLinkedEvolved: boolean;
+
+    // Navigation control
+    shouldHideNav?: () => void;
+    hideNav?: boolean;
 
     // Annotations
     mapAnnotationsPresentation: any;
@@ -225,21 +229,46 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     }, [value]);
 
-    // Initial fit to viewer on mount
+    // Initial fit to viewer on mount only (not when content changes)
     useEffect(() => {
         const timer = setTimeout(() => {
             if (Viewer.current && Viewer.current.fitSelection) {
+                // Restore margins to include title and labels, but more conservative
                 Viewer.current.fitSelection(
-                    -35,
-                    -45,
-                    mapDimensions.width + 70,
-                    mapDimensions.height + 92,
+                    -50, // Margin for value chain labels on left
+                    -80, // Margin for title at top
+                    mapDimensions.width + 100, // Margin for evolution labels on right
+                    mapDimensions.height + 120, // Margin for evolution labels at bottom
                 );
             }
-        }, 300); // Longer delay to ensure the viewer is fully ready
+        }, 300);
 
         return () => clearTimeout(timer);
-    }, [mapDimensions.width, mapDimensions.height]);
+    }, []); // Empty dependency array - only run once on mount
+
+    // Handle panel resize events - simply refit the map to the new container size
+    useEffect(() => {
+        const handlePanelResize = (event: CustomEvent) => {
+            // Delay the adjustment to ensure the DOM has updated
+            setTimeout(() => {
+                if (Viewer.current && Viewer.current.fitSelection) {
+                    // Just do a standard fit to the map dimensions without any scaling manipulation
+                    // The SVG viewer will automatically scale the content to fit the available space
+                    Viewer.current.fitSelection(
+                        -50, // Margin for value chain labels on left
+                        -80, // Margin for title at top
+                        mapDimensions.width + 100, // Margin for evolution labels on right
+                        mapDimensions.height + 120, // Margin for evolution labels at bottom
+                    );
+                }
+            }, 200); // Delay to ensure DOM updates are complete
+        };
+
+        window.addEventListener('panelResize', handlePanelResize as EventListener);
+        return () => {
+            window.removeEventListener('panelResize', handlePanelResize as EventListener);
+        };
+    }, [mapDimensions]);
 
     // Get the correct background fill based on the map style
     const fill = {
@@ -256,7 +285,10 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             : fill[mapStyleDefs.className as keyof typeof fill] || 'white';
 
     return (
-        <div id="map-canvas" style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <div
+            id="map-canvas"
+            style={{ width: '100%', height: '100%', position: 'relative' }}
+        >
             {/* Use UncontrolledReactSVGPanZoom directly instead of nested components */}
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
@@ -342,31 +374,35 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 </svg>
             </UncontrolledReactSVGPanZoom>
             {showMapToolbar && (
-                <div style={{ 
-                    position: 'absolute', 
-                    bottom: '60px', 
-                    left: '20px', 
-                    zIndex: 1000,
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: '8px',
-                    padding: '8px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    border: '1px solid rgba(0,0,0,0.1)'
-                }}>
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: '20px', // Reduced from 60px to 20px, saving 40px
+                        left: '20px',
+                        zIndex: 1000,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderRadius: '8px',
+                        padding: '8px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        border: '1px solid rgba(0,0,0,0.1)',
+                    }}
+                >
                     <MapCanvasToolbar
-                        shouldHideNav={() => {}}
-                        hideNav={false}
+                        shouldHideNav={props.shouldHideNav || (() => {})}
+                        hideNav={props.hideNav || false}
                         tool={tool}
                         handleChangeTool={(event, newTool) => setTool(newTool)}
                         _fitToViewer={() => {
-                            if (Viewer.current && Viewer.current.fitSelection) {
-                                // Use the same coordinates as the legacy implementation
-                                Viewer.current.fitSelection(
-                                    -35,
-                                    -45,
-                                    mapDimensions.width + 70,
-                                    mapDimensions.height + 92,
-                                );
+                            if (Viewer.current) {
+                                // Restore proper margins to show title and labels
+                                if (Viewer.current.fitSelection) {
+                                    Viewer.current.fitSelection(
+                                        -50, // Margin for value chain labels on left
+                                        -80, // Margin for title at top
+                                        mapDimensions.width + 100, // Margin for evolution labels on right
+                                        mapDimensions.height + 120, // Margin for evolution labels at bottom
+                                    );
+                                }
                             }
                         }}
                     />
