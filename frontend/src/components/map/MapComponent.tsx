@@ -1,8 +1,8 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedComponent } from '../../types/unified';
-import { useModKeyPressedConsumer } from '../KeyPressContext';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedComponent} from '../../types/unified';
+import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -133,11 +133,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
             </Movable>
 
             {component.inertia && !component.evolved && component.evolving === false && (
-                <Inertia
-                    maturity={component.maturity + 0.02}
-                    visibility={component.visibility}
-                    mapDimensions={mapDimensions}
-                />
+                <Inertia maturity={component.maturity + 0.02} visibility={component.visibility} mapDimensions={mapDimensions} />
             )}
 
             <g transform={`translate(${posX},${posY})`}>

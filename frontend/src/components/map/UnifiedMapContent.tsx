@@ -6,6 +6,7 @@ import {UnifiedComponent} from '../../types/unified';
 
 // Import required components
 import {processMapElements} from '../../utils/mapProcessing';
+import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
@@ -200,9 +201,8 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                             mapText={mapText}
                             mutateMapText={mutateMapText}
                             scaleFactor={scaleFactor}>
-                            <ComponentSymbol
+                            <AcceleratorSymbol
                                 id={'accelerator_circle_' + el.id}
-                                styles={mapStyleDefs.component}
                                 component={el}
                                 onClick={() =>
                                     clicked({
