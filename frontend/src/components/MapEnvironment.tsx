@@ -28,6 +28,7 @@ import { MapAnnotationsPosition, MapSize } from '../types/base';
 import { useFeatureSwitches } from './FeatureSwitchesContext';
 import { ModKeyPressedProvider } from './KeyPressContext';
 import QuickAdd from './actions/QuickAdd';
+import { ResizableSplitPane } from './common/ResizableSplitPane';
 import { Breadcrumb } from './editor/Breadcrumb';
 import Editor from './editor/Editor';
 import { NewMapIterations } from './editor/MapIterations';
@@ -35,7 +36,6 @@ import { MapView } from './map/MapView';
 import { LeftNavigation } from './page/LeftNavigation';
 import NewHeader from './page/NewHeader';
 import { UsageInfo } from './page/UseageInfo';
-import { ResizableSplitPane } from './common/ResizableSplitPane';
 
 function debounce<T extends (...args: any[]) => void>(
     fn: T,
@@ -466,6 +466,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         }, 500);
 
         // Handle panel resize events specifically
+        /* eslint-disable @typescript-eslint/no-unused-vars */
         const handlePanelResize = (event: CustomEvent) => {
             // Update both map dimensions and canvas dimensions when panel resizes
             // This should work exactly like browser window resize

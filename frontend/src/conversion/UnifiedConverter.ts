@@ -62,37 +62,17 @@ export class UnifiedConverter {
      */
     private transformToUnifiedMap(legacyMap: WardleyMap): UnifiedWardleyMap {
         const unifiedMap = createEmptyMap();
-
-        // Set basic properties
         this.copyBasicProperties(legacyMap, unifiedMap);
-
-        // Extract method components for label handling
-        const methodComponents = this.extractMethodComponents(legacyMap);
-
-        // Transform components to unified format, passing along method component info
-        this.transformAllComponentTypes(
-            legacyMap,
-            unifiedMap,
-            methodComponents,
-        );
-
-        // Transform evolved elements
+        this.transformAllComponentTypes(legacyMap, unifiedMap);
         unifiedMap.evolved = this.transformEvolvedElements(
             legacyMap.evolved || [],
         );
-
-        // Transform pipelines (must be done after components for visibility processing)
         unifiedMap.pipelines = this.transformPipelines(
             legacyMap.pipelines || [],
             this.getAllComponents(unifiedMap),
         );
-
-        // Transform links
         unifiedMap.links = this.transformLinks(legacyMap.links || []);
-
-        // Copy other properties as-is for now
         this.copyAdditionalProperties(legacyMap, unifiedMap);
-
         return unifiedMap;
     }
 
@@ -118,25 +98,9 @@ export class UnifiedConverter {
     ): void {
         target.annotations = source.annotations || [];
         target.notes = source.notes || [];
-        target.methods = source.methods || [];
         target.urls = source.urls || [];
         target.attitudes = source.attitudes || [];
         target.accelerators = source.accelerators || [];
-    }
-
-    /**
-     * Extract component names referenced in methods
-     */
-    private extractMethodComponents(map: WardleyMap): Set<string> {
-        const methodComponents = new Set<string>();
-        if (map.methods && map.methods.length > 0) {
-            map.methods.forEach((method) => {
-                if (method.name) {
-                    methodComponents.add(method.name);
-                }
-            });
-        }
-        return methodComponents;
     }
 
     /**
@@ -145,32 +109,18 @@ export class UnifiedConverter {
     private transformAllComponentTypes(
         legacyMap: WardleyMap,
         unifiedMap: UnifiedWardleyMap,
-        methodComponents: Set<string>,
     ): void {
         unifiedMap.components = this.transformComponents(
             legacyMap.elements || [],
             'component',
-            methodComponents,
         );
         unifiedMap.anchors = this.transformComponents(
             legacyMap.anchors || [],
             'anchor',
-            methodComponents,
         );
         unifiedMap.submaps = this.transformComponents(
             legacyMap.submaps || [],
             'submap',
-            methodComponents,
-        );
-        unifiedMap.markets = this.transformComponents(
-            legacyMap.markets || [],
-            'market',
-            methodComponents,
-        );
-        unifiedMap.ecosystems = this.transformComponents(
-            legacyMap.ecosystems || [],
-            'ecosystem',
-            methodComponents,
         );
     }
 
@@ -183,7 +133,6 @@ export class UnifiedConverter {
     private transformComponents(
         legacyComponents: any[],
         type: string,
-        methodComponents?: Set<string>,
     ): UnifiedComponent[] {
         return legacyComponents.map((component) => {
             return createUnifiedComponent({
