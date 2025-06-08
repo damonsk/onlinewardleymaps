@@ -1,6 +1,6 @@
-import React, { memo, MouseEvent } from 'react';
-import { MapComponentTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified';
+import React, {memo, MouseEvent} from 'react';
+import {MapComponentTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified';
 
 /**
  * PipelineComponentSymbol Props - using unified type system directly

@@ -1,16 +1,16 @@
-import { Box } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {Box} from '@mui/material';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 interface ResizableSplitPaneProps {
     leftPanel: React.ReactNode;
     rightPanel: React.ReactNode;
-    defaultLeftWidth?: number; 
-    minLeftWidth?: number; 
-    maxLeftWidth?: number; 
-    resizerWidth?: number; 
+    defaultLeftWidth?: number;
+    minLeftWidth?: number;
+    maxLeftWidth?: number;
+    resizerWidth?: number;
     onResize?: (leftWidth: number) => void;
-    storageKey?: string; 
-    isDarkTheme?: boolean; 
+    storageKey?: string;
+    isDarkTheme?: boolean;
 }
 
 export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
