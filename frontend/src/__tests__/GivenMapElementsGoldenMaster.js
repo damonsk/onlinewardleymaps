@@ -19,100 +19,79 @@ useContext.mockReturnValue({
     enableDoubleClickRename: true,
 });
 
-// Function to load the content of a file
 function loadFileContent(fileName) {
     const filePath = path.resolve(__dirname, fileName);
     return fs.readFileSync(filePath, 'utf-8');
 }
 
-// Reusable function to compare results
 function testResultEquality(result, fileName) {
+    writeComparisonFile(result, fileName);
     const outputFileContent = loadFileContent(fileName);
-    // console.log(JSON.stringify(result)); // Uncomment for debugging
-
-    // Parse both as objects for semantic comparison (property order doesn't matter)
     const expectedObject = JSON.parse(outputFileContent);
     expect(result).toEqual(expectedObject);
 }
 
 describe('So that large refactors can be done without breaking output of mapElements', function () {
     const mockContextValue = useContext();
+    let result;
+    let legacyAdapter;
 
-    test('When all possible map components are specified, ensure the output is as expected', function () {
+    beforeEach(() => {
         const fileName = 'GoldenMasterMapText.txt';
         const fileContent = loadFileContent(fileName);
-
-        let result = new UnifiedConverter(mockContextValue).parse(fileContent);
-        // console.log(JSON.stringify(result)); // Uncomment for debugging
-        testResultEquality(result, 'GoldenMasterConverterOutput.txt');
-
-        // Use MapElements instead of UnifiedMapElements
+        result = new UnifiedConverter(mockContextValue).parse(fileContent);
         const me = new MapElements(result);
-        const legacyAdapter = me.getLegacyAdapter();
+        legacyAdapter = me.getLegacyAdapter();
+    });
 
-        const testCases = [
-            {
-                fn: () => legacyAdapter.getMergedElements(),
-                fileName: 'GoldenMasterMapElementsMergedElements.txt',
-            },
-            {
-                fn: () => legacyAdapter.getMapPipelines(),
-                fileName: 'GoldenMasterMapElementsPipeline.txt',
-            },
-            {
-                fn: () => legacyAdapter.getEvolveElements(),
-                fileName: 'GoldenMasterMapElementsEvolve.txt',
-            },
-            {
-                fn: () => legacyAdapter.getEvolvedElements(),
-                fileName: 'GoldenMasterMapElementsEvolved.txt',
-            },
-            {
-                fn: () => {
-                    // Filter out evolved elements from merged elements (matching legacy behavior)
-                    const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter((el) => !el.evolved);
-                },
-                fileName: 'GoldenMasterMapElementsNonEvolved.txt',
-            },
-            {
-                fn: () => {
-                    // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
-                    const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(
-                        (el) => !el.evolved && !el.evolving,
-                    );
-                },
-                fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
-            },
-            {
-                fn: () => {
-                    // Filter out evolving elements from merged elements (matching legacy behavior)
-                    const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter((el) => !el.evolving);
-                },
-                fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
-            },
-        ];
+    test('When parsing map text, ensure converter output is as expected', function () {
+        testResultEquality(result, 'GoldenMasterConverterOutput.txt');
+    });
 
-        testCases.forEach((testCase) => {
-            const { fn, fileName } = testCase;
-            console.log(testCase);
-            const output = fn();
-            // Always log the output for debugging
-            console.log(`ACTUAL ${fileName} OUTPUT:`);
-            console.log(JSON.stringify(output));
+    test('When getting merged elements, ensure output is as expected', function () {
+        const output = legacyAdapter.getMergedElements();        
+        testResultEquality(output, 'GoldenMasterMapElementsMergedElements.txt');
+    });
 
-            // Write the new output to a file for comparison and updating golden masters
-            fs.writeFileSync(
-                path.resolve(
-                    __dirname,
-                    `${fileName.replace('.txt', '')}_new.txt`,
-                ),
-                JSON.stringify(output),
-                'utf-8',
-            );
-            testResultEquality(output, fileName);
-        });
+    test('When getting map pipelines, ensure output is as expected', function () {
+        const output = legacyAdapter.getMapPipelines();
+        testResultEquality(output, 'GoldenMasterMapElementsPipeline.txt');
+    });
+
+    test('When getting evolve elements, ensure output is as expected', function () {
+        const output = legacyAdapter.getEvolveElements();    
+        testResultEquality(output, 'GoldenMasterMapElementsEvolve.txt');
+    });
+
+    test('When getting evolved elements, ensure output is as expected', function () {
+        const output = legacyAdapter.getEvolvedElements();
+        testResultEquality(output, 'GoldenMasterMapElementsEvolved.txt');
+    });
+
+    test('When filtering out evolved elements, ensure output is as expected', function () {
+        const mergedElements = legacyAdapter.getMergedElements();
+        const output = mergedElements.filter((el) => !el.evolved);
+        testResultEquality(output, 'GoldenMasterMapElementsNonEvolved.txt');
+    });
+
+    test('When filtering out evolved and evolving elements, ensure output is as expected', function () {
+        const mergedElements = legacyAdapter.getMergedElements();
+        const output = mergedElements.filter((el) => !el.evolved && !el.evolving);
+        testResultEquality(output, 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt');
+    });
+
+    test('When filtering out evolving elements, ensure output is as expected', function () {
+        const mergedElements = legacyAdapter.getMergedElements();
+        const output = mergedElements.filter((el) => !el.evolving);
+        testResultEquality(output, 'GoldenMasterGetNoneEvolvingElements.txt');
     });
 });
+function writeComparisonFile(output, originalFileName) {
+    const fileName = originalFileName.replace('.txt', '_new.txt');
+    fs.writeFileSync(
+        path.resolve(__dirname, fileName),
+        JSON.stringify(output),
+        'utf-8'
+    );
+}
+

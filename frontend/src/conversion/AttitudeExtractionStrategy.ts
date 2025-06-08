@@ -4,8 +4,8 @@ import {
     setHeightWidth,
     setManyCoords,
 } from '../constants/extractionFunctions';
-import BaseStrategyRunner from './BaseStrategyRunner';
 import { IParseStrategy } from '../types/base';
+import BaseStrategyRunner from './BaseStrategyRunner';
 
 export default class AttitudeExtractionStrategy implements IParseStrategy {
     data: string;

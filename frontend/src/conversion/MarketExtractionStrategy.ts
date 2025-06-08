@@ -13,7 +13,7 @@ export default class MarketExtractionStrategy implements IParseStrategy {
         const config: IProvideBaseStrategyRunnerConfig = {
             keyword: 'market',
             containerName: 'markets',
-            defaultAttributes: { increaseLabelSpacing: 1 },
+            defaultAttributes: { increaseLabelSpacing: 1},
         };
         this.data = data;
         this.keyword = config.keyword;
