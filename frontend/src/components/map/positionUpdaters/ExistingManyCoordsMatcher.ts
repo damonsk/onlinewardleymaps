@@ -11,7 +11,7 @@ export const ExistingManyCoordsMatcher: Replacer = {
 
     action: (line: string, moved: ManyCoordsMoved): string => {
         return line.replace(
-            /\[(.?|.+?)\]/g,
+            /\[([^[\]]+)\]/g,
             `[${moved.param1}, ${moved.param2}, ${moved.param3}, ${moved.param4}]`,
         );
     },

@@ -40,7 +40,7 @@ export const ModernExistingCoordsMatcher: Replacer = {
             typeof moved.param2 === 'number'
                 ? moved.param2.toString()
                 : parseFloat(moved.param2).toString();
-        const result = line.replace(/\[(.?|.+?)\]/g, `[${param1}, ${param2}]`);
+        const result = line.replace(/\[([^[\]]+)\]/g, `[${param1}, ${param2}]`);
         return result;
     },
 };

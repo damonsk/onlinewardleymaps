@@ -158,7 +158,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(pioneers|settlers|townplanners)(\\s*\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])',
+                        regex: '(pioneers|settlers|townplanners)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
                         token: [
@@ -194,8 +194,38 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         next: 'comment',
                     },
                     {
+                        token: [
+                            'keyword',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'variable.parameter.function.asp',
+                        ],
+                        regex: '(annotation)(\\s+\\d+)(\\s*\\[\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\s*\\]\\s*,\\s*\\[\\s*)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\s*\\]\\s*\\]\\s*)(\\s*.*)',
+                    },
+                    {
+                        token: [
+                            'keyword',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'variable.parameter.function.asp',
+                        ],
+                        regex: '(annotation)(\\s+\\d+)(\\s*\\[\\s*)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\s*\\])(\\s+.*)',
+                    },
+                    {
                         token: ['keyword', 'variable.parameter.function.asp'],
-                        regex: '(deaccelerator|accelerator|evolution|note|anchor|annotations|annotation|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
+                        regex: '(deaccelerator|accelerator|evolution|note|anchor|annotations|component|ecosystem|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
                     },
                     {
                         token: [
@@ -203,7 +233,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'variable.parameter.function.asp',
                             'constant.numeric',
                         ],
-                        regex: '(evolve)(\\s*[a-zA-Z0-9\\s*]+)(\\d+(?:\\.\\d{1,})*)',
+                        regex: '(evolve)(\\s*[a-zA-Z0-9\\s*]+)(-?\\d+(?:\\.\\d+)?)',
                     },
                     {
                         token: [
@@ -211,7 +241,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(\\[)(\\d+(?:\\.\\d{1,})*)(\\])',
+                        regex: '(\\[)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
                         token: [
@@ -222,7 +252,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(label)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
+                        regex: '(label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
                         token: [
@@ -249,7 +279,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation',
                             'punctuation',
                         ],
-                        regex: '(\\[*)(\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])(\\]*)',
+                        regex: '(\\[*)(\\[)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])(\\]*)',
                     },
                     {
                         token: [

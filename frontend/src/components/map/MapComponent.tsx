@@ -123,13 +123,13 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     if (line.includes('label')) {
                         const parts = line.split(/\blabel\b/);
                         const updatedFirstPart = parts[0].replace(
-                            /\[(.?|.+?)\]/,
+                            /\[([^[\]]+)\]/,
                             `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
                         );
                         return updatedFirstPart + 'label' + parts[1];
                     } else {
                         return line.replace(
-                            /\[(.?|.+?)\]/,
+                            /\[([^[\]]+)\]/,
                             `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
                         );
                     }

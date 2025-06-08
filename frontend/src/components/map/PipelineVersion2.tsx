@@ -118,7 +118,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
                         if (line.includes('label')) {
                             // If label exists, update only the label coordinates
                             return line.replace(
-                                /\slabel\s\[(.?|.+?)\]+/g,
+                                /\slabel\s\[([^[\]]+)\]/g,
                                 ` label [${correctedX}, ${correctedY}]`,
                             );
                         }

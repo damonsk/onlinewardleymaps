@@ -12,7 +12,7 @@ export const ExistingMaturityMatcher: MatcherResult = {
     },
     action: (line: string, moved: { param1: string | number }): string => {
         return line.replace(
-            /\[(.?|.+?)\]/g,
+            /\[([^[\]]+)\]/g,
             `[${parseFloat(moved.param1.toString()).toFixed(2)}]`,
         );
     },

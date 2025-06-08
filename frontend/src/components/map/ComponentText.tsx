@@ -191,7 +191,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             if (normalizedLine.indexOf(evolveText) === 0) {
                 if (normalizedLine.indexOf('label[') > -1) {
                     return line.replace(
-                        /\slabel\s\[(.?|.+?)\]+/g,
+                        /\slabel\s\[([^[\]]+)\]/g,
                         getLabelText(moved.x, moved.y),
                     );
                 }
@@ -211,7 +211,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             if (normalizedLine.indexOf(searchText) === 0) {
                 if (normalizedLine.indexOf('label[') > -1) {
                     return line.replace(
-                        /\slabel\s\[(.?|.+?)\]+/g,
+                        /\slabel\s\[([^[\]]+)\]/g,
                         getLabelText(moved.x, moved.y),
                     );
                 }
