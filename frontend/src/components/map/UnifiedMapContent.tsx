@@ -1,11 +1,9 @@
-import React, { MouseEvent } from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapElements } from '../../processing/MapElements';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedComponent } from '../../types/unified';
-
-// Import required components
-import { getMapElementsDecorated } from '../../utils/mapProcessing';
+import React, {MouseEvent} from 'react';
+import {MapDimensions} from '../../constants/defaults';
+import {MapElements} from '../../processing/MapElements';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedComponent} from '../../types/unified';
+import {getMapElementsDecorated} from '../../utils/mapProcessing';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
@@ -24,10 +22,6 @@ import MapComponent from './MapComponent';
 import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
 import Note from './Note';
-
-// Phase 4: Component Interface Modernization
-// All adapter functions have been removed
-// Components now use UnifiedComponent type directly
 
 interface ModernUnifiedMapContentProps {
     mapAttitudes: any[];
@@ -215,7 +209,6 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                     ))}
             </g>
 
-            {/* Render annotations box first (background) followed by pipelines and then components */}
             {props.mapAnnotations && props.mapAnnotations.length > 0 && (
                 <AnnotationBox
                     mapStyleDefs={mapStyleDefs}
@@ -231,7 +224,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
 
             <MapPipelines
                 enableNewPipelines={props.enableNewPipelines || false}
-                mapElements={mapElements} /* Using MapElements directly */
+                mapElements={mapElements}
                 mapDimensions={mapDimensions}
                 mapText={mapText}
                 mutateMapText={mutateMapText}
@@ -242,16 +235,18 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
             />
 
             <g id="methods">
-                {(() => getMapElementsDecorated(mapElements).map((methodComp: UnifiedComponent, i: number) => {
-                    return (
-                        <MethodElement
-                            key={`method_${i}`}
-                            methodComponent={methodComp}
-                            mapDimensions={mapDimensions}
-                            mapStyleDefs={mapStyleDefs}
-                            setHighlightLine={setHighlightLineDispatch} />
-                    );
-                }))()}
+                {(() =>
+                    getMapElementsDecorated(mapElements).map((methodComp: UnifiedComponent, i: number) => {
+                        return (
+                            <MethodElement
+                                key={`method_${i}`}
+                                methodComponent={methodComp}
+                                mapDimensions={mapDimensions}
+                                mapStyleDefs={mapStyleDefs}
+                                setHighlightLine={setHighlightLineDispatch}
+                            />
+                        );
+                    }))()}
             </g>
 
             <g id="elements">
