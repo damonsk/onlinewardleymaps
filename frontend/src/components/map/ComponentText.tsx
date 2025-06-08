@@ -6,44 +6,26 @@ import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import RelativeMovable from './RelativeMovable';
 
-// Interface not used in this version but retained for future position updates
-// interface MovedPosition {
-//     x: number;
-//     y: number;
-// }
-
-/**
- * ComponentText Props
- * Uses UnifiedComponent directly instead of ComponentElement
- */
 interface MovedPosition {
     x: number;
     y: number;
 }
 
 interface ModernComponentTextProps {
-    // Original props
-    component: UnifiedComponent; // Using UnifiedComponent directly
+    component: UnifiedComponent;
     cx: string | number;
     cy: string | number;
     styles: any;
     mutateMapText?: (newText: string) => void;
     mapText?: string;
-
-    // Legacy props to maintain compatibility
     id?: string;
-    element?: any; // Using any for the element to maintain compatibility
-    onLabelMove?: (moved: MovedPosition) => void; // Optional callback for label movement
-    scaleFactor?: number; // Added scale factor for zooming
-    mapStyleDefs?: any; // Map style definitions
-    onClick?: () => void; // Click handler for component text
+    element?: any;
+    onLabelMove?: (moved: MovedPosition) => void;
+    scaleFactor?: number;
+    mapStyleDefs?: any;
+    onClick?: () => void;
 }
 
-/**
- * ComponentText
- * Phase 4A: Component Interface Modernization
- * This component accepts UnifiedComponent directly without adapters
- */
 const ComponentText: React.FC<ModernComponentTextProps> = ({
     component,
     cx,
@@ -52,22 +34,18 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     mutateMapText,
     mapText,
     onLabelMove,
-    scaleFactor = 1, // Default to 1 if not provided
+    scaleFactor = 1,
     mapStyleDefs, // eslint-disable-line @typescript-eslint/no-unused-vars
     onClick,
-
-    // Legacy props
     id, // eslint-disable-line @typescript-eslint/no-unused-vars
     element,
 }) => {
     const { enableRenameLabels } = useFeatureSwitches();
     const [editMode, setEditMode] = useState(false);
 
-    // Handle either modern or legacy component props
     const actualComponent = element
         ? {
               name: element.name,
-              // Add other properties as needed
           }
         : component;
 
@@ -101,7 +79,6 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             text !== component.name &&
             component.line
         ) {
-            // Using the rename function with the correct parameters
             rename(
                 component.line,
                 component.name,
