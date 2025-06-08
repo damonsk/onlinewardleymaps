@@ -59,6 +59,8 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
     const x1 = positionCalc.maturityToX(props.pipeline.maturity1 || 0, props.mapDimensions.width);
     const x2 = positionCalc.maturityToX(props.pipeline.maturity2 || 0, props.mapDimensions.width);
     const y = positionCalc.visibilityToY(props.pipeline.visibility, props.mapDimensions.height) + 2;
+    const pipelineBoxHeight = 22; // Height of the pipeline box from ModernPipelineBoxSymbol
+    const centeredY = y + pipelineBoxHeight / 2; // Center the symbols vertically in the pipeline box
 
     // Ensure we have valid dimensions for the pipeline box
     if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
@@ -74,8 +76,8 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
             <ModernPipelineBoxSymbol
                 id={'pipeline_box_' + props.pipeline.id}
                 y={y}
-                x1={x1}
-                x2={x2}
+                x1={x1 - 15}
+                x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
                 stroke={props.mapStyleDefs.component.stroke}
             />
@@ -83,7 +85,7 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                 id={'pipeline_x1_' + props.pipeline.id}
                 onMove={endDragX1}
                 x={x1}
-                y={y}
+                y={centeredY}
                 fixedY={true}
                 fixedX={false}
                 scaleFactor={props.scaleFactor}>
@@ -105,7 +107,7 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                 id={'pipeline_x2_' + props.pipeline.id}
                 onMove={endDragX2}
                 x={x2}
-                y={y}
+                y={centeredY}
                 fixedY={true}
                 fixedX={false}
                 scaleFactor={props.scaleFactor}>
