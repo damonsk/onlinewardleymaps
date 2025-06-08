@@ -54,7 +54,7 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
                 .split('\n')
                 .map(line => {
                     const normalizedLine = line.replace(/\s/g, '');
-                    const searchPattern = 'annotation' + annotation.number + '[';
+                    const searchPattern = `annotation${annotation.number}[`;
 
                     if (normalizedLine.indexOf(searchPattern) !== -1) {
                         if (normalizedLine.indexOf(']]') > -1) {
@@ -69,27 +69,23 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
 
                             const beforeCoords = line.split('[')[0].trim();
                             const afterCoords = line.substr(line.lastIndexOf(']'), line.length - line.lastIndexOf(']'));
-                            const newCoords =
-                                '[' +
-                                extractedOccurances
-                                    .map(e => {
-                                        return '[' + e.trim() + ']';
-                                    })
-                                    .join(',');
-                            return beforeCoords + ' ' + newCoords + afterCoords;
-                        } else {
-                            // Handle single occurrence format: annotation 1 [x,y]
-                            return line.replace(
-                                /\[(.+?)\]/g,
-                                `[${positionCalc.yToVisibility(
-                                    moved.y,
-                                    mapDimensions.height,
-                                )}, ${positionCalc.xToMaturity(moved.x, mapDimensions.width)}]`,
-                            );
+                            const newCoords = `[${extractedOccurances
+                                .map(e => {
+                                    return `[${e.trim()}]`;
+                                })
+                                .join(',')}`;
+                            return `${beforeCoords} ${newCoords}${afterCoords}`;
                         }
-                    } else {
-                        return line;
+                        // Handle single occurrence format: annotation 1 [x,y]
+                        return line.replace(
+                            /\[(.+?)\]/g,
+                            `[${positionCalc.yToVisibility(
+                                moved.y,
+                                mapDimensions.height,
+                            )}, ${positionCalc.xToMaturity(moved.x, mapDimensions.width)}]`,
+                        );
                     }
+                    return line;
                 })
                 .join('\n'),
         );

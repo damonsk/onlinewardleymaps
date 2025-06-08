@@ -25,7 +25,6 @@
         "babel-jest": "^29.7.0",
         "babel-plugin-require-context-hook": "^1.0.0",
         "eslint": "^8.57.0",
-        "eslint-config-airbnb-typescript": "^18.0.0",
         "eslint-config-next": "15.3.2",
         "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-import": "^2.29.1",
