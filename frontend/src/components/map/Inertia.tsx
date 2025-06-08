@@ -26,7 +26,7 @@ const Inertia: React.FC<InertiaProps> = ({
     // Make sure maturity is defined with a proper offset for inertia indicator
     // We add a standard 0.05 offset to position the inertia indicator slightly
     // to the right of the component
-    const adjustedMaturity = maturity + 0.05;
+    const adjustedMaturity = maturity;;
 
     const x = positionCalc.maturityToX(adjustedMaturity, mapDimensions.width);
     const y = positionCalc.visibilityToY(
