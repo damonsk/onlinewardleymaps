@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 import {useContext} from 'react';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
 import {MapElements} from '../processing/MapElements';

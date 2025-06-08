@@ -104,8 +104,9 @@ describe('Given Components Have Pipelines', function () {
             '\n' +
             'component Bar [0.66]' +
             '\n' +
-            'component FooBar [0.41]';
-        '\n' + '}';
+            'component FooBar [0.41]' +
+            '\n' +
+            '}';
         let result = new UnifiedConverter(mockContextValue).parse(actual);
         let me = new MapElements(result);
         let legacyAdapter = me.getLegacyAdapter();

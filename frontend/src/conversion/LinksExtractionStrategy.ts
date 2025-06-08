@@ -102,7 +102,7 @@ export default class LinksExtractionStrategy implements IParseStrategy {
                         context,
                     });
                 }
-            } catch (err) {
+            } catch {
                 errors.push(new ParseError(i));
             }
         }

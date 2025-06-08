@@ -79,9 +79,9 @@ export interface MapAnchors extends NamedComponent {
     evolving: boolean;
 }
 
-export interface MapEvolved {}
-export interface MapPipelines {}
-export interface MapComponents extends NamedComponent {}
+export type MapEvolved = Record<string, unknown>;
+export type MapPipelines = Record<string, unknown>;
+export type MapComponents = NamedComponent;
 
 export interface MapAnnotation {
     maturity: number;
@@ -103,7 +103,7 @@ export interface MapNotes {
     maturity: number;
     line: number;
 }
-export interface MapEvolution extends Array<EvolutionLabel> {}
+export type MapEvolution = Array<EvolutionLabel>;
 export interface MapMethods {
     id?: number | string;
     line?: number;
@@ -111,15 +111,15 @@ export interface MapMethods {
     name: string;
     method: string;
 }
-export interface MapSubmaps extends NamedComponent {}
-export interface MapMarkets extends NamedComponent {}
-export interface MapEcosystems {}
+export type MapSubmaps = NamedComponent;
+export type MapMarkets = NamedComponent;
+export type MapEcosystems = Record<string, unknown>;
 export interface MapUrls {
     name: string;
     url: string;
 }
 
-export interface MapAttitudes {}
+export type MapAttitudes = Record<string, unknown>;
 
 export interface MapAccelerators {
     id: string;

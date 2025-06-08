@@ -122,7 +122,7 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                     }
                     elementsToReturn.push(baseElement);
                 }
-            } catch (l) {
+            } catch {
                 errors.push(new ParseError(i));
             }
         }

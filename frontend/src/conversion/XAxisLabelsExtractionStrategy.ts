@@ -24,7 +24,7 @@ export default class XAxisLabelsExtractionStrategy implements IParseStrategy {
                         ],
                     };
                 }
-            } catch (err) {
+            } catch {
                 errors.push(new ParseError(i));
             }
         }
