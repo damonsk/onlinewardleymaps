@@ -53,11 +53,21 @@ function debounce<T extends (...args: any[]) => void>(
 }
 
 const getHeight = () => {
-    const winHeight = window.innerHeight;
-    const topNavHeight =
-        document.getElementById('top-nav-wrapper')?.clientHeight;
-    const titleHeight = document.getElementById('title')?.clientHeight;
-    return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 65; // Reduced from 95 to 65, saving 30px
+    const mapElement = document.getElementById('map');
+    const clientHeight = mapElement?.clientHeight;
+    
+    // If map element doesn't exist or has no height, fall back to window calculation
+    if (!clientHeight || clientHeight < 100) {
+        const winHeight = window.innerHeight;
+        const topNavHeight =
+            document.getElementById('top-nav-wrapper')?.clientHeight;
+        const titleHeight = document.getElementById('title')?.clientHeight;
+        return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 65; // Fallback calculation
+    }
+    
+    // Use the actual map container height with margin for toolbar area
+    // The toolbar is positioned absolutely at bottom: 20px, so we need some space for it
+    return Math.max(clientHeight - 60, 400); // Increased margin to account for toolbar
 };
 const getWidth = () => {
     const mapElement = document.getElementById('map');
@@ -457,13 +467,25 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
         // Handle panel resize events specifically
         const handlePanelResize = (event: CustomEvent) => {
-            // Update canvas dimensions when panel resizes
+            // Update both map dimensions and canvas dimensions when panel resizes
+            // This should work exactly like browser window resize
             setTimeout(() => {
+                const newWidth = getWidth();
+                const newHeight = getHeight();
+                
+                // Update map dimensions (like window resize does)
+                const dimensions = {
+                    width: mapSize.width > 0 ? mapSize.width : 100 + newWidth,
+                    height: mapSize.height > 0 ? mapSize.height : newHeight,
+                };
+                mapActions.setMapDimensions(dimensions);
+                
+                // Update canvas dimensions
                 mapActions.setMapCanvasDimensions({
-                    width: getWidth(),
-                    height: getHeight(),
+                    width: newWidth,
+                    height: newHeight,
                 });
-            }, 50); // Small delay to ensure DOM has updated
+            }, 200); // Delay to ensure DOM has fully updated and map container has resized
         };
 
         // Handle standard window resize events (but not panel resizes)

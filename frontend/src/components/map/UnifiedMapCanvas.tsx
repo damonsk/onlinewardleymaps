@@ -229,46 +229,29 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     }, [value]);
 
-    // Initial fit to viewer on mount only (not when content changes)
+    // Initial fit to viewer when map dimensions are available
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (Viewer.current && Viewer.current.fitSelection) {
-                // Restore margins to include title and labels, but more conservative
-                Viewer.current.fitSelection(
-                    -50, // Margin for value chain labels on left
-                    -80, // Margin for title at top
-                    mapDimensions.width + 100, // Margin for evolution labels on right
-                    mapDimensions.height + 120, // Margin for evolution labels at bottom
-                );
-            }
-        }, 300);
-
-        return () => clearTimeout(timer);
-    }, []); // Empty dependency array - only run once on mount
-
-    // Handle panel resize events - simply refit the map to the new container size
-    useEffect(() => {
-        const handlePanelResize = (event: CustomEvent) => {
-            // Delay the adjustment to ensure the DOM has updated
-            setTimeout(() => {
+        // Only run initial fit once when mapDimensions are first set and have actual values
+        if (mapDimensions.width > 0 && mapDimensions.height > 0) {
+            const timer = setTimeout(() => {
                 if (Viewer.current && Viewer.current.fitSelection) {
-                    // Just do a standard fit to the map dimensions without any scaling manipulation
-                    // The SVG viewer will automatically scale the content to fit the available space
+                    // Use conservative margins to avoid clipping while still reducing whitespace
                     Viewer.current.fitSelection(
-                        -50, // Margin for value chain labels on left
-                        -80, // Margin for title at top
-                        mapDimensions.width + 100, // Margin for evolution labels on right
-                        mapDimensions.height + 120, // Margin for evolution labels at bottom
+                        -40, // Margin for value chain labels on left
+                        -50, // Margin for title at top  
+                        mapDimensions.width + 40, // Margin for evolution labels on right
+                        mapDimensions.height + 60, // Margin for evolution labels at bottom
                     );
                 }
-            }, 200); // Delay to ensure DOM updates are complete
-        };
+            }, 300);
 
-        window.addEventListener('panelResize', handlePanelResize as EventListener);
-        return () => {
-            window.removeEventListener('panelResize', handlePanelResize as EventListener);
-        };
-    }, [mapDimensions]);
+            return () => clearTimeout(timer);
+        }
+    }, [mapDimensions.width, mapDimensions.height]); // Depend on actual dimension values
+
+    // Note: Panel resize is now handled by dimension updates in MapEnvironment
+    // Dimension updates will automatically trigger re-render with proper scaling
+    // No need for manual fitSelection calls on panel resize
 
     // Get the correct background fill based on the map style
     const fill = {
@@ -394,13 +377,13 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         handleChangeTool={(event, newTool) => setTool(newTool)}
                         _fitToViewer={() => {
                             if (Viewer.current) {
-                                // Restore proper margins to show title and labels
+                                // Use conservative margins to avoid clipping
                                 if (Viewer.current.fitSelection) {
                                     Viewer.current.fitSelection(
-                                        -50, // Margin for value chain labels on left
-                                        -80, // Margin for title at top
-                                        mapDimensions.width + 100, // Margin for evolution labels on right
-                                        mapDimensions.height + 120, // Margin for evolution labels at bottom
+                                        -60, // Margin for value chain labels on left
+                                        -70, // Margin for title at top
+                                        mapDimensions.width + 80, // Margin for evolution labels on right
+                                        mapDimensions.height + 90, // Margin for evolution labels at bottom
                                     );
                                 }
                             }

@@ -51,10 +51,13 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         if (initialWidth !== defaultLeftWidth) {
             setLeftWidth(initialWidth);
             onResize?.(initialWidth);
-            // Dispatch panelResize event to notify the map, but not generic resize
-            setTimeout(() => {
+            
+            // Wait for map to be properly initialized before triggering resize
+            const checkMapReady = () => {
                 const mapContainer = document.getElementById('map');
-                if (mapContainer) {
+                const mapCanvas = mapContainer?.querySelector('svg');
+                
+                if (mapContainer && mapCanvas) {
                     const panelResizeEvent = new CustomEvent('panelResize', {
                         detail: {
                             leftWidthPercent: initialWidth,
@@ -64,8 +67,14 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         }
                     });
                     window.dispatchEvent(panelResizeEvent);
+                } else {
+                    // Map not ready yet, check again in a bit
+                    setTimeout(checkMapReady, 200);
                 }
-            }, 100);
+            };
+            
+            // Start checking after a reasonable delay
+            setTimeout(checkMapReady, 800);
         }
     }, []);
 
