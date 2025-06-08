@@ -1,4 +1,4 @@
-import { Moved, Replacer } from '../../../types/base';
+import {Moved, Replacer} from '../../../types/base';
 
 export const NotDefinedCoordsMatcher: Replacer = {
     matcher: (line: string, identifier: string, type: string): boolean => {

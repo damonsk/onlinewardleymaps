@@ -2,24 +2,15 @@
 // Modern UnifiedMapCanvas that accepts UnifiedWardleyMap directly
 // This component reduces the prop drilling with a clean unified interface
 
-import React, { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
-import {
-    ReactSVGPanZoom,
-    TOOL_NONE,
-    UncontrolledReactSVGPanZoom,
-} from 'react-svg-pan-zoom';
-import {
-    EvolutionStages,
-    MapCanvasDimensions,
-    MapDimensions,
-    Offsets,
-} from '../../constants/defaults';
-import { MapElements } from '../../processing/MapElements';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedWardleyMap } from '../../types/unified/map';
-import { processLinks } from '../../utils/mapProcessing';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
-import { useModKeyPressedConsumer } from '../KeyPressContext';
+import React, {MouseEvent, useEffect, useMemo, useRef, useState} from 'react';
+import {ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
+import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
+import {MapElements} from '../../processing/MapElements';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedWardleyMap} from '../../types/unified/map';
+import {processLinks} from '../../utils/mapProcessing';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {useModKeyPressedConsumer} from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import PositionCalculator from './PositionCalculator';
@@ -42,9 +33,7 @@ interface ModernUnifiedMapCanvasProps {
 
     // Interaction handlers
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    setNewComponentContext: React.Dispatch<
-        React.SetStateAction<{ x: string; y: string } | null>
-    >;
+    setNewComponentContext: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
     launchUrl: (urlId: string) => void;
     showLinkedEvolved: boolean;
 
@@ -56,13 +45,12 @@ interface ModernUnifiedMapCanvasProps {
     mapAnnotationsPresentation: any;
 
     // Optional handlers
-    handleMapCanvasClick?: (pos: { x: number; y: number }) => void;
+    handleMapCanvasClick?: (pos: {x: number; y: number}) => void;
 }
 
 function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const featureSwitches = useFeatureSwitches();
-    const { enableAccelerators, showMapToolbar, allowMapZoomMouseWheel } =
-        featureSwitches;
+    const {enableAccelerators, showMapToolbar, allowMapZoomMouseWheel} = featureSwitches;
 
     const {
         wardleyMap,
@@ -91,7 +79,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     // Process links using the UnifiedMapElements instance
     const processedLinks = useMemo(() => {
         return processLinks(
-            wardleyMap.links.map((link) => ({
+            wardleyMap.links.map(link => ({
                 start: link.start,
                 end: link.end,
                 line: link.line ?? 0,
@@ -102,7 +90,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 context: link.context ?? '',
             })),
             mapElements,
-            wardleyMap.anchors.map((anchor) => ({
+            wardleyMap.anchors.map(anchor => ({
                 ...anchor,
                 line: anchor.line ?? 0,
                 evolved: anchor.evolved ?? false,
@@ -168,7 +156,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const handleMapClick = (event: any) => {
         if (enableZoomOnClick && props.handleMapCanvasClick) {
             // Extract position from event and call the handler
-            const pos = { x: event.x || 0, y: event.y || 0 };
+            const pos = {x: event.x || 0, y: event.y || 0};
             props.handleMapCanvasClick(pos);
         }
     };
@@ -176,16 +164,12 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const handleMapDoubleClick = (event: any) => {
         if (enableZoomOnClick) {
             // Handle double click to add new component
-            const svgPos = { x: event.x || 0, y: event.y || 0 };
+            const svgPos = {x: event.x || 0, y: event.y || 0};
 
             // Convert SVG coordinates to maturity/visibility values
             const positionCalc = new PositionCalculator();
-            const maturity = parseFloat(
-                positionCalc.xToMaturity(svgPos.x, mapDimensions.width),
-            );
-            const visibility = parseFloat(
-                positionCalc.yToVisibility(svgPos.y, mapDimensions.height),
-            );
+            const maturity = parseFloat(positionCalc.xToMaturity(svgPos.x, mapDimensions.width));
+            const visibility = parseFloat(positionCalc.yToVisibility(svgPos.y, mapDimensions.height));
 
             console.log('Double-click coordinates:', {
                 svgX: svgPos.x,
@@ -206,16 +190,14 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         // Handle mouse move if needed
     };
 
-    const clicked = function (ctx: { el: any; e: MouseEvent<Element> | null }) {
+    const clicked = function (ctx: {el: any; e: MouseEvent<Element> | null}) {
         console.log('mapElementsClicked::clicked', ctx);
         setHighlightLine(ctx.el.line || 0);
         if (isModKeyPressed === false) return;
         if (ctx.e === null) return;
-        const s = [...mapElementsClicked, { el: ctx.el, e: ctx.e }];
+        const s = [...mapElementsClicked, {el: ctx.el, e: ctx.e}];
         if (s.length === 2) {
-            mutateMapText(
-                mapText + '\r\n' + s.map((r) => r.el.name).join('->'),
-            );
+            mutateMapText(mapText + '\r\n' + s.map(r => r.el.name).join('->'));
             setMapElementsClicked([]);
         } else setMapElementsClicked(s);
     };
@@ -244,22 +226,16 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 if (Viewer.current && Viewer.current.fitSelection) {
                     // Check if map has actually rendered components
                     const mapContainer = document.getElementById('map');
-                    const renderedComponents =
-                        mapContainer?.querySelectorAll('circle, rect');
+                    const renderedComponents = mapContainer?.querySelectorAll('circle, rect');
 
-                    console.log(
-                        'Checking rendered components:',
-                        renderedComponents?.length,
-                    );
+                    console.log('Checking rendered components:', renderedComponents?.length);
 
                     if (renderedComponents && renderedComponents.length > 0) {
                         console.log('Components found, scheduling fit');
                         // Wait for any localStorage restoration or other initialization to complete
                         setTimeout(() => {
                             if (Viewer.current && Viewer.current.fitSelection) {
-                                console.log(
-                                    'EXECUTING INITIAL FIT TO SELECTION',
-                                );
+                                console.log('EXECUTING INITIAL FIT TO SELECTION');
                                 // Gentle fit with conservative margins
                                 Viewer.current.fitSelection(
                                     -60, // Margin for value chain labels on left
@@ -304,16 +280,10 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         dark: '#353347',
     };
 
-    const svgBackground =
-        mapStyleDefs.className === 'wardley'
-            ? 'white'
-            : fill[mapStyleDefs.className as keyof typeof fill] || 'white';
+    const svgBackground = mapStyleDefs.className === 'wardley' ? 'white' : fill[mapStyleDefs.className as keyof typeof fill] || 'white';
 
     return (
-        <div
-            id="map-canvas"
-            style={{ width: '100%', height: '100%', position: 'relative' }}
-        >
+        <div id="map-canvas" style={{width: '100%', height: '100%', position: 'relative'}}>
             {/* Use UncontrolledReactSVGPanZoom directly instead of nested components */}
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
@@ -347,8 +317,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                     width: '100%',
                     height: '100%', // Use full height since toolbar is now fixed position
                     display: 'block',
-                }}
-            >
+                }}>
                 <svg
                     className={[mapStyleDefs.className, 'mapCanvas'].join(' ')}
                     width={mapDimensions.width + 105}
@@ -357,8 +326,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                     id="svgMap"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
-                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                >
+                    xmlnsXlink="http://www.w3.org/1999/xlink">
                     <MapGridGroup
                         mapDimensions={mapDimensions}
                         mapStyleDefs={mapStyleDefs}
@@ -382,15 +350,11 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         setHighlightLine={setHighlightLine}
                         clicked={clicked}
                         enableAccelerators={enableAccelerators}
-                        mapAccelerators={wardleyMap.accelerators.map(
-                            (accelerator: any) => ({
-                                ...accelerator,
-                                type: accelerator.deaccelerator
-                                    ? 'deaccelerator'
-                                    : 'accelerator',
-                                label: accelerator.label || { x: 0, y: 0 },
-                            }),
-                        )}
+                        mapAccelerators={wardleyMap.accelerators.map((accelerator: any) => ({
+                            ...accelerator,
+                            type: accelerator.deaccelerator ? 'deaccelerator' : 'accelerator',
+                            label: accelerator.label || {x: 0, y: 0},
+                        }))}
                         mapNotes={wardleyMap.notes}
                         mapAnnotations={wardleyMap.annotations}
                         mapAnnotationsPresentation={mapAnnotationsPresentation}
@@ -410,8 +374,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         padding: '8px',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                         border: '1px solid rgba(0,0,0,0.1)',
-                    }}
-                >
+                    }}>
                     <MapCanvasToolbar
                         shouldHideNav={props.shouldHideNav || (() => {})}
                         hideNav={props.hideNav || false}

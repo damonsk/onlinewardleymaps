@@ -1,7 +1,7 @@
 // Unified component type system - Phase 1 of refactoring plan
 // This file consolidates multiple overlapping component interfaces into a coherent type hierarchy
 
-import { ComponentDecorator, ComponentLabel } from '../base';
+import {ComponentDecorator, ComponentLabel} from '../base';
 
 /**
  * Base interface for all map elements that have positional properties
@@ -46,19 +46,14 @@ export interface DecoratedElement {
  * Interface for elements that can have URLs
  */
 export interface UrlElement {
-    url?: string | { url: string; [key: string]: any };
+    url?: string | {url: string; [key: string]: any};
 }
 
 /**
  * Unified component interface that replaces MapElement, Component, MapComponents, etc.
  * This combines all the properties that were scattered across multiple interfaces
  */
-export interface UnifiedComponent
-    extends BaseMapElement,
-        LabelableElement,
-        EvolvableElement,
-        DecoratedElement,
-        UrlElement {
+export interface UnifiedComponent extends BaseMapElement, LabelableElement, EvolvableElement, DecoratedElement, UrlElement {
     type: string;
     pipeline?: boolean;
 }
@@ -89,12 +84,7 @@ export interface MapEcosystemData extends UnifiedComponent {
 /**
  * Union type for all component types
  */
-export type ComponentData =
-    | MapComponentData
-    | MapAnchorData
-    | MapSubmapData
-    | MapMarketData
-    | MapEcosystemData;
+export type ComponentData = MapComponentData | MapAnchorData | MapSubmapData | MapMarketData | MapEcosystemData;
 
 /**
  * Interface for evolved elements
@@ -139,40 +129,27 @@ export interface PipelineData {
 /**
  * Type guards for component types
  */
-export const isComponentType = (
-    component: UnifiedComponent,
-    type: string,
-): boolean => {
+export const isComponentType = (component: UnifiedComponent, type: string): boolean => {
     return component.type === type;
 };
 
-export const isComponent = (
-    component: UnifiedComponent,
-): component is MapComponentData => {
+export const isComponent = (component: UnifiedComponent): component is MapComponentData => {
     return component.type === 'component';
 };
 
-export const isAnchor = (
-    component: UnifiedComponent,
-): component is MapAnchorData => {
+export const isAnchor = (component: UnifiedComponent): component is MapAnchorData => {
     return component.type === 'anchor';
 };
 
-export const isSubmap = (
-    component: UnifiedComponent,
-): component is MapSubmapData => {
+export const isSubmap = (component: UnifiedComponent): component is MapSubmapData => {
     return component.type === 'submap';
 };
 
-export const isMarket = (
-    component: UnifiedComponent,
-): component is MapMarketData => {
+export const isMarket = (component: UnifiedComponent): component is MapMarketData => {
     return component.decorators?.market ?? false;
 };
 
-export const isEcosystem = (
-    component: UnifiedComponent,
-): component is MapEcosystemData => {
+export const isEcosystem = (component: UnifiedComponent): component is MapEcosystemData => {
     return component.decorators?.ecosystem ?? false;
 };
 
@@ -180,13 +157,12 @@ export const isEcosystem = (
  * Helper functions for component creation with default values
  */
 export const createUnifiedComponent = (
-    partial: Partial<UnifiedComponent> &
-        Pick<UnifiedComponent, 'id' | 'name' | 'type'>,
+    partial: Partial<UnifiedComponent> & Pick<UnifiedComponent, 'id' | 'name' | 'type'>,
 ): UnifiedComponent => {
     return {
         maturity: 0,
         visibility: 0,
-        label: { x: 0, y: 0 },
+        label: {x: 0, y: 0},
         evolving: false,
         evolved: false,
         inertia: false,
@@ -199,19 +175,17 @@ export const createUnifiedComponent = (
 };
 
 export const createEvolvedElement = (
-    partial: Partial<EvolvedElementData> &
-        Pick<EvolvedElementData, 'name' | 'maturity'>,
+    partial: Partial<EvolvedElementData> & Pick<EvolvedElementData, 'name' | 'maturity'>,
 ): EvolvedElementData => {
     return {
-        label: { x: 0, y: 0 },
+        label: {x: 0, y: 0},
         increaseLabelSpacing: 0,
         ...partial,
     };
 };
 
 export const createPipeline = (
-    partial: Partial<PipelineData> &
-        Pick<PipelineData, 'id' | 'name' | 'visibility' | 'components'>,
+    partial: Partial<PipelineData> & Pick<PipelineData, 'id' | 'name' | 'visibility' | 'components'>,
 ): PipelineData => {
     return {
         inertia: false,

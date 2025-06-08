@@ -13,41 +13,20 @@ export default class PipelineStrategyRunner implements IParseStrategy {
     childKeyword: string;
     containerName: string;
     config: IProvideBaseStrategyRunnerConfig;
-    decorators: ((
-        baseElement: IProvideBaseElement,
-        element: string,
-        config: IProvideDecoratorsConfig,
-    ) => void)[];
-    childDecorators: ((
-        baseElement: IProvideBaseElement,
-        element: string,
-        config: IProvideDecoratorsConfig,
-    ) => void)[];
+    decorators: ((baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void)[];
+    childDecorators: ((baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void)[];
     constructor(
         data: string,
         config: IProvideBaseStrategyRunnerConfig,
-        decorators: Array<
-            (
-                baseElement: IProvideBaseElement,
-                element: string,
-                config: IProvideDecoratorsConfig,
-            ) => void
-        >,
-        childDecorators: Array<
-            (
-                baseElement: IProvideBaseElement,
-                element: string,
-                config: IProvideDecoratorsConfig,
-            ) => void
-        >,
+        decorators: Array<(baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void>,
+        childDecorators: Array<(baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void>,
     ) {
         this.data = data;
         this.keyword = config.keyword;
         this.childKeyword = 'component';
         this.containerName = config.containerName;
         this.config = config;
-        this.decorators =
-            decorators !== null && decorators !== undefined ? decorators : [];
+        this.decorators = decorators !== null && decorators !== undefined ? decorators : [];
         this.childDecorators = childDecorators;
     }
 
@@ -68,7 +47,7 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                         },
                         this.config.defaultAttributes,
                     );
-                    this.decorators.forEach((f) =>
+                    this.decorators.forEach(f =>
                         f(baseElement, element, {
                             keyword: this.keyword,
                             containerName: this.containerName,
@@ -79,45 +58,28 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                     const scanForPipelineComponents = (
                         allLines: string | any[],
                         startingIndex: number,
-                        elementToMutate: { components: any[] },
+                        elementToMutate: {components: any[]},
                         decorators: any[],
                     ) => {
                         const childComponents = [];
                         let hasPassedOpeningContainer = false;
 
-                        for (
-                            let j = 1 + startingIndex;
-                            j < allLines.length;
-                            j++
-                        ) {
+                        for (let j = 1 + startingIndex; j < allLines.length; j++) {
                             const currentLine = allLines[j].trim();
 
-                            if (
-                                currentLine.indexOf('{') > -1 &&
-                                !hasPassedOpeningContainer
-                            ) {
+                            if (currentLine.indexOf('{') > -1 && !hasPassedOpeningContainer) {
                                 hasPassedOpeningContainer = true;
                             }
 
-                            if (
-                                currentLine.indexOf(`${this.keyword} `) === 0 &&
-                                !hasPassedOpeningContainer
-                            ) {
+                            if (currentLine.indexOf(`${this.keyword} `) === 0 && !hasPassedOpeningContainer) {
                                 break;
                             }
 
-                            if (
-                                hasPassedOpeningContainer &&
-                                currentLine.indexOf('}') > -1
-                            ) {
+                            if (hasPassedOpeningContainer && currentLine.indexOf('}') > -1) {
                                 break; // We hit a new pipeline or the closing bracket, stop extracting
                             }
 
-                            if (
-                                hasPassedOpeningContainer &&
-                                currentLine.indexOf(`${this.childKeyword} `) ===
-                                    0
-                            ) {
+                            if (hasPassedOpeningContainer && currentLine.indexOf(`${this.childKeyword} `) === 0) {
                                 const pipelineComponent = Object.assign(
                                     {
                                         id: 1 + startingIndex + '-' + j,
@@ -126,7 +88,7 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                                     this.config.defaultAttributes,
                                 );
 
-                                decorators.forEach((decorator) => {
+                                decorators.forEach(decorator => {
                                     decorator(pipelineComponent, currentLine, {
                                         keyword: this.childKeyword,
                                     });
@@ -139,22 +101,13 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                         elementToMutate.components = childComponents;
                     };
 
-                    scanForPipelineComponents(
-                        lines,
-                        i,
-                        baseElement,
-                        this.childDecorators,
-                    );
+                    scanForPipelineComponents(lines, i, baseElement, this.childDecorators);
 
                     if (baseElement.components.length > 0) {
                         // now, find the most left and most right child components, overwrite the pipeline maturities.
                         let mostLeft = 1;
                         let mostRight = 0;
-                        for (
-                            let j = 0;
-                            j < baseElement.components.length;
-                            j++
-                        ) {
+                        for (let j = 0; j < baseElement.components.length; j++) {
                             const child = baseElement.components[j];
                             if (child.maturity < mostLeft) {
                                 mostLeft = child.maturity;
@@ -173,6 +126,6 @@ export default class PipelineStrategyRunner implements IParseStrategy {
                 errors.push(new ParseError(i));
             }
         }
-        return { [this.containerName]: elementsToReturn, errors };
+        return {[this.containerName]: elementsToReturn, errors};
     }
 }

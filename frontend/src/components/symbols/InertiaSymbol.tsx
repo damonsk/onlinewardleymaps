@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 
 interface InertiaSymbolProps {
     id?: string;
@@ -16,14 +16,7 @@ interface InertiaSymbolProps {
  * This component displays the visual representation of inertia on the map
  * Represented as a vertical line indicating resistance to change
  */
-const InertiaSymbol: React.FC<InertiaSymbolProps> = ({
-    id,
-    x,
-    y,
-    stroke = 'black',
-    strokeWidth = 6,
-    className = '',
-}) => {
+const InertiaSymbol: React.FC<InertiaSymbolProps> = ({id, x, y, stroke = 'black', strokeWidth = 6, className = ''}) => {
     return (
         <line
             id={id}

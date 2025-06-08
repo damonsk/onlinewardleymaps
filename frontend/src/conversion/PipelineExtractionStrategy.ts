@@ -1,5 +1,5 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-import { IParseStrategy, IProvideFeatureSwitches } from '../types/base';
+import {IParseStrategy, IProvideFeatureSwitches} from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
 import PipelineStrategyRunner from './PipelineStrategyRunner';
 
@@ -19,17 +19,10 @@ export default class PipelineExtractionStrategy implements IParseStrategy {
                 {
                     keyword: this.keyword,
                     containerName: this.containerName,
-                    defaultAttributes: { increaseLabelSpacing: 0 },
+                    defaultAttributes: {increaseLabelSpacing: 0},
                 },
-                [
-                    ExtractionFunctions.setName,
-                    ExtractionFunctions.setPipelineMaturity,
-                ],
-                [
-                    ExtractionFunctions.setName,
-                    ExtractionFunctions.setPipelineComponentMaturity,
-                    ExtractionFunctions.setLabel,
-                ],
+                [ExtractionFunctions.setName, ExtractionFunctions.setPipelineMaturity],
+                [ExtractionFunctions.setName, ExtractionFunctions.setPipelineComponentMaturity, ExtractionFunctions.setLabel],
             );
         } else {
             this.baseRunner = new BaseStrategyRunner(
@@ -37,12 +30,9 @@ export default class PipelineExtractionStrategy implements IParseStrategy {
                 {
                     keyword: this.keyword,
                     containerName: this.containerName,
-                    defaultAttributes: { increaseLabelSpacing: 0 },
+                    defaultAttributes: {increaseLabelSpacing: 0},
                 },
-                [
-                    ExtractionFunctions.setName,
-                    ExtractionFunctions.setPipelineMaturity,
-                ],
+                [ExtractionFunctions.setName, ExtractionFunctions.setPipelineMaturity],
             );
         }
     }

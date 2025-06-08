@@ -1,11 +1,4 @@
-import React, {
-    ChangeEvent,
-    ChangeEventHandler,
-    memo,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, memo, useCallback, useEffect, useState} from 'react';
 import {
     BuildMethodIcon,
     BuyMethodIcon,
@@ -17,7 +10,7 @@ import {
     OutSourceMethodIcon,
 } from '../symbols/icons';
 
-import { TextField } from '@mui/material';
+import {TextField} from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -26,17 +19,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { ThemeProvider } from '@mui/material/styles';
-import { MapTheme } from '../../constants/mapstyles';
-import { lightTheme } from '../../theme/index';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
+import {ThemeProvider} from '@mui/material/styles';
+import {MapTheme} from '../../constants/mapstyles';
+import {lightTheme} from '../../theme/index';
 
 export interface QuickAddProps {
-    newComponentContext: { x: string; y: string } | null;
+    newComponentContext: {x: string; y: string} | null;
     mutateMapText: (newText: string) => void;
-    setNewComponentContext: React.Dispatch<
-        React.SetStateAction<{ x: string; y: string } | null>
-    >;
+    setNewComponentContext: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
     mapText: string;
     mapStyleDefs: MapTheme;
 }
@@ -51,51 +42,41 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
     const icons = [
         {
             Icon: ComponentIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}]`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}]`,
         },
         {
             Icon: InertiaIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}] inertia`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}] inertia`,
         },
         {
             Icon: MarketIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}] (market)`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}] (market)`,
         },
         {
             Icon: EcosystemIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}] (ecosystem)`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}] (ecosystem)`,
         },
         {
             Icon: BuyMethodIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}] (buy)`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}] (buy)`,
         },
         {
             Icon: BuildMethodIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}] (build)`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}] (build)`,
         },
         {
             Icon: OutSourceMethodIcon,
-            template: (val: string, y: string, x: string) =>
-                `component ${val} [${y}, ${x}] (outsource)`,
+            template: (val: string, y: string, x: string) => `component ${val} [${y}, ${x}] (outsource)`,
         },
         {
             Icon: GenericNoteIcon,
-            template: (val: string, y: string, x: string) =>
-                `note ${val} [${y}, ${x}]`,
+            template: (val: string, y: string, x: string) => `note ${val} [${y}, ${x}]`,
         },
     ];
     const [showAdd, setShowAdd] = useState(false);
     const [typeToUse, setTypeToUse] = useState(0);
     const [value, setValue] = React.useState('');
-    const handleChange: ChangeEventHandler<HTMLInputElement> = (
-        event: ChangeEvent<HTMLInputElement>,
-    ) => {
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (event: ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
     };
 
@@ -129,11 +110,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
         setShowAdd(false);
 
         // Use the coordinates directly - they're already in the correct format
-        const componentString = icons[typeToUse].template(
-            value.trim(),
-            newComponentContext.y,
-            newComponentContext.x,
-        );
+        const componentString = icons[typeToUse].template(value.trim(), newComponentContext.y, newComponentContext.x);
 
         // Add the new component to the map text
         mutateMapText(mapText + `\r\n${componentString}`);
@@ -147,8 +124,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                     open={showAdd}
                     onClose={cancelShowAdd}
                     aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
+                    aria-describedby="alert-dialog-description">
                     <DialogTitle id="alert-dialog-title">Quick Add</DialogTitle>
                     <DialogContent>
                         <FormControl
@@ -158,21 +134,17 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                                 '.MuiInputBase-root:before': {
                                     border: '0',
                                 },
-                            }}
-                        >
-                            <InputLabel id="type-autowidth-label">
-                                Type
-                            </InputLabel>
+                            }}>
+                            <InputLabel id="type-autowidth-label">Type</InputLabel>
                             <Select
                                 labelId="type-autowidth-label"
                                 id="demo-simple-select-autowidth"
                                 value={typeToUse}
                                 onChange={handleChaneOfComponent}
                                 label="Type"
-                                variant="standard"
-                            >
+                                variant="standard">
                                 {icons.map((available, idx) => {
-                                    const { Icon } = available;
+                                    const {Icon} = available;
                                     return (
                                         <MenuItem key={idx} value={idx}>
                                             <Icon
@@ -188,7 +160,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                                 })}
                             </Select>
                         </FormControl>
-                        <FormControl sx={{ m: 1, minWidth: 80 }}>
+                        <FormControl sx={{m: 1, minWidth: 80}}>
                             <TextField
                                 id="outlined-multiline-flexible"
                                 label="Text"
@@ -201,7 +173,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                                         height: '40px',
                                     },
                                 }}
-                                onKeyPress={(e) => {
+                                onKeyPress={e => {
                                     if (e.key === 'Enter') addNewComponent();
                                 }}
                             />

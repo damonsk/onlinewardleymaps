@@ -21,7 +21,7 @@ export interface MapElement {
     decorators?: ComponentDecorator;
     increaseLabelSpacing: number;
     pipeline?: boolean;
-    url?: { name: string; url: string };
+    url?: {name: string; url: string};
 }
 
 export interface LinkExtractionStrategy {
@@ -256,11 +256,7 @@ export interface MapPresentationStyle {
     size: MapSize;
 }
 
-export type MatcherFunction = (
-    line: string,
-    identifier: string,
-    type: string,
-) => boolean;
+export type MatcherFunction = (line: string, identifier: string, type: string) => boolean;
 
 export type ActionFunction = (line: string, moved: any) => string;
 

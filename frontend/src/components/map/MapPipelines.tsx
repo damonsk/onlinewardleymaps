@@ -1,9 +1,9 @@
-import React, { MouseEvent } from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapElements } from '../../processing/MapElements';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedComponent } from '../../types/unified';
-import { PipelineData } from '../../types/unified/components';
+import React, {MouseEvent} from 'react';
+import {MapDimensions} from '../../constants/defaults';
+import {MapElements} from '../../processing/MapElements';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedComponent} from '../../types/unified';
+import {PipelineData} from '../../types/unified/components';
 import Pipeline from './Pipeline';
 import PipelineVersion2 from './PipelineVersion2';
 
@@ -25,10 +25,7 @@ interface ModernMapPipelinesProps {
     pipelines?: PipelineData[];
 
     // Optional click handler for linking functionality
-    clicked?: (data: {
-        el: UnifiedComponent;
-        e: MouseEvent<Element> | null;
-    }) => void;
+    clicked?: (data: {el: UnifiedComponent; e: MouseEvent<Element> | null}) => void;
 }
 
 /**
@@ -63,7 +60,7 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
     } else {
         console.log(
             `Rendering ${pipelinesToRender.length} pipelines:`,
-            pipelinesToRender.map((p) => ({
+            pipelinesToRender.map(p => ({
                 name: p.name,
                 visibility: p.visibility,
                 components: p.components?.length || 0,
@@ -73,13 +70,13 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
 
     // Helper function to adapt UnifiedComponent to the expected format for linking
     const linkingFunction = clicked
-        ? (data: { el: any; e: MouseEvent<Element> }) => {
+        ? (data: {el: any; e: MouseEvent<Element>}) => {
               // Create a component with the necessary pipeline properties to match MapElement
               const componentWithVisibility = {
                   ...data.el,
                   visibility: data.el.visibility || 0,
               };
-              clicked({ el: componentWithVisibility, e: data.e });
+              clicked({el: componentWithVisibility, e: data.e});
           }
         : undefined;
 
@@ -87,7 +84,7 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
         <g id="pipelines">
             {enableNewPipelines &&
                 pipelinesToRender
-                    .filter((p) => p.hidden !== true)
+                    .filter(p => p.hidden !== true)
                     .map((p, i) => (
                         <React.Fragment key={i}>
                             {p.components && p.components.length > 0 ? (
@@ -99,9 +96,7 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
                                     mutateMapText={mutateMapText}
                                     mapStyleDefs={mapStyleDefs}
                                     setHighlightLine={handleSetHighlightLine}
-                                    linkingFunction={
-                                        linkingFunction || (() => {})
-                                    }
+                                    linkingFunction={linkingFunction || (() => {})}
                                     scaleFactor={scaleFactor}
                                 />
                             ) : (

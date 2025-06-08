@@ -1,6 +1,6 @@
-import React, { memo, MouseEvent } from 'react';
-import { MapComponentTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified';
+import React, {memo, MouseEvent} from 'react';
+import {MapComponentTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified';
 
 const SM_CIRC_RADIUS = 10;
 const polarCoord = (radius: number, angle: number): [number, number] => [
@@ -18,21 +18,8 @@ const rotatePoints = (): [number, number][] => {
     return coords;
 };
 
-const drawInsideCircles = (
-    coords: [number, number][],
-    styles: MapComponentTheme,
-) =>
-    coords.map((cxy, i) => (
-        <circle
-            key={i}
-            cx={cxy[0]}
-            cy={cxy[1]}
-            r="5"
-            fill={styles.fill}
-            strokeWidth="3"
-            stroke={styles.stroke}
-        />
-    ));
+const drawInsideCircles = (coords: [number, number][], styles: MapComponentTheme) =>
+    coords.map((cxy, i) => <circle key={i} cx={cxy[0]} cy={cxy[1]} r="5" fill={styles.fill} strokeWidth="3" stroke={styles.stroke} />);
 
 /**
  * MarketSymbol Props - using unified type system directly
@@ -65,19 +52,8 @@ const MarketSymbol: React.FC<ModernMarketSymbolProps> = ({
 
     return (
         <g id={id} onClick={onClick}>
-            <circle
-                r={SM_CIRC_RADIUS * 1.8}
-                fill={fill}
-                strokeWidth="1"
-                stroke={stroke}
-            />
-            <path
-                strokeWidth="2"
-                stroke="black"
-                fill="none"
-                opacity=".8"
-                d={`M${coords[0]} L${coords[1]} L${coords[2]} Z`}
-            />
+            <circle r={SM_CIRC_RADIUS * 1.8} fill={fill} strokeWidth="1" stroke={stroke} />
+            <path strokeWidth="2" stroke="black" fill="none" opacity=".8" d={`M${coords[0]} L${coords[1]} L${coords[2]} Z`} />
             {drawInsideCircles(coords, styles)}
         </g>
     );

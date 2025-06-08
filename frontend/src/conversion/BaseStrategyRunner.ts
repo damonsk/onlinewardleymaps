@@ -1,33 +1,16 @@
-import {
-    IParseStrategy,
-    IProvideBaseElement,
-    IProvideBaseStrategyRunnerConfig,
-    IProvideDecoratorsConfig,
-} from '../types/base';
+import {IParseStrategy, IProvideBaseElement, IProvideBaseStrategyRunnerConfig, IProvideDecoratorsConfig} from '../types/base';
 
 export default class BaseStrategyRunner implements IParseStrategy {
     data: string;
     containerName: string;
     keyword: string;
     config: IProvideBaseStrategyRunnerConfig;
-    decorators: Array<
-        (
-            baseElement: IProvideBaseElement,
-            element: string,
-            config: IProvideDecoratorsConfig,
-        ) => void
-    >;
+    decorators: Array<(baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void>;
 
     constructor(
         data: string,
         config: IProvideBaseStrategyRunnerConfig,
-        decorators: Array<
-            (
-                baseElement: IProvideBaseElement,
-                element: string,
-                config: IProvideDecoratorsConfig,
-            ) => void
-        >,
+        decorators: Array<(baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void>,
     ) {
         this.data = data;
         this.keyword = config.keyword;
@@ -50,7 +33,7 @@ export default class BaseStrategyRunner implements IParseStrategy {
                         },
                         this.config.defaultAttributes,
                     );
-                    this.decorators.forEach((f) =>
+                    this.decorators.forEach(f =>
                         f(baseElement, element, {
                             keyword: this.keyword,
                             containerName: this.containerName,
@@ -61,7 +44,7 @@ export default class BaseStrategyRunner implements IParseStrategy {
                 }
             } catch (e) {
                 console.log(e);
-                errors.push({ line: i, name: e });
+                errors.push({line: i, name: e});
             }
         }
         return {

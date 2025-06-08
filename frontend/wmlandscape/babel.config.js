@@ -4,4 +4,4 @@ const env = {
         plugins: ['require-context-hook'],
     },
 };
-module.exports = { presets, env };
+module.exports = {presets, env};

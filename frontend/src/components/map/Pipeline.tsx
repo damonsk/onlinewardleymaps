@@ -1,14 +1,14 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
-import { PipelineData } from '../../types/unified/components';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
+import {PipelineData} from '../../types/unified/components';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import ModernPipelineBoxSymbol from '../symbols/ModernPipelineBoxSymbol';
 import Movable from './Movable';
 import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
-import { ExistingCoordsMatcher } from './positionUpdaters/ExistingCoordsMatcher';
-import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
+import {ExistingCoordsMatcher} from './positionUpdaters/ExistingCoordsMatcher';
+import {NotDefinedCoordsMatcher} from './positionUpdaters/NotDefinedCoordsMatcher';
 
 interface MovedPosition {
     x: number;
@@ -31,20 +31,15 @@ interface ModernPipelineProps {
  */
 function Pipeline(props: ModernPipelineProps): JSX.Element {
     const positionCalc = new PositionCalculator();
-    const positionUpdater = new DefaultPositionUpdater(
-        'pipeline',
-        props.mapText,
-        props.mutateMapText,
-        [ExistingCoordsMatcher, NotDefinedCoordsMatcher],
-    );
+    const positionUpdater = new DefaultPositionUpdater('pipeline', props.mapText, props.mutateMapText, [
+        ExistingCoordsMatcher,
+        NotDefinedCoordsMatcher,
+    ]);
 
     function endDragX1(moved: MovedPosition): void {
         positionUpdater.update(
             {
-                param1: positionCalc.xToMaturity(
-                    moved.x,
-                    props.mapDimensions.width,
-                ),
+                param1: positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
                 param2: props.pipeline.maturity2 || 0,
             },
             props.pipeline.name,
@@ -55,41 +50,24 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
         positionUpdater.update(
             {
                 param1: props.pipeline.maturity1 || 0,
-                param2: positionCalc.xToMaturity(
-                    moved.x,
-                    props.mapDimensions.width,
-                ),
+                param2: positionCalc.xToMaturity(moved.x, props.mapDimensions.width),
             },
             props.pipeline.name,
         );
     }
 
-    const x1 = positionCalc.maturityToX(
-        props.pipeline.maturity1 || 0,
-        props.mapDimensions.width,
-    );
-    const x2 = positionCalc.maturityToX(
-        props.pipeline.maturity2 || 0,
-        props.mapDimensions.width,
-    );
-    const y =
-        positionCalc.visibilityToY(
-            props.pipeline.visibility,
-            props.mapDimensions.height,
-        ) + 2;
+    const x1 = positionCalc.maturityToX(props.pipeline.maturity1 || 0, props.mapDimensions.width);
+    const x2 = positionCalc.maturityToX(props.pipeline.maturity2 || 0, props.mapDimensions.width);
+    const y = positionCalc.visibilityToY(props.pipeline.visibility, props.mapDimensions.height) + 2;
 
     // Ensure we have valid dimensions for the pipeline box
     if (isNaN(x1) || isNaN(x2) || isNaN(y) || x1 === x2) {
-        console.warn(
-            `Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`,
-        );
+        console.warn(`Pipeline ${props.pipeline.name} has invalid coordinates: x1=${x1}, x2=${x2}, y=${y}`);
         return <></>;
     }
 
     // Log the calculated coordinates for debugging
-    console.log(
-        `Pipeline ${props.pipeline.name} box: x1=${x1}, x2=${x2}, y=${y}`,
-    );
+    console.log(`Pipeline ${props.pipeline.name} box: x1=${x1}, x2=${x2}, y=${y}`);
 
     return (
         <>
@@ -108,8 +86,7 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                 y={y}
                 fixedY={true}
                 fixedX={false}
-                scaleFactor={props.scaleFactor}
-            >
+                scaleFactor={props.scaleFactor}>
                 <ComponentSymbol
                     id={'pipeline_circle_x1_' + props.pipeline.id}
                     styles={props.mapStyleDefs.component}
@@ -120,7 +97,7 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                         maturity: props.pipeline.maturity1 || 0,
                         visibility: props.pipeline.visibility,
                         line: props.pipeline.line,
-                        label: { x: 0, y: 0 },
+                        label: {x: 0, y: 0},
                     }}
                     onClick={() => props.setHighlightLine(props.pipeline.line)}
                 />
@@ -132,8 +109,7 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                 y={y}
                 fixedY={true}
                 fixedX={false}
-                scaleFactor={props.scaleFactor}
-            >
+                scaleFactor={props.scaleFactor}>
                 <ComponentSymbol
                     id={'pipeline_circle_x2_' + props.pipeline.id}
                     styles={props.mapStyleDefs.component}
@@ -144,7 +120,7 @@ function Pipeline(props: ModernPipelineProps): JSX.Element {
                         maturity: props.pipeline.maturity2 || 0,
                         visibility: props.pipeline.visibility,
                         line: props.pipeline.line,
-                        label: { x: 0, y: 0 },
+                        label: {x: 0, y: 0},
                     }}
                     onClick={() => props.setHighlightLine(props.pipeline.line)}
                 />

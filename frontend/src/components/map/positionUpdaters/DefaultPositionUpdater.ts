@@ -1,4 +1,4 @@
-import { PositionUpdater, Replacer } from '../../../types/base';
+import {PositionUpdater, Replacer} from '../../../types/base';
 
 export default class DefaultPositionUpdater implements PositionUpdater {
     type: string;
@@ -6,12 +6,7 @@ export default class DefaultPositionUpdater implements PositionUpdater {
     mutator: (updatedText: string) => void;
     replacers: Replacer[];
 
-    constructor(
-        type: string,
-        mapText: string,
-        mutator: (updatedText: string) => void,
-        replacers: Replacer[],
-    ) {
+    constructor(type: string, mapText: string, mutator: (updatedText: string) => void, replacers: Replacer[]) {
         this.type = type;
         this.mapText = mapText;
         this.mutator = mutator;
@@ -26,7 +21,7 @@ export default class DefaultPositionUpdater implements PositionUpdater {
     update(moved: any, identifier: string): void {
         const updatedText = this.mapText
             .split('\n')
-            .map((line) => {
+            .map(line => {
                 for (let i = 0; i < this.replacers.length; i++) {
                     const r = this.replacers[i];
                     if (r.matcher(line, identifier, this.type)) {

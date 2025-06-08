@@ -1,5 +1,5 @@
 import * as Defaults from '../constants/defaults';
-import { LoadStrategy } from './LoadStrategy';
+import {LoadStrategy} from './LoadStrategy';
 
 interface FetchedData {
     id: string;
@@ -21,9 +21,7 @@ export class LegacyLoadStrategy extends LoadStrategy {
         const newObj: ProcessedData = {
             id: data.id,
             mapText: data.text,
-            mapIterations: data.mapIterations
-                ? JSON.parse(data.mapIterations)
-                : [],
+            mapIterations: data.mapIterations ? JSON.parse(data.mapIterations) : [],
         };
 
         this.callback(Defaults.MapPersistenceStrategy.Legacy, newObj);

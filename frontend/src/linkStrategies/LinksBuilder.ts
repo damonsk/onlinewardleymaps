@@ -1,5 +1,5 @@
 // We need the import for type checking, but we handle both legacy and modern elements
-import { MapAnchors } from '../types/base';
+import {MapAnchors} from '../types/base';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
@@ -11,12 +11,7 @@ import EvolveToEvolvedLinksStrategy from './EvolveToEvolvedLinksStrategy';
 import EvolvingEndLinksStrategy from './EvolvingEndLinksStrategy';
 import EvolvingToEvolvingLinksStrategy from './EvolvingToEvolvingLinksStrategy';
 import EvolvingToNoneEvolvingEndLinksStrategy from './EvolvingToNoneEvolvingEndLinksStrategy';
-import {
-    Link,
-    LinkExtractionStrategy,
-    LinkResult,
-    MapElement,
-} from './LinkStrategiesInterfaces';
+import {Link, LinkExtractionStrategy, LinkResult, MapElement} from './LinkStrategiesInterfaces';
 import NoneEvolvingToEvolvingLinksStrategy from './NoneEvolvingToEvolvingLinksStrategy';
 
 /**
@@ -40,58 +35,33 @@ export default class LinksBuilder {
         // Use modernMapElements directly without the legacy adapter
         // This completes the Phase 4C modernization by removing adapter usage
         const mapElements = modernMapElements;
-        const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] =
-            showLinkedEvolved
-                ? [
-                      new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
-                      new EvolvedToNoneEvolvingLinksStrategy(
-                          mapLinks,
-                          mapElements,
-                      ),
-                      new NoneEvolvingToEvolvingLinksStrategy(
-                          mapLinks,
-                          mapElements,
-                      ),
-                      new BothEvolvedLinksStrategy(mapLinks, mapElements),
-                      new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
-                      new AnchorEvolvedLinksStrategy(
-                          mapLinks,
-                          mapElements,
-                          mapAnchors,
-                      ),
-                  ]
-                : [];
+        const linksThatAreEvolvingOfAnyKind: LinkExtractionStrategy[] = showLinkedEvolved
+            ? [
+                  new EvolveToEvolvedLinksStrategy(mapLinks, mapElements),
+                  new EvolvedToNoneEvolvingLinksStrategy(mapLinks, mapElements),
+                  new NoneEvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
+                  new BothEvolvedLinksStrategy(mapLinks, mapElements),
+                  new EvolvedToEvolvingLinksStrategy(mapLinks, mapElements),
+                  new AnchorEvolvedLinksStrategy(mapLinks, mapElements, mapAnchors),
+              ]
+            : [];
 
         this.linkStrategies = linksThatAreEvolvingOfAnyKind.concat([
             new AllLinksStrategy(mapLinks, mapElements),
             new EvolvingEndLinksStrategy(mapLinks, mapElements),
             new EvolvingToEvolvingLinksStrategy(mapLinks, mapElements),
             new AnchorLinksStrategy(mapLinks, mapElements, mapAnchors),
-            new AnchorNoneEvolvedLinksStrategy(
-                mapLinks,
-                mapElements,
-                mapAnchors,
-            ),
+            new AnchorNoneEvolvedLinksStrategy(mapLinks, mapElements, mapAnchors),
             new EvolvingToNoneEvolvingEndLinksStrategy(mapLinks, mapElements),
         ]);
     }
 
-    private getElementByName(
-        elements: MapElement[],
-        name: string,
-    ): MapElement | undefined {
-        return elements?.find((element) => element.name === name);
+    private getElementByName(elements: MapElement[], name: string): MapElement | undefined {
+        return elements?.find(element => element.name === name);
     }
 
-    private canSatisfyLink(
-        link: Link,
-        startElements: MapElement[],
-        endElements: MapElement[],
-    ): boolean {
-        return (
-            this.getElementByName(startElements, link.start) !== undefined &&
-            this.getElementByName(endElements, link.end) !== undefined
-        );
+    private canSatisfyLink(link: Link, startElements: MapElement[], endElements: MapElement[]): boolean {
+        return this.getElementByName(startElements, link.start) !== undefined && this.getElementByName(endElements, link.end) !== undefined;
     }
 
     public build(): {
@@ -112,7 +82,7 @@ export default class LinksBuilder {
                 link: Link;
             }[];
         }[] = [];
-        this.linkStrategies.forEach((strategy) => {
+        this.linkStrategies.forEach(strategy => {
             const result: LinkResult = strategy.getLinks();
             const currentLinks: {
                 key: number;
@@ -121,29 +91,17 @@ export default class LinksBuilder {
                 link: Link;
             }[] = [];
             result.links.forEach((link, index) => {
-                if (
-                    this.canSatisfyLink(
-                        link,
-                        result.startElements,
-                        result.endElements,
-                    )
-                ) {
+                if (this.canSatisfyLink(link, result.startElements, result.endElements)) {
                     const item = {
                         key: index,
-                        startElement: this.getElementByName(
-                            result.startElements,
-                            link.start,
-                        ),
-                        endElement: this.getElementByName(
-                            result.endElements,
-                            link.end,
-                        ),
+                        startElement: this.getElementByName(result.startElements, link.start),
+                        endElement: this.getElementByName(result.endElements, link.end),
                         link: link,
                     };
                     currentLinks.push(item);
                 }
             });
-            allLinks.push({ name: result.name, links: currentLinks });
+            allLinks.push({name: result.name, links: currentLinks});
         });
 
         return allLinks;

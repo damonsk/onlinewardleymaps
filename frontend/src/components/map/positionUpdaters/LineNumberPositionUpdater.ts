@@ -1,4 +1,4 @@
-import { Replacer } from '../../../types/base';
+import {Replacer} from '../../../types/base';
 
 export default class LineNumberPositionUpdater {
     private type: string;
@@ -6,12 +6,7 @@ export default class LineNumberPositionUpdater {
     private mutator: (text: string) => void;
     private replacers: Replacer[];
 
-    constructor(
-        type: string,
-        mapText: string,
-        mutator: (text: string) => void,
-        replacers: Replacer[],
-    ) {
+    constructor(type: string, mapText: string, mutator: (text: string) => void, replacers: Replacer[]) {
         this.type = type;
         this.mapText = mapText;
         this.mutator = mutator;

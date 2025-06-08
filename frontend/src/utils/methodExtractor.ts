@@ -1,4 +1,4 @@
-import { UnifiedComponent } from '../types/unified';
+import {UnifiedComponent} from '../types/unified';
 
 // Define an interface for method components that extends UnifiedComponent
 export interface MethodComponent extends UnifiedComponent {
@@ -11,14 +11,12 @@ export interface MethodComponent extends UnifiedComponent {
  * Looks for components with (buy), (build), or (outsource) decorators
  * Returns an array of method objects ready to be rendered
  */
-export function extractMethodsFromComponents(
-    components: UnifiedComponent[],
-): MethodComponent[] {
+export function extractMethodsFromComponents(components: UnifiedComponent[]): MethodComponent[] {
     const methodRegex = /\((buy|build|outsource)\)$/i;
     const methods: MethodComponent[] = [];
 
     // Process all components to detect method decorations in names
-    components.forEach((component) => {
+    components.forEach(component => {
         if (!component.name) return;
 
         const match = component.name.match(methodRegex);
@@ -34,10 +32,7 @@ export function extractMethodsFromComponents(
                 name: component.name.replace(methodRegex, '').trim(),
             } as MethodComponent);
 
-            console.log(
-                `Found method decoration in component "${component.name}":`,
-                methodType,
-            );
+            console.log(`Found method decoration in component "${component.name}":`, methodType);
         }
     });
 
@@ -55,20 +50,13 @@ export function processStandaloneMethods(
 ): MethodComponent[] {
     const result: MethodComponent[] = [];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
         if (!method.name || !method.method) return;
 
-        console.log(
-            `Processing standalone method: ${method.method} ${method.name}`,
-        );
+        console.log(`Processing standalone method: ${method.method} ${method.name}`);
 
         // Find the referenced component
-        const targetComponentIndex = components.findIndex(
-            (c) =>
-                c.name &&
-                c.name.trim().toLowerCase() ===
-                    method.name.trim().toLowerCase(),
-        );
+        const targetComponentIndex = components.findIndex(c => c.name && c.name.trim().toLowerCase() === method.name.trim().toLowerCase());
 
         if (targetComponentIndex >= 0) {
             const targetComponent = components[targetComponentIndex];
@@ -81,9 +69,7 @@ export function processStandaloneMethods(
                     increaseLabelSpacing: 2, // Apply the same spacing as with decorated components
                 };
 
-                console.log(
-                    `Applied increaseLabelSpacing to target component "${targetComponent.name}"`,
-                );
+                console.log(`Applied increaseLabelSpacing to target component "${targetComponent.name}"`);
             }
 
             // Create a method component with the target component's position
@@ -100,13 +86,10 @@ export function processStandaloneMethods(
             console.log(`Found target component for method "${method.name}":`, {
                 maturity: targetComponent.maturity,
                 visibility: targetComponent.visibility,
-                increasedLabelSpacing:
-                    components[targetComponentIndex].increaseLabelSpacing,
+                increasedLabelSpacing: components[targetComponentIndex].increaseLabelSpacing,
             });
         } else {
-            console.warn(
-                `Could not find target component for method: ${method.method} ${method.name}`,
-            );
+            console.warn(`Could not find target component for method: ${method.method} ${method.name}`);
 
             // Still include the method so we can at least render something
             result.push({

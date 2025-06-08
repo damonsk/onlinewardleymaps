@@ -1,4 +1,4 @@
-import { Replacer } from '../../../types/base';
+import {Replacer} from '../../../types/base';
 
 /**
  * ModernLineNumberPositionUpdater - Modern implementation using unified types
@@ -21,12 +21,7 @@ export default class ModernLineNumberPositionUpdater {
      * @param mutator A function that updates the map text
      * @param replacers Array of replacers to apply
      */
-    constructor(
-        type: string,
-        mapText: string,
-        mutator: (text: string) => void,
-        replacers: Replacer[],
-    ) {
+    constructor(type: string, mapText: string, mutator: (text: string) => void, replacers: Replacer[]) {
         this.type = type;
         this.mapText = mapText;
         this.mutator = mutator;

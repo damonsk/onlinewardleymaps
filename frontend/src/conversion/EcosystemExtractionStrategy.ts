@@ -1,4 +1,4 @@
-import { IParseStrategy } from '../types/base';
+import {IParseStrategy} from '../types/base';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
 
 export default class EcosystemExtractionStrategy implements IParseStrategy {
@@ -10,16 +10,12 @@ export default class EcosystemExtractionStrategy implements IParseStrategy {
         const config = {
             keyword: 'ecosystem',
             containerName: 'ecosystems',
-            defaultAttributes: { increaseLabelSpacing: 3 },
+            defaultAttributes: {increaseLabelSpacing: 3},
         };
         this.data = data;
         this.keyword = config.keyword;
         this.containerName = config.containerName;
-        this.parentStrategy = new ExtendableComponentExtractionStrategy(
-            data,
-            config,
-            [],
-        );
+        this.parentStrategy = new ExtendableComponentExtractionStrategy(data, config, []);
     }
 
     apply() {

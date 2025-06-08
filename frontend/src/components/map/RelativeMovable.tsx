@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useEffect } from 'react';
+import React, {MouseEvent, useCallback, useEffect} from 'react';
 
 interface MovedPosition {
     x: number;
@@ -33,7 +33,7 @@ interface ModernRelativeMovableProps {
  * This component handles draggable elements that move relative to a position
  * Used primarily for flow text, annotations, and other movable map elements
  */
-const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
+const RelativeMovable: React.FC<ModernRelativeMovableProps> = props => {
     const [moving, setMoving] = React.useState(false);
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);
@@ -45,7 +45,7 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
 
     const handleMouseMove = useCallback(
         (e: globalThis.MouseEvent) => {
-            setPosition((position) => {
+            setPosition(position => {
                 const scaleFactor = props.scaleFactor || 1;
                 const xDiff = (position.coords.x! - e.pageX) / scaleFactor;
                 const yDiff = (position.coords.y! - e.pageY) / scaleFactor;
@@ -68,7 +68,7 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
             endDrag();
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('keyup', handleEscape);
-            setPosition({ x: x(), y: y(), coords: {} });
+            setPosition({x: x(), y: y(), coords: {}});
         }
     };
 
@@ -76,7 +76,7 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
         const pageX = e.pageX;
         const pageY = e.pageY;
         setMoving(true);
-        setPosition((position) =>
+        setPosition(position =>
             Object.assign({}, position, {
                 coords: {
                     x: pageX,
@@ -90,7 +90,7 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
 
     const handleMouseUp = () => {
         document.removeEventListener('mousemove', handleMouseMove);
-        setPosition((position) =>
+        setPosition(position =>
             Object.assign({}, position, {
                 coords: {},
             }),
@@ -127,18 +127,11 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = (props) => {
         <g
             key={`modern_movable_${props.id}`}
             className={'draggable'}
-            style={{ cursor: moving ? 'grabbing' : 'grab' }}
-            onMouseDown={(e) => handleMouseDown(e)}
+            style={{cursor: moving ? 'grabbing' : 'grab'}}
+            onMouseDown={e => handleMouseDown(e)}
             onMouseUp={() => handleMouseUp()}
             id={`modern_movable_${props.id}`}
-            transform={
-                'translate(' +
-                (props.fixedX ? x() : position.x) +
-                ',' +
-                (props.fixedY ? y() : position.y) +
-                ')'
-            }
-        >
+            transform={'translate(' + (props.fixedX ? x() : position.x) + ',' + (props.fixedY ? y() : position.y) + ')'}>
             {props.children}
         </g>
     );

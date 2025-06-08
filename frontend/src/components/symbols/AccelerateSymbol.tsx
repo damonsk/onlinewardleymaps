@@ -1,16 +1,12 @@
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 
 export interface AccelerateSymbolProps {
     id?: string;
     deaccel?: boolean;
-    styles: { stroke: string };
+    styles: {stroke: string};
 }
 
-const AccelerateSymbol: React.FunctionComponent<AccelerateSymbolProps> = ({
-    id,
-    styles,
-    deaccel,
-}) => {
+const AccelerateSymbol: React.FunctionComponent<AccelerateSymbolProps> = ({id, styles, deaccel}) => {
     return (
         <polygon
             id={id}

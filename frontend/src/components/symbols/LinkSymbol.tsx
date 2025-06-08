@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 
 interface LinkStyles {
     evolvedStroke: string;
@@ -52,11 +52,9 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     styles = {},
     filter,
 }) => {
-    const finalStyles = { ...defaultStyles, ...styles };
+    const finalStyles = {...defaultStyles, ...styles};
     const stroke = evolved ? finalStyles.evolvedStroke : finalStyles.stroke;
-    const strokeWidth = evolved
-        ? finalStyles.evolvedStrokeWidth
-        : finalStyles.strokeWidth;
+    const strokeWidth = evolved ? finalStyles.evolvedStrokeWidth : finalStyles.strokeWidth;
 
     return (
         <g id={id}>
@@ -72,16 +70,7 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                 markerEnd={isMarkerStart ? undefined : marker}
                 filter={filter}
             />
-            {flow && (
-                <line
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    strokeWidth={finalStyles.flowStrokeWidth}
-                    stroke={finalStyles.flow}
-                />
-            )}
+            {flow && <line x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth={finalStyles.flowStrokeWidth} stroke={finalStyles.flow} />}
         </g>
     );
 };

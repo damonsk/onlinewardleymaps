@@ -5,13 +5,7 @@
 // that works directly with unified types and doesn't convert to legacy MapElement types.
 // It provides a clean, type-safe interface for modern components.
 
-import {
-    EvolvedElementData,
-    PipelineData,
-    UnifiedComponent,
-    UnifiedWardleyMap,
-    createUnifiedComponent,
-} from '../types/unified';
+import {EvolvedElementData, PipelineData, UnifiedComponent, UnifiedWardleyMap, createUnifiedComponent} from '../types/unified';
 
 /**
  * Modern MapElements processor with clean, type-safe operations
@@ -31,13 +25,7 @@ export class MapElements {
      * @param map The UnifiedWardleyMap containing all map data
      */
     constructor(map: UnifiedWardleyMap) {
-        this.allComponents = [
-            ...map.components,
-            ...map.anchors,
-            ...map.submaps,
-            ...map.markets,
-            ...map.ecosystems,
-        ];
+        this.allComponents = [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
         this.evolvedElements = map.evolved;
         this.pipelines = map.pipelines;
 
@@ -52,34 +40,26 @@ export class MapElements {
     private markEvolvingComponents(): void {
         // First create a set of components referenced in methods
         const methodComponents = new Set<string>();
-        if (this.allComponents.some((c) => c.decorators?.method)) {
-            this.allComponents.forEach((component) => {
+        if (this.allComponents.some(c => c.decorators?.method)) {
+            this.allComponents.forEach(component => {
                 if (component.decorators?.method && component.name) {
                     methodComponents.add(component.name);
                 }
             });
         }
 
-        this.allComponents = this.allComponents.map((component) => {
+        this.allComponents = this.allComponents.map(component => {
             // Handle evolving components
             if (this.evolvedElements.length > 0) {
-                const hasEvolvedElement = this.evolvedElements.some(
-                    (evolved) => evolved.name === component.name,
-                );
-                const evolved = this.evolvedElements.find(
-                    (x) => x.name === component.name,
-                );
+                const hasEvolvedElement = this.evolvedElements.some(evolved => evolved.name === component.name);
+                const evolved = this.evolvedElements.find(x => x.name === component.name);
 
                 if (hasEvolvedElement) {
                     // Apply consistent label spacing for evolving components
-                    const increaseLabelSpacing = Math.max(
-                        component.increaseLabelSpacing || 0,
-                        evolved?.increaseLabelSpacing || 0,
-                        2,
-                    );
+                    const increaseLabelSpacing = Math.max(component.increaseLabelSpacing || 0, evolved?.increaseLabelSpacing || 0, 2);
 
                     // Calculate appropriate label position
-                    let label = component.label || { x: 0, y: 0 };
+                    let label = component.label || {x: 0, y: 0};
 
                     // For labels with the default value or no meaningful vertical position,
                     // place the label below the component
@@ -116,13 +96,10 @@ export class MapElements {
             // Handle method components
             if (methodComponents.has(component.name)) {
                 // Apply consistent label spacing for method components
-                const increaseLabelSpacing = Math.max(
-                    component.increaseLabelSpacing || 0,
-                    2,
-                );
+                const increaseLabelSpacing = Math.max(component.increaseLabelSpacing || 0, 2);
 
                 // Calculate appropriate label position
-                let label = component.label || { x: 0, y: 0 };
+                let label = component.label || {x: 0, y: 0};
 
                 // If no y offset is specified or it's within the default range,
                 // place the label below the component
@@ -159,10 +136,8 @@ export class MapElements {
      * Sets the pipeline property to true for components that are pipelines
      */
     private markPipelineComponents(): void {
-        this.allComponents = this.allComponents.map((component) => {
-            const isPipelineComponent = this.pipelines.some(
-                (pipeline) => pipeline.name === component.name,
-            );
+        this.allComponents = this.allComponents.map(component => {
+            const isPipelineComponent = this.pipelines.some(pipeline => pipeline.name === component.name);
             if (isPipelineComponent) {
                 return {
                     ...component,
@@ -186,7 +161,7 @@ export class MapElements {
      * @param type Component type ('component', 'anchor', 'submap', etc)
      */
     getComponentsByType(type: string): UnifiedComponent[] {
-        return this.allComponents.filter((c) => c.type === type);
+        return this.allComponents.filter(c => c.type === type);
     }
 
     /**
@@ -194,7 +169,7 @@ export class MapElements {
      * These are the source components that are evolving into another position
      */
     getEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => c.evolving);
+        return this.allComponents.filter(c => c.evolving);
     }
 
     /**
@@ -202,24 +177,16 @@ export class MapElements {
      * Creates evolved components based on evolving components and evolved data
      */
     getEvolvedComponents(): UnifiedComponent[] {
-        return this.getEvolvingComponents().map((component) => {
-            const evolvedData = this.evolvedElements.find(
-                (e) => e.name === component.name,
-            );
+        return this.getEvolvingComponents().map(component => {
+            const evolvedData = this.evolvedElements.find(e => e.name === component.name);
             if (!evolvedData) {
-                throw new Error(
-                    `Evolved element not found for ${component.name}`,
-                );
+                throw new Error(`Evolved element not found for ${component.name}`);
             }
 
             // Calculate appropriate label spacing
-            const increaseLabelSpacing = Math.max(
-                evolvedData.increaseLabelSpacing || 0,
-                component.increaseLabelSpacing || 0,
-                2,
-            );
+            const increaseLabelSpacing = Math.max(evolvedData.increaseLabelSpacing || 0, component.increaseLabelSpacing || 0, 2);
 
-            let label = evolvedData.label || component.label || { x: 0, y: 0 };
+            let label = evolvedData.label || component.label || {x: 0, y: 0};
             if ((!label.x || Math.abs(label.x) <= 10) && evolvedData.override) {
                 label = {
                     ...label,
@@ -237,8 +204,7 @@ export class MapElements {
                 override: evolvedData.override || component.override,
                 line: evolvedData.line || component.line,
                 decorators:
-                    evolvedData.decorators &&
-                    Object.keys(evolvedData.decorators).length > 0
+                    evolvedData.decorators && Object.keys(evolvedData.decorators).length > 0
                         ? evolvedData.decorators
                         : component.decorators,
                 increaseLabelSpacing: increaseLabelSpacing,
@@ -247,21 +213,21 @@ export class MapElements {
     }
 
     getStaticComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => !c.evolved);
+        return this.allComponents.filter(c => !c.evolved);
     }
 
     /**
      * Gets components with inertia but not evolved
      */
     getInertiaComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => c.inertia === true);
+        return this.allComponents.filter(c => c.inertia === true);
     }
 
     /**
      * Gets components that are neither evolved nor evolving
      */
     getNeitherEvolvedNorEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => !c.evolving && !c.evolved);
+        return this.allComponents.filter(c => !c.evolving && !c.evolved);
     }
 
     /**
@@ -269,7 +235,7 @@ export class MapElements {
      * These include static components and evolved components
      */
     getNonEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => !c.evolving);
+        return this.allComponents.filter(c => !c.evolving);
     }
 
     /**
@@ -277,14 +243,14 @@ export class MapElements {
      * These include static components and evolving components
      */
     getNonEvolvedComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => !c.evolved);
+        return this.allComponents.filter(c => !c.evolved);
     }
 
     /**
      * Gets components that are either evolved or evolving
      */
     getEitherEvolvedOrEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter((c) => c.evolving || c.evolved);
+        return this.allComponents.filter(c => c.evolving || c.evolved);
     }
 
     /**
@@ -315,8 +281,7 @@ export class MapElements {
         // Create an adapter object with methods that match UnifiedMapElements API
         return {
             getAllComponents: () => this.getAllComponents(),
-            getComponentsByType: (type: string) =>
-                this.getComponentsByType(type),
+            getComponentsByType: (type: string) => this.getComponentsByType(type),
             getEvolvingComponents: () => this.getEvolvingComponents(),
             getEvolvedComponents: () => this.getEvolvedComponents(),
             getMergedComponents: () => this.getMergedComponents(),
@@ -328,16 +293,13 @@ export class MapElements {
             getEvolvedElements: () => this.getEvolvedComponents(),
             getMergedElements: () => this.getMergedComponents(),
             getMapPipelines: () => this.getPipelineComponents(),
-            getNoneEvolvedOrEvolvingElements: () =>
-                this.getNeitherEvolvedNorEvolvingComponents(),
+            getNoneEvolvedOrEvolvingElements: () => this.getNeitherEvolvedNorEvolvingComponents(),
             getNoneEvolvingElements: () => this.getNonEvolvingComponents(),
-            getNeitherEvolvedNorEvolvingComponents: () =>
-                this.getNeitherEvolvedNorEvolvingComponents(),
+            getNeitherEvolvedNorEvolvingComponents: () => this.getNeitherEvolvedNorEvolvingComponents(),
 
             // Legacy adapter methods
             convertToMapElement: (component: UnifiedComponent) => component,
-            convertToMapElements: (components: UnifiedComponent[]) =>
-                components,
+            convertToMapElements: (components: UnifiedComponent[]) => components,
             getEvolvedUnifiedComponents: () => this.getEvolvedComponents(),
         };
     }

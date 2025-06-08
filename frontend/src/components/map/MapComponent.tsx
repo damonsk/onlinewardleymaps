@@ -1,8 +1,8 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedComponent } from '../../types/unified';
-import { useModKeyPressedConsumer } from '../KeyPressContext';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedComponent} from '../../types/unified';
+import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -46,15 +46,8 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 }) => {
     const isModKeyPressed = useModKeyPressedConsumer();
     const calculatedPosition = new ModernPositionCalculator();
-    const posX = calculatedPosition.maturityToX(
-        component.maturity,
-        mapDimensions.width,
-    );
-    const posY =
-        calculatedPosition.visibilityToY(
-            component.visibility,
-            mapDimensions.height,
-        ) + (component.offsetY ? component.offsetY : 0);
+    const posX = calculatedPosition.maturityToX(component.maturity, mapDimensions.width);
+    const posY = calculatedPosition.visibilityToY(component.visibility, mapDimensions.height) + (component.offsetY ? component.offsetY : 0);
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -79,31 +72,17 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 
         // Calculate new maturity and visibility from moved position
         const calculator = new ModernPositionCalculator();
-        const newMaturity = parseFloat(
-            calculator.xToMaturity(movedPosition.x, mapDimensions.width),
-        );
-        const newVisibility = parseFloat(
-            calculator.yToVisibility(movedPosition.y, mapDimensions.height),
-        );
+        const newMaturity = parseFloat(calculator.xToMaturity(movedPosition.x, mapDimensions.width));
+        const newVisibility = parseFloat(calculator.yToVisibility(movedPosition.y, mapDimensions.height));
 
         const lines = mapText.split('\n');
 
         if (component.evolved) {
-            const updatedLines = lines.map((line) => {
+            const updatedLines = lines.map(line => {
                 const normalizedLine = line.replace(/\s/g, '');
-                const componentNameNormalized = component.name.replace(
-                    /\s/g,
-                    '',
-                );
-                if (
-                    normalizedLine.indexOf(
-                        `evolve${componentNameNormalized}`,
-                    ) === 0
-                ) {
-                    return line.replace(
-                        /\s([0-9]?\.[0-9]+[0-9]?)+/g,
-                        ` ${newMaturity.toFixed(2)}`,
-                    );
+                const componentNameNormalized = component.name.replace(/\s/g, '');
+                if (normalizedLine.indexOf(`evolve${componentNameNormalized}`) === 0) {
+                    return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
                 }
                 return line;
             });
@@ -115,10 +94,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 
         const updatedLines = lines.map((line, index) => {
             if (index + 1 === component.line) {
-                const regex = new RegExp(
-                    `component\\s+${component.name}\\b`,
-                    'i',
-                );
+                const regex = new RegExp(`component\\s+${component.name}\\b`, 'i');
                 if (regex.test(line)) {
                     if (line.includes('label')) {
                         const parts = line.split(/\blabel\b/);
@@ -128,10 +104,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         );
                         return updatedFirstPart + 'label' + parts[1];
                     } else {
-                        return line.replace(
-                            /\[([^[\]]+)\]/,
-                            `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
-                        );
+                        return line.replace(/\[([^[\]]+)\]/, `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`);
                     }
                 }
             }
@@ -153,26 +126,19 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 fixedX={false}
                 shouldShowMoving={true}
                 isModKeyPressed={isModKeyPressed}
-                scaleFactor={scaleFactor}
-            >
-                <g
-                    id={component.id}
-                    onClick={handleClick}
-                    style={{ cursor: 'pointer' }}
-                >
+                scaleFactor={scaleFactor}>
+                <g id={component.id} onClick={handleClick} style={{cursor: 'pointer'}}>
                     {children}
                 </g>
             </Movable>
 
-            {component.inertia &&
-                !component.evolved &&
-                component.evolving === false && (
-                    <Inertia
-                        maturity={component.maturity + 0.05} // Added 0.05 offset to match legacy implementation
-                        visibility={component.visibility}
-                        mapDimensions={mapDimensions}
-                    />
-                )}
+            {component.inertia && !component.evolved && component.evolving === false && (
+                <Inertia
+                    maturity={component.maturity + 0.05} // Added 0.05 offset to match legacy implementation
+                    visibility={component.visibility}
+                    mapDimensions={mapDimensions}
+                />
+            )}
 
             <g transform={`translate(${posX},${posY})`}>
                 <ComponentText

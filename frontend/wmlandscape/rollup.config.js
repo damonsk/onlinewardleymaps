@@ -16,7 +16,7 @@ export default {
         },
     ],
     plugins: [
-        sass({ insert: true }),
+        sass({insert: true}),
         babel({
             exclude: 'node_modules/**',
         }),

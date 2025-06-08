@@ -1,7 +1,7 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified/components';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified/components';
 import LinkSymbol from '../symbols/LinkSymbol';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -38,22 +38,10 @@ const setBoundary = (
     },
 ): number | null => {
     const boundWidth = mapDimensions.width / 20;
-    const limits = [
-        evolutionOffsets.custom,
-        evolutionOffsets.product,
-        evolutionOffsets.commodity,
-    ];
+    const limits = [evolutionOffsets.custom, evolutionOffsets.product, evolutionOffsets.commodity];
     for (let i = 0; i < limits.length; i++) {
-        const edge = parseFloat(
-            positionCalc.xToMaturity(
-                boundWidth * limits[i],
-                mapDimensions.width,
-            ),
-        );
-        if (
-            (startElement.maturity ?? 0) <= edge &&
-            (endElement.maturity ?? 0) >= edge
-        ) {
+        const edge = parseFloat(positionCalc.xToMaturity(boundWidth * limits[i], mapDimensions.width));
+        if ((startElement.maturity ?? 0) <= edge && (endElement.maturity ?? 0) >= edge) {
             return edge;
         }
     }
@@ -77,7 +65,7 @@ const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
         return null;
     }
 
-    const { height, width } = mapDimensions;
+    const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
 
     // Handle the coordinate calculation based on unified component types
@@ -86,17 +74,13 @@ const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
 
     const y1 =
         positionCalc.visibilityToY(
-            typeof startElement.visibility === 'string'
-                ? parseFloat(startElement.visibility)
-                : startElement.visibility,
+            typeof startElement.visibility === 'string' ? parseFloat(startElement.visibility) : startElement.visibility,
             height,
         ) + (startElement.offsetY ?? 0);
 
     const y2 =
         positionCalc.visibilityToY(
-            typeof endElement.visibility === 'string'
-                ? parseFloat(endElement.visibility)
-                : endElement.visibility,
+            typeof endElement.visibility === 'string' ? parseFloat(endElement.visibility) : endElement.visibility,
             height,
         ) + (endElement.offsetY ?? 0);
 
@@ -128,11 +112,7 @@ const EvolvingComponentLink: React.FC<ModernEvolvingComponentLinkProps> = ({
                 evolved={true}
             />
             {endElement.inertia && boundary !== undefined && (
-                <Inertia
-                    maturity={boundary}
-                    visibility={endElement.visibility}
-                    mapDimensions={mapDimensions}
-                />
+                <Inertia maturity={boundary} visibility={endElement.visibility} mapDimensions={mapDimensions} />
             )}
         </>
     );

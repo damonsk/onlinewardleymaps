@@ -1,4 +1,4 @@
-import { OwnApiWardleyMap } from './OwnApiWardleyMap';
+import {OwnApiWardleyMap} from './OwnApiWardleyMap';
 
 export interface SaveStrategy {
     callback: (id: string, data: string) => void;

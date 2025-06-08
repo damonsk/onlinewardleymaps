@@ -2,7 +2,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MapIcon from '@mui/icons-material/Map';
-import { ListItemButton } from '@mui/material';
+import {ListItemButton} from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -10,8 +10,8 @@ import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Router from 'next/router';
-import React, { FunctionComponent, KeyboardEvent } from 'react';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import React, {FunctionComponent, KeyboardEvent} from 'react';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 
 export interface LeftNavigationProps {
     toggleMenu: () => void;
@@ -25,14 +25,8 @@ export interface LeftNavigationProps {
     }[];
 }
 
-export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
-    menuVisible,
-    toggleMenu,
-    submenu,
-    toggleTheme,
-    isLightTheme,
-}) => {
-    const { enableDashboard } = useFeatureSwitches();
+export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisible, toggleMenu, submenu, toggleTheme, isLightTheme}) => {
+    const {enableDashboard} = useFeatureSwitches();
     const history = {
         push: (url: string) => {
             Router.push({
@@ -41,10 +35,7 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
         },
     };
     const toggleDrawer = () => (event: KeyboardEvent) => {
-        if (
-            event.type === 'keydown' &&
-            (event.key === 'Tab' || event.key === 'Shift')
-        ) {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
         toggleMenu();
@@ -71,25 +62,17 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
         {
             name: 'Use Classic Version',
             icon: <MapIcon />,
-            action: () =>
-                complete(() =>
-                    history.push('https://classic.onlinewardleymaps.com'),
-                ),
+            action: () => complete(() => history.push('https://classic.onlinewardleymaps.com')),
             visible: true,
         },
     ];
 
     const list = (
-        <Box
-            sx={{ width: '285px' }}
-            role="presentation"
-            onClick={() => toggleDrawer()}
-            onKeyDown={() => toggleDrawer()}
-        >
+        <Box sx={{width: '285px'}} role="presentation" onClick={() => toggleDrawer()} onKeyDown={() => toggleDrawer()}>
             <List>
                 {siteLinks
-                    .filter((i) => i.visible === true)
-                    .map((l) => (
+                    .filter(i => i.visible === true)
+                    .map(l => (
                         <ListItemButton key={l.name} onClick={l.action}>
                             <ListItemIcon>{l.icon}</ListItemIcon>
                             <ListItemText primary={l.name} />
@@ -99,11 +82,8 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
             <Divider />
             <List>
                 {submenu &&
-                    submenu.map((l) => (
-                        <ListItemButton
-                            key={l.name}
-                            onClick={() => complete(() => l.action())}
-                        >
+                    submenu.map(l => (
+                        <ListItemButton key={l.name} onClick={() => complete(() => l.action())}>
                             <ListItemIcon>{l.icon}</ListItemIcon>
                             <ListItemText primary={l.name} />
                         </ListItemButton>
@@ -111,20 +91,9 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({
             </List>
             <Divider />
             <List>
-                <ListItemButton
-                    key={'toggleTheme'}
-                    onClick={() => complete(() => toggleTheme())}
-                >
-                    <ListItemIcon>
-                        {isLightTheme ? <DarkModeIcon /> : <LightModeIcon />}
-                    </ListItemIcon>
-                    <ListItemText
-                        primary={
-                            isLightTheme
-                                ? 'Enable Dark Theme'
-                                : 'Enable Light Theme'
-                        }
-                    />
+                <ListItemButton key={'toggleTheme'} onClick={() => complete(() => toggleTheme())}>
+                    <ListItemIcon>{isLightTheme ? <DarkModeIcon /> : <LightModeIcon />}</ListItemIcon>
+                    <ListItemText primary={isLightTheme ? 'Enable Dark Theme' : 'Enable Light Theme'} />
                 </ListItemButton>
             </List>
         </Box>

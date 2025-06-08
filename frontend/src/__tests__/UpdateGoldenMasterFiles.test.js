@@ -4,9 +4,9 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { useContext } from 'react';
-import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { MapElements } from '../processing/MapElements';
+import {useContext} from 'react';
+import {UnifiedConverter} from '../conversion/UnifiedConverter';
+import {MapElements} from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -42,15 +42,10 @@ describe('Update Golden Master Files', () => {
         const fileContent = loadFileContent(mapTextFileName);
 
         // Parse the text with UnifiedConverter
-        const parsedMap = new UnifiedConverter(mockContextValue).parse(
-            fileContent,
-        );
+        const parsedMap = new UnifiedConverter(mockContextValue).parse(fileContent);
 
         // Save converter output for reference
-        saveFileContent(
-            'GoldenMasterConverterOutput.txt',
-            JSON.stringify(parsedMap),
-        );
+        saveFileContent('GoldenMasterConverterOutput.txt', JSON.stringify(parsedMap));
 
         // Create MapElements from the parsed map
         const modernMapElements = new MapElements(parsedMap);
@@ -78,7 +73,7 @@ describe('Update Golden Master Files', () => {
                 fn: () => {
                     // Filter out evolved elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter((el) => !el.evolved);
+                    return mergedElements.filter(el => !el.evolved);
                 },
                 fileName: 'GoldenMasterMapElementsNonEvolved.txt',
             },
@@ -86,9 +81,7 @@ describe('Update Golden Master Files', () => {
                 fn: () => {
                     // Filter out evolved and evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter(
-                        (el) => !el.evolved && !el.evolving,
-                    );
+                    return mergedElements.filter(el => !el.evolved && !el.evolving);
                 },
                 fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
             },
@@ -96,15 +89,15 @@ describe('Update Golden Master Files', () => {
                 fn: () => {
                     // Filter out evolving elements from merged elements (matching legacy behavior)
                     const mergedElements = legacyAdapter.getMergedElements();
-                    return mergedElements.filter((el) => !el.evolving);
+                    return mergedElements.filter(el => !el.evolving);
                 },
                 fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
             },
         ];
 
         // Update each golden master file
-        testCases.forEach((testCase) => {
-            const { fn, fileName } = testCase;
+        testCases.forEach(testCase => {
+            const {fn, fileName} = testCase;
             const output = fn();
             saveFileContent(fileName, JSON.stringify(output));
         });

@@ -1,7 +1,4 @@
-import {
-    IParseStrategy,
-    IProvideBaseStrategyRunnerConfig,
-} from '../types/base';
+import {IParseStrategy, IProvideBaseStrategyRunnerConfig} from '../types/base';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
 
 export default class ComponentExtractionStrategy implements IParseStrategy {
@@ -13,7 +10,7 @@ export default class ComponentExtractionStrategy implements IParseStrategy {
         const config: IProvideBaseStrategyRunnerConfig = {
             keyword: 'component',
             containerName: 'elements',
-            defaultAttributes: { increaseLabelSpacing: 0 },
+            defaultAttributes: {increaseLabelSpacing: 0},
         };
 
         const lines = [];
@@ -29,17 +26,10 @@ export default class ComponentExtractionStrategy implements IParseStrategy {
                 isWithinNestedContainer = false;
                 lines.push(' ');
             }
-            if (
-                isWithinNestedContainer &&
-                element.trim().includes('}') === false &&
-                element.trim().includes('{') === false
-            ) {
+            if (isWithinNestedContainer && element.trim().includes('}') === false && element.trim().includes('{') === false) {
                 lines.push(' ');
             }
-            if (
-                !isWithinNestedContainer &&
-                element.trim().indexOf('}') === -1
-            ) {
+            if (!isWithinNestedContainer && element.trim().indexOf('}') === -1) {
                 lines.push(element);
             }
         }
@@ -47,11 +37,7 @@ export default class ComponentExtractionStrategy implements IParseStrategy {
         this.data = cleanedData;
         this.keyword = config.keyword;
         this.containerName = config.containerName;
-        this.parentStrategy = new ExtendableComponentExtractionStrategy(
-            cleanedData,
-            config,
-            [],
-        );
+        this.parentStrategy = new ExtendableComponentExtractionStrategy(cleanedData, config, []);
     }
 
     apply() {

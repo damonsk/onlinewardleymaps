@@ -1,7 +1,7 @@
 // Unified link type system - Phase 1 of refactoring plan
 // This file consolidates multiple overlapping link interfaces
 
-import { UnifiedComponent } from './components';
+import {UnifiedComponent} from './components';
 
 /**
  * Base link interface
@@ -60,17 +60,13 @@ export const isFlowLink = (link: BaseLink): link is FlowLink => {
 /**
  * Helper functions for link creation
  */
-export const createBaseLink = (
-    partial: Partial<BaseLink> & Pick<BaseLink, 'start' | 'end'>,
-): BaseLink => {
+export const createBaseLink = (partial: Partial<BaseLink> & Pick<BaseLink, 'start' | 'end'>): BaseLink => {
     return {
         ...partial,
     };
 };
 
-export const createFlowLink = (
-    partial: Partial<FlowLink> & Pick<FlowLink, 'start' | 'end'>,
-): FlowLink => {
+export const createFlowLink = (partial: Partial<FlowLink> & Pick<FlowLink, 'start' | 'end'>): FlowLink => {
     return {
         flow: false,
         future: false,
@@ -79,11 +75,7 @@ export const createFlowLink = (
     };
 };
 
-export const createProcessedLink = (
-    link: FlowLink,
-    startElement: UnifiedComponent,
-    endElement: UnifiedComponent,
-): ProcessedLink => {
+export const createProcessedLink = (link: FlowLink, startElement: UnifiedComponent, endElement: UnifiedComponent): ProcessedLink => {
     return {
         link,
         startElement,

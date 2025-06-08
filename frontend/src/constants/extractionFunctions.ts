@@ -1,43 +1,22 @@
 import merge from 'lodash.merge';
-import {
-    ComponentLabel,
-    IProvideBaseElement,
-    IProvideDecoratorsConfig,
-} from '../types/base';
+import {ComponentLabel, IProvideBaseElement, IProvideDecoratorsConfig} from '../types/base';
 import * as Defaults from './defaults';
 
-export const setName = (
-    baseElement: IProvideBaseElement & { name?: string },
-    element: string,
-    config: IProvideDecoratorsConfig,
-): void => {
-    const name = element
-        .split(`${config.keyword} `)[1]
-        .trim()
-        .split(' [')[0]
-        .trim();
-    Object.assign(baseElement, { name });
+export const setName = (baseElement: IProvideBaseElement & {name?: string}, element: string, config: IProvideDecoratorsConfig): void => {
+    const name = element.split(`${config.keyword} `)[1].trim().split(' [')[0].trim();
+    Object.assign(baseElement, {name});
 };
 
-export const setRef = (
-    baseElement: IProvideBaseElement & { url?: string },
-    element: string,
-): void => {
+export const setRef = (baseElement: IProvideBaseElement & {url?: string}, element: string): void => {
     if (element.indexOf('url(') !== -1) {
         const extractedRef = element.split('url(')[1].split(')')[0].trim();
-        Object.assign(baseElement, { url: extractedRef });
+        Object.assign(baseElement, {url: extractedRef});
     }
 };
 
-export const setTextFromEnding = (
-    baseElement: IProvideBaseElement & { text?: string },
-    element: string,
-): void => {
+export const setTextFromEnding = (baseElement: IProvideBaseElement & {text?: string}, element: string): void => {
     let text = '';
-    if (
-        element.trim().indexOf(']') > -1 &&
-        element.trim().indexOf(']') !== element.trim().length - 1
-    ) {
+    if (element.trim().indexOf(']') > -1 && element.trim().indexOf(']') !== element.trim().length - 1) {
         if (element.replace(/\s/g, '').indexOf(']]') === -1) {
             text = element.split(']')[1].trim();
         }
@@ -46,12 +25,12 @@ export const setTextFromEnding = (
             text = element.substr(pos + 1, element.length - 1).trim();
         }
     }
-    Object.assign(baseElement, { text });
+    Object.assign(baseElement, {text});
 };
 
 export const setOccurances = (
     baseElement: IProvideBaseElement & {
-        occurances?: { visibility: number; maturity: number }[];
+        occurances?: {visibility: number; maturity: number}[];
     },
     element: string,
 ): void => {
@@ -59,22 +38,17 @@ export const setOccurances = (
         visibility: 0.9,
         maturity: 0.1,
     };
-    const positionData: { visibility: number; maturity: number }[] = [];
+    const positionData: {visibility: number; maturity: number}[] = [];
     if (element.replace(/\s/g, '').indexOf('[[') > -1) {
-        const justOccurances =
-            '[' +
-            element.replace(/\s/g, '').split('[[')[1].split(']]')[0] +
-            ']';
-        const occurancesAsArray = justOccurances
-            .replace(/\],\[/g, ']|[')
-            .split('|');
-        occurancesAsArray.forEach((e) => {
+        const justOccurances = '[' + element.replace(/\s/g, '').split('[[')[1].split(']]')[0] + ']';
+        const occurancesAsArray = justOccurances.replace(/\],\[/g, ']|[').split('|');
+        occurancesAsArray.forEach(e => {
             positionData.push(extractLocation(e, defaultPosition));
         });
     } else if (element.indexOf('[') > -1 && element.indexOf(']') > -1) {
         positionData.push(extractLocation(element, defaultPosition));
     }
-    Object.assign(baseElement, { occurances: positionData });
+    Object.assign(baseElement, {occurances: positionData});
 };
 
 export const setPipelineMaturity = (
@@ -86,14 +60,9 @@ export const setPipelineMaturity = (
     element: string,
 ): void => {
     let pipelineHidden = true;
-    const pieplinePos = { maturity1: 0.2, maturity2: 0.8 };
+    const pieplinePos = {maturity1: 0.2, maturity2: 0.8};
     const findPos = element.split('[');
-    if (
-        element.indexOf('[') > -1 &&
-        element.indexOf(']') > -1 &&
-        findPos.length > 1 &&
-        findPos[1].indexOf(']') > -1
-    ) {
+    if (element.indexOf('[') > -1 && element.indexOf(']') > -1 && findPos.length > 1 && findPos[1].indexOf(']') > -1) {
         const extractedPos = findPos[1].split(']')[0].split(',');
         pieplinePos.maturity1 = parseFloat(extractedPos[0].trim());
         pieplinePos.maturity2 = parseFloat(extractedPos[1].trim());
@@ -106,64 +75,35 @@ export const setPipelineMaturity = (
     });
 };
 
-export const setPipelineComponentMaturity = (
-    baseElement: IProvideBaseElement & { maturity?: number },
-    element: string,
-): void => {
-    const pieplinePos = { maturity: 0.2 };
+export const setPipelineComponentMaturity = (baseElement: IProvideBaseElement & {maturity?: number}, element: string): void => {
+    const pieplinePos = {maturity: 0.2};
     const findPos = element.split('[');
-    if (
-        element.indexOf('[') > -1 &&
-        element.indexOf(']') > -1 &&
-        findPos.length > 1 &&
-        findPos[1].indexOf(']') > -1
-    ) {
+    if (element.indexOf('[') > -1 && element.indexOf(']') > -1 && findPos.length > 1 && findPos[1].indexOf(']') > -1) {
         const extractedPos = findPos[1].split(']')[0];
         pieplinePos.maturity = parseFloat(extractedPos.trim());
     }
-    Object.assign(baseElement, { maturity: pieplinePos.maturity });
+    Object.assign(baseElement, {maturity: pieplinePos.maturity});
 };
 
 export const extractLocation = (
     input: string,
-    defaultValue: { visibility: number; maturity: number },
-): { visibility: number; maturity: number } => {
+    defaultValue: {visibility: number; maturity: number},
+): {visibility: number; maturity: number} => {
     if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
-        const loc = input
-            .split('[')[1]
-            .trim()
-            .split(']')[0]
-            .replace(/\s/g, '')
-            .split(',');
+        const loc = input.split('[')[1].trim().split(']')[0].replace(/\s/g, '').split(',');
         return {
-            visibility: isNaN(parseFloat(loc[0]))
-                ? defaultValue.visibility
-                : parseFloat(loc[0]),
-            maturity: isNaN(parseFloat(loc[1]))
-                ? defaultValue.maturity
-                : parseFloat(loc[1]),
+            visibility: isNaN(parseFloat(loc[0])) ? defaultValue.visibility : parseFloat(loc[0]),
+            maturity: isNaN(parseFloat(loc[1])) ? defaultValue.maturity : parseFloat(loc[1]),
         };
     } else return defaultValue;
 };
 
-export const extractSize = (
-    input: string,
-    defaultValue: { width: number; height: number },
-): { width: number; height: number } => {
+export const extractSize = (input: string, defaultValue: {width: number; height: number}): {width: number; height: number} => {
     if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
-        const loc = input
-            .split('[')[1]
-            .trim()
-            .split(']')[0]
-            .replace(/\s/g, '')
-            .split(',');
+        const loc = input.split('[')[1].trim().split(']')[0].replace(/\s/g, '').split(',');
         return {
-            width: isNaN(parseFloat(loc[0]))
-                ? defaultValue.width
-                : parseFloat(loc[0]),
-            height: isNaN(parseFloat(loc[1]))
-                ? defaultValue.height
-                : parseFloat(loc[1]),
+            width: isNaN(parseFloat(loc[0])) ? defaultValue.width : parseFloat(loc[0]),
+            height: isNaN(parseFloat(loc[1])) ? defaultValue.height : parseFloat(loc[1]),
         };
     } else return defaultValue;
 };
@@ -183,25 +123,12 @@ export const extractManyLocations = (
     maturity2: number;
 } => {
     if (input.indexOf('[') > -1 && input.indexOf(']') > -1) {
-        const loc = input
-            .split('[')[1]
-            .trim()
-            .split(']')[0]
-            .replace(/\s/g, '')
-            .split(',');
+        const loc = input.split('[')[1].trim().split(']')[0].replace(/\s/g, '').split(',');
         return {
-            visibility: isNaN(parseFloat(loc[0]))
-                ? defaultValue.visibility
-                : parseFloat(loc[0]),
-            maturity: isNaN(parseFloat(loc[1]))
-                ? defaultValue.maturity
-                : parseFloat(loc[1]),
-            visibility2: isNaN(parseFloat(loc[2]))
-                ? defaultValue.visibility2
-                : parseFloat(loc[2]),
-            maturity2: isNaN(parseFloat(loc[3]))
-                ? defaultValue.maturity2
-                : parseFloat(loc[3]),
+            visibility: isNaN(parseFloat(loc[0])) ? defaultValue.visibility : parseFloat(loc[0]),
+            maturity: isNaN(parseFloat(loc[1])) ? defaultValue.maturity : parseFloat(loc[1]),
+            visibility2: isNaN(parseFloat(loc[2])) ? defaultValue.visibility2 : parseFloat(loc[2]),
+            maturity2: isNaN(parseFloat(loc[3])) ? defaultValue.maturity2 : parseFloat(loc[3]),
         };
     } else return defaultValue;
 };
@@ -225,22 +152,19 @@ export const setMethod = (
 };
 
 export const setAttitude = (
-    baseElement: IProvideBaseElement & { attitude?: string },
+    baseElement: IProvideBaseElement & {attitude?: string},
     element: string,
     config: IProvideDecoratorsConfig,
 ): void => {
-    Object.assign(baseElement, { attitude: config.keyword });
+    Object.assign(baseElement, {attitude: config.keyword});
 };
 
-export const setHeightWidth = (
-    baseElement: IProvideBaseElement & { width?: string; height?: string },
-    element: string,
-): void => {
+export const setHeightWidth = (baseElement: IProvideBaseElement & {width?: string; height?: string}, element: string): void => {
     if (!element.includes(']')) {
         return;
     }
     const [width, height] = element.split(']')[1].trim().split(' ');
-    Object.assign(baseElement, { width, height });
+    Object.assign(baseElement, {width, height});
 };
 
 export const setNameWithMaturity = (
@@ -264,7 +188,7 @@ export const setNameWithMaturity = (
             name = unprocessedName.split('->')[0].trim();
         }
     }
-    Object.assign(baseElement, { name, override, maturity: newPoint });
+    Object.assign(baseElement, {name, override, maturity: newPoint});
 };
 
 export const setCoords = (
@@ -284,10 +208,7 @@ export const setCoords = (
     });
 };
 
-export const isDeAccelerator = (
-    baseElement: IProvideBaseElement & { deaccelerator?: boolean },
-    element: string,
-): void => {
+export const isDeAccelerator = (baseElement: IProvideBaseElement & {deaccelerator?: boolean}, element: string): void => {
     Object.assign(baseElement, {
         deaccelerator: element.indexOf('deaccelerator') === 0,
     });
@@ -326,9 +247,7 @@ export const decorators = (
     decorators?: any;
     increaseLabelSpacing?: number;
 } => {
-    [methodDecorator, marketDecorator, ecosystemDecorator].forEach((d) =>
-        merge(baseElement, d(baseElement, element)),
-    );
+    [methodDecorator, marketDecorator, ecosystemDecorator].forEach(d => merge(baseElement, d(baseElement, element)));
     return baseElement;
 };
 
@@ -339,7 +258,7 @@ export const setLabel = (
     },
     element: string,
 ): void => {
-    let labelOffset = { ...Defaults.defaultLabelOffset };
+    let labelOffset = {...Defaults.defaultLabelOffset};
     if (baseElement.increaseLabelSpacing) {
         labelOffset = {
             x: labelOffset.x * baseElement.increaseLabelSpacing,
@@ -355,7 +274,7 @@ export const setLabel = (
             labelOffset.y = parseFloat(extractedPos[1].trim());
         }
     }
-    Object.assign(baseElement, { label: labelOffset });
+    Object.assign(baseElement, {label: labelOffset});
 };
 
 export const setEvolve = (
@@ -376,68 +295,49 @@ export const setEvolve = (
     });
 };
 
-export const setInertia = (
-    baseElement: IProvideBaseElement & { inertia?: boolean },
-    element: string,
-): void => {
+export const setInertia = (baseElement: IProvideBaseElement & {inertia?: boolean}, element: string): void => {
     // Support both 'inertia' and '(inertia)' syntax in the DSL
     Object.assign(baseElement, {
-        inertia:
-            element.indexOf('inertia') !== -1 ||
-            element.indexOf('(inertia)') !== -1,
+        inertia: element.indexOf('inertia') !== -1 || element.indexOf('(inertia)') !== -1,
     });
 };
 
-export const setText = (
-    baseElement: IProvideBaseElement & { text?: string },
-    element: string,
-    config: IProvideDecoratorsConfig,
-): void => {
+export const setText = (baseElement: IProvideBaseElement & {text?: string}, element: string, config: IProvideDecoratorsConfig): void => {
     const start = element.indexOf(config.keyword);
     const text = element
-        .substr(
-            `${config.keyword} `.length + start,
-            element.length - `${config.keyword} `.length + start,
-        )
+        .substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start)
         .trim()
         .split(' [')[0]
         .trim();
-    Object.assign(baseElement, { text });
+    Object.assign(baseElement, {text});
 };
 
 export const setContext = (
-    baseElement: IProvideBaseElement & { context?: string },
+    baseElement: IProvideBaseElement & {context?: string},
     element: string,
     config: IProvideDecoratorsConfig,
 ): void => {
     const start = element.indexOf(config.keyword);
     const text = element
-        .substr(
-            `${config.keyword} `.length + start,
-            element.length - `${config.keyword} `.length + start,
-        )
+        .substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start)
         .trim()
         .split(';')[1]
         .trim();
-    Object.assign(baseElement, { context: text });
+    Object.assign(baseElement, {context: text});
 };
 
 export const setNumber = (
-    baseElement: IProvideBaseElement & { number?: number },
+    baseElement: IProvideBaseElement & {number?: number},
     element: string,
     config: IProvideDecoratorsConfig,
 ): void => {
-    const number = element
-        .split(`${config.keyword} `)[1]
-        .trim()
-        .split(' [')[0]
-        .trim();
-    Object.assign(baseElement, { number: parseInt(number) });
+    const number = element.split(`${config.keyword} `)[1].trim().split(' [')[0].trim();
+    Object.assign(baseElement, {number: parseInt(number)});
 };
 
 const methodDecorator = (
     baseElement: IProvideBaseElement & {
-        decorators?: { method?: string };
+        decorators?: {method?: string};
         increaseLabelSpacing?: number;
     },
     element: string,
@@ -447,22 +347,18 @@ const methodDecorator = (
     let parentAttributes = {};
     for (let i = 0; i < meths.length; i++) {
         const meth = meths[i];
-        if (
-            element.indexOf(meth) > -1 &&
-            element.indexOf('(') < element.indexOf(meth) &&
-            element.indexOf(')') > element.indexOf(meth)
-        ) {
-            decs = { method: meth };
-            parentAttributes = { increaseLabelSpacing: 2 };
+        if (element.indexOf(meth) > -1 && element.indexOf('(') < element.indexOf(meth) && element.indexOf(')') > element.indexOf(meth)) {
+            decs = {method: meth};
+            parentAttributes = {increaseLabelSpacing: 2};
             break;
         }
     }
-    return { decorators: decs, ...parentAttributes };
+    return {decorators: decs, ...parentAttributes};
 };
 
 const marketDecorator = (
     baseElement: IProvideBaseElement & {
-        decorators?: { market?: boolean };
+        decorators?: {market?: boolean};
         increaseLabelSpacing?: number;
     },
     element: string,
@@ -475,15 +371,15 @@ const marketDecorator = (
             element.indexOf(')') > element.indexOf('market')) ||
         element.indexOf('market') === 0
     ) {
-        decs = { market: true };
-        parentAttributes = { increaseLabelSpacing: 2 };
+        decs = {market: true};
+        parentAttributes = {increaseLabelSpacing: 2};
     }
-    return { decorators: decs, ...parentAttributes };
+    return {decorators: decs, ...parentAttributes};
 };
 
 const ecosystemDecorator = (
     baseElement: IProvideBaseElement & {
-        decorators?: { ecosystem?: boolean };
+        decorators?: {ecosystem?: boolean};
         increaseLabelSpacing?: number;
     },
     element: string,
@@ -496,16 +392,13 @@ const ecosystemDecorator = (
             element.indexOf(')') > element.indexOf('ecosystem')) ||
         element.indexOf('ecosystem') === 0
     ) {
-        decs = { ecosystem: true };
-        parentAttributes = { increaseLabelSpacing: 3 };
+        decs = {ecosystem: true};
+        parentAttributes = {increaseLabelSpacing: 3};
     }
-    return { decorators: decs, ...parentAttributes };
+    return {decorators: decs, ...parentAttributes};
 };
 
-export const setUrl = (
-    baseElement: IProvideBaseElement & { url?: string },
-    element: string,
-): void => {
+export const setUrl = (baseElement: IProvideBaseElement & {url?: string}, element: string): void => {
     const path = element.split('[')[1].trim().split(']')[0].trim();
-    Object.assign(baseElement, { url: path });
+    Object.assign(baseElement, {url: path});
 };

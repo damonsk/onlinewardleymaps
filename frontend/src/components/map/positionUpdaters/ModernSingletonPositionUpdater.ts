@@ -1,4 +1,4 @@
-import { Moved, PositionUpdater } from '../../../types/base';
+import {Moved, PositionUpdater} from '../../../types/base';
 
 /**
  * ModernSingletonPositionUpdater - Modern implementation using unified types
@@ -21,11 +21,7 @@ export default class ModernSingletonPositionUpdater implements PositionUpdater {
      * @param mapText The current map text content
      * @param mutator A function that updates the map text
      */
-    constructor(
-        type: string,
-        mapText: string,
-        mutator: (text: string) => void,
-    ) {
+    constructor(type: string, mapText: string, mutator: (text: string) => void) {
         this.type = type;
         this.mutator = mutator;
         this.mapText = mapText;
@@ -50,18 +46,10 @@ export default class ModernSingletonPositionUpdater implements PositionUpdater {
      * @param identifier The element identifier (not used for singletons)
      */
     update(moved: Moved, identifier: string): void {
-        if (
-            this.mapText.indexOf(this.type + ' ') > -1 &&
-            this.positionUpdater != null
-        ) {
+        if (this.mapText.indexOf(this.type + ' ') > -1 && this.positionUpdater != null) {
             this.positionUpdater.update(moved, identifier);
         } else {
-            this.mutator(
-                this.mapText +
-                    '\n' +
-                    this.type +
-                    ` [${moved.param1}, ${moved.param2}]`,
-            );
+            this.mutator(this.mapText + '\n' + this.type + ` [${moved.param1}, ${moved.param2}]`);
         }
     }
 }

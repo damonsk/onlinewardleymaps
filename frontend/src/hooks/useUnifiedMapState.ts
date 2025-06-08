@@ -1,33 +1,20 @@
 // Unified Map State Hook - Phase 1 of refactoring plan
 // This consolidates the 15+ useState hooks from MapEnvironment into a cleaner state management system
 
-import { useCallback, useMemo, useState } from 'react';
-import {
-    EvolutionStages,
-    MapCanvasDimensions,
-    MapDimensions,
-    Offsets,
-} from '../constants/defaults';
-import { MapTheme } from '../types/map/styles';
-import {
-    MapRenderState,
-    UnifiedComponent,
-    UnifiedWardleyMap,
-    createEmptyMap,
-    groupComponentsByType,
-} from '../types/unified';
-import { FlowLink } from '../types/unified/links';
+import {useCallback, useMemo, useState} from 'react';
+import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../constants/defaults';
+import {MapTheme} from '../types/map/styles';
+import {MapRenderState, UnifiedComponent, UnifiedWardleyMap, createEmptyMap, groupComponentsByType} from '../types/unified';
+import {FlowLink} from '../types/unified/links';
 
 /**
  * Ensures that components involved in evolution or methods have consistent label spacing and positioning
  */
-const applyConsistentLabelSpacingForEvolution = (
-    map: UnifiedWardleyMap,
-): UnifiedWardleyMap => {
+const applyConsistentLabelSpacingForEvolution = (map: UnifiedWardleyMap): UnifiedWardleyMap => {
     // Create a set of component names that are referenced in methods
     const methodComponents = new Set<string>();
     if (map.methods && map.methods.length > 0) {
-        map.methods.forEach((method) => {
+        map.methods.forEach(method => {
             if (method.name) {
                 methodComponents.add(method.name);
             }
@@ -35,23 +22,16 @@ const applyConsistentLabelSpacingForEvolution = (
     }
 
     // Early return if no evolution or methods to process
-    if (
-        (map.evolved?.length === 0 || !map.evolved) &&
-        methodComponents.size === 0
-    ) {
+    if ((map.evolved?.length === 0 || !map.evolved) && methodComponents.size === 0) {
         return map;
     }
 
     // Create a map of evolved components with their evolved data
-    const evolvedComponents = map.evolved
-        ? new Map(map.evolved.map((e) => [e.name, e]))
-        : new Map();
+    const evolvedComponents = map.evolved ? new Map(map.evolved.map(e => [e.name, e])) : new Map();
 
     // Process all component types to ensure consistent label spacing and positioning
-    const processComponents = (
-        components: UnifiedComponent[],
-    ): UnifiedComponent[] => {
-        return components.map((component) => {
+    const processComponents = (components: UnifiedComponent[]): UnifiedComponent[] => {
+        return components.map(component => {
             // Determine if this component needs special label handling
             const isEvolved = evolvedComponents.has(component.name);
             const isMethodComponent = methodComponents.has(component.name);
@@ -59,13 +39,10 @@ const applyConsistentLabelSpacingForEvolution = (
             // If this component requires special handling
             if (isEvolved || isMethodComponent) {
                 // Ensure appropriate label spacing
-                const increaseLabelSpacing = Math.max(
-                    component.increaseLabelSpacing || 0,
-                    2,
-                );
+                const increaseLabelSpacing = Math.max(component.increaseLabelSpacing || 0, 2);
 
                 // Calculate appropriate label position
-                let label = component.label || { x: 0, y: 0 };
+                let label = component.label || {x: 0, y: 0};
 
                 // Apply consistent vertical position if not already specified
                 if (!label.y || Math.abs(label.y) <= 10) {
@@ -78,9 +55,7 @@ const applyConsistentLabelSpacingForEvolution = (
 
                 // Apply consistent horizontal position if not already specified
                 // and apply appropriate positioning based on component type
-                const evolvedData = isEvolved
-                    ? evolvedComponents.get(component.name)
-                    : null;
+                const evolvedData = isEvolved ? evolvedComponents.get(component.name) : null;
                 if (!label.x || Math.abs(label.x) <= 10) {
                     // Calculate appropriate horizontal position
                     let xOffset = 5; // Default slight offset to the right
@@ -107,14 +82,11 @@ const applyConsistentLabelSpacingForEvolution = (
     };
 
     // Process evolved elements to ensure consistent label positioning
-    const processedEvolved = map.evolved.map((evolvedElement) => {
-        const increaseLabelSpacing = Math.max(
-            evolvedElement.increaseLabelSpacing || 0,
-            2,
-        );
+    const processedEvolved = map.evolved.map(evolvedElement => {
+        const increaseLabelSpacing = Math.max(evolvedElement.increaseLabelSpacing || 0, 2);
 
         // Calculate appropriate label position
-        let label = evolvedElement.label || { x: 0, y: 0 };
+        let label = evolvedElement.label || {x: 0, y: 0};
 
         // Apply consistent vertical position if not already specified
         if (!label.y || Math.abs(label.y) <= 10) {
@@ -240,10 +212,10 @@ const createDefaultState = (): ConsolidatedMapState => ({
     highlightedLine: -1,
     newComponentContext: null,
     showLinkedEvolved: false,
-    mapDimensions: { width: 500, height: 400 },
-    mapCanvasDimensions: { width: 500, height: 400 },
+    mapDimensions: {width: 500, height: 400},
+    mapCanvasDimensions: {width: 500, height: 400},
     mapStyleDefs: {} as MapTheme,
-    evolutionOffsets: { commodity: 0, product: 0, custom: 0 },
+    evolutionOffsets: {commodity: 0, product: 0, custom: 0},
     mapEvolutionStates: EvolutionStages,
     isLoading: false,
     errors: [],
@@ -254,9 +226,7 @@ const createDefaultState = (): ConsolidatedMapState => ({
 /**
  * Unified map state hook that consolidates all map-related state
  */
-export const useUnifiedMapState = (
-    initialState?: Partial<ConsolidatedMapState>,
-): UseMapStateResult => {
+export const useUnifiedMapState = (initialState?: Partial<ConsolidatedMapState>): UseMapStateResult => {
     const [state, setState] = useState<ConsolidatedMapState>(() => ({
         ...createDefaultState(),
         ...initialState,
@@ -265,56 +235,40 @@ export const useUnifiedMapState = (
     // Actions for updating state
     const actions = useMemo<MapStateActions>(
         () => ({
-            setMapText: (text: string) =>
-                setState((prev) => ({ ...prev, mapText: text })),
+            setMapText: (text: string) => setState(prev => ({...prev, mapText: text})),
             setMap: (map: UnifiedWardleyMap) => {
                 // Process the map to ensure consistent label spacing for evolution components
-                const processedMap =
-                    applyConsistentLabelSpacingForEvolution(map);
-                setState((prev) => ({ ...prev, map: processedMap }));
+                const processedMap = applyConsistentLabelSpacingForEvolution(map);
+                setState(prev => ({...prev, map: processedMap}));
             },
-            setHighlightedLine: (line: number) =>
-                setState((prev) => ({ ...prev, highlightedLine: line })),
-            setNewComponentContext: (context: any | null) =>
-                setState((prev) => ({ ...prev, newComponentContext: context })),
-            setShowLinkedEvolved: (show: boolean) =>
-                setState((prev) => ({ ...prev, showLinkedEvolved: show })),
-            setMapDimensions: (dimensions: MapDimensions) =>
-                setState((prev) => ({ ...prev, mapDimensions: dimensions })),
+            setHighlightedLine: (line: number) => setState(prev => ({...prev, highlightedLine: line})),
+            setNewComponentContext: (context: any | null) => setState(prev => ({...prev, newComponentContext: context})),
+            setShowLinkedEvolved: (show: boolean) => setState(prev => ({...prev, showLinkedEvolved: show})),
+            setMapDimensions: (dimensions: MapDimensions) => setState(prev => ({...prev, mapDimensions: dimensions})),
             setMapCanvasDimensions: (dimensions: MapCanvasDimensions) =>
-                setState((prev) => ({
+                setState(prev => ({
                     ...prev,
                     mapCanvasDimensions: dimensions,
                 })),
-            setMapStyleDefs: (style: MapTheme) =>
-                setState((prev) => ({ ...prev, mapStyleDefs: style })),
-            setEvolutionOffsets: (offsets: Offsets) =>
-                setState((prev) => ({ ...prev, evolutionOffsets: offsets })),
-            setMapEvolutionStates: (states: EvolutionStages) =>
-                setState((prev) => ({ ...prev, mapEvolutionStates: states })),
-            setIsLoading: (loading: boolean) =>
-                setState((prev) => ({ ...prev, isLoading: loading })),
-            setErrors: (errors: string[]) =>
-                setState((prev) => ({ ...prev, errors })),
+            setMapStyleDefs: (style: MapTheme) => setState(prev => ({...prev, mapStyleDefs: style})),
+            setEvolutionOffsets: (offsets: Offsets) => setState(prev => ({...prev, evolutionOffsets: offsets})),
+            setMapEvolutionStates: (states: EvolutionStages) => setState(prev => ({...prev, mapEvolutionStates: states})),
+            setIsLoading: (loading: boolean) => setState(prev => ({...prev, isLoading: loading})),
+            setErrors: (errors: string[]) => setState(prev => ({...prev, errors})),
             addError: (error: string) =>
-                setState((prev) => ({
+                setState(prev => ({
                     ...prev,
                     errors: [...prev.errors, error],
                 })),
-            clearErrors: () => setState((prev) => ({ ...prev, errors: [] })),
-            setShowUsage: (show: boolean) =>
-                setState((prev) => ({ ...prev, showUsage: show })),
-            setActionInProgress: (inProgress: boolean) =>
-                setState((prev) => ({ ...prev, actionInProgress: inProgress })),
+            clearErrors: () => setState(prev => ({...prev, errors: []})),
+            setShowUsage: (show: boolean) => setState(prev => ({...prev, showUsage: show})),
+            setActionInProgress: (inProgress: boolean) => setState(prev => ({...prev, actionInProgress: inProgress})),
         }),
         [],
     );
 
     // Computed values
-    const groupedComponents = useMemo(
-        () => groupComponentsByType(state.map),
-        [state.map],
-    );
+    const groupedComponents = useMemo(() => groupComponentsByType(state.map), [state.map]);
 
     const renderState = useMemo<MapRenderState>(
         () => ({
@@ -324,36 +278,18 @@ export const useUnifiedMapState = (
             newComponentContext: state.newComponentContext,
             showLinkedEvolved: state.showLinkedEvolved,
         }),
-        [
-            state.map,
-            groupedComponents,
-            state.highlightedLine,
-            state.newComponentContext,
-            state.showLinkedEvolved,
-        ],
+        [state.map, groupedComponents, state.highlightedLine, state.newComponentContext, state.showLinkedEvolved],
     );
 
     // Utility functions
     const getAllComponents = useCallback(
-        () => [
-            ...state.map.components,
-            ...state.map.anchors,
-            ...state.map.submaps,
-            ...state.map.markets,
-            ...state.map.ecosystems,
-        ],
+        () => [...state.map.components, ...state.map.anchors, ...state.map.submaps, ...state.map.markets, ...state.map.ecosystems],
         [state.map],
     );
 
-    const getComponentsByType = useCallback(
-        (type: string) => getAllComponents().filter((c) => c.type === type),
-        [getAllComponents],
-    );
+    const getComponentsByType = useCallback((type: string) => getAllComponents().filter(c => c.type === type), [getAllComponents]);
 
-    const findComponentByName = useCallback(
-        (name: string) => getAllComponents().find((c) => c.name === name),
-        [getAllComponents],
-    );
+    const findComponentByName = useCallback((name: string) => getAllComponents().find(c => c.name === name), [getAllComponents]);
 
     const resetToDefaults = useCallback(() => {
         setState(createDefaultState());
@@ -390,7 +326,7 @@ const convertToLegacyComponent = (unified: UnifiedComponent): any => ({
 });
 
 const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] => {
-    return flowLinks.map((link) => ({
+    return flowLinks.map(link => ({
         ...link,
         flow: link.flow ?? false,
         future: link.future ?? false,
@@ -401,16 +337,12 @@ const convertToLegacyLinks = (flowLinks: FlowLink[]): any[] => {
 };
 
 // React-style setter adapters
-const createReactSetter = <T>(
-    setter: (value: T) => void,
-): React.Dispatch<React.SetStateAction<T>> => {
+const createReactSetter = <T>(setter: (value: T) => void): React.Dispatch<React.SetStateAction<T>> => {
     return (value: React.SetStateAction<T>) => {
         if (typeof value === 'function') {
             // For functional updates, we can't easily support this without state access
             // For now, warn and use the current value
-            console.warn(
-                'Functional state updates not fully supported in legacy adapter',
-            );
+            console.warn('Functional state updates not fully supported in legacy adapter');
             return;
         }
         setter(value);
@@ -422,24 +354,14 @@ const createReactSetter = <T>(
  * This provides the individual state values that the old components expect
  */
 export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
-    const { state, actions, groupedComponents } = unifiedState;
+    const {state, actions, groupedComponents} = unifiedState;
 
     // Convert unified types to legacy-compatible types
-    const legacyComponents = groupedComponents.components.map(
-        convertToLegacyComponent,
-    );
-    const legacyAnchors = groupedComponents.anchors.map(
-        convertToLegacyComponent,
-    );
-    const legacySubMaps = groupedComponents.submaps.map(
-        convertToLegacyComponent,
-    );
-    const legacyMarkets = groupedComponents.markets.map(
-        convertToLegacyComponent,
-    );
-    const legacyEcosystems = groupedComponents.ecosystems.map(
-        convertToLegacyComponent,
-    );
+    const legacyComponents = groupedComponents.components.map(convertToLegacyComponent);
+    const legacyAnchors = groupedComponents.anchors.map(convertToLegacyComponent);
+    const legacySubMaps = groupedComponents.submaps.map(convertToLegacyComponent);
+    const legacyMarkets = groupedComponents.markets.map(convertToLegacyComponent);
+    const legacyEcosystems = groupedComponents.ecosystems.map(convertToLegacyComponent);
     const legacyLinks = convertToLegacyLinks(state.map.links);
 
     return {
@@ -472,9 +394,7 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
         // Legacy individual setters with React-compatible signatures
         mutateMapText: createReactSetter(actions.setMapText),
         setHighlightLine: createReactSetter(actions.setHighlightedLine),
-        setNewComponentContext: createReactSetter(
-            actions.setNewComponentContext,
-        ),
+        setNewComponentContext: createReactSetter(actions.setNewComponentContext),
         setShowLinkedEvolved: createReactSetter(actions.setShowLinkedEvolved),
     };
 };

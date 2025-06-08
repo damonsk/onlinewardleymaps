@@ -1,4 +1,4 @@
-import { ManyCoordsMoved, Replacer } from '../../../types/base';
+import {ManyCoordsMoved, Replacer} from '../../../types/base';
 
 /**
  * ModernExistingManyCoordsMatcher - Modern implementation using unified types
@@ -17,11 +17,7 @@ export const ModernExistingManyCoordsMatcher: Replacer = {
      * @returns true if the line contains the element
      */
     matcher: (line: string, identifier: string, type: string): boolean => {
-        return (
-            line
-                .replace(/\s/g, '')
-                .indexOf(type + identifier.replace(/\s/g, '') + '[') !== -1
-        );
+        return line.replace(/\s/g, '').indexOf(type + identifier.replace(/\s/g, '') + '[') !== -1;
     },
 
     /**
@@ -32,9 +28,6 @@ export const ModernExistingManyCoordsMatcher: Replacer = {
      * @returns The modified line
      */
     action: (line: string, moved: ManyCoordsMoved): string => {
-        return line.replace(
-            /\[([^[\]]+)\]/g,
-            `[${moved.param1}, ${moved.param2}, ${moved.param3}, ${moved.param4}]`,
-        );
+        return line.replace(/\[([^[\]]+)\]/g, `[${moved.param1}, ${moved.param2}, ${moved.param3}, ${moved.param4}]`);
     },
 };

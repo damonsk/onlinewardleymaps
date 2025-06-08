@@ -1,4 +1,4 @@
-import { IProvideFeatureSwitches, WardleyMap } from '../types/base';
+import {IProvideFeatureSwitches, WardleyMap} from '../types/base';
 import AcceleratorExtractionStrategy from './AcceleratorExtractionStrategy';
 import AnchorExtractionStrategy from './AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from './AnnotationExtractionStrategy';
@@ -41,12 +41,12 @@ export default class Converter {
             new AttitudeExtractionStrategy(t),
             new AcceleratorExtractionStrategy(t),
         ];
-        const errorContainer = { errors: [] };
+        const errorContainer = {errors: []};
 
         const nullPresentation = {
             style: '',
-            annotations: { visibility: 0, maturity: 0 },
-            size: { width: 0, height: 0 },
+            annotations: {visibility: 0, maturity: 0},
+            size: {width: 0, height: 0},
         };
         let wardleyMap: WardleyMap = {
             links: [],
@@ -68,19 +68,17 @@ export default class Converter {
             title: '',
             errors: [],
         };
-        strategies.forEach((strategy) => {
+        strategies.forEach(strategy => {
             const strategyResult = strategy.apply();
             wardleyMap = Object.assign(wardleyMap, strategyResult);
             if (strategyResult.errors && strategyResult.errors.length > 0)
-                errorContainer.errors = errorContainer.errors.concat(
-                    strategyResult.errors,
-                );
+                errorContainer.errors = errorContainer.errors.concat(strategyResult.errors);
         });
         return Object.assign(wardleyMap, errorContainer);
     }
 
     stripComments(data: string) {
-        const doubleSlashRemoved = data.split('\n').map((line) => {
+        const doubleSlashRemoved = data.split('\n').map(line => {
             if (line.trim().indexOf('url') === 0) {
                 return line;
             }

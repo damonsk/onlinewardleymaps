@@ -16,7 +16,7 @@
  * 3. Component types, links, pipelines, etc. are converted with proper typing
  */
 
-import { IProvideFeatureSwitches, WardleyMap } from '../types/base';
+import {IProvideFeatureSwitches, WardleyMap} from '../types/base';
 import {
     EvolvedElementData,
     FlowLink,
@@ -64,13 +64,8 @@ export class UnifiedConverter {
         const unifiedMap = createEmptyMap();
         this.copyBasicProperties(legacyMap, unifiedMap);
         this.transformAllComponentTypes(legacyMap, unifiedMap);
-        unifiedMap.evolved = this.transformEvolvedElements(
-            legacyMap.evolved || [],
-        );
-        unifiedMap.pipelines = this.transformPipelines(
-            legacyMap.pipelines || [],
-            this.getAllComponents(unifiedMap),
-        );
+        unifiedMap.evolved = this.transformEvolvedElements(legacyMap.evolved || []);
+        unifiedMap.pipelines = this.transformPipelines(legacyMap.pipelines || [], this.getAllComponents(unifiedMap));
         unifiedMap.links = this.transformLinks(legacyMap.links || []);
         this.copyAdditionalProperties(legacyMap, unifiedMap);
         return unifiedMap;
@@ -79,10 +74,7 @@ export class UnifiedConverter {
     /**
      * Copy basic map properties
      */
-    private copyBasicProperties(
-        source: WardleyMap,
-        target: UnifiedWardleyMap,
-    ): void {
+    private copyBasicProperties(source: WardleyMap, target: UnifiedWardleyMap): void {
         target.title = source.title || '';
         target.presentation = source.presentation;
         target.errors = source.errors || [];
@@ -92,10 +84,7 @@ export class UnifiedConverter {
     /**
      * Copy additional map properties
      */
-    private copyAdditionalProperties(
-        source: WardleyMap,
-        target: UnifiedWardleyMap,
-    ): void {
+    private copyAdditionalProperties(source: WardleyMap, target: UnifiedWardleyMap): void {
         target.annotations = source.annotations || [];
         target.notes = source.notes || [];
         target.urls = source.urls || [];
@@ -106,22 +95,10 @@ export class UnifiedConverter {
     /**
      * Transform all component types
      */
-    private transformAllComponentTypes(
-        legacyMap: WardleyMap,
-        unifiedMap: UnifiedWardleyMap,
-    ): void {
-        unifiedMap.components = this.transformComponents(
-            legacyMap.elements || [],
-            'component',
-        );
-        unifiedMap.anchors = this.transformComponents(
-            legacyMap.anchors || [],
-            'anchor',
-        );
-        unifiedMap.submaps = this.transformComponents(
-            legacyMap.submaps || [],
-            'submap',
-        );
+    private transformAllComponentTypes(legacyMap: WardleyMap, unifiedMap: UnifiedWardleyMap): void {
+        unifiedMap.components = this.transformComponents(legacyMap.elements || [], 'component');
+        unifiedMap.anchors = this.transformComponents(legacyMap.anchors || [], 'anchor');
+        unifiedMap.submaps = this.transformComponents(legacyMap.submaps || [], 'submap');
     }
 
     /**
@@ -130,11 +107,8 @@ export class UnifiedConverter {
      * @param type The component type
      * @param methodComponents Optional set of component names that are referenced in methods
      */
-    private transformComponents(
-        legacyComponents: any[],
-        type: string,
-    ): UnifiedComponent[] {
-        return legacyComponents.map((component) => {
+    private transformComponents(legacyComponents: any[], type: string): UnifiedComponent[] {
+        return legacyComponents.map(component => {
             return createUnifiedComponent({
                 id: component.id || this.generateId(component.name, type),
                 name: component.name || '',
@@ -161,10 +135,8 @@ export class UnifiedConverter {
     /**
      * Transform legacy evolved elements
      */
-    private transformEvolvedElements(
-        legacyEvolved: any[],
-    ): EvolvedElementData[] {
-        return legacyEvolved.map((evolved) => {
+    private transformEvolvedElements(legacyEvolved: any[]): EvolvedElementData[] {
+        return legacyEvolved.map(evolved => {
             return {
                 name: evolved.name || '',
                 maturity: evolved.maturity || 0,
@@ -180,19 +152,14 @@ export class UnifiedConverter {
     /**
      * Transform legacy pipelines with visibility processing
      */
-    private transformPipelines(
-        legacyPipelines: any[],
-        allComponents?: UnifiedComponent[],
-    ): PipelineData[] {
-        return legacyPipelines.map((pipeline) => {
+    private transformPipelines(legacyPipelines: any[], allComponents?: UnifiedComponent[]): PipelineData[] {
+        return legacyPipelines.map(pipeline => {
             const transformedPipeline: PipelineData = {
                 id: pipeline.id || this.generateId(pipeline.name, 'pipeline'),
                 name: pipeline.name || '',
                 visibility: pipeline.visibility || 0,
                 line: pipeline.line,
-                components: this.transformPipelineComponents(
-                    pipeline.components || [],
-                ),
+                components: this.transformPipelineComponents(pipeline.components || []),
                 inertia: pipeline.inertia || false,
                 hidden: pipeline.hidden || false,
                 maturity1: pipeline.maturity1,
@@ -217,28 +184,23 @@ export class UnifiedConverter {
         line: number;
         label: LabelOffset;
     }[] {
-        return components.map((comp) => ({
+        return components.map(comp => ({
             id: comp.id || this.generateId(comp.name, 'pipelinecomponent'),
             name: comp.name || '',
             maturity: comp.maturity || 0,
             visibility: comp.visibility || 0,
             line: comp.line,
-            label: comp.label || { x: 0, y: 0 },
+            label: comp.label || {x: 0, y: 0},
         }));
     }
 
     /**
      * Process visibility for a pipeline based on its parent component
      */
-    private processPipelineVisibility(
-        pipeline: PipelineData,
-        allComponents?: UnifiedComponent[],
-    ): void {
+    private processPipelineVisibility(pipeline: PipelineData, allComponents?: UnifiedComponent[]): void {
         if (!allComponents) return;
 
-        const matchingComponent = allComponents.find(
-            (component) => component.name === pipeline.name,
-        );
+        const matchingComponent = allComponents.find(component => component.name === pipeline.name);
 
         if (matchingComponent) {
             pipeline.visibility = matchingComponent.visibility;
@@ -251,7 +213,7 @@ export class UnifiedConverter {
      * Transform legacy links to unified flow links
      */
     private transformLinks(legacyLinks: any[]): FlowLink[] {
-        return legacyLinks.map((link) => ({
+        return legacyLinks.map(link => ({
             start: link.start || '',
             end: link.end || '',
             line: link.line,
@@ -274,13 +236,7 @@ export class UnifiedConverter {
      * Get all components from the map regardless of type
      */
     getAllComponents(map: UnifiedWardleyMap): UnifiedComponent[] {
-        return [
-            ...map.components,
-            ...map.anchors,
-            ...map.submaps,
-            ...map.markets,
-            ...map.ecosystems,
-        ];
+        return [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
     }
 
     /**

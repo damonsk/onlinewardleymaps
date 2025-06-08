@@ -1,4 +1,4 @@
-import { IParseStrategy } from '../types/base';
+import {IParseStrategy} from '../types/base';
 import ParseError from './ParseError';
 
 export default class LinksExtractionStrategy implements IParseStrategy {
@@ -107,7 +107,7 @@ export default class LinksExtractionStrategy implements IParseStrategy {
             }
         }
 
-        return { links: linksToReturn, errors: errors };
+        return {links: linksToReturn, errors: errors};
     }
 
     canProcessLine(element: string) {
@@ -115,10 +115,7 @@ export default class LinksExtractionStrategy implements IParseStrategy {
         let shouldProcess = true;
         for (let j = 0; j < this.notLinks.length; j++) {
             const shouldIgnore = this.notLinks[j];
-            if (
-                element.trim().indexOf(shouldIgnore) === 0 ||
-                element.trim().indexOf('(' + shouldIgnore + ')') !== -1
-            ) {
+            if (element.trim().indexOf(shouldIgnore) === 0 || element.trim().indexOf('(' + shouldIgnore + ')') !== -1) {
                 shouldProcess = false;
             }
         }

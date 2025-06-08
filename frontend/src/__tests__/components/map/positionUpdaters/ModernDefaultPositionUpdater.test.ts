@@ -1,5 +1,5 @@
 import ModernDefaultPositionUpdater from '../../../../components/map/positionUpdaters/ModernDefaultPositionUpdater';
-import { PositionUpdater, Replacer } from '../../../../types/base';
+import {PositionUpdater, Replacer} from '../../../../types/base';
 
 describe('ModernDefaultPositionUpdater', () => {
     let mapText: string;
@@ -25,12 +25,7 @@ describe('ModernDefaultPositionUpdater', () => {
         mapText = 'component Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]';
         mutator = jest.fn();
         replacers = [mockMatcher1, mockMatcher2];
-        updater = new ModernDefaultPositionUpdater(
-            'component',
-            mapText,
-            mutator,
-            replacers,
-        );
+        updater = new ModernDefaultPositionUpdater('component', mapText, mutator, replacers);
     });
 
     afterEach(() => {
@@ -38,25 +33,16 @@ describe('ModernDefaultPositionUpdater', () => {
     });
 
     test('updates position when matcher finds a match', () => {
-        const moved = { param1: 0.5, param2: 0.6 };
+        const moved = {param1: 0.5, param2: 0.6};
         updater.update(moved, 'Foo');
 
-        expect(mockMatcher1.matcher).toHaveBeenCalledWith(
-            'component Foo [0.1, 0.2]',
-            'Foo',
-            'component',
-        );
-        expect(mockMatcher1.action).toHaveBeenCalledWith(
-            'component Foo [0.1, 0.2]',
-            moved,
-        );
-        expect(mutator).toHaveBeenCalledWith(
-            'component Foo [0.5, 0.6]\ncomponent Bar [0.3, 0.4]',
-        );
+        expect(mockMatcher1.matcher).toHaveBeenCalledWith('component Foo [0.1, 0.2]', 'Foo', 'component');
+        expect(mockMatcher1.action).toHaveBeenCalledWith('component Foo [0.1, 0.2]', moved);
+        expect(mutator).toHaveBeenCalledWith('component Foo [0.5, 0.6]\ncomponent Bar [0.3, 0.4]');
     });
 
     test('checks all replacers until it finds a match', () => {
-        const moved = { param1: 0.7, param2: 0.8 };
+        const moved = {param1: 0.7, param2: 0.8};
         updater.update(moved, 'NonExistent');
 
         expect(mockMatcher1.matcher).toHaveBeenCalledTimes(2); // Once for each line
@@ -72,8 +58,6 @@ describe('ModernDefaultPositionUpdater', () => {
             setSuccessor: jest.fn(),
         };
 
-        expect(() => updater.setSuccessor(mockSuccessor)).toThrow(
-            'Method not implemented.',
-        );
+        expect(() => updater.setSuccessor(mockSuccessor)).toThrow('Method not implemented.');
     });
 });

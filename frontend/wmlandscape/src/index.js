@@ -3,14 +3,14 @@ import MapEvolution from '../../src/components/map/foundation/MapEvolution';
 import MapGraphics from '../../src/components/map/foundation/MapGraphics';
 import MapGrid from '../../src/components/map/foundation/MapGrid';
 import DefaultPositionUpdater from '../../src/components/map/positionUpdaters/DefaultPositionUpdater';
-import { ExistingCoordsMatcher } from '../../src/components/map/positionUpdaters/ExistingCoordsMatcher';
-import { ExistingManyCoordsMatcher } from '../../src/components/map/positionUpdaters/ExistingManyCoordsMatcher';
-import { ExistingMaturityMatcher } from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
-import { ExistingSingleCoordMatcher } from '../../src/components/map/positionUpdaters/ExistingSingleCoordMatcher';
+import {ExistingCoordsMatcher} from '../../src/components/map/positionUpdaters/ExistingCoordsMatcher';
+import {ExistingManyCoordsMatcher} from '../../src/components/map/positionUpdaters/ExistingManyCoordsMatcher';
+import {ExistingMaturityMatcher} from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
+import {ExistingSingleCoordMatcher} from '../../src/components/map/positionUpdaters/ExistingSingleCoordMatcher';
 import LineNumberPositionUpdater from '../../src/components/map/positionUpdaters/LineNumberPositionUpdater';
-import { NotDefinedCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedCoordsMatcher';
-import { NotDefinedManyCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedManyCoordsMatcher';
-import { NotDefinedMaturityMatcher } from '../../src/components/map/positionUpdaters/NotDefinedMaturityMatcher';
+import {NotDefinedCoordsMatcher} from '../../src/components/map/positionUpdaters/NotDefinedCoordsMatcher';
+import {NotDefinedManyCoordsMatcher} from '../../src/components/map/positionUpdaters/NotDefinedManyCoordsMatcher';
+import {NotDefinedMaturityMatcher} from '../../src/components/map/positionUpdaters/NotDefinedMaturityMatcher';
 import SingletonPositionUpdater from '../../src/components/map/positionUpdaters/SingletonPositionUpdater';
 
 import Anchor from '../../src/components/map/Anchor';
@@ -39,12 +39,7 @@ import AttitudeSymbol from '../../src/components/symbols/AttitudeSymbol';
 import ComponentSymbol from '../../src/components/symbols/ComponentSymbol';
 import ComponentTextSymbol from '../../src/components/symbols/ComponentTextSymbol';
 import EcosystemSymbol from '../../src/components/symbols/EcosystemSymbol';
-import {
-    ComponentEvolvedIcon,
-    ComponentIcon,
-    InertiaIcon,
-    SVGWrapper,
-} from '../../src/components/symbols/icons';
+import {ComponentEvolvedIcon, ComponentIcon, InertiaIcon, SVGWrapper} from '../../src/components/symbols/icons';
 import InertiaSymbol from '../../src/components/symbols/InertiaSymbol';
 import LinkSymbol from '../../src/components/symbols/LinkSymbol';
 import MarketSymbol from '../../src/components/symbols/MarketSymbol';
@@ -59,14 +54,8 @@ import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
 
 import QuickAdd from '../../src/components/actions/QuickAdd';
-import {
-    FeatureSwitchesProvider,
-    useFeatureSwitches,
-} from '../../src/components/FeatureSwitchesContext';
-import {
-    ModKeyPressedProvider,
-    useModKeyPressedConsumer,
-} from '../../src/components/KeyPressContext';
+import {FeatureSwitchesProvider, useFeatureSwitches} from '../../src/components/FeatureSwitchesContext';
+import {ModKeyPressedProvider, useModKeyPressedConsumer} from '../../src/components/KeyPressContext';
 import FluidLink from '../../src/components/map/FluidLink';
 import MapAccelerator from '../../src/components/map/MapAccelerator';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
@@ -103,7 +92,7 @@ import EvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingEndLinksS
 import EvolvingToEvolvingLinksStrategy from '../../src/linkStrategies/EvolvingToEvolvingLinksStrategy';
 import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingToNoneEvolvingEndLinksStrategy';
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
-import { UnifiedMapElements } from '../../src/processing/UnifiedMapElements';
+import {UnifiedMapElements} from '../../src/processing/UnifiedMapElements';
 export {
     AccelerateSymbol,
     AcceleratorExtractionStrategy,

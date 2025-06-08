@@ -1,6 +1,6 @@
-import React, { memo, MouseEvent } from 'react';
-import { MapComponentTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified';
+import React, {memo, MouseEvent} from 'react';
+import {MapComponentTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified';
 
 /**
  * EcosystemSymbol Props - using unified type system directly
@@ -34,31 +34,10 @@ const EcosystemSymbol: React.FunctionComponent<ModernEcosystemSymbolProps> = ({
 
     return (
         <g id={id} onClick={onClick}>
-            <circle
-                cx={cx}
-                cy={cy}
-                r="30"
-                fill={fill}
-                strokeWidth="1"
-                stroke={stroke}
-            />
-            <circle
-                cx={cx}
-                cy={cy}
-                r="25"
-                fill="white"
-                strokeWidth="1"
-                stroke="#9e9b9e"
-            />
+            <circle cx={cx} cy={cy} r="30" fill={fill} strokeWidth="1" stroke={stroke} />
+            <circle cx={cx} cy={cy} r="25" fill="white" strokeWidth="1" stroke="#9e9b9e" />
             <circle cx={cx} cy={cy} r="25" fill="url(#diagonalHatch)" />
-            <circle
-                cx={cx}
-                cy={cy}
-                r="10"
-                fill="white"
-                strokeWidth="1"
-                stroke="#6e6e6e"
-            />
+            <circle cx={cx} cy={cy} r="10" fill="white" strokeWidth="1" stroke="#6e6e6e" />
         </g>
     );
 };

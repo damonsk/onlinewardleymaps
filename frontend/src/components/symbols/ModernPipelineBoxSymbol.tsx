@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 
 interface ModernPipelineBoxSymbolProps {
     id?: string;
@@ -16,14 +16,7 @@ interface ModernPipelineBoxSymbolProps {
  * ModernPipelineBoxSymbol - Modern implementation of pipeline box
  * Part of Phase 4 Component Interface Modernization
  */
-const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({
-    id,
-    y,
-    x1,
-    x2,
-    stroke,
-    styles = {},
-}) => {
+const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({id, y, x1, x2, stroke, styles = {}}) => {
     // Use explicitly provided stroke, or from styles, or default to black
     const str = stroke || styles.stroke || 'black';
     // Use pipelineStrokeWidth from styles if available, or default to 1
@@ -31,38 +24,10 @@ const ModernPipelineBoxSymbol: React.FC<ModernPipelineBoxSymbolProps> = ({
 
     return (
         <g id={id} transform={`translate(${x1},${y})`}>
-            <line
-                x1={0}
-                y1={0}
-                x2={x2 - x1}
-                y2={0}
-                strokeWidth={strokeWidth}
-                stroke={str}
-            />
-            <line
-                x1={x2 - x1}
-                y1={0}
-                x2={x2 - x1}
-                y2={22}
-                strokeWidth={strokeWidth}
-                stroke={str}
-            />
-            <line
-                x1={x2 - x1}
-                y1={22}
-                x2={0}
-                y2={22}
-                strokeWidth={strokeWidth}
-                stroke={str}
-            />
-            <line
-                x1={0}
-                y1={22}
-                x2={0}
-                y2={0}
-                strokeWidth={strokeWidth}
-                stroke={str}
-            />
+            <line x1={0} y1={0} x2={x2 - x1} y2={0} strokeWidth={strokeWidth} stroke={str} />
+            <line x1={x2 - x1} y1={0} x2={x2 - x1} y2={22} strokeWidth={strokeWidth} stroke={str} />
+            <line x1={x2 - x1} y1={22} x2={0} y2={22} strokeWidth={strokeWidth} stroke={str} />
+            <line x1={0} y1={22} x2={0} y2={0} strokeWidth={strokeWidth} stroke={str} />
         </g>
     );
 };

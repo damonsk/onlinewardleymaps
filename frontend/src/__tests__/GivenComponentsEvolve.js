@@ -1,13 +1,13 @@
-import { useContext } from 'react';
-import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { MapElements } from '../processing/MapElements';
+import {useContext} from 'react';
+import {UnifiedConverter} from '../conversion/UnifiedConverter';
+import {MapElements} from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
     useContext: jest.fn(),
 }));
 
-useContext.mockReturnValue({ enableNewPipelines: false });
+useContext.mockReturnValue({enableNewPipelines: false});
 
 describe('Given Components Evolve', function () {
     const mockContextValue = useContext();
@@ -39,10 +39,7 @@ describe('Given Components Evolve', function () {
     });
 
     test('When evolve text with label is supplied then convert output is correct', function () {
-        let actual =
-            'component Foo [0.1, 0.1] label [66,99]' +
-            '\n' +
-            'evolve Foo 0.9 label [-33, -55]';
+        let actual = 'component Foo [0.1, 0.1] label [66,99]' + '\n' + 'evolve Foo 0.9 label [-33, -55]';
         let result = new UnifiedConverter(mockContextValue).parse(actual);
         let me = new MapElements(result);
         let legacyAdapter = me.getLegacyAdapter();

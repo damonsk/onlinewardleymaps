@@ -1,11 +1,11 @@
 import React from 'react';
-import { MapTheme } from '../../constants/mapstyles';
+import {MapTheme} from '../../constants/mapstyles';
 import AttitudeSymbol from '../symbols/AttitudeSymbol';
 import Movable from './Movable';
 import ModernPositionCalculator from './ModernPositionCalculator';
-import { ModernExistingManyCoordsMatcher } from './positionUpdaters/ModernExistingManyCoordsMatcher';
+import {ModernExistingManyCoordsMatcher} from './positionUpdaters/ModernExistingManyCoordsMatcher';
 import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
-import { NotDefinedManyCoordsMatcher } from './positionUpdaters/NotDefinedManyCoordsMatcher';
+import {NotDefinedManyCoordsMatcher} from './positionUpdaters/NotDefinedManyCoordsMatcher';
 
 interface ModernAttitudeProps {
     attitude: {
@@ -37,23 +37,14 @@ interface MovedPosition {
  *
  * This component renders a movable attitude area on the map
  */
-const Attitude: React.FC<ModernAttitudeProps> = ({
-    attitude,
-    mapDimensions,
-    mapText,
-    mutateMapText,
-    mapStyleDefs,
-    scaleFactor,
-}) => {
-    const { height, width } = mapDimensions;
+const Attitude: React.FC<ModernAttitudeProps> = ({attitude, mapDimensions, mapText, mutateMapText, mapStyleDefs, scaleFactor}) => {
+    const {height, width} = mapDimensions;
     const type = attitude.attitude;
     const positionCalc = new ModernPositionCalculator();
-    const positionUpdater = new ModernLineNumberPositionUpdater(
-        type,
-        mapText,
-        mutateMapText,
-        [ModernExistingManyCoordsMatcher, NotDefinedManyCoordsMatcher],
-    );
+    const positionUpdater = new ModernLineNumberPositionUpdater(type, mapText, mutateMapText, [
+        ModernExistingManyCoordsMatcher,
+        NotDefinedManyCoordsMatcher,
+    ]);
 
     const x = positionCalc.maturityToX(attitude.maturity, width);
     const x2 = positionCalc.maturityToX(attitude.maturity2, width);
@@ -61,20 +52,16 @@ const Attitude: React.FC<ModernAttitudeProps> = ({
     const y2 = positionCalc.visibilityToY(attitude.visibility2, height);
 
     function endDrag(moved: MovedPosition): void {
-        const visibility = parseFloat(
-            positionCalc.yToVisibility(moved.y, height),
-        );
+        const visibility = parseFloat(positionCalc.yToVisibility(moved.y, height));
         const maturity = parseFloat(positionCalc.xToMaturity(moved.x, width));
         let visibility2 = attitude.visibility2;
         let maturity2 = attitude.maturity2;
 
         if (attitude.visibility < visibility) {
-            visibility2 =
-                visibility - attitude.visibility + attitude.visibility2;
+            visibility2 = visibility - attitude.visibility + attitude.visibility2;
         }
         if (attitude.visibility > visibility) {
-            visibility2 =
-                visibility - attitude.visibility + attitude.visibility2;
+            visibility2 = visibility - attitude.visibility + attitude.visibility2;
         }
         if (attitude.maturity < maturity) {
             maturity2 = maturity - attitude.maturity + attitude.maturity2;
@@ -104,8 +91,7 @@ const Attitude: React.FC<ModernAttitudeProps> = ({
                 y={y}
                 fixedY={false}
                 fixedX={false}
-                scaleFactor={scaleFactor}
-            >
+                scaleFactor={scaleFactor}>
                 <AttitudeSymbol
                     id={`modern_attitude_${type}`}
                     attitude={type}

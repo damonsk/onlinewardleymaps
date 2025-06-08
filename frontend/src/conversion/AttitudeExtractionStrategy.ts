@@ -1,10 +1,5 @@
-import {
-    setAttitude,
-    setCoords,
-    setHeightWidth,
-    setManyCoords,
-} from '../constants/extractionFunctions';
-import { IParseStrategy } from '../types/base';
+import {setAttitude, setCoords, setHeightWidth, setManyCoords} from '../constants/extractionFunctions';
+import {IParseStrategy} from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
 
 export default class AttitudeExtractionStrategy implements IParseStrategy {
@@ -16,13 +11,13 @@ export default class AttitudeExtractionStrategy implements IParseStrategy {
         this.containerName = 'attitudes';
         this.baseStrategies = ['pioneers', 'settlers', 'townplanners']
             .map(
-                (e) =>
+                e =>
                     new BaseStrategyRunner(
                         data,
                         {
                             keyword: e,
                             containerName: 'attitudes',
-                            defaultAttributes: { increaseLabelSpacing: 0 },
+                            defaultAttributes: {increaseLabelSpacing: 0},
                         },
                         [setAttitude, setCoords, setManyCoords, setHeightWidth],
                     ),
@@ -31,9 +26,9 @@ export default class AttitudeExtractionStrategy implements IParseStrategy {
     }
 
     apply() {
-        const output = this.baseStrategies.map((bs) => bs.apply()).flat();
+        const output = this.baseStrategies.map(bs => bs.apply()).flat();
         return {
-            [this.containerName]: output.map((o) => o.attitudes).flat(),
+            [this.containerName]: output.map(o => o.attitudes).flat(),
             errors: [],
         };
     }

@@ -1,19 +1,17 @@
 import dynamic from 'next/dynamic';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ReactAce from 'react-ace/lib/ace';
-import { EditorPrefixes } from '../../constants/editorPrefixes';
-import { UnifiedWardleyMap } from '../../types/unified/map';
-import { WrappedEditorProps } from './WrappedEditor';
+import {EditorPrefixes} from '../../constants/editorPrefixes';
+import {UnifiedWardleyMap} from '../../types/unified/map';
+import {WrappedEditorProps} from './WrappedEditor';
 
 const TextEditor = dynamic(() => import('./WrappedEditor'), {
     ssr: false,
 });
 
-const ForwardedRefComponent = React.forwardRef<ReactAce, WrappedEditorProps>(
-    (props, ref) => {
-        return <TextEditor {...props} editorRef={ref} />;
-    },
-);
+const ForwardedRefComponent = React.forwardRef<ReactAce, WrappedEditorProps>((props, ref) => {
+    return <TextEditor {...props} editorRef={ref} />;
+});
 
 ForwardedRefComponent.displayName = 'ForwardedRefComponent';
 
@@ -53,8 +51,7 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
     // Use the same height calculation logic as the original Editor
     const getHeight = () => {
         const winHeight = window.innerHeight;
-        const topNavHeight =
-            document.getElementById('top-nav-wrapper')?.clientHeight;
+        const topNavHeight = document.getElementById('top-nav-wrapper')?.clientHeight;
         const titleHeight = document.getElementById('title')?.clientHeight;
         return winHeight - (topNavHeight ?? 0) - (titleHeight ?? 0) + 35;
     };
@@ -102,9 +99,7 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
             }
             // Add error decorations to the specified error lines
             if (errorLine.length > 0) {
-                errorLine.forEach((e: number) =>
-                    editor.session.addGutterDecoration(e, 'ace_error'),
-                );
+                errorLine.forEach((e: number) => editor.session.addGutterDecoration(e, 'ace_error'));
             }
         }
     }, [errorLine]);
@@ -155,7 +150,7 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
                         _prefix: any,
                         callback: (arg0: null, arg1: any) => void,
                     ) {
-                        const suggestions = completions.map((item) => ({
+                        const suggestions = completions.map(item => ({
                             name: item.caption,
                             value: item.value,
                             score: 1,
@@ -175,8 +170,7 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
                 width: '100%',
                 height: editorHeight,
                 paddingBottom: '10px',
-            }}
-        >
+            }}>
             <ForwardedRefComponent
                 ref={aceEditorRef}
                 mode="owm"
@@ -200,7 +194,7 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
                     width: '100%',
                     border: invalid ? '2px solid red' : '0px',
                 }}
-                annotations={errorLine.map((line) => ({
+                annotations={errorLine.map(line => ({
                     row: line,
                     column: 0,
                     type: 'error',

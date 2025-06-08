@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { TextTheme } from '../../constants/mapstyles';
+import React, {memo} from 'react';
+import {TextTheme} from '../../constants/mapstyles';
 
 export interface ComponentTextSymbolProps {
     id: string;
@@ -17,9 +17,7 @@ export interface ComponentTextSymbolProps {
     setShowTextField?: (value: React.SetStateAction<boolean>) => void;
 }
 
-const ComponentTextSymbol: React.FunctionComponent<
-    ComponentTextSymbolProps
-> = ({
+const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = ({
     id,
     x,
     y,
@@ -37,25 +35,16 @@ const ComponentTextSymbol: React.FunctionComponent<
             .trim()
             .split(' ')
             .map((text, i) => (
-                <tspan
-                    key={'component_text_span_' + id + '_' + i}
-                    x={0}
-                    dy={i > 0 ? 15 : 0}
-                    textAnchor="middle"
-                >
+                <tspan key={'component_text_span_' + id + '_' + i} x={0} dy={i > 0 ? 15 : 0} textAnchor="middle">
                     {text.trim()}
                 </tspan>
             ));
 
-    const displayFill = evolved
-        ? textTheme.evolvedTextColor
-        : textTheme.textColor;
+    const displayFill = evolved ? textTheme.evolvedTextColor : textTheme.textColor;
     const isLong = text && text.length > 14;
     const trimmedText = isLong ? trimText(id, text) : text;
     const transform = isLong ? 'translate(30, 10)' : '';
-    const handleDblClick = (
-        e: React.MouseEvent<SVGTextElement, MouseEvent>,
-    ): void => {
+    const handleDblClick = (e: React.MouseEvent<SVGTextElement, MouseEvent>): void => {
         e.stopPropagation();
         if (setShowTextField) setShowTextField(true);
     };
@@ -73,8 +62,7 @@ const ComponentTextSymbol: React.FunctionComponent<
                 transform={transform}
                 fill={textTheme.textColor || displayFill}
                 onClick={onClick ? onClick : () => {}}
-                onDoubleClick={handleDblClick}
-            >
+                onDoubleClick={handleDblClick}>
                 {note || trimmedText}
             </text>
         </>

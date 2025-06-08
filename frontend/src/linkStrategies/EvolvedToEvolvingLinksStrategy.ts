@@ -1,35 +1,23 @@
 // Using any type instead of MapElements for compatibility with both modern and legacy elements
-import {
-    Link,
-    LinkExtractionStrategy,
-    LinkStrategy,
-} from './LinkStrategiesInterfaces';
+import {Link, LinkExtractionStrategy, LinkStrategy} from './LinkStrategiesInterfaces';
 
 /**
  * EvolvedToEvolvingLinksStrategy
  * Updated to use MapElements in Phase 4C
  */
-export default class EvolvedToEvolvingLinksStrategy
-    implements LinkExtractionStrategy
-{
+export default class EvolvedToEvolvingLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility
 
     constructor(links: Link[] = [], mapElements: any = {}) {
         this.links = links || []; // Initialize links with empty array if undefined
-        this.mapElements = mapElements?.getLegacyAdapter
-            ? mapElements.getLegacyAdapter()
-            : mapElements;
+        this.mapElements = mapElements?.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
     }
     getLinks(): LinkStrategy {
         const links = this.links.filter(
             (li: Link) =>
-                this.mapElements
-                    .getEvolvedElements()
-                    ?.find((i: any) => i.name === li.start) &&
-                this.mapElements
-                    .getEvolvedElements()
-                    ?.find((i: any) => i.name === li.end),
+                this.mapElements.getEvolvedElements()?.find((i: any) => i.name === li.start) &&
+                this.mapElements.getEvolvedElements()?.find((i: any) => i.name === li.end),
         );
 
         return {

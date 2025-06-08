@@ -1,11 +1,11 @@
-import React, { MouseEvent } from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapElements } from '../../processing/MapElements';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedComponent } from '../../types/unified';
+import React, {MouseEvent} from 'react';
+import {MapDimensions} from '../../constants/defaults';
+import {MapElements} from '../../processing/MapElements';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedComponent} from '../../types/unified';
 
 // Import required components
-import { processMapElements } from '../../utils/mapProcessing';
+import {processMapElements} from '../../utils/mapProcessing';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
@@ -48,7 +48,7 @@ interface ModernUnifiedMapContentProps {
     };
     enableNewPipelines: boolean;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    clicked: (data: { el: any; e: MouseEvent<Element> | null }) => void;
+    clicked: (data: {el: any; e: MouseEvent<Element> | null}) => void;
     enableAccelerators: boolean;
     mapAccelerators: UnifiedComponent[];
     mapNotes: any[];
@@ -58,7 +58,7 @@ interface ModernUnifiedMapContentProps {
     mapMethods: any[];
 }
 
-const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
+const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
     const {
         mapDimensions,
         mapStyleDefs,
@@ -86,12 +86,9 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
 
     // Get elements from UnifiedMapElements
     // Use MapElements directly - Phase 4C modernization
-    const mapAnchors: UnifiedComponent[] = mapElements
-        .getAllComponents()
-        .filter((c) => c.type === 'anchor');
+    const mapAnchors: UnifiedComponent[] = mapElements.getAllComponents().filter(c => c.type === 'anchor');
 
-    const getElementByName = (elements: UnifiedComponent[], name: string) =>
-        elements.find((e) => e.name === name);
+    const getElementByName = (elements: UnifiedComponent[], name: string) => elements.find(e => e.name === name);
 
     // Direct component passing function - no need for adaptation since we're using unified types
     // This is part of Phase 4A migration - eliminate adapter functions
@@ -139,31 +136,18 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
             <g id="evolvedLinks">
                 {mapElements.getEvolvingComponents().map(
                     (e: UnifiedComponent, i: number) =>
-                        getElementByName(
-                            mapElements.getEvolvingComponents(),
-                            e.name,
-                        ) && (
+                        getElementByName(mapElements.getEvolvingComponents(), e.name) && (
                             <EvolvingComponentLink
                                 key={i}
                                 mapStyleDefs={mapStyleDefs}
                                 mapDimensions={mapDimensions}
                                 endElement={(() => {
-                                    const element = getElementByName(
-                                        mapElements.getEvolvedComponents(),
-                                        e.name,
-                                    );
-                                    return element
-                                        ? passComponent(element)
-                                        : undefined;
+                                    const element = getElementByName(mapElements.getEvolvedComponents(), e.name);
+                                    return element ? passComponent(element) : undefined;
                                 })()}
                                 startElement={(() => {
-                                    const element = getElementByName(
-                                        mapElements.getEvolvingComponents(),
-                                        e.name,
-                                    );
-                                    return element
-                                        ? passComponent(element)
-                                        : undefined;
+                                    const element = getElementByName(mapElements.getEvolvingComponents(), e.name);
+                                    return element ? passComponent(element) : undefined;
                                 })()}
                                 evolutionOffsets={
                                     props.evolutionOffsets || {
@@ -208,30 +192,27 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
             <g id="accelerators">
                 {enableAccelerators &&
                     props.mapAccelerators &&
-                    props.mapAccelerators.map(
-                        (el: UnifiedComponent, i: number) => (
-                            <MapAccelerator
-                                key={i}
-                                element={el}
-                                mapDimensions={mapDimensions}
-                                mapText={mapText}
-                                mutateMapText={mutateMapText}
-                                scaleFactor={scaleFactor}
-                            >
-                                <ComponentSymbol
-                                    id={'accelerator_circle_' + el.id}
-                                    styles={mapStyleDefs.component}
-                                    component={el}
-                                    onClick={() =>
-                                        clicked({
-                                            el: passComponent(el),
-                                            e: null,
-                                        })
-                                    }
-                                />
-                            </MapAccelerator>
-                        ),
-                    )}
+                    props.mapAccelerators.map((el: UnifiedComponent, i: number) => (
+                        <MapAccelerator
+                            key={i}
+                            element={el}
+                            mapDimensions={mapDimensions}
+                            mapText={mapText}
+                            mutateMapText={mutateMapText}
+                            scaleFactor={scaleFactor}>
+                            <ComponentSymbol
+                                id={'accelerator_circle_' + el.id}
+                                styles={mapStyleDefs.component}
+                                component={el}
+                                onClick={() =>
+                                    clicked({
+                                        el: passComponent(el),
+                                        e: null,
+                                    })
+                                }
+                            />
+                        </MapAccelerator>
+                    ))}
             </g>
 
             {/* Render annotations box first (background) followed by pipelines and then components */}
@@ -266,10 +247,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
                 {/* Process all methods using the same logic from the legacy implementation */}
                 {(() => {
                     // Process all methods using the utility from mapProcessing.ts with MapElements directly
-                    const processedMethodsData = processMapElements(
-                        props.mapMethods || [],
-                        mapElements /* Using MapElements directly */,
-                    );
+                    const processedMethodsData = processMapElements(props.mapMethods || [], mapElements /* Using MapElements directly */);
 
                     // Get all methods: both standalone and decorated components
                     const allMethods = processedMethodsData.allMethods || [];
@@ -311,8 +289,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
                             mutateMapText={mutateMapText}
                             mapStyleDefs={mapStyleDefs}
                             setHighlightLine={setHighlightLineDispatch}
-                            scaleFactor={scaleFactor}
-                        >
+                            scaleFactor={scaleFactor}>
                             {el.type === 'component' && !el.pipeline && (
                                 <ComponentSymbol
                                     id={`element_circle_${el.id}`}
@@ -341,8 +318,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
                                 />
                             )}
 
-                            {(el.decorators?.ecosystem ||
-                                el.type === 'ecosystem') && (
+                            {(el.decorators?.ecosystem || el.type === 'ecosystem') && (
                                 <EcosystemSymbol
                                     id={`ecosystem_circle_${el.id}`}
                                     styles={mapStyleDefs.component}
@@ -356,8 +332,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
                                 />
                             )}
 
-                            {(el.decorators?.market ||
-                                el.type === 'market') && (
+                            {(el.decorators?.market || el.type === 'market') && (
                                 <MarketSymbol
                                     id={`market_circle_${el.id}`}
                                     styles={mapStyleDefs.component}
@@ -382,14 +357,8 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = (props) => {
                                         })
                                     }
                                     launchUrl={
-                                        el.url &&
-                                        typeof el.url === 'object' &&
-                                        'url' in el.url &&
-                                        (el.url as any).url
-                                            ? () =>
-                                                  launchUrl?.(
-                                                      (el.url as any).url,
-                                                  )
+                                        el.url && typeof el.url === 'object' && 'url' in el.url && (el.url as any).url
+                                            ? () => launchUrl?.((el.url as any).url)
                                             : undefined
                                     }
                                 />

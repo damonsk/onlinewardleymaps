@@ -5,7 +5,7 @@ import ace from 'ace-builds';
 interface Mode {
     HighlightRules: any;
     lineCommentStart?: string;
-    blockComment?: { start: string; end: string };
+    blockComment?: {start: string; end: string};
 }
 
 interface RequireFunction {
@@ -40,30 +40,18 @@ interface TextHighlightRules {
 }
 
 interface DocCommentHighlightRules extends TextHighlightRules {
-    getTagRule(): { token: string; regex: string };
-    getStartRule(start: string): { token: string; regex: string; next: string };
-    getEndRule(start: string): { token: string; regex: string; next: string };
+    getTagRule(): {token: string; regex: string};
+    getStartRule(start: string): {token: string; regex: string; next: string};
+    getEndRule(start: string): {token: string; regex: string; next: string};
 }
 
 (ace as any).define(
     'ace/mode/owm',
-    [
-        'require',
-        'exports',
-        'module',
-        'ace/lib/oop',
-        'ace/mode/text',
-        'ace/mode/owm_highlight_rules',
-    ],
-    function (
-        require: RequireFunction,
-        exports: ModuleExports,
-        _module: Module,
-    ) {
+    ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text', 'ace/mode/owm_highlight_rules'],
+    function (require: RequireFunction, exports: ModuleExports, _module: Module) {
         const oop = require('../lib/oop');
         const TextMode = require('./text').Mode;
-        const OwmHighlightRules =
-            require('./owm_highlight_rules').OwmHighlightRules;
+        const OwmHighlightRules = require('./owm_highlight_rules').OwmHighlightRules;
 
         const Mode = function (this: Mode) {
             this.HighlightRules = OwmHighlightRules;
@@ -72,7 +60,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
 
         (function (this: Mode) {
             this.lineCommentStart = '//';
-            this.blockComment = { start: '/*', end: '*/' };
+            this.blockComment = {start: '/*', end: '*/'};
         }).call(Mode.prototype);
 
         exports.Mode = Mode;
@@ -81,25 +69,12 @@ interface DocCommentHighlightRules extends TextHighlightRules {
 
 (ace as any).define(
     'ace/mode/owm_highlight_rules',
-    [
-        'require',
-        'exports',
-        'module',
-        'ace/lib/oop',
-        'ace/mode/text_highlight_rules',
-    ],
-    function (
-        require: RequireFunction,
-        exports: ModuleExports,
-        _module: Module,
-    ) {
+    ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text_highlight_rules'],
+    function (require: RequireFunction, exports: ModuleExports, _module: Module) {
         const oop = require('../lib/oop');
-        const TextHighlightRules =
-            require('./text_highlight_rules').TextHighlightRules;
+        const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
-        const DocCommentHighlightRules = function (
-            this: DocCommentHighlightRules,
-        ) {
+        const DocCommentHighlightRules = function (this: DocCommentHighlightRules) {
             this.$rules = {
                 start: [
                     {
@@ -161,22 +136,11 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         regex: '(pioneers|settlers|townplanners)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
-                        token: [
-                            'keyword',
-                            'variable.parameter.function.asp',
-                            'punctuation',
-                            'comment',
-                            'punctuation',
-                        ],
+                        token: ['keyword', 'variable.parameter.function.asp', 'punctuation', 'comment', 'punctuation'],
                         regex: '(url)(\\s*[a-zA-Z0-9\\s*]+)(\\s*\\[)(\\s*[-+\'"/;:.#a-zA-Z0-9\\s*]+)(\\])',
                     },
                     {
-                        token: [
-                            'keyword',
-                            'punctuation',
-                            'variable.parameter.function.asp',
-                            'punctuation',
-                        ],
+                        token: ['keyword', 'punctuation', 'variable.parameter.function.asp', 'punctuation'],
                         regex: '(url)(\\s*\\()(\\s*[-+\'"/;:a-zA-Z0-9\\s*]+)(\\))',
                     },
                     {
@@ -328,13 +292,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         regex: '(component)(\\s+[a-zA-Z0-9\\s]+)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\])(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
-                        token: [
-                            'keyword',
-                            'variable.parameter.function.asp',
-                            'punctuation',
-                            'constant.numeric',
-                            'punctuation',
-                        ],
+                        token: ['keyword', 'variable.parameter.function.asp', 'punctuation', 'constant.numeric', 'punctuation'],
                         regex: '(component)(\\s+[a-zA-Z0-9\\s]+)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
@@ -358,41 +316,19 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         regex: '(evolve)(\\s+[a-zA-Z0-9\\s]+)(->)([a-zA-Z0-9\\s]+)(\\s+\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
-                        token: [
-                            'keyword',
-                            'variable.parameter.function.asp',
-                            'constant.numeric',
-                        ],
+                        token: ['keyword', 'variable.parameter.function.asp', 'constant.numeric'],
                         regex: '(evolve)(\\s*[a-zA-Z0-9\\s*]+)(-?\\d+(?:\\.\\d+)?)',
                     },
                     {
-                        token: [
-                            'punctuation',
-                            'constant.numeric',
-                            'punctuation',
-                        ],
+                        token: ['punctuation', 'constant.numeric', 'punctuation'],
                         regex: '(\\[)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
-                        token: [
-                            'keyword',
-                            'punctuation',
-                            'constant.numeric',
-                            'punctuation',
-                            'constant.numeric',
-                            'punctuation',
-                        ],
+                        token: ['keyword', 'punctuation', 'constant.numeric', 'punctuation', 'constant.numeric', 'punctuation'],
                         regex: '(label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
-                        token: [
-                            'keyword',
-                            'punctuation',
-                            'constant.numeric',
-                            'punctuation',
-                            'constant.numeric',
-                            'punctuation',
-                        ],
+                        token: ['keyword', 'punctuation', 'constant.numeric', 'punctuation', 'constant.numeric', 'punctuation'],
                         regex: '(size)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])',
                     },
                     {
@@ -412,19 +348,11 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         regex: '(\\[*)(\\[)(-?\\d+(?:\\.\\d+)?)(\\,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])(\\]*)',
                     },
                     {
-                        token: [
-                            'variable.parameter.function.asp',
-                            'punctuation',
-                            'variable.parameter.function.asp',
-                        ],
+                        token: ['variable.parameter.function.asp', 'punctuation', 'variable.parameter.function.asp'],
                         regex: '(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)',
                     },
                     {
-                        token: [
-                            'variable.parameter.function.asp',
-                            'punctuation',
-                            'variable.parameter.function.asp',
-                        ],
+                        token: ['variable.parameter.function.asp', 'punctuation', 'variable.parameter.function.asp'],
                         regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)',
                     },
                     {

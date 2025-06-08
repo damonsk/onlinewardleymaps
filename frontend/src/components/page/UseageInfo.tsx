@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapTheme } from '../../constants/mapstyles';
+import {MapTheme} from '../../constants/mapstyles';
 import Usage from '../editor/Usage';
 
 interface UsageInfoProps {
@@ -8,19 +8,11 @@ interface UsageInfoProps {
     mapStyleDefs: MapTheme;
 }
 
-export const UsageInfo: React.FunctionComponent<UsageInfoProps> = ({
-    mapText,
-    mutateMapText,
-    mapStyleDefs,
-}) => {
+export const UsageInfo: React.FunctionComponent<UsageInfoProps> = ({mapText, mutateMapText, mapStyleDefs}) => {
     return (
         <div className="row usage no-gutters">
             <div className="col">
-                <Usage
-                    mapStyleDefs={mapStyleDefs}
-                    mapText={mapText}
-                    mutateMapText={mutateMapText}
-                />
+                <Usage mapStyleDefs={mapStyleDefs} mapText={mapText} mutateMapText={mutateMapText} />
             </div>
         </div>
     );

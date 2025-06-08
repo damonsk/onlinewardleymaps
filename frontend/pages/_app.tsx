@@ -1,23 +1,22 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider as MaterialUIThemeProvider } from '@mui/material/styles';
+import {ThemeProvider as MaterialUIThemeProvider} from '@mui/material/styles';
 import StylesProvider from '@mui/styles/StylesProvider';
 import Head from 'next/head';
-import React, { useEffect, useState } from 'react';
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
-import { FeatureSwitchesProvider } from '../src/components/FeatureSwitchesContext';
-import { ModKeyPressedProvider } from '../src/components/KeyPressContext';
+import React, {useEffect, useState} from 'react';
+import {ThemeProvider as StyledComponentsThemeProvider} from 'styled-components';
+import {FeatureSwitchesProvider} from '../src/components/FeatureSwitchesContext';
+import {ModKeyPressedProvider} from '../src/components/KeyPressContext';
 import Footer from '../src/components/page/Footer';
-import { featureSwitches } from '../src/constants/featureswitches';
-import { lightTheme, theme } from '../src/theme';
+import {featureSwitches} from '../src/constants/featureswitches';
+import {lightTheme, theme} from '../src/theme';
 
 interface MyAppProps {
     Component: React.FC<any>;
     pageProps: any;
 }
-const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
+const MyApp: React.FC<MyAppProps> = ({Component, pageProps}) => {
     useEffect(() => {
-        const jssStyles =
-            document.querySelector<HTMLStyleElement>('#jss-server-side');
+        const jssStyles = document.querySelector<HTMLStyleElement>('#jss-server-side');
         if (jssStyles && jssStyles.parentNode) {
             jssStyles.parentNode.removeChild(jssStyles);
         }
@@ -43,10 +42,7 @@ const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
         <>
             <Head>
                 <title>OnlineWardleyMaps.com</title>
-                <meta
-                    name="viewport"
-                    content="minimum-scale=1, initial-scale=1, width=device-width"
-                />
+                <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
             </Head>
             <FeatureSwitchesProvider value={featureSwitches}>
                 <ModKeyPressedProvider>

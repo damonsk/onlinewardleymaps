@@ -1,5 +1,5 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { MenuListProps, PopoverVirtualElement, Stack } from '@mui/material';
+import {MenuListProps, PopoverVirtualElement, Stack} from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,35 +10,26 @@ import Divider from '@mui/material/Divider';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import { alpha, styled } from '@mui/material/styles';
-import React, { FunctionComponent, MouseEvent, useRef, useState } from 'react';
-import { ExampleMap, MapPersistenceStrategy } from '../../constants/defaults';
+import {alpha, styled} from '@mui/material/styles';
+import React, {FunctionComponent, MouseEvent, useRef, useState} from 'react';
+import {ExampleMap, MapPersistenceStrategy} from '../../constants/defaults';
 import CoreHeader from './CoreHeader';
 
 interface StyledMenuProps {
     id: string;
     MenuListProps: MenuListProps;
-    anchorEl:
-        | Element
-        | PopoverVirtualElement
-        | (() => Element)
-        | (() => PopoverVirtualElement)
-        | null
-        | undefined;
+    anchorEl: Element | PopoverVirtualElement | (() => Element) | (() => PopoverVirtualElement) | null | undefined;
     open: boolean;
     onClose: (preAction: () => void) => void;
     children: React.ReactNode;
 }
 
-const StyledMenu = styled(Menu)<StyledMenuProps>(({ theme }) => ({
+const StyledMenu = styled(Menu)<StyledMenuProps>(({theme}) => ({
     '& .MuiPaper-root': {
         borderRadius: 6,
         marginTop: theme.spacing(1),
         minWidth: 180,
-        color:
-            theme.palette.mode === 'light'
-                ? 'rgb(55, 65, 81)'
-                : theme.palette.grey[300],
+        color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
         boxShadow:
             'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
         '& .MuiMenu-list': {
@@ -51,10 +42,7 @@ const StyledMenu = styled(Menu)<StyledMenuProps>(({ theme }) => ({
                 marginRight: theme.spacing(1.5),
             },
             '&:active': {
-                backgroundColor: alpha(
-                    theme.palette.primary.main,
-                    theme.palette.action.selectedOpacity,
-                ),
+                backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
             },
         },
     },
@@ -123,85 +111,38 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
             }}
             anchorEl={anchorMoreEl}
             open={openMore}
-            onClose={handleMoreClose}
-        >
-            <MenuItem
-                disableRipple
-                onClick={() => handleMoreClose(() => setModalShow(true))}
-            >
+            onClose={handleMoreClose}>
+            <MenuItem disableRipple onClick={() => handleMoreClose(() => setModalShow(true))}>
                 Get Clone URL
             </MenuItem>
             <Divider />
-            <MenuItem
-                onClick={() => handleMoreClose(() => downloadMapImage())}
-                disableRipple
-            >
+            <MenuItem onClick={() => handleMoreClose(() => downloadMapImage())} disableRipple>
                 Download as PNG
             </MenuItem>
-            <MenuItem
-                onClick={() => handleMoreClose(() => downloadMapAsSVG())}
-                disableRipple
-            >
+            <MenuItem onClick={() => handleMoreClose(() => downloadMapAsSVG())} disableRipple>
                 Download as SVG
             </MenuItem>
             <Divider />
-            <MenuItem
-                onClick={() =>
-                    handleMoreClose(() => setShowLineNumbers(!showLineNumbers))
-                }
-                disableRipple
-            >
+            <MenuItem onClick={() => handleMoreClose(() => setShowLineNumbers(!showLineNumbers))} disableRipple>
                 {showLineNumbers ? 'Hide Line Numbers' : 'Show Line Numbers'}
             </MenuItem>
-            <MenuItem
-                onClick={() =>
-                    handleMoreClose(() =>
-                        setShowLinkedEvolved(!showLinkedEvolved),
-                    )
-                }
-                disableRipple
-            >
-                {showLinkedEvolved
-                    ? 'Hide Evolved Links'
-                    : 'Show Evolved Links'}
+            <MenuItem onClick={() => handleMoreClose(() => setShowLinkedEvolved(!showLinkedEvolved))} disableRipple>
+                {showLinkedEvolved ? 'Hide Evolved Links' : 'Show Evolved Links'}
             </MenuItem>
             <Divider />
-            <MenuItem
-                onClick={() =>
-                    handleMoreClose(() =>
-                        window.open('https://docs.onlinewardleymaps.com'),
-                    )
-                }
-                disableRipple
-            >
+            <MenuItem onClick={() => handleMoreClose(() => window.open('https://docs.onlinewardleymaps.com'))} disableRipple>
                 Usage Guide
             </MenuItem>
             <Divider />
-            <MenuItem
-                onClick={() =>
-                    handleMoreClose(() =>
-                        window.open('https://www.patreon.com/mapsascode'),
-                    )
-                }
-                disableRipple
-            >
+            <MenuItem onClick={() => handleMoreClose(() => window.open('https://www.patreon.com/mapsascode'))} disableRipple>
                 Become a Patron ❤️
             </MenuItem>
         </StyledMenu>
     );
     return (
         <CoreHeader toggleMenu={toggleMenu}>
-            <Stack
-                direction="row"
-                alignItems="flex-start"
-                spacing={0.5}
-                divider={<Divider orientation="vertical" flexItem />}
-            >
-                <Button
-                    color="inherit"
-                    size="small"
-                    onClick={() => setMapOnlyView(!mapOnlyView)}
-                >
+            <Stack direction="row" alignItems="flex-start" spacing={0.5} divider={<Divider orientation="vertical" flexItem />}>
+                <Button color="inherit" size="small" onClick={() => setMapOnlyView(!mapOnlyView)}>
                     {mapOnlyView ? 'Editor Mode' : 'Presentation Mode'}
                 </Button>
 
@@ -213,8 +154,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                     size="small"
                     variant="text"
                     id="new-menu-button"
-                    onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}
-                >
+                    onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}>
                     New
                 </Button>
 
@@ -223,12 +163,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                     size="small"
                     onClick={saveMapClick}
                     variant={saveOutstanding ? 'outlined' : 'text'}
-                    sx={
-                        saveOutstanding
-                            ? { backgroundColor: '#d32f2f', color: 'white' }
-                            : null
-                    }
-                >
+                    sx={saveOutstanding ? {backgroundColor: '#d32f2f', color: 'white'} : null}>
                     Save
                 </Button>
 
@@ -240,8 +175,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                     id="more-menu-button"
                     aria-controls={openMore ? 'more-menu' : undefined}
                     aria-haspopup="true"
-                    aria-expanded={openMore ? 'true' : undefined}
-                >
+                    aria-expanded={openMore ? 'true' : undefined}>
                     <MoreVertIcon />
                 </Button>
             </Stack>
@@ -252,8 +186,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 <DialogTitle>Clone URL</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        You can share this URL with others to allow them to
-                        create a new map using this map as its initial state.
+                        You can share this URL with others to allow them to create a new map using this map as its initial state.
                     </DialogContentText>
                     <TextField
                         autoFocus

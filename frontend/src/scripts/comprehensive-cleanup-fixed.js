@@ -70,7 +70,7 @@ const TEST_MODE = false;
 // Archive directory for deleted files (keeping a backup)
 const archiveDir = path.join(baseDir, 'archived_unused_code');
 if (!fs.existsSync(archiveDir)) {
-    fs.mkdirSync(archiveDir, { recursive: true });
+    fs.mkdirSync(archiveDir, {recursive: true});
 }
 
 // Logging utilities
@@ -112,12 +112,7 @@ const cleanupTargets = {
     ],
 
     // Legacy backup files and archived components
-    backupFiles: [
-        'setupTests.js.bak',
-        'extractionFunctions.ts.bak',
-        'MapElements.ts.bak',
-        '__tests__/GivenAcceleratora.js.bak',
-    ],
+    backupFiles: ['setupTests.js.bak', 'extractionFunctions.ts.bak', 'MapElements.ts.bak', '__tests__/GivenAcceleratora.js.bak'],
 
     // Duplicate type definitions (already exist in types/base.ts)
     duplicateTypeFiles: [
@@ -193,10 +188,7 @@ function archiveFile(filePath) {
 
             fs.copyFileSync(fullPath, archivePath);
             fs.unlinkSync(fullPath);
-            log(
-                `Archived: ${filePath} -> ${path.relative(baseDir, archivePath)}`,
-                'success',
-            );
+            log(`Archived: ${filePath} -> ${path.relative(baseDir, archivePath)}`, 'success');
         } catch (error) {
             log(`Error archiving ${filePath}: ${error.message}`, 'error');
             summary.filesSkipped++;
@@ -210,10 +202,7 @@ function archiveFile(filePath) {
         } catch (e) {
             // File might not exist
         }
-        log(
-            `Would archive: ${filePath} -> ${path.relative(baseDir, archivePath)}`,
-            'info',
-        );
+        log(`Would archive: ${filePath} -> ${path.relative(baseDir, archivePath)}`, 'info');
     }
 
     summary.filesArchived++;
@@ -280,35 +269,20 @@ async function runComprehensiveCleanup() {
 
     // Print summary
     log('📊 CLEANUP SUMMARY', 'header');
-    log(
-        `Files processed: ${summary.filesArchived + summary.filesSkipped}`,
-        'info',
-    );
+    log(`Files processed: ${summary.filesArchived + summary.filesSkipped}`, 'info');
     log(`Files archived: ${summary.filesArchived}`, 'success');
     log(`Files skipped: ${summary.filesSkipped}`, 'warning');
     log(`Imports fixed: ${summary.importsRemoved}`, 'success');
-    log(
-        `Total size cleaned: ${(summary.totalSize / 1024).toFixed(2)} KB`,
-        'info',
-    );
+    log(`Total size cleaned: ${(summary.totalSize / 1024).toFixed(2)} KB`, 'info');
     log('', 'info');
 
     if (TEST_MODE) {
         log('🔍 TEST MODE ENABLED', 'warning');
-        log(
-            'No files were actually modified. Set TEST_MODE = false to run cleanup.',
-            'warning',
-        );
-        log(
-            'Review the list above and verify these files can be safely removed.',
-            'warning',
-        );
+        log('No files were actually modified. Set TEST_MODE = false to run cleanup.', 'warning');
+        log('Review the list above and verify these files can be safely removed.', 'warning');
     } else {
         log('✅ CLEANUP COMPLETE', 'success');
-        log(
-            'All targeted files have been archived to preserve them.',
-            'success',
-        );
+        log('All targeted files have been archived to preserve them.', 'success');
         log('You can review archived files and restore any if needed.', 'info');
         log('', 'info');
         log('🚀 Next steps:', 'header');
@@ -326,7 +300,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // Run the cleanup
-runComprehensiveCleanup().catch((err) => {
+runComprehensiveCleanup().catch(err => {
     log(`💥 Error: ${err.message}`, 'error');
     console.error(err);
     process.exit(1);

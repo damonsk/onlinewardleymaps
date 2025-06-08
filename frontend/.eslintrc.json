@@ -16,12 +16,7 @@
             "jsx": true
         }
     },
-    "ignorePatterns": [
-        "models",
-        "src/ui-components",
-        "node_modules/",
-        ".yarn/*"
-    ],
+    "ignorePatterns": ["models", "src/ui-components", "node_modules/", ".yarn/*"],
     "plugins": ["react"],
     "rules": {
         "prettier/prettier": [

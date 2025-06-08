@@ -1,34 +1,23 @@
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
-} from 'react';
+import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 
 export interface ModKeyPressedContextProps {
     isModKeyPressed: boolean;
 }
 
-const ModKeyPressedContext = createContext<
-    ModKeyPressedContextProps | undefined
->(undefined);
+const ModKeyPressedContext = createContext<ModKeyPressedContextProps | undefined>(undefined);
 
 export function useKeysPressed(allowedKeys: string[] | undefined) {
     const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
 
     const allowAll = useMemo(() => {
-        return (
-            !allowedKeys ||
-            (Array.isArray(allowedKeys) && allowedKeys.length === 0)
-        );
+        return !allowedKeys || (Array.isArray(allowedKeys) && allowedKeys.length === 0);
     }, [allowedKeys]);
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
-            const { key } = event;
+            const {key} = event;
             if (allowAll || (allowedKeys && allowedKeys.includes(key))) {
-                setPressedKeys((prevKeys) => {
+                setPressedKeys(prevKeys => {
                     if (prevKeys.has(key)) return prevKeys; // Avoid unnecessary updates
                     const newKeys = new Set(prevKeys);
                     newKeys.add(key);
@@ -38,9 +27,9 @@ export function useKeysPressed(allowedKeys: string[] | undefined) {
         };
 
         const onKeyUp = (event: KeyboardEvent) => {
-            const { key } = event;
+            const {key} = event;
             if (allowAll || (allowedKeys && allowedKeys.includes(key))) {
-                setPressedKeys((prevKeys) => {
+                setPressedKeys(prevKeys => {
                     if (!prevKeys.has(key)) return prevKeys; // Avoid unnecessary updates
                     const newKeys = new Set(prevKeys);
                     newKeys.delete(key);
@@ -71,7 +60,7 @@ export function useModKeyPressed() {
         const pressed = keysPressed.has(CTRL_OR_CMD);
 
         // Only update if the state actually changed
-        setModKeyPressed((prev) => {
+        setModKeyPressed(prev => {
             if (prev === pressed) return prev;
             return pressed;
         });
@@ -84,31 +73,20 @@ interface ModKeyPressedProviderProps {
     children: React.ReactNode;
 }
 
-export function ModKeyPressedProvider({
-    children,
-}: ModKeyPressedProviderProps) {
+export function ModKeyPressedProvider({children}: ModKeyPressedProviderProps) {
     const isModKeyPressed = useModKeyPressed();
 
     // Memoize the context value to prevent unnecessary re-renders
-    const contextValue = useMemo(
-        () => ({ isModKeyPressed }),
-        [isModKeyPressed],
-    );
+    const contextValue = useMemo(() => ({isModKeyPressed}), [isModKeyPressed]);
 
-    return (
-        <ModKeyPressedContext.Provider value={contextValue}>
-            {children}
-        </ModKeyPressedContext.Provider>
-    );
+    return <ModKeyPressedContext.Provider value={contextValue}>{children}</ModKeyPressedContext.Provider>;
 }
 
 export function useModKeyPressedConsumer() {
     const context = useContext(ModKeyPressedContext);
 
     if (!context) {
-        throw new Error(
-            'useModKeyPressedConsumer must be used within a ModKeyPressedProvider',
-        );
+        throw new Error('useModKeyPressedConsumer must be used within a ModKeyPressedProvider');
     }
 
     return context.isModKeyPressed;

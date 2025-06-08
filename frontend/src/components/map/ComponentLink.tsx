@@ -1,9 +1,9 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified/components';
-import { FlowLink } from '../../types/unified/links';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified/components';
+import {FlowLink} from '../../types/unified/links';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import FlowText from './FlowText';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -21,22 +21,14 @@ interface ModernComponentLinkProps {
  * ComponentLink - Modern implementation using unified types
  * Part of Phase 4 Component Interface Modernization
  */
-const ComponentLink: React.FC<ModernComponentLinkProps> = ({
-    mapStyleDefs,
-    mapDimensions,
-    startElement,
-    endElement,
-    link,
-    scaleFactor,
-}) => {
-    const { enableLinkContext } = useFeatureSwitches();
-    const { height, width } = mapDimensions;
+const ComponentLink: React.FC<ModernComponentLinkProps> = ({mapStyleDefs, mapDimensions, startElement, endElement, link, scaleFactor}) => {
+    const {enableLinkContext} = useFeatureSwitches();
+    const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
     const isFlow = link.flow !== false;
     const isEvolved = startElement.evolved || endElement.evolved;
 
-    const startMaturity =
-        startElement.maturity ?? startElement.evolveMaturity ?? 0;
+    const startMaturity = startElement.maturity ?? startElement.evolveMaturity ?? 0;
 
     const endMaturity = endElement.maturity ?? endElement.evolveMaturity ?? 0;
 
@@ -45,17 +37,13 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
 
     const y1 =
         positionCalc.visibilityToY(
-            typeof startElement.visibility === 'string'
-                ? parseFloat(startElement.visibility)
-                : startElement.visibility,
+            typeof startElement.visibility === 'string' ? parseFloat(startElement.visibility) : startElement.visibility,
             height,
         ) + (startElement.offsetY ?? 0);
 
     const y2 =
         positionCalc.visibilityToY(
-            typeof endElement.visibility === 'string'
-                ? parseFloat(endElement.visibility)
-                : endElement.visibility,
+            typeof endElement.visibility === 'string' ? parseFloat(endElement.visibility) : endElement.visibility,
             height,
         ) + (endElement.offsetY ?? 0);
 
@@ -97,8 +85,7 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
                     textAnchor="middle"
                     x={centerX}
                     y={centerY - buffer}
-                    transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}
-                >
+                    transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}>
                     {link.context}
                 </text>
             )}

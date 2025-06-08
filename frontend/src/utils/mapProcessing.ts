@@ -1,6 +1,6 @@
 import LinksBuilder from '../linkStrategies/LinksBuilder';
-import { MapElements } from '../processing/MapElements';
-import { MapAnchors, MapElement, MapLinks, MapMethods } from '../types/base';
+import {MapElements} from '../processing/MapElements';
+import {MapAnchors, MapElement, MapLinks, MapMethods} from '../types/base';
 
 export interface ProcessedLink {
     key: number;
@@ -31,20 +31,13 @@ export function processLinks(
     showLinkedEvolved: boolean,
 ): ProcessedLinkGroup[] {
     // Use MapElements directly with the LinksBuilder
-    const linksBuilder = new LinksBuilder(
-        mapLinks,
-        mapElements,
-        mapAnchors,
-        showLinkedEvolved,
-    );
+    const linksBuilder = new LinksBuilder(mapLinks, mapElements, mapAnchors, showLinkedEvolved);
     const result = linksBuilder.build();
 
     // Filter out any links where startElement or endElement is undefined
-    return result.map((group) => ({
+    return result.map(group => ({
         name: group.name,
-        links: group.links.filter(
-            (link) => link.startElement && link.endElement,
-        ) as ProcessedLink[],
+        links: group.links.filter(link => link.startElement && link.endElement) as ProcessedLink[],
     }));
 }
 
@@ -70,25 +63,16 @@ export function processMapElements(
         increaseLabelSpacing: m.increaseLabelSpacing, // Keep any existing increaseLabelSpacing without adding a default
     });
 
-    const getElementByName = (
-        elements: any[],
-        name: string,
-    ): any | undefined => {
-        return elements.find((el) => el.name === name);
+    const getElementByName = (elements: any[], name: string): any | undefined => {
+        return elements.find(el => el.name === name);
     };
 
     const decoratedComponentsMethods = mapElements
         .getMergedComponents()
-        .filter(
-            (m: any) =>
-                m.decorators &&
-                'method' in m.decorators &&
-                (m.decorators.method ?? '').length > 0,
-        )
+        .filter((m: any) => m.decorators && 'method' in m.decorators && (m.decorators.method ?? '').length > 0)
         .map((m: any) => asMethod(m));
 
-    const nonEvolvedElements =
-        mapElements.getNeitherEvolvedNorEvolvingComponents();
+    const nonEvolvedElements = mapElements.getNeitherEvolvedNorEvolvingComponents();
 
     const meths = elements
         .filter((m: any) => {

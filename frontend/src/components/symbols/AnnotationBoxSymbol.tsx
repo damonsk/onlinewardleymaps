@@ -1,5 +1,5 @@
-import React, { ReactNode, memo } from 'react';
-import { MapAnnotationTheme } from '../../constants/mapstyles';
+import React, {ReactNode, memo} from 'react';
+import {MapAnnotationTheme} from '../../constants/mapstyles';
 
 interface ModernAnnotationBoxSymbolProps {
     id?: string;
@@ -31,14 +31,7 @@ const AnnotationBoxSymbol: React.FC<ModernAnnotationBoxSymbolProps> = ({
 }) => {
     return (
         <text id={id}>
-            <tspan
-                className={className}
-                textAnchor={textAnchor}
-                dy={dy}
-                x={x}
-                fill={theme.text}
-                textDecoration={textDecoration}
-            >
+            <tspan className={className} textAnchor={textAnchor} dy={dy} x={x} fill={theme.text} textDecoration={textDecoration}>
                 Annotations:
             </tspan>
             {children}

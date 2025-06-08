@@ -1,5 +1,5 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-import { IParseStrategy } from '../types/base';
+import {IParseStrategy} from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
 
 export default class NoteExtractionStrategy implements IParseStrategy {
@@ -16,7 +16,7 @@ export default class NoteExtractionStrategy implements IParseStrategy {
             {
                 keyword: this.keyword,
                 containerName: this.containerName,
-                defaultAttributes: { increaseLabelSpacing: 0 },
+                defaultAttributes: {increaseLabelSpacing: 0},
             },
             [ExtractionFunctions.setText, ExtractionFunctions.setCoords],
         );

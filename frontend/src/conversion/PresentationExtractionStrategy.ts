@@ -1,5 +1,5 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-import { MapPresentationStyle } from '../types/base';
+import {MapPresentationStyle} from '../types/base';
 
 export default class PresentationExtractionStrategy {
     data: string;
@@ -10,8 +10,8 @@ export default class PresentationExtractionStrategy {
     apply() {
         const presentationObject: MapPresentationStyle = {
             style: 'plain',
-            annotations: { visibility: 0.9, maturity: 0.1 },
-            size: { width: 0, height: 0 },
+            annotations: {visibility: 0.9, maturity: 0.1},
+            size: {width: 0, height: 0},
         };
         const lines = this.data.split('\n');
         for (let i = 0; i < lines.length; i++) {
@@ -21,22 +21,18 @@ export default class PresentationExtractionStrategy {
                 presentationObject.style = name;
             }
             if (element.trim().indexOf('annotations ') === 0) {
-                presentationObject.annotations =
-                    ExtractionFunctions.extractLocation(element, {
-                        visibility: 0.9,
-                        maturity: 0.1,
-                    });
+                presentationObject.annotations = ExtractionFunctions.extractLocation(element, {
+                    visibility: 0.9,
+                    maturity: 0.1,
+                });
             }
             if (element.trim().indexOf('size ') === 0) {
-                presentationObject.size = ExtractionFunctions.extractSize(
-                    element,
-                    {
-                        width: 0,
-                        height: 0,
-                    },
-                );
+                presentationObject.size = ExtractionFunctions.extractSize(element, {
+                    width: 0,
+                    height: 0,
+                });
             }
         }
-        return { presentation: presentationObject, errors: [] };
+        return {presentation: presentationObject, errors: []};
     }
 }

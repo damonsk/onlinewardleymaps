@@ -1,12 +1,7 @@
 // MapElements.test.ts
 import '@testing-library/jest-dom';
-import { MapElements } from '../processing/MapElements';
-import {
-    UnifiedWardleyMap,
-    createEvolvedElement,
-    createPipeline,
-    createUnifiedComponent,
-} from '../types/unified';
+import {MapElements} from '../processing/MapElements';
+import {UnifiedWardleyMap, createEvolvedElement, createPipeline, createUnifiedComponent} from '../types/unified';
 
 describe('MapElements', () => {
     let testMap: UnifiedWardleyMap;
@@ -82,8 +77,8 @@ describe('MapElements', () => {
             errors: [],
             presentation: {
                 style: '',
-                annotations: { visibility: 0, maturity: 0 },
-                size: { width: 0, height: 0 },
+                annotations: {visibility: 0, maturity: 0},
+                size: {width: 0, height: 0},
             },
         };
     });
@@ -134,9 +129,7 @@ describe('MapElements', () => {
     test('should mark pipeline components', () => {
         const mapElements = new MapElements(testMap);
         const components = mapElements.getComponentsByType('component');
-        const pipelineComponent = components.find(
-            (c) => c.name === 'Component B',
-        );
+        const pipelineComponent = components.find(c => c.name === 'Component B');
         expect(pipelineComponent).toBeDefined();
         expect(pipelineComponent?.pipeline).toBe(true);
     });
@@ -147,9 +140,7 @@ describe('MapElements', () => {
         expect(mergedComponents.length).toBe(5); // 3 original components + 1 anchor + 1 evolved
 
         // Verify the evolved component is included
-        const evolvedComponent = mergedComponents.find(
-            (c) => c.id === 'comp_a_evolved',
-        );
+        const evolvedComponent = mergedComponents.find(c => c.id === 'comp_a_evolved');
         expect(evolvedComponent).toBeDefined();
         expect(evolvedComponent?.evolved).toBe(true);
     });
@@ -160,7 +151,7 @@ describe('MapElements', () => {
         expect(staticComponents.length).toBe(4); // all components except evolved ones
 
         // Check no components are marked as evolved
-        expect(staticComponents.every((c) => !c.evolved)).toBe(true);
+        expect(staticComponents.every(c => !c.evolved)).toBe(true);
     });
 
     test('should return inertia components', () => {
@@ -175,14 +166,14 @@ describe('MapElements', () => {
         const mapElements = new MapElements(testMap);
         const components = mapElements.getNeitherEvolvedNorEvolvingComponents();
         expect(components.length).toBe(3); // Component B, C, and Anchor A
-        expect(components.some((c) => c.name === 'Component A')).toBe(false);
+        expect(components.some(c => c.name === 'Component A')).toBe(false);
     });
 
     test('should return non-evolving components', () => {
         const mapElements = new MapElements(testMap);
         const components = mapElements.getNonEvolvingComponents();
         expect(components.length).toBe(3); // Component B, C, and Anchor A
-        expect(components.some((c) => c.name === 'Component A')).toBe(false);
+        expect(components.some(c => c.name === 'Component A')).toBe(false);
     });
 
     test('should return non-evolved components', () => {
@@ -191,7 +182,7 @@ describe('MapElements', () => {
         expect(components.length).toBe(4); // All original components (no evolved components)
 
         // Check if any returned component has the evolved flag set to true
-        expect(components.some((c) => c.evolved === true)).toBe(false);
+        expect(components.some(c => c.evolved === true)).toBe(false);
     });
 
     test('should return components that are either evolved or evolving', () => {
@@ -231,7 +222,7 @@ describe('MapElements', () => {
         const components = mapElements.getComponentsByType('component');
 
         // No component should be marked as a pipeline
-        expect(components.every((c) => !c.pipeline)).toBe(true);
+        expect(components.every(c => !c.pipeline)).toBe(true);
     });
 
     test('should correctly handle method components', () => {
@@ -260,9 +251,7 @@ describe('MapElements', () => {
         const allComponents = mapElements.getAllComponents();
 
         // Find the method component
-        const methodComponent = allComponents.find(
-            (c) => c.name === 'Method Component',
-        );
+        const methodComponent = allComponents.find(c => c.name === 'Method Component');
         expect(methodComponent).toBeDefined();
         expect(methodComponent?.decorators?.method).toBe('build');
 

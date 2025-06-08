@@ -1,5 +1,5 @@
-import React, { memo, MouseEvent } from 'react';
-import { UnifiedComponent } from '../../types/unified';
+import React, {memo, MouseEvent} from 'react';
+import {UnifiedComponent} from '../../types/unified';
 
 /**
  * AcceleratorSymbol Props - using unified type system directly
@@ -15,9 +15,7 @@ export interface ModernAcceleratorSymbolProps {
  * AcceleratorSymbol - Accelerator symbol representation using unified types
  * This component eliminates legacy type dependencies and improves rendering performance
  */
-const AcceleratorSymbol: React.FunctionComponent<
-    ModernAcceleratorSymbolProps
-> = ({
+const AcceleratorSymbol: React.FunctionComponent<ModernAcceleratorSymbolProps> = ({
     id,
     onClick,
     component, // Direct access to UnifiedComponent
@@ -26,13 +24,7 @@ const AcceleratorSymbol: React.FunctionComponent<
     const isDeAccelerator = component?.type === 'deaccelerator';
 
     return (
-        <g
-            transform={['translate(-25, -25)']
-                .concat(isDeAccelerator ? 'rotate(180,25,25)' : '')
-                .join(' ')}
-            id={id}
-            onClick={onClick}
-        >
+        <g transform={['translate(-25, -25)'].concat(isDeAccelerator ? 'rotate(180,25,25)' : '').join(' ')} id={id} onClick={onClick}>
             <g opacity="0.8" fill="url(#arrowGradient)">
                 <path d="m25.5 6 18 18 -18 18v-9H9a1.5 1.5 0 0 1 -1.5 -1.5V16.5a1.5 1.5 0 0 1 1.5 -1.5h16.5Z" />
             </g>

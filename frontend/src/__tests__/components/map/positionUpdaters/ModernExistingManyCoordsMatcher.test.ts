@@ -1,4 +1,4 @@
-import { ModernExistingManyCoordsMatcher } from '../../../../components/map/positionUpdaters/ModernExistingManyCoordsMatcher';
+import {ModernExistingManyCoordsMatcher} from '../../../../components/map/positionUpdaters/ModernExistingManyCoordsMatcher';
 
 describe('ModernExistingManyCoordsMatcher', () => {
     describe('matcher', () => {
@@ -7,9 +7,7 @@ describe('ModernExistingManyCoordsMatcher', () => {
             const identifier = 'Box';
             const type = 'annotation';
 
-            expect(
-                ModernExistingManyCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(true);
+            expect(ModernExistingManyCoordsMatcher.matcher(line, identifier, type)).toBe(true);
         });
 
         test('returns true when line contains the component with spaces', () => {
@@ -17,9 +15,7 @@ describe('ModernExistingManyCoordsMatcher', () => {
             const identifier = 'My Box';
             const type = 'annotation';
 
-            expect(
-                ModernExistingManyCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(true);
+            expect(ModernExistingManyCoordsMatcher.matcher(line, identifier, type)).toBe(true);
         });
 
         test('returns false when line does not contain the component', () => {
@@ -27,9 +23,7 @@ describe('ModernExistingManyCoordsMatcher', () => {
             const identifier = 'Box';
             const type = 'annotation';
 
-            expect(
-                ModernExistingManyCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(false);
+            expect(ModernExistingManyCoordsMatcher.matcher(line, identifier, type)).toBe(false);
         });
 
         test('returns false when line does not contain the correct type', () => {
@@ -37,9 +31,7 @@ describe('ModernExistingManyCoordsMatcher', () => {
             const identifier = 'Box';
             const type = 'annotation';
 
-            expect(
-                ModernExistingManyCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(false);
+            expect(ModernExistingManyCoordsMatcher.matcher(line, identifier, type)).toBe(false);
         });
     });
 
@@ -73,8 +65,7 @@ describe('ModernExistingManyCoordsMatcher', () => {
         });
 
         test('handles multiple coordinate groups', () => {
-            const line =
-                'annotation Box [0.1, 0.2, 0.3, 0.4][0.5, 0.6, 0.7, 0.8]';
+            const line = 'annotation Box [0.1, 0.2, 0.3, 0.4][0.5, 0.6, 0.7, 0.8]';
             const moved = {
                 param1: '0.9',
                 param2: '1.0',
@@ -85,9 +76,7 @@ describe('ModernExistingManyCoordsMatcher', () => {
             const result = ModernExistingManyCoordsMatcher.action(line, moved);
 
             // Note: This shows current behavior which replaces all coordinate groups
-            expect(result).toBe(
-                'annotation Box [0.9, 1.0, 1.1, 1.2][0.9, 1.0, 1.1, 1.2]',
-            );
+            expect(result).toBe('annotation Box [0.9, 1.0, 1.1, 1.2][0.9, 1.0, 1.1, 1.2]');
         });
     });
 });

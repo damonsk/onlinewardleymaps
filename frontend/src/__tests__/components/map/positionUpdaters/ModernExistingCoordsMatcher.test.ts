@@ -1,4 +1,4 @@
-import { ModernExistingCoordsMatcher } from '../../../../components/map/positionUpdaters/ModernExistingCoordsMatcher';
+import {ModernExistingCoordsMatcher} from '../../../../components/map/positionUpdaters/ModernExistingCoordsMatcher';
 
 describe('ModernExistingCoordsMatcher', () => {
     describe('matcher', () => {
@@ -7,9 +7,7 @@ describe('ModernExistingCoordsMatcher', () => {
             const identifier = 'Name';
             const type = 'component';
 
-            expect(
-                ModernExistingCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(true);
+            expect(ModernExistingCoordsMatcher.matcher(line, identifier, type)).toBe(true);
         });
 
         test('returns true when line contains the component with spaces', () => {
@@ -17,9 +15,7 @@ describe('ModernExistingCoordsMatcher', () => {
             const identifier = 'My Component';
             const type = 'component';
 
-            expect(
-                ModernExistingCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(true);
+            expect(ModernExistingCoordsMatcher.matcher(line, identifier, type)).toBe(true);
         });
 
         test('returns false when line does not contain the component', () => {
@@ -27,9 +23,7 @@ describe('ModernExistingCoordsMatcher', () => {
             const identifier = 'Name';
             const type = 'component';
 
-            expect(
-                ModernExistingCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(false);
+            expect(ModernExistingCoordsMatcher.matcher(line, identifier, type)).toBe(false);
         });
 
         test('returns false when line does not contain the correct type', () => {
@@ -37,16 +31,14 @@ describe('ModernExistingCoordsMatcher', () => {
             const identifier = 'Name';
             const type = 'component';
 
-            expect(
-                ModernExistingCoordsMatcher.matcher(line, identifier, type),
-            ).toBe(false);
+            expect(ModernExistingCoordsMatcher.matcher(line, identifier, type)).toBe(false);
         });
     });
 
     describe('action', () => {
         test('replaces coordinates with numeric parameters', () => {
             const line = 'component Name [0.1, 0.2]';
-            const moved = { param1: 0.3, param2: 0.4 };
+            const moved = {param1: 0.3, param2: 0.4};
 
             const result = ModernExistingCoordsMatcher.action(line, moved);
 
@@ -55,7 +47,7 @@ describe('ModernExistingCoordsMatcher', () => {
 
         test('replaces coordinates with string parameters', () => {
             const line = 'component Name [0.1, 0.2]';
-            const moved = { param1: '0.3', param2: '0.4' };
+            const moved = {param1: '0.3', param2: '0.4'};
 
             const result = ModernExistingCoordsMatcher.action(line, moved);
 
@@ -64,7 +56,7 @@ describe('ModernExistingCoordsMatcher', () => {
 
         test('handles multiple coordinate pairs', () => {
             const line = 'component Name [0.1, 0.2][0.3, 0.4]';
-            const moved = { param1: '0.5', param2: '0.6' };
+            const moved = {param1: '0.5', param2: '0.6'};
 
             const result = ModernExistingCoordsMatcher.action(line, moved);
 

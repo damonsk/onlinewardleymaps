@@ -1,6 +1,6 @@
 // Re-export all types from styles.ts
 export * from '../types/map/styles';
-import { MapTheme } from '../types/map/styles';
+import {MapTheme} from '../types/map/styles';
 
 const mergeIntoDefault = (style: MapTheme) => Object.assign({}, Plain, style);
 

@@ -1,4 +1,4 @@
-import { Moved, Replacer } from '../../../types/base';
+import {Moved, Replacer} from '../../../types/base';
 
 /**
  * ModernNotDefinedCoordsMatcher - Modern implementation using unified types

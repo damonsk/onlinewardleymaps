@@ -1,32 +1,18 @@
 // Using any type instead of MapElements for compatibility with both modern and legacy elements
-import {
-    Anchor,
-    Link,
-    LinkExtractionStrategy,
-    LinkResult,
-    MapElement,
-} from './LinkStrategiesInterfaces';
+import {Anchor, Link, LinkExtractionStrategy, LinkResult, MapElement} from './LinkStrategiesInterfaces';
 
 /**
  * AnchorNoneEvolvedLinksStrategy
  * Updated to use MapElements in Phase 4C
  */
-export default class AnchorNoneEvolvedLinksStrategy
-    implements LinkExtractionStrategy
-{
+export default class AnchorNoneEvolvedLinksStrategy implements LinkExtractionStrategy {
     private links: Link[];
     private mapElements: any; // Using any for adapter compatibility
     private anchors: Anchor[];
 
-    constructor(
-        links: Link[] = [],
-        mapElements: any = {},
-        anchors: Anchor[] = [],
-    ) {
+    constructor(links: Link[] = [], mapElements: any = {}, anchors: Anchor[] = []) {
         this.links = links || []; // Initialize links with empty array if undefined
-        this.mapElements = mapElements?.getLegacyAdapter
-            ? mapElements.getLegacyAdapter()
-            : mapElements;
+        this.mapElements = mapElements?.getLegacyAdapter ? mapElements.getLegacyAdapter() : mapElements;
         this.anchors = anchors;
     }
     /**
@@ -46,17 +32,15 @@ export default class AnchorNoneEvolvedLinksStrategy
         }
 
         const links = this.links.filter(
-            (li) =>
+            li =>
                 this.anchors?.find((i: any) => i.name === li.start) &&
-                this.mapElements
-                    .getEvolvedElements()
-                    ?.find((i: any) => i.name === li.end),
+                this.mapElements.getEvolvedElements()?.find((i: any) => i.name === li.end),
         );
 
         return {
             name: 'anchorNonEvolvedLinks',
             links: links,
-            startElements: this.anchors.map((a) => a as MapElement),
+            startElements: this.anchors.map(a => a as MapElement),
             endElements: this.mapElements.getEvolvedElements(),
         };
     }

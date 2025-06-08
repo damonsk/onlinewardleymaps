@@ -1,5 +1,5 @@
 import ModernLineNumberPositionUpdater from '../../../../components/map/positionUpdaters/ModernLineNumberPositionUpdater';
-import { Replacer } from '../../../../types/base';
+import {Replacer} from '../../../../types/base';
 
 describe('ModernLineNumberPositionUpdater', () => {
     let mapText: string;
@@ -22,16 +22,10 @@ describe('ModernLineNumberPositionUpdater', () => {
     };
 
     beforeEach(() => {
-        mapText =
-            'title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]';
+        mapText = 'title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]';
         mutator = jest.fn();
         replacers = [mockMatcher1, mockMatcher2];
-        updater = new ModernLineNumberPositionUpdater(
-            'component',
-            mapText,
-            mutator,
-            replacers,
-        );
+        updater = new ModernLineNumberPositionUpdater('component', mapText, mutator, replacers);
     });
 
     afterEach(() => {
@@ -39,35 +33,20 @@ describe('ModernLineNumberPositionUpdater', () => {
     });
 
     test('updates position at specific line when matcher finds a match', () => {
-        const moved = { param1: 0.5, param2: 0.6 };
+        const moved = {param1: 0.5, param2: 0.6};
         // Update line 2 (component Foo)
         updater.update(moved, 'Foo', 2);
 
-        expect(mockMatcher1.matcher).toHaveBeenCalledWith(
-            'component Foo [0.1, 0.2]',
-            'Foo',
-            'component',
-        );
-        expect(mockMatcher1.action).toHaveBeenCalledWith(
-            'component Foo [0.1, 0.2]',
-            moved,
-        );
-        expect(mutator).toHaveBeenCalledWith(
-            'title My Map\ncomponent Foo [0.5, 0.6]\ncomponent Bar [0.3, 0.4]',
-        );
+        expect(mockMatcher1.matcher).toHaveBeenCalledWith('component Foo [0.1, 0.2]', 'Foo', 'component');
+        expect(mockMatcher1.action).toHaveBeenCalledWith('component Foo [0.1, 0.2]', moved);
+        expect(mutator).toHaveBeenCalledWith('title My Map\ncomponent Foo [0.5, 0.6]\ncomponent Bar [0.3, 0.4]');
     });
 
     test('checks all replacers until it finds a match', () => {
         // Set up specific matchers for this test
-        const specificMatcher = jest
-            .fn()
-            .mockImplementation((line, identifier, type) => {
-                return (
-                    line === 'component Bar [0.3, 0.4]' &&
-                    identifier === 'Bar' &&
-                    type === 'component'
-                );
-            });
+        const specificMatcher = jest.fn().mockImplementation((line, identifier, type) => {
+            return line === 'component Bar [0.3, 0.4]' && identifier === 'Bar' && type === 'component';
+        });
 
         const specificAction = jest.fn().mockImplementation((line, moved) => {
             return `component Bar [${moved.param1}, ${moved.param2}]`;
@@ -77,54 +56,35 @@ describe('ModernLineNumberPositionUpdater', () => {
         (mockMatcher1.matcher as jest.Mock).mockImplementation(specificMatcher);
         (mockMatcher1.action as jest.Mock).mockImplementation(specificAction);
 
-        const moved = { param1: 0.7, param2: 0.8 };
+        const moved = {param1: 0.7, param2: 0.8};
         // Update line 3 (component Bar)
         updater.update(moved, 'Bar', 3);
 
-        expect(mockMatcher1.matcher).toHaveBeenCalledWith(
-            'component Bar [0.3, 0.4]',
-            'Bar',
-            'component',
-        );
-        expect(mockMatcher1.action).toHaveBeenCalledWith(
-            'component Bar [0.3, 0.4]',
-            moved,
-        );
+        expect(mockMatcher1.matcher).toHaveBeenCalledWith('component Bar [0.3, 0.4]', 'Bar', 'component');
+        expect(mockMatcher1.action).toHaveBeenCalledWith('component Bar [0.3, 0.4]', moved);
         expect(mockMatcher2.matcher).not.toHaveBeenCalled(); // First matcher succeeded, so second shouldn't be called
 
-        expect(mutator).toHaveBeenCalledWith(
-            'title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.7, 0.8]',
-        );
+        expect(mutator).toHaveBeenCalledWith('title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.7, 0.8]');
     });
 
     test('does nothing if no matcher matches', () => {
         // Override mockMatcher1 to always return false for this test
         (mockMatcher1.matcher as jest.Mock).mockImplementation(() => false);
 
-        const moved = { param1: 0.9, param2: 1.0 };
+        const moved = {param1: 0.9, param2: 1.0};
         updater.update(moved, 'Baz', 2);
 
-        expect(mockMatcher1.matcher).toHaveBeenCalledWith(
-            'component Foo [0.1, 0.2]',
-            'Baz',
-            'component',
-        );
-        expect(mockMatcher2.matcher).toHaveBeenCalledWith(
-            'component Foo [0.1, 0.2]',
-            'Baz',
-            'component',
-        );
+        expect(mockMatcher1.matcher).toHaveBeenCalledWith('component Foo [0.1, 0.2]', 'Baz', 'component');
+        expect(mockMatcher2.matcher).toHaveBeenCalledWith('component Foo [0.1, 0.2]', 'Baz', 'component');
         expect(mockMatcher1.action).not.toHaveBeenCalled();
         expect(mockMatcher2.action).not.toHaveBeenCalled();
 
         // Mutator should still be called with the original text
-        expect(mutator).toHaveBeenCalledWith(
-            'title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]',
-        );
+        expect(mutator).toHaveBeenCalledWith('title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]');
     });
 
     test('handles line number that is out of bounds', () => {
-        const moved = { param1: 0.9, param2: 1.0 };
+        const moved = {param1: 0.9, param2: 1.0};
         updater.update(moved, 'OutOfBounds', 10);
 
         // Line 10 doesn't exist, so nothing should happen
@@ -132,8 +92,6 @@ describe('ModernLineNumberPositionUpdater', () => {
         expect(mockMatcher2.matcher).not.toHaveBeenCalled();
 
         // Mutator should still be called with undefined replacing that line
-        expect(mutator).toHaveBeenCalledWith(
-            'title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]\n\n\n\n\n\n\nundefined',
-        );
+        expect(mutator).toHaveBeenCalledWith('title My Map\ncomponent Foo [0.1, 0.2]\ncomponent Bar [0.3, 0.4]\n\n\n\n\n\n\nundefined');
     });
 });

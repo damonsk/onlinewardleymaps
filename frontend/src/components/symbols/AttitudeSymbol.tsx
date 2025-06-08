@@ -1,8 +1,5 @@
-import React, { memo } from 'react';
-import {
-    MapAttitudeTheme,
-    MapAttitudeTypeTheme,
-} from '../../constants/mapstyles';
+import React, {memo} from 'react';
+import {MapAttitudeTheme, MapAttitudeTypeTheme} from '../../constants/mapstyles';
 
 const defaultHeight = '100';
 const defaultWidth = '200';
@@ -36,8 +33,7 @@ const AttitudeSymbol: React.FC<ModernAttitudeSymbolProps> = ({
     attitude,
     styles,
 }) => {
-    const style = (styles[attitude as keyof MapAttitudeTheme] ||
-        styles.pioneers) as MapAttitudeTypeTheme;
+    const style = (styles[attitude as keyof MapAttitudeTheme] || styles.pioneers) as MapAttitudeTypeTheme;
 
     return (
         <rect

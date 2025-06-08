@@ -1,4 +1,4 @@
-import { IProvideFeatureSwitches } from '../types/base';
+import {IProvideFeatureSwitches} from '../types/base';
 
 export const featureSwitches: IProvideFeatureSwitches = {
     enableDashboard: false,

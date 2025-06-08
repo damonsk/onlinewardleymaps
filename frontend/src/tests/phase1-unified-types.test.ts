@@ -1,12 +1,7 @@
 // Test file to validate Phase 1 unified types work correctly
 // This ensures our new type system functions as expected
 
-import {
-    createEmptyMap,
-    createUnifiedComponent,
-    isAnchor,
-    isComponent,
-} from '../types/unified';
+import {createEmptyMap, createUnifiedComponent, isAnchor, isComponent} from '../types/unified';
 
 describe('Phase 1 Unified Types', () => {
     test('createEmptyMap should create valid map structure', () => {
@@ -36,7 +31,7 @@ describe('Phase 1 Unified Types', () => {
             type: 'component',
             maturity: 0.5,
             visibility: 0.7,
-            label: { x: 0, y: 0 },
+            label: {x: 0, y: 0},
         });
 
         expect(component.id).toBe('test-1');
@@ -60,7 +55,7 @@ describe('Phase 1 Unified Types', () => {
             type: 'component',
             maturity: 0.5,
             visibility: 0.7,
-            label: { x: 0, y: 0 },
+            label: {x: 0, y: 0},
         });
 
         const anchor = createUnifiedComponent({
@@ -69,7 +64,7 @@ describe('Phase 1 Unified Types', () => {
             type: 'anchor',
             maturity: 0.5,
             visibility: 0.7,
-            label: { x: 0, y: 0 },
+            label: {x: 0, y: 0},
         });
 
         expect(isComponent(component)).toBe(true);

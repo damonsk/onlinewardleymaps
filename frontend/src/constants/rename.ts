@@ -24,68 +24,31 @@ export const rename = (
                 if (secondPart === toFind) {
                     lines[i] = [firstPart, replaceWith].join('->');
                 }
-                if (
-                    secondPart.includes(';') &&
-                    secondPart.split(';')[0].trim() === toFind
-                ) {
-                    const optionalNote: string = secondPart
-                        .split(';')[1]
-                        .trim();
-                    lines[i] = [
-                        firstPart,
-                        `${replaceWith};${optionalNote}`,
-                    ].join('->');
+                if (secondPart.includes(';') && secondPart.split(';')[0].trim() === toFind) {
+                    const optionalNote: string = secondPart.split(';')[1].trim();
+                    lines[i] = [firstPart, `${replaceWith};${optionalNote}`].join('->');
                 }
             }
 
-            ['pipeline', 'build', 'buy', 'outsource'].forEach(
-                (startsWith: string) => {
-                    if (
-                        line.startsWith(startsWith) &&
-                        line.split(startsWith).length > 1 &&
-                        line.split(startsWith)[1].trim() === toFind
-                    ) {
-                        lines[i] = `${startsWith} ${line
-                            .split(startsWith)[1]
-                            .trim()
-                            .replace(toFind, replaceWith)}`;
-                    }
-                },
-            );
+            ['pipeline', 'build', 'buy', 'outsource'].forEach((startsWith: string) => {
+                if (line.startsWith(startsWith) && line.split(startsWith).length > 1 && line.split(startsWith)[1].trim() === toFind) {
+                    lines[i] = `${startsWith} ${line.split(startsWith)[1].trim().replace(toFind, replaceWith)}`;
+                }
+            });
             ['evolve'].forEach((startsWith: string) => {
-                if (
-                    line.startsWith(startsWith) &&
-                    line.split(startsWith).length > 1
-                ) {
-                    const evolvedWithMaturity: boolean =
-                        line
-                            .split(startsWith)[1]
-                            .trim()
-                            .split(' ')[0]
-                            .trim() === toFind;
+                if (line.startsWith(startsWith) && line.split(startsWith).length > 1) {
+                    const evolvedWithMaturity: boolean = line.split(startsWith)[1].trim().split(' ')[0].trim() === toFind;
 
                     if (evolvedWithMaturity) {
-                        lines[i] = `${startsWith} ${line
-                            .split(startsWith)[1]
-                            .trim()
-                            .replace(toFind, replaceWith)}`;
+                        lines[i] = `${startsWith} ${line.split(startsWith)[1].trim().replace(toFind, replaceWith)}`;
                     }
 
-                    const cleanedPart: string = line
-                        .split(startsWith)[1]
-                        .trim()
-                        .split(' ')[0]
-                        .trim();
+                    const cleanedPart: string = line.split(startsWith)[1].trim().split(' ')[0].trim();
 
-                    const evolvedWithNewName: boolean =
-                        cleanedPart.includes(toFind) &&
-                        cleanedPart.includes('->');
+                    const evolvedWithNewName: boolean = cleanedPart.includes(toFind) && cleanedPart.includes('->');
 
                     if (evolvedWithNewName) {
-                        lines[i] = `${startsWith} ${line
-                            .split(startsWith)[1]
-                            .trim()
-                            .replace(toFind, replaceWith)}`;
+                        lines[i] = `${startsWith} ${line.split(startsWith)[1].trim().replace(toFind, replaceWith)}`;
                     }
                 }
             });

@@ -1,8 +1,8 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedComponent } from '../../types/unified';
-import { MethodComponent } from '../../utils/methodExtractor';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedComponent} from '../../types/unified';
+import {MethodComponent} from '../../utils/methodExtractor';
 import MethodSymbol from '../symbols/MethodSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 
@@ -20,13 +20,7 @@ interface ModernMethodElementProps {
  *
  * This component positions and renders method indicators on the map
  */
-const MethodElement: React.FC<ModernMethodElementProps> = ({
-    methodComponent,
-    mapDimensions,
-    method,
-    mapStyleDefs,
-    setHighlightLine,
-}) => {
+const MethodElement: React.FC<ModernMethodElementProps> = ({methodComponent, mapDimensions, method, mapStyleDefs, setHighlightLine}) => {
     const positionCalc = new ModernPositionCalculator();
 
     console.log('Method component:', methodComponent);
@@ -46,10 +40,7 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({
 
         // Only check targetComponentName if this is a MethodComponent
         if (isMethodComponent && 'targetComponentName' in methodComponent) {
-            console.log(
-                'Method has a target component:',
-                (methodComponent as MethodComponent).targetComponentName,
-            );
+            console.log('Method has a target component:', (methodComponent as MethodComponent).targetComponentName);
         } else {
             console.log('Method has no target component information');
         }
@@ -60,17 +51,12 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({
         if (maturity === undefined) {
             maturity = 0.5;
             visibilityValue = 0.5;
-            console.warn(
-                `Using fallback position for "${methodComponent.name}": [${maturity}, ${visibilityValue}]`,
-            );
+            console.warn(`Using fallback position for "${methodComponent.name}": [${maturity}, ${visibilityValue}]`);
         }
     }
 
     // Convert maturity to x position with safeguards against NaN
-    const x = positionCalc.maturityToX(
-        isNaN(maturity as number) ? 0 : (maturity as number),
-        mapDimensions.width,
-    );
+    const x = positionCalc.maturityToX(isNaN(maturity as number) ? 0 : (maturity as number), mapDimensions.width);
 
     // Convert visibility to y position, handling string vs number
     let yValue: number;
@@ -89,16 +75,11 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({
         maturity,
         visibility: visibilityValue,
         targetComponentName:
-            'targetComponentName' in methodComponent
-                ? (methodComponent as MethodComponent).targetComponentName
-                : undefined,
+            'targetComponentName' in methodComponent ? (methodComponent as MethodComponent).targetComponentName : undefined,
         increaseLabelSpacing: methodComponent.increaseLabelSpacing || 0,
     });
 
-    const y = positionCalc.visibilityToY(
-        isNaN(yValue) ? 0 : yValue,
-        mapDimensions.height,
-    );
+    const y = positionCalc.visibilityToY(isNaN(yValue) ? 0 : yValue, mapDimensions.height);
 
     // Add debug logging to identify positioning issues
     if (isNaN(x) || isNaN(y)) {
@@ -129,14 +110,7 @@ const MethodElement: React.FC<ModernMethodElementProps> = ({
     };
 
     return (
-        <MethodSymbol
-            id={`method_${methodComponent.id}`}
-            x={x}
-            y={y}
-            method={method}
-            styles={mapStyleDefs.methods}
-            onClick={handleClick}
-        />
+        <MethodSymbol id={`method_${methodComponent.id}`} x={x} y={y} method={method} styles={mapStyleDefs.methods} onClick={handleClick} />
     );
 };
 

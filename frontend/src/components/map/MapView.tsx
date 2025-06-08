@@ -2,22 +2,17 @@
 // Modern MapView component that accepts UnifiedWardleyMap directly
 // This replaces the legacy MapView component with a cleaner, unified interface
 
-import React, { LegacyRef, useState } from 'react';
+import React, {LegacyRef, useState} from 'react';
 import ReactDOMServer from 'react-dom/server';
-import {
-    EvolutionStages,
-    MapCanvasDimensions,
-    MapDimensions,
-    Offsets,
-} from '../../constants/defaults';
+import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 
-import { MapAnnotationsPosition } from '../../types/base';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedWardleyMap } from '../../types/unified/map';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import {MapAnnotationsPosition} from '../../types/base';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedWardleyMap} from '../../types/unified/map';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
-import { DefaultThemes } from './foundation/Fill';
+import {DefaultThemes} from './foundation/Fill';
 
 export interface ModernMapViewProps {
     // Core unified data
@@ -42,17 +37,13 @@ export interface ModernMapViewProps {
     // Interaction handlers
     launchUrl: (urlId: string) => void;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    setNewComponentContext: React.Dispatch<
-        React.SetStateAction<{ x: string; y: string } | null>
-    >;
+    setNewComponentContext: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
     showLinkedEvolved: boolean;
 }
 
-export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
+export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     const featureSwitches = useFeatureSwitches();
-    const [quickAddTemplate, setQuickAddTemplate] = useState(
-        () => () => console.log('nullTemplate'),
-    );
+    const [quickAddTemplate, setQuickAddTemplate] = useState(() => () => console.log('nullTemplate'));
     const [quickAddInProgress, setQuickAddInProgress] = useState(false);
 
     const fill: DefaultThemes = {
@@ -64,8 +55,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
     };
 
     const containerStyle: React.CSSProperties = {
-        backgroundColor:
-            fill[props.mapStyleDefs.className as keyof DefaultThemes],
+        backgroundColor: fill[props.mapStyleDefs.className as keyof DefaultThemes],
         position: 'relative',
         width: '100%',
         height: '100%', // Changed from 100vh to 100% to respect parent container
@@ -79,9 +69,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
         position: 'relative', // Add relative positioning for toolbar placement
     };
 
-    const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as
-        | LegacyRef<HTMLDivElement>
-        | undefined;
+    const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as LegacyRef<HTMLDivElement> | undefined;
 
     function svgToBase64Url(svgString: string, width: number, height: number) {
         console.log(svgString);
@@ -109,17 +97,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
     };
 
     return (
-        <div
-            ref={legacyRef}
-            className={props.mapStyleDefs.className}
-            style={containerStyle}
-        >
-            {featureSwitches.enableQuickAdd && (
-                <CanvasSpeedDial
-                    setQuickAdd={setQuickAdd}
-                    mapStyleDefs={props.mapStyleDefs}
-                />
-            )}
+        <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle}>
+            {featureSwitches.enableQuickAdd && <CanvasSpeedDial setQuickAdd={setQuickAdd} mapStyleDefs={props.mapStyleDefs} />}
             <div id="map" style={mapStyle}>
                 <UnifiedMapCanvas
                     wardleyMap={props.wardleyMap}
@@ -136,9 +115,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = (props) => {
                     showLinkedEvolved={props.showLinkedEvolved}
                     shouldHideNav={props.shouldHideNav}
                     hideNav={props.hideNav}
-                    mapAnnotationsPresentation={
-                        props.mapAnnotationsPresentation
-                    }
+                    mapAnnotationsPresentation={props.mapAnnotationsPresentation}
                     handleMapCanvasClick={handleMapCanvasClick}
                 />
             </div>

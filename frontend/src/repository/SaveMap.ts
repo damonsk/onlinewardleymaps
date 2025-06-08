@@ -1,7 +1,7 @@
 import * as Defaults from '../constants/defaults';
 import LegacySaveStrategy from './LegacySaveStrategy';
-import { NullSaveStrategy } from './NullSaveStrategy';
-import { OwnApiWardleyMap } from './OwnApiWardleyMap';
+import {NullSaveStrategy} from './NullSaveStrategy';
+import {OwnApiWardleyMap} from './OwnApiWardleyMap';
 
 export const SaveMap = async (
     mapPersistenceStrategy: string,

@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {Box} from '@mui/material';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 interface ResizableSplitPaneProps {
     leftPanel: React.ReactNode;
@@ -60,9 +60,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 
             // Simple delayed panel resize event - let map handle its own zoom state
             setTimeout(() => {
-                console.log(
-                    'ResizableSplitPane: Dispatching panelResize event',
-                );
+                console.log('ResizableSplitPane: Dispatching panelResize event');
                 const mapContainer = document.getElementById('map');
                 if (mapContainer) {
                     const panelResizeEvent = new CustomEvent('panelResize', {
@@ -74,9 +72,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         },
                     });
                     window.dispatchEvent(panelResizeEvent);
-                    console.log(
-                        'ResizableSplitPane: panelResize event dispatched',
-                    );
+                    console.log('ResizableSplitPane: panelResize event dispatched');
                 } else {
                     console.log('ResizableSplitPane: map container not found');
                 }
@@ -131,10 +127,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
             const containerRect = containerRef.current.getBoundingClientRect();
             const deltaX = e.clientX - startXRef.current;
             const deltaPercent = (deltaX / containerRect.width) * 100;
-            const newLeftWidth = Math.max(
-                minLeftWidth,
-                Math.min(maxLeftWidth, startWidthRef.current + deltaPercent),
-            );
+            const newLeftWidth = Math.max(minLeftWidth, Math.min(maxLeftWidth, startWidthRef.current + deltaPercent));
 
             updateWidth(newLeftWidth);
         },
@@ -182,8 +175,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                 width: '100%',
                 height: '100%',
                 overflow: 'hidden',
-            }}
-        >
+            }}>
             {/* Left Panel */}
             <Box
                 sx={{
@@ -191,8 +183,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     height: '100%',
                     overflow: 'hidden',
                     borderRight: '2px solid rgba(0, 133, 208, 0.2)',
-                }}
-            >
+                }}>
                 {leftPanel}
             </Box>
 
@@ -203,9 +194,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     width: `${resizerWidth}px`,
                     height: '100%',
                     cursor: 'col-resize',
-                    backgroundColor: isDragging
-                        ? 'rgba(0, 133, 208, 0.4)'
-                        : 'rgba(0, 133, 208, 0.1)',
+                    backgroundColor: isDragging ? 'rgba(0, 133, 208, 0.4)' : 'rgba(0, 133, 208, 0.1)',
                     borderLeft: '1px solid rgba(0, 133, 208, 0.3)',
                     borderRight: '1px solid rgba(0, 133, 208, 0.3)',
                     transition: isDragging ? 'none' : 'all 0.2s ease',
@@ -222,9 +211,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         content: '"⋮"',
                         position: 'absolute',
                         fontSize: '24px',
-                        color: isDarkTheme
-                            ? 'rgba(255, 255, 255, 0.6)'
-                            : 'rgba(0, 0, 0, 0.6)',
+                        color: isDarkTheme ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
                         fontWeight: 'bold',
                         lineHeight: 1,
                         userSelect: 'none',
@@ -241,9 +228,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                         transition: 'opacity 0.2s ease',
                     },
                     '&:hover::before': {
-                        color: isDarkTheme
-                            ? 'rgba(255, 255, 255, 0.9)'
-                            : 'rgba(0, 0, 0, 0.9)',
+                        color: isDarkTheme ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
                     },
                     '&:hover::after': {
                         opacity: 1,
@@ -258,8 +243,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     width: `${100 - leftWidth}%`,
                     height: '100%',
                     overflow: 'hidden',
-                }}
-            >
+                }}>
                 {rightPanel}
             </Box>
         </Box>

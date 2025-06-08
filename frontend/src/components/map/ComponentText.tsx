@@ -1,8 +1,8 @@
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import React, { useEffect, useRef, useState } from 'react';
-import { rename } from '../../constants/rename';
-import { UnifiedComponent } from '../../types/unified';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import React, {useEffect, useRef, useState} from 'react';
+import {rename} from '../../constants/rename';
+import {UnifiedComponent} from '../../types/unified';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import RelativeMovable from './RelativeMovable';
 
@@ -40,7 +40,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     id, // eslint-disable-line @typescript-eslint/no-unused-vars
     element,
 }) => {
-    const { enableRenameLabels } = useFeatureSwitches();
+    const {enableRenameLabels} = useFeatureSwitches();
     const [editMode, setEditMode] = useState(false);
 
     const actualComponent = element
@@ -73,19 +73,8 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     const handleBlur = () => {
         setEditMode(false);
-        if (
-            mutateMapText &&
-            mapText &&
-            text !== component.name &&
-            component.line
-        ) {
-            rename(
-                component.line,
-                component.name,
-                text,
-                mapText,
-                mutateMapText,
-            );
+        if (mutateMapText && mapText && text !== component.name && component.line) {
+            rename(component.line, component.name, text, mapText, mutateMapText);
         }
     };
 
@@ -97,20 +86,9 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         if (e.key === 'Enter') {
             e.preventDefault();
             setEditMode(false);
-            if (
-                mutateMapText &&
-                mapText &&
-                text !== component.name &&
-                component.line
-            ) {
+            if (mutateMapText && mapText && text !== component.name && component.line) {
                 // Using the rename function with the correct parameters
-                rename(
-                    component.line,
-                    component.name,
-                    text,
-                    mapText,
-                    mutateMapText,
-                );
+                rename(component.line, component.name, text, mapText, mutateMapText);
             }
         }
     };
@@ -126,13 +104,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const fontSize = styles?.fontSize || '14px';
 
     const renderEditMode = () => (
-        <foreignObject
-            x={Number(cx) + getX() - 50}
-            y={Number(cy) + getY() - 25}
-            width="100"
-            height="50"
-            style={{ overflow: 'visible' }}
-        >
+        <foreignObject x={Number(cx) + getX() - 50} y={Number(cy) + getY() - 25} width="100" height="50" style={{overflow: 'visible'}}>
             <TextareaAutosize
                 ref={textareaRef}
                 value={text}
@@ -167,53 +139,34 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
         // Otherwise, handle the label update directly in the map text
         if (!mutateMapText || !mapText || !component.line) {
-            console.warn(
-                'Cannot update label position: missing required props',
-            );
+            console.warn('Cannot update label position: missing required props');
             return;
         }
 
-        const getLabelText = (x: number, y: number): string =>
-            ` label [${x.toFixed(2)}, ${y.toFixed(2)}]`;
+        const getLabelText = (x: number, y: number): string => ` label [${x.toFixed(2)}, ${y.toFixed(2)}]`;
 
-        const processEvolvedLine = (
-            line: string,
-            normalizedLine: string,
-        ): string => {
+        const processEvolvedLine = (line: string, normalizedLine: string): string => {
             const evolveBase = 'evolve' + component.name.replace(/\s/g, '');
             const evolveOverride =
-                component.override?.length && component.override.length > 0
-                    ? '->' + component.override.replace(/\s/g, '')
-                    : '';
-            const evolveText =
-                evolveBase + evolveOverride + (component.maturity || '');
+                component.override?.length && component.override.length > 0 ? '->' + component.override.replace(/\s/g, '') : '';
+            const evolveText = evolveBase + evolveOverride + (component.maturity || '');
 
             if (normalizedLine.indexOf(evolveText) === 0) {
                 if (normalizedLine.indexOf('label[') > -1) {
-                    return line.replace(
-                        /\slabel\s\[([^[\]]+)\]/g,
-                        getLabelText(moved.x, moved.y),
-                    );
+                    return line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
                 }
                 return line.trim() + getLabelText(moved.x, moved.y);
             }
             return line;
         };
 
-        const processNormalLine = (
-            line: string,
-            normalizedLine: string,
-        ): string => {
-            const baseText =
-                (component.type || '') + component.name.replace(/\s/g, '');
+        const processNormalLine = (line: string, normalizedLine: string): string => {
+            const baseText = (component.type || '') + component.name.replace(/\s/g, '');
             const searchText = baseText + '[';
 
             if (normalizedLine.indexOf(searchText) === 0) {
                 if (normalizedLine.indexOf('label[') > -1) {
-                    return line.replace(
-                        /\slabel\s\[([^[\]]+)\]/g,
-                        getLabelText(moved.x, moved.y),
-                    );
+                    return line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
                 }
                 return line.trim() + getLabelText(moved.x, moved.y);
             }
@@ -222,9 +175,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
         const processLine = (line: string): string => {
             const normalizedLine = line.replace(/\s/g, '');
-            return component.evolved
-                ? processEvolvedLine(line, normalizedLine)
-                : processNormalLine(line, normalizedLine);
+            return component.evolved ? processEvolvedLine(line, normalizedLine) : processNormalLine(line, normalizedLine);
         };
 
         mutateMapText(mapText.split('\n').map(processLine).join('\n'));
@@ -236,8 +187,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             x={getX()}
             y={getY()}
             scaleFactor={scaleFactor} // Pass scale factor to RelativeMovable
-            onMove={endDrag}
-        >
+            onMove={endDrag}>
             <ComponentTextSymbol
                 id={`${component.id}-text`}
                 text={component.name}

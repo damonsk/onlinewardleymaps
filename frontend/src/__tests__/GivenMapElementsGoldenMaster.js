@@ -2,9 +2,9 @@
 const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
-import { useContext } from 'react';
-import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { MapElements } from '../processing/MapElements';
+import {useContext} from 'react';
+import {UnifiedConverter} from '../conversion/UnifiedConverter';
+import {MapElements} from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -70,32 +70,23 @@ describe('So that large refactors can be done without breaking output of mapElem
 
     test('When filtering out evolved elements, ensure output is as expected', function () {
         const mergedElements = legacyAdapter.getMergedElements();
-        const output = mergedElements.filter((el) => !el.evolved);
+        const output = mergedElements.filter(el => !el.evolved);
         testResultEquality(output, 'GoldenMasterMapElementsNonEvolved.txt');
     });
 
     test('When filtering out evolved and evolving elements, ensure output is as expected', function () {
         const mergedElements = legacyAdapter.getMergedElements();
-        const output = mergedElements.filter(
-            (el) => !el.evolved && !el.evolving,
-        );
-        testResultEquality(
-            output,
-            'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
-        );
+        const output = mergedElements.filter(el => !el.evolved && !el.evolving);
+        testResultEquality(output, 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt');
     });
 
     test('When filtering out evolving elements, ensure output is as expected', function () {
         const mergedElements = legacyAdapter.getMergedElements();
-        const output = mergedElements.filter((el) => !el.evolving);
+        const output = mergedElements.filter(el => !el.evolving);
         testResultEquality(output, 'GoldenMasterGetNoneEvolvingElements.txt');
     });
 });
 function writeComparisonFile(output, originalFileName) {
     const fileName = originalFileName.replace('.txt', '_new.txt');
-    fs.writeFileSync(
-        path.resolve(__dirname, fileName),
-        JSON.stringify(output),
-        'utf-8',
-    );
+    fs.writeFileSync(path.resolve(__dirname, fileName), JSON.stringify(output), 'utf-8');
 }

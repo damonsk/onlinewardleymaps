@@ -1,7 +1,7 @@
-import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified/components';
+import React, {MouseEvent, useCallback, useEffect, useState} from 'react';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified/components';
 import LinkSymbol from '../symbols/LinkSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 
@@ -29,25 +29,16 @@ interface Position {
  * This component renders a fluid link that follows the mouse cursor
  * Used during the component linking process
  */
-const FluidLink: React.FC<ModernFluidLinkProps> = ({
-    mapStyleDefs,
-    mapDimensions,
-    startElement,
-    origClick,
-    scaleFactor = 1,
-}) => {
-    const { height, width } = mapDimensions;
+const FluidLink: React.FC<ModernFluidLinkProps> = ({mapStyleDefs, mapDimensions, startElement, origClick, scaleFactor = 1}) => {
+    const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
 
-    const startMaturity =
-        startElement.maturity ?? startElement.evolveMaturity ?? 0;
+    const startMaturity = startElement.maturity ?? startElement.evolveMaturity ?? 0;
     const x1 = positionCalc.maturityToX(startMaturity, width);
 
     const y1 =
         positionCalc.visibilityToY(
-            typeof startElement.visibility === 'string'
-                ? parseFloat(startElement.visibility)
-                : startElement.visibility,
+            typeof startElement.visibility === 'string' ? parseFloat(startElement.visibility) : startElement.visibility,
             height,
         ) + (startElement.offsetY ?? 0);
 
@@ -60,11 +51,9 @@ const FluidLink: React.FC<ModernFluidLinkProps> = ({
     const handleMouseMove = useCallback(
         (e: Event) => {
             const mouseEvent = e as globalThis.MouseEvent;
-            setPosition((position) => {
-                const xDiff =
-                    (position.coords.x! - mouseEvent.pageX) / scaleFactor;
-                const yDiff =
-                    (position.coords.y! - mouseEvent.pageY) / scaleFactor;
+            setPosition(position => {
+                const xDiff = (position.coords.x! - mouseEvent.pageX) / scaleFactor;
+                const yDiff = (position.coords.y! - mouseEvent.pageY) / scaleFactor;
                 return {
                     x: position.x - xDiff,
                     y: position.y - yDiff,
@@ -82,7 +71,7 @@ const FluidLink: React.FC<ModernFluidLinkProps> = ({
         const pageX = origClick.nativeEvent.pageX;
         const pageY = origClick.nativeEvent.pageY;
 
-        setPosition((position) =>
+        setPosition(position =>
             Object.assign({}, position, {
                 coords: {
                     x: pageX,

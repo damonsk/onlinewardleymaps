@@ -13,12 +13,8 @@ import {
     MapPresentationStyle,
     MapUrls,
 } from '../base';
-import {
-    EvolvedElementData,
-    PipelineData,
-    UnifiedComponent,
-} from './components';
-import { FlowLink } from './links';
+import {EvolvedElementData, PipelineData, UnifiedComponent} from './components';
+import {FlowLink} from './links';
 
 /**
  * Unified WardleyMap structure with consolidated component types
@@ -113,11 +109,9 @@ export const createEmptyMap = (): UnifiedWardleyMap => {
     };
 };
 
-export const groupComponentsByType = (
-    map: UnifiedWardleyMap,
-): GroupedComponents => {
+export const groupComponentsByType = (map: UnifiedWardleyMap): GroupedComponents => {
     return {
-        components: map.components.filter((c) => c.type === 'component'),
+        components: map.components.filter(c => c.type === 'component'),
         anchors: map.anchors,
         submaps: map.submaps,
         markets: map.markets,
@@ -125,16 +119,8 @@ export const groupComponentsByType = (
     };
 };
 
-export const getAllMapElements = (
-    map: UnifiedWardleyMap,
-): UnifiedComponent[] => {
-    return [
-        ...map.components,
-        ...map.anchors,
-        ...map.submaps,
-        ...map.markets,
-        ...map.ecosystems,
-    ];
+export const getAllMapElements = (map: UnifiedWardleyMap): UnifiedComponent[] => {
+    return [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
 };
 
 /**

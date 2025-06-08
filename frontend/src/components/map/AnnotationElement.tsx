@@ -1,6 +1,6 @@
 import React from 'react';
-import { MapTheme } from '../../constants/mapstyles';
-import { MapAnnotation, MapAnnotations } from '../../types/base';
+import {MapTheme} from '../../constants/mapstyles';
+import {MapAnnotation, MapAnnotations} from '../../types/base';
 import ModernAnnotationElementSymbol from '../symbols/ModernAnnotationElementSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
@@ -44,53 +44,35 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
 }) => {
     const positionCalc = new ModernPositionCalculator();
 
-    const x = (): number =>
-        positionCalc.maturityToX(occurance.maturity, mapDimensions.width);
+    const x = (): number => positionCalc.maturityToX(occurance.maturity, mapDimensions.width);
 
-    const y = (): number =>
-        positionCalc.visibilityToY(occurance.visibility, mapDimensions.height);
+    const y = (): number => positionCalc.visibilityToY(occurance.visibility, mapDimensions.height);
 
     function endDrag(moved: MovedPosition): void {
         mutateMapText(
             mapText
                 .split('\n')
-                .map((line) => {
-                    if (
-                        line
-                            .replace(/\s/g, '')
-                            .indexOf('annotation' + annotation.number + '[') !==
-                        -1
-                    ) {
-                        if (line.replace(/\s/g, '').indexOf(']]') > -1) {
+                .map(line => {
+                    const normalizedLine = line.replace(/\s/g, '');
+                    const searchPattern = 'annotation' + annotation.number + '[';
+
+                    if (normalizedLine.indexOf(searchPattern) !== -1) {
+                        if (normalizedLine.indexOf(']]') > -1) {
                             // Handle multiple occurrences format: annotation 1 [[x,y],[x,y]]
-                            const extractedOccurances = line
-                                .replace(/\s/g, '')
-                                .split('[[')[1]
-                                .split(']]')[0]
-                                .split('],[');
+                            const extractedOccurances = line.replace(/\s/g, '').split('[[')[1].split(']]')[0].split('],[');
 
                             // Update only the specific occurrence that was moved
-                            const newVisibility = positionCalc.yToVisibility(
-                                moved.y,
-                                mapDimensions.height,
-                            );
-                            const newMaturity = positionCalc.xToMaturity(
-                                moved.x,
-                                mapDimensions.width,
-                            );
+                            const newVisibility = positionCalc.yToVisibility(moved.y, mapDimensions.height);
+                            const newMaturity = positionCalc.xToMaturity(moved.x, mapDimensions.width);
 
-                            extractedOccurances[occuranceIndex] =
-                                `${newVisibility},${newMaturity}`;
+                            extractedOccurances[occuranceIndex] = `${newVisibility},${newMaturity}`;
 
                             const beforeCoords = line.split('[')[0].trim();
-                            const afterCoords = line.substr(
-                                line.lastIndexOf(']'),
-                                line.length - line.lastIndexOf(']'),
-                            );
+                            const afterCoords = line.substr(line.lastIndexOf(']'), line.length - line.lastIndexOf(']'));
                             const newCoords =
                                 '[' +
                                 extractedOccurances
-                                    .map((e) => {
+                                    .map(e => {
                                         return '[' + e.trim() + ']';
                                     })
                                     .join(',');
@@ -102,10 +84,7 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
                                 `[${positionCalc.yToVisibility(
                                     moved.y,
                                     mapDimensions.height,
-                                )}, ${positionCalc.xToMaturity(
-                                    moved.x,
-                                    mapDimensions.width,
-                                )}]`,
+                                )}, ${positionCalc.xToMaturity(moved.x, mapDimensions.width)}]`,
                             );
                         }
                     } else {
@@ -124,8 +103,7 @@ const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
             y={y()}
             fixedY={false}
             fixedX={false}
-            scaleFactor={scaleFactor}
-        >
+            scaleFactor={scaleFactor}>
             <ModernAnnotationElementSymbol
                 id={`modern_annotation_element_symbol_${annotation.number}`}
                 annotation={annotation}

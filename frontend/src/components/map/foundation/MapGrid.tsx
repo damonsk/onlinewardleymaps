@@ -1,6 +1,6 @@
 import React from 'react';
-import { MapDimensions, Offsets } from '../../../constants/defaults';
-import { MapTheme } from '../../../constants/mapstyles';
+import {MapDimensions, Offsets} from '../../../constants/defaults';
+import {MapTheme} from '../../../constants/mapstyles';
 
 export interface MaoGridProps {
     mapDimensions: MapDimensions;
@@ -8,18 +8,13 @@ export interface MaoGridProps {
     evolutionOffsets: Offsets;
 }
 
-export const MapGrid: React.FunctionComponent<MaoGridProps> = ({
-    mapDimensions,
-    mapStyleDefs,
-    evolutionOffsets,
-}) => {
+export const MapGrid: React.FunctionComponent<MaoGridProps> = ({mapDimensions, mapStyleDefs, evolutionOffsets}) => {
     return (
         <g
             id="valueChain"
             transform={'translate(0,' + mapDimensions.height + ') rotate(270)'}
             fontFamily='"Helvetica Neue",Helvetica,Arial,sans-serif'
-            fontSize="13px"
-        >
+            fontSize="13px">
             <line
                 x1="0"
                 y1="0"
@@ -53,13 +48,7 @@ export const MapGrid: React.FunctionComponent<MaoGridProps> = ({
                 stroke={mapStyleDefs.evolutionSeparationStroke}
                 strokeDasharray={mapStyleDefs.strokeDasharray}
             />
-            <text
-                fill={mapStyleDefs.mapGridTextColor}
-                x={mapDimensions.height - 2}
-                y="-0.4em"
-                textAnchor="end"
-                fontWeight="bold"
-            >
+            <text fill={mapStyleDefs.mapGridTextColor} x={mapDimensions.height - 2} y="-0.4em" textAnchor="end" fontWeight="bold">
                 Value Chain
             </text>
         </g>

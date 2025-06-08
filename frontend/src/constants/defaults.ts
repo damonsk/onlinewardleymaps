@@ -1,10 +1,9 @@
-export const PageTitle =
-    'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
+export const PageTitle = 'OnlineWardleyMaps - Draw Wardley Maps in seconds using this free online tool';
 
 export const ApiEndpoint = 'https://api.onlinewardleymaps.com/v1/maps/';
 
-export const defaultLabelOffset = { x: 5, y: -10 };
-export const increasedLabelOffset = { x: 5, y: -20 };
+export const defaultLabelOffset = {x: 5, y: -10};
+export const increasedLabelOffset = {x: 5, y: -20};
 
 export const MapPersistenceStrategy = {
     Legacy: 'Legacy',
@@ -27,23 +26,23 @@ export const DefaultMapObject = {
     elements: [],
     links: [],
     evolution: [],
-    presentation: { style: 'plain' },
+    presentation: {style: 'plain'},
     methods: [],
     annotations: [],
 };
 
 export interface EvolutionStages {
-    genesis: { l1: string; l2: string };
-    custom: { l1: string; l2: string };
-    product: { l1: string; l2: string };
-    commodity: { l1: string; l2: string };
+    genesis: {l1: string; l2: string};
+    custom: {l1: string; l2: string};
+    product: {l1: string; l2: string};
+    commodity: {l1: string; l2: string};
 }
 
 export const EvolutionStages: EvolutionStages = {
-    genesis: { l1: 'Genesis', l2: '' },
-    custom: { l1: 'Custom Built', l2: '' },
-    product: { l1: 'Product', l2: '(+rental)' },
-    commodity: { l1: 'Commodity', l2: '(+utility)' },
+    genesis: {l1: 'Genesis', l2: ''},
+    custom: {l1: 'Custom Built', l2: ''},
+    product: {l1: 'Product', l2: '(+rental)'},
+    commodity: {l1: 'Commodity', l2: '(+utility)'},
 };
 
 export const MapDimensions: MapDimensions = {

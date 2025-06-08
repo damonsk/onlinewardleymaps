@@ -1,6 +1,6 @@
 import React from 'react';
-import { MapDimensions } from '../../../constants/defaults';
-import { DefaultThemes } from './Fill';
+import {MapDimensions} from '../../../constants/defaults';
+import {DefaultThemes} from './Fill';
 
 const fill: DefaultThemes = {
     wardley: 'url(#wardleyGradient)',
@@ -15,10 +15,7 @@ export interface MapBackgroundProps {
     mapStyleClass: string;
 }
 
-const MapBackground: React.FunctionComponent<MapBackgroundProps> = ({
-    mapStyleClass,
-    mapDimensions,
-}) => {
+const MapBackground: React.FunctionComponent<MapBackgroundProps> = ({mapStyleClass, mapDimensions}) => {
     return (
         <rect
             x="0"

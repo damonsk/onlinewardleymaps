@@ -14,9 +14,9 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
-import { MapIteration } from '../../repository/OwnApiWardleyMap';
+import {styled} from '@mui/material/styles';
+import React, {FunctionComponent, useEffect, useRef} from 'react';
+import {MapIteration} from '../../repository/OwnApiWardleyMap';
 
 export interface NewMapIterationsProps {
     mapIterations: MapIteration[];
@@ -35,7 +35,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
     setCurrentIteration,
     currentIteration,
 }) => {
-    const StyledArea = styled(Box)(({ theme }) => ({
+    const StyledArea = styled(Box)(({theme}) => ({
         width: '100%',
         boxShadow: theme.shadows[4],
         marginBottom: '2px',
@@ -68,9 +68,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
 
     const updateIterationName = () => {
         const newList = [...mapIterations];
-        newList[currentIteration].name = renameInput.current
-            ? renameInput.current.value
-            : '';
+        newList[currentIteration].name = renameInput.current ? renameInput.current.value : '';
         setMapIterations(newList);
     };
 
@@ -80,10 +78,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
         if (currentIteration > -1) {
             if (newList.length === 0) {
                 setCurrentIteration(-1);
-            } else if (
-                currentIteration > newList.length - 1 ||
-                currentIteration === newList.length
-            ) {
+            } else if (currentIteration > newList.length - 1 || currentIteration === newList.length) {
                 setCurrentIteration(newList.length - 1);
             } else if (currentIteration <= newList.length - 1) {
                 setCurrentIteration(0);
@@ -115,7 +110,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
     };
 
     const handleBack = () => {
-        setCurrentIteration((prevActiveStep) => prevActiveStep - 1);
+        setCurrentIteration(prevActiveStep => prevActiveStep - 1);
     };
 
     const handleStep = (step: number) => () => {
@@ -138,26 +133,18 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                 {Array.isArray(mapIterations) &&
                     mapIterations.map((iteration, index) => (
                         <Step key={index}>
-                            <StepButton
-                                color="inherit"
-                                onClick={handleStep(index)}
-                            >
+                            <StepButton color="inherit" onClick={handleStep(index)}>
                                 {iteration.name}
                             </StepButton>
                         </Step>
                     ))}
             </Stepper>
             <div>
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <Button
-                        disabled={currentIteration <= 0}
-                        onClick={handleBack}
-                        sx={{ mr: 1 }}
-                        size="small"
-                    >
+                <Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
+                    <Button disabled={currentIteration <= 0} onClick={handleBack} sx={{mr: 1}} size="small">
                         <KeyboardArrowLeft /> Back
                     </Button>
-                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Box sx={{flex: '1 1 auto'}} />
 
                     {(mapIterations.length > 0 || currentIteration > 0) && (
                         <Button size="small" onClick={handleClickOpenDelete}>
@@ -172,16 +159,12 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                     <Button size="small" onClick={addIterationClick}>
                         Add <AddCircleIcon />
                     </Button>
-                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Box sx={{flex: '1 1 auto'}} />
                     <Button
                         size="small"
                         onClick={handleNext}
-                        sx={{ mr: 1 }}
-                        disabled={
-                            mapIterations.length === 0 ||
-                            currentIteration === mapIterations.length - 1
-                        }
-                    >
+                        sx={{mr: 1}}
+                        disabled={mapIterations.length === 0 || currentIteration === mapIterations.length - 1}>
                         Next <KeyboardArrowRight />
                     </Button>
                 </Box>
@@ -189,9 +172,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
             <Dialog open={openRename} onClose={() => handleClose()}>
                 <DialogTitle>Rename</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Enter a new name for the current iteration.
-                    </DialogContentText>
+                    <DialogContentText>Enter a new name for the current iteration.</DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -206,22 +187,15 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleClose()}>Cancel</Button>
-                    <Button
-                        onClick={() => handleClose(() => updateIterationName())}
-                    >
-                        Update
-                    </Button>
+                    <Button onClick={() => handleClose(() => updateIterationName())}>Update</Button>
                 </DialogActions>
             </Dialog>
             <Dialog
                 open={openDelete}
                 onClose={() => handleCloseDelete()}
                 aria-labelledby="alert-dialog-title-delete"
-                aria-describedby="alert-dialog-description-delete"
-            >
-                <DialogTitle id="alert-dialog-title-delete">
-                    Are you sure?
-                </DialogTitle>
+                aria-describedby="alert-dialog-description-delete">
+                <DialogTitle id="alert-dialog-title-delete">Are you sure?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         Are you sure you want to delete iteration &apos;{value}
@@ -229,13 +203,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={() =>
-                            handleCloseDelete(() => deleteIterationClick())
-                        }
-                    >
-                        Delete
-                    </Button>
+                    <Button onClick={() => handleCloseDelete(() => deleteIterationClick())}>Delete</Button>
                     <Button onClick={() => handleCloseDelete()} autoFocus>
                         Cancel
                     </Button>

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import {useContext} from 'react';
 import Converter from '../conversion/Converter';
 
 jest.mock('react', () => ({
@@ -6,7 +6,7 @@ jest.mock('react', () => ({
     useContext: jest.fn(),
 }));
 
-useContext.mockReturnValue({ enableNewPipelines: false });
+useContext.mockReturnValue({enableNewPipelines: false});
 
 describe('Given map size can change', function () {
     test('When dimensions specified, ensure values are parsed', function () {

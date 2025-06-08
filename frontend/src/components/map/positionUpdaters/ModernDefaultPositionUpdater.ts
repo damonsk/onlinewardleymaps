@@ -1,4 +1,4 @@
-import { PositionUpdater, Replacer } from '../../../types/base';
+import {PositionUpdater, Replacer} from '../../../types/base';
 
 /**
  * ModernDefaultPositionUpdater - Modern implementation using unified types
@@ -21,12 +21,7 @@ export default class ModernDefaultPositionUpdater implements PositionUpdater {
      * @param mutator A function that updates the map text
      * @param replacers Array of replacers to apply
      */
-    constructor(
-        type: string,
-        mapText: string,
-        mutator: (updatedText: string) => void,
-        replacers: Replacer[],
-    ) {
+    constructor(type: string, mapText: string, mutator: (updatedText: string) => void, replacers: Replacer[]) {
         this.type = type;
         this.mapText = mapText;
         this.mutator = mutator;
@@ -50,7 +45,7 @@ export default class ModernDefaultPositionUpdater implements PositionUpdater {
     update(moved: any, identifier: string): void {
         const updatedText = this.mapText
             .split('\n')
-            .map((line) => {
+            .map(line => {
                 for (let i = 0; i < this.replacers.length; i++) {
                     const r = this.replacers[i];
                     if (r.matcher(line, identifier, this.type)) {

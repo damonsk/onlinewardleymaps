@@ -1,6 +1,6 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 import BaseStrategyRunner from './BaseStrategyRunner';
-import { IParseStrategy } from '../types/base';
+import {IParseStrategy} from '../types/base';
 
 export default class MethodExtractionStrategy implements IParseStrategy {
     data: string;
@@ -11,14 +11,14 @@ export default class MethodExtractionStrategy implements IParseStrategy {
         this.containerName = 'methods';
         this.baseStrategies = ['buy', 'outsource', 'build']
             .map(
-                (e) =>
+                e =>
                     new BaseStrategyRunner(
                         data,
                         {
                             keyword: e,
                             containerName: 'methods',
                             // Set to 0 to satisfy the interface but not affect positioning
-                            defaultAttributes: { increaseLabelSpacing: 0 },
+                            defaultAttributes: {increaseLabelSpacing: 0},
                         },
                         [ExtractionFunctions.setMethod],
                     ),
@@ -27,9 +27,9 @@ export default class MethodExtractionStrategy implements IParseStrategy {
     }
 
     apply() {
-        const output = this.baseStrategies.map((bs) => bs.apply()).flat();
+        const output = this.baseStrategies.map(bs => bs.apply()).flat();
         return {
-            [this.containerName]: output.map((o) => o.methods).flat(),
+            [this.containerName]: output.map(o => o.methods).flat(),
             errors: [],
         };
     }

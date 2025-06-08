@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { EditorPrefixes } from '../constants/editorPrefixes';
+import {useContext} from 'react';
+import {EditorPrefixes} from '../constants/editorPrefixes';
 import Converter from '../conversion/Converter';
 
 jest.mock('react', () => ({
@@ -7,19 +7,16 @@ jest.mock('react', () => ({
     useContext: jest.fn(),
 }));
 
-useContext.mockReturnValue({ enableNewPipelines: false });
+useContext.mockReturnValue({enableNewPipelines: false});
 
 describe('Given Submaps', function () {
     const mockContextValue = useContext();
-    test.each(['Foo', 'Bar', 'Bleh'])(
-        'When mapText contains submaps then text is correctly parsed',
-        (name) => {
-            let actual = `submap ${name}`;
-            let result = new Converter(mockContextValue).parse(actual);
-            expect(result.submaps.length).toEqual(1);
-            expect(result.submaps[0].name).toEqual(name);
-        },
-    );
+    test.each(['Foo', 'Bar', 'Bleh'])('When mapText contains submaps then text is correctly parsed', name => {
+        let actual = `submap ${name}`;
+        let result = new Converter(mockContextValue).parse(actual);
+        expect(result.submaps.length).toEqual(1);
+        expect(result.submaps[0].name).toEqual(name);
+    });
 
     test('When mapText contains submaps with coords then text is correctly parsed', () => {
         const visibility = 0.11;
@@ -67,13 +64,7 @@ describe('Given Submaps', function () {
     test('Editor prefixes are defined', function () {
         expect(EditorPrefixes.includes('submap')).toEqual(true);
         expect(EditorPrefixes.includes('submap <name>')).toEqual(true);
-        expect(
-            EditorPrefixes.includes('submap <name> [<visibility>, <maturity>]'),
-        ).toEqual(true);
-        expect(
-            EditorPrefixes.includes(
-                'submap <name> [<visibility>, <maturity>] url(<url>)',
-            ),
-        ).toEqual(true);
+        expect(EditorPrefixes.includes('submap <name> [<visibility>, <maturity>]')).toEqual(true);
+        expect(EditorPrefixes.includes('submap <name> [<visibility>, <maturity>] url(<url>)')).toEqual(true);
     });
 });

@@ -1,6 +1,6 @@
-import { useContext } from 'react';
-import { UnifiedConverter } from '../conversion/UnifiedConverter';
-import { MapElements } from '../processing/MapElements';
+import {useContext} from 'react';
+import {UnifiedConverter} from '../conversion/UnifiedConverter';
+import {MapElements} from '../processing/MapElements';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -36,17 +36,14 @@ component MultipleDecorators [0.9, 0.9] (market, buy)
         const mergedElements = me.getMergedComponents();
 
         // Find components by name
-        const findComponent = (name) =>
-            mergedElements.find((c) => c.name === name);
+        const findComponent = name => mergedElements.find(c => c.name === name);
 
         const regularComponent = findComponent('RegularComponent');
         const marketDecorated = findComponent('MarketDecorated');
         const ecosystemDecorated = findComponent('EcosystemDecorated');
         const buyMethodDecorated = findComponent('BuyMethodDecorated');
         const buildMethodDecorated = findComponent('BuildMethodDecorated');
-        const outsourceMethodDecorated = findComponent(
-            'OutsourceMethodDecorated',
-        );
+        const outsourceMethodDecorated = findComponent('OutsourceMethodDecorated');
         const multipleDecorators = findComponent('MultipleDecorators');
 
         // Regular component should not have any decorators
@@ -74,12 +71,8 @@ component MultipleDecorators [0.9, 0.9] (market, buy)
         expect(buildMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
         expect(outsourceMethodDecorated.decorators.method).toBe('outsource');
-        expect(outsourceMethodDecorated.decorators?.market || false).toBe(
-            false,
-        );
-        expect(outsourceMethodDecorated.decorators?.ecosystem || false).toBe(
-            false,
-        );
+        expect(outsourceMethodDecorated.decorators?.market || false).toBe(false);
+        expect(outsourceMethodDecorated.decorators?.ecosystem || false).toBe(false);
 
         // Multiple decorators should preserve both
         expect(multipleDecorators.decorators?.market || false).toBe(true);
@@ -99,8 +92,7 @@ component RegularComponent [0.7, 0.7]
         const mergedElements = me.getMergedComponents();
 
         // Find components by name
-        const findComponent = (name) =>
-            mergedElements.find((c) => c.name === name);
+        const findComponent = name => mergedElements.find(c => c.name === name);
 
         const regularComponent = findComponent('RegularComponent');
         // Regular component should not have any decorators
@@ -123,8 +115,7 @@ component Barbaz [0.9, 0.1] (ecosystem)
         const mergedElements = me.getMergedComponents();
 
         // Find components by name
-        const findComponent = (name) =>
-            mergedElements.find((c) => c.name === name);
+        const findComponent = name => mergedElements.find(c => c.name === name);
 
         const foobar = findComponent('Foobar');
         const barbaz = findComponent('Barbaz');
@@ -155,8 +146,7 @@ evolve EvolvedMethod 0.75
         const evolvedElements = legacyAdapter.getEvolvedElements();
 
         // Find evolved components by name (they get '_evolved' suffix)
-        const findComponent = (name) =>
-            evolvedElements.find((c) => c.name === name);
+        const findComponent = name => evolvedElements.find(c => c.name === name);
 
         const evolvedMarket = findComponent('EvolvedMarket');
         const evolvedEcosystem = findComponent('EvolvedEcosystem');
@@ -189,7 +179,7 @@ component AnotherComponent [0.6, 0.6]
         const mergedElements = me.getMergedComponents();
 
         // All components should have proper default decorator values
-        mergedElements.forEach((component) => {
+        mergedElements.forEach(component => {
             expect(component.decorators?.market || false).toBe(false);
             expect(component.decorators?.ecosystem || false).toBe(false);
             expect(component.decorators.method).toBeUndefined();

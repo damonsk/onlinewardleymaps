@@ -1,15 +1,8 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
-import {
-    IParseStrategy,
-    IProvideBaseElement,
-    IProvideBaseStrategyRunnerConfig,
-    IProvideDecoratorsConfig,
-} from '../types/base';
+import {IParseStrategy, IProvideBaseElement, IProvideBaseStrategyRunnerConfig, IProvideDecoratorsConfig} from '../types/base';
 import BaseStrategyRunner from './BaseStrategyRunner';
 
-export default class ExtendableComponentExtractionStrategy
-    implements IParseStrategy
-{
+export default class ExtendableComponentExtractionStrategy implements IParseStrategy {
     data: string;
     keyword: string;
     containerName: string;
@@ -17,13 +10,7 @@ export default class ExtendableComponentExtractionStrategy
     constructor(
         data: string,
         config: IProvideBaseStrategyRunnerConfig,
-        additionalExtractions: Array<
-            (
-                baseElement: IProvideBaseElement,
-                element: string,
-                config: IProvideDecoratorsConfig,
-            ) => void
-        >,
+        additionalExtractions: Array<(baseElement: IProvideBaseElement, element: string, config: IProvideDecoratorsConfig) => void>,
     ) {
         this.data = data;
         this.keyword = config.keyword;
@@ -38,10 +25,7 @@ export default class ExtendableComponentExtractionStrategy
             ExtractionFunctions.setEvolve,
         ];
 
-        if (
-            additionalExtractions !== null &&
-            additionalExtractions !== undefined
-        ) {
+        if (additionalExtractions !== null && additionalExtractions !== undefined) {
             extractionFuncs = additionalExtractions.concat(extractionFuncs);
         }
 

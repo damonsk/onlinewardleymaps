@@ -1,6 +1,6 @@
 import * as ExtractionFunctions from '../constants/extractionFunctions';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
-import { IParseStrategy } from '../types/base';
+import {IParseStrategy} from '../types/base';
 
 export default class SubMapExtractionStrategy implements IParseStrategy {
     data: string;
@@ -15,7 +15,7 @@ export default class SubMapExtractionStrategy implements IParseStrategy {
             {
                 keyword: 'submap',
                 containerName: 'submaps',
-                defaultAttributes: { increaseLabelSpacing: 0 },
+                defaultAttributes: {increaseLabelSpacing: 0},
             },
             additionalExtractions,
         );

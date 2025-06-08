@@ -1,12 +1,8 @@
 // Integration test for MapElements
 // Part of Phase 4C: Component Interface Modernization
 
-import { MapElements } from '../processing/MapElements';
-import {
-    PipelineData,
-    UnifiedComponent,
-    createUnifiedComponent,
-} from '../types/unified/components';
+import {MapElements} from '../processing/MapElements';
+import {PipelineData, UnifiedComponent, createUnifiedComponent} from '../types/unified/components';
 
 // Create a mock of UnifiedWardleyMap with only the properties needed for testing
 interface TestMap {
@@ -95,9 +91,9 @@ function createTestMap(): TestMap {
             name: 'Component2',
             visibility: 0.5,
             components: [
-                { id: 'p1', name: 'Phase1', maturity: 0.3, visibility: 0.5 },
-                { id: 'p2', name: 'Phase2', maturity: 0.5, visibility: 0.5 },
-                { id: 'p3', name: 'Phase3', maturity: 0.7, visibility: 0.5 },
+                {id: 'p1', name: 'Phase1', maturity: 0.3, visibility: 0.5},
+                {id: 'p2', name: 'Phase2', maturity: 0.5, visibility: 0.5},
+                {id: 'p3', name: 'Phase3', maturity: 0.7, visibility: 0.5},
             ],
             line: 20,
         },
@@ -163,8 +159,7 @@ describe('MapElements Integration Tests', () => {
         });
 
         test('getNeitherEvolvedNorEvolvingComponents returns components not involved in evolution', () => {
-            const normalComponents =
-                mapElements.getNeitherEvolvedNorEvolvingComponents();
+            const normalComponents = mapElements.getNeitherEvolvedNorEvolvingComponents();
             expect(normalComponents.length).toBe(4); // Component2, Component3, User, Submap1
         });
 
@@ -173,14 +168,12 @@ describe('MapElements Integration Tests', () => {
             expect(mergedComponents.length).toBe(6); // 5 original + 1 evolved
 
             // Verify we have both the original and evolved versions of Component1
-            const component1Instances = mergedComponents.filter(
-                (c) => c.name === 'Component1',
-            );
+            const component1Instances = mergedComponents.filter(c => c.name === 'Component1');
             expect(component1Instances.length).toBe(2);
 
             // One should be evolving and one should be evolved
-            expect(component1Instances.some((c) => c.evolving)).toBe(true);
-            expect(component1Instances.some((c) => c.evolved)).toBe(true);
+            expect(component1Instances.some(c => c.evolving)).toBe(true);
+            expect(component1Instances.some(c => c.evolved)).toBe(true);
         });
     });
 
@@ -198,20 +191,12 @@ describe('MapElements Integration Tests', () => {
             const adapter = mapElements.getLegacyAdapter();
 
             // Test that adapter methods match original functionality
-            expect(adapter.getAllComponents().length).toBe(
-                mapElements.getAllComponents().length,
-            );
-            expect(adapter.getEvolvingComponents().length).toBe(
-                mapElements.getEvolvingComponents().length,
-            );
+            expect(adapter.getAllComponents().length).toBe(mapElements.getAllComponents().length);
+            expect(adapter.getEvolvingComponents().length).toBe(mapElements.getEvolvingComponents().length);
 
             // Test legacy method names
-            expect(adapter.getEvolveElements().length).toBe(
-                mapElements.getEvolvingComponents().length,
-            );
-            expect(adapter.getMergedElements().length).toBe(
-                mapElements.getMergedComponents().length,
-            );
+            expect(adapter.getEvolveElements().length).toBe(mapElements.getEvolvingComponents().length);
+            expect(adapter.getMergedElements().length).toBe(mapElements.getMergedComponents().length);
         });
     });
 });

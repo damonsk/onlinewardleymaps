@@ -33,10 +33,8 @@ const specialCases = [
         standardName: 'MapEnvironment',
         importFixes: {
             // Import paths need adjustment when moving across directories
-            '../../components/FeatureSwitchesContext':
-                '../FeatureSwitchesContext',
-            '../../conversion/UnifiedConverter':
-                '../conversion/UnifiedConverter',
+            '../../components/FeatureSwitchesContext': '../FeatureSwitchesContext',
+            '../../conversion/UnifiedConverter': '../conversion/UnifiedConverter',
             '../../processing/MapElements': '../processing/MapElements',
             '../../types/unified/map': '../types/unified/map',
         },
@@ -99,7 +97,7 @@ const componentsByDir = {
 // Archive directory for legacy files
 const archiveDir = path.join(baseDir, 'archived_legacy_components');
 if (!fs.existsSync(archiveDir)) {
-    fs.mkdirSync(archiveDir, { recursive: true });
+    fs.mkdirSync(archiveDir, {recursive: true});
 }
 
 // Test mode flag (set to false to apply changes)
@@ -153,10 +151,7 @@ function moveFile(sourcePath, destPath, importFixes = {}) {
         log(`Moved file: ${sourcePath} -> ${destPath}`, 'success');
     } else {
         log(`[TEST] Would move file: ${sourcePath} -> ${destPath}`, 'info');
-        log(
-            `[TEST] Would delete original file after move: ${sourcePath}`,
-            'info',
-        );
+        log(`[TEST] Would delete original file after move: ${sourcePath}`, 'info');
     }
     return true;
 }
@@ -176,20 +171,14 @@ function archiveLegacyFile(filePath) {
             createBackup(filePath);
             fs.copyFileSync(filePath, archivePath);
             fs.unlinkSync(filePath);
-            log(
-                `Archived legacy file: ${filePath} -> ${archivePath}`,
-                'success',
-            );
+            log(`Archived legacy file: ${filePath} -> ${archivePath}`, 'success');
         } else {
             fs.unlinkSync(filePath);
             log(`Deleted legacy file: ${filePath}`, 'success');
         }
     } else {
         if (ARCHIVE_LEGACY) {
-            log(
-                `[TEST] Would archive legacy file: ${filePath} -> ${archivePath}`,
-                'info',
-            );
+            log(`[TEST] Would archive legacy file: ${filePath} -> ${archivePath}`, 'info');
         } else {
             log(`[TEST] Would delete legacy file: ${filePath}`, 'info');
         }
@@ -206,7 +195,7 @@ function findAllTsFiles() {
             return;
         }
         const files = fs.readdirSync(dir);
-        files.forEach((file) => {
+        files.forEach(file => {
             const filePath = path.join(dir, file);
             const stat = fs.statSync(filePath);
             if (stat.isDirectory()) {
@@ -230,30 +219,18 @@ function updateImportsInFile(filePath, oldName, newName) {
     let updated = false;
 
     // Replace import { ModernXXX } from './ModernXXX'
-    const importRegex = new RegExp(
-        `import\\s+{([^}]*)${oldName}([^}]*)}\\s+from\\s+['"]([^'"]*${oldName})['"](;?)`,
-        'g',
-    );
-    content = content.replace(
-        importRegex,
-        (match, before, after, path, semicolon) => {
-            updated = true;
-            return `import {${before}${newName}${after}} from '${path.replace(oldName, newName)}'${semicolon}`;
-        },
-    );
+    const importRegex = new RegExp(`import\\s+{([^}]*)${oldName}([^}]*)}\\s+from\\s+['"]([^'"]*${oldName})['"](;?)`, 'g');
+    content = content.replace(importRegex, (match, before, after, path, semicolon) => {
+        updated = true;
+        return `import {${before}${newName}${after}} from '${path.replace(oldName, newName)}'${semicolon}`;
+    });
 
     // Replace import { ModernXXX } from './components/somewhere'
-    const namedImportRegex = new RegExp(
-        `import\\s+{([^}]*)${oldName}([^}]*)}\\s+from\\s+['"]([^'"]*)['"](;?)`,
-        'g',
-    );
-    content = content.replace(
-        namedImportRegex,
-        (match, before, after, path, semicolon) => {
-            updated = true;
-            return `import {${before}${newName}${after}} from '${path}'${semicolon}`;
-        },
-    );
+    const namedImportRegex = new RegExp(`import\\s+{([^}]*)${oldName}([^}]*)}\\s+from\\s+['"]([^'"]*)['"](;?)`, 'g');
+    content = content.replace(namedImportRegex, (match, before, after, path, semicolon) => {
+        updated = true;
+        return `import {${before}${newName}${after}} from '${path}'${semicolon}`;
+    });
 
     // Replace <ModernXXX> with <XXX> in JSX
     const jsxRegex = new RegExp(`<(\\/?)(${oldName})(\\s|>|/)`, 'g');
@@ -285,30 +262,17 @@ async function runCleanup() {
 
     // 1. Handle special cases first (cross-directory files)
     log('\n=== Processing Special Cases ===', 'info');
-    specialCases.forEach(
-        ({
-            modernPath,
-            legacyPath,
-            newPath,
-            modernName,
-            standardName,
-            importFixes,
-            archiveLegacy,
-        }) => {
-            log(
-                `Processing special case: ${modernName} -> ${standardName}`,
-                'info',
-            );
+    specialCases.forEach(({modernPath, legacyPath, newPath, modernName, standardName, importFixes, archiveLegacy}) => {
+        log(`Processing special case: ${modernName} -> ${standardName}`, 'info');
 
-            // Move the Modern file to its new location with proper name
-            moveFile(modernPath, newPath, importFixes || {});
+        // Move the Modern file to its new location with proper name
+        moveFile(modernPath, newPath, importFixes || {});
 
-            // Archive the legacy file if it exists and is marked for archiving
-            if (archiveLegacy && fs.existsSync(legacyPath)) {
-                archiveLegacyFile(legacyPath);
-            }
-        },
-    );
+        // Archive the legacy file if it exists and is marked for archiving
+        if (archiveLegacy && fs.existsSync(legacyPath)) {
+            archiveLegacyFile(legacyPath);
+        }
+    });
 
     // 2. Process standard directory-based components
     log('\n=== Processing Directory Components ===', 'info');
@@ -321,16 +285,8 @@ async function runCleanup() {
             const modernPathAlt = path.join(dir, `${modernName}.ts`); // Try .ts extension too
             const standardPath = path.join(dir, `${standardName}.tsx`);
             const standardPathAlt = path.join(dir, `${standardName}.ts`);
-            const legacyPath = fs.existsSync(standardPath)
-                ? standardPath
-                : fs.existsSync(standardPathAlt)
-                  ? standardPathAlt
-                  : null;
-            const sourcePath = fs.existsSync(modernPath)
-                ? modernPath
-                : fs.existsSync(modernPathAlt)
-                  ? modernPathAlt
-                  : null;
+            const legacyPath = fs.existsSync(standardPath) ? standardPath : fs.existsSync(standardPathAlt) ? standardPathAlt : null;
+            const sourcePath = fs.existsSync(modernPath) ? modernPath : fs.existsSync(modernPathAlt) ? modernPathAlt : null;
 
             if (!sourcePath) {
                 log(`Modern file not found: ${modernName}`, 'warning');
@@ -339,10 +295,7 @@ async function runCleanup() {
 
             // Determine destination extension based on source extension
             const isTypeScript = sourcePath.endsWith('.ts');
-            const destPath = path.join(
-                dir,
-                `${standardName}${isTypeScript ? '.ts' : '.tsx'}`,
-            );
+            const destPath = path.join(dir, `${standardName}${isTypeScript ? '.ts' : '.tsx'}`);
 
             log(`Processing: ${modernName} -> ${standardName}`, 'info');
 
@@ -364,7 +317,7 @@ async function runCleanup() {
     const allRenames = {};
 
     // Add special cases
-    specialCases.forEach(({ modernName, standardName }) => {
+    specialCases.forEach(({modernName, standardName}) => {
         allRenames[modernName] = standardName;
     });
 
@@ -376,7 +329,7 @@ async function runCleanup() {
     });
 
     // Update imports in all files
-    tsFiles.forEach((filePath) => {
+    tsFiles.forEach(filePath => {
         Object.entries(allRenames).forEach(([oldName, newName]) => {
             updateImportsInFile(filePath, oldName, newName);
         });
@@ -390,7 +343,7 @@ async function runCleanup() {
 }
 
 // Run the cleanup
-runCleanup().catch((err) => {
+runCleanup().catch(err => {
     log(`Error: ${err.message}`, 'error');
     console.error(err);
 });

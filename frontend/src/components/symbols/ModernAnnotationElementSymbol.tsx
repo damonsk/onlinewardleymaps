@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
-import { MapAnnotationTheme } from '../../constants/mapstyles';
-import { MapAnnotations } from '../../types/base';
+import React, {memo} from 'react';
+import {MapAnnotationTheme} from '../../constants/mapstyles';
+import {MapAnnotations} from '../../types/base';
 
 interface ModernAnnotationElementSymbolProps {
     id?: string;
@@ -14,9 +14,7 @@ interface ModernAnnotationElementSymbolProps {
  *
  * This component renders an annotation element number in a circle
  */
-const ModernAnnotationElementSymbol: React.FC<
-    ModernAnnotationElementSymbolProps
-> = ({ id, annotation, styles }) => {
+const ModernAnnotationElementSymbol: React.FC<ModernAnnotationElementSymbolProps> = ({id, annotation, styles}) => {
     return (
         <>
             <circle
@@ -39,8 +37,5 @@ const ModernAnnotationElementSymbol: React.FC<
 // Use memo with custom equality function for performance
 export default memo(ModernAnnotationElementSymbol, (prevProps, nextProps) => {
     // Only re-render when annotation number or styles change
-    return (
-        prevProps.annotation.number === nextProps.annotation.number &&
-        prevProps.styles === nextProps.styles
-    );
+    return prevProps.annotation.number === nextProps.annotation.number && prevProps.styles === nextProps.styles;
 });

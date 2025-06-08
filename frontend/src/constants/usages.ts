@@ -1,8 +1,4 @@
-import {
-    ComponentEvolvedIcon,
-    ComponentIcon,
-    InertiaIcon,
-} from '../components/symbols/icons';
+import {ComponentEvolvedIcon, ComponentIcon, InertiaIcon} from '../components/symbols/icons';
 
 interface Usage {
     title: string;
@@ -22,21 +18,14 @@ const usages: Usage[] = [
         Icon: ComponentIcon,
         title: 'To create a component',
         summary: 'component Name [Visibility (Y Axis), Maturity (X Axis)]',
-        examples: [
-            'component Customer [0.9, 0.5]',
-            'component Cup of Tea [0.9, 0.5]',
-        ],
+        examples: ['component Customer [0.9, 0.5]', 'component Cup of Tea [0.9, 0.5]'],
     },
     {
         toolbarButtonText: 'Inertia',
         Icon: InertiaIcon,
         title: 'Inertia - component likely to face resistance to change.',
-        summary:
-            'component Name [Visibility (Y Axis), Maturity (X Axis)] inertia',
-        examples: [
-            'component Customer [0.95, 0.5] inertia',
-            'component Cup of Tea [0.9, 0.5] inertia',
-        ],
+        summary: 'component Name [Visibility (Y Axis), Maturity (X Axis)] inertia',
+        examples: ['component Customer [0.95, 0.5] inertia', 'component Cup of Tea [0.9, 0.5] inertia'],
     },
     {
         Icon: ComponentEvolvedIcon,
@@ -64,13 +53,8 @@ const usages: Usage[] = [
         toolbarButtonText: 'Create Market',
         Icon: ComponentIcon,
         title: 'To create a market',
-        summary:
-            'component Name [Visibility (Y Axis), Maturity (X Axis)] (market)',
-        examples: [
-            'component Customer [0.9, 0.5] (market)',
-            'component Cup of Tea [0.9, 0.5] (market)',
-            'evolve Customer 0.9 (market)',
-        ],
+        summary: 'component Name [Visibility (Y Axis), Maturity (X Axis)] (market)',
+        examples: ['component Customer [0.9, 0.5] (market)', 'component Cup of Tea [0.9, 0.5] (market)', 'evolve Customer 0.9 (market)'],
     },
     {
         title: 'To set component as pipeline:',
@@ -90,15 +74,11 @@ const usages: Usage[] = [
     {
         title: 'To indicate flow - with label',
         summary: '',
-        examples: [
-            "Start Component+'insert text'>End Component",
-            "Hot Water+'$0.10'>Kettle",
-        ],
+        examples: ["Start Component+'insert text'>End Component", "Hot Water+'$0.10'>Kettle"],
     },
     {
         title: 'Pioneers, Settlers, Townplanners area',
-        summary:
-            'Add areas indicating which type of working approach supports component development',
+        summary: 'Add areas indicating which type of working approach supports component development',
         examples: [
             'pioneers [<visibility>, <maturity>, <visibility2>, <maturity2>]',
             'settlers [0.59, 0.43, 0.49, 0.63]',
@@ -107,8 +87,7 @@ const usages: Usage[] = [
     },
     {
         title: 'Build, buy, outsource components',
-        summary:
-            'Highlight a component with a build, buy, or outsource method of execution',
+        summary: 'Highlight a component with a build, buy, or outsource method of execution',
         examples: [
             'component Customer [0.9, 0.2] (buy)',
             'component Customer [0.9, 0.2] (build)',
@@ -120,8 +99,7 @@ const usages: Usage[] = [
     },
     {
         title: 'Link submap to a component',
-        summary:
-            'Add a reference link to a submap. A component becomes a link to another Wardley Map',
+        summary: 'Add a reference link to a submap. A component becomes a link to another Wardley Map',
         examples: [
             'submap Component [<visibility>, <maturity>] url(urlName)',
             'url urlName [URL]',
@@ -132,36 +110,22 @@ const usages: Usage[] = [
     {
         title: 'Stages of Evolution',
         summary: 'Change the stages of evolution labels on the map',
-        examples: [
-            'evolution First->Second->Third->Fourth',
-            'evolution Novel->Emerging->Good->Best',
-        ],
+        examples: ['evolution First->Second->Third->Fourth', 'evolution Novel->Emerging->Good->Best'],
     },
     {
         title: 'Add notes',
         summary: 'Add text to any part of the map',
-        examples: [
-            'note Note Text [0.9, 0.5]',
-            'note +future development [0.9, 0.5]',
-        ],
+        examples: ['note Note Text [0.9, 0.5]', 'note +future development [0.9, 0.5]'],
     },
     {
         title: 'Available styles',
         summary: 'Change the look and feel of a map',
-        examples: [
-            'style wardley',
-            'style handwritten',
-            'style colour',
-            'style dark',
-        ],
+        examples: ['style wardley', 'style handwritten', 'style colour', 'style dark'],
     },
     {
         title: 'Accelerator/Deaccelerator',
         summary: 'An attempt to alter the map',
-        examples: [
-            'accelerator foobar [0.1, 0.8]',
-            'deaccelerator barbaz [0.2, 0.7]',
-        ],
+        examples: ['accelerator foobar [0.1, 0.8]', 'deaccelerator barbaz [0.2, 0.7]'],
     },
 ];
 

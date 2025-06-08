@@ -1,7 +1,4 @@
-import {
-    IParseStrategy,
-    IProvideBaseStrategyRunnerConfig,
-} from '../types/base';
+import {IParseStrategy, IProvideBaseStrategyRunnerConfig} from '../types/base';
 import ExtendableComponentExtractionStrategy from './ExtendableComponentExtractionStrategy';
 
 export default class MarketExtractionStrategy implements IParseStrategy {
@@ -13,16 +10,12 @@ export default class MarketExtractionStrategy implements IParseStrategy {
         const config: IProvideBaseStrategyRunnerConfig = {
             keyword: 'market',
             containerName: 'markets',
-            defaultAttributes: { increaseLabelSpacing: 1 },
+            defaultAttributes: {increaseLabelSpacing: 1},
         };
         this.data = data;
         this.keyword = config.keyword;
         this.containerName = config.containerName;
-        this.parentStrategy = new ExtendableComponentExtractionStrategy(
-            data,
-            config,
-            [],
-        );
+        this.parentStrategy = new ExtendableComponentExtractionStrategy(data, config, []);
     }
 
     apply() {

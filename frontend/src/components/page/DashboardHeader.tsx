@@ -5,9 +5,7 @@ export interface DashboardHeaderProps {
     toggleMenu: any;
 }
 
-const DashboardHeader: React.FunctionComponent<DashboardHeaderProps> = ({
-    toggleMenu,
-}) => {
+const DashboardHeader: React.FunctionComponent<DashboardHeaderProps> = ({toggleMenu}) => {
     return <CoreHeader toggleMenu={toggleMenu} />;
 };
 
