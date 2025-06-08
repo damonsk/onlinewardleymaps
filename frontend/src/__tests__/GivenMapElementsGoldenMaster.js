@@ -49,7 +49,7 @@ describe('So that large refactors can be done without breaking output of mapElem
     });
 
     test('When getting merged elements, ensure output is as expected', function () {
-        const output = legacyAdapter.getMergedElements();        
+        const output = legacyAdapter.getMergedElements();
         testResultEquality(output, 'GoldenMasterMapElementsMergedElements.txt');
     });
 
@@ -59,7 +59,7 @@ describe('So that large refactors can be done without breaking output of mapElem
     });
 
     test('When getting evolve elements, ensure output is as expected', function () {
-        const output = legacyAdapter.getEvolveElements();    
+        const output = legacyAdapter.getEvolveElements();
         testResultEquality(output, 'GoldenMasterMapElementsEvolve.txt');
     });
 
@@ -76,8 +76,13 @@ describe('So that large refactors can be done without breaking output of mapElem
 
     test('When filtering out evolved and evolving elements, ensure output is as expected', function () {
         const mergedElements = legacyAdapter.getMergedElements();
-        const output = mergedElements.filter((el) => !el.evolved && !el.evolving);
-        testResultEquality(output, 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt');
+        const output = mergedElements.filter(
+            (el) => !el.evolved && !el.evolving,
+        );
+        testResultEquality(
+            output,
+            'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
+        );
     });
 
     test('When filtering out evolving elements, ensure output is as expected', function () {
@@ -91,7 +96,6 @@ function writeComparisonFile(output, originalFileName) {
     fs.writeFileSync(
         path.resolve(__dirname, fileName),
         JSON.stringify(output),
-        'utf-8'
+        'utf-8',
     );
 }
-

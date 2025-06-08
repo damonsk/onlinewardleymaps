@@ -2,17 +2,17 @@
 /* eslint-disable */
 /**
  * Conservative Code Cleanup Script for OnlineWardleyMaps Frontend
- * 
+ *
  * This script performs CONSERVATIVE cleanup of only verified unused code.
  * After the previous cleanup attempt, several files were incorrectly identified
  * as duplicates. This version is much more conservative and only targets files
  * that are definitely unused.
- * 
+ *
  * 🗂️  CLEANUP CATEGORIES (CONSERVATIVE):
  * - Legacy backup files (.bak files only)
  * - One-time fix scripts (migration scripts no longer needed)
  * - Verified duplicate type definitions
- * 
+ *
  * ⚠️  WHAT WE LEARNED:
  * - Many "interface duplicates" are actually in active use
  * - Constants/extractionFunctions.ts is heavily used (NOT a duplicate)
@@ -20,11 +20,11 @@
  * - XAxisLabelsExtractionStrategy is used by Converter
  * - ParseError, MapParseError, MapParseComponent are all required
  * - LinkStrategiesInterfaces is used by AllLinksStrategy
- * 
+ *
  * 🚀 USAGE:
  * 1. cd frontend
  * 2. node src/scripts/conservative-cleanup.js (test mode)
- * 3. Review output and archived files  
+ * 3. Review output and archived files
  * 4. Set TEST_MODE = false and run again for real cleanup
  * 5. Run build and tests to verify everything works
  */
@@ -60,7 +60,7 @@ function log(message, type = 'info') {
 let summary = {
     filesArchived: 0,
     filesSkipped: 0,
-    totalSize: 0
+    totalSize: 0,
 };
 
 // CONSERVATIVE cleanup targets - only files verified as truly unused
@@ -68,7 +68,7 @@ const cleanupTargets = {
     // Legacy backup files - these are definitely safe to remove
     backupFiles: [
         'setupTests.js.bak',
-        'extractionFunctions.ts.bak', 
+        'extractionFunctions.ts.bak',
         'MapElements.ts.bak',
         '__tests__/GivenAcceleratora.js.bak',
     ],
@@ -76,7 +76,7 @@ const cleanupTargets = {
     // One-time fix/migration scripts - these can be safely archived
     unusedScripts: [
         'scripts/fixAllLinkStrategies.js',
-        'scripts/updateLinkStrategies.js', 
+        'scripts/updateLinkStrategies.js',
         'scripts/fixDefensiveCoding.js',
         'scripts/fixRedundantOptionalChaining.js',
         'scripts/fixLintingIssues.js',
@@ -99,7 +99,7 @@ const cleanupTargets = {
 // Archive a file instead of deleting it
 function archiveFile(filePath) {
     const fullPath = path.join(baseDir, filePath);
-    
+
     if (!fs.existsSync(fullPath)) {
         log(`File not found: ${filePath}`, 'warning');
         summary.filesSkipped++;
@@ -118,7 +118,10 @@ function archiveFile(filePath) {
 
             fs.copyFileSync(fullPath, archivePath);
             fs.unlinkSync(fullPath);
-            log(`Archived: ${filePath} -> ${path.relative(baseDir, archivePath)}`, 'success');
+            log(
+                `Archived: ${filePath} -> ${path.relative(baseDir, archivePath)}`,
+                'success',
+            );
         } catch (error) {
             log(`Error archiving ${filePath}: ${error.message}`, 'error');
             summary.filesSkipped++;
@@ -132,9 +135,12 @@ function archiveFile(filePath) {
         } catch (e) {
             // File might not exist
         }
-        log(`Would archive: ${filePath} -> ${path.relative(baseDir, archivePath)}`, 'info');
+        log(
+            `Would archive: ${filePath} -> ${path.relative(baseDir, archivePath)}`,
+            'info',
+        );
     }
-    
+
     summary.filesArchived++;
     return true;
 }
@@ -145,35 +151,50 @@ async function runConservativeCleanup() {
     log(`📁 Base directory: ${baseDir}`, 'info');
     log(`📦 Archive directory: ${archiveDir}`, 'info');
     log('', 'info');
-    
-    log('⚠️  CONSERVATIVE MODE - Only cleaning verified unused files', 'warning');
+
+    log(
+        '⚠️  CONSERVATIVE MODE - Only cleaning verified unused files',
+        'warning',
+    );
     log('', 'info');
 
     // Process each category
     for (const [category, files] of Object.entries(cleanupTargets)) {
         if (files.length === 0) continue;
-        
+
         log(`🗂️  Processing ${category}:`, 'header');
-        
+
         for (const file of files) {
             archiveFile(file);
         }
-        
+
         log('', 'info');
     }
 
     // Print summary
     log('📊 CLEANUP SUMMARY', 'header');
-    log(`Files processed: ${summary.filesArchived + summary.filesSkipped}`, 'info');
+    log(
+        `Files processed: ${summary.filesArchived + summary.filesSkipped}`,
+        'info',
+    );
     log(`Files archived: ${summary.filesArchived}`, 'success');
     log(`Files skipped: ${summary.filesSkipped}`, 'warning');
-    log(`Total size cleaned: ${(summary.totalSize / 1024).toFixed(2)} KB`, 'info');
+    log(
+        `Total size cleaned: ${(summary.totalSize / 1024).toFixed(2)} KB`,
+        'info',
+    );
     log('', 'info');
 
     if (TEST_MODE) {
         log('🔍 TEST MODE ENABLED', 'warning');
-        log('No files were actually modified. Set TEST_MODE = false to run cleanup.', 'warning');
-        log('This conservative version only targets verified unused files.', 'info');
+        log(
+            'No files were actually modified. Set TEST_MODE = false to run cleanup.',
+            'warning',
+        );
+        log(
+            'This conservative version only targets verified unused files.',
+            'info',
+        );
     } else {
         log('✅ CONSERVATIVE CLEANUP COMPLETE', 'success');
         log('Only verified unused files have been archived.', 'success');
@@ -193,7 +214,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // Run the cleanup
-runConservativeCleanup().catch(err => {
+runConservativeCleanup().catch((err) => {
     log(`💥 Error: ${err.message}`, 'error');
     console.error(err);
     process.exit(1);

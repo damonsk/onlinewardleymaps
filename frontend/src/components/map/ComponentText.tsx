@@ -178,37 +178,92 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         </foreignObject>
     );
 
+    // Function to handle label dragging and update map text
+    function endDrag(moved: MovedPosition): void {
+        // If we have a specific onLabelMove handler (e.g., for pipeline components), use it
+        if (onLabelMove) {
+            const adjustedMoved = component.pipeline
+                ? {
+                      x: Math.round(moved.x),
+                      y: Math.round(moved.y),
+                  }
+                : moved;
+            onLabelMove(adjustedMoved);
+            return;
+        }
+
+        // Otherwise, handle the label update directly in the map text
+        if (!mutateMapText || !mapText || !component.line) {
+            console.warn(
+                'Cannot update label position: missing required props',
+            );
+            return;
+        }
+
+        const getLabelText = (x: number, y: number): string =>
+            ` label [${parseFloat(x.toString()).toFixed(2)}, ${y}]`;
+
+        const processEvolvedLine = (
+            line: string,
+            normalizedLine: string,
+        ): string => {
+            const evolveBase = 'evolve' + component.name.replace(/\s/g, '');
+            const evolveOverride =
+                component.override?.length && component.override.length > 0
+                    ? '->' + component.override.replace(/\s/g, '')
+                    : '';
+            const evolveText =
+                evolveBase + evolveOverride + (component.maturity || '');
+
+            if (normalizedLine.indexOf(evolveText) === 0) {
+                if (normalizedLine.indexOf('label[') > -1) {
+                    return line.replace(
+                        /\slabel\s\[(.?|.+?)\]+/g,
+                        getLabelText(moved.x, moved.y),
+                    );
+                }
+                return line.trim() + getLabelText(moved.x, moved.y);
+            }
+            return line;
+        };
+
+        const processNormalLine = (
+            line: string,
+            normalizedLine: string,
+        ): string => {
+            const baseText =
+                (component.type || '') + component.name.replace(/\s/g, '');
+            const searchText = baseText + '[';
+
+            if (normalizedLine.indexOf(searchText) === 0) {
+                if (normalizedLine.indexOf('label[') > -1) {
+                    return line.replace(
+                        /\slabel\s\[(.?|.+?)\]+/g,
+                        getLabelText(moved.x, moved.y),
+                    );
+                }
+                return line.trim() + getLabelText(moved.x, moved.y);
+            }
+            return line;
+        };
+
+        const processLine = (line: string): string => {
+            const normalizedLine = line.replace(/\s/g, '');
+            return component.evolved
+                ? processEvolvedLine(line, normalizedLine)
+                : processNormalLine(line, normalizedLine);
+        };
+
+        mutateMapText(mapText.split('\n').map(processLine).join('\n'));
+    }
+
     const renderText = () => (
         <RelativeMovable
             id={`${component.id}-text-movable`}
             x={getX()}
             y={getY()}
             scaleFactor={scaleFactor} // Pass scale factor to RelativeMovable
-            onMove={(moved) => {
-                // Log the move action to help debug
-                console.log('Label move:', {
-                    component: component.name,
-                    moved,
-                    currentLabelPos: { x: getX(), y: getY() },
-                    isPipelineComponent: component.pipeline,
-                    scaleFactor,
-                });
-
-                // For pipeline components, we need to ensure we're passing relative offsets
-                // rather than absolute positions
-                const adjustedMoved = component.pipeline
-                    ? {
-                          // For pipeline components, we want relative positions from the component
-                          x: Math.round(moved.x),
-                          y: Math.round(moved.y),
-                      }
-                    : moved;
-
-                // Call the passed onLabelMove handler if available
-                if (onLabelMove) {
-                    onLabelMove(adjustedMoved);
-                }
-            }}
+            onMove={endDrag}
         >
             <ComponentTextSymbol
                 id={`${component.id}-text`}

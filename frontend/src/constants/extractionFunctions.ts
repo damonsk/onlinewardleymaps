@@ -471,8 +471,9 @@ const marketDecorator = (
     let parentAttributes = {};
     if (
         (element.indexOf('market') > -1 &&
-        element.indexOf('(') < element.indexOf('market') &&
-        element.indexOf(')') > element.indexOf('market')) || (element.indexOf('market') === 0)
+            element.indexOf('(') < element.indexOf('market') &&
+            element.indexOf(')') > element.indexOf('market')) ||
+        element.indexOf('market') === 0
     ) {
         decs = { market: true };
         parentAttributes = { increaseLabelSpacing: 2 };
@@ -491,8 +492,9 @@ const ecosystemDecorator = (
     let parentAttributes = {};
     if (
         (element.indexOf('ecosystem') > -1 &&
-        element.indexOf('(') < element.indexOf('ecosystem') &&
-        element.indexOf(')') > element.indexOf('ecosystem') ) || (element.indexOf('ecosystem') === 0)
+            element.indexOf('(') < element.indexOf('ecosystem') &&
+            element.indexOf(')') > element.indexOf('ecosystem')) ||
+        element.indexOf('ecosystem') === 0
     ) {
         decs = { ecosystem: true };
         parentAttributes = { increaseLabelSpacing: 3 };
