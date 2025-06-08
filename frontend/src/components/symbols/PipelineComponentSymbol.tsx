@@ -1,6 +1,6 @@
-import React, {memo} from 'react';
-import {MapComponentTheme} from '../../constants/mapstyles';
-import {UnifiedComponent} from '../../types/unified';
+import React, { memo, MouseEvent } from 'react';
+import { MapComponentTheme } from '../../constants/mapstyles';
+import { UnifiedComponent } from '../../types/unified';
 
 /**
  * PipelineComponentSymbol Props - using unified type system directly
@@ -12,7 +12,7 @@ interface ModernPipelineComponentSymbolProps {
     y?: string;
     width?: string;
     height?: string;
-    onClick?: () => void;
+    onClick?: (e: MouseEvent<SVGElement>) => void;
     styles: MapComponentTheme;
     component?: UnifiedComponent; // Direct reference to UnifiedComponent
 }

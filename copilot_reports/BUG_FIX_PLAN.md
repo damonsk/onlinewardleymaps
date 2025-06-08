@@ -36,7 +36,7 @@ This document outlines the plan for addressing the issues listed in "things to f
 - Add proper highlighting for evolution labels
 - Test with various syntax patterns
 
-### 5. Moveable Annotations Positioning Bug
+### 5. Moveable Annotations Positioning Bug [FIXED]
 **Problem:** Moveable annotations with many coordinates sets both to the same moved position
 **Plan:**
 - Identify which annotation is being moved
@@ -70,7 +70,7 @@ This document outlines the plan for addressing the issues listed in "things to f
 - Verify background styling and positioning
 - Test with different background configurations
 
-### 9. Method Label Dragging Issues
+### 9. Method Label Dragging Issues [FIXED]
 **Problem:** Dragging method label seems to use increaseLabelSpacing when updating the mapText, the further away the label is moved, the updated coords are exponentially bigger, which is why we assume the multiplier of increaseLabelSpacing is causing this.
 **Plan:**
 - Review label movement calculation logic

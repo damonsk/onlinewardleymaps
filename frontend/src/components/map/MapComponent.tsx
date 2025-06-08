@@ -125,7 +125,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 fixedY={component.evolved}
                 fixedX={false}
                 shouldShowMoving={true}
-                isModKeyPressed={isModKeyPressed}
+                isModKeyPressed={component.evolved ? false : isModKeyPressed}
                 scaleFactor={scaleFactor}>
                 <g id={component.id} onClick={handleClick} style={{cursor: 'pointer'}}>
                     {children}

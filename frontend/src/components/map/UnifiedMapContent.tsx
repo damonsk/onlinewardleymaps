@@ -1,11 +1,11 @@
-import React, {MouseEvent} from 'react';
-import {MapDimensions} from '../../constants/defaults';
-import {MapElements} from '../../processing/MapElements';
-import {MapTheme} from '../../types/map/styles';
-import {UnifiedComponent} from '../../types/unified';
+import React, { MouseEvent } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapElements } from '../../processing/MapElements';
+import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
 
 // Import required components
-import {processMapElements} from '../../utils/mapProcessing';
+import { processMapElements } from '../../utils/mapProcessing';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
@@ -309,10 +309,10 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                     id={`element_square_${el.id}`}
                                     styles={mapStyleDefs.component}
                                     component={el}
-                                    onClick={() =>
+                                    onClick={(e) =>
                                         clicked({
                                             el: passComponent(el),
-                                            e: null,
+                                            e: e,
                                         })
                                     }
                                 />
