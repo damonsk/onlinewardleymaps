@@ -1,84 +1,90 @@
-const fs = require('fs');
-const path = require('path');
-import MapElements from '../MapElements';
-import Converter from '../conversion/Converter';
-import { useContext } from 'react';
+import fs from 'fs';
+import path from 'path';
+import {useContext} from 'react';
+import {UnifiedConverter} from '../conversion/UnifiedConverter';
+import {MapElements} from '../processing/MapElements';
 
 jest.mock('react', () => ({
-	...jest.requireActual('react'),
-	useContext: jest.fn(),
+    ...jest.requireActual('react'),
+    useContext: jest.fn(),
 }));
 
 useContext.mockReturnValue({
-	enableDashboard: false,
-	enableNewPipelines: true,
-	enableLinkContext: true,
-	enableAccelerators: true,
-	enableDoubleClickRename: true,
+    enableDashboard: false,
+    enableNewPipelines: true,
+    enableLinkContext: true,
+    enableAccelerators: true,
+    enableDoubleClickRename: true,
 });
 
-// Function to load the content of a file
 function loadFileContent(fileName) {
-	const filePath = path.resolve(__dirname, fileName);
-	return fs.readFileSync(filePath, 'utf-8');
+    const filePath = path.resolve(__dirname, fileName);
+    return fs.readFileSync(filePath, 'utf-8');
 }
 
-// Reusable function to compare results
 function testResultEquality(result, fileName) {
-	const outputFileContent = loadFileContent(fileName);
-	// console.log(JSON.stringify(result));  // Uncomment for debugging
-	expect(JSON.stringify(result)).toBe(outputFileContent);
+    writeComparisonFile(result, fileName);
+    const outputFileContent = loadFileContent(fileName);
+    const expectedObject = JSON.parse(outputFileContent);
+    expect(result).toEqual(expectedObject);
 }
 
 describe('So that large refactors can be done without breaking output of mapElements', function () {
-	const mockContextValue = useContext();
+    const mockContextValue = useContext();
+    let result;
+    let legacyAdapter;
 
-	test('When all possible map components are specified, ensure the output is as expected', function () {
-		const fileName = 'GoldenMasterMapText.txt';
-		const fileContent = loadFileContent(fileName);
+    beforeEach(() => {
+        const fileName = 'GoldenMasterMapText.txt';
+        const fileContent = loadFileContent(fileName);
+        result = new UnifiedConverter(mockContextValue).parse(fileContent);
+        const me = new MapElements(result);
+        legacyAdapter = me.getLegacyAdapter();
+    });
 
-		let result = new Converter(mockContextValue).parse(fileContent);
-		//console.log(JSON.stringify(result)); // Uncomment for debugging
-		testResultEquality(result, 'GoldenMasterConverterOutput.txt');
+    test('When parsing map text, ensure converter output is as expected', function () {
+        testResultEquality(result, 'GoldenMasterConverterOutput.txt');
+    });
 
-		const mergeables = [{ collection: result.elements, type: 'component' }];
-		const me = new MapElements(mergeables, result.evolved, result.pipelines);
+    test('When getting merged elements, ensure output is as expected', function () {
+        const output = legacyAdapter.getMergedElements();
+        testResultEquality(output, 'GoldenMasterMapElementsMergedElements.txt');
+    });
 
-		const testCases = [
-			{
-				fn: () => me.getMergedElements(),
-				fileName: 'GoldenMasterMapElementsMergedElements.txt',
-			},
-			{
-				fn: () => me.getMapPipelines(),
-				fileName: 'GoldenMasterMapElementsPipeline.txt',
-			},
-			{
-				fn: () => me.getEvolveElements(),
-				fileName: 'GoldenMasterMapElementsEvolve.txt',
-			},
-			{
-				fn: () => me.getEvolvedElements(),
-				fileName: 'GoldenMasterMapElementsEvolved.txt',
-			},
-			{
-				fn: () => me.getNonEvolvedElements(),
-				fileName: 'GoldenMasterMapElementsNonEvolved.txt',
-			},
-			{
-				fn: () => me.getNoneEvolvedOrEvolvingElements(),
-				fileName: 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt',
-			},
-			{
-				fn: () => me.getNoneEvolvingElements(),
-				fileName: 'GoldenMasterGetNoneEvolvingElements.txt',
-			},
-		];
+    test('When getting map pipelines, ensure output is as expected', function () {
+        const output = legacyAdapter.getMapPipelines();
+        testResultEquality(output, 'GoldenMasterMapElementsPipeline.txt');
+    });
 
-		testCases.forEach((testCase) => {
-			const { fn, fileName } = testCase;
-			// console.log(testCase);
-			testResultEquality(fn(), fileName);
-		});
-	});
+    test('When getting evolve elements, ensure output is as expected', function () {
+        const output = legacyAdapter.getEvolveElements();
+        testResultEquality(output, 'GoldenMasterMapElementsEvolve.txt');
+    });
+
+    test('When getting evolved elements, ensure output is as expected', function () {
+        const output = legacyAdapter.getEvolvedElements();
+        testResultEquality(output, 'GoldenMasterMapElementsEvolved.txt');
+    });
+
+    test('When filtering out evolved elements, ensure output is as expected', function () {
+        const mergedElements = legacyAdapter.getMergedElements();
+        const output = mergedElements.filter(el => !el.evolved);
+        testResultEquality(output, 'GoldenMasterMapElementsNonEvolved.txt');
+    });
+
+    test('When filtering out evolved and evolving elements, ensure output is as expected', function () {
+        const mergedElements = legacyAdapter.getMergedElements();
+        const output = mergedElements.filter(el => !el.evolved && !el.evolving);
+        testResultEquality(output, 'GoldenMasterGetNoneEvolvedOrEvolvingElements.txt');
+    });
+
+    test('When filtering out evolving elements, ensure output is as expected', function () {
+        const mergedElements = legacyAdapter.getMergedElements();
+        const output = mergedElements.filter(el => !el.evolving);
+        testResultEquality(output, 'GoldenMasterGetNoneEvolvingElements.txt');
+    });
 });
+function writeComparisonFile(output, originalFileName) {
+    const fileName = originalFileName.replace('.txt', '_new.txt');
+    fs.writeFileSync(path.resolve(__dirname, fileName), JSON.stringify(output), 'utf-8');
+}

@@ -10,7 +10,7 @@ docs/Gemfile.lock
 wmlandscape/package-lock.json
 docs/.jekyll-metadata
 .next/
-
+.scannerwork/
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*

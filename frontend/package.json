@@ -1,97 +1,120 @@
 {
-	"name": "online-wardley-maps",
-	"version": "1.117.0",
-	"main": "index.js",
-	"license": "MIT",
-	"devDependencies": {
-		"@babel/core": "7.26.0",
-		"@babel/eslint-parser": "^7.25.9",
-		"@babel/preset-env": "7.26.0",
-		"@babel/preset-react": "7.25.9",
-		"@next/eslint-plugin-next": "14.2.16",
-		"@testing-library/jest-dom": "^6.1.6",
-		"@types/node": "20.10.5",
-		"@types/react": "18.2.45",
-		"babel-plugin-require-context-hook": "^1.0.0",
-		"eslint": "^8.56.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-jsx": "^0.1.0",
-		"eslint-plugin-prettier": "^5.1.2",
-		"eslint-plugin-react": "^7.33.2",
-		"husky": "^8.0.3",
-		"lint-staged": "^15.2.0",
-		"prettier": "^3.1.1",
-		"pretty-quick": "^3.1.3",
-		"rollup": "^4.9.1",
-		"typescript": "5.6.3"
-	},
-	"env": {
-		"browser": true,
-		"node": true,
-		"es6": true,
-		"jest": true
-	},
-	"build": {
-		"directories": {
-			"output": "release/"
-		}
-	},
-	"resolutions": {
-		"//": "See https://github.com/facebook/create-react-app/issues/11773",
-		"react-error-overlay": "6.0.9"
-	},
-	"dependencies": {
-		"@emotion/react": "^11.13.3",
-		"@emotion/styled": "^11.13.0",
-		"@mui/icons-material": "^5.16.7",
-		"@mui/material": "5.16.7",
-		"@mui/styles": "5.16.7",
-		"ace-builds": "^1.36.3",
-		"core-js": "^3.39.0",
-		"html2canvas": "^1.4.1",
-		"lodash.merge": "^4.6.2",
-		"next": "14.2.16",
-		"prop-types": "^15.8.1",
-		"react": "18.3.1",
-		"react-ace": "^12.0.0",
-		"react-dom": "18.3.1",
-		"react-svg-pan-zoom": "^3.13.1",
-		"sass": "^1.80.5",
-		"styled-components": "6.1.13"
-	},
-	"lint-staged": {
-		"*.{js,jsx}": [
-			"yarn run format-staged",
-			"yarn run elint frontend/ --fix",
-			"git add"
-		]
-	},
-	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
-		"lint": "eslint .",
-		"format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
-		"precommit": "yarn run format-staged && yarn test",
-		"package": "rollup -c",
-		"test": "jest --env=jsdom",
-		"test:watch": "jest --watchAll --env=jsdom"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	}
+    "name": "online-wardley-maps",
+    "version": "1.117.0",
+    "main": "index.js",
+    "license": "MIT",
+    "devDependencies": {
+        "@babel/core": "^7.24.3",
+        "@babel/preset-env": "^7.24.3",
+        "@babel/preset-react": "^7.24.1",
+        "@babel/preset-typescript": "^7.24.1",
+        "@next/eslint-plugin-next": "15.3.2",
+        "@testing-library/jest-dom": "^6.4.2",
+        "@types/babel__core": "^7.20.5",
+        "@types/babel__preset-env": "^7.10.0",
+        "@types/cookie": "^0.6.0",
+        "@types/jest": "^29.5.14",
+        "@types/lodash": "^4.17.0",
+        "@types/lodash.merge": "^4.6.9",
+        "@types/node": "20.11.30",
+        "@types/react": "^18.2.67",
+        "@types/react-dom": "^18.2.22",
+        "@types/react-svg-pan-zoom": "^3.3.9",
+        "@typescript-eslint/eslint-plugin": "^8.33.1",
+        "@typescript-eslint/parser": "^8.33.1",
+        "babel-jest": "^29.7.0",
+        "babel-plugin-require-context-hook": "^1.0.0",
+        "eslint": "^8.57.0",
+        "eslint-config-next": "15.3.2",
+        "eslint-config-prettier": "^10.1.5",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsx": "^0.1.0",
+        "eslint-plugin-n": "^16.6.2",
+        "eslint-plugin-prettier": "^5.1.3",
+        "eslint-plugin-promise": "^6.1.1",
+        "eslint-plugin-react": "^7.34.1",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.2",
+        "prettier": "^3.2.5",
+        "rollup": "^4.13.0",
+        "sonarqube-scanner": "^4.3.0",
+        "typescript": "^5.4.3"
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "jest": true
+    },
+    "build": {
+        "directories": {
+            "output": "release/"
+        }
+    },
+    "resolutions": {
+        "react-error-overlay": "6.0.9",
+        "@types/react": "^18.2.67",
+        "@types/react-dom": "^18.2.22"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.0",
+        "@mui/icons-material": "^7.1.1",
+        "@mui/material": "^6.4.11",
+        "@mui/styles": "^6.4.11",
+        "ace-builds": "^1.32.7",
+        "core-js": "^3.36.1",
+        "html2canvas": "^1.4.1",
+        "lodash.merge": "^4.6.2",
+        "next": "15.3.2",
+        "prop-types": "^15.8.1",
+        "react": "^18.2.0",
+        "react-ace": "^13.0.0",
+        "react-dom": "^18.2.0",
+        "react-svg-pan-zoom": "^3.13.1",
+        "sass": "1.80.6",
+        "styled-components": "6.1.8"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "yarn run lint",
+            "git add"
+        ]
+    },
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "node scripts/lint-with-progress.js --fix",
+        "lint:check": "node scripts/lint-with-progress.js",
+        "lint:simple": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+        "lint:watch": "node scripts/lint-watch.js",
+        "lint:verbose": "echo '🔧 Running ESLint with detailed output...' && eslint . --ext .js,.jsx,.ts,.tsx --fix --format=stylish --debug && echo '✅ ESLint completed!'",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
+        "precommit": "yarn run format-staged && yarn test",
+        "package": "rollup -c",
+        "test": "jest --env=jsdom",
+        "test:watch": "jest --watchAll --env=jsdom",
+        "sonar": "node sonar-project.js"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "packageManager": "yarn@4.9.2"
 }

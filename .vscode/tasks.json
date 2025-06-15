@@ -5,53 +5,172 @@
 			"label": "clean",
 			"type": "shell",
 			"command": "rm",
+			"detail": "Remove node_modules, yarn.lock, and .next",
 			"args": [
 				"-rf",
 				"${workspaceFolder}/frontend/node_modules/",
 				"${workspaceFolder}/frontend/yarn.lock",
-				"${workspaceFolder}/frontend/.next/",
+				"${workspaceFolder}/frontend/.next/"
 			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"group": "build",
 			"presentation": {
 				"reveal": "always"
 			},
 			"problemMatcher": []
 		},
 		{
-			"type": "npm",
-			"script": "dev",
-			"path": "frontend",
-			"problemMatcher": [],
+			"type": "shell",
 			"label": "dev - frontend",
-			"detail": "next dev",
+			"command": "yarn",
+			"args": [
+				"dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": [],
+			"detail": "yarn dev",
+			"group": "build"
+		},
+		{
+			"type": "shell",
+			"label": "build - frontend",
+			"command": "yarn",
+			"args": [
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": [],
+			"detail": "yarn build",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			}
 		},
 		{
-			"type": "npm",
-			"script": "build",
-			"path": "frontend",
+			"type": "shell",
+			"label": "lint - frontend",
+			"command": "yarn",
+			"args": [
+				"lint"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "🔧 yarn lint - ESLint with auto-fix and progress",
 			"group": "build",
-			"problemMatcher": [],
-			"label": "build - frontend",
-			"detail": "next build"
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
 		},
 		{
-			"type": "npm",
-			"script": "test:watch",
-			"path": "frontend",
+			"type": "shell",
+			"label": "lint:check - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:check"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "🔍 yarn lint:check - ESLint check-only with progress",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:simple - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:simple"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "⚡ yarn lint:simple - ESLint without progress indicators",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:verbose - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:verbose"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "🔬 yarn lint:verbose - ESLint with detailed debug output",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "lint:watch - frontend",
+			"command": "yarn",
+			"args": [
+				"lint:watch"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
+			"problemMatcher": ["$eslint-stylish"],
+			"detail": "👀 yarn lint:watch - ESLint file watcher with auto-fix",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"clear": true
+			},
+			"isBackground": true,
+			"runOptions": {
+				"runOn": "default"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "test - frontend",
+			"command": "yarn",
+			"args": [
+				"test:watch"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/frontend"
+			},
 			"group": {
 				"kind": "test",
 				"isDefault": true
 			},
 			"problemMatcher": [],
-			"label": "test - frontend",
-			"detail": "jest --watchAll --env=jsdom"
+			"detail": "yarn test:watch"
 		}
 	]
 }

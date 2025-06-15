@@ -5,11 +5,11 @@ import MapGrid from '../../src/components/map/foundation/MapGrid';
 import DefaultPositionUpdater from '../../src/components/map/positionUpdaters/DefaultPositionUpdater';
 import { ExistingCoordsMatcher } from '../../src/components/map/positionUpdaters/ExistingCoordsMatcher';
 import { ExistingManyCoordsMatcher } from '../../src/components/map/positionUpdaters/ExistingManyCoordsMatcher';
+import { ExistingMaturityMatcher } from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
 import { ExistingSingleCoordMatcher } from '../../src/components/map/positionUpdaters/ExistingSingleCoordMatcher';
 import LineNumberPositionUpdater from '../../src/components/map/positionUpdaters/LineNumberPositionUpdater';
 import { NotDefinedCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedCoordsMatcher';
 import { NotDefinedManyCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedManyCoordsMatcher';
-import { ExistingMaturityMatcher } from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
 import { NotDefinedMaturityMatcher } from '../../src/components/map/positionUpdaters/NotDefinedMaturityMatcher';
 import SingletonPositionUpdater from '../../src/components/map/positionUpdaters/SingletonPositionUpdater';
 
@@ -22,9 +22,9 @@ import ComponentText from '../../src/components/map/ComponentText';
 import EvolvingComponentLink from '../../src/components/map/EvolvingComponentLink';
 import FlowText from '../../src/components/map/FlowText';
 import Inertia from '../../src/components/map/Inertia';
-import MapCanvas from '../../src/components/map/MapCanvas';
+import MapCanvas from '../../src/components/map/UnifiedMapCanvas';
 import MapComponent from '../../src/components/map/MapComponent';
-import MapView from '../../src/components/map/MapView';
+import { MapView } from '../../src/components/map/MapView';
 import MethodElement from '../../src/components/map/MethodElement';
 import Movable from '../../src/components/map/Movable';
 import Note from '../../src/components/map/Note';
@@ -39,12 +39,7 @@ import AttitudeSymbol from '../../src/components/symbols/AttitudeSymbol';
 import ComponentSymbol from '../../src/components/symbols/ComponentSymbol';
 import ComponentTextSymbol from '../../src/components/symbols/ComponentTextSymbol';
 import EcosystemSymbol from '../../src/components/symbols/EcosystemSymbol';
-import {
-	SVGWrapper,
-	ComponentIcon,
-	ComponentEvolvedIcon,
-	InertiaIcon,
-} from '../../src/components/symbols/icons';
+import { ComponentEvolvedIcon, ComponentIcon, InertiaIcon, SVGWrapper } from '../../src/components/symbols/icons';
 import InertiaSymbol from '../../src/components/symbols/InertiaSymbol';
 import LinkSymbol from '../../src/components/symbols/LinkSymbol';
 import MarketSymbol from '../../src/components/symbols/MarketSymbol';
@@ -54,10 +49,17 @@ import PipelineComponentSymbol from '../../src/components/symbols/PipelineCompon
 import SubMapSymbol from '../../src/components/symbols/SubMapSymbol';
 import * as Defaults from '../../src/constants/defaults';
 import * as EditorPrefixes from '../../src/constants/editorPrefixes';
+import * as FeatureSwitches from '../../src/constants/featureswitches';
 import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
-import * as FeatureSwitches from '../../src/constants/featureswitches';
 
+import QuickAdd from '../../src/components/actions/QuickAdd';
+import { FeatureSwitchesProvider, useFeatureSwitches } from '../../src/components/FeatureSwitchesContext';
+import { ModKeyPressedProvider, useModKeyPressedConsumer } from '../../src/components/KeyPressContext';
+import FluidLink from '../../src/components/map/FluidLink';
+import MapAccelerator from '../../src/components/map/MapAccelerator';
+import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
+import AcceleratorExtractionStrategy from '../../src/conversion/AcceleratorExtractionStrategy';
 import AnchorExtractionStrategy from '../../src/conversion/AnchorExtractionStrategy';
 import AnnotationExtractionStrategy from '../../src/conversion/AnnotationExtractionStrategy';
 import AttitudeExtractionStrategy from '../../src/conversion/AttitudeExtractionStrategy';
@@ -90,119 +92,105 @@ import EvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingEndLinksS
 import EvolvingToEvolvingLinksStrategy from '../../src/linkStrategies/EvolvingToEvolvingLinksStrategy';
 import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingToNoneEvolvingEndLinksStrategy';
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
-import MapElements from '../../src/MapElements';
-import MetaPositioner from '../../src/MetaPositioner';
-import FluidLink from '../../src/components/map/FluidLink';
-import {
-	ModKeyPressedProvider,
-	useModKeyPressedConsumer,
-} from '../../src/components/KeyPressContext';
-import QuickAdd from '../../src/components/actions/QuickAdd';
-import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
-import AcceleratorExtractionStrategy from '../../src/conversion/AcceleratorExtractionStrategy';
-import MapAccelerator from '../../src/components/map/MapAccelerator';
-import {
-	FeatureSwitchesProvider,
-	useFeatureSwitches,
-} from '../../src/components/FeatureSwitchesContext';
+import { MapElements } from '../../src/processing/MapElements';
 export {
-	MapBackground,
-	MapEvolution,
-	MapGraphics,
-	MapGrid,
-	DefaultPositionUpdater,
-	ExistingCoordsMatcher,
-	ExistingManyCoordsMatcher,
-	ExistingSingleCoordMatcher,
-	LineNumberPositionUpdater,
-	NotDefinedCoordsMatcher,
-	NotDefinedManyCoordsMatcher,
-	ExistingMaturityMatcher,
-	NotDefinedMaturityMatcher,
-	SingletonPositionUpdater,
-	Anchor,
-	AnnotationBox,
-	AnnotationElement,
-	Attitude,
-	ComponentLink,
-	ComponentText,
-	EvolvingComponentLink,
-	FlowText,
-	Inertia,
-	MapCanvas,
-	MapComponent,
-	MapView,
-	MethodElement,
-	Movable,
-	Note,
-	Pipeline,
-	PositionCalculator,
-	RelativeMovable,
-	AccelerateSymbol,
-	AnnotationBoxSymbol,
-	AnnotationElementSymbol,
-	AnnotationTextSymbol,
-	AttitudeSymbol,
-	ComponentSymbol,
-	ComponentTextSymbol,
-	EcosystemSymbol,
-	SVGWrapper,
-	ComponentIcon,
-	ComponentEvolvedIcon,
-	InertiaIcon,
-	InertiaSymbol,
-	LinkSymbol,
-	MarketSymbol,
-	MethodSymbol,
-	PipelineBoxSymbol,
-	PipelineComponentSymbol,
-	SubMapSymbol,
-	Defaults,
-	EditorPrefixes,
-	MapStyles,
-	Usages,
-	FeatureSwitches,
-	AnchorExtractionStrategy,
-	AnnotationExtractionStrategy,
-	AttitudeExtractionStrategy,
-	BaseStrategyRunner,
-	ComponentExtractionStrategy,
-	Converter,
-	EcosystemExtractionStrategy,
-	EvolveExtractionStrategy,
-	ExtendableComponentExtractionStrategy,
-	LinksExtractionStrategy,
-	MarketExtractionStrategy,
-	MethodExtractionStrategy,
-	NoteExtractionStrategy,
-	ParseError,
-	PipelineExtractionStrategy,
-	PipelineStrategyRunner,
-	PresentationExtractionStrategy,
-	SubMapExtractionStrategy,
-	TitleExtractionStrategy,
-	UrlExtractionStrategy,
-	XAxisLabelsExtractionStrategy,
-	AllLinksStrategy,
-	AnchorLinksStrategy,
-	AnchorNoneEvolvedLinksStrategy,
-	BothEvolvedLinksStrategy,
-	EvolvedToEvolvingLinksStrategy,
-	EvolvedToNoneEvolvingLinksStrategy,
-	EvolveToEvolvedLinksStrategy,
-	EvolvingEndLinksStrategy,
-	EvolvingToEvolvingLinksStrategy,
-	EvolvingToNoneEvolvingEndLinksStrategy,
-	LinksBuilder,
-	MapElements,
-	MetaPositioner,
-	FluidLink,
-	ModKeyPressedProvider,
-	useModKeyPressedConsumer,
-	FeatureSwitchesProvider,
-	useFeatureSwitches,
-	QuickAdd,
-	PipelineVersion2,
-	AcceleratorExtractionStrategy,
-	MapAccelerator,
+    AccelerateSymbol,
+    AcceleratorExtractionStrategy,
+    AllLinksStrategy,
+    Anchor,
+    AnchorExtractionStrategy,
+    AnchorLinksStrategy,
+    AnchorNoneEvolvedLinksStrategy,
+    AnnotationBox,
+    AnnotationBoxSymbol,
+    AnnotationElement,
+    AnnotationElementSymbol,
+    AnnotationExtractionStrategy,
+    AnnotationTextSymbol,
+    Attitude,
+    AttitudeExtractionStrategy,
+    AttitudeSymbol,
+    BaseStrategyRunner,
+    BothEvolvedLinksStrategy,
+    ComponentEvolvedIcon,
+    ComponentExtractionStrategy,
+    ComponentIcon,
+    ComponentLink,
+    ComponentSymbol,
+    ComponentText,
+    ComponentTextSymbol,
+    Converter,
+    DefaultPositionUpdater,
+    Defaults,
+    EcosystemExtractionStrategy,
+    EcosystemSymbol,
+    EditorPrefixes,
+    EvolvedToEvolvingLinksStrategy,
+    EvolvedToNoneEvolvingLinksStrategy,
+    EvolveExtractionStrategy,
+    EvolveToEvolvedLinksStrategy,
+    EvolvingComponentLink,
+    EvolvingEndLinksStrategy,
+    EvolvingToEvolvingLinksStrategy,
+    EvolvingToNoneEvolvingEndLinksStrategy,
+    ExistingCoordsMatcher,
+    ExistingManyCoordsMatcher,
+    ExistingMaturityMatcher,
+    ExistingSingleCoordMatcher,
+    ExtendableComponentExtractionStrategy,
+    FeatureSwitches,
+    FeatureSwitchesProvider,
+    FlowText,
+    FluidLink,
+    Inertia,
+    InertiaIcon,
+    InertiaSymbol,
+    LineNumberPositionUpdater,
+    LinksBuilder,
+    LinksExtractionStrategy,
+    LinkSymbol,
+    MapAccelerator,
+    MapBackground,
+    MapCanvas,
+    MapComponent,
+    MapEvolution,
+    MapGraphics,
+    MapGrid,
+    MapStyles,
+    MapView,
+    MarketExtractionStrategy,
+    MarketSymbol,
+    MethodElement,
+    MethodExtractionStrategy,
+    MethodSymbol,
+    ModKeyPressedProvider,
+    Movable,
+    NotDefinedCoordsMatcher,
+    NotDefinedManyCoordsMatcher,
+    NotDefinedMaturityMatcher,
+    Note,
+    NoteExtractionStrategy,
+    ParseError,
+    Pipeline,
+    PipelineBoxSymbol,
+    PipelineComponentSymbol,
+    PipelineExtractionStrategy,
+    PipelineStrategyRunner,
+    PipelineVersion2,
+    PositionCalculator,
+    PresentationExtractionStrategy,
+    QuickAdd,
+    RelativeMovable,
+    SingletonPositionUpdater,
+    SubMapExtractionStrategy,
+    SubMapSymbol,
+    SVGWrapper,
+    TitleExtractionStrategy,
+    MapElements,
+    UrlExtractionStrategy,
+    Usages,
+    useFeatureSwitches,
+    useModKeyPressedConsumer,
+    XAxisLabelsExtractionStrategy
 };
+
