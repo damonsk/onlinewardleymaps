@@ -14,3 +14,5 @@ frontend/tsconfig.tsbuildinfo
 *.bak
 frontend/src/archived_legacy_components/
 **/archived_unused_code
+
+copilot_reports/*
