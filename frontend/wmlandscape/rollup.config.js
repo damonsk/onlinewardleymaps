@@ -1,10 +1,9 @@
-import sass from 'rollup-plugin-sass';
-import pkg from './package.json';
-import babel from '@rollup/plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+const pkg = require('./package.json');
+const babel = require('@rollup/plugin-babel').default;
+const commonjs = require('@rollup/plugin-commonjs');
+const resolve = require('@rollup/plugin-node-resolve').default;
 
-export default {
+module.exports = {
     input: 'src/index.js',
     output: [
         {
@@ -16,11 +15,19 @@ export default {
         },
     ],
     plugins: [
-        sass({insert: true}),
+        resolve({
+            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        }),
         babel({
             exclude: 'node_modules/**',
+            babelHelpers: 'bundled',
+            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+                ['@babel/preset-typescript', { allowNamespaces: true }]
+            ]
         }),
-        resolve(),
         commonjs(),
     ],
     external: [
