@@ -20,6 +20,7 @@
     "frontend/src/archived_unused_code": true,
     "frontend/tsconfig.tsbuildinfo": true,
     "frontend/sonar-project.js": true,
+    ".husky": true,
   },
   "jestrunner.configPath": "frontend/jest.config.js",
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
