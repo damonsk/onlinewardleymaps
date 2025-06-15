@@ -73,7 +73,7 @@
         "react-dom": "^18.2.0",
         "react-svg-pan-zoom": "^3.13.1",
         "sass": "1.80.6",
-        "styled-components": "6.1.8"
+        "styled-components": "6.1.19"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx}": [
