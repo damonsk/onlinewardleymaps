@@ -7169,7 +7169,7 @@ __metadata:
     "@types/lodash": "npm:^4.17.0"
     "@types/lodash.merge": "npm:^4.6.9"
     "@types/node": "npm:20.11.30"
-    "@types/react": "npm:^18.2.67"
+    "@types/react": "npm:^19.1.8"
     "@types/react-dom": "npm:^18.2.22"
     "@types/react-svg-pan-zoom": "npm:^3.3.9"
     "@typescript-eslint/eslint-plugin": "npm:^8.33.1"
@@ -7194,7 +7194,7 @@ __metadata:
     next: "npm:15.3.3"
     prettier: "npm:^3.2.5"
     prop-types: "npm:^15.8.1"
-    react: "npm:^18.2.0"
+    react: "npm:^19.1.0"
     react-ace: "npm:^13.0.0"
     react-dom: "npm:^18.2.0"
     react-svg-pan-zoom: "npm:^3.13.1"
@@ -7600,12 +7600,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
-  version: 18.3.1
-  resolution: "react@npm:18.3.1"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-  checksum: 10c0/283e8c5efcf37802c9d1ce767f302dd569dd97a70d9bb8c7be79a789b9902451e0d16334b05d73299b20f048cbc3c7d288bbbde10b701fa194e2089c237dbea3
+"react@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "react@npm:19.1.0"
+  checksum: 10c0/530fb9a62237d54137a13d2cfb67a7db6a2156faed43eecc423f4713d9b20c6f2728b026b45e28fcd72e8eadb9e9ed4b089e99f5e295d2f0ad3134251bdd3698
   languageName: node
   linkType: hard
 
