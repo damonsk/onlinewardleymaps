@@ -1,4 +1,4 @@
-import {Grid, Link, Stack, Typography} from '@mui/material';
+import {Box, Grid, Link, Stack, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import React from 'react';
 import {useI18n} from '../../hooks/useI18n';
@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
 
     return (
         <StyledFooter>
-            <Grid item xs={6}>
+            <Box sx={{width: '50%'}}>
                 <Stack spacing={2}>
                     <Typography>
                         <Link
@@ -65,8 +65,8 @@ const Footer: React.FC = () => {
                         .
                     </Typography>
                 </Stack>
-            </Grid>
-            <Grid item xs={6} sx={{textAlign: 'right'}}>
+            </Box>
+            <Box sx={{width: '50%', textAlign: 'right'}}>
                 <Typography>
                     <Link href="https://www.patreon.com/mapsascode" rel="noreferrer noopener" target="_blank">
                         <img alt="Patreon Button" height="38" src="/become_a_patron_button.png" width="162" />
@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
                         Damon Skelhorn
                     </Link>
                 </Typography>
-            </Grid>
+            </Box>
         </StyledFooter>
     );
 };
