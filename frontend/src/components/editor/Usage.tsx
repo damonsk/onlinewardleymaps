@@ -1,6 +1,7 @@
 import {Divider, Link, Typography} from '@mui/material';
 import React from 'react';
 import usages from '../../constants/usages';
+import {useI18n} from '../../hooks/useI18n';
 function Usage(props: {mapText: string; mutateMapText: (arg0: any) => void; mapStyleDefs: any}) {
     const addOnClick = (txt: string) => {
         let before = props.mapText;
@@ -33,11 +34,16 @@ const UsageDefinition = (props: {
 }) => {
     const {Icon, mapStyleDefs} = props;
     const enabledIcons = false;
+    const {t} = useI18n();
     return (
         <>
-            <Typography variant="h3">{props.title}</Typography>
-            {props.summary.length > 0 ? <Typography variant="body1">{props.summary} </Typography> : null}
-            <Typography variant="h5">Example</Typography>
+            <Typography variant="h3">{t(`editor.usages.${props.title.toLowerCase().replace(/\s+/g, '_')}`, props.title)}</Typography>
+            {props.summary.length > 0 ? (
+                <Typography variant="body1">
+                    {t(`editor.usages.${props.summary.toLowerCase().replace(/\s+/g, '_')}`, props.summary)}{' '}
+                </Typography>
+            ) : null}
+            <Typography variant="h5">{t('editor.example', 'Example')}</Typography>
             {props.examples &&
                 props.examples.map((example, idx) => (
                     <React.Fragment key={idx}>

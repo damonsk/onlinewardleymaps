@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "Cartes de Wardley",
+        "name": "Cartes de Wardley en Ligne",
+        "description": "Créer et partager des Cartes de Wardley en ligne"
+    },
+    "common": {
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "new": "Nouveau",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "add": "Ajouter",
+        "remove": "Retirer",
+        "yes": "Oui",
+        "no": "Non",
+        "ok": "D'accord",
+        "back": "Retour",
+        "next": "Suivant",
+        "close": "Fermer",
+        "confirm": "Confirmer",
+        "update": "Mettre à jour",
+        "rename": "Renommer"
+    },
+    "navigation": {
+        "home": "Accueil",
+        "about": "À propos",
+        "help": "Aide",
+        "settings": "Paramètres",
+        "language": "Langue",
+        "menu": "menu principal",
+        "dashboard": "Tableau de Bord",
+        "editor": "Éditeur",
+        "classicVersion": "Utiliser la Version Classique",
+        "enableDarkTheme": "Activer le Thème Sombre",
+        "enableLightTheme": "Activer le Thème Clair"
+    },
+    "header": {
+        "editorMode": "Mode Éditeur",
+        "presentationMode": "Mode Présentation",
+        "exampleMap": "Carte Exemple",
+        "getCloneUrl": "Obtenir l'URL de Clone",
+        "showLineNumbers": "Afficher les Numéros de Ligne",
+        "hideLineNumbers": "Masquer les Numéros de Ligne",
+        "showEvolvedLinks": "Afficher les Liens Évolués",
+        "hideEvolvedLinks": "Masquer les Liens Évolués",
+        "usageGuide": "Guide d'Utilisation",
+        "becomePatron": "Devenir un Patron ❤️"
+    },
+    "map": {
+        "title": "Carte de Wardley",
+        "newMap": "Nouvelle Carte",
+        "saveMap": "Enregistrer la Carte",
+        "loadMap": "Charger la Carte",
+        "exportMap": "Exporter la Carte",
+        "shareMap": "Partager la Carte",
+        "cloneMap": "Cloner la Carte",
+        "deleteMap": "Supprimer la Carte",
+        "mapName": "Nom de la Carte",
+        "mapDescription": "Description de la Carte",
+        "yourMap": "Votre Carte",
+        "unsaved": "non sauvegardé",
+        "saving": "sauvegarde...",
+        "toolbar": {
+            "group": "groupe de boutons",
+            "select": "Sélectionner",
+            "pan": "Déplacer",
+            "zoomIn": "Zoom Avant",
+            "zoomOut": "Zoom Arrière",
+            "fit": "Ajuster",
+            "fullscreen": "Plein Écran",
+            "exitFullscreen": "Quitter le Plein Écran"
+        },
+        "evolution": {
+            "genesis": "Genèse",
+            "custom": "Personnalisé",
+            "product": "Produit",
+            "commodity": "Commodité"
+        },
+        "visibility": {
+            "invisible": "Non visible",
+            "visible": "Visible"
+        }
+    },
+    "components": {
+        "component": "Composant",
+        "components": "Composants",
+        "addComponent": "Ajouter un Composant",
+        "editComponent": "Modifier le Composant",
+        "deleteComponent": "Supprimer le Composant",
+        "componentName": "Nom du Composant",
+        "maturity": "Maturité",
+        "visibility": "Visibilité",
+        "inertia": "Inertie",
+        "quickAdd": "Ajout Rapide",
+        "type": "Catégorie",
+        "text": "Texte"
+    },
+    "links": {
+        "link": "Lien",
+        "links": "Liens",
+        "addLink": "Ajouter un Lien",
+        "deleteLink": "Supprimer le Lien",
+        "linkType": "Type de Lien",
+        "flow": "Flux"
+    },
+    "annotations": {
+        "annotation": "Annotation",
+        "annotations": "Annotations",
+        "addAnnotation": "Ajouter une Annotation",
+        "editAnnotation": "Modifier l'Annotation",
+        "deleteAnnotation": "Supprimer l'Annotation",
+        "annotationText": "Texte d'Annotation"
+    },
+    "iterations": {
+        "iteration": "Itération",
+        "iterations": "Itérations",
+        "addIteration": "Ajouter une Itération",
+        "deleteIteration": "Supprimer l'Itération",
+        "renameIteration": "Renommer l'Itération",
+        "iterationName": "Nom d'Itération",
+        "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer l'itération '{{name}}' ? Cela ne peut pas être annulé.",
+        "renamePrompt": "Entrez un nouveau nom pour l'itération actuelle."
+    },
+    "editor": {
+        "mapText": "Texte de la Carte",
+        "preview": "Aperçu",
+        "syntax": "Syntaxe",
+        "help": "Aide",
+        "examples": "Exemples",
+        "usage": "Utilisation",
+        "example": "Exemple",
+        "usageDescription": "Référence rapide de tous les éléments de carte disponibles. Vous pouvez ajouter un exemple à votre carte en cliquant sur les liens disponibles.",
+        "validation": {
+            "error": "Erreur de Validation",
+            "lineError": "Erreur à la ligne {{line}}",
+            "componentNotFound": "Composant '{{component}}' non trouvé",
+            "invalidSyntax": "Syntaxe invalide"
+        },
+        "usages": {
+            "to_set_the_title": "Pour définir le titre",
+            "to_create_a_component": "Pour créer un composant",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "composant Nom [Visibilité (Axe Y), Maturité (Axe X)]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "Inertie - composant susceptible de rencontrer une résistance au changement.",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "composant Nom [Visibilité (Axe Y), Maturité (Axe X)] inertie",
+            "to_evolve_a_component": "Pour faire évoluer un composant",
+            "evole_name_(x_axis)": "évoluer Nom (Axe X)",
+            "to_evolve_a_component_with_new_name": "Pour faire évoluer un composant avec un nouveau nom",
+            "evole_name->newname_(x_axis)": "évoluer Nom->NouveauNom (Axe X)",
+            "to_link_components": "Pour lier des composants",
+            "to_indicate_flow": "Pour indiquer un flux",
+            "to_create_a_market": "Pour créer un marché",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "composant Nom [Visibilité (Axe Y), Maturité (Axe X)] (marché)",
+            "to_set_component_as_pipeline:": "Pour définir un composant comme pipeline :",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "pipeline Nom du Composant [Axe X (début), Axe X (fin)]",
+            "to_indicate_flow_-_past_components_only": "Pour indiquer un flux - composants passés uniquement",
+            "to_indicate_flow_-_future_components_only": "Pour indiquer un flux - composants futurs uniquement",
+            "to_indicate_flow_-_with_label": "Pour indiquer un flux - avec étiquette",
+            "pioneers,_settlers,_townplanners_area": "Zone des Pionniers, Colons, Urbanistes",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Ajouter des zones indiquant quel type d'approche de travail soutient le développement des composants",
+            "build,_buy,_outsource_components": "Composants construire, acheter, externaliser",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Mettre en évidence un composant avec une méthode d'exécution de construction, d'achat ou d'externalisation"
+        },
+        "hideUsage": "Masquer l'Utilisation",
+        "showUsage": "Afficher l'Utilisation"
+    },
+    "theme": {
+        "light": "Thème Clair",
+        "dark": "Thème Sombre",
+        "toggleTheme": "Basculer le Thème"
+    },
+    "sharing": {
+        "shareMap": "Partager la Carte",
+        "shareUrl": "URL de Partage",
+        "copyUrl": "Copier l'URL",
+        "urlCopied": "URL copiée dans le presse-papiers",
+        "publicMap": "Carte Publique",
+        "privateMap": "Carte Privée",
+        "cloneUrl": "URL de Clone",
+        "cloneDescription": "Vous pouvez partager cette URL avec d'autres pour leur permettre de créer une nouvelle carte en utilisant cette carte comme état initial.",
+        "url": "Adresse web",
+        "copy": "Copier"
+    },
+    "export": {
+        "exportAs": "Exporter en tant que",
+        "png": "Image PNG",
+        "svg": "Image SVG",
+        "pdf": "Document PDF",
+        "json": "Données JSON",
+        "text": "Format Texte"
+    },
+    "footer": {
+        "downloadExtension": "Télécharger l'Extension Visual Studio Code",
+        "github": "Dépôt GitHub",
+        "twitter": "Suivre sur Twitter",
+        "wardleyMapping": "Cartographie Wardley grâce à Simon Wardley, CC BY-SA 4.0. Pour en savoir plus, voir",
+        "wardleyMappingLink": "le livre",
+        "community": "Rejoindre la communauté",
+        "documentation": "Documentation",
+        "support": "Assistance technique",
+        "createdBy": "Créé par"
+    },
+    "dialogs": {
+        "areYouSure": "Êtes-vous sûr ?",
+        "deleteConfirmation": "Cette action ne peut pas être annulée.",
+        "unsavedChanges": "Vous avez des modifications non enregistrées. Voulez-vous les enregistrer ?",
+        "invalidInput": "Veuillez entrer une saisie valide.",
+        "networkError": "Erreur réseau. Veuillez réessayer.",
+        "saveError": "Erreur lors de l'enregistrement. Veuillez réessayer.",
+        "loadError": "Erreur lors du chargement. Veuillez réessayer."
+    }
+}

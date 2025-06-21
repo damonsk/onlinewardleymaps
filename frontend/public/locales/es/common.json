@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "Mapas de Wardley",
+        "name": "Mapas de Wardley en Línea",
+        "description": "Crea y comparte Mapas de Wardley en línea"
+    },
+    "common": {
+        "loading": "Cargando...",
+        "error": "Error",
+        "success": "Éxito",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "new": "Nuevo",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "add": "Agregar",
+        "remove": "Quitar",
+        "yes": "Sí",
+        "no": "No",
+        "ok": "Aceptar",
+        "back": "Atrás",
+        "next": "Siguiente",
+        "close": "Cerrar",
+        "confirm": "Confirmar",
+        "update": "Actualizar",
+        "rename": "Renombrar"
+    },
+    "navigation": {
+        "home": "Inicio",
+        "about": "Acerca de",
+        "help": "Ayuda",
+        "settings": "Configuración",
+        "language": "Idioma",
+        "menu": "menú",
+        "dashboard": "Tablero",
+        "editor": "Editor",
+        "classicVersion": "Usar Versión Clásica",
+        "enableDarkTheme": "Activar Tema Oscuro",
+        "enableLightTheme": "Activar Tema Claro"
+    },
+    "header": {
+        "editorMode": "Modo Editor",
+        "presentationMode": "Modo Presentación",
+        "exampleMap": "Mapa de Ejemplo",
+        "getCloneUrl": "Obtener URL de Clon",
+        "showLineNumbers": "Mostrar Números de Línea",
+        "hideLineNumbers": "Ocultar Números de Línea",
+        "showEvolvedLinks": "Mostrar Enlaces Evolucionados",
+        "hideEvolvedLinks": "Ocultar Enlaces Evolucionados",
+        "usageGuide": "Guía de Uso",
+        "becomePatron": "Conviértete en Patron ❤️"
+    },
+    "map": {
+        "title": "Mapa de Wardley",
+        "newMap": "Nuevo Mapa",
+        "saveMap": "Guardar Mapa",
+        "loadMap": "Cargar Mapa",
+        "exportMap": "Exportar Mapa",
+        "shareMap": "Compartir Mapa",
+        "cloneMap": "Clonar Mapa",
+        "deleteMap": "Eliminar Mapa",
+        "mapName": "Nombre del Mapa",
+        "mapDescription": "Descripción del Mapa",
+        "yourMap": "Tu Mapa",
+        "unsaved": "no guardado",
+        "saving": "guardando...",
+        "toolbar": {
+            "group": "grupo de botones",
+            "select": "Seleccionar",
+            "pan": "Mover",
+            "zoomIn": "Acercar",
+            "zoomOut": "Alejar",
+            "fit": "Ajustar",
+            "fullscreen": "Pantalla Completa",
+            "exitFullscreen": "Salir de Pantalla Completa"
+        },
+        "evolution": {
+            "genesis": "Génesis",
+            "custom": "Personalizado",
+            "product": "Producto",
+            "commodity": "Mercancía"
+        },
+        "visibility": {
+            "invisible": "No visible",
+            "visible": "Visible"
+        }
+    },
+    "components": {
+        "component": "Componente",
+        "components": "Componentes",
+        "addComponent": "Añadir Componente",
+        "editComponent": "Editar Componente",
+        "deleteComponent": "Eliminar Componente",
+        "componentName": "Nombre del Componente",
+        "maturity": "Madurez",
+        "visibility": "Visibilidad",
+        "inertia": "Inercia",
+        "quickAdd": "Añadir Rápido",
+        "type": "Tipo",
+        "text": "Texto"
+    },
+    "links": {
+        "link": "Enlace",
+        "links": "Enlaces",
+        "addLink": "Añadir Enlace",
+        "deleteLink": "Eliminar Enlace",
+        "linkType": "Tipo de Enlace",
+        "flow": "Flujo"
+    },
+    "annotations": {
+        "annotation": "Anotación",
+        "annotations": "Anotaciones",
+        "addAnnotation": "Añadir Anotación",
+        "editAnnotation": "Editar Anotación",
+        "deleteAnnotation": "Eliminar Anotación",
+        "annotationText": "Texto de Anotación"
+    },
+    "iterations": {
+        "iteration": "Iteración",
+        "iterations": "Iteraciones",
+        "addIteration": "Añadir Iteración",
+        "deleteIteration": "Eliminar Iteración",
+        "renameIteration": "Renombrar Iteración",
+        "iterationName": "Nombre de Iteración",
+        "deleteConfirmation": "¿Estás seguro de que quieres eliminar la iteración '{{name}}'? Esto no se puede deshacer.",
+        "renamePrompt": "Ingresa un nuevo nombre para la iteración actual."
+    },
+    "editor": {
+        "mapText": "Texto del Mapa",
+        "preview": "Vista previa",
+        "syntax": "Sintaxis",
+        "help": "Ayuda",
+        "examples": "Ejemplos",
+        "usage": "Uso",
+        "example": "Ejemplo",
+        "usageDescription": "Referencia rápida de todos los elementos disponibles del mapa. Puede añadir un ejemplo a su mapa haciendo clic en los enlaces disponibles.",
+        "validation": {
+            "error": "Error de Validación",
+            "lineError": "Error en la línea {{line}}",
+            "componentNotFound": "Componente '{{component}}' no encontrado",
+            "invalidSyntax": "Sintaxis no válida"
+        },
+        "usages": {
+            "to_set_the_title": "Para establecer el título",
+            "to_create_a_component": "Para crear un componente",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "componente Nombre [Visibilidad (Eje Y), Madurez (Eje X)]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "Inercia - componente que probablemente enfrentará resistencia al cambio.",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "componente Nombre [Visibilidad (Eje Y), Madurez (Eje X)] inercia",
+            "to_evolve_a_component": "Para evolucionar un componente",
+            "evole_name_(x_axis)": "evolucionar Nombre (Eje X)",
+            "to_evolve_a_component_with_new_name": "Para evolucionar un componente con nuevo nombre",
+            "evole_name->newname_(x_axis)": "evolucionar Nombre->NuevoNombre (Eje X)",
+            "to_link_components": "Para enlazar componentes",
+            "to_indicate_flow": "Para indicar flujo",
+            "to_create_a_market": "Para crear un mercado",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "componente Nombre [Visibilidad (Eje Y), Madurez (Eje X)] (mercado)",
+            "to_set_component_as_pipeline:": "Para establecer componente como pipeline:",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "pipeline Nombre del Componente [Eje X (inicio), Eje X (fin)]",
+            "to_indicate_flow_-_past_components_only": "Para indicar flujo - solo componentes pasados",
+            "to_indicate_flow_-_future_components_only": "Para indicar flujo - solo componentes futuros",
+            "to_indicate_flow_-_with_label": "Para indicar flujo - con etiqueta",
+            "pioneers,_settlers,_townplanners_area": "Área de Pioneros, Colonos, Urbanistas",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Añadir áreas indicando qué tipo de enfoque de trabajo soporta el desarrollo de componentes",
+            "build,_buy,_outsource_components": "Componentes construir, comprar, externalizar",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar un componente con un método de ejecución de construir, comprar o externalizar"
+        },
+        "hideUsage": "Ocultar Uso",
+        "showUsage": "Mostrar Uso"
+    },
+    "theme": {
+        "light": "Tema Claro",
+        "dark": "Tema Oscuro",
+        "toggleTheme": "Cambiar Tema"
+    },
+    "sharing": {
+        "shareMap": "Compartir Mapa",
+        "shareUrl": "URL para Compartir",
+        "copyUrl": "Copiar URL",
+        "urlCopied": "URL copiada al portapapeles",
+        "publicMap": "Mapa Público",
+        "privateMap": "Mapa Privado",
+        "cloneUrl": "URL de Clon",
+        "cloneDescription": "Puedes compartir esta URL con otros para permitirles crear un nuevo mapa usando este mapa como estado inicial.",
+        "url": "Dirección web",
+        "copy": "Copiar"
+    },
+    "export": {
+        "exportAs": "Exportar como",
+        "png": "Imagen PNG",
+        "svg": "Imagen SVG",
+        "pdf": "Documento PDF",
+        "json": "Datos JSON",
+        "text": "Formato de Texto"
+    },
+    "footer": {
+        "downloadExtension": "Descargar Extensión de Visual Studio Code",
+        "github": "Repositorio de GitHub",
+        "twitter": "Seguir en Twitter",
+        "wardleyMapping": "Mapeo de Wardley cortesía de Simon Wardley, CC BY-SA 4.0. Para aprender más, ver",
+        "wardleyMappingLink": "el libro",
+        "community": "Únete a la comunidad",
+        "documentation": "Documentación",
+        "support": "Soporte",
+        "createdBy": "Creado por"
+    },
+    "dialogs": {
+        "areYouSure": "¿Estás seguro?",
+        "deleteConfirmation": "Esta acción no se puede deshacer.",
+        "unsavedChanges": "Tienes cambios sin guardar. ¿Quieres guardarlos?",
+        "invalidInput": "Por favor, introduce una entrada válida.",
+        "networkError": "Error de red. Por favor, inténtalo de nuevo.",
+        "saveError": "Error al guardar. Por favor, inténtalo de nuevo.",
+        "loadError": "Error al cargar. Por favor, inténtalo de nuevo."
+    }
+}

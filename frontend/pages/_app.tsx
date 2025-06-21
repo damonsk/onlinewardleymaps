@@ -1,20 +1,19 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import {ThemeProvider as MaterialUIThemeProvider} from '@mui/material/styles';
 import StylesProvider from '@mui/styles/StylesProvider';
+import {appWithTranslation} from 'next-i18next';
+import {AppProps} from 'next/app';
 import Head from 'next/head';
 import React, {useEffect, useState} from 'react';
 import {ThemeProvider as StyledComponentsThemeProvider} from 'styled-components';
+import nextI18NextConfig from '../next-i18next.config.js';
 import {FeatureSwitchesProvider} from '../src/components/FeatureSwitchesContext';
 import {ModKeyPressedProvider} from '../src/components/KeyPressContext';
 import Footer from '../src/components/page/Footer';
 import {featureSwitches} from '../src/constants/featureswitches';
 import {lightTheme, theme} from '../src/theme';
 
-interface MyAppProps {
-    Component: React.FC<any>;
-    pageProps: any;
-}
-const MyApp: React.FC<MyAppProps> = ({Component, pageProps}) => {
+const MyApp: React.FC<AppProps> = ({Component, pageProps}) => {
     useEffect(() => {
         const jssStyles = document.querySelector<HTMLStyleElement>('#jss-server-side');
         if (jssStyles && jssStyles.parentNode) {
@@ -68,4 +67,4 @@ const MyApp: React.FC<MyAppProps> = ({Component, pageProps}) => {
     );
 };
 
-export default MyApp;
+export default appWithTranslation(MyApp, nextI18NextConfig);

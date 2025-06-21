@@ -39,18 +39,17 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
     };
 
     const pipelinesToRender = pipelines || mapElements.getPipelineComponents();
-    if (pipelinesToRender.length === 0) {
-        console.warn('No pipelines to render');
-    } else {
-        console.log(
-            `Rendering ${pipelinesToRender.length} pipelines:`,
-            pipelinesToRender.map(p => ({
-                name: p.name,
-                visibility: p.visibility,
-                components: p.components?.length || 0,
-            })),
-        );
-    }
+    if (pipelinesToRender.length === 0) return;
+
+    console.log(
+        `Rendering ${pipelinesToRender.length} pipelines:`,
+        pipelinesToRender.map(p => ({
+            name: p.name,
+            visibility: p.visibility,
+            components: p.components?.length || 0,
+        })),
+    );
+
     const linkingFunction = clicked
         ? (data: {el: any; e: MouseEvent<Element>}) => {
               const componentWithVisibility = {

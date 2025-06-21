@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "Wardley Maps",
+        "name": "Online Wardley Maps",
+        "description": "Create and share Wardley Maps online"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "cancel": "Cancel",
+        "save": "Save",
+        "new": "New",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "remove": "Remove",
+        "yes": "Yes",
+        "no": "No",
+        "ok": "OK",
+        "back": "Back",
+        "next": "Next",
+        "close": "Close",
+        "confirm": "Confirm",
+        "update": "Update",
+        "rename": "Rename"
+    },
+    "navigation": {
+        "home": "Home",
+        "about": "About",
+        "help": "Help",
+        "settings": "Settings",
+        "language": "Language",
+        "menu": "menu",
+        "dashboard": "Dashboard",
+        "editor": "Editor",
+        "classicVersion": "Use Classic Version",
+        "enableDarkTheme": "Enable Dark Theme",
+        "enableLightTheme": "Enable Light Theme"
+    },
+    "header": {
+        "editorMode": "Editor Mode",
+        "presentationMode": "Presentation Mode",
+        "exampleMap": "Example Map",
+        "getCloneUrl": "Get Clone URL",
+        "showLineNumbers": "Show Line Numbers",
+        "hideLineNumbers": "Hide Line Numbers",
+        "showEvolvedLinks": "Show Evolved Links",
+        "hideEvolvedLinks": "Hide Evolved Links",
+        "usageGuide": "Usage Guide",
+        "becomePatron": "Become a Patron ❤️"
+    },
+    "map": {
+        "title": "Wardley Map",
+        "newMap": "New Map",
+        "saveMap": "Save Map",
+        "loadMap": "Load Map",
+        "exportMap": "Export Map",
+        "shareMap": "Share Map",
+        "cloneMap": "Clone Map",
+        "deleteMap": "Delete Map",
+        "mapName": "Map Name",
+        "mapDescription": "Map Description",
+        "yourMap": "Your Map",
+        "unsaved": "unsaved",
+        "saving": "saving...",
+        "toolbar": {
+            "group": "button group",
+            "select": "Select",
+            "pan": "Pan",
+            "zoomIn": "Zoom In",
+            "zoomOut": "Zoom Out",
+            "fit": "Fit",
+            "fullscreen": "Fullscreen",
+            "exitFullscreen": "Exit Fullscreen"
+        },
+        "evolution": {
+            "genesis": "Genesis",
+            "custom": "Custom",
+            "product": "Product",
+            "commodity": "Commodity"
+        },
+        "visibility": {
+            "invisible": "Invisible",
+            "visible": "Visible"
+        }
+    },
+    "components": {
+        "component": "Component",
+        "components": "Components",
+        "addComponent": "Add Component",
+        "editComponent": "Edit Component",
+        "deleteComponent": "Delete Component",
+        "componentName": "Component Name",
+        "maturity": "Maturity",
+        "visibility": "Visibility",
+        "inertia": "Inertia",
+        "quickAdd": "Quick Add",
+        "type": "Type",
+        "text": "Text"
+    },
+    "links": {
+        "link": "Link",
+        "links": "Links",
+        "addLink": "Add Link",
+        "deleteLink": "Delete Link",
+        "linkType": "Link Type",
+        "flow": "Flow"
+    },
+    "annotations": {
+        "annotation": "Annotation",
+        "annotations": "Annotations",
+        "addAnnotation": "Add Annotation",
+        "editAnnotation": "Edit Annotation",
+        "deleteAnnotation": "Delete Annotation",
+        "annotationText": "Annotation Text"
+    },
+    "iterations": {
+        "iteration": "Iteration",
+        "iterations": "Iterations",
+        "addIteration": "Add Iteration",
+        "deleteIteration": "Delete Iteration",
+        "renameIteration": "Rename Iteration",
+        "iterationName": "Iteration Name",
+        "deleteConfirmation": "Are you sure you want to delete iteration '{{name}}'? This cannot be undone.",
+        "renamePrompt": "Enter a new name for the current iteration."
+    },
+    "editor": {
+        "mapText": "Map Text",
+        "preview": "Preview",
+        "syntax": "Syntax",
+        "help": "Help",
+        "examples": "Examples",
+        "usage": "Usage",
+        "example": "Example",
+        "usageDescription": "Quick reference of all available map elements. You can add an example to your map by clicking the available links.",
+        "validation": {
+            "error": "Validation Error",
+            "lineError": "Error on line {{line}}",
+            "componentNotFound": "Component '{{component}}' not found",
+            "invalidSyntax": "Invalid syntax"
+        },
+        "usages": {
+            "to_set_the_title": "To set the title",
+            "to_create_a_component": "To create a component",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "component Name [Visibility (Y Axis), Maturity (X Axis)]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "Inertia - component likely to face resistance to change.",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "component Name [Visibility (Y Axis), Maturity (X Axis)] inertia",
+            "to_evolve_a_component": "To evolve a component",
+            "evole_name_(x_axis)": "evole Name (X Axis)",
+            "to_evolve_a_component_with_new_name": "To evolve a component with new name",
+            "evole_name->newname_(x_axis)": "evole Name->NewName (X Axis)",
+            "to_link_components": "To link components",
+            "to_indicate_flow": "To indicate flow",
+            "to_create_a_market": "To create a market",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "component Name [Visibility (Y Axis), Maturity (X Axis)] (market)",
+            "to_set_component_as_pipeline:": "To set component as pipeline:",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "pipeline Component Name [X Axis (start), X Axis (end)]",
+            "to_indicate_flow_-_past_components_only": "To indicate flow - past components only",
+            "to_indicate_flow_-_future_components_only": "To indicate flow - future components only",
+            "to_indicate_flow_-_with_label": "To indicate flow - with label",
+            "pioneers,_settlers,_townplanners_area": "Pioneers, Settlers, Townplanners area",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Add areas indicating which type of working approach supports component development",
+            "build,_buy,_outsource_components": "Build, buy, outsource components",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Highlight a component with a build, buy, or outsource method of execution"
+        },
+        "hideUsage": "Hide Usage",
+        "showUsage": "Show Usage"
+    },
+    "theme": {
+        "light": "Light Theme",
+        "dark": "Dark Theme",
+        "toggleTheme": "Toggle Theme"
+    },
+    "sharing": {
+        "shareMap": "Share Map",
+        "shareUrl": "Share URL",
+        "copyUrl": "Copy URL",
+        "urlCopied": "URL copied to clipboard",
+        "publicMap": "Public Map",
+        "privateMap": "Private Map",
+        "cloneUrl": "Clone URL",
+        "cloneDescription": "You can share this URL with others to allow them to create a new map using this map as its initial state.",
+        "url": "URL",
+        "copy": "Copy"
+    },
+    "export": {
+        "exportAs": "Export as",
+        "png": "PNG Image",
+        "svg": "SVG Image",
+        "pdf": "PDF Document",
+        "json": "JSON Data",
+        "text": "Text Format"
+    },
+    "footer": {
+        "downloadExtension": "Download Visual Studio Code Extension",
+        "github": "GitHub Repository",
+        "twitter": "Follow on Twitter",
+        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
+        "wardleyMappingLink": "the book",
+        "community": "Join the community",
+        "documentation": "Documentation",
+        "support": "Support",
+        "createdBy": "Created by"
+    },
+    "dialogs": {
+        "areYouSure": "Are you sure?",
+        "deleteConfirmation": "This action cannot be undone.",
+        "unsavedChanges": "You have unsaved changes. Do you want to save them?",
+        "invalidInput": "Please enter a valid input.",
+        "networkError": "Network error. Please try again.",
+        "saveError": "Error saving. Please try again.",
+        "loadError": "Error loading. Please try again."
+    }
+}

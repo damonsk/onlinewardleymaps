@@ -1,6 +1,7 @@
 import {Grid, Link, Stack, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import React from 'react';
+import {useI18n} from '../../hooks/useI18n';
 
 const StyledFooter = styled((props: {children?: React.ReactNode}) => <Grid container padding={4} {...props} />)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.background.paper,
@@ -12,6 +13,8 @@ const StyledFooter = styled((props: {children?: React.ReactNode}) => <Grid conta
 }));
 
 const Footer: React.FC = () => {
+    const {t} = useI18n();
+
     return (
         <StyledFooter>
             <Grid item xs={6}>
@@ -22,7 +25,7 @@ const Footer: React.FC = () => {
                             rel="noopener noreferrer"
                             href="https://marketplace.visualstudio.com/items?itemName=damonsk.vscode-wardley-maps">
                             <img
-                                alt="Download Visual Studio Code Extension"
+                                alt={t('footer.downloadExtension')}
                                 src="https://img.shields.io/visual-studio-marketplace/v/damonsk.vscode-wardley-maps?style=flat&amp;label=Download Visual%20Studio%20Code%20Extension&amp;logo=visual-studio-code"
                             />
                         </Link>
@@ -36,19 +39,16 @@ const Footer: React.FC = () => {
                         <Link href="https://github.com/damonsk/onlinewardleymaps" target="_blank" rel="noopener noreferrer">
                             https://github.com/damonsk/onlinewardleymaps
                         </Link>
-                    </Typography>
+                    </Typography>{' '}
                     <Typography>
-                        <svg className="gh-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                        </svg>{' '}
                         <Link href="https://twitter.com/mapsascode" target="_blank" rel="noopener noreferrer">
-                            @MapsAsCode
+                            {t('footer.twitter', 'Follow on Twitter')}
                         </Link>
                     </Typography>
                     <Typography>
-                        Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see{' '}
+                        {t('footer.wardleyMapping')}{' '}
                         <Link target="blank" href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec">
-                            Simon&apos;s book
+                            {t('footer.wardleyMappingLink')}
                         </Link>
                         .
                     </Typography>
@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
                     </Link>
                 </Typography>
                 <Typography>
-                    Created by{' '}
+                    {t('footer.createdBy', 'Created by')}{' '}
                     <Link href="https://www.linkedin.com/in/skels/" target="_blank" rel="noopener noreferrer">
                         Damon Skelhorn
                     </Link>

@@ -1,3 +1,5 @@
+import {GetStaticProps} from 'next';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
 import MapEnvironment from '../src/components/MapEnvironment';
@@ -46,6 +48,14 @@ const Map: React.FC<MapProps> = props => {
             setShouldLoad={setShouldLoad}
         />
     );
+};
+
+export const getStaticProps: GetStaticProps = async ({locale}) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+        },
+    };
 };
 
 export default Map;

@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "ワードレイマップ",
+        "name": "オンラインワードレイマップ",
+        "description": "ワードレイマップをオンラインで作成・共有する"
+    },
+    "common": {
+        "loading": "読み込み中...",
+        "error": "エラー",
+        "success": "成功",
+        "cancel": "キャンセル",
+        "save": "保存",
+        "new": "新規",
+        "delete": "削除",
+        "edit": "編集",
+        "add": "追加",
+        "remove": "削除",
+        "yes": "はい",
+        "no": "いいえ",
+        "ok": "了解",
+        "back": "戻る",
+        "next": "次へ",
+        "close": "閉じる",
+        "confirm": "確認",
+        "update": "更新",
+        "rename": "名前を変更"
+    },
+    "navigation": {
+        "home": "ホーム",
+        "about": "概要",
+        "help": "ヘルプ",
+        "settings": "設定",
+        "language": "言語",
+        "menu": "メニュー",
+        "dashboard": "ダッシュボード",
+        "editor": "エディター",
+        "classicVersion": "クラシック版を使用",
+        "enableDarkTheme": "ダークテーマを有効にする",
+        "enableLightTheme": "ライトテーマを有効にする"
+    },
+    "header": {
+        "editorMode": "エディタモード",
+        "presentationMode": "プレゼンテーションモード",
+        "exampleMap": "例のマップ",
+        "getCloneUrl": "クローンURLを取得",
+        "showLineNumbers": "行番号を表示",
+        "hideLineNumbers": "行番号を非表示",
+        "showEvolvedLinks": "進化したリンクを表示",
+        "hideEvolvedLinks": "進化したリンクを非表示",
+        "usageGuide": "使用ガイド",
+        "becomePatron": "パトロンになる ❤️"
+    },
+    "map": {
+        "title": "ワードレイマップ",
+        "newMap": "新しいマップ",
+        "saveMap": "マップを保存",
+        "loadMap": "マップを読み込む",
+        "exportMap": "マップをエクスポート",
+        "shareMap": "マップを共有",
+        "cloneMap": "マップをクローン",
+        "deleteMap": "マップを削除",
+        "mapName": "マップ名",
+        "mapDescription": "マップの説明",
+        "toolbar": {
+            "group": "ボタングループ",
+            "select": "選択",
+            "pan": "パン",
+            "zoomIn": "ズームイン",
+            "zoomOut": "ズームアウト",
+            "fit": "フィット",
+            "fullscreen": "全画面",
+            "exitFullscreen": "全画面終了"
+        },
+        "evolution": {
+            "genesis": "創生期",
+            "custom": "カスタム",
+            "product": "製品",
+            "commodity": "コモディティ"
+        },
+        "visibility": {
+            "invisible": "不可視",
+            "visible": "可視"
+        },
+        "yourMap": "あなたのマップ",
+        "unsaved": "未保存",
+        "saving": "保存中..."
+    },
+    "components": {
+        "component": "コンポーネント",
+        "components": "コンポーネント",
+        "addComponent": "コンポーネントを追加",
+        "editComponent": "コンポーネントを編集",
+        "deleteComponent": "コンポーネントを削除",
+        "componentName": "コンポーネント名",
+        "maturity": "成熟度",
+        "visibility": "可視性",
+        "inertia": "慣性",
+        "quickAdd": "クイック追加",
+        "type": "タイプ",
+        "text": "テキスト"
+    },
+    "links": {
+        "link": "リンク",
+        "links": "リンク",
+        "addLink": "リンクを追加",
+        "deleteLink": "リンクを削除",
+        "linkType": "リンクタイプ",
+        "flow": "フロー"
+    },
+    "annotations": {
+        "annotation": "注釈",
+        "annotations": "注釈",
+        "addAnnotation": "注釈を追加",
+        "editAnnotation": "注釈を編集",
+        "deleteAnnotation": "注釈を削除",
+        "annotationText": "注釈テキスト"
+    },
+    "iterations": {
+        "iteration": "イテレーション",
+        "iterations": "イテレーション",
+        "addIteration": "イテレーションを追加",
+        "deleteIteration": "イテレーションを削除",
+        "renameIteration": "イテレーション名を変更",
+        "iterationName": "イテレーション名",
+        "deleteConfirmation": "イテレーション '{{name}}' を削除してもよろしいですか？この操作は元に戻せません。",
+        "renamePrompt": "現在のイテレーションの新しい名前を入力してください。"
+    },
+    "editor": {
+        "mapText": "マップテキスト",
+        "preview": "プレビュー",
+        "syntax": "構文",
+        "help": "ヘルプ",
+        "examples": "例",
+        "usage": "使用法",
+        "example": "例",
+        "usageDescription": "利用可能なすべてのマップ要素のクイックリファレンス。利用可能なリンクをクリックすることで、例をマップに追加できます。",
+        "validation": {
+            "error": "検証エラー",
+            "lineError": "行 {{line}} でエラー",
+            "componentNotFound": "コンポーネント「{{component}}」が見つかりません",
+            "invalidSyntax": "無効な構文"
+        },
+        "usages": {
+            "to_set_the_title": "タイトルを設定する",
+            "to_create_a_component": "コンポーネントを作成する",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "コンポーネント名 [可視性（Y軸）、成熟度（X軸）]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "慣性 - コンポーネントは変更への抵抗に直面する可能性があります。",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "コンポーネント名 [可視性（Y軸）、成熟度（X軸）] 慣性",
+            "to_evolve_a_component": "コンポーネントを進化させる",
+            "evole_name_(x_axis)": "進化 名前（X軸）",
+            "to_evolve_a_component_with_new_name": "新しい名前でコンポーネントを進化させる",
+            "evole_name->newname_(x_axis)": "進化 名前->新しい名前（X軸）",
+            "to_link_components": "コンポーネントをリンクする",
+            "to_indicate_flow": "フローを示す",
+            "to_create_a_market": "市場を作成する",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "コンポーネント名 [可視性（Y軸）、成熟度（X軸）]（市場）",
+            "to_set_component_as_pipeline:": "コンポーネントをパイプラインとして設定する：",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "パイプライン コンポーネント名 [X軸（開始）、X軸（終了）]",
+            "to_indicate_flow_-_past_components_only": "フローを示す - 過去のコンポーネントのみ",
+            "to_indicate_flow_-_future_components_only": "フローを示す - 将来のコンポーネントのみ",
+            "to_indicate_flow_-_with_label": "フローを示す - ラベル付き",
+            "pioneers,_settlers,_townplanners_area": "パイオニア、セトラー、タウンプランナーエリア",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "コンポーネント開発をサポートする作業アプローチのタイプを示すエリアを追加",
+            "build,_buy,_outsource_components": "ビルド、バイ、アウトソースのコンポーネント",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "ビルド、バイ、アウトソースの実行方法でコンポーネントをハイライト"
+        },
+        "hideUsage": "使用法を非表示",
+        "showUsage": "使用法を表示"
+    },
+    "theme": {
+        "light": "ライトテーマ",
+        "dark": "ダークテーマ",
+        "toggleTheme": "テーマを切り替える"
+    },
+    "sharing": {
+        "shareMap": "マップを共有",
+        "shareUrl": "共有URL",
+        "copyUrl": "URLをコピー",
+        "urlCopied": "URLがクリップボードにコピーされました",
+        "publicMap": "公開マップ",
+        "privateMap": "プライベートマップ",
+        "cloneUrl": "クローンURL",
+        "cloneDescription": "このURLを他の人と共有することで、このマップを初期状態として新しいマップを作成できます。",
+        "url": "ウェブアドレス",
+        "copy": "コピー"
+    },
+    "export": {
+        "exportAs": "エクスポート形式",
+        "png": "PNG画像",
+        "svg": "SVG画像",
+        "pdf": "PDF文書",
+        "json": "JSONデータ",
+        "text": "テキスト形式"
+    },
+    "footer": {
+        "github": "GitHubリポジトリ",
+        "twitter": "Twitterでフォロー",
+        "community": "コミュニティに参加",
+        "documentation": "ドキュメント",
+        "support": "サポート",
+        "downloadExtension": "Download Visual Studio Code Extension",
+        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
+        "wardleyMappingLink": "the book",
+        "createdBy": "作成者"
+    },
+    "dialogs": {
+        "deleteConfirmation": "この操作は元に戻せません。",
+        "unsavedChanges": "保存されていない変更があります。保存しますか？",
+        "invalidInput": "有効な入力を入力してください。",
+        "networkError": "ネットワークエラー。もう一度お試しください。",
+        "saveError": "保存エラー。もう一度お試しください。",
+        "loadError": "読み込みエラー。もう一度お試しください。",
+        "areYouSure": "Are you sure?"
+    }
+}

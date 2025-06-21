@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import React, {ReactNode} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 
 export interface CoreHeaderProps {
     toggleMenu: any;
@@ -12,11 +13,18 @@ export interface CoreHeaderProps {
 }
 
 const CoreHeader: React.FC<CoreHeaderProps> = ({children, toggleMenu}) => {
+    const {t} = useI18n();
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{mr: 2}} onClick={toggleMenu}>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label={t('navigation.menu', 'menu')}
+                        sx={{mr: 2}}
+                        onClick={toggleMenu}>
                         <MenuIcon />
                     </IconButton>
                     <Typography
@@ -26,7 +34,7 @@ const CoreHeader: React.FC<CoreHeaderProps> = ({children, toggleMenu}) => {
                             flexGrow: 1,
                             display: {xs: 'none', sm: 'block'},
                         }}>
-                        Wardley Maps
+                        {t('app.title', 'Wardley Maps')}
                     </Typography>
                     {children}
                 </Toolbar>

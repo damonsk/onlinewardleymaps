@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "Mappe di Wardley",
+        "name": "Mappe di Wardley Online",
+        "description": "Crea e condividi Mappe di Wardley online"
+    },
+    "common": {
+        "loading": "Caricamento...",
+        "error": "Errore",
+        "success": "Successo",
+        "cancel": "Annulla",
+        "save": "Salva",
+        "new": "Nuovo",
+        "delete": "Elimina",
+        "edit": "Modifica",
+        "add": "Aggiungi",
+        "remove": "Rimuovi",
+        "yes": "Sì",
+        "no": "No",
+        "ok": "Va bene",
+        "back": "Indietro",
+        "next": "Avanti",
+        "close": "Chiudi",
+        "confirm": "Conferma",
+        "update": "Aggiorna",
+        "rename": "Rinomina"
+    },
+    "navigation": {
+        "home": "Pagina iniziale",
+        "about": "Informazioni",
+        "help": "Aiuto",
+        "settings": "Impostazioni",
+        "language": "Lingua",
+        "menu": "Menu",
+        "dashboard": "Dashboard",
+        "editor": "Editor",
+        "classicVersion": "Usa Versione Classica",
+        "enableDarkTheme": "Attiva Tema Scuro",
+        "enableLightTheme": "Attiva Tema Chiaro"
+    },
+    "header": {
+        "editorMode": "Modalità Editor",
+        "presentationMode": "Modalità Presentazione",
+        "exampleMap": "Mappa di Esempio",
+        "getCloneUrl": "Ottieni URL Clone",
+        "showLineNumbers": "Mostra Numeri di Riga",
+        "hideLineNumbers": "Nascondi Numeri di Riga",
+        "showEvolvedLinks": "Mostra Collegamenti Evoluti",
+        "hideEvolvedLinks": "Nascondi Collegamenti Evoluti",
+        "usageGuide": "Guida all'Uso",
+        "becomePatron": "Diventa Sostenitore ❤️"
+    },
+    "map": {
+        "title": "Mappa di Wardley",
+        "newMap": "Nuova Mappa",
+        "saveMap": "Salva Mappa",
+        "loadMap": "Carica Mappa",
+        "exportMap": "Esporta Mappa",
+        "shareMap": "Condividi Mappa",
+        "cloneMap": "Clona Mappa",
+        "deleteMap": "Elimina Mappa",
+        "mapName": "Nome della Mappa",
+        "mapDescription": "Descrizione della Mappa",
+        "toolbar": {
+            "group": "gruppo di pulsanti",
+            "select": "Seleziona",
+            "pan": "Sposta",
+            "zoomIn": "Ingrandisci",
+            "zoomOut": "Rimpicciolisci",
+            "fit": "Adatta",
+            "fullscreen": "Schermo Intero",
+            "exitFullscreen": "Esci da Schermo Intero"
+        },
+        "evolution": {
+            "genesis": "Genesi",
+            "custom": "Personalizzato",
+            "product": "Prodotto",
+            "commodity": "Commodità"
+        },
+        "visibility": {
+            "invisible": "Invisibile",
+            "visible": "Visibile"
+        },
+        "yourMap": "La Vostra Mappa",
+        "unsaved": "non salvato",
+        "saving": "salvando..."
+    },
+    "components": {
+        "component": "Componente",
+        "components": "Componenti",
+        "addComponent": "Aggiungi Componente",
+        "editComponent": "Modifica Componente",
+        "deleteComponent": "Elimina Componente",
+        "componentName": "Nome Componente",
+        "maturity": "Maturità",
+        "visibility": "Visibilità",
+        "inertia": "Inerzia",
+        "quickAdd": "Aggiunta Rapida",
+        "type": "Tipo",
+        "text": "Testo"
+    },
+    "links": {
+        "link": "Collegamento",
+        "links": "Collegamenti",
+        "addLink": "Aggiungi Collegamento",
+        "deleteLink": "Elimina Collegamento",
+        "linkType": "Tipo di Collegamento",
+        "flow": "Flusso"
+    },
+    "annotations": {
+        "annotation": "Annotazione",
+        "annotations": "Annotazioni",
+        "addAnnotation": "Aggiungi Annotazione",
+        "editAnnotation": "Modifica Annotazione",
+        "deleteAnnotation": "Elimina Annotazione",
+        "annotationText": "Testo Annotazione"
+    },
+    "iterations": {
+        "iteration": "Iterazione",
+        "iterations": "Iterazioni",
+        "addIteration": "Aggiungi Iterazione",
+        "deleteIteration": "Elimina Iterazione",
+        "renameIteration": "Rinomina Iterazione",
+        "deleteConfirmation": "Sei sicuro di voler eliminare l'iterazione '{{name}}'? Questa azione non può essere annullata.",
+        "renamePrompt": "Inserisci un nuovo nome per l'iterazione corrente.",
+        "iterationName": "Nome Iterazione"
+    },
+    "editor": {
+        "mapText": "Testo Mappa",
+        "preview": "Anteprima",
+        "syntax": "Sintassi",
+        "help": "Aiuto",
+        "examples": "Esempi",
+        "usage": "Utilizzo",
+        "example": "Esempio",
+        "usageDescription": "Riferimento rapido di tutti gli elementi della mappa disponibili. Puoi aggiungere un esempio alla tua mappa facendo clic sui link disponibili.",
+        "validation": {
+            "error": "Errore di Validazione",
+            "lineError": "Errore alla riga {{line}}",
+            "componentNotFound": "Componente '{{component}}' non trovato",
+            "invalidSyntax": "Sintassi non valida"
+        },
+        "usages": {
+            "to_set_the_title": "Per impostare il titolo",
+            "to_create_a_component": "Per creare un componente",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "Nome Componente [Visibilità (Asse Y), Maturità (Asse X)]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "Inerzia - componente che probabilmente affronterà resistenza al cambiamento.",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "Nome Componente [Visibilità (Asse Y), Maturità (Asse X)] inerzia",
+            "to_evolve_a_component": "Per evolvere un componente",
+            "evole_name_(x_axis)": "evolvi Nome (Asse X)",
+            "to_evolve_a_component_with_new_name": "Per evolvere un componente con un nuovo nome",
+            "evole_name->newname_(x_axis)": "evolvi Nome->NuovoNome (Asse X)",
+            "to_link_components": "Per collegare componenti",
+            "to_indicate_flow": "Per indicare il flusso",
+            "to_create_a_market": "Per creare un mercato",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "Nome Componente [Visibilità (Asse Y), Maturità (Asse X)] (mercato)",
+            "to_set_component_as_pipeline:": "Per impostare un componente come pipeline:",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "pipeline Nome Componente [Asse X (inizio), Asse X (fine)]",
+            "to_indicate_flow_-_past_components_only": "Per indicare il flusso - solo componenti passati",
+            "to_indicate_flow_-_future_components_only": "Per indicare il flusso - solo componenti futuri",
+            "to_indicate_flow_-_with_label": "Per indicare il flusso - con etichetta",
+            "pioneers,_settlers,_townplanners_area": "Area pionieri, coloni, urbanisti",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Aggiungi aree che indicano quale tipo di approccio lavorativo supporta lo sviluppo dei componenti",
+            "build,_buy,_outsource_components": "Componenti costruiti, acquistati, esternalizzati",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Evidenzia un componente con un metodo di esecuzione di costruzione, acquisto o esternalizzazione"
+        },
+        "hideUsage": "Nascondi Utilizzo",
+        "showUsage": "Mostra Utilizzo"
+    },
+    "theme": {
+        "light": "Tema Chiaro",
+        "dark": "Tema Scuro",
+        "toggleTheme": "Cambia Tema"
+    },
+    "sharing": {
+        "shareMap": "Condividi Mappa",
+        "shareUrl": "Condividi URL",
+        "copyUrl": "Copia URL",
+        "urlCopied": "URL copiato negli appunti",
+        "publicMap": "Mappa Pubblica",
+        "privateMap": "Mappa Privata",
+        "cloneUrl": "URL Clone",
+        "cloneDescription": "Puoi condividere questo URL con altri per consentire loro di creare una nuova mappa utilizzando questa mappa come stato iniziale.",
+        "url": "Indirizzo web",
+        "copy": "Copia"
+    },
+    "export": {
+        "exportAs": "Esporta come",
+        "png": "Immagine PNG",
+        "svg": "Immagine SVG",
+        "pdf": "Documento PDF",
+        "json": "Dati JSON",
+        "text": "Formato Testo"
+    },
+    "footer": {
+        "github": "Repository GitHub",
+        "twitter": "Segui su Twitter",
+        "community": "Unisciti alla comunità",
+        "documentation": "Documentazione",
+        "support": "Supporto",
+        "downloadExtension": "Scarica Estensione Visual Studio Code",
+        "wardleyMapping": "Mappatura Wardley per gentile concessione di Simon Wardley, CC BY-SA 4.0. Per saperne di più, vedi",
+        "wardleyMappingLink": "il libro",
+        "createdBy": "Creato da"
+    },
+    "dialogs": {
+        "deleteConfirmation": "Questa azione non può essere annullata.",
+        "unsavedChanges": "Hai modifiche non salvate. Vuoi salvarle?",
+        "invalidInput": "Inserisci un input valido.",
+        "networkError": "Errore di rete. Riprova.",
+        "saveError": "Errore durante il salvataggio. Riprova.",
+        "loadError": "Errore durante il caricamento. Riprova.",
+        "areYouSure": "Sei sicuro?"
+    }
+}

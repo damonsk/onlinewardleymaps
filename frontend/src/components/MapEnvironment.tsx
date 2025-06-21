@@ -7,6 +7,7 @@ import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import Converter from '../conversion/Converter';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
+import {useI18n} from '../hooks/useI18n';
 import {useLegacyMapState, useUnifiedMapState} from '../hooks/useUnifiedMapState';
 import {LoadMap} from '../repository/LoadMap';
 import {MapIteration, OwnApiWardleyMap} from '../repository/OwnApiWardleyMap';
@@ -89,6 +90,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 }) => {
     const featureSwitches = useFeatureSwitches();
     const mapRef = useRef<HTMLElement | null>(null);
+    const {t} = useI18n();
 
     // Initialize unified map state
     const unifiedMapState = useUnifiedMapState({
@@ -205,7 +207,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             setCurrentUrl(window.location.href);
 
             if (window.location.hash.indexOf('#clone:') === 0) {
-                setCurrentUrl('(unsaved)');
+                setCurrentUrl(`(${t('map.unsaved', 'unsaved')})`);
                 setSaveOutstanding(true);
                 setCurrentId('');
                 window.location.hash = '';
@@ -232,7 +234,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     function newMap(mapPersistenceStrategy: string) {
         legacyState.mutateMapText('');
         setCurrentId('');
-        setCurrentUrl('(unsaved)');
+        setCurrentUrl(`(${t('map.unsaved', 'unsaved')})`);
         setSaveOutstanding(false);
         setCurrentIteration(-1);
         setMapIterations([]);
@@ -241,7 +243,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     }
 
     async function saveMap() {
-        setCurrentUrl('(saving...)');
+        setCurrentUrl(`(${t('map.saving', 'saving...')})`);
         saveToRemoteStorage(currentId);
     }
 
@@ -480,7 +482,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
 
     const submenu = [
         {
-            name: mapState.showUsage ? 'Hide Usage' : 'Show Usage',
+            name: mapState.showUsage ? t('editor.hideUsage', 'Hide Usage') : t('editor.showUsage', 'Show Usage'),
             icon: <HelpCenterIcon />,
             action: () => {
                 toggleUsage();
@@ -630,17 +632,20 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
             </Box>
 
             <Dialog maxWidth={'lg'} open={mapState.showUsage} onClose={() => mapActions.setShowUsage(false)}>
-                <DialogTitle>Usage </DialogTitle>
+                <DialogTitle>{t('editor.usage', 'Usage')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Quick reference of all available map elements.You can add an example to your map by clicking the available links.
+                        {t(
+                            'editor.usageDescription',
+                            'Quick reference of all available map elements. You can add an example to your map by clicking the available links.',
+                        )}
                     </DialogContentText>
                     <Box marginTop={2}>
                         <UsageInfo mapStyleDefs={legacyState.mapStyleDefs} mutateMapText={mutateMapText} mapText={legacyState.mapText} />
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => mapActions.setShowUsage(false)}> Close </Button>
+                    <Button onClick={() => mapActions.setShowUsage(false)}>{t('common.close', 'Close')}</Button>
                 </DialogActions>
             </Dialog>
 

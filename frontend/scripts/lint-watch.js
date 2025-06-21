@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { spawn } = require('child_process');
+const {spawn} = require('child_process');
 
 console.log('👀 Starting ESLint file watcher...');
 console.log('🔍 Watching for changes in .js, .jsx, .ts, .tsx files');
@@ -19,24 +19,30 @@ function runLint(files = []) {
 
     isLinting = true;
     const filesToLint = files.length > 0 ? files : ['.'];
-    
-    console.log(`🔧 Running ESLint on ${files.length > 0 ? files.join(', ') : 'all files'}...`);
-    
-    const eslint = spawn('npx', [
-        'eslint',
-        ...filesToLint,
-        '--ext', '.js,.jsx,.ts,.tsx',
-        '--fix',
-        '--format=stylish',
-        '--cache',
-        '--cache-location', '.eslintcache'
-    ], {
-        stdio: 'inherit',
-        shell: true,
-        cwd: process.cwd()
-    });
 
-    eslint.on('close', (code) => {
+    console.log(`🔧 Running ESLint on ${files.length > 0 ? files.join(', ') : 'all files'}...`);
+
+    const eslint = spawn(
+        'npx',
+        [
+            'eslint',
+            ...filesToLint,
+            '--ext',
+            '.js,.jsx,.ts,.tsx',
+            '--fix',
+            '--format=stylish',
+            '--cache',
+            '--cache-location',
+            '.eslintcache',
+        ],
+        {
+            stdio: 'inherit',
+            shell: true,
+            cwd: process.cwd(),
+        },
+    );
+
+    eslint.on('close', code => {
         isLinting = false;
         if (code === 0) {
             console.log('✅ ESLint completed successfully\n');
@@ -52,7 +58,7 @@ function runLint(files = []) {
         }
     });
 
-    eslint.on('error', (err) => {
+    eslint.on('error', err => {
         console.error('❌ Failed to run ESLint:', err);
         isLinting = false;
     });
@@ -60,28 +66,30 @@ function runLint(files = []) {
 
 function shouldWatch(filePath) {
     // Ignore node_modules, .git, build directories, etc.
-    if (filePath.includes('node_modules') || 
-        filePath.includes('.git') || 
-        filePath.includes('.next') || 
+    if (
+        filePath.includes('node_modules') ||
+        filePath.includes('.git') ||
+        filePath.includes('.next') ||
         filePath.includes('build') ||
         filePath.includes('dist') ||
-        filePath.includes('.eslintcache')) {
+        filePath.includes('.eslintcache')
+    ) {
         return false;
     }
-    
+
     // Only watch js, jsx, ts, tsx files
     return /\.(js|jsx|ts|tsx)$/.test(filePath);
 }
 
 function watchDirectory(dir) {
     try {
-        fs.watch(dir, { recursive: true }, (eventType, filename) => {
+        fs.watch(dir, {recursive: true}, (eventType, filename) => {
             if (!filename) return;
-            
+
             const fullPath = path.join(dir, filename);
-            
+
             if (!shouldWatch(fullPath)) return;
-            
+
             if (eventType === 'change') {
                 console.log(`📝 File changed: ${filename}`);
                 setTimeout(() => runLint([fullPath]), 100);

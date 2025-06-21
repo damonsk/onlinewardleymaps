@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "沃德利地图",
+        "name": "在线沃德利地图",
+        "description": "在线创建和分享沃德利地图"
+    },
+    "common": {
+        "loading": "加载中...",
+        "error": "错误",
+        "success": "成功",
+        "cancel": "取消",
+        "save": "保存",
+        "new": "新建",
+        "delete": "删除",
+        "edit": "编辑",
+        "add": "添加",
+        "remove": "移除",
+        "yes": "是",
+        "no": "否",
+        "ok": "确定",
+        "back": "返回",
+        "next": "下一步",
+        "close": "关闭",
+        "confirm": "确认",
+        "update": "更新",
+        "rename": "重命名"
+    },
+    "navigation": {
+        "home": "首页",
+        "about": "关于",
+        "help": "帮助",
+        "settings": "设置",
+        "language": "语言",
+        "menu": "菜单",
+        "dashboard": "仪表板",
+        "editor": "编辑器",
+        "classicVersion": "使用经典版本",
+        "enableDarkTheme": "启用深色主题",
+        "enableLightTheme": "启用浅色主题"
+    },
+    "header": {
+        "editorMode": "编辑模式",
+        "presentationMode": "演示模式",
+        "exampleMap": "示例地图",
+        "getCloneUrl": "获取克隆URL",
+        "showLineNumbers": "显示行号",
+        "hideLineNumbers": "隐藏行号",
+        "showEvolvedLinks": "显示演变链接",
+        "hideEvolvedLinks": "隐藏演变链接",
+        "usageGuide": "使用指南",
+        "becomePatron": "成为赞助者 ❤️"
+    },
+    "map": {
+        "title": "沃德利地图",
+        "newMap": "新地图",
+        "saveMap": "保存地图",
+        "loadMap": "加载地图",
+        "exportMap": "导出地图",
+        "shareMap": "分享地图",
+        "cloneMap": "克隆地图",
+        "deleteMap": "删除地图",
+        "mapName": "地图名称",
+        "mapDescription": "地图描述",
+        "toolbar": {
+            "group": "按钮组",
+            "select": "选择",
+            "pan": "平移",
+            "zoomIn": "放大",
+            "zoomOut": "缩小",
+            "fit": "适应",
+            "fullscreen": "全屏",
+            "exitFullscreen": "退出全屏"
+        },
+        "evolution": {
+            "genesis": "创新期",
+            "custom": "定制期",
+            "product": "产品期",
+            "commodity": "商品期"
+        },
+        "visibility": {
+            "invisible": "不可见",
+            "visible": "可见"
+        },
+        "yourMap": "您的地图",
+        "unsaved": "未保存",
+        "saving": "保存中..."
+    },
+    "components": {
+        "component": "组件",
+        "components": "组件",
+        "addComponent": "添加组件",
+        "editComponent": "编辑组件",
+        "deleteComponent": "删除组件",
+        "componentName": "组件名称",
+        "maturity": "成熟度",
+        "visibility": "可见度",
+        "inertia": "惯性",
+        "quickAdd": "快速添加",
+        "type": "类型",
+        "text": "文本"
+    },
+    "links": {
+        "link": "链接",
+        "links": "链接",
+        "addLink": "添加链接",
+        "deleteLink": "删除链接",
+        "linkType": "链接类型",
+        "flow": "流向"
+    },
+    "annotations": {
+        "annotation": "注释",
+        "annotations": "注释",
+        "addAnnotation": "添加注释",
+        "editAnnotation": "编辑注释",
+        "deleteAnnotation": "删除注释",
+        "annotationText": "注释文本"
+    },
+    "iterations": {
+        "iteration": "迭代",
+        "iterations": "迭代",
+        "addIteration": "添加迭代",
+        "deleteIteration": "删除迭代",
+        "renameIteration": "重命名迭代",
+        "iterationName": "迭代名稱",
+        "deleteConfirmation": "您確定要刪除迭代 '{{name}}' 嗎？此操作無法撤銷。",
+        "renamePrompt": "為當前迭代輸入新名稱。"
+    },
+    "editor": {
+        "mapText": "地图文本",
+        "preview": "预览",
+        "syntax": "语法",
+        "help": "帮助",
+        "examples": "示例",
+        "usage": "用法",
+        "example": "示例",
+        "usageDescription": "所有可用地图元素的快速参考。您可以通过点击可用链接将示例添加到您的地图中。",
+        "validation": {
+            "error": "验证错误",
+            "lineError": "第 {{line}} 行出错",
+            "componentNotFound": "找不到组件 '{{component}}'",
+            "invalidSyntax": "无效语法"
+        },
+        "usages": {
+            "to_set_the_title": "设置标题",
+            "to_create_a_component": "创建组件",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "组件名称 [可见度（Y轴）, 成熟度（X轴）]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "惯性 - 组件可能面临变更阻力。",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "组件名称 [可见度（Y轴）, 成熟度（X轴）] 惯性",
+            "to_evolve_a_component": "演变组件",
+            "evole_name_(x_axis)": "演变 名称（X轴）",
+            "to_evolve_a_component_with_new_name": "用新名称演变组件",
+            "evole_name->newname_(x_axis)": "演变 名称->新名称（X轴）",
+            "to_link_components": "链接组件",
+            "to_indicate_flow": "指示流向",
+            "to_create_a_market": "创建市场",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "组件名称 [可见度（Y轴）, 成熟度（X轴）]（市场）",
+            "to_set_component_as_pipeline:": "将组件设置为管道：",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "管道 组件名称 [X轴（开始）, X轴（结束）]",
+            "to_indicate_flow_-_past_components_only": "指示流向 - 仅过去的组件",
+            "to_indicate_flow_-_future_components_only": "指示流向 - 仅未来的组件",
+            "to_indicate_flow_-_with_label": "指示流向 - 带标签",
+            "pioneers,_settlers,_townplanners_area": "先驱者，定居者，城镇规划者区域",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "添加区域指示哪种工作方式支持组件开发",
+            "build,_buy,_outsource_components": "构建、购买、外包组件",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "突出显示具有构建、购买或外包执行方法的组件"
+        },
+        "hideUsage": "隐藏用法",
+        "showUsage": "显示用法"
+    },
+    "theme": {
+        "light": "浅色主题",
+        "dark": "深色主题",
+        "toggleTheme": "切换主题"
+    },
+    "sharing": {
+        "shareMap": "分享地图",
+        "shareUrl": "分享URL",
+        "copyUrl": "复制URL",
+        "urlCopied": "URL已复制到剪贴板",
+        "publicMap": "公开地图",
+        "privateMap": "私人地图",
+        "cloneUrl": "克隆URL",
+        "cloneDescription": "您可以与他人分享此URL，使他们能够使用此地图作为初始状态创建新地图。",
+        "url": "URL",
+        "copy": "复制"
+    },
+    "export": {
+        "exportAs": "导出为",
+        "png": "PNG图片",
+        "svg": "SVG图片",
+        "pdf": "PDF文档",
+        "json": "JSON数据",
+        "text": "文本格式"
+    },
+    "footer": {
+        "github": "GitHub仓库",
+        "twitter": "在Twitter上关注",
+        "community": "加入社区",
+        "documentation": "文档",
+        "support": "支持",
+        "downloadExtension": "Download Visual Studio Code Extension",
+        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
+        "wardleyMappingLink": "the book",
+        "createdBy": "创建者"
+    },
+    "dialogs": {
+        "deleteConfirmation": "此操作无法撤消。",
+        "unsavedChanges": "您有未保存的更改。是否要保存？",
+        "invalidInput": "请输入有效内容。",
+        "networkError": "网络错误。请重试。",
+        "saveError": "保存错误。请重试。",
+        "loadError": "加载错误。请重试。",
+        "areYouSure": "Are you sure?"
+    }
+}

@@ -16,6 +16,7 @@ import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import {styled} from '@mui/material/styles';
 import React, {FunctionComponent, useEffect, useRef} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 import {MapIteration} from '../../repository/OwnApiWardleyMap';
 
 export interface NewMapIterationsProps {
@@ -35,6 +36,8 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
     setCurrentIteration,
     currentIteration,
 }) => {
+    const {t, originalT, currentLanguage} = useI18n();
+
     const StyledArea = styled(Box)(({theme}) => ({
         width: '100%',
         boxShadow: theme.shadows[4],
@@ -128,7 +131,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
     // }, [mapIterations]);
 
     return (
-        <StyledArea>
+        <StyledArea key={`iterations-${currentLanguage}`}>
             <Stepper nonLinear activeStep={currentIteration}>
                 {Array.isArray(mapIterations) &&
                     mapIterations.map((iteration, index) => (
@@ -142,22 +145,22 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
             <div>
                 <Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
                     <Button disabled={currentIteration <= 0} onClick={handleBack} sx={{mr: 1}} size="small">
-                        <KeyboardArrowLeft /> Back
+                        <KeyboardArrowLeft /> {t('common.back', 'Back')}
                     </Button>
                     <Box sx={{flex: '1 1 auto'}} />
 
                     {(mapIterations.length > 0 || currentIteration > 0) && (
                         <Button size="small" onClick={handleClickOpenDelete}>
-                            Delete <DeleteIcon />
+                            {t('common.delete', 'Delete')} <DeleteIcon />
                         </Button>
                     )}
                     {(mapIterations.length > 0 || currentIteration > 0) && (
                         <Button size="small" onClick={handleClickOpen}>
-                            Rename <EditIcon />
+                            {t('common.rename', 'Rename')} <EditIcon />
                         </Button>
                     )}
                     <Button size="small" onClick={addIterationClick}>
-                        Add <AddCircleIcon />
+                        {t('common.add', 'Add')} <AddCircleIcon />
                     </Button>
                     <Box sx={{flex: '1 1 auto'}} />
                     <Button
@@ -165,19 +168,19 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                         onClick={handleNext}
                         sx={{mr: 1}}
                         disabled={mapIterations.length === 0 || currentIteration === mapIterations.length - 1}>
-                        Next <KeyboardArrowRight />
+                        {t('common.next', 'Next')} <KeyboardArrowRight />
                     </Button>
                 </Box>
             </div>
             <Dialog open={openRename} onClose={() => handleClose()}>
-                <DialogTitle>Rename</DialogTitle>
+                <DialogTitle>{t('common.rename', 'Rename')}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>Enter a new name for the current iteration.</DialogContentText>
+                    <DialogContentText>{t('iterations.renamePrompt', 'Enter a new name for the current iteration.')}</DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
                         id="name"
-                        label="Iteration Name"
+                        label={t('iterations.iterationName', 'Iteration Name')}
                         type="text"
                         fullWidth
                         variant="standard"
@@ -186,8 +189,8 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleClose()}>Cancel</Button>
-                    <Button onClick={() => handleClose(() => updateIterationName())}>Update</Button>
+                    <Button onClick={() => handleClose()}>{t('common.cancel', 'Cancel')}</Button>
+                    <Button onClick={() => handleClose(() => updateIterationName())}>{t('common.update', 'Update')}</Button>
                 </DialogActions>
             </Dialog>
             <Dialog
@@ -195,17 +198,17 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                 onClose={() => handleCloseDelete()}
                 aria-labelledby="alert-dialog-title-delete"
                 aria-describedby="alert-dialog-description-delete">
-                <DialogTitle id="alert-dialog-title-delete">Are you sure?</DialogTitle>
+                <DialogTitle id="alert-dialog-title-delete">{t('dialogs.areYouSure', 'Are you sure?')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete iteration &apos;{value}
-                        &apos;? This cannot be undone.
+                        {originalT('iterations.deleteConfirmation', {name: value}) ||
+                            `Are you sure you want to delete iteration '${value}'? This cannot be undone.`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseDelete(() => deleteIterationClick())}>Delete</Button>
+                    <Button onClick={() => handleCloseDelete(() => deleteIterationClick())}>{t('common.delete', 'Delete')}</Button>
                     <Button onClick={() => handleCloseDelete()} autoFocus>
-                        Cancel
+                        {t('common.cancel', 'Cancel')}
                     </Button>
                 </DialogActions>
             </Dialog>

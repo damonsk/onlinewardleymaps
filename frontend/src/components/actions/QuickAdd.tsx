@@ -22,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {ThemeProvider} from '@mui/material/styles';
 import {MapTheme} from '../../constants/mapstyles';
+import {useI18n} from '../../hooks/useI18n';
 import {lightTheme} from '../../theme/index';
 
 export interface QuickAddProps {
@@ -39,6 +40,9 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
     mapText,
     mapStyleDefs,
 }) => {
+    // Get translation function
+    const {t} = useI18n();
+
     const icons = [
         {
             Icon: ComponentIcon,
@@ -125,7 +129,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                     onClose={cancelShowAdd}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description">
-                    <DialogTitle id="alert-dialog-title">Quick Add</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{t('components.quickAdd', 'Quick Add')}</DialogTitle>
                     <DialogContent>
                         <FormControl
                             sx={{
@@ -135,13 +139,13 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                                     border: '0',
                                 },
                             }}>
-                            <InputLabel id="type-autowidth-label">Type</InputLabel>
+                            <InputLabel id="type-autowidth-label">{t('components.type', 'Type')}</InputLabel>
                             <Select
                                 labelId="type-autowidth-label"
                                 id="demo-simple-select-autowidth"
                                 value={typeToUse}
                                 onChange={handleChaneOfComponent}
-                                label="Type"
+                                label={t('components.type', 'Type')}
                                 variant="standard">
                                 {icons.map((available, idx) => {
                                     const {Icon} = available;
@@ -163,7 +167,7 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                         <FormControl sx={{m: 1, minWidth: 80}}>
                             <TextField
                                 id="outlined-multiline-flexible"
-                                label="Text"
+                                label={t('components.text', 'Text')}
                                 value={value}
                                 onChange={handleChange}
                                 autoFocus={true}
@@ -180,8 +184,8 @@ export const QuickAdd: React.FunctionComponent<QuickAddProps> = ({
                         </FormControl>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={cancelShowAdd}>Cancel</Button>
-                        <Button onClick={addNewComponent}>Add</Button>
+                        <Button onClick={cancelShowAdd}>{t('common.cancel', 'Cancel')}</Button>
+                        <Button onClick={addNewComponent}>{t('common.add', 'Add')}</Button>
                     </DialogActions>
                 </Dialog>
             </ThemeProvider>

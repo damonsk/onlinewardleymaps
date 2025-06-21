@@ -17,3 +17,4 @@ frontend/src/archived_legacy_components/
 copilot_reports/*
 .husky/
 frontend/wmlandscape/.yarn
+frontend/.eslintcache

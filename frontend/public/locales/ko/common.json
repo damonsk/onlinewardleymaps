@@ -1,0 +1,215 @@
+{
+    "app": {
+        "title": "워들리 맵",
+        "name": "온라인 워들리 맵",
+        "description": "워들리 맵을 온라인에서 만들고 공유하세요"
+    },
+    "common": {
+        "loading": "로딩 중...",
+        "error": "오류",
+        "success": "성공",
+        "cancel": "취소",
+        "save": "저장",
+        "new": "새로 만들기",
+        "delete": "삭제",
+        "edit": "편집",
+        "add": "추가",
+        "remove": "제거",
+        "yes": "예",
+        "no": "아니오",
+        "ok": "확인",
+        "back": "뒤로",
+        "next": "다음",
+        "close": "닫기",
+        "confirm": "확인",
+        "update": "업데이트",
+        "rename": "이름 바꾸기"
+    },
+    "navigation": {
+        "home": "홈",
+        "about": "소개",
+        "help": "도움말",
+        "settings": "설정",
+        "language": "언어",
+        "menu": "메뉴",
+        "dashboard": "대시보드",
+        "editor": "편집기",
+        "classicVersion": "클래식 버전 사용",
+        "enableDarkTheme": "다크 테마 활성화",
+        "enableLightTheme": "라이트 테마 활성화"
+    },
+    "header": {
+        "editorMode": "편집기 모드",
+        "presentationMode": "프레젠테이션 모드",
+        "exampleMap": "예제 맵",
+        "getCloneUrl": "복제 URL 가져오기",
+        "showLineNumbers": "줄 번호 표시",
+        "hideLineNumbers": "줄 번호 숨기기",
+        "showEvolvedLinks": "진화된 링크 표시",
+        "hideEvolvedLinks": "진화된 링크 숨기기",
+        "usageGuide": "사용 가이드",
+        "becomePatron": "후원자 되기 ❤️"
+    },
+    "map": {
+        "title": "워들리 맵",
+        "newMap": "새 맵",
+        "saveMap": "맵 저장",
+        "loadMap": "맵 불러오기",
+        "exportMap": "맵 내보내기",
+        "shareMap": "맵 공유",
+        "cloneMap": "맵 복제",
+        "deleteMap": "맵 삭제",
+        "mapName": "맵 이름",
+        "mapDescription": "맵 설명",
+        "toolbar": {
+            "group": "버튼 그룹",
+            "select": "선택",
+            "pan": "이동",
+            "zoomIn": "확대",
+            "zoomOut": "축소",
+            "fit": "맞춤",
+            "fullscreen": "전체 화면",
+            "exitFullscreen": "전체 화면 나가기"
+        },
+        "evolution": {
+            "genesis": "기원",
+            "custom": "커스텀",
+            "product": "제품",
+            "commodity": "상품"
+        },
+        "visibility": {
+            "invisible": "보이지 않음",
+            "visible": "보임"
+        },
+        "yourMap": "귀하의 지도",
+        "unsaved": "저장되지 않음",
+        "saving": "저장 중..."
+    },
+    "components": {
+        "component": "구성 요소",
+        "components": "구성 요소",
+        "addComponent": "구성 요소 추가",
+        "editComponent": "구성 요소 편집",
+        "deleteComponent": "구성 요소 삭제",
+        "componentName": "구성 요소 이름",
+        "maturity": "성숙도",
+        "visibility": "가시성",
+        "inertia": "관성",
+        "quickAdd": "빠른 추가",
+        "type": "유형",
+        "text": "텍스트"
+    },
+    "links": {
+        "link": "링크",
+        "links": "링크",
+        "addLink": "링크 추가",
+        "deleteLink": "링크 삭제",
+        "linkType": "링크 유형",
+        "flow": "흐름"
+    },
+    "annotations": {
+        "annotation": "주석",
+        "annotations": "주석",
+        "addAnnotation": "주석 추가",
+        "editAnnotation": "주석 편집",
+        "deleteAnnotation": "주석 삭제",
+        "annotationText": "주석 텍스트"
+    },
+    "iterations": {
+        "iteration": "반복",
+        "iterations": "반복",
+        "addIteration": "반복 추가",
+        "deleteIteration": "반복 삭제",
+        "renameIteration": "반복 이름 바꾸기",
+        "iterationName": "반복 이름",
+        "deleteConfirmation": "반복 '{{name}}'을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        "renamePrompt": "현재 반복에 대한 새 이름을 입력하세요."
+    },
+    "editor": {
+        "mapText": "맵 텍스트",
+        "preview": "미리보기",
+        "syntax": "구문",
+        "help": "도움말",
+        "examples": "예제",
+        "usage": "사용법",
+        "example": "예제",
+        "usageDescription": "사용 가능한 모든 맵 요소에 대한 빠른 참조. 사용 가능한 링크를 클릭하여 예제를 맵에 추가할 수 있습니다.",
+        "validation": {
+            "error": "유효성 검사 오류",
+            "lineError": "{{line}}번 줄에서 오류",
+            "componentNotFound": "구성 요소 '{{component}}'를 찾을 수 없습니다",
+            "invalidSyntax": "잘못된 구문"
+        },
+        "usages": {
+            "to_set_the_title": "제목 설정하기",
+            "to_create_a_component": "구성 요소 만들기",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "구성 요소 이름 [가시성(Y축), 성숙도(X축)]",
+            "inertia_-_component_likely_to_face_resistance_to_change.": "관성 - 구성 요소가 변화에 저항할 가능성이 있습니다.",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "구성 요소 이름 [가시성(Y축), 성숙도(X축)] 관성",
+            "to_evolve_a_component": "구성 요소 진화시키기",
+            "evole_name_(x_axis)": "진화 이름(X축)",
+            "to_evolve_a_component_with_new_name": "새 이름으로 구성 요소 진화시키기",
+            "evole_name->newname_(x_axis)": "진화 이름->새이름(X축)",
+            "to_link_components": "구성 요소 연결하기",
+            "to_indicate_flow": "흐름 표시하기",
+            "to_create_a_market": "시장 만들기",
+            "component_name_[visibility_(y_axis),_maturity_(x_axis)]_(market)": "구성 요소 이름 [가시성(Y축), 성숙도(X축)] (시장)",
+            "to_set_component_as_pipeline:": "구성 요소를 파이프라인으로 설정하기:",
+            "pipeline_component_name_[x_axis_(start),_x_axis_(end)]": "파이프라인 구성 요소 이름 [X축(시작), X축(끝)]",
+            "to_indicate_flow_-_past_components_only": "흐름 표시하기 - 과거 구성 요소만",
+            "to_indicate_flow_-_future_components_only": "흐름 표시하기 - 미래 구성 요소만",
+            "to_indicate_flow_-_with_label": "흐름 표시하기 - 라벨 포함",
+            "pioneers,_settlers,_townplanners_area": "개척자, 정착자, 도시계획가 영역",
+            "add_areas_indicating_which_type_of_working_approach_supports_component_development": "어떤 작업 방식이 구성 요소 개발을 지원하는지 나타내는 영역 추가",
+            "build,_buy,_outsource_components": "구축, 구매, 외주 구성 요소",
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "구축, 구매 또는 외주 실행 방법으로 구성 요소 강조 표시"
+        },
+        "hideUsage": "사용법 숨기기",
+        "showUsage": "사용법 보기"
+    },
+    "theme": {
+        "light": "라이트 테마",
+        "dark": "다크 테마",
+        "toggleTheme": "테마 전환"
+    },
+    "sharing": {
+        "shareMap": "맵 공유",
+        "shareUrl": "공유 URL",
+        "copyUrl": "URL 복사",
+        "urlCopied": "URL이 클립보드에 복사되었습니다",
+        "publicMap": "공개 맵",
+        "privateMap": "비공개 맵",
+        "cloneUrl": "복제 URL",
+        "cloneDescription": "다른 사람들과 이 URL을 공유하여 이 맵을 초기 상태로 사용하여 새 맵을 만들 수 있게 할 수 있습니다.",
+        "url": "URL",
+        "copy": "복사"
+    },
+    "export": {
+        "exportAs": "내보내기 형식",
+        "png": "PNG 이미지",
+        "svg": "SVG 이미지",
+        "pdf": "PDF 문서",
+        "json": "JSON 데이터",
+        "text": "텍스트 형식"
+    },
+    "footer": {
+        "github": "GitHub 저장소",
+        "twitter": "Twitter에서 팔로우",
+        "community": "커뮤니티 참여",
+        "documentation": "문서",
+        "support": "지원",
+        "downloadExtension": "Download Visual Studio Code Extension",
+        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
+        "wardleyMappingLink": "the book",
+        "createdBy": "제작자"
+    },
+    "dialogs": {
+        "deleteConfirmation": "이 작업은 취소할 수 없습니다.",
+        "unsavedChanges": "저장되지 않은 변경 사항이 있습니다. 저장하시겠습니까?",
+        "invalidInput": "유효한 입력을 입력하세요.",
+        "networkError": "네트워크 오류. 다시 시도하세요.",
+        "saveError": "저장 오류. 다시 시도하세요.",
+        "loadError": "로드 오류. 다시 시도하세요.",
+        "areYouSure": "Are you sure?"
+    }
+}
