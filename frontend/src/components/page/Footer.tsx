@@ -10,6 +10,9 @@ const StyledFooter = styled((props: {children?: React.ReactNode}) => <Grid conta
         fill: theme.palette.mode === 'light' ? 'black' : 'white',
         verticalAlign: 'bottom',
     },
+    '& .x-icon': {
+        fill: theme.palette.mode === 'light' ? 'black' : 'white',
+    },
 }));
 
 const Footer: React.FC = () => {
@@ -41,8 +44,17 @@ const Footer: React.FC = () => {
                         </Link>
                     </Typography>{' '}
                     <Typography>
-                        <Link href="https://twitter.com/mapsascode" target="_blank" rel="noopener noreferrer">
-                            {t('footer.twitter', 'Follow on Twitter')}
+                        <Link href="https://x.com/mapsascode" target="_blank" rel="noopener noreferrer">
+                            <svg
+                                className="x-icon"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                style={{verticalAlign: 'middle', marginRight: '8px'}}>
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            {t('footer.twitter', 'MapsAsCode')}
                         </Link>
                     </Typography>
                     <Typography>

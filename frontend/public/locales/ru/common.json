@@ -194,13 +194,13 @@
     },
     "footer": {
         "github": "GitHub репозиторий",
-        "twitter": "Подписаться в Twitter",
+        "twitter": "MapsAsCode",
         "community": "Присоединиться к сообществу",
         "documentation": "Документация",
         "support": "Поддержка",
         "downloadExtension": "Download Visual Studio Code Extension",
-        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
-        "wardleyMappingLink": "the book",
+        "wardleyMapping": "Картографирование Уордли предоставлено Саймоном Уордли, CC BY-SA 4.0. Чтобы узнать больше, смотрите",
+        "wardleyMappingLink": "книгу",
         "createdBy": "Создано"
     },
     "dialogs": {

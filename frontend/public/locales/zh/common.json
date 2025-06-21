@@ -194,13 +194,13 @@
     },
     "footer": {
         "github": "GitHub仓库",
-        "twitter": "在Twitter上关注",
+        "twitter": "MapsAsCode",
         "community": "加入社区",
         "documentation": "文档",
         "support": "支持",
         "downloadExtension": "Download Visual Studio Code Extension",
-        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
-        "wardleyMappingLink": "the book",
+        "wardleyMapping": "沃德利映射由西蒙·沃德利提供，CC BY-SA 4.0。了解更多，请参阅",
+        "wardleyMappingLink": "书籍",
         "createdBy": "创建者"
     },
     "dialogs": {

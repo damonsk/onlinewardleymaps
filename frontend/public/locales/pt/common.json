@@ -194,13 +194,13 @@
     },
     "footer": {
         "github": "Repositório GitHub",
-        "twitter": "Seguir no Twitter",
+        "twitter": "MapsAsCode",
         "community": "Junte-se à comunidade",
         "documentation": "Documentação",
         "support": "Suporte",
         "downloadExtension": "Download Visual Studio Code Extension",
-        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
-        "wardleyMappingLink": "the book",
+        "wardleyMapping": "Mapeamento Wardley cortesia de Simon Wardley, CC BY-SA 4.0. Para saber mais, veja",
+        "wardleyMappingLink": "o livro",
         "createdBy": "Criado por"
     },
     "dialogs": {

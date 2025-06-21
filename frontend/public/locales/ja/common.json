@@ -194,13 +194,13 @@
     },
     "footer": {
         "github": "GitHubリポジトリ",
-        "twitter": "Twitterでフォロー",
+        "twitter": "MapsAsCode",
         "community": "コミュニティに参加",
         "documentation": "ドキュメント",
         "support": "サポート",
         "downloadExtension": "Download Visual Studio Code Extension",
-        "wardleyMapping": "Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see",
-        "wardleyMappingLink": "the book",
+        "wardleyMapping": "ワードリーマッピングはサイモン・ワードリーの提供、CC BY-SA 4.0。詳細については、",
+        "wardleyMappingLink": "書籍",
         "createdBy": "作成者"
     },
     "dialogs": {
