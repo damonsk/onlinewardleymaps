@@ -73,7 +73,7 @@
         "next-i18next": "^15.4.2",
         "prop-types": "^15.8.1",
         "react": "^19.1.0",
-        "react-ace": "^13.0.0",
+        "react-ace": "^14.0.1",
         "react-dom": "^19.1.0",
         "react-i18next": "^15.5.3",
         "react-svg-pan-zoom": "^3.13.1",
