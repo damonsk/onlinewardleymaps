@@ -16,7 +16,25 @@
             "jsx": true
         }
     },
-    "ignorePatterns": ["models", "src/ui-components", "node_modules/", ".yarn/*", "sonar-project.js", "scripts/*.js"],
+    "ignorePatterns": [
+        "models",
+        "src/ui-components", 
+        "node_modules/",
+        "**/node_modules/**",
+        ".yarn/*",
+        "**/.yarn/**",
+        "sonar-project.js",
+        "scripts/*.js",
+        "*.config.js",
+        "**/*.config.js",
+        "test-i18n.js",
+        ".next/",
+        "**/.next/**",
+        "build/",
+        "**/build/**",
+        "dist/",
+        "**/dist/**"
+    ],
     "plugins": ["react"],
     "rules": {
         "prettier/prettier": [

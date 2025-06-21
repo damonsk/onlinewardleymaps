@@ -43,7 +43,15 @@ const eslint = spawn('npx', ['eslint', ...args], {
     shell: true,
 });
 
+// Add a timeout to prevent hanging
+const timeout = setTimeout(() => {
+    console.log('⏰ ESLint timed out after 5 minutes. Killing process...');
+    eslint.kill('SIGTERM');
+    process.exit(1);
+}, 5 * 60 * 1000); // 5 minutes
+
 eslint.on('close', code => {
+    clearTimeout(timeout);
     if (code === 0) {
         console.log(`✅ ESLint completed successfully! Processed ${totalFiles} files.`);
     } else {
@@ -53,6 +61,7 @@ eslint.on('close', code => {
 });
 
 eslint.on('error', err => {
+    clearTimeout(timeout);
     console.error('❌ Failed to run ESLint:', err);
     process.exit(1);
 });
