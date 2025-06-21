@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Code Cleanup Script
  * This script renames Modern component files to their standard names and updates imports

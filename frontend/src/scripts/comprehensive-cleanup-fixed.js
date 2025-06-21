@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable */
+
 /**
  * Comprehensive Code Cleanup Script for    // Duplicate interface files (CAREFUL - check imports first!)
     orphanedInterfaces: [

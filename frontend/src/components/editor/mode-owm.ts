@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-ignore - ace-builds has incorrect type definitions
 import ace from 'ace-builds';
 

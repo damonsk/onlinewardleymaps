@@ -25,7 +25,7 @@ interface ModernPipelineProps {
     scaleFactor: number;
 }
 
-function Pipeline(props: ModernPipelineProps): JSX.Element {
+function Pipeline(props: ModernPipelineProps): React.JSX.Element {
     const positionCalc = new PositionCalculator();
     const positionUpdater = new DefaultPositionUpdater('pipeline', props.mapText, props.mutateMapText, [
         ExistingCoordsMatcher,

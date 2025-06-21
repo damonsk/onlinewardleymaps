@@ -13,7 +13,6 @@ export default class DefaultPositionUpdater implements PositionUpdater {
         this.replacers = replacers;
     }
 
-    //eslint-disable-next-line
     setSuccessor(_positionUpdater: PositionUpdater) {
         throw new Error('Method not implemented.');
     }

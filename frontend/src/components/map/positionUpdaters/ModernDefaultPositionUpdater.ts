@@ -13,7 +13,6 @@ export default class ModernDefaultPositionUpdater implements PositionUpdater {
         this.replacers = replacers;
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     setSuccessor(_positionUpdater: PositionUpdater) {
         throw new Error('Method not implemented.');
     }

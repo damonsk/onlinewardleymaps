@@ -264,7 +264,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 link.click();
                 tempElement.remove();
             })
-            // eslint-disable-next-line
+
             .catch(_ => {
                 tempElement.remove();
             });
@@ -439,7 +439,7 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         }, 500);
 
         // Handle panel resize events specifically
-        /* eslint-disable @typescript-eslint/no-unused-vars */
+
         const handlePanelResize = (event: CustomEvent) => {
             // Update both map dimensions and canvas dimensions when panel resizes
             // This should work exactly like browser window resize

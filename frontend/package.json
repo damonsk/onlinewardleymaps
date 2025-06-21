@@ -8,6 +8,7 @@
         "@babel/preset-env": "^7.24.3",
         "@babel/preset-react": "^7.24.1",
         "@babel/preset-typescript": "^7.24.1",
+        "@eslint/js": "^9.29.0",
         "@next/eslint-plugin-next": "15.3.2",
         "@testing-library/jest-dom": "^6.4.2",
         "@types/babel__core": "^7.20.5",
@@ -18,7 +19,7 @@
         "@types/lodash.merge": "^4.6.9",
         "@types/node": "20.11.30",
         "@types/react": "^19.1.8",
-        "@types/react-dom": "^18.2.22",
+        "@types/react-dom": "^19.1.6",
         "@types/react-svg-pan-zoom": "^3.3.9",
         "@typescript-eslint/eslint-plugin": "^8.33.1",
         "@typescript-eslint/parser": "^8.34.0",
@@ -54,8 +55,8 @@
     },
     "resolutions": {
         "react-error-overlay": "6.0.9",
-        "@types/react": "^18.2.67",
-        "@types/react-dom": "^18.2.22"
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6"
     },
     "dependencies": {
         "@emotion/react": "^11.11.4",
@@ -73,7 +74,7 @@
         "prop-types": "^15.8.1",
         "react": "^19.1.0",
         "react-ace": "^13.0.0",
-        "react-dom": "^18.2.0",
+        "react-dom": "^19.1.0",
         "react-i18next": "^15.5.3",
         "react-svg-pan-zoom": "^3.13.1",
         "sass": "1.80.6",
@@ -91,9 +92,9 @@
         "start": "next start",
         "lint": "node scripts/lint-with-progress.js --fix",
         "lint:check": "node scripts/lint-with-progress.js",
-        "lint:simple": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+        "lint:simple": "eslint . --fix",
         "lint:watch": "node scripts/lint-watch.js",
-        "lint:verbose": "echo '🔧 Running ESLint with detailed output...' && eslint . --ext .js,.jsx,.ts,.tsx --fix --format=stylish --debug && echo '✅ ESLint completed!'",
+        "lint:verbose": "echo '🔧 Running ESLint with detailed output...' && eslint . --fix --format=stylish --debug && echo '✅ ESLint completed!'",
         "find-untranslated": "node scripts/find-untranslated.js",
         "check-translations": "node scripts/check-translations.js",
         "fix-translations": "node scripts/check-translations.js --fix",

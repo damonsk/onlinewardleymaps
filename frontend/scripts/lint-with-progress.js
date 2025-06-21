@@ -32,7 +32,7 @@ const totalFiles = countFiles('.', ['.js', '.jsx', '.ts', '.tsx']);
 console.log(`🔍 Found ${totalFiles} TypeScript/JavaScript files to check...`);
 console.log(`${shouldFix ? '🔧 Running ESLint with auto-fix' : '📋 Running ESLint check-only'}...`);
 
-const args = ['.', '--ext', '.js,.jsx,.ts,.tsx', '--format=stylish'];
+const args = ['.', '--format=stylish'];
 
 if (shouldFix) {
     args.push('--fix');

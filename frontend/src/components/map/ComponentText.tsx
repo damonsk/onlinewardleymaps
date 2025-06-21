@@ -35,9 +35,9 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     mapText,
     onLabelMove,
     scaleFactor = 1,
-    mapStyleDefs, // eslint-disable-line @typescript-eslint/no-unused-vars
+    mapStyleDefs,
     onClick,
-    id, // eslint-disable-line @typescript-eslint/no-unused-vars
+    id,
     element,
 }) => {
     const {enableDoubleClickRename} = useFeatureSwitches();

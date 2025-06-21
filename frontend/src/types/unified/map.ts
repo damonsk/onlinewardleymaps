@@ -127,7 +127,7 @@ export const getAllMapElements = (map: UnifiedWardleyMap): UnifiedComponent[] =>
  * Migration helper - converts old WardleyMap to new unified structure
  * This can be used during the transition period
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export const migrateToUnifiedMap = (oldMap: any): UnifiedWardleyMap => {
     // This would contain the logic to convert from the old fragmented structure
     // to the new unified structure. For now, returning empty map as placeholder.

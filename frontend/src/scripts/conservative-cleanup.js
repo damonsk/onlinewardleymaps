@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable */
+
 /**
  * Conservative Code Cleanup Script for OnlineWardleyMaps Frontend
  *

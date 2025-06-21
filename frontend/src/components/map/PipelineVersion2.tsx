@@ -33,7 +33,7 @@ interface ModernPipelineVersion2Props {
     scaleFactor: number;
 }
 
-function PipelineVersion2(props: ModernPipelineVersion2Props): JSX.Element {
+function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element {
     const positionCalc = new PositionCalculator();
     const isModKeyPressed = useModKeyPressedConsumer();
 
