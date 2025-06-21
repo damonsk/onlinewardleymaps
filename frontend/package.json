@@ -62,7 +62,7 @@
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.0",
         "@mui/icons-material": "^7.1.1",
-        "@mui/material": "^6.4.11",
+        "@mui/material": "^7.1.2",
         "@mui/styles": "^6.4.11",
         "ace-builds": "^1.32.7",
         "core-js": "^3.36.1",
