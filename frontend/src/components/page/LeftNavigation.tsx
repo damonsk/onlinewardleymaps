@@ -1,10 +1,10 @@
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import LanguageIcon from '@mui/icons-material/Language';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MapIcon from '@mui/icons-material/Map';
-import LanguageIcon from '@mui/icons-material/Language';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {ListItemButton} from '@mui/material';
+import { ListItemButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -14,9 +14,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Router from 'next/router';
-import React, {FunctionComponent, KeyboardEvent, useMemo, useState} from 'react';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
-import {useI18n} from '../../hooks/useI18n';
+import React, { FunctionComponent, KeyboardEvent, useMemo, useState } from 'react';
+import { useI18n } from '../../hooks/useI18n';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 
 export interface LeftNavigationProps {
     toggleMenu: () => void;
