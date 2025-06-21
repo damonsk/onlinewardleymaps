@@ -119,17 +119,7 @@ export const useI18n = () => {
 
                 // Also change Next.js locale via router for SSR consistency
                 const {pathname, asPath, query} = router;
-
-                // Handle hash/fragment properly - preserve it but ensure it comes after the locale
-                let newAsPath = asPath;
-                if (typeof window !== 'undefined' && window.location.hash) {
-                    const hash = window.location.hash;
-                    // Remove hash from asPath if present and add it back properly
-                    const pathWithoutHash = asPath.split('#')[0];
-                    newAsPath = `${pathWithoutHash}/${hash.substring(1)}`; // Convert #mapid to /mapid
-                }
-
-                await router.push({pathname, query}, newAsPath, {locale: language});
+                await router.push({pathname, query}, asPath, {locale: language});
 
                 console.log(`Language changed to: ${language}`);
             } catch (error) {
