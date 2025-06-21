@@ -14,7 +14,6 @@ import {alpha, styled} from '@mui/material/styles';
 import React, {FunctionComponent, MouseEvent, useRef, useState} from 'react';
 import {ExampleMap, MapPersistenceStrategy} from '../../constants/defaults';
 import {useI18n} from '../../hooks/useI18n';
-import LanguageSelector from '../controls/LanguageSelector';
 import CoreHeader from './CoreHeader';
 
 interface StyledMenuProps {
@@ -22,7 +21,7 @@ interface StyledMenuProps {
     MenuListProps: MenuListProps;
     anchorEl: Element | PopoverVirtualElement | (() => Element) | (() => PopoverVirtualElement) | null | undefined;
     open: boolean;
-    onClose: (preAction: () => void) => void;
+    onClose: () => void;
     children: React.ReactNode;
 }
 
@@ -104,8 +103,13 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
         setAnchorMoreEl(event.currentTarget);
     };
 
-    const handleMoreClose = (preAction: () => void) => {
+    const handleMoreClose = (preAction?: () => void) => {
         if (preAction) preAction();
+        setAnchorMoreEl(null);
+    };
+
+    // Separate handler for Material-UI Menu onClose that doesn't expect parameters
+    const handleMenuClose = () => {
         setAnchorMoreEl(null);
     };
 
@@ -117,7 +121,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
             }}
             anchorEl={anchorMoreEl}
             open={openMore}
-            onClose={handleMoreClose}>
+            onClose={handleMenuClose}>
             <MenuItem disableRipple onClick={() => handleMoreClose(() => setModalShow(true))}>
                 {t('header.getCloneUrl', 'Get Clone URL')}
             </MenuItem>
@@ -150,8 +154,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     return (
         <CoreHeader toggleMenu={toggleMenu}>
             <Stack direction="row" alignItems="flex-start" spacing={0.5} divider={<Divider orientation="vertical" flexItem />}>
-                <LanguageSelector size="small" variant="standard" />
-
                 <Button color="inherit" size="small" onClick={() => setMapOnlyView(!mapOnlyView)}>
                     {mapOnlyView ? t('header.editorMode', 'Editor Mode') : t('header.presentationMode', 'Presentation Mode')}
                 </Button>

@@ -2,6 +2,8 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MapIcon from '@mui/icons-material/Map';
+import LanguageIcon from '@mui/icons-material/Language';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {ListItemButton} from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -9,8 +11,10 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Router from 'next/router';
-import React, {FunctionComponent, KeyboardEvent, useMemo} from 'react';
+import React, {FunctionComponent, KeyboardEvent, useMemo, useState} from 'react';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {useI18n} from '../../hooks/useI18n';
 
@@ -28,7 +32,9 @@ export interface LeftNavigationProps {
 
 export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisible, toggleMenu, submenu, toggleTheme, isLightTheme}) => {
     const {enableDashboard} = useFeatureSwitches();
-    const {t, currentLanguage} = useI18n();
+    const {t, currentLanguage, changeLanguage, supportedLanguages} = useI18n();
+    const [anchorLanguageEl, setAnchorLanguageEl] = useState<Element | null>(null);
+
     const history = {
         push: (url: string) => {
             Router.push({
@@ -46,6 +52,20 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
     const complete = (followAction: () => void) => {
         toggleMenu();
         if (followAction) followAction();
+    };
+
+    const handleLanguageClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorLanguageEl(event.currentTarget);
+    };
+
+    const handleLanguageMenuClose = () => {
+        setAnchorLanguageEl(null);
+    };
+
+    const handleLanguageSelect = async (languageCode: string) => {
+        await changeLanguage(languageCode);
+        setAnchorLanguageEl(null);
+        toggleMenu(); // Close the main navigation drawer as well
     };
 
     const siteLinks = useMemo(
@@ -106,8 +126,39 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
                     <ListItemIcon>{isLightTheme ? <DarkModeIcon /> : <LightModeIcon />}</ListItemIcon>
                     <ListItemText primary={themeToggleText} />
                 </ListItemButton>
+                <ListItemButton key={'language'} onClick={handleLanguageClick}>
+                    <ListItemIcon>
+                        <LanguageIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={t('navigation.language', 'Language')} />
+                    <ChevronRightIcon />
+                </ListItemButton>
             </List>
         </Box>
+    );
+
+    const languageMenu = (
+        <Menu
+            anchorEl={anchorLanguageEl}
+            open={Boolean(anchorLanguageEl)}
+            onClose={handleLanguageMenuClose}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}>
+            {supportedLanguages.map(language => (
+                <MenuItem
+                    key={language.code}
+                    onClick={() => handleLanguageSelect(language.code)}
+                    selected={currentLanguage === language.code}>
+                    {language.nativeName}
+                </MenuItem>
+            ))}
+        </Menu>
     );
 
     return (
@@ -115,6 +166,7 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
             <Drawer anchor={'left'} open={menuVisible} onClose={toggleMenu}>
                 {list}
             </Drawer>
+            {languageMenu}
         </div>
     );
 };

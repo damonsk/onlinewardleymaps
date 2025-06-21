@@ -19,10 +19,48 @@ export const useI18n = () => {
     const [isHydrated, setIsHydrated] = useState(false);
     const [forceRender, setForceRender] = useState(0);
 
+    // Storage key for language preference
+    const LANGUAGE_STORAGE_KEY = 'onlinewardleymaps_language';
+
+    /**
+     * Get the saved language preference from localStorage
+     * Falls back to router locale or default 'en'
+     */
+    const getSavedLanguage = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            if (saved) {
+                // Check if it's a valid locale
+                const supportedLocales = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko', 'ru'];
+                if (supportedLocales.includes(saved)) {
+                    return saved;
+                }
+            }
+        }
+        return router.locale || 'en';
+    }, [router.locale]);
+
     // Track hydration state to prevent SSR/CSR mismatches
     useEffect(() => {
         setIsHydrated(true);
-    }, []);
+
+        // Once hydrated, check for saved language preference and apply it
+        const savedLanguage = getSavedLanguage();
+        const currentLang = i18n.language || router.locale || 'en';
+
+        if (savedLanguage !== currentLang && i18n && typeof i18n.changeLanguage === 'function') {
+            console.log(`Applying saved language preference: ${savedLanguage}`);
+            i18n.changeLanguage(savedLanguage)
+                .then(() => {
+                    // Update Next.js locale as well
+                    const {pathname, asPath, query} = router;
+                    router.push({pathname, query}, asPath, {locale: savedLanguage});
+                })
+                .catch(error => {
+                    console.error('Error applying saved language:', error);
+                });
+        }
+    }, [getSavedLanguage, i18n, router]);
 
     // Set up listener for i18next language changes
     useEffect(() => {
@@ -66,6 +104,12 @@ export const useI18n = () => {
                 if (i18n && typeof i18n.changeLanguage === 'function') {
                     await i18n.changeLanguage(language);
 
+                    // Persist language preference to localStorage
+                    if (typeof window !== 'undefined') {
+                        localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+                        console.log(`Language preference saved to localStorage: ${language}`);
+                    }
+
                     // Force components to rerender by dispatching a custom event
                     window.dispatchEvent(new CustomEvent('languageChanged', {detail: language}));
 
@@ -75,14 +119,24 @@ export const useI18n = () => {
 
                 // Also change Next.js locale via router for SSR consistency
                 const {pathname, asPath, query} = router;
-                await router.push({pathname, query}, asPath, {locale: language});
+
+                // Handle hash/fragment properly - preserve it but ensure it comes after the locale
+                let newAsPath = asPath;
+                if (typeof window !== 'undefined' && window.location.hash) {
+                    const hash = window.location.hash;
+                    // Remove hash from asPath if present and add it back properly
+                    const pathWithoutHash = asPath.split('#')[0];
+                    newAsPath = `${pathWithoutHash}/${hash.substring(1)}`; // Convert #mapid to /mapid
+                }
+
+                await router.push({pathname, query}, newAsPath, {locale: language});
 
                 console.log(`Language changed to: ${language}`);
             } catch (error) {
                 console.error('Error changing language:', error);
             }
         },
-        [i18n, router],
+        [i18n, router, LANGUAGE_STORAGE_KEY],
     );
 
     const currentLanguage = i18n.language || router.locale || 'en';
