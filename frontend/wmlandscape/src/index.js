@@ -66,6 +66,7 @@ import AttitudeExtractionStrategy from '../../src/conversion/AttitudeExtractionS
 import BaseStrategyRunner from '../../src/conversion/BaseStrategyRunner';
 import ComponentExtractionStrategy from '../../src/conversion/ComponentExtractionStrategy';
 import Converter from '../../src/conversion/Converter';
+import {UnifiedConverter} from '../../src/conversion/UnifiedConverter';
 import EcosystemExtractionStrategy from '../../src/conversion/EcosystemExtractionStrategy';
 import EvolveExtractionStrategy from '../../src/conversion/EvolveExtractionStrategy';
 import ExtendableComponentExtractionStrategy from '../../src/conversion/ExtendableComponentExtractionStrategy';
@@ -93,6 +94,7 @@ import EvolvingToEvolvingLinksStrategy from '../../src/linkStrategies/EvolvingTo
 import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingToNoneEvolvingEndLinksStrategy';
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
 import {MapElements} from '../../src/processing/MapElements';
+import {useUnifiedMapState, useLegacyMapState} from '../../src/hooks/useUnifiedMapState';
 export {
     AccelerateSymbol,
     AcceleratorExtractionStrategy,
@@ -186,10 +188,13 @@ export {
     SubMapSymbol,
     SVGWrapper,
     TitleExtractionStrategy,
+    UnifiedConverter,
     MapElements,
     UrlExtractionStrategy,
     Usages,
     useFeatureSwitches,
+    useUnifiedMapState,
+    useLegacyMapState,
     useModKeyPressedConsumer,
     XAxisLabelsExtractionStrategy,
 };
