@@ -152,7 +152,7 @@ export const Defaults: {
 // Converter
 export class UnifiedConverter {
     constructor(featureSwitches?: any);
-    convert: (mapText: string) => UnifiedWardleyMap;
+    parse(mapText: string): UnifiedWardleyMap;
 }
 
 // Hooks and Providers
