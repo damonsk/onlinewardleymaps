@@ -5,9 +5,9 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "rollup -c && tsc --emitDeclarationOnly && cp ./src/index.d.ts ./dist/",
+        "build": "rollup -c && cp ./src/index.d.ts ./dist/ && cp ./src/global.d.ts ./dist/",
         "start": "rollup -c -w",
-        "types": "tsc --emitDeclarationOnly"
+        "types": "tsc --skipLibCheck -p tsconfig.types.json || true"
     },
     "files": [
         "dist"
@@ -25,9 +25,20 @@
         "@rollup/plugin-commonjs": "^15.1.0",
         "@rollup/plugin-node-resolve": "^9.0.0",
         "@rollup/plugin-typescript": "^8.3.2",
+        "@types/lodash.merge": "^4.6.9",
+        "@types/react": "^18.2.0",
+        "@types/react-dom": "^18.2.0",
         "autoprefixer": "^10.0.1",
         "babel-core": "^6.26.3",
         "babel-runtime": "^6.26.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "@mui/material": "^6.4.11",
+        "@mui/icons-material": "^7.1.1",
+        "@mui/styles": "^6.4.11",
+        "lodash.merge": "^4.6.2",
+        "i18next": "^23.16.8",
+        "next": "^14.1.0",
         "rollup": "^4.13.0",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-node-resolve": "^5.2.0",

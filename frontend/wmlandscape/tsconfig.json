@@ -16,8 +16,9 @@
         "declaration": true,
         "declarationDir": "./dist",
         "outDir": "./dist",
-        "emitDeclarationOnly": true
+        "emitDeclarationOnly": true,
+        "types": ["react", "react-dom"]
     },
-    "include": ["../../src/**/*", "src/**/*"],
+    "include": ["../../src/**/*", "src/**/*", "node_modules/@types"],
     "exclude": ["node_modules/**"]
 }

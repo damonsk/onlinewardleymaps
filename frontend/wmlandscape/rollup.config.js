@@ -18,12 +18,18 @@ module.exports = {
     plugins: [
         resolve({
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            mainFields: ['browser', 'module', 'main'],
+            preferBuiltins: false
         }),
         typescript({
             tsconfig: './tsconfig.json',
             declaration: true,
             declarationDir: './dist',
-            rootDir: 'src'
+            rootDir: 'src',
+            include: ['src/**/*', 'global.d.ts'],
+            compilerOptions: {
+                skipLibCheck: true
+            }
         }),
         babel({
             exclude: 'node_modules/**',

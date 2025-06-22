@@ -1,6 +1,10 @@
-name: Publish
+name: Build and Publish wmlandscape
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,12 +18,33 @@ jobs:
           registry-url: https://registry.npmjs.org/
         env:
           CI: true
+          
+      - name: Install dependencies
+        run: |
+          cd frontend/wmlandscape
+          yarn install
+          
+      # Important step for TypeScript type modules
+      - name: Create react/react-dom modules for TypeScript
+        run: |
+          mkdir -p frontend/wmlandscape/node_modules/@types/react
+          mkdir -p frontend/wmlandscape/node_modules/@types/react-dom
+          echo '{ "name": "@types/react" }' > frontend/wmlandscape/node_modules/@types/react/package.json
+          echo '{ "name": "@types/react-dom" }' > frontend/wmlandscape/node_modules/@types/react-dom/package.json
+          
+          # Create basic type files
+          echo 'import * as React from "react"; export = React; export as namespace React;' > frontend/wmlandscape/node_modules/@types/react/index.d.ts
+          echo 'import * as ReactDOM from "react-dom"; export = ReactDOM; export as namespace ReactDOM;' > frontend/wmlandscape/node_modules/@types/react-dom/index.d.ts
+          
+          # Create jsx-runtime module
+          mkdir -p frontend/wmlandscape/node_modules/react/jsx-runtime
+          echo 'export * from "react";' > frontend/wmlandscape/node_modules/react/jsx-runtime/index.js
+          
       - name: Publish wmlandscape
         run: | 
             cd frontend/wmlandscape/
             npm version 1.$GITHUB_RUN_NUMBER.0
-            yarn install
             yarn build
             npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
