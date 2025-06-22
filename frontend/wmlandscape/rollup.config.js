@@ -2,6 +2,7 @@ const pkg = require('./package.json');
 const babel = require('@rollup/plugin-babel').default;
 const commonjs = require('@rollup/plugin-commonjs');
 const resolve = require('@rollup/plugin-node-resolve').default;
+const typescript = require('@rollup/plugin-typescript');
 
 module.exports = {
     input: 'src/index.js',
@@ -17,6 +18,12 @@ module.exports = {
     plugins: [
         resolve({
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        }),
+        typescript({
+            tsconfig: './tsconfig.json',
+            declaration: true,
+            declarationDir: './dist',
+            rootDir: 'src'
         }),
         babel({
             exclude: 'node_modules/**',

@@ -3,9 +3,11 @@
     "version": "1.269.0",
     "description": "The engine that powers OnlineWardleyMaps and VSCode-Wardley-Maps",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "build": "rollup -c",
-        "start": "rollup -c -w"
+        "build": "rollup -c && tsc --emitDeclarationOnly",
+        "start": "rollup -c -w",
+        "types": "tsc --emitDeclarationOnly"
     },
     "files": [
         "dist"

@@ -12,8 +12,12 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": false,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "declaration": true,
+        "declarationDir": "./dist",
+        "outDir": "./dist",
+        "emitDeclarationOnly": true
     },
-    "include": ["../../src/**/*"],
+    "include": ["../../src/**/*", "src/**/*"],
     "exclude": ["node_modules/**"]
 }
