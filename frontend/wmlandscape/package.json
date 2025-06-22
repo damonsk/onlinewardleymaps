@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "rollup -c && tsc --emitDeclarationOnly",
+        "build": "rollup -c && tsc --emitDeclarationOnly && cp ./src/index.d.ts ./dist/",
         "start": "rollup -c -w",
         "types": "tsc --emitDeclarationOnly"
     },
@@ -33,6 +33,7 @@
         "rollup-plugin-node-resolve": "^5.2.0",
         "rollup-plugin-peer-deps-external": "^2.2.4",
         "rollup-plugin-postcss": "^3.1.8",
+        "tslib": "^2.8.1",
         "typescript": "^5.4.3"
     },
     "peerDependencies": {
