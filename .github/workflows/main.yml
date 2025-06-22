@@ -43,7 +43,7 @@ jobs:
       - name: Publish wmlandscape
         run: | 
             cd frontend/wmlandscape/
-            npm version 1.$GITHUB_RUN_NUMBER.0
+            npm version 2.$GITHUB_RUN_NUMBER.0
             yarn build
             npm publish
         env:
