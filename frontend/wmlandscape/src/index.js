@@ -3,14 +3,14 @@ import MapEvolution from '../../src/components/map/foundation/MapEvolution';
 import MapGraphics from '../../src/components/map/foundation/MapGraphics';
 import MapGrid from '../../src/components/map/foundation/MapGrid';
 import DefaultPositionUpdater from '../../src/components/map/positionUpdaters/DefaultPositionUpdater';
-import {ExistingCoordsMatcher} from '../../src/components/map/positionUpdaters/ExistingCoordsMatcher';
-import {ExistingManyCoordsMatcher} from '../../src/components/map/positionUpdaters/ExistingManyCoordsMatcher';
-import {ExistingMaturityMatcher} from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
-import {ExistingSingleCoordMatcher} from '../../src/components/map/positionUpdaters/ExistingSingleCoordMatcher';
+import { ExistingCoordsMatcher } from '../../src/components/map/positionUpdaters/ExistingCoordsMatcher';
+import { ExistingManyCoordsMatcher } from '../../src/components/map/positionUpdaters/ExistingManyCoordsMatcher';
+import { ExistingMaturityMatcher } from '../../src/components/map/positionUpdaters/ExistingMaturityMatcher';
+import { ExistingSingleCoordMatcher } from '../../src/components/map/positionUpdaters/ExistingSingleCoordMatcher';
 import LineNumberPositionUpdater from '../../src/components/map/positionUpdaters/LineNumberPositionUpdater';
-import {NotDefinedCoordsMatcher} from '../../src/components/map/positionUpdaters/NotDefinedCoordsMatcher';
-import {NotDefinedManyCoordsMatcher} from '../../src/components/map/positionUpdaters/NotDefinedManyCoordsMatcher';
-import {NotDefinedMaturityMatcher} from '../../src/components/map/positionUpdaters/NotDefinedMaturityMatcher';
+import { NotDefinedCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedCoordsMatcher';
+import { NotDefinedManyCoordsMatcher } from '../../src/components/map/positionUpdaters/NotDefinedManyCoordsMatcher';
+import { NotDefinedMaturityMatcher } from '../../src/components/map/positionUpdaters/NotDefinedMaturityMatcher';
 import SingletonPositionUpdater from '../../src/components/map/positionUpdaters/SingletonPositionUpdater';
 
 import Anchor from '../../src/components/map/Anchor';
@@ -22,15 +22,15 @@ import ComponentText from '../../src/components/map/ComponentText';
 import EvolvingComponentLink from '../../src/components/map/EvolvingComponentLink';
 import FlowText from '../../src/components/map/FlowText';
 import Inertia from '../../src/components/map/Inertia';
-import MapCanvas from '../../src/components/map/UnifiedMapCanvas';
 import MapComponent from '../../src/components/map/MapComponent';
-import {MapView} from '../../src/components/map/MapView';
+import { MapView } from '../../src/components/map/MapView';
 import MethodElement from '../../src/components/map/MethodElement';
 import Movable from '../../src/components/map/Movable';
 import Note from '../../src/components/map/Note';
 import Pipeline from '../../src/components/map/Pipeline';
 import PositionCalculator from '../../src/components/map/PositionCalculator';
 import RelativeMovable from '../../src/components/map/RelativeMovable';
+import MapCanvas from '../../src/components/map/UnifiedMapCanvas';
 import AccelerateSymbol from '../../src/components/symbols/AccelerateSymbol';
 import AnnotationBoxSymbol from '../../src/components/symbols/AnnotationBoxSymbol';
 import AnnotationElementSymbol from '../../src/components/symbols/AnnotationElementSymbol';
@@ -39,7 +39,7 @@ import AttitudeSymbol from '../../src/components/symbols/AttitudeSymbol';
 import ComponentSymbol from '../../src/components/symbols/ComponentSymbol';
 import ComponentTextSymbol from '../../src/components/symbols/ComponentTextSymbol';
 import EcosystemSymbol from '../../src/components/symbols/EcosystemSymbol';
-import {ComponentEvolvedIcon, ComponentIcon, InertiaIcon, SVGWrapper} from '../../src/components/symbols/icons';
+import { ComponentEvolvedIcon, ComponentIcon, InertiaIcon, SVGWrapper } from '../../src/components/symbols/icons';
 import InertiaSymbol from '../../src/components/symbols/InertiaSymbol';
 import LinkSymbol from '../../src/components/symbols/LinkSymbol';
 import MarketSymbol from '../../src/components/symbols/MarketSymbol';
@@ -54,8 +54,8 @@ import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
 
 import QuickAdd from '../../src/components/actions/QuickAdd';
-import {FeatureSwitchesProvider, useFeatureSwitches} from '../../src/components/FeatureSwitchesContext';
-import {ModKeyPressedProvider, useModKeyPressedConsumer} from '../../src/components/KeyPressContext';
+import { FeatureSwitchesProvider, useFeatureSwitches } from '../../src/components/FeatureSwitchesContext';
+import { ModKeyPressedProvider, useModKeyPressedConsumer } from '../../src/components/KeyPressContext';
 import FluidLink from '../../src/components/map/FluidLink';
 import MapAccelerator from '../../src/components/map/MapAccelerator';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
@@ -66,7 +66,6 @@ import AttitudeExtractionStrategy from '../../src/conversion/AttitudeExtractionS
 import BaseStrategyRunner from '../../src/conversion/BaseStrategyRunner';
 import ComponentExtractionStrategy from '../../src/conversion/ComponentExtractionStrategy';
 import Converter from '../../src/conversion/Converter';
-import {UnifiedConverter} from '../../src/conversion/UnifiedConverter';
 import EcosystemExtractionStrategy from '../../src/conversion/EcosystemExtractionStrategy';
 import EvolveExtractionStrategy from '../../src/conversion/EvolveExtractionStrategy';
 import ExtendableComponentExtractionStrategy from '../../src/conversion/ExtendableComponentExtractionStrategy';
@@ -80,8 +79,10 @@ import PipelineStrategyRunner from '../../src/conversion/PipelineStrategyRunner'
 import PresentationExtractionStrategy from '../../src/conversion/PresentationExtractionStrategy';
 import SubMapExtractionStrategy from '../../src/conversion/SubMapExtractionStrategy';
 import TitleExtractionStrategy from '../../src/conversion/TitleExtractionStrategy';
+import { UnifiedConverter } from '../../src/conversion/UnifiedConverter';
 import UrlExtractionStrategy from '../../src/conversion/UrlExtractionStrategy';
 import XAxisLabelsExtractionStrategy from '../../src/conversion/XAxisLabelsExtractionStrategy';
+import { useLegacyMapState, useUnifiedMapState } from '../../src/hooks/useUnifiedMapState';
 import AllLinksStrategy from '../../src/linkStrategies/AllLinksStrategy';
 import AnchorLinksStrategy from '../../src/linkStrategies/AnchorLinksStrategy';
 import AnchorNoneEvolvedLinksStrategy from '../../src/linkStrategies/AnchorNoneEvolvedLinksStrategy';
@@ -93,8 +94,8 @@ import EvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingEndLinksS
 import EvolvingToEvolvingLinksStrategy from '../../src/linkStrategies/EvolvingToEvolvingLinksStrategy';
 import EvolvingToNoneEvolvingEndLinksStrategy from '../../src/linkStrategies/EvolvingToNoneEvolvingEndLinksStrategy';
 import LinksBuilder from '../../src/linkStrategies/LinksBuilder';
-import {MapElements} from '../../src/processing/MapElements';
-import {useUnifiedMapState, useLegacyMapState} from '../../src/hooks/useUnifiedMapState';
+import { MapElements } from '../../src/processing/MapElements';
+import { createEmptyMap } from '../../src/types/unified/map';
 export {
     AccelerateSymbol,
     AcceleratorExtractionStrategy,
@@ -121,8 +122,7 @@ export {
     ComponentSymbol,
     ComponentText,
     ComponentTextSymbol,
-    Converter,
-    DefaultPositionUpdater,
+    Converter, createEmptyMap, DefaultPositionUpdater,
     Defaults,
     EcosystemExtractionStrategy,
     EcosystemSymbol,
@@ -154,8 +154,7 @@ export {
     MapAccelerator,
     MapBackground,
     MapCanvas,
-    MapComponent,
-    MapEvolution,
+    MapComponent, MapElements, MapEvolution,
     MapGraphics,
     MapGrid,
     MapStyles,
@@ -188,13 +187,9 @@ export {
     SubMapSymbol,
     SVGWrapper,
     TitleExtractionStrategy,
-    UnifiedConverter,
-    MapElements,
-    UrlExtractionStrategy,
+    UnifiedConverter, UrlExtractionStrategy,
     Usages,
-    useFeatureSwitches,
-    useUnifiedMapState,
-    useLegacyMapState,
-    useModKeyPressedConsumer,
-    XAxisLabelsExtractionStrategy,
+    useFeatureSwitches, useLegacyMapState,
+    useModKeyPressedConsumer, useUnifiedMapState, XAxisLabelsExtractionStrategy
 };
+
