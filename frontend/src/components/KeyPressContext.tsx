@@ -1,10 +1,10 @@
-import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 export interface ModKeyPressedContextProps {
     isModKeyPressed: boolean;
 }
 
-const ModKeyPressedContext = createContext<ModKeyPressedContextProps | undefined>(undefined);
+export const ModKeyPressedContext = createContext<ModKeyPressedContextProps | undefined>(undefined);
 
 export function useKeysPressed(allowedKeys: string[] | undefined) {
     const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());

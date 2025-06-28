@@ -28,7 +28,8 @@ module.exports = {
             rootDir: 'src',
             include: ['src/**/*', 'global.d.ts'],
             compilerOptions: {
-                skipLibCheck: true
+                skipLibCheck: true,
+                emitDeclarationOnly: false
             }
         }),
         babel({
@@ -48,18 +49,27 @@ module.exports = {
         '@mui/icons-material',
         '@mui/material',
         '@mui/styles',
-        '@mui/material/TextareaAutosize',
-        '@mui/material/Button',
-        '@mui/material/Dialog',
-        '@mui/material/DialogActions',
-        '@mui/material/DialogContent',
-        '@mui/material/DialogTitle',
-        '@mui/material/InputLabel',
-        '@mui/material/MenuItem',
-        '@mui/material/FormControl',
-        '@mui/material/Select',
-        '@mui/material/styles',
-        '@mui/icons-material/FullscreenExit',
-        '@mui/icons-material/Fullscreen',
-    ],
+        '@mui/system',
+        '@mui/utils',
+        '@emotion/react',
+        '@emotion/styled',
+        '@emotion/cache',
+        'i18next',
+        'react-i18next',
+        'react-svg-pan-zoom',
+        'next',
+        'next/router',
+        'next/head',
+        /@mui\/.*/,
+        /@emotion\/.*/,
+        /next\/.*/,
+        // Exclude all relative imports that might be problematic
+        (id) => {
+            // Don't bundle Next.js internals or relative imports from Next.js
+            if (id.includes('next/dist/') || id.includes('./utils/') || id.includes('../')) {
+                return true;
+            }
+            return false;
+        }
+    ]
 };

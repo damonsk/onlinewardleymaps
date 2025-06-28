@@ -155,7 +155,16 @@ export class UnifiedConverter {
     parse(mapText: string): UnifiedWardleyMap;
 }
 
-// Hooks and Providers
+// Contexts and Providers
+export const FeatureSwitchesContext: React.Context<any>;
+export const FeatureSwitchesProvider: React.FC<{ value: any; children: React.ReactNode }>;
+export function useFeatureSwitches(): any;
+
+export const ModKeyPressedContext: React.Context<boolean>;
+export const ModKeyPressedProvider: React.FC<{ children: React.ReactNode }>;
+export function useModKeyPressedConsumer(): boolean;
+
+// State Hooks
 export function useUnifiedMapState(): {
     state: {
         map: UnifiedWardleyMap;
@@ -171,28 +180,20 @@ export function useUnifiedMapState(): {
     };
 };
 
-export const ModKeyPressedProvider: React.FC<{children: React.ReactNode}>;
-export const useModKeyPressedConsumer: () => boolean;
+export function useLegacyMapState(): any;
 
-export const FeatureSwitchesProvider: React.FC<{children: React.ReactNode, value?: any}>;
-export const useFeatureSwitches: () => any;
+export function useFeatureSwitches(): any;
+export function useLegacyMapState(): any;
+export function useModKeyPressedConsumer(): any;
 
-export const FeatureSwitches: {
-    featureSwitches: {
-        showMapText: boolean;
-        showToggleFullscreen: boolean;
-    };
+export const ModKeyPressedProvider: React.FC<any>;
+export const FeatureSwitchesProvider: React.FC<any>;
+
+export const MapElements: any;
+export const MapStyles: any;
+export const UnifiedConverter: {
+    parse(mapText: string): UnifiedWardleyMap;
 };
-
-// Map Elements
-export class MapElements {
-    constructor(map: UnifiedWardleyMap);
-    getAllComponents(): UnifiedComponent[];
-    getComponentById(id: string): UnifiedComponent | undefined;
-    getComponentByName(name: string): UnifiedComponent | undefined;
-    getEvolvedComponents(): any[];
-    getEvolvingComponents(): UnifiedComponent[];
-}
 
 // Helper functions
 export function createEmptyMap(): UnifiedWardleyMap;
@@ -202,6 +203,7 @@ export const MapBackground: React.FC<any>;
 export const MapEvolution: React.FC<any>;
 export const MapGraphics: React.FC<any>;
 export const MapGrid: React.FC<any>;
+export const MapView: React.FC<any>;
 export const DefaultPositionUpdater: any;
 export const ExistingCoordsMatcher: any;
 export const ExistingManyCoordsMatcher: any;
@@ -212,3 +214,37 @@ export const NotDefinedCoordsMatcher: any;
 export const NotDefinedManyCoordsMatcher: any;
 export const NotDefinedMaturityMatcher: any;
 export const SingletonPositionUpdater: any;
+
+// Additional exports from index.js
+export const LinksBuilder: any;
+export const LinksExtractionStrategy: any;
+export const LinkSymbol: any;
+export const MapAccelerator: any;
+export const MapCanvas: any;
+export const MapComponent: any;
+export const MarketExtractionStrategy: any;
+export const MarketSymbol: any;
+export const MethodElement: any;
+export const MethodExtractionStrategy: any;
+export const MethodSymbol: any;
+export const Movable: any;
+export const Note: any;
+export const NoteExtractionStrategy: any;
+export const ParseError: any;
+export const Pipeline: any;
+export const PipelineBoxSymbol: any;
+export const PipelineComponentSymbol: any;
+export const PipelineExtractionStrategy: any;
+export const PipelineStrategyRunner: any;
+export const PipelineVersion2: any;
+export const PositionCalculator: any;
+export const PresentationExtractionStrategy: any;
+export const QuickAdd: any;
+export const RelativeMovable: any;
+export const SubMapExtractionStrategy: any;
+export const SubMapSymbol: any;
+export const SVGWrapper: any;
+export const TitleExtractionStrategy: any;
+export const UrlExtractionStrategy: any;
+export const Usages: any;
+export const XAxisLabelsExtractionStrategy: any;

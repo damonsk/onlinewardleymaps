@@ -1,12 +1,12 @@
-import React, {ReactNode, createContext, useContext} from 'react';
-import {IProvideFeatureSwitches} from '../types/base';
+import React, { ReactNode, createContext, useContext } from 'react';
+import { IProvideFeatureSwitches } from '../types/base';
 
 interface FeatureSwitchesProviderProps {
     children: ReactNode;
     value: IProvideFeatureSwitches;
 }
 
-const FeatureSwitchesContext = createContext<any>(null);
+export const FeatureSwitchesContext = createContext<any>(null);
 
 export const FeatureSwitchesProvider: React.FC<FeatureSwitchesProviderProps> = ({children, value}) => (
     <FeatureSwitchesContext.Provider value={value}>{children}</FeatureSwitchesContext.Provider>

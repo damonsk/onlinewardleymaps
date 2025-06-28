@@ -54,8 +54,8 @@ import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
 
 import QuickAdd from '../../src/components/actions/QuickAdd';
-import { FeatureSwitchesProvider, useFeatureSwitches } from '../../src/components/FeatureSwitchesContext';
-import { ModKeyPressedProvider, useModKeyPressedConsumer } from '../../src/components/KeyPressContext';
+import { FeatureSwitchesContext, FeatureSwitchesProvider, useFeatureSwitches } from '../../src/components/FeatureSwitchesContext';
+import { ModKeyPressedContext, ModKeyPressedProvider, useModKeyPressedConsumer } from '../../src/components/KeyPressContext';
 import FluidLink from '../../src/components/map/FluidLink';
 import MapAccelerator from '../../src/components/map/MapAccelerator';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
@@ -140,8 +140,7 @@ export {
     ExistingMaturityMatcher,
     ExistingSingleCoordMatcher,
     ExtendableComponentExtractionStrategy,
-    FeatureSwitches,
-    FeatureSwitchesProvider,
+    FeatureSwitches, FeatureSwitchesContext, FeatureSwitchesProvider,
     FlowText,
     FluidLink,
     Inertia,
@@ -163,8 +162,7 @@ export {
     MarketSymbol,
     MethodElement,
     MethodExtractionStrategy,
-    MethodSymbol,
-    ModKeyPressedProvider,
+    MethodSymbol, ModKeyPressedContext, ModKeyPressedProvider,
     Movable,
     NotDefinedCoordsMatcher,
     NotDefinedManyCoordsMatcher,
@@ -188,8 +186,6 @@ export {
     SVGWrapper,
     TitleExtractionStrategy,
     UnifiedConverter, UrlExtractionStrategy,
-    Usages,
-    useFeatureSwitches, useLegacyMapState,
-    useModKeyPressedConsumer, useUnifiedMapState, XAxisLabelsExtractionStrategy
+    Usages, useFeatureSwitches, useLegacyMapState, useModKeyPressedConsumer, useUnifiedMapState, XAxisLabelsExtractionStrategy
 };
 
