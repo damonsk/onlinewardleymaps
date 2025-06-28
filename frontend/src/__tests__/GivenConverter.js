@@ -325,4 +325,10 @@ describe('Convert test suite', function () {
             expect(result.attitudes[0].visibility2).toEqual(0.6);
         },
     );
+
+    test('random string should give error', function(){
+        const mapString = "foobar";
+        const result = new Converter(mockContextValue).parse(mapString);
+        expect(result.errors.length).toEqual(1);
+    });
 });

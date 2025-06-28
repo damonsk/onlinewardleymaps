@@ -93,6 +93,8 @@ export default class LinksExtractionStrategy implements IParseStrategy {
                         context = element.split(';')[1].trim();
                     }
 
+                    if(start.trim().length === 0 && end.trim().length === 0) throw new ParseError(i);
+
                     linksToReturn.push({
                         start: start.trim(),
                         end: end.trim().split(';')[0].trim(),
