@@ -25,8 +25,6 @@ export default class LinksExtractionStrategy implements IParseStrategy {
             'townplanners',
             'submap',
             'url',
-            'market',
-            'ecosystem',
             '{',
             '}',
             'accelerator',
