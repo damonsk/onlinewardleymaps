@@ -64,6 +64,6 @@
         "react-svg-pan-zoom": "^3.13.1"
     },
     "dependencies": {
-        "sass": "1.80.6"
+        "sass": "1.89.2"
     }
 }
