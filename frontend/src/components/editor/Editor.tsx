@@ -162,6 +162,7 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
                 ref={aceEditorRef}
                 mode="owm"
                 theme={isLightTheme ? 'eclipse' : 'dracula'}
+                keyboardHandler='vscode'
                 name="map_editor"
                 onChange={mutateMapText}
                 fontSize={13}
