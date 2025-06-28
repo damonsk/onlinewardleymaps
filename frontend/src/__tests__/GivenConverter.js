@@ -326,8 +326,8 @@ describe('Convert test suite', function () {
         },
     );
 
-    test('random string should give error', function(){
-        const mapString = "foobar";
+    test('random string should give error', function () {
+        const mapString = 'foobar';
         const result = new Converter(mockContextValue).parse(mapString);
         expect(result.errors.length).toEqual(1);
     });

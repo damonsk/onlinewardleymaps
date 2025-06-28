@@ -1,5 +1,5 @@
-import React, { ReactNode, createContext, useContext } from 'react';
-import { IProvideFeatureSwitches } from '../types/base';
+import React, {ReactNode, createContext, useContext} from 'react';
+import {IProvideFeatureSwitches} from '../types/base';
 
 interface FeatureSwitchesProviderProps {
     children: ReactNode;
