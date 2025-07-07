@@ -37,7 +37,7 @@
         "eslint-plugin-react": "^7.34.1",
         "husky": "^9.1.7",
         "lint-staged": "^16.1.2",
-        "prettier": "^3.2.5",
+        "prettier": "^3.6.2",
         "rollup": "^4.44.1",
         "sonarqube-scanner": "^4.3.0",
         "typescript": "^5.4.3"
