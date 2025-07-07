@@ -5,7 +5,7 @@
     "license": "MIT",
     "devDependencies": {
         "@babel/core": "^7.24.3",
-        "@babel/preset-env": "^7.24.3",
+        "@babel/preset-env": "^7.28.0",
         "@babel/preset-react": "^7.24.1",
         "@babel/preset-typescript": "^7.24.1",
         "@eslint/js": "^9.29.0",
