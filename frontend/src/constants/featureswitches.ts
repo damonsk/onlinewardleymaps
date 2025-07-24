@@ -11,4 +11,5 @@ export const featureSwitches: IProvideFeatureSwitches = {
     showMiniMap: false,
     allowMapZoomMouseWheel: true,
     enableModernComponents: true, // Phase 4: Enabled modern unified components by default
+    enableQuickAdd: true, // Enable QuickAdd functionality alongside WYSIWYG toolbar
 };

@@ -60,8 +60,8 @@ export interface MapViewProps {
     showLinkedEvolved?: boolean;
     launchUrl?: (urlId: string) => void;
     mapStyleDefs?: any;
-    mapDimensions?: { width: number; height: number };
-    mapCanvasDimensions?: { width: number; height: number };
+    mapDimensions?: {width: number; height: number};
+    mapCanvasDimensions?: {width: number; height: number};
     mapEvolutionStates?: any;
     mapStyleSheetPath?: string;
     mapClass?: string;
@@ -83,7 +83,7 @@ export const MapView: React.FC<MapViewProps>;
 
 // Map structure
 export interface MapPresentationStyle {
-    size?: { width: number; height: number };
+    size?: {width: number; height: number};
     style?: string;
     annotations?: any[];
     yAxis?: Record<string, any>;
@@ -157,11 +157,11 @@ export class UnifiedConverter {
 
 // Contexts and Providers
 export const FeatureSwitchesContext: React.Context<any>;
-export const FeatureSwitchesProvider: React.FC<{ value: any; children: React.ReactNode }>;
+export const FeatureSwitchesProvider: React.FC<{value: any; children: React.ReactNode}>;
 export function useFeatureSwitches(): any;
 
 export const ModKeyPressedContext: React.Context<boolean>;
-export const ModKeyPressedProvider: React.FC<{ children: React.ReactNode }>;
+export const ModKeyPressedProvider: React.FC<{children: React.ReactNode}>;
 export function useModKeyPressedConsumer(): boolean;
 
 // State Hooks

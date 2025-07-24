@@ -1,8 +1,9 @@
-import React, {MouseEvent, useEffect, useMemo, useRef, useState} from 'react';
+import React, {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {MapElements} from '../../processing/MapElements';
 import {MapTheme} from '../../types/map/styles';
+import {ToolbarItem} from '../../types/toolbar';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 import {processLinks} from '../../utils/mapProcessing';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
@@ -29,11 +30,26 @@ interface ModernUnifiedMapCanvasProps {
     hideNav?: boolean;
     mapAnnotationsPresentation: any;
     handleMapCanvasClick?: (pos: {x: number; y: number}) => void;
+    // New props for toolbar drag and drop support
+    selectedToolbarItem?: ToolbarItem | null;
+    onToolbarItemDrop?: (item: ToolbarItem, position: {x: number; y: number}) => void;
+    onMouseMove?: (position: {x: number; y: number}) => void;
 }
 
 function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     const featureSwitches = useFeatureSwitches();
     const {enableAccelerators, showMapToolbar, allowMapZoomMouseWheel} = featureSwitches;
+
+    // Debug mode for coordinate issues - set to false to disable debug indicators
+    const DEBUG_COORDINATES = false;
+
+    // State to track the last click position for debugging
+    const [lastClickPosition, setLastClickPosition] = useState<{
+        x: number;
+        y: number;
+        correctedX?: number;
+        correctedY?: number;
+    } | null>(null);
 
     const {
         wardleyMap,
@@ -124,13 +140,288 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }>
     >([]);
 
+    // Position calculator for coordinate conversion
+    const positionCalculator = useMemo(() => new PositionCalculator(), []);
+
     useEffect(() => {
         if (!isModKeyPressed && mapElementsClicked.length > 0) {
             setMapElementsClicked([]);
         }
     }, [isModKeyPressed, mapElementsClicked]);
 
+    // Convert screen coordinates to map coordinates with comprehensive error handling
+    const convertScreenToMapCoordinates = useCallback(
+        (screenX: number, screenY: number) => {
+            try {
+                // Validate input parameters
+                if (typeof screenX !== 'number' || typeof screenY !== 'number' || isNaN(screenX) || isNaN(screenY)) {
+                    console.warn('Invalid screen coordinates provided:', {screenX, screenY});
+                    return null;
+                }
+
+                // Get the SVG element and its bounding rect
+                const svgElement = document.getElementById('svgMap');
+                if (!svgElement) {
+                    console.warn('SVG element not found for coordinate conversion');
+                    // Fallback: return center coordinates
+                    return {
+                        svgX: mapDimensions.width / 2,
+                        svgY: mapDimensions.height / 2,
+                        maturity: '0.50',
+                        visibility: '0.50',
+                        isFallback: true,
+                    };
+                }
+
+                const svgRect = svgElement.getBoundingClientRect();
+
+                // Validate SVG rect
+                if (svgRect.width === 0 || svgRect.height === 0) {
+                    console.warn('SVG element has invalid dimensions:', svgRect);
+                    return null;
+                }
+
+                // Calculate relative position within the SVG
+                const relativeX = screenX - svgRect.left;
+                const relativeY = screenY - svgRect.top;
+
+                // Log for debugging
+                console.debug('Screen to SVG coordinate conversion:', {
+                    screenX,
+                    screenY,
+                    svgRect,
+                    relativeX,
+                    relativeY,
+                });
+
+                // Validate relative coordinates are within SVG bounds
+                if (relativeX < 0 || relativeX > svgRect.width || relativeY < 0 || relativeY > svgRect.height) {
+                    console.debug('Click outside SVG bounds:', {relativeX, relativeY, svgRect});
+                    return null;
+                }
+
+                // Account for current zoom and pan transformation
+                const transform = value;
+
+                // Validate transform values
+                if (transform.a === 0 || transform.d === 0) {
+                    console.warn('Invalid transform scale factors:', transform);
+                    return null;
+                }
+
+                // Convert screen coordinates to SVG coordinates considering zoom and pan
+                const svgX = (relativeX - transform.e) / transform.a;
+                const svgY = (relativeY - transform.f) / transform.d;
+
+                // Adjust for SVG viewBox offset (-35, -45)
+                const adjustedX = svgX + 35;
+                const adjustedY = svgY + 45;
+
+                // Log for debugging
+                console.debug('Coordinate transformation details:', {
+                    transform,
+                    svgX,
+                    svgY,
+                    adjustedX,
+                    adjustedY,
+                });
+
+                // Validate adjusted coordinates are reasonable
+                if (
+                    adjustedX < -100 ||
+                    adjustedX > mapDimensions.width + 100 ||
+                    adjustedY < -100 ||
+                    adjustedY > mapDimensions.height + 100
+                ) {
+                    console.debug('Adjusted coordinates outside reasonable bounds:', {adjustedX, adjustedY});
+                    return null;
+                }
+
+                // Convert to map coordinates (maturity and visibility) with error handling
+                let maturity: number;
+                let visibility: number;
+
+                try {
+                    maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+                    visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+                } catch (calcError) {
+                    console.error('Error in position calculation:', calcError);
+                    // Fallback to proportional calculation
+                    maturity = Math.max(0, Math.min(1, adjustedX / mapDimensions.width));
+                    visibility = Math.max(0, Math.min(1, 1 - adjustedY / mapDimensions.height));
+                }
+
+                // Validate and clamp coordinates to valid range [0, 1]
+                maturity = Math.max(0, Math.min(1, maturity));
+                visibility = Math.max(0, Math.min(1, visibility));
+
+                // Additional validation for NaN values
+                if (isNaN(maturity) || isNaN(visibility)) {
+                    console.error('Calculated coordinates are NaN:', {maturity, visibility});
+                    return null;
+                }
+
+                // Log final calculated coordinates
+                console.debug('Final calculated map coordinates:', {
+                    svgX: adjustedX,
+                    svgY: adjustedY,
+                    maturity: maturity.toFixed(2),
+                    visibility: visibility.toFixed(2),
+                });
+
+                return {
+                    svgX: adjustedX,
+                    svgY: adjustedY,
+                    maturity: maturity.toFixed(2),
+                    visibility: visibility.toFixed(2),
+                    isFallback: false,
+                };
+            } catch (error) {
+                console.error('Error converting screen coordinates to map coordinates:', error);
+
+                // Fallback positioning: place component near center of map
+                const fallbackMaturity = 0.5 + (Math.random() - 0.5) * 0.2; // 0.4 to 0.6
+                const fallbackVisibility = 0.5 + (Math.random() - 0.5) * 0.2; // 0.4 to 0.6
+
+                console.info('Using fallback positioning:', {
+                    maturity: fallbackMaturity.toFixed(2),
+                    visibility: fallbackVisibility.toFixed(2),
+                });
+
+                return {
+                    svgX: mapDimensions.width * fallbackMaturity,
+                    svgY: mapDimensions.height * (1 - fallbackVisibility),
+                    maturity: fallbackMaturity.toFixed(2),
+                    visibility: fallbackVisibility.toFixed(2),
+                    isFallback: true,
+                };
+            }
+        },
+        [mapDimensions.width, mapDimensions.height, positionCalculator, value],
+    );
+
+    // Check if a position is a valid drop zone with comprehensive validation
+    const isValidDropZone = useCallback(
+        (svgX: number, svgY: number) => {
+            try {
+                // Validate input parameters
+                if (typeof svgX !== 'number' || typeof svgY !== 'number' || isNaN(svgX) || isNaN(svgY)) {
+                    return false;
+                }
+
+                // Adjust for SVG viewBox offset (-35, -45)
+                const adjustedX = svgX + 35;
+                const adjustedY = svgY + 45;
+
+                // Check if coordinates are within the map dimensions
+                if (adjustedX < 0 || adjustedX > mapDimensions.width || adjustedY < 0 || adjustedY > mapDimensions.height) {
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Error validating drop zone:', error);
+                return false;
+            }
+        },
+        [mapDimensions.width, mapDimensions.height],
+    );
+
     const handleMapClick = (event: any) => {
+        // Handle toolbar item placement when an item is selected
+        if (props.selectedToolbarItem && props.onToolbarItemDrop) {
+            if (DEBUG_COORDINATES) {
+                // Log the entire event object to understand its structure
+                console.log('Click event structure:', event);
+
+                // Also log the original event if available
+                if (event.originalEvent) {
+                    console.log('Original event:', {
+                        clientX: event.originalEvent.clientX,
+                        clientY: event.originalEvent.clientY,
+                        pageX: event.originalEvent.pageX,
+                        pageY: event.originalEvent.pageY,
+                        screenX: event.originalEvent.screenX,
+                        screenY: event.originalEvent.screenY,
+                    });
+                }
+            }
+
+            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+            // These are already adjusted for pan and zoom
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+
+            // Get the original event coordinates if available
+            const originalClientX = event.originalEvent?.clientX;
+            const originalClientY = event.originalEvent?.clientY;
+
+            // Adjust for SVG viewBox offset (-35, -45)
+            // This is critical for correct positioning
+            const adjustedX = svgX + 35;
+            const adjustedY = svgY + 45;
+
+            // Log exact coordinates for debugging
+            console.log('Click coordinates:', {
+                eventX: event.x,
+                eventY: event.y,
+                svgX,
+                svgY,
+                adjustedX,
+                adjustedY,
+            });
+
+            // Convert to map coordinates (maturity and visibility)
+            // Apply a correction factor to compensate for the offset
+            // Based on the images, we need to adjust the coordinates to match the cursor position
+            const offsetCorrectionX = -30; // Adjusted to fix the right offset
+            const offsetCorrectionY = -40; // Adjusted to fix the down offset (increased by 10px)
+
+            const correctedX = adjustedX + offsetCorrectionX;
+            const correctedY = adjustedY + offsetCorrectionY;
+
+            const maturity = parseFloat(positionCalculator.xToMaturity(correctedX, mapDimensions.width));
+            const visibility = parseFloat(positionCalculator.yToVisibility(correctedY, mapDimensions.height));
+
+            // Validate and clamp coordinates to valid range [0, 1]
+            const clampedMaturity = Math.max(0, Math.min(1, maturity));
+            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+
+            if (DEBUG_COORDINATES) {
+                console.log('Direct SVG coordinate conversion:', {
+                    svgX,
+                    svgY,
+                    adjustedX,
+                    adjustedY,
+                    correctedX,
+                    correctedY,
+                    mapWidth: mapDimensions.width,
+                    mapHeight: mapDimensions.height,
+                    maturity: clampedMaturity.toFixed(2),
+                    visibility: clampedVisibility.toFixed(2),
+                });
+            }
+
+            // Store the last click position for debugging visualization
+            if (DEBUG_COORDINATES) {
+                setLastClickPosition({
+                    x: adjustedX,
+                    y: adjustedY,
+                    correctedX,
+                    correctedY,
+                });
+            }
+
+            // Use these coordinates directly, but adjust for the offset
+            // This is the key fix - we need to place the component exactly at the cursor position
+            props.onToolbarItemDrop(props.selectedToolbarItem, {
+                x: clampedMaturity,
+                y: clampedVisibility,
+            });
+            return; // Don't process other click handlers when placing toolbar items
+        }
+
+        // Handle existing click functionality
         if (enableZoomOnClick && props.handleMapCanvasClick) {
             const pos = {x: event.x || 0, y: event.y || 0};
             props.handleMapCanvasClick(pos);
@@ -159,7 +450,47 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         }
     };
 
-    const handleMapMouseMove = () => {};
+    const handleMapMouseMove = (event: any) => {
+        // Handle mouse move for drag preview when toolbar item is selected
+        if (props.selectedToolbarItem && props.onMouseMove) {
+            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+            // These are already adjusted for pan and zoom
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+
+            // Adjust for SVG viewBox offset (-35, -45)
+            const adjustedX = svgX + 35;
+            const adjustedY = svgY + 45;
+
+            // Convert to map coordinates (maturity and visibility)
+            const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+            const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+
+            // Validate and clamp coordinates to valid range [0, 1]
+            const clampedMaturity = Math.max(0, Math.min(1, maturity));
+            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+
+            if (DEBUG_COORDINATES) {
+                // Only log occasionally to avoid flooding the console
+                if (Math.random() < 0.05) {
+                    console.log('Mouse move coordinates:', {
+                        svgX,
+                        svgY,
+                        adjustedX,
+                        adjustedY,
+                        maturity: clampedMaturity.toFixed(2),
+                        visibility: clampedVisibility.toFixed(2),
+                    });
+                }
+            }
+
+            // Pass the precise coordinates to the mouse move handler
+            props.onMouseMove({
+                x: clampedMaturity,
+                y: clampedVisibility,
+            });
+        }
+    };
 
     const clicked = function (ctx: {el: any; e: MouseEvent<Element> | null}) {
         console.log('mapElementsClicked::clicked', ctx);
@@ -245,6 +576,16 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     const svgBackground = mapStyleDefs.className === 'wardley' ? 'white' : fill[mapStyleDefs.className as keyof typeof fill] || 'white';
 
+    // Determine cursor style based on toolbar item selection with compatibility
+    const getCursorStyle = () => {
+        if (props.selectedToolbarItem) {
+            // Check if current position is a valid drop zone
+            const isValid = true; // For now, assume valid - this could be enhanced
+            return isValid ? 'crosshair' : 'not-allowed';
+        }
+        return 'default';
+    };
+
     return (
         <div id="map-canvas" style={{width: '100%', height: '100%', position: 'relative'}}>
             <UncontrolledReactSVGPanZoom
@@ -277,6 +618,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                     width: '100%',
                     height: '100%', // Use full height since toolbar is now fixed position
                     display: 'block',
+                    cursor: getCursorStyle(),
                 }}>
                 <svg
                     className={[mapStyleDefs.className, 'mapCanvas'].join(' ')}
@@ -294,6 +636,103 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         evolutionOffsets={evolutionOffsets}
                         mapTitle={wardleyMap.title}
                     />
+
+                    {/* Debug indicator for last click position */}
+                    {DEBUG_COORDINATES && lastClickPosition && (
+                        <g>
+                            {/* Original click position */}
+                            <circle cx={lastClickPosition.x} cy={lastClickPosition.y} r="5" fill="red" fillOpacity="0.7" />
+                            <circle
+                                cx={lastClickPosition.x}
+                                cy={lastClickPosition.y}
+                                r="10"
+                                stroke="red"
+                                strokeWidth="2"
+                                fill="none"
+                                strokeOpacity="0.7"
+                            />
+                            <line
+                                x1={lastClickPosition.x - 20}
+                                y1={lastClickPosition.y}
+                                x2={lastClickPosition.x + 20}
+                                y2={lastClickPosition.y}
+                                stroke="red"
+                                strokeWidth="2"
+                                strokeOpacity="0.7"
+                            />
+                            <line
+                                x1={lastClickPosition.x}
+                                y1={lastClickPosition.y - 20}
+                                x2={lastClickPosition.x}
+                                y2={lastClickPosition.y + 20}
+                                stroke="red"
+                                strokeWidth="2"
+                                strokeOpacity="0.7"
+                            />
+                            <text x={lastClickPosition.x + 15} y={lastClickPosition.y} fill="red" fontSize="12px">
+                                Cursor: ({lastClickPosition.x.toFixed(0)}, {lastClickPosition.y.toFixed(0)})
+                            </text>
+
+                            {/* Corrected position */}
+                            {lastClickPosition.correctedX && lastClickPosition.correctedY && (
+                                <>
+                                    <circle
+                                        cx={lastClickPosition.correctedX}
+                                        cy={lastClickPosition.correctedY}
+                                        r="5"
+                                        fill="blue"
+                                        fillOpacity="0.7"
+                                    />
+                                    <circle
+                                        cx={lastClickPosition.correctedX}
+                                        cy={lastClickPosition.correctedY}
+                                        r="10"
+                                        stroke="blue"
+                                        strokeWidth="2"
+                                        fill="none"
+                                        strokeOpacity="0.7"
+                                    />
+                                    <line
+                                        x1={lastClickPosition.correctedX - 20}
+                                        y1={lastClickPosition.correctedY}
+                                        x2={lastClickPosition.correctedX + 20}
+                                        y2={lastClickPosition.correctedY}
+                                        stroke="blue"
+                                        strokeWidth="2"
+                                        strokeOpacity="0.7"
+                                    />
+                                    <line
+                                        x1={lastClickPosition.correctedX}
+                                        y1={lastClickPosition.correctedY - 20}
+                                        x2={lastClickPosition.correctedX}
+                                        y2={lastClickPosition.correctedY + 20}
+                                        stroke="blue"
+                                        strokeWidth="2"
+                                        strokeOpacity="0.7"
+                                    />
+                                    <text
+                                        x={lastClickPosition.correctedX + 15}
+                                        y={lastClickPosition.correctedY + 20}
+                                        fill="blue"
+                                        fontSize="12px">
+                                        Component: ({lastClickPosition.correctedX.toFixed(0)}, {lastClickPosition.correctedY.toFixed(0)})
+                                    </text>
+
+                                    {/* Line connecting original and corrected positions */}
+                                    <line
+                                        x1={lastClickPosition.x}
+                                        y1={lastClickPosition.y}
+                                        x2={lastClickPosition.correctedX}
+                                        y2={lastClickPosition.correctedY}
+                                        stroke="purple"
+                                        strokeWidth="1"
+                                        strokeDasharray="5,5"
+                                        strokeOpacity="0.7"
+                                    />
+                                </>
+                            )}
+                        </g>
+                    )}
                     <UnifiedMapContent
                         mapElements={mapElements}
                         mapDimensions={mapDimensions}

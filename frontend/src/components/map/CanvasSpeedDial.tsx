@@ -38,13 +38,15 @@ export default function CanvasSpeedDial(props: CanvasSpeedDialProps) {
     const classes = useStyles();
     const {setQuickAdd} = props;
 
-    const actionMapTheme = props.mapStyleDefs;
-    actionMapTheme.component = Object.assign(actionMapTheme.component, {
+    // Create a deep copy of the theme to avoid modifying the original
+    const actionMapTheme = JSON.parse(JSON.stringify(props.mapStyleDefs));
+    actionMapTheme.component = {
+        ...actionMapTheme.component,
         stroke: 'white',
         fill: 'transparent',
         strokeWidth: 1,
         radius: 5,
-    });
+    };
     const actions: Action[] = [
         {
             name: 'Component',

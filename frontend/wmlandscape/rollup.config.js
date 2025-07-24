@@ -19,7 +19,7 @@ module.exports = {
         resolve({
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
             mainFields: ['browser', 'module', 'main'],
-            preferBuiltins: false
+            preferBuiltins: false,
         }),
         typescript({
             tsconfig: './tsconfig.json',
@@ -29,8 +29,8 @@ module.exports = {
             include: ['src/**/*', 'global.d.ts'],
             compilerOptions: {
                 skipLibCheck: true,
-                emitDeclarationOnly: false
-            }
+                emitDeclarationOnly: false,
+            },
         }),
         babel({
             exclude: 'node_modules/**',
@@ -64,12 +64,12 @@ module.exports = {
         /@emotion\/.*/,
         /next\/.*/,
         // Exclude all relative imports that might be problematic
-        (id) => {
+        id => {
             // Don't bundle Next.js internals or relative imports from Next.js
             if (id.includes('next/dist/') || id.includes('./utils/') || id.includes('../')) {
                 return true;
             }
             return false;
-        }
-    ]
+        },
+    ],
 };

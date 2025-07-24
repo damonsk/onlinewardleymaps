@@ -2,7 +2,7 @@
 declare module 'next/router';
 declare module 'react-i18next';
 declare module '@mui/material' {
-  export * from '@mui/material';
+    export * from '@mui/material';
 }
 declare module '@mui/material/*';
 declare module '@mui/styles';
@@ -12,9 +12,9 @@ declare module 'lodash.merge';
 // For JSX support
 import * as React from 'react';
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
+    namespace JSX {
+        interface IntrinsicElements {
+            [elemName: string]: any;
+        }
     }
-  }
 }
