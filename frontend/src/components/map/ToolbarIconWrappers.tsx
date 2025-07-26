@@ -12,6 +12,7 @@ import {
 } from '../symbols/icons';
 import PipelineIcon from '../symbols/PipelineIcon';
 import AnchorIcon from '../symbols/AnchorIcon';
+import LinkIcon from '../symbols/LinkIcon';
 
 /**
  * Wrapper for ComponentIcon to normalize props
@@ -88,4 +89,11 @@ export const ToolbarPipelineIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDef
  */
 export const ToolbarAnchorIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
     <AnchorIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
+);
+
+/**
+ * Wrapper for LinkIcon to normalize props
+ */
+export const ToolbarLinkIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
+    <LinkIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
 );

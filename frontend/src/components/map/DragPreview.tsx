@@ -26,22 +26,19 @@ const PreviewContainer = styled.div<{
 
 /**
  * Styled ghost preview of the component being dragged
- * Enhanced with theme-specific styling for consistent appearance across all map themes
+ * Compact and subtle design for better user experience
  */
 const GhostPreview = styled.div<{isValidDropZone: boolean}>`
-    background: ${props => (props.isValidDropZone ? '#e3f2fd' : '#ffebee')};
-    border: 2px dashed ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
-    border-radius: 8px;
-    padding: 8px 12px;
+    background: ${props => (props.isValidDropZone ? 'rgba(25, 118, 210, 0.1)' : 'rgba(211, 47, 47, 0.1)')};
+    border: 1px solid ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
+    border-radius: 4px;
+    padding: 4px 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-width: 120px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(4px);
-
-    /* Animation for visual feedback */
-    animation: ${props => (props.isValidDropZone ? 'pulse-valid' : 'pulse-invalid')} 2s infinite;
+    gap: 6px;
+    min-width: 80px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2px);
 
     @keyframes pulse-valid {
         0%,
@@ -381,51 +378,36 @@ export const DragPreview: React.FC<DragPreviewProps> = memo(({selectedItem, mous
         return null;
     }
 
+    // For linking tools, don't show drag preview (they have their own visual feedback)
+    if (selectedItem.toolType === 'linking') {
+        return null;
+    }
+
     const IconComponent = selectedItem.icon;
 
     return (
-        <>
-            {/* Crosshair indicator at exact cursor position */}
-            <div
-                style={{
-                    position: 'fixed',
-                    left: currentMousePosition.x,
-                    top: currentMousePosition.y,
-                    width: 20,
-                    height: 20,
-                    borderRadius: '50%',
-                    border: '2px solid red',
-                    transform: 'translate(-50%, -50%)',
-                    pointerEvents: 'none',
-                    zIndex: 10001,
-                    opacity: isVisible ? 1 : 0,
-                }}
-            />
-            <PreviewContainer
-                x={currentMousePosition.x}
-                y={currentMousePosition.y}
-                isValidDropZone={isValidDropZone}
-                isVisible={isVisible}
-                data-testid="drag-preview"
-                role="img"
-                aria-label={`Dragging ${selectedItem.label}`}>
-                <GhostPreview isValidDropZone={isValidDropZone}>
-                    <PreviewIcon>
-                        <IconComponent
-                            id={`preview-${selectedItem.id}`}
-                            mapStyleDefs={mapStyleDefs}
-                            onClick={() => {}} // No-op for preview
-                        />
-                    </PreviewIcon>
-                    <div>
-                        <PreviewLabel isValidDropZone={isValidDropZone}>{selectedItem.label}</PreviewLabel>
-                        <DropZoneIndicator isValidDropZone={isValidDropZone}>
-                            {isValidDropZone ? 'Drop to place' : 'Invalid drop zone'}
-                        </DropZoneIndicator>
-                    </div>
-                </GhostPreview>
-            </PreviewContainer>
-        </>
+        <PreviewContainer
+            x={currentMousePosition.x}
+            y={currentMousePosition.y}
+            isValidDropZone={isValidDropZone}
+            isVisible={isVisible}
+            data-testid="drag-preview"
+            role="img"
+            aria-label={`Dragging ${selectedItem.label}`}>
+            <GhostPreview isValidDropZone={isValidDropZone}>
+                <PreviewIcon>
+                    <IconComponent
+                        id={`preview-${selectedItem.id}`}
+                        mapStyleDefs={mapStyleDefs}
+                        onClick={() => {}} // No-op for preview
+                    />
+                </PreviewIcon>
+                <PreviewLabel isValidDropZone={isValidDropZone}>{selectedItem.label}</PreviewLabel>
+                <DropZoneIndicator isValidDropZone={isValidDropZone}>
+                    {isValidDropZone ? 'Drop to place' : 'Invalid drop zone'}
+                </DropZoneIndicator>
+            </GhostPreview>
+        </PreviewContainer>
     );
 });
 

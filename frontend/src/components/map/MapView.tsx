@@ -1,4 +1,4 @@
-import React, {LegacyRef, useCallback, useState} from 'react';
+import React, {LegacyRef, useCallback, useEffect, useState} from 'react';
 import ReactDOMServer from 'react-dom/server';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 
@@ -6,6 +6,7 @@ import {MapAnnotationsPosition} from '../../types/base';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
 import {UnifiedWardleyMap} from '../../types/unified/map';
+import {UnifiedComponent} from '../../types/unified/components';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
 import {
     synchronizeToolbarQuickAddState,
@@ -13,6 +14,7 @@ import {
     ensureToolbarComponentEditingCompatibility,
     getCompatibleCursorStyle,
 } from '../../utils/toolbarCompatibility';
+import {findNearestComponent, linkExists, addLinkToMapText} from '../../utils/componentDetection';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import DragPreview from './DragPreview';
@@ -52,6 +54,17 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     const [selectedToolbarItem, setSelectedToolbarItem] = useState<ToolbarItem | null>(null);
     const [isValidDropZone, setIsValidDropZone] = useState(false);
 
+    // Component linking state management
+    const [linkingState, setLinkingState] = useState<'idle' | 'selecting-source' | 'selecting-target'>('idle');
+    const [sourceComponent, setSourceComponent] = useState<UnifiedComponent | null>(null);
+    const [highlightedComponent, setHighlightedComponent] = useState<UnifiedComponent | null>(null);
+    const [isDuplicateLink, setIsDuplicateLink] = useState(false);
+    const [isInvalidTarget, setIsInvalidTarget] = useState(false);
+    const [isSourceDeleted, setIsSourceDeleted] = useState(false);
+    const [isTargetDeleted, setIsTargetDeleted] = useState(false);
+    const [currentMousePosition, setCurrentMousePosition] = useState<{x: number; y: number}>({x: 0, y: 0});
+    const [showCancellationHint, setShowCancellationHint] = useState(false);
+
     // User feedback state for error handling
     const [userFeedback, setUserFeedback] = useState<{
         message: string;
@@ -77,6 +90,28 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             setUserFeedback(prev => ({...prev, visible: false}));
         }, hideDelay);
     }, []);
+
+    // Monitor component deletion and automatically cancel linking if source or target is deleted
+    useEffect(() => {
+        if (linkingState !== 'idle' && sourceComponent) {
+            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const sourceExists = allComponents.some(c => c.id === sourceComponent.id);
+
+            if (!sourceExists) {
+                // Source component was deleted, cancel linking
+                setLinkingState('idle');
+                setSourceComponent(null);
+                setHighlightedComponent(null);
+                setSelectedToolbarItem(null);
+                setShowCancellationHint(false);
+                setIsDuplicateLink(false);
+                setIsInvalidTarget(false);
+                setIsSourceDeleted(false);
+                setIsTargetDeleted(false);
+                showUserFeedback('Source component was deleted. Linking cancelled.', 'warning');
+            }
+        }
+    }, [linkingState, sourceComponent, props.wardleyMap.components, props.wardleyMap.anchors, showUserFeedback]);
 
     const fill: DefaultThemes = {
         wardley: 'url(#wardleyGradient)',
@@ -153,6 +188,23 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setIsValidDropZone(false);
             }
 
+            // Handle linking tool selection
+            if (item?.toolType === 'linking') {
+                setLinkingState('selecting-source');
+                setSourceComponent(null);
+                setHighlightedComponent(null);
+                setShowCancellationHint(false);
+                showUserFeedback('Hover & click components to link', 'info');
+            } else {
+                // Reset linking state when switching to other tools
+                setLinkingState('idle');
+                setSourceComponent(null);
+                setHighlightedComponent(null);
+                setIsDuplicateLink(false);
+                setIsInvalidTarget(false);
+                setShowCancellationHint(false);
+            }
+
             // Use compatibility utility to synchronize state
             const {shouldClearQuickAdd} = synchronizeToolbarQuickAddState(
                 item,
@@ -187,7 +239,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             try {
                 const existingComponents = props.wardleyMap.components || [];
                 const baseName = item.defaultName || 'New Pipeline';
-                
+
                 // Generate unique name for both the pipeline and its component
                 let componentName = baseName;
                 let counter = 1;
@@ -204,30 +256,30 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 }
 
                 // Generate pipeline text
-                const pipelineText = item.template(componentName, position.y.toFixed(2), position.x.toFixed(2));
-                
+                const pipelineText = item.template?.(componentName, position.y.toFixed(2), position.x.toFixed(2)) || '';
+
                 // Generate corresponding component text
                 // Place the component at the same position as the pipeline
                 const componentText = `component ${componentName} [${position.y.toFixed(2)}, ${position.x.toFixed(2)}]`;
-                
+
                 // Combine both texts
                 const combinedText = componentText + '\n' + pipelineText;
-                
+
                 // Add to map text
                 const currentText = props.mapText || '';
                 const updatedMapText = currentText.trim() + (currentText.trim() ? '\n' : '') + combinedText;
-                
+
                 // Update map text
                 props.mutateMapText(updatedMapText);
                 showUserFeedback(`Pipeline "${componentName}" with component added successfully!`, 'success');
-                
+
                 return true;
             } catch (error) {
                 console.error('Pipeline placement failed:', error);
                 return false;
             }
         },
-        [props.wardleyMap.components, props.mapText, props.mutateMapText, showUserFeedback]
+        [props.wardleyMap.components, props.mapText, props.mutateMapText, showUserFeedback],
     );
 
     // Handle toolbar item drop (component placement) with comprehensive error handling
@@ -239,7 +291,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 console.log('Toolbar item:', item);
                 console.log('Position:', position);
             }
-            
+
             // Special handling for pipeline - needs a corresponding component
             if (item.category === 'pipeline') {
                 const success = handlePipelinePlacement(item, position);
@@ -352,7 +404,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     // Generate map text using the item's template with validation
                     let newComponentText: string;
                     try {
-                        newComponentText = item.template(componentName, position.y.toFixed(2), position.x.toFixed(2));
+                        newComponentText = item.template?.(componentName, position.y.toFixed(2), position.x.toFixed(2)) || '';
                     } catch (templateError) {
                         console.error('Template generation failed:', templateError);
                         // Use a basic fallback template
@@ -397,57 +449,237 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         [props.wardleyMap.components, props.mapText, props.mutateMapText, handlePipelinePlacement],
     );
 
-    // Handle mouse move for drag preview with comprehensive validation
-    const handleMouseMove = useCallback((position: {x: number; y: number}) => {
-        try {
-            // Validate input position
-            if (!position || typeof position.x !== 'number' || typeof position.y !== 'number') {
-                console.warn('Invalid position received in handleMouseMove:', position);
-                setIsValidDropZone(false);
-                return;
-            }
-
-            // Check for NaN values
-            if (isNaN(position.x) || isNaN(position.y)) {
-                console.warn('NaN coordinates received in handleMouseMove:', position);
-                setIsValidDropZone(false);
-                return;
-            }
-
-            // Validate drop zone (coordinates should be between 0 and 1)
-            const isValid = position.x >= 0 && position.x <= 1 && position.y >= 0 && position.y <= 1;
-
-            // Additional validation for edge cases
-            const isReasonable = position.x >= -0.1 && position.x <= 1.1 && position.y >= -0.1 && position.y <= 1.1;
-
-            if (!isReasonable) {
-                console.debug('Position outside reasonable bounds:', position);
-                setIsValidDropZone(false);
-                return;
-            }
-
-            setIsValidDropZone(isValid);
-
-            // Log for debugging if coordinates are close to boundaries
-            if (isValid && (position.x < 0.05 || position.x > 0.95 || position.y < 0.05 || position.y > 0.95)) {
-                console.debug('Position near map boundaries:', position);
-            }
-        } catch (error) {
-            console.error('Error in handleMouseMove:', error);
-            setIsValidDropZone(false);
-        }
-    }, []);
-
-    // Handle clicks outside the map to deselect toolbar items
-    const handleContainerClick = useCallback(
-        (event: React.MouseEvent) => {
-            // Only deselect if clicking on the container itself, not child elements
-            if (event.target === event.currentTarget && selectedToolbarItem) {
+    // Handle component click for linking workflow
+    const handleComponentClick = useCallback(
+        (component: UnifiedComponent | null) => {
+            // Helper function to reset all linking state
+            const resetLinkingState = () => {
+                setLinkingState('idle');
+                setSourceComponent(null);
+                setHighlightedComponent(null);
                 setSelectedToolbarItem(null);
+                setShowCancellationHint(false);
+                setIsDuplicateLink(false);
+                setIsInvalidTarget(false);
+                setIsSourceDeleted(false);
+                setIsTargetDeleted(false);
+            };
+
+            // Handle cancellation when clicking on empty areas (component is null)
+            if (component === null) {
+                if (linkingState !== 'idle') {
+                    resetLinkingState();
+                    showUserFeedback('Linking cancelled', 'info');
+                }
+                return;
+            }
+
+            // Validate that the component still exists in the current map
+            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const componentExists = allComponents.some(c => c.id === component.id);
+            if (!componentExists) {
+                showUserFeedback('Component no longer exists. Linking cancelled.', 'warning');
+                resetLinkingState();
+                return;
+            }
+
+            if (linkingState === 'selecting-source') {
+                // First click - select source component
+                setSourceComponent(component);
+                setLinkingState('selecting-target');
+                showUserFeedback(`Selected "${component.name}" as source. Click another component to create a link.`, 'info');
+            } else if (linkingState === 'selecting-target') {
+                // Second click - create link
+                if (!sourceComponent) {
+                    console.error('No source component selected');
+                    setLinkingState('selecting-source');
+                    return;
+                }
+
+                // Validate that the source component still exists
+                const sourceExists = allComponents.some(c => c.id === sourceComponent.id);
+                if (!sourceExists) {
+                    showUserFeedback('Source component no longer exists. Linking cancelled.', 'warning');
+                    resetLinkingState();
+                    return;
+                }
+
+                if (component.id === sourceComponent.id) {
+                    showUserFeedback('Cannot link a component to itself. Select a different component.', 'warning');
+                    return;
+                }
+
+                // Check if link already exists
+                const existingLinks = props.wardleyMap.links || [];
+                if (linkExists(sourceComponent, component, existingLinks)) {
+                    showUserFeedback(`Link between "${sourceComponent.name}" and "${component.name}" already exists.`, 'warning');
+                    return;
+                }
+
+                try {
+                    // Add link to map text
+                    const updatedMapText = addLinkToMapText(props.mapText, sourceComponent, component);
+                    props.mutateMapText(updatedMapText);
+                    showUserFeedback(`Link created: "${sourceComponent.name}" → "${component.name}"`, 'success');
+
+                    // Reset linking state
+                    resetLinkingState();
+                } catch (error) {
+                    console.error('Failed to create link:', error);
+                    showUserFeedback('Failed to create link. Please try again.', 'error');
+                    // Reset linking state on error
+                    resetLinkingState();
+                }
+            }
+        },
+        [
+            linkingState,
+            sourceComponent,
+            props.wardleyMap.links,
+            props.wardleyMap.components,
+            props.wardleyMap.anchors,
+            props.mapText,
+            props.mutateMapText,
+            showUserFeedback,
+        ],
+    );
+
+    // Handle mouse move for drag preview and linking with comprehensive validation
+    const handleMouseMove = useCallback(
+        (position: {x: number; y: number; nearestComponent?: UnifiedComponent | null}) => {
+            try {
+                // Validate input position
+                if (!position || typeof position.x !== 'number' || typeof position.y !== 'number') {
+                    console.warn('Invalid position received in handleMouseMove:', position);
+                    setIsValidDropZone(false);
+                    return;
+                }
+
+                // Check for NaN values
+                if (isNaN(position.x) || isNaN(position.y)) {
+                    console.warn('NaN coordinates received in handleMouseMove:', position);
+                    setIsValidDropZone(false);
+                    return;
+                }
+
+                // Update current mouse position for linking preview
+                setCurrentMousePosition({x: position.x, y: position.y});
+
+                // Check if source component still exists during linking
+                if (linkingState !== 'idle' && sourceComponent) {
+                    const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                    const sourceExists = allComponents.some(c => c.id === sourceComponent.id);
+                    setIsSourceDeleted(!sourceExists);
+
+                    if (!sourceExists) {
+                        // Source component was deleted, show error and prepare for cancellation
+                        setHighlightedComponent(null);
+                        setIsInvalidTarget(false);
+                        setIsDuplicateLink(false);
+                        setShowCancellationHint(false);
+                        return;
+                    }
+                } else {
+                    setIsSourceDeleted(false);
+                }
+
+                // Handle magnetic component highlighting for linking
+                if ((linkingState === 'selecting-source' || linkingState === 'selecting-target') && position.nearestComponent) {
+                    // Check if the highlighted component still exists
+                    const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                    const targetExists = allComponents.some(c => c.id === position.nearestComponent!.id);
+                    setIsTargetDeleted(!targetExists);
+
+                    if (targetExists) {
+                        setHighlightedComponent(position.nearestComponent);
+
+                        // Check for duplicate links and invalid targets when selecting target
+                        if (linkingState === 'selecting-target' && sourceComponent) {
+                            const isInvalid = position.nearestComponent.id === sourceComponent.id;
+                            const existingLinks = props.wardleyMap.links || [];
+                            const isDuplicate = linkExists(sourceComponent, position.nearestComponent, existingLinks);
+
+                            setIsInvalidTarget(isInvalid);
+                            setIsDuplicateLink(isDuplicate && !isInvalid);
+                        } else {
+                            setIsInvalidTarget(false);
+                            setIsDuplicateLink(false);
+                        }
+                    } else {
+                        // Target component was deleted
+                        setHighlightedComponent(null);
+                        setIsInvalidTarget(false);
+                        setIsDuplicateLink(false);
+                    }
+                } else if (linkingState !== 'idle') {
+                    // Clear highlighting when no component is near but still in linking mode
+                    setHighlightedComponent(null);
+                    setIsInvalidTarget(false);
+                    setIsDuplicateLink(false);
+                    setIsTargetDeleted(false);
+                    // Show cancellation hint when in linking mode but no component is highlighted
+                    setShowCancellationHint(true);
+                } else {
+                    setIsTargetDeleted(false);
+                }
+
+                // Hide cancellation hint when a component is highlighted or not in linking mode
+                if (linkingState === 'idle' || position.nearestComponent) {
+                    setShowCancellationHint(false);
+                }
+
+                // Validate drop zone (coordinates should be between 0 and 1)
+                const isValid = position.x >= 0 && position.x <= 1 && position.y >= 0 && position.y <= 1;
+
+                // Additional validation for edge cases
+                const isReasonable = position.x >= -0.1 && position.x <= 1.1 && position.y >= -0.1 && position.y <= 1.1;
+
+                if (!isReasonable) {
+                    console.debug('Position outside reasonable bounds:', position);
+                    setIsValidDropZone(false);
+                    return;
+                }
+
+                setIsValidDropZone(isValid);
+
+                // Log for debugging if coordinates are close to boundaries
+                if (isValid && (position.x < 0.05 || position.x > 0.95 || position.y < 0.05 || position.y > 0.95)) {
+                    console.debug('Position near map boundaries:', position);
+                }
+            } catch (error) {
+                console.error('Error in handleMouseMove:', error);
                 setIsValidDropZone(false);
             }
         },
-        [selectedToolbarItem],
+        [linkingState, sourceComponent, props.wardleyMap.components, props.wardleyMap.anchors],
+    );
+
+    // Handle clicks outside the map to deselect toolbar items and cancel linking
+    const handleContainerClick = useCallback(
+        (event: React.MouseEvent) => {
+            // Only deselect if clicking on the container itself, not child elements
+            if (event.target === event.currentTarget) {
+                if (selectedToolbarItem) {
+                    setSelectedToolbarItem(null);
+                    setIsValidDropZone(false);
+                }
+
+                // Cancel linking if in progress
+                if (linkingState !== 'idle') {
+                    // Use the same reset function as in handleComponentClick
+                    setLinkingState('idle');
+                    setSourceComponent(null);
+                    setHighlightedComponent(null);
+                    setShowCancellationHint(false);
+                    setIsDuplicateLink(false);
+                    setIsInvalidTarget(false);
+                    setIsSourceDeleted(false);
+                    setIsTargetDeleted(false);
+                    showUserFeedback('Linking cancelled', 'info');
+                }
+            }
+        },
+        [selectedToolbarItem, linkingState, showUserFeedback],
     );
 
     return (
@@ -455,17 +687,14 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             {featureSwitches.enableQuickAdd && <CanvasSpeedDial setQuickAdd={setQuickAdd} mapStyleDefs={props.mapStyleDefs} />}
 
             {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
-            <div className={`toolbar-container ${props.mapStyleDefs.className}`} style={{position: 'absolute', zIndex: 1000}}>
-                <WysiwygToolbar
-                    mapStyleDefs={props.mapStyleDefs}
-                    mapDimensions={props.mapDimensions}
-                    mapText={props.mapText}
-                    mutateMapText={props.mutateMapText}
-                    selectedItem={selectedToolbarItem}
-                    onItemSelect={handleToolbarItemSelect}
-                    className={props.mapStyleDefs.className}
-                />
-            </div>
+            <WysiwygToolbar
+                mapStyleDefs={props.mapStyleDefs}
+                mapDimensions={props.mapDimensions}
+                mapText={props.mapText}
+                mutateMapText={props.mutateMapText}
+                selectedItem={selectedToolbarItem}
+                onItemSelect={handleToolbarItemSelect}
+            />
 
             {/* Drag Preview */}
             <DragPreview
@@ -480,20 +709,20 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 <div
                     style={{
                         position: 'fixed',
-                        top: '20px',
-                        right: '20px',
+                        top: '16px',
+                        right: '16px',
                         zIndex: 10001,
-                        maxWidth: '400px',
-                        padding: '12px 16px',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        maxWidth: '280px',
+                        padding: '8px 12px',
+                        borderRadius: '6px',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                         border: '1px solid',
-                        fontSize: '14px',
-                        fontWeight: '500',
+                        fontSize: '12px',
+                        fontWeight: '400',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        animation: 'slideInFromRight 0.3s ease-out',
+                        gap: '6px',
+                        animation: 'slideInFromRight 0.2s ease-out',
                         backgroundColor:
                             userFeedback.type === 'success'
                                 ? '#d4edda'
@@ -574,6 +803,15 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     selectedToolbarItem={selectedToolbarItem}
                     onToolbarItemDrop={handleToolbarItemDrop}
                     onMouseMove={handleMouseMove}
+                    onComponentClick={handleComponentClick}
+                    linkingState={linkingState}
+                    sourceComponent={sourceComponent}
+                    highlightedComponent={highlightedComponent}
+                    isDuplicateLink={isDuplicateLink}
+                    isInvalidTarget={isInvalidTarget}
+                    showCancellationHint={showCancellationHint}
+                    isSourceDeleted={isSourceDeleted}
+                    isTargetDeleted={isTargetDeleted}
                 />
             </div>
 

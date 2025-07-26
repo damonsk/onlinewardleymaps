@@ -14,11 +14,32 @@ interface ModernComponentSymbolProps {
 
 const ComponentSymbol: React.FunctionComponent<ModernComponentSymbolProps> = ({id, cx, cy, component, onClick, styles}) => {
     const evolved = component?.evolved || false;
-    const fill = evolved ? styles.evolvedFill : styles.fill;
-    const stroke = evolved ? styles.evolved : styles.stroke;
+
+    // Provide default styles if none are provided (for testing)
+    const defaultStyles = {
+        fill: '#ffffff',
+        stroke: '#000000',
+        strokeWidth: 1,
+        radius: 8,
+        evolved: '#ff0000',
+        evolvedFill: '#ffcccc',
+    };
+
+    const safeStyles = styles || defaultStyles;
+    const fill = evolved ? safeStyles.evolvedFill : safeStyles.fill;
+    const stroke = evolved ? safeStyles.evolved : safeStyles.stroke;
 
     return (
-        <circle id={id} cx={cx} cy={cy} strokeWidth={styles.strokeWidth} r={styles.radius} stroke={stroke} fill={fill} onClick={onClick} />
+        <circle
+            id={id}
+            cx={cx}
+            cy={cy}
+            strokeWidth={safeStyles.strokeWidth}
+            r={safeStyles.radius}
+            stroke={stroke}
+            fill={fill}
+            onClick={onClick}
+        />
     );
 };
 

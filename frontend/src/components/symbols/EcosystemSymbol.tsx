@@ -20,8 +20,8 @@ const EcosystemSymbol: React.FunctionComponent<ModernEcosystemSymbolProps> = ({
     component, // Direct access to UnifiedComponent
 }) => {
     const evolved = component?.evolved || false;
-    const fill = evolved ? styles.evolvedFill : '#d7d7d7';
-    const stroke = evolved ? styles.evolved : styles.stroke;
+    const fill = evolved ? styles?.evolvedFill : '#d7d7d7';
+    const stroke = evolved ? styles?.evolved : styles?.stroke || 'black';
 
     return (
         <g id={id} onClick={onClick}>

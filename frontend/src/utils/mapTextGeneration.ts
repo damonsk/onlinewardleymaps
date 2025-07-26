@@ -116,7 +116,7 @@ export function validateTemplate(
 
     // Test the template with sample data
     try {
-        const testResult = template('Test Component', '0.50', '0.50');
+        const testResult = template?.('Test Component', '0.50', '0.50');
 
         if (typeof testResult !== 'string') {
             errors.push(`Template must return a string for item ${itemId}`);
@@ -233,7 +233,9 @@ export function generateComponentMapText(item: ToolbarItem, componentName: strin
         const formattedX = formatCoordinate(position.x);
 
         // Validate the template first
-        const templateValidation = validateTemplate(item.template, item.id);
+        const templateValidation = item.template
+            ? validateTemplate(item.template, item.id)
+            : {isValid: false, errors: ['Template is undefined']};
 
         let template = item.template;
 
@@ -247,7 +249,7 @@ export function generateComponentMapText(item: ToolbarItem, componentName: strin
         // Generate map text using the template (original or fallback)
         let result: string;
         try {
-            result = template(safeName, formattedY, formattedX);
+            result = template?.(safeName, formattedY, formattedX) || '';
         } catch (templateError) {
             console.error(`Template execution failed for ${item.id}:`, templateError);
             // Use basic fallback template as last resort

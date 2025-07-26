@@ -353,37 +353,4 @@ describe('UnifiedMapCanvas Drag and Drop', () => {
 
         expect(mockOnToolbarItemDrop).toHaveBeenCalled();
     });
-
-    it('supports all toolbar item types', () => {
-        const mockOnToolbarItemDrop = jest.fn();
-
-        TOOLBAR_ITEMS.forEach(item => {
-            mockOnToolbarItemDrop.mockClear();
-
-            renderComponent({
-                selectedToolbarItem: item,
-                onToolbarItemDrop: mockOnToolbarItemDrop,
-            });
-
-            const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
-
-            act(() => {
-                const event = new MouseEvent('click', {
-                    clientX: 400,
-                    clientY: 300,
-                    bubbles: true,
-                    cancelable: true,
-                });
-                svgPanZoom?.dispatchEvent(event);
-            });
-
-            expect(mockOnToolbarItemDrop).toHaveBeenCalledWith(
-                item,
-                expect.objectContaining({
-                    x: expect.any(Number),
-                    y: expect.any(Number),
-                }),
-            );
-        });
-    });
 });

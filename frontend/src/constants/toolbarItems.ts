@@ -6,6 +6,7 @@ import {
     ToolbarEcosystemIcon,
     ToolbarGenericNoteIcon,
     ToolbarInertiaIcon,
+    ToolbarLinkIcon,
     ToolbarMarketIcon,
     ToolbarOutSourceMethodIcon,
     ToolbarPipelineIcon,
@@ -55,6 +56,8 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.component,
         category: 'component',
         defaultName: DEFAULT_COMPONENT_NAMES.component,
+        toolType: 'placement',
+        keyboardShortcut: 'c',
     },
     {
         id: 'component-inertia',
@@ -63,6 +66,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.componentInertia,
         category: 'component',
         defaultName: DEFAULT_COMPONENT_NAMES.componentInertia,
+        toolType: 'placement',
     },
     {
         id: 'market',
@@ -71,6 +75,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.market,
         category: 'component',
         defaultName: DEFAULT_COMPONENT_NAMES.market,
+        toolType: 'placement',
     },
     {
         id: 'ecosystem',
@@ -79,6 +84,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.ecosystem,
         category: 'component',
         defaultName: DEFAULT_COMPONENT_NAMES.ecosystem,
+        toolType: 'placement',
     },
     {
         id: 'buy',
@@ -87,6 +93,8 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.buy,
         category: 'method',
         defaultName: DEFAULT_COMPONENT_NAMES.buy,
+        toolType: 'placement',
+        keyboardShortcut: 'm',
     },
     {
         id: 'build',
@@ -95,6 +103,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.build,
         category: 'method',
         defaultName: DEFAULT_COMPONENT_NAMES.build,
+        toolType: 'placement',
     },
     {
         id: 'outsource',
@@ -103,6 +112,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.outsource,
         category: 'method',
         defaultName: DEFAULT_COMPONENT_NAMES.outsource,
+        toolType: 'placement',
     },
     {
         id: 'note',
@@ -111,6 +121,8 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.note,
         category: 'note',
         defaultName: DEFAULT_COMPONENT_NAMES.note,
+        toolType: 'placement',
+        keyboardShortcut: 'n',
     },
     // Note: Pipeline and Anchor icons will be created in a later task
     // For now, we'll use placeholder icons that will be replaced
@@ -121,6 +133,8 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.pipeline,
         category: 'pipeline',
         defaultName: DEFAULT_COMPONENT_NAMES.pipeline,
+        toolType: 'placement',
+        keyboardShortcut: 'p',
     },
     {
         id: 'anchor',
@@ -129,6 +143,17 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         template: TOOLBAR_TEMPLATES.anchor,
         category: 'other',
         defaultName: DEFAULT_COMPONENT_NAMES.anchor,
+        toolType: 'placement',
+        keyboardShortcut: 'a',
+    },
+    // New linking tool
+    {
+        id: 'link',
+        label: 'Link Components',
+        icon: ToolbarLinkIcon,
+        category: 'link',
+        toolType: 'linking',
+        keyboardShortcut: 'l',
     },
 ];
 
@@ -155,6 +180,11 @@ export const TOOLBAR_CATEGORIES: ToolbarCategory[] = [
         id: 'pipeline',
         label: 'Pipelines',
         items: ['pipeline'],
+    },
+    {
+        id: 'link',
+        label: 'Links',
+        items: ['link'],
     },
     {
         id: 'other',
@@ -186,4 +216,24 @@ export const getToolbarItemsByCategory = (categoryId: string): ToolbarItem[] => 
     if (!category) return [];
 
     return category.items.map(itemId => getToolbarItemById(itemId)).filter((item): item is ToolbarItem => item !== undefined);
+};
+
+/**
+ * Keyboard shortcut mapping for quick lookup
+ */
+export const KEYBOARD_SHORTCUTS: Record<string, string> = {
+    c: 'component',
+    l: 'link',
+    n: 'note',
+    p: 'pipeline',
+    a: 'anchor',
+    m: 'buy', // Method - using 'buy' as the primary method tool
+};
+
+/**
+ * Helper function to get toolbar item by keyboard shortcut
+ */
+export const getToolbarItemByShortcut = (key: string): ToolbarItem | undefined => {
+    const itemId = KEYBOARD_SHORTCUTS[key.toLowerCase()];
+    return itemId ? getToolbarItemById(itemId) : undefined;
 };

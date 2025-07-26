@@ -113,8 +113,8 @@ export const MarketIcon: React.FunctionComponent<IconProps> = ({id, hideLabel, m
             <MarketSymbol
                 styles={{
                     ...mapStyleDefs.component,
-                    fill: mapStyleDefs.component.fill ?? 'none',
-                    stroke: mapStyleDefs.component.stroke ?? 'none',
+                    fill: mapStyleDefs.component?.fill ?? 'none',
+                    stroke: mapStyleDefs.component?.stroke ?? 'none',
                 }}
                 onClick={() => {}}
             />

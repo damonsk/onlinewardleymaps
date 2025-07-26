@@ -40,7 +40,7 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
                 </tspan>
             ));
 
-    const displayFill = evolved ? textTheme.evolvedTextColor : textTheme.textColor;
+    const displayFill = evolved ? textTheme?.evolvedTextColor : textTheme?.textColor || 'black';
     const isLong = text && text.length > 14;
     const trimmedText = isLong ? trimText(id, text) : text;
     const transform = isLong ? 'translate(30, 10)' : '';
@@ -53,14 +53,14 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
             <text
                 id={id}
                 data-testid={id}
-                fontWeight={textTheme.fontWeight}
-                fontSize={textTheme.fontSize || '14px'}
+                fontWeight={textTheme?.fontWeight || 'normal'}
+                fontSize={textTheme?.fontSize || '14px'}
                 className={className}
                 textAnchor={textAnchor}
                 x={x}
                 y={y}
                 transform={transform}
-                fill={textTheme.textColor || displayFill}
+                fill={textTheme?.textColor || displayFill}
                 onClick={onClick ? onClick : () => {}}
                 onDoubleClick={handleDblClick}>
                 {note || trimmedText}

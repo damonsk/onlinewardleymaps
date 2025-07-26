@@ -202,13 +202,16 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, 
         [onClick],
     );
 
+    // Create tooltip text with keyboard shortcut if available
+    const tooltipText = item.keyboardShortcut ? `${item.label} (${item.keyboardShortcut.toUpperCase()})` : item.label;
+
     return (
         <StyledToolbarButton
             isSelected={isSelected}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
-            title={item.label}
-            aria-label={`${item.label} tool${isSelected ? ' (selected)' : ''}`}
+            title={tooltipText}
+            aria-label={`${item.label} tool${isSelected ? ' (selected)' : ''}${item.keyboardShortcut ? `, keyboard shortcut ${item.keyboardShortcut.toUpperCase()}` : ''}`}
             aria-pressed={isSelected}
             role="button"
             tabIndex={0}

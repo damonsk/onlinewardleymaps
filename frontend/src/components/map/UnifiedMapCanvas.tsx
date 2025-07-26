@@ -5,7 +5,9 @@ import {MapElements} from '../../processing/MapElements';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
 import {UnifiedWardleyMap} from '../../types/unified/map';
+import {UnifiedComponent} from '../../types/unified/components';
 import {processLinks} from '../../utils/mapProcessing';
+import {findNearestComponent} from '../../utils/componentDetection';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {useModKeyPressedConsumer} from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
@@ -33,7 +35,17 @@ interface ModernUnifiedMapCanvasProps {
     // New props for toolbar drag and drop support
     selectedToolbarItem?: ToolbarItem | null;
     onToolbarItemDrop?: (item: ToolbarItem, position: {x: number; y: number}) => void;
-    onMouseMove?: (position: {x: number; y: number}) => void;
+    onMouseMove?: (position: {x: number; y: number; nearestComponent?: UnifiedComponent | null}) => void;
+    // New props for linking functionality
+    onComponentClick?: (component: UnifiedComponent | null) => void;
+    linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
+    sourceComponent?: UnifiedComponent | null;
+    highlightedComponent?: UnifiedComponent | null;
+    isDuplicateLink?: boolean;
+    isInvalidTarget?: boolean;
+    showCancellationHint?: boolean;
+    isSourceDeleted?: boolean;
+    isTargetDeleted?: boolean;
 }
 
 function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
@@ -50,6 +62,9 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
         correctedX?: number;
         correctedY?: number;
     } | null>(null);
+
+    // State to track current mouse position for linking preview
+    const [currentMousePosition, setCurrentMousePosition] = useState<{x: number; y: number}>({x: 0, y: 0});
 
     const {
         wardleyMap,
@@ -328,8 +343,52 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     );
 
     const handleMapClick = (event: any) => {
-        // Handle toolbar item placement when an item is selected
-        if (props.selectedToolbarItem && props.onToolbarItemDrop) {
+        // Handle component linking when in linking mode
+        if (props.linkingState && props.linkingState !== 'idle' && props.onComponentClick) {
+            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+
+            // Adjust for SVG viewBox offset (-35, -45)
+            const adjustedX = svgX + 35;
+            const adjustedY = svgY + 45;
+
+            // Convert to map coordinates (maturity and visibility)
+            const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+            const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+
+            // Validate and clamp coordinates to valid range [0, 1]
+            const clampedMaturity = Math.max(0, Math.min(1, maturity));
+            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+
+            // Prioritize highlighted component if it exists (for better UX when component is pulsating)
+            if (props.highlightedComponent) {
+                props.onComponentClick(props.highlightedComponent);
+            } else {
+                // Fallback: Find the nearest component to the click position
+                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+                const clickedComponent = findNearestComponent(
+                    {x: clampedMaturity, y: clampedVisibility},
+                    allComponents,
+                    0.05, // Click tolerance
+                );
+
+                if (clickedComponent) {
+                    props.onComponentClick(clickedComponent);
+                } else {
+                    // No component found - cancel linking by calling onComponentClick with null
+                    // This allows the parent component to handle the cancellation
+                    if (props.onComponentClick) {
+                        // Signal cancellation by calling with a special null component
+                        props.onComponentClick(null as any);
+                    }
+                }
+            }
+            return; // Always return early when in linking mode to prevent placement logic
+        }
+
+        // Handle toolbar item placement when an item is selected (only for placement tools)
+        if (props.selectedToolbarItem && props.selectedToolbarItem.toolType === 'placement' && props.onToolbarItemDrop) {
             if (DEBUG_COORDINATES) {
                 // Log the entire event object to understand its structure
                 console.log('Click event structure:', event);
@@ -451,25 +510,25 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     };
 
     const handleMapMouseMove = (event: any) => {
-        // Handle mouse move for drag preview when toolbar item is selected
-        if (props.selectedToolbarItem && props.onMouseMove) {
-            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
-            // These are already adjusted for pan and zoom
-            const svgX = event.x || 0;
-            const svgY = event.y || 0;
+        // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+        // These are already adjusted for pan and zoom
+        const svgX = event.x || 0;
+        const svgY = event.y || 0;
 
-            // Adjust for SVG viewBox offset (-35, -45)
-            const adjustedX = svgX + 35;
-            const adjustedY = svgY + 45;
+        // Adjust for SVG viewBox offset (-35, -45)
+        const adjustedX = svgX + 35;
+        const adjustedY = svgY + 45;
 
-            // Convert to map coordinates (maturity and visibility)
-            const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
-            const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+        // Convert to map coordinates (maturity and visibility)
+        const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+        const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
 
-            // Validate and clamp coordinates to valid range [0, 1]
-            const clampedMaturity = Math.max(0, Math.min(1, maturity));
-            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+        // Validate and clamp coordinates to valid range [0, 1]
+        const clampedMaturity = Math.max(0, Math.min(1, maturity));
+        const clampedVisibility = Math.max(0, Math.min(1, visibility));
 
+        // Handle mouse move for drag preview when toolbar item is selected (placement tools only)
+        if (props.selectedToolbarItem && props.selectedToolbarItem.toolType === 'placement' && props.onMouseMove) {
             if (DEBUG_COORDINATES) {
                 // Only log occasionally to avoid flooding the console
                 if (Math.random() < 0.05) {
@@ -488,6 +547,27 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             props.onMouseMove({
                 x: clampedMaturity,
                 y: clampedVisibility,
+            });
+        }
+
+        // Update current mouse position for linking preview
+        setCurrentMousePosition({x: clampedMaturity, y: clampedVisibility});
+
+        // Handle mouse move for linking functionality
+        if ((props.linkingState === 'selecting-source' || props.linkingState === 'selecting-target') && props.onMouseMove) {
+            // Find the nearest component for magnetic linking
+            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+            const nearestComponent = findNearestComponent(
+                {x: clampedMaturity, y: clampedVisibility},
+                allComponents,
+                0.1, // Increased magnetic distance threshold for better detection
+            );
+
+            // Pass mouse position and highlighted component to parent
+            props.onMouseMove({
+                x: clampedMaturity,
+                y: clampedVisibility,
+                nearestComponent,
             });
         }
     };
@@ -758,6 +838,15 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         mapAnnotations={wardleyMap.annotations}
                         mapAnnotationsPresentation={mapAnnotationsPresentation}
                         mapMethods={wardleyMap.methods}
+                        linkingState={props.linkingState}
+                        sourceComponent={props.sourceComponent}
+                        mousePosition={currentMousePosition}
+                        highlightedComponent={props.highlightedComponent}
+                        isDuplicateLink={props.isDuplicateLink}
+                        isInvalidTarget={props.isInvalidTarget}
+                        showCancellationHint={props.showCancellationHint}
+                        isSourceDeleted={props.isSourceDeleted}
+                        isTargetDeleted={props.isTargetDeleted}
                     />
                 </svg>
             </UncontrolledReactSVGPanZoom>

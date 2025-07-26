@@ -414,25 +414,32 @@ describe('WysiwygToolbar', () => {
 
     describe('Integration with ToolbarItem', () => {
         it('passes correct props to ToolbarItem components', () => {
-            const selectedItem = TOOLBAR_ITEMS[0];
-            renderComponent({selectedItem});
-
-            // Check selected item receives correct props
-            const selectedButton = container.querySelector(`[data-testid="toolbar-item-${selectedItem.id}"]`);
-            expect(selectedButton?.getAttribute('aria-pressed')).toBe('true');
-
-            // Check unselected item receives correct props
-            const unselectedButton = container.querySelector(`[data-testid="toolbar-item-${TOOLBAR_ITEMS[1].id}"]`);
-            expect(unselectedButton?.getAttribute('aria-pressed')).toBe('false');
+            // Check each item as selected and others as unselected
+            TOOLBAR_ITEMS.forEach((selectedItem, idx) => {
+                renderComponent({selectedItem});
+                const selectedButton = container.querySelector(`[data-testid="toolbar-item-${selectedItem.id}"]`);
+                expect(selectedButton?.getAttribute('aria-pressed')).toBe('true');
+                // Check all other items are unselected
+                TOOLBAR_ITEMS.forEach((otherItem, otherIdx) => {
+                    if (otherIdx !== idx) {
+                        const unselectedButton = container.querySelector(`[data-testid="toolbar-item-${otherItem.id}"]`);
+                        expect(unselectedButton?.getAttribute('aria-pressed')).toBe('false');
+                    }
+                });
+            });
         });
 
         it('handles ToolbarItem click events correctly', () => {
-            renderComponent();
-
             TOOLBAR_ITEMS.forEach(item => {
+                mockOnItemSelect.mockClear();
+                renderComponent();
                 const button = container.querySelector(`[data-testid="toolbar-item-${item.id}"]`);
                 expect(button).toBeTruthy();
-                expect(button?.getAttribute('title')).toBe(item.label);
+                expect(button?.getAttribute('title')).toContain(item.label);
+                act(() => {
+                    button?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+                });
+                expect(mockOnItemSelect).toHaveBeenCalledWith(item);
             });
         });
     });

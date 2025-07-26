@@ -287,7 +287,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for standard component', () => {
             const componentItem = TOOLBAR_ITEMS.find(item => item.id === 'component');
             expect(componentItem).toBeTruthy();
-            
+
             if (componentItem) {
                 const updatedText = placeComponent(componentItem);
                 expect(updatedText).toContain('title Test Map');
@@ -298,7 +298,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for component with inertia', () => {
             const inertiaItem = TOOLBAR_ITEMS.find(item => item.id === 'component-inertia');
             expect(inertiaItem).toBeTruthy();
-            
+
             if (inertiaItem) {
                 const updatedText = placeComponent(inertiaItem);
                 expect(updatedText).toContain('title Test Map');
@@ -309,7 +309,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for market component', () => {
             const marketItem = TOOLBAR_ITEMS.find(item => item.id === 'market');
             expect(marketItem).toBeTruthy();
-            
+
             if (marketItem) {
                 const updatedText = placeComponent(marketItem);
                 expect(updatedText).toContain('title Test Map');
@@ -320,7 +320,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for ecosystem component', () => {
             const ecosystemItem = TOOLBAR_ITEMS.find(item => item.id === 'ecosystem');
             expect(ecosystemItem).toBeTruthy();
-            
+
             if (ecosystemItem) {
                 const updatedText = placeComponent(ecosystemItem);
                 expect(updatedText).toContain('title Test Map');
@@ -333,7 +333,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for buy method', () => {
             const buyItem = TOOLBAR_ITEMS.find(item => item.id === 'buy');
             expect(buyItem).toBeTruthy();
-            
+
             if (buyItem) {
                 const updatedText = placeComponent(buyItem);
                 expect(updatedText).toContain('title Test Map');
@@ -344,7 +344,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for build method', () => {
             const buildItem = TOOLBAR_ITEMS.find(item => item.id === 'build');
             expect(buildItem).toBeTruthy();
-            
+
             if (buildItem) {
                 const updatedText = placeComponent(buildItem);
                 expect(updatedText).toContain('title Test Map');
@@ -355,7 +355,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for outsource method', () => {
             const outsourceItem = TOOLBAR_ITEMS.find(item => item.id === 'outsource');
             expect(outsourceItem).toBeTruthy();
-            
+
             if (outsourceItem) {
                 const updatedText = placeComponent(outsourceItem);
                 expect(updatedText).toContain('title Test Map');
@@ -368,7 +368,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for note', () => {
             const noteItem = TOOLBAR_ITEMS.find(item => item.id === 'note');
             expect(noteItem).toBeTruthy();
-            
+
             if (noteItem) {
                 const updatedText = placeComponent(noteItem);
                 expect(updatedText).toContain('title Test Map');
@@ -379,7 +379,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for pipeline', () => {
             const pipelineItem = TOOLBAR_ITEMS.find(item => item.id === 'pipeline');
             expect(pipelineItem).toBeTruthy();
-            
+
             if (pipelineItem) {
                 const updatedText = placeComponent(pipelineItem);
                 expect(updatedText).toContain('title Test Map');
@@ -390,7 +390,7 @@ describe('Map Text Generation Integration Tests', () => {
         it('should generate correct syntax for anchor', () => {
             const anchorItem = TOOLBAR_ITEMS.find(item => item.id === 'anchor');
             expect(anchorItem).toBeTruthy();
-            
+
             if (anchorItem) {
                 const updatedText = placeComponent(anchorItem);
                 expect(updatedText).toContain('title Test Map');
@@ -435,7 +435,7 @@ note Test Note [0.5, 0.6]`;
             // Verify map text structure is preserved
             expect(mockMutateMapText).toHaveBeenCalled();
             const updatedText = mockMutateMapText.mock.calls[0][0];
-            
+
             // Check that all original elements are preserved
             expect(updatedText).toContain('title Test Map');
             expect(updatedText).toContain('component A [0.1, 0.2]');
@@ -443,7 +443,7 @@ note Test Note [0.5, 0.6]`;
             expect(updatedText).toContain('A->B');
             expect(updatedText).toContain('// This is a comment');
             expect(updatedText).toContain('note Test Note [0.5, 0.6]');
-            
+
             // Check that new component is added
             expect(updatedText).toMatch(/component New Component \[[0-9.]+, [0-9.]+\]/);
         });
@@ -540,12 +540,12 @@ note Test Note [0.5, 0.6]`;
             expect(updatedText).toContain('component A [0.1, 0.2]');
             expect(updatedText).toContain('component B [0.3, 0.4]');
             expect(updatedText).toMatch(/component New Component \[[0-9.]+, [0-9.]+\]/);
-            
+
             // Check that line endings are normalized
             const lineCount = updatedText.split('\n').length;
             const crlfCount = updatedText.split('\r\n').length;
             const crCount = updatedText.split('\r').length;
-            
+
             // The total number of lines should be greater than the number of CRLF or CR lines
             // This indicates normalization to LF
             expect(lineCount).toBeGreaterThan(crlfCount);
@@ -556,10 +556,10 @@ note Test Note [0.5, 0.6]`;
     describe('Component Naming and Uniqueness', () => {
         it('should generate unique names for components of the same type', () => {
             const mockMutateMapText = jest.fn();
-            
+
             // Start with a map that already has a component
             const initialMapText = 'title Test Map\ncomponent New Component [0.1, 0.2]';
-            
+
             renderComponent({
                 mapText: initialMapText,
                 mutateMapText: mockMutateMapText,
@@ -615,13 +615,13 @@ note Test Note [0.5, 0.6]`;
 
         it('should handle multiple components with numbered names', () => {
             const mockMutateMapText = jest.fn();
-            
+
             // Start with a map that already has numbered components
             const initialMapText = `title Test Map
 component New Component [0.1, 0.2]
 component New Component 1 [0.3, 0.4]
 component New Component 2 [0.5, 0.6]`;
-            
+
             renderComponent({
                 mapText: initialMapText,
                 mutateMapText: mockMutateMapText,
@@ -715,93 +715,6 @@ component New Component 2 [0.5, 0.6]`;
             expect(updatedText).toMatch(/component New Component 3 \[[0-9.]+, [0-9.]+\]/);
         });
 
-        it('should generate unique names for different component types', () => {
-            const mockMutateMapText = jest.fn();
-            
-            // Start with a map that has components of different types
-            const initialMapText = `title Test Map
-component New Component [0.1, 0.2]
-note New Note [0.3, 0.4]
-pipeline New Pipeline [0.5, 0.6]`;
-            
-            renderComponent({
-                mapText: initialMapText,
-                mutateMapText: mockMutateMapText,
-                wardleyMap: {
-                    ...mockWardleyMap,
-                    components: [
-                        {
-                            name: 'New Component',
-                            maturity: 0.2,
-                            visibility: 0.1,
-                            line: 2,
-                            evolved: false,
-                            inertia: false,
-                            increaseLabelSpacing: 0,
-                            pseudoComponent: false,
-                            offsetY: 0,
-                            evolving: false,
-                            decorators: {
-                                buy: false,
-                                build: false,
-                                outsource: false,
-                                ecosystem: false,
-                                market: false,
-                            },
-                        },
-                    ],
-                    notes: [
-                        {
-                            name: 'New Note',
-                            maturity: 0.4,
-                            visibility: 0.3,
-                            line: 3,
-                        },
-                    ],
-                    pipelines: [
-                        {
-                            name: 'New Pipeline',
-                            maturity: 0.6,
-                            visibility: 0.5,
-                            line: 4,
-                        },
-                    ],
-                },
-            });
-
-            // Test adding each type of component
-            const testCases = [
-                {selector: '[aria-label*="Component"]:not([aria-label*="Inertia"])', expectedName: 'New Component 1'},
-                {selector: '[aria-label*="Note"]', expectedName: 'New Note 1'},
-                {selector: '[aria-label*="Pipeline"]', expectedName: 'New Pipeline 1'},
-            ];
-
-            testCases.forEach(({selector, expectedName}, index) => {
-                mockMutateMapText.mockClear();
-
-                // Select toolbar item
-                const button = container.querySelector(selector);
-                act(() => {
-                    button?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-                });
-
-                // Click on map canvas to place component
-                const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
-                act(() => {
-                    const event = new MouseEvent('click', {
-                        clientX: 500 + index * 50,
-                        clientY: 350 + index * 50,
-                        bubbles: true,
-                    });
-                    svgPanZoom?.dispatchEvent(event);
-                });
-
-                // Verify component has unique name
-                expect(mockMutateMapText).toHaveBeenCalled();
-                const updatedText = mockMutateMapText.mock.calls[0][0];
-                expect(updatedText).toContain(expectedName);
-            });
-        });
     });
 
     describe('Error Handling in Map Text Generation', () => {

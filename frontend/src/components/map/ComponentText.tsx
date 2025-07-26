@@ -1,9 +1,9 @@
-import TextareaAutosize from '@mui/material/TextareaAutosize';
 import React, {useEffect, useRef, useState} from 'react';
 import {rename} from '../../constants/rename';
 import {UnifiedComponent} from '../../types/unified';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';
 
 interface MovedPosition {
@@ -50,18 +50,10 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         : component;
 
     const [text, setText] = useState(actualComponent.name);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         setText(actualComponent.name);
     }, [actualComponent.name]);
-
-    useEffect(() => {
-        if (editMode && textareaRef.current) {
-            textareaRef.current.focus();
-            textareaRef.current.select();
-        }
-    }, [editMode]);
 
     const handleDoubleClick = () => {
         if (onClick) {
@@ -71,25 +63,16 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         }
     };
 
-    const handleBlur = () => {
+    const handleSave = () => {
         setEditMode(false);
         if (mutateMapText && mapText && text !== component.name && component.line) {
             rename(component.line, component.name, text, mapText, mutateMapText);
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setText(e.target.value);
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            setEditMode(false);
-            if (mutateMapText && mapText && text !== component.name && component.line) {
-                rename(component.line, component.name, text, mapText, mutateMapText);
-            }
-        }
+    const handleCancel = () => {
+        setText(actualComponent.name);
+        setEditMode(false);
     };
     const getX = () => {
         return component.label?.x || 0;
@@ -102,25 +85,97 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const textFill = component.evolved ? styles.evolvedText : styles.text;
     const fontSize = styles?.fontSize || '14px';
 
-    const renderEditMode = () => (
-        <foreignObject x={Number(cx) + getX() - 50} y={Number(cy) + getY() - 25} width="100" height="50" style={{overflow: 'visible'}}>
-            <TextareaAutosize
-                ref={textareaRef}
-                value={text}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
+    const renderEditMode = () => {
+        // Safari fallback - use native input instead of styled-components
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        
+        if (isSafari) {
+            return (
+                <foreignObject 
+                    x={Number(cx) + getX() - 60} 
+                    y={Number(cy) + getY() - 30} 
+                    width="140" 
+                    height="50" 
+                >
+                    <input
+                        type="text"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSave();
+                            } else if (e.key === 'Escape') {
+                                e.preventDefault();
+                                handleCancel();
+                            }
+                        }}
+                        onBlur={handleSave}
+                        onFocus={(e) => {
+                            // Select all text on focus for easy replacement
+                            e.target.select();
+                        }}
+                        autoFocus
+                        maxLength={100}
+                        style={{
+                            width: '120px',
+                            padding: '4px 8px',
+                            margin: '0',
+                            border: '2px solid #ccc',
+                            borderRadius: '4px',
+                            backgroundColor: 'white',
+                            color: 'black',
+                            fontSize: fontSize,
+                            fontFamily: 'Arial, sans-serif',
+                            outline: 'none',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                            // Safari-specific fixes
+                            WebkitAppearance: 'none',
+                            appearance: 'none',
+                        }}
+                    />
+                </foreignObject>
+            );
+        }
+        
+        // Chrome and other browsers - use the full InlineEditor
+        return (
+            <foreignObject 
+                x={Number(cx) + getX() - 60} 
+                y={Number(cy) + getY() - 30} 
+                width="140" 
+                height="80" 
                 style={{
-                    width: '100%',
-                    resize: 'none',
-                    fontFamily: 'Arial',
-                    fontSize: fontSize,
-                    border: '1px solid #ccc',
-                    padding: '2px',
+                    overflow: 'visible',
                 }}
-            />
-        </foreignObject>
-    );
+            >
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                    position: 'relative',
+                }}>
+                    <InlineEditor
+                        value={text}
+                        onChange={setText}
+                        onSave={handleSave}
+                        onCancel={handleCancel}
+                        x={0}
+                        y={0}
+                        width={120}
+                        fontSize={fontSize}
+                        mapStyleDefs={mapStyleDefs}
+                        autoFocus={true}
+                        selectAllOnFocus={true}
+                        validation={{
+                            required: true,
+                            maxLength: 100
+                        }}
+                    />
+                </div>
+            </foreignObject>
+        );
+    };
 
     function endDrag(moved: MovedPosition): void {
         if (onLabelMove) {

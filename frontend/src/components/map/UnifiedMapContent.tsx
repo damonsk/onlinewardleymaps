@@ -22,6 +22,7 @@ import MapComponent from './MapComponent';
 import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
 import Note from './Note';
+import LinkingPreview from './LinkingPreview';
 
 interface ModernUnifiedMapContentProps {
     mapAttitudes: any[];
@@ -51,6 +52,16 @@ interface ModernUnifiedMapContentProps {
     mapAnnotationsPresentation: any;
     launchUrl?: (url: string) => void;
     mapMethods: any[];
+    // New props for linking functionality
+    linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
+    sourceComponent?: UnifiedComponent | null;
+    mousePosition?: {x: number; y: number};
+    highlightedComponent?: UnifiedComponent | null;
+    isDuplicateLink?: boolean;
+    isInvalidTarget?: boolean;
+    showCancellationHint?: boolean;
+    isSourceDeleted?: boolean;
+    isTargetDeleted?: boolean;
 }
 
 const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
@@ -366,6 +377,21 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         </React.Fragment>
                     ))}
             </g>
+
+            {/* Linking preview for component linking functionality */}
+            <LinkingPreview
+                linkingState={props.linkingState || 'idle'}
+                sourceComponent={props.sourceComponent || null}
+                mousePosition={props.mousePosition || {x: 0, y: 0}}
+                highlightedComponent={props.highlightedComponent || null}
+                mapStyleDefs={mapStyleDefs}
+                mapDimensions={mapDimensions}
+                isDuplicateLink={props.isDuplicateLink || false}
+                isInvalidTarget={props.isInvalidTarget || false}
+                showCancellationHint={props.showCancellationHint || false}
+                isSourceDeleted={props.isSourceDeleted || false}
+                isTargetDeleted={props.isTargetDeleted || false}
+            />
         </g>
     );
 };

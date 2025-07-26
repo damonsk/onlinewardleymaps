@@ -254,15 +254,15 @@ describe('Pipeline Placement Integration Tests', () => {
         // Find the pipeline toolbar item
         const pipelineItem = TOOLBAR_ITEMS.find(item => item.id === 'pipeline');
         expect(pipelineItem).toBeTruthy();
-        
+
         if (!pipelineItem) return; // TypeScript guard
-        
+
         // Find the pipeline button in the toolbar
         const pipelineButton = container.querySelector(`[aria-label*="${pipelineItem.label}"]`);
         expect(pipelineButton).toBeTruthy();
-        
+
         if (!pipelineButton) return; // TypeScript guard
-        
+
         // Select the pipeline toolbar item
         act(() => {
             pipelineButton.dispatchEvent(new MouseEvent('click', {bubbles: true}));
@@ -282,18 +282,18 @@ describe('Pipeline Placement Integration Tests', () => {
         // Verify map text was updated with both component and pipeline
         expect(mockMutateMapText).toHaveBeenCalled();
         const updatedText = mockMutateMapText.mock.calls[0][0];
-        
+
         // Should contain both component and pipeline with the same name and coordinates
         expect(updatedText).toContain('component New Pipeline');
         expect(updatedText).toContain('pipeline New Pipeline');
-        
+
         // Extract the coordinates from both entries
         const componentMatch = updatedText.match(/component New Pipeline \[([0-9.]+), ([0-9.]+)\]/);
         const pipelineMatch = updatedText.match(/pipeline New Pipeline \[([0-9.]+), ([0-9.]+)\]/);
-        
+
         expect(componentMatch).toBeTruthy();
         expect(pipelineMatch).toBeTruthy();
-        
+
         if (componentMatch && pipelineMatch) {
             // Component and pipeline should have the same coordinates
             expect(componentMatch[1]).toBe(pipelineMatch[1]); // y coordinate
@@ -303,10 +303,10 @@ describe('Pipeline Placement Integration Tests', () => {
 
     it('should generate unique names for pipelines when existing components exist', () => {
         const mockMutateMapText = jest.fn();
-        
+
         // Start with a map that already has a pipeline component
         const initialMapText = 'title Test Map\ncomponent New Pipeline [0.5, 0.5]\npipeline New Pipeline [0.5, 0.5]';
-        
+
         renderComponent({
             mapText: initialMapText,
             mutateMapText: mockMutateMapText,
@@ -364,11 +364,11 @@ describe('Pipeline Placement Integration Tests', () => {
         // Verify map text was updated with both component and pipeline with unique names
         expect(mockMutateMapText).toHaveBeenCalled();
         const updatedText = mockMutateMapText.mock.calls[0][0];
-        
+
         // Should contain both component and pipeline with the same name and coordinates
         expect(updatedText).toContain('component New Pipeline 1');
         expect(updatedText).toContain('pipeline New Pipeline 1');
-        
+
         // Should also preserve the existing pipeline and component
         expect(updatedText).toContain('component New Pipeline [0.5, 0.5]');
         expect(updatedText).toContain('pipeline New Pipeline [0.5, 0.5]');

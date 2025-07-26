@@ -8,9 +8,11 @@ export interface ToolbarItem {
     id: string;
     label: string;
     icon: React.ComponentType<ToolbarIconProps>;
-    template: (name: string, y: string, x: string) => string;
-    category: 'component' | 'method' | 'note' | 'pipeline' | 'other';
-    defaultName: string;
+    template?: (name: string, y: string, x: string) => string;
+    category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'other';
+    defaultName?: string;
+    toolType?: 'placement' | 'linking';
+    keyboardShortcut?: string; // Single character keyboard shortcut
 }
 
 /**
@@ -49,7 +51,7 @@ export interface WysiwygToolbarProps {
     mutateMapText: (newText: string) => void;
     onItemSelect: (item: ToolbarItem | null) => void;
     selectedItem: ToolbarItem | null;
-    className?: string;
+    keyboardShortcutsEnabled?: boolean;
 }
 
 /**
@@ -86,4 +88,14 @@ export interface CoordinatePosition {
 export interface MapDimensions {
     width: number;
     height: number;
+}
+
+/**
+ * Props interface for the KeyboardShortcutHandler component
+ */
+export interface KeyboardShortcutHandlerProps {
+    toolbarItems: ToolbarItem[];
+    onToolSelect: (toolId: string | null) => void;
+    isEnabled: boolean;
+    currentSelectedTool: string | null;
 }
