@@ -12,6 +12,7 @@ export interface ComponentTextSymbolProps {
     className?: string;
     evolved?: boolean;
     onClick?: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void;
+    onDoubleClick?: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void;
     note?: string;
     textAnchor?: string;
     setShowTextField?: (value: React.SetStateAction<boolean>) => void;
@@ -28,6 +29,7 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     textAnchor,
     textTheme,
     onClick,
+    onDoubleClick,
     setShowTextField = null,
 }) => {
     const trimText = (id: string, longText: string) =>
@@ -46,7 +48,16 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     const transform = isLong ? 'translate(30, 10)' : '';
     const handleDblClick = (e: React.MouseEvent<SVGTextElement, MouseEvent>): void => {
         e.stopPropagation();
-        if (setShowTextField) setShowTextField(true);
+
+        // Call external double-click handler if provided (for Notes)
+        if (onDoubleClick) {
+            onDoubleClick(e);
+        }
+
+        // Call existing setShowTextField for Components
+        if (setShowTextField) {
+            setShowTextField(true);
+        }
     };
     return (
         <>

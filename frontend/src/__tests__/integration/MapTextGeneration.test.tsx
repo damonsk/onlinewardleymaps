@@ -714,7 +714,6 @@ component New Component 2 [0.5, 0.6]`;
             expect(updatedText).toContain('component New Component 2 [0.5, 0.6]');
             expect(updatedText).toMatch(/component New Component 3 \[[0-9.]+, [0-9.]+\]/);
         });
-
     });
 
     describe('Error Handling in Map Text Generation', () => {

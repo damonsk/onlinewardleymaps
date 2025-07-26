@@ -307,6 +307,7 @@ export interface IProvideFeatureSwitches {
     enableLinkContext: boolean;
     enableAccelerators: boolean;
     enableDoubleClickRename: boolean;
+    enableNoteInlineEditing: boolean;
     showToggleFullscreen: boolean;
     showMapToolbar: boolean;
     showMiniMap: boolean;

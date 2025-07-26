@@ -45,7 +45,7 @@
   - Write unit tests for ComponentText integration with InlineEditor
   - _Requirements: 1.1, 1.2, 1.3, 3.1, 3.2, 3.3_
 
-- [-] 7. Create note text mutation function for Notes editing
+- [x] 7. Create note text mutation function for Notes editing
   - Create renameNote function similar to existing rename function but for note content
   - Implement proper parsing of note syntax to preserve coordinates and formatting
   - Add support for multi-line note content in map text DSL
@@ -53,7 +53,7 @@
   - Write unit tests for note text mutation and syntax preservation
   - _Requirements: 2.2, 6.1, 6.2, 6.4_
 
-- [ ] 8. Enhance Note component with double-click editing support
+- [x] 8. Enhance Note component with double-click editing support
   - Add edit mode state management to Note component
   - Implement double-click handler to enter inline editing mode
   - Integrate InlineEditor component with proper positioning for notes
@@ -61,7 +61,7 @@
   - Write unit tests for Note component editing functionality
   - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 9. Update ComponentTextSymbol to support Note double-click events
+- [x] 9. Update ComponentTextSymbol to support Note double-click events
   - Add onDoubleClick prop to ComponentTextSymbol interface
   - Modify double-click handler to support both Component and Note editing
   - Ensure proper event handling and propagation for different element types

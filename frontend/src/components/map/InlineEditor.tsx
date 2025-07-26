@@ -1,512 +1,511 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import styled from 'styled-components';
-import { MapTheme } from '../../types/map/styles';
+import {MapTheme} from '../../types/map/styles';
 
 interface ValidationConfig {
-  required?: boolean;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: RegExp;
-  customValidator?: (value: string) => string | null;
-  sanitizeInput?: boolean;
-  allowedCharacters?: RegExp;
-  forbiddenCharacters?: RegExp;
-  warningThreshold?: number; // Show warning when approaching maxLength
+    required?: boolean;
+    maxLength?: number;
+    minLength?: number;
+    pattern?: RegExp;
+    customValidator?: (value: string) => string | null;
+    sanitizeInput?: boolean;
+    allowedCharacters?: RegExp;
+    forbiddenCharacters?: RegExp;
+    warningThreshold?: number; // Show warning when approaching maxLength
 }
 
 export interface InlineEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSave: () => void;
-  onCancel: () => void;
-  isMultiLine?: boolean;
-  placeholder?: string;
-  x: number;
-  y: number;
-  width?: number;
-  minWidth?: number;
-  maxHeight?: number;
-  minHeight?: number;
-  fontSize?: string;
-  fontFamily?: string;
-  mapStyleDefs: MapTheme;
-  autoFocus?: boolean;
-  selectAllOnFocus?: boolean;
-  validation?: ValidationConfig;
-  realTimeValidation?: boolean;
-  showCharacterCount?: boolean;
-  autoResize?: boolean;
+    value: string;
+    onChange: (value: string) => void;
+    onSave: () => void;
+    onCancel: () => void;
+    isMultiLine?: boolean;
+    placeholder?: string;
+    x: number;
+    y: number;
+    width?: number;
+    minWidth?: number;
+    maxHeight?: number;
+    minHeight?: number;
+    fontSize?: string;
+    fontFamily?: string;
+    mapStyleDefs: MapTheme;
+    autoFocus?: boolean;
+    selectAllOnFocus?: boolean;
+    validation?: ValidationConfig;
+    realTimeValidation?: boolean;
+    showCharacterCount?: boolean;
+    autoResize?: boolean;
 }
 
 interface StyledEditorProps {
-  $width?: number;
-  $minWidth?: number;
-  $maxHeight?: number;
-  $minHeight?: number;
-  $fontSize?: string;
-  $fontFamily?: string;
-  $theme: MapTheme;
-  $hasError?: boolean;
-  $hasWarning?: boolean;
-  $isMultiLine?: boolean;
-  $autoResize?: boolean;
-  $dynamicHeight?: number;
+    $width?: number;
+    $minWidth?: number;
+    $maxHeight?: number;
+    $minHeight?: number;
+    $fontSize?: string;
+    $fontFamily?: string;
+    $theme: MapTheme;
+    $hasError?: boolean;
+    $hasWarning?: boolean;
+    $isMultiLine?: boolean;
+    $autoResize?: boolean;
+    $dynamicHeight?: number;
 }
 
 const EditorContainer = styled.div<StyledEditorProps>`
-  position: relative;
-  display: inline-block;
-  min-width: ${props => props.$minWidth || 120}px;
-  width: ${props => props.$width ? `${props.$width}px` : 'auto'};
-  /* Safari compatibility fixes */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  /* Ensure proper rendering in Safari */
-  z-index: 1;
+    position: relative;
+    display: block;
+    min-width: ${props => props.$minWidth || 120}px;
+    width: ${props => (props.$width ? `${props.$width}px` : 'auto')};
+    /* Cross-browser compatibility fixes */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Chrome-specific fixes for foreignObject */
+    background-color: transparent;
+    /* Ensure proper rendering across browsers */
+    z-index: 1;
 `;
 
 const StyledInput = styled.input<StyledEditorProps>`
-  width: 100%;
-  min-width: ${props => props.$minWidth || 120}px;
-  padding: 4px 8px;
-  margin: 0;
-  border: 2px solid ${props => 
-    props.$hasError ? '#ff4444' : 
-    props.$hasWarning ? '#ffaa00' : 
-    props.$theme.component?.stroke || '#ccc'};
-  border-radius: 4px;
-  background-color: ${props => props.$theme.component?.fill || 'white'};
-  color: ${props => props.$theme.component?.textColor || 'black'};
-  font-family: ${props => props.$fontFamily || props.$theme.fontFamily || 'Arial, sans-serif'};
-  font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
-  font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
-  outline: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  /* Safari compatibility fixes */
-  -webkit-appearance: none;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  /* Ensure proper rendering */
-  position: relative;
-  z-index: 1;
+    width: 100%;
+    min-width: ${props => props.$minWidth || 120}px;
+    padding: 4px 8px;
+    margin: 0;
+    border: 2px solid ${props => (props.$hasError ? '#ff4444' : props.$hasWarning ? '#ffaa00' : props.$theme.component?.stroke || '#ccc')};
+    border-radius: 4px;
+    background-color: ${props => props.$theme.component?.fill || 'white'};
+    color: ${props => props.$theme.component?.textColor || 'black'};
+    font-family: ${props => props.$fontFamily || props.$theme.fontFamily || 'Arial, sans-serif'};
+    font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
+    font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    /* Safari compatibility fixes */
+    -webkit-appearance: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Ensure proper rendering */
+    position: relative;
+    z-index: 1;
 
-  &:focus {
-    border-color: ${props => props.$theme.component?.evolved || '#007bff'};
-    box-shadow: 0 0 0 2px ${props => props.$theme.component?.evolved || '#007bff'}33;
-  }
+    &:focus {
+        border-color: ${props => props.$theme.component?.evolved || '#007bff'};
+        box-shadow: 0 0 0 2px ${props => props.$theme.component?.evolved || '#007bff'}33;
+    }
 
-  &::placeholder {
-    color: ${props => props.$theme.component?.textColor || '#999'}66;
-    opacity: 0.7;
-  }
+    &::placeholder {
+        color: ${props => props.$theme.component?.textColor || '#999'}66;
+        opacity: 0.7;
+    }
 `;
 
 const StyledTextarea = styled.textarea<StyledEditorProps>`
-  width: 100%;
-  min-width: ${props => props.$minWidth || 120}px;
-  min-height: ${props => props.$minHeight || 60}px;
-  max-height: ${props => props.$maxHeight ? `${props.$maxHeight}px` : 'none'};
-  height: ${props => props.$autoResize && props.$dynamicHeight ? `${props.$dynamicHeight}px` : 'auto'};
-  padding: 4px 8px;
-  margin: 0;
-  border: 2px solid ${props => 
-    props.$hasError ? '#ff4444' : 
-    props.$hasWarning ? '#ffaa00' : 
-    props.$theme.component?.stroke || '#ccc'};
-  border-radius: 4px;
-  background-color: ${props => props.$theme.component?.fill || 'white'};
-  color: ${props => props.$theme.component?.textColor || 'black'};
-  font-family: ${props => props.$fontFamily || props.$theme.fontFamily || 'Arial, sans-serif'};
-  font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
-  font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
-  line-height: 1.4;
-  outline: none;
-  resize: ${props => props.$autoResize ? 'none' : 'vertical'};
-  overflow-y: ${props => props.$maxHeight ? 'auto' : 'hidden'};
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, height 0.1s ease;
-  /* Safari compatibility fixes */
-  -webkit-appearance: none;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  /* Ensure proper rendering */
-  position: relative;
-  z-index: 1;
+    width: 100%;
+    min-width: ${props => props.$minWidth || 120}px;
+    min-height: ${props => props.$minHeight || 60}px;
+    max-height: ${props => (props.$maxHeight ? `${props.$maxHeight}px` : 'none')};
+    height: ${props => (props.$autoResize && props.$dynamicHeight ? `${props.$dynamicHeight}px` : 'auto')};
+    padding: 4px 8px;
+    margin: 0;
+    border: 2px solid ${props => (props.$hasError ? '#ff4444' : props.$hasWarning ? '#ffaa00' : props.$theme.component?.stroke || '#ccc')};
+    border-radius: 4px;
+    background-color: ${props => props.$theme.component?.fill || 'white'};
+    color: ${props => props.$theme.component?.textColor || 'black'};
+    font-family: ${props => props.$fontFamily || props.$theme.fontFamily || 'Arial, sans-serif'};
+    font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
+    font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
+    line-height: 1.4;
+    outline: none;
+    resize: ${props => (props.$autoResize ? 'none' : 'vertical')};
+    overflow-y: ${props => (props.$maxHeight ? 'auto' : 'hidden')};
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        height 0.1s ease;
+    /* Safari compatibility fixes */
+    -webkit-appearance: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Ensure proper rendering */
+    position: relative;
+    z-index: 1;
 
-  &:focus {
-    border-color: ${props => props.$theme.component?.evolved || '#007bff'};
-    box-shadow: 0 0 0 2px ${props => props.$theme.component?.evolved || '#007bff'}33;
-  }
+    &:focus {
+        border-color: ${props => props.$theme.component?.evolved || '#007bff'};
+        box-shadow: 0 0 0 2px ${props => props.$theme.component?.evolved || '#007bff'}33;
+    }
 
-  &::placeholder {
-    color: ${props => props.$theme.component?.textColor || '#999'}66;
-    opacity: 0.7;
-  }
+    &::placeholder {
+        color: ${props => props.$theme.component?.textColor || '#999'}66;
+        opacity: 0.7;
+    }
 `;
 
-const ErrorMessage = styled.div<{ $theme: MapTheme }>`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 2px;
-  padding: 2px 4px;
-  background-color: #ff4444;
-  color: white;
-  font-size: 11px;
-  border-radius: 2px;
-  z-index: 1000;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const ErrorMessage = styled.div<{$theme: MapTheme}>`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 2px;
+    padding: 2px 4px;
+    background-color: #ff4444;
+    color: white;
+    font-size: 11px;
+    border-radius: 2px;
+    z-index: 1000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
-const CharacterCounter = styled.div<{ $theme: MapTheme; $isWarning?: boolean; $isError?: boolean }>`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 2px;
-  padding: 2px 4px;
-  background-color: ${props => 
-    props.$isError ? '#ff4444' : 
-    props.$isWarning ? '#ffaa00' : 
-    '#666'};
-  color: white;
-  font-size: 10px;
-  border-radius: 2px;
-  z-index: 1000;
+const CharacterCounter = styled.div<{$theme: MapTheme; $isWarning?: boolean; $isError?: boolean}>`
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 2px;
+    padding: 2px 4px;
+    background-color: ${props => (props.$isError ? '#ff4444' : props.$isWarning ? '#ffaa00' : '#666')};
+    color: white;
+    font-size: 10px;
+    border-radius: 2px;
+    z-index: 1000;
 `;
 
 const InlineEditor: React.FC<InlineEditorProps> = ({
-  value,
-  onChange,
-  onSave,
-  onCancel,
-  isMultiLine = false,
-  placeholder,
-  x,
-  y,
-  width,
-  minWidth = 120,
-  maxHeight,
-  minHeight = 60,
-  fontSize,
-  fontFamily,
-  mapStyleDefs,
-  autoFocus = true,
-  selectAllOnFocus = true,
-  validation,
-  realTimeValidation = false,
-  showCharacterCount = false,
-  autoResize = true,
-}) => {
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [showRealTimeValidation, setShowRealTimeValidation] = useState(false);
-  const [dynamicHeight, setDynamicHeight] = useState<number | undefined>(undefined);
-
-  // Calculate dynamic height for auto-resize
-  const calculateHeight = useCallback(() => {
-    if (!isMultiLine || !autoResize || !inputRef.current) return;
-
-    const textarea = inputRef.current as HTMLTextAreaElement;
-    const computedStyle = window.getComputedStyle(textarea);
-    const lineHeight = parseFloat(computedStyle.lineHeight) || 20;
-    const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
-    const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
-    const borderTop = parseFloat(computedStyle.borderTopWidth) || 0;
-    const borderBottom = parseFloat(computedStyle.borderBottomWidth) || 0;
-
-    // Reset height to auto to get the natural scroll height
-    textarea.style.height = 'auto';
-    const scrollHeight = textarea.scrollHeight;
-    
-    // Calculate the content height
-    const contentHeight = scrollHeight - paddingTop - paddingBottom;
-    const lines = Math.max(1, Math.ceil(contentHeight / lineHeight));
-    
-    // Calculate new height with padding and borders
-    let newHeight = (lines * lineHeight) + paddingTop + paddingBottom + borderTop + borderBottom;
-    
-    // Apply min and max height constraints
-    if (minHeight) {
-      newHeight = Math.max(newHeight, minHeight);
-    }
-    if (maxHeight) {
-      newHeight = Math.min(newHeight, maxHeight);
-    }
-
-    setDynamicHeight(newHeight);
-  }, [isMultiLine, autoResize, minHeight, maxHeight]);
-
-  // Auto-resize effect
-  useEffect(() => {
-    if (isMultiLine && autoResize) {
-      calculateHeight();
-    }
-  }, [value, calculateHeight, isMultiLine, autoResize]);
-
-  useEffect(() => {
-    if (autoFocus && inputRef.current) {
-      // Use setTimeout to ensure the element is fully rendered before focusing
-      const timeoutId = setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-          if (selectAllOnFocus) {
-            inputRef.current.select();
-          }
-          // Calculate height after focus for multi-line
-          if (isMultiLine && autoResize) {
-            calculateHeight();
-          }
-        }
-      }, 0);
-
-      // Cleanup timeout on unmount or dependency change
-      return () => clearTimeout(timeoutId);
-    }
-  }, [autoFocus, selectAllOnFocus, isMultiLine, autoResize, calculateHeight]);
-
-  const sanitizeInput = (val: string): string => {
-    if (!validation?.sanitizeInput) return val;
-
-    let sanitized = val;
-
-    // Remove forbidden characters if specified
-    if (validation.forbiddenCharacters) {
-      sanitized = sanitized.replace(validation.forbiddenCharacters, '');
-    }
-
-    // Keep only allowed characters if specified
-    if (validation.allowedCharacters) {
-      const matches = sanitized.match(validation.allowedCharacters);
-      sanitized = matches ? matches.join('') : '';
-    }
-
-    return sanitized;
-  };
-
-  const validateValue = (val: string): string | null => {
-    if (!validation) return null;
-
-    if (validation.required && val.trim().length === 0) {
-      return 'This field is required';
-    }
-
-    if (validation.minLength && val.length < validation.minLength) {
-      return `Minimum length is ${validation.minLength} characters`;
-    }
-
-    if (validation.maxLength && val.length > validation.maxLength) {
-      return `Maximum length is ${validation.maxLength} characters`;
-    }
-
-    if (validation.pattern && !validation.pattern.test(val)) {
-      return 'Invalid format';
-    }
-
-    // Check for forbidden characters (if not sanitizing)
-    if (!validation.sanitizeInput && validation.forbiddenCharacters && validation.forbiddenCharacters.test(val)) {
-      return 'Contains invalid characters';
-    }
-
-    // Check for allowed characters (if not sanitizing)
-    if (!validation.sanitizeInput && validation.allowedCharacters && !validation.allowedCharacters.test(val)) {
-      return 'Contains invalid characters';
-    }
-
-    if (validation.customValidator) {
-      return validation.customValidator(val);
-    }
-
-    return null;
-  };
-
-  const checkWarning = (val: string): boolean => {
-    if (!validation?.warningThreshold || !validation?.maxLength) return false;
-    return val.length >= validation.warningThreshold;
-  };
-
-  // Calculate warning state based on current value
-  const hasWarning = checkWarning(value) && !validateValue(value);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    let newValue = e.target.value;
-    
-    // Sanitize input if enabled
-    if (validation?.sanitizeInput) {
-      newValue = sanitizeInput(newValue);
-    }
-    
-    onChange(newValue);
-    
-    // Handle real-time validation
-    if (realTimeValidation && showRealTimeValidation) {
-      const error = validateValue(newValue);
-      setValidationError(error);
-    } else if (validationError) {
-      // Clear validation error when user starts typing (when not in real-time mode)
-      setValidationError(null);
-    }
-
-    // Trigger height recalculation for multi-line auto-resize
-    if (isMultiLine && autoResize) {
-      // Use setTimeout to ensure the DOM is updated with the new value
-      setTimeout(() => calculateHeight(), 0);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    // Always stop propagation to prevent map interactions during editing
-    e.stopPropagation();
-
-    // Handle Escape key - always cancels editing
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      onCancel();
-      return;
-    }
-
-    // Handle save shortcuts
-    if (isMultiLine) {
-      // For multi-line: Ctrl+Enter or Cmd+Enter saves, Enter creates new line
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        handleSave();
-        return;
-      }
-    } else {
-      // For single-line: Enter saves
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        handleSave();
-        return;
-      }
-    }
-
-    // Allow navigation keys to work normally for text editing
-    const navigationKeys = [
-      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
-      'Home', 'End', 'PageUp', 'PageDown',
-      'Backspace', 'Delete',
-      'Tab'
-    ];
-
-    // Allow text selection shortcuts
-    const textSelectionKeys = ['a', 'c', 'v', 'x', 'z', 'y'];
-    const isTextSelectionShortcut = textSelectionKeys.includes(e.key.toLowerCase()) && 
-      (e.ctrlKey || e.metaKey);
-
-    // Allow navigation keys and text selection shortcuts to work normally
-    if (navigationKeys.includes(e.key) || isTextSelectionShortcut) {
-      // Don't prevent default for these keys - let them work normally
-      return;
-    }
-
-    // For all other keys, let them work normally for text input
-    // The stopPropagation above ensures map shortcuts don't interfere
-  };
-
-  const handleSave = () => {
-    const error = validateValue(value);
-    if (error) {
-      setValidationError(error);
-      setShowRealTimeValidation(true); // Enable real-time validation after first save attempt
-      return;
-    }
-    
-    setValidationError(null);
-    onSave();
-  };
-
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    // Always stop propagation to prevent map interactions during editing
-    e.stopPropagation();
-  };
-
-  const handleBlur = () => {
-    // Auto-save on blur if no validation errors
-    const error = validateValue(value);
-    if (!error) {
-      onSave();
-    } else {
-      setValidationError(error);
-      setShowRealTimeValidation(true); // Enable real-time validation after blur with error
-    }
-  };
-
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    // Handle focus event for additional text selection if needed
-    if (selectAllOnFocus && e.target.value) {
-      e.target.select();
-    }
-  };
-
-  const commonProps = {
-    ref: inputRef as any,
     value,
-    onChange: handleChange,
-    onKeyDown: handleKeyDown,
-    onKeyUp: handleKeyUp,
-    onBlur: handleBlur,
-    onFocus: handleFocus,
+    onChange,
+    onSave,
+    onCancel,
+    isMultiLine = false,
     placeholder,
-    $width: width,
-    $minWidth: minWidth,
-    $maxHeight: maxHeight,
-    $minHeight: minHeight,
-    $fontSize: fontSize,
-    $fontFamily: fontFamily,
-    $theme: mapStyleDefs,
-    $hasError: !!validationError,
-    $hasWarning: hasWarning,
-    $isMultiLine: isMultiLine,
-    $autoResize: autoResize,
-    $dynamicHeight: dynamicHeight,
-  };
+    x,
+    y,
+    width,
+    minWidth = 120,
+    maxHeight,
+    minHeight = 60,
+    fontSize,
+    fontFamily,
+    mapStyleDefs,
+    autoFocus = true,
+    selectAllOnFocus = true,
+    validation,
+    realTimeValidation = false,
+    showCharacterCount = false,
+    autoResize = true,
+}) => {
+    const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+    const [validationError, setValidationError] = useState<string | null>(null);
+    const [showRealTimeValidation, setShowRealTimeValidation] = useState(false);
+    const [dynamicHeight, setDynamicHeight] = useState<number | undefined>(undefined);
 
-  return (
-    <EditorContainer
-      $width={width}
-      $minWidth={minWidth}
-      $maxHeight={maxHeight}
-      $minHeight={minHeight}
-      $fontSize={fontSize}
-      $fontFamily={fontFamily}
-      $theme={mapStyleDefs}
-      $autoResize={autoResize}
-      $dynamicHeight={dynamicHeight}
-    >
-      {isMultiLine ? (
-        <StyledTextarea {...commonProps} />
-      ) : (
-        <StyledInput {...commonProps} />
-      )}
-      {validationError && (
-        <ErrorMessage $theme={mapStyleDefs}>
-          {validationError}
-        </ErrorMessage>
-      )}
-      {showCharacterCount && validation?.maxLength && (
-        <CharacterCounter 
-          $theme={mapStyleDefs}
-          $isWarning={hasWarning && !validationError}
-          $isError={!!validationError && validationError.includes('Maximum length')}
-        >
-          {value.length}/{validation.maxLength}
-        </CharacterCounter>
-      )}
-    </EditorContainer>
-  );
+    // Calculate dynamic height for auto-resize
+    const calculateHeight = useCallback(() => {
+        if (!isMultiLine || !autoResize || !inputRef.current) return;
+
+        const textarea = inputRef.current as HTMLTextAreaElement;
+        const computedStyle = window.getComputedStyle(textarea);
+        const lineHeight = parseFloat(computedStyle.lineHeight) || 20;
+        const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+        const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+        const borderTop = parseFloat(computedStyle.borderTopWidth) || 0;
+        const borderBottom = parseFloat(computedStyle.borderBottomWidth) || 0;
+
+        // Reset height to auto to get the natural scroll height
+        textarea.style.height = 'auto';
+        const scrollHeight = textarea.scrollHeight;
+
+        // Calculate the content height
+        const contentHeight = scrollHeight - paddingTop - paddingBottom;
+        const lines = Math.max(1, Math.ceil(contentHeight / lineHeight));
+
+        // Calculate new height with padding and borders
+        let newHeight = lines * lineHeight + paddingTop + paddingBottom + borderTop + borderBottom;
+
+        // Apply min and max height constraints
+        if (minHeight) {
+            newHeight = Math.max(newHeight, minHeight);
+        }
+        if (maxHeight) {
+            newHeight = Math.min(newHeight, maxHeight);
+        }
+
+        setDynamicHeight(newHeight);
+    }, [isMultiLine, autoResize, minHeight, maxHeight]);
+
+    // Auto-resize effect
+    useEffect(() => {
+        if (isMultiLine && autoResize) {
+            calculateHeight();
+        }
+    }, [value, calculateHeight, isMultiLine, autoResize]);
+
+    useEffect(() => {
+        if (autoFocus && inputRef.current) {
+            // Use setTimeout to ensure the element is fully rendered before focusing
+            const timeoutId = setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                    if (selectAllOnFocus) {
+                        inputRef.current.select();
+                    }
+                    // Calculate height after focus for multi-line
+                    if (isMultiLine && autoResize) {
+                        calculateHeight();
+                    }
+                }
+            }, 0);
+
+            // Cleanup timeout on unmount or dependency change
+            return () => clearTimeout(timeoutId);
+        }
+    }, [autoFocus, selectAllOnFocus, isMultiLine, autoResize, calculateHeight]);
+
+    const sanitizeInput = (val: string): string => {
+        if (!validation?.sanitizeInput) return val;
+
+        let sanitized = val;
+
+        // Remove forbidden characters if specified
+        if (validation.forbiddenCharacters) {
+            sanitized = sanitized.replace(validation.forbiddenCharacters, '');
+        }
+
+        // Keep only allowed characters if specified
+        if (validation.allowedCharacters) {
+            const matches = sanitized.match(validation.allowedCharacters);
+            sanitized = matches ? matches.join('') : '';
+        }
+
+        return sanitized;
+    };
+
+    const validateValue = (val: string): string | null => {
+        if (!validation) return null;
+
+        if (validation.required && val.trim().length === 0) {
+            return 'This field is required';
+        }
+
+        if (validation.minLength && val.length < validation.minLength) {
+            return `Minimum length is ${validation.minLength} characters`;
+        }
+
+        if (validation.maxLength && val.length > validation.maxLength) {
+            return `Maximum length is ${validation.maxLength} characters`;
+        }
+
+        if (validation.pattern && !validation.pattern.test(val)) {
+            return 'Invalid format';
+        }
+
+        // Check for forbidden characters (if not sanitizing)
+        if (!validation.sanitizeInput && validation.forbiddenCharacters && validation.forbiddenCharacters.test(val)) {
+            return 'Contains invalid characters';
+        }
+
+        // Check for allowed characters (if not sanitizing)
+        if (!validation.sanitizeInput && validation.allowedCharacters && !validation.allowedCharacters.test(val)) {
+            return 'Contains invalid characters';
+        }
+
+        if (validation.customValidator) {
+            return validation.customValidator(val);
+        }
+
+        return null;
+    };
+
+    const checkWarning = (val: string): boolean => {
+        if (!validation?.warningThreshold || !validation?.maxLength) return false;
+        return val.length >= validation.warningThreshold;
+    };
+
+    // Calculate warning state based on current value
+    const hasWarning = checkWarning(value) && !validateValue(value);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        let newValue = e.target.value;
+
+        // Sanitize input if enabled
+        if (validation?.sanitizeInput) {
+            newValue = sanitizeInput(newValue);
+        }
+
+        onChange(newValue);
+
+        // Handle real-time validation
+        if (realTimeValidation && showRealTimeValidation) {
+            const error = validateValue(newValue);
+            setValidationError(error);
+        } else if (validationError) {
+            // Clear validation error when user starts typing (when not in real-time mode)
+            setValidationError(null);
+        }
+
+        // Trigger height recalculation for multi-line auto-resize
+        if (isMultiLine && autoResize) {
+            // Use setTimeout to ensure the DOM is updated with the new value
+            setTimeout(() => calculateHeight(), 0);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        // Always stop propagation to prevent map interactions during editing
+        e.stopPropagation();
+
+        // Handle Escape key - always cancels editing
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            onCancel();
+            return;
+        }
+
+        // Handle save shortcuts
+        if (isMultiLine) {
+            // For multi-line: Ctrl+Enter or Cmd+Enter saves, Enter creates new line
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                handleSave();
+                return;
+            }
+        } else {
+            // For single-line: Enter saves
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSave();
+                return;
+            }
+        }
+
+        // Allow navigation keys to work normally for text editing
+        const navigationKeys = [
+            'ArrowLeft',
+            'ArrowRight',
+            'ArrowUp',
+            'ArrowDown',
+            'Home',
+            'End',
+            'PageUp',
+            'PageDown',
+            'Backspace',
+            'Delete',
+            'Tab',
+        ];
+
+        // Allow text selection shortcuts
+        const textSelectionKeys = ['a', 'c', 'v', 'x', 'z', 'y'];
+        const isTextSelectionShortcut = textSelectionKeys.includes(e.key.toLowerCase()) && (e.ctrlKey || e.metaKey);
+
+        // Allow navigation keys and text selection shortcuts to work normally
+        if (navigationKeys.includes(e.key) || isTextSelectionShortcut) {
+            // Don't prevent default for these keys - let them work normally
+            return;
+        }
+
+        // For all other keys, let them work normally for text input
+        // The stopPropagation above ensures map shortcuts don't interfere
+    };
+
+    const handleSave = () => {
+        const error = validateValue(value);
+        if (error) {
+            setValidationError(error);
+            setShowRealTimeValidation(true); // Enable real-time validation after first save attempt
+            return;
+        }
+
+        setValidationError(null);
+        onSave();
+    };
+
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        // Always stop propagation to prevent map interactions during editing
+        e.stopPropagation();
+    };
+
+    const handleBlur = () => {
+        // Auto-save on blur if no validation errors
+        const error = validateValue(value);
+        if (!error) {
+            onSave();
+        } else {
+            setValidationError(error);
+            setShowRealTimeValidation(true); // Enable real-time validation after blur with error
+        }
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        // Handle focus event for additional text selection if needed
+        if (selectAllOnFocus && e.target.value) {
+            e.target.select();
+        }
+    };
+
+    const commonProps = {
+        ref: inputRef as any,
+        value,
+        onChange: handleChange,
+        onKeyDown: handleKeyDown,
+        onKeyUp: handleKeyUp,
+        onBlur: handleBlur,
+        onFocus: handleFocus,
+        placeholder,
+        $width: width,
+        $minWidth: minWidth,
+        $maxHeight: maxHeight,
+        $minHeight: minHeight,
+        $fontSize: fontSize,
+        $fontFamily: fontFamily,
+        $theme: mapStyleDefs,
+        $hasError: !!validationError,
+        $hasWarning: hasWarning,
+        $isMultiLine: isMultiLine,
+        $autoResize: autoResize,
+        $dynamicHeight: dynamicHeight,
+    };
+
+    return (
+        <EditorContainer
+            data-testid="inline-editor"
+            $width={width}
+            $minWidth={minWidth}
+            $maxHeight={maxHeight}
+            $minHeight={minHeight}
+            $fontSize={fontSize}
+            $fontFamily={fontFamily}
+            $theme={mapStyleDefs}
+            $autoResize={autoResize}
+            $dynamicHeight={dynamicHeight}>
+            {isMultiLine ? (
+                <StyledTextarea {...commonProps} data-testid="inline-editor-input" />
+            ) : (
+                <StyledInput {...commonProps} data-testid="inline-editor-input" />
+            )}
+            {validationError && <ErrorMessage $theme={mapStyleDefs}>{validationError}</ErrorMessage>}
+            {showCharacterCount && validation?.maxLength && (
+                <CharacterCounter
+                    $theme={mapStyleDefs}
+                    $isWarning={hasWarning && !validationError}
+                    $isError={!!validationError && validationError.includes('Maximum length')}>
+                    {value.length}/{validation.maxLength}
+                </CharacterCounter>
+            )}
+        </EditorContainer>
+    );
 };
 
 export default InlineEditor;

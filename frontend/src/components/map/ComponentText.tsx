@@ -88,20 +88,15 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const renderEditMode = () => {
         // Safari fallback - use native input instead of styled-components
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        
+
         if (isSafari) {
             return (
-                <foreignObject 
-                    x={Number(cx) + getX() - 60} 
-                    y={Number(cy) + getY() - 30} 
-                    width="140" 
-                    height="50" 
-                >
+                <foreignObject x={Number(cx) + getX() - 60} y={Number(cy) + getY() - 30} width="140" height="50">
                     <input
                         type="text"
                         value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyDown={(e) => {
+                        onChange={e => setText(e.target.value)}
+                        onKeyDown={e => {
                             e.stopPropagation();
                             if (e.key === 'Enter') {
                                 e.preventDefault();
@@ -112,7 +107,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                             }
                         }}
                         onBlur={handleSave}
-                        onFocus={(e) => {
+                        onFocus={e => {
                             // Select all text on focus for easy replacement
                             e.target.select();
                         }}
@@ -138,23 +133,23 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 </foreignObject>
             );
         }
-        
+
         // Chrome and other browsers - use the full InlineEditor
         return (
-            <foreignObject 
-                x={Number(cx) + getX() - 60} 
-                y={Number(cy) + getY() - 30} 
-                width="140" 
-                height="80" 
+            <foreignObject
+                x={Number(cx) + getX() - 60}
+                y={Number(cy) + getY() - 30}
+                width="140"
+                height="80"
                 style={{
                     overflow: 'visible',
-                }}
-            >
-                <div style={{
-                    width: '100%',
-                    height: '100%',
-                    position: 'relative',
                 }}>
+                <div
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'relative',
+                    }}>
                     <InlineEditor
                         value={text}
                         onChange={setText}
@@ -169,7 +164,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                         selectAllOnFocus={true}
                         validation={{
                             required: true,
-                            maxLength: 100
+                            maxLength: 100,
                         }}
                     />
                 </div>

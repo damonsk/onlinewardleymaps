@@ -1,8 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import {render, screen, fireEvent} from '@testing-library/react';
 import InlineEditor from '../../../components/map/InlineEditor';
-import { MapTheme } from '../../../types/map/styles';
-import { Plain } from '../../../constants/mapstyles';
+import {MapTheme} from '../../../types/map/styles';
+import {Plain} from '../../../constants/mapstyles';
 
 // Mock styled-components theme
 const mockTheme: MapTheme = Plain;
@@ -28,11 +28,7 @@ describe('InlineEditor Keyboard Integration', () => {
             const parentKeyUpHandler = jest.fn();
 
             const TestWrapper = () => (
-                <div 
-                    onKeyDown={parentKeyDownHandler}
-                    onKeyUp={parentKeyUpHandler}
-                    data-testid="parent-container"
-                >
+                <div onKeyDown={parentKeyDownHandler} onKeyUp={parentKeyUpHandler} data-testid="parent-container">
                     <InlineEditor {...defaultProps} />
                 </div>
             );
@@ -42,12 +38,12 @@ describe('InlineEditor Keyboard Integration', () => {
             const input = screen.getByDisplayValue('Test Value');
 
             // Test various key events
-            fireEvent.keyDown(input, { key: 'a' });
-            fireEvent.keyUp(input, { key: 'a' });
-            fireEvent.keyDown(input, { key: 'ArrowLeft' });
-            fireEvent.keyUp(input, { key: 'ArrowLeft' });
-            fireEvent.keyDown(input, { key: 'Enter' });
-            fireEvent.keyUp(input, { key: 'Enter' });
+            fireEvent.keyDown(input, {key: 'a'});
+            fireEvent.keyUp(input, {key: 'a'});
+            fireEvent.keyDown(input, {key: 'ArrowLeft'});
+            fireEvent.keyUp(input, {key: 'ArrowLeft'});
+            fireEvent.keyDown(input, {key: 'Enter'});
+            fireEvent.keyUp(input, {key: 'Enter'});
 
             // Parent handlers should not be called due to stopPropagation
             expect(parentKeyDownHandler).not.toHaveBeenCalled();
@@ -59,15 +55,14 @@ describe('InlineEditor Keyboard Integration', () => {
 
             // Simulate a map container that listens for keyboard shortcuts
             const MapContainer = () => (
-                <div 
-                    onKeyDown={(e) => {
+                <div
+                    onKeyDown={e => {
                         // Simulate map shortcuts like 'c' for component, 'n' for note, etc.
                         if (['c', 'n', 'l', 'p'].includes(e.key.toLowerCase())) {
                             mapShortcutHandler(e.key);
                         }
                     }}
-                    data-testid="map-container"
-                >
+                    data-testid="map-container">
                     <InlineEditor {...defaultProps} />
                 </div>
             );
@@ -77,10 +72,10 @@ describe('InlineEditor Keyboard Integration', () => {
             const input = screen.getByDisplayValue('Test Value');
 
             // Type characters that would normally trigger map shortcuts
-            fireEvent.keyDown(input, { key: 'c' });
-            fireEvent.keyDown(input, { key: 'n' });
-            fireEvent.keyDown(input, { key: 'l' });
-            fireEvent.keyDown(input, { key: 'p' });
+            fireEvent.keyDown(input, {key: 'c'});
+            fireEvent.keyDown(input, {key: 'n'});
+            fireEvent.keyDown(input, {key: 'l'});
+            fireEvent.keyDown(input, {key: 'p'});
 
             // Map shortcuts should not be triggered while editing
             expect(mapShortcutHandler).not.toHaveBeenCalled();
@@ -97,16 +92,16 @@ describe('InlineEditor Keyboard Integration', () => {
             input.setSelectionRange(5, 5); // Position after "Test "
 
             // Test arrow keys
-            fireEvent.keyDown(input, { key: 'ArrowLeft' });
-            fireEvent.keyDown(input, { key: 'ArrowRight' });
-            fireEvent.keyDown(input, { key: 'ArrowUp' });
-            fireEvent.keyDown(input, { key: 'ArrowDown' });
+            fireEvent.keyDown(input, {key: 'ArrowLeft'});
+            fireEvent.keyDown(input, {key: 'ArrowRight'});
+            fireEvent.keyDown(input, {key: 'ArrowUp'});
+            fireEvent.keyDown(input, {key: 'ArrowDown'});
 
             // Test other navigation keys
-            fireEvent.keyDown(input, { key: 'Home' });
-            fireEvent.keyDown(input, { key: 'End' });
-            fireEvent.keyDown(input, { key: 'PageUp' });
-            fireEvent.keyDown(input, { key: 'PageDown' });
+            fireEvent.keyDown(input, {key: 'Home'});
+            fireEvent.keyDown(input, {key: 'End'});
+            fireEvent.keyDown(input, {key: 'PageUp'});
+            fireEvent.keyDown(input, {key: 'PageDown'});
 
             // None of these should trigger save or cancel
             expect(defaultProps.onSave).not.toHaveBeenCalled();
@@ -120,12 +115,12 @@ describe('InlineEditor Keyboard Integration', () => {
 
             // Test common text selection shortcuts
             const textSelectionKeys = [
-                { key: 'a', ctrlKey: true }, // Select all
-                { key: 'c', ctrlKey: true }, // Copy
-                { key: 'v', ctrlKey: true }, // Paste
-                { key: 'x', ctrlKey: true }, // Cut
-                { key: 'z', ctrlKey: true }, // Undo
-                { key: 'y', ctrlKey: true }, // Redo
+                {key: 'a', ctrlKey: true}, // Select all
+                {key: 'c', ctrlKey: true}, // Copy
+                {key: 'v', ctrlKey: true}, // Paste
+                {key: 'x', ctrlKey: true}, // Cut
+                {key: 'z', ctrlKey: true}, // Undo
+                {key: 'y', ctrlKey: true}, // Redo
             ];
 
             textSelectionKeys.forEach(keyEvent => {
@@ -144,11 +139,11 @@ describe('InlineEditor Keyboard Integration', () => {
 
             // Test Mac-style shortcuts with metaKey
             const macTextSelectionKeys = [
-                { key: 'a', metaKey: true }, // Select all
-                { key: 'c', metaKey: true }, // Copy
-                { key: 'v', metaKey: true }, // Paste
-                { key: 'x', metaKey: true }, // Cut
-                { key: 'z', metaKey: true }, // Undo
+                {key: 'a', metaKey: true}, // Select all
+                {key: 'c', metaKey: true}, // Copy
+                {key: 'v', metaKey: true}, // Paste
+                {key: 'x', metaKey: true}, // Cut
+                {key: 'z', metaKey: true}, // Undo
             ];
 
             macTextSelectionKeys.forEach(keyEvent => {
@@ -167,7 +162,7 @@ describe('InlineEditor Keyboard Integration', () => {
 
             const input = screen.getByDisplayValue('Test Value');
 
-            fireEvent.keyDown(input, { key: 'Enter' });
+            fireEvent.keyDown(input, {key: 'Enter'});
 
             expect(defaultProps.onSave).toHaveBeenCalledTimes(1);
             expect(defaultProps.onCancel).not.toHaveBeenCalled();
@@ -179,17 +174,17 @@ describe('InlineEditor Keyboard Integration', () => {
             const textarea = screen.getByDisplayValue('Test Value');
 
             // Regular Enter should not save in multi-line mode
-            fireEvent.keyDown(textarea, { key: 'Enter' });
+            fireEvent.keyDown(textarea, {key: 'Enter'});
             expect(defaultProps.onSave).not.toHaveBeenCalled();
 
             // Ctrl+Enter should save
-            fireEvent.keyDown(textarea, { key: 'Enter', ctrlKey: true });
+            fireEvent.keyDown(textarea, {key: 'Enter', ctrlKey: true});
             expect(defaultProps.onSave).toHaveBeenCalledTimes(1);
 
             defaultProps.onSave.mockClear();
 
             // Cmd+Enter should also save (Mac)
-            fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true });
+            fireEvent.keyDown(textarea, {key: 'Enter', metaKey: true});
             expect(defaultProps.onSave).toHaveBeenCalledTimes(1);
         });
 
@@ -198,7 +193,7 @@ describe('InlineEditor Keyboard Integration', () => {
 
             const input = screen.getByDisplayValue('Test Value');
 
-            fireEvent.keyDown(input, { key: 'Escape' });
+            fireEvent.keyDown(input, {key: 'Escape'});
 
             expect(defaultProps.onCancel).toHaveBeenCalledTimes(1);
             expect(defaultProps.onSave).not.toHaveBeenCalled();
@@ -213,10 +208,10 @@ describe('InlineEditor Keyboard Integration', () => {
 
             // Rapid key presses
             for (let i = 0; i < 10; i++) {
-                fireEvent.keyDown(input, { key: 'a' });
-                fireEvent.keyUp(input, { key: 'a' });
-                fireEvent.keyDown(input, { key: 'ArrowLeft' });
-                fireEvent.keyUp(input, { key: 'ArrowLeft' });
+                fireEvent.keyDown(input, {key: 'a'});
+                fireEvent.keyUp(input, {key: 'a'});
+                fireEvent.keyDown(input, {key: 'ArrowLeft'});
+                fireEvent.keyUp(input, {key: 'ArrowLeft'});
             }
 
             // Should not cause any save/cancel calls
@@ -231,11 +226,11 @@ describe('InlineEditor Keyboard Integration', () => {
 
             // Test various modifier combinations that should not trigger save/cancel
             const modifierCombinations = [
-                { key: 'a', shiftKey: true },
-                { key: 'ArrowLeft', shiftKey: true }, // Text selection
-                { key: 'ArrowRight', ctrlKey: true }, // Word navigation
-                { key: 'Backspace', ctrlKey: true }, // Delete word
-                { key: 'Delete', ctrlKey: true }, // Delete word forward
+                {key: 'a', shiftKey: true},
+                {key: 'ArrowLeft', shiftKey: true}, // Text selection
+                {key: 'ArrowRight', ctrlKey: true}, // Word navigation
+                {key: 'Backspace', ctrlKey: true}, // Delete word
+                {key: 'Delete', ctrlKey: true}, // Delete word forward
             ];
 
             modifierCombinations.forEach(keyEvent => {

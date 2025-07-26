@@ -10,6 +10,7 @@ import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import SubMapSymbol from '../symbols/SubMapSymbol';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import Anchor from './Anchor';
 import AnnotationBox from './AnnotationBox';
 import AnnotationElement from './AnnotationElement';
@@ -77,6 +78,8 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
         enableAccelerators,
         launchUrl,
     } = props;
+
+    const featureSwitches = useFeatureSwitches();
 
     const setHighlightLineDispatch = (value: any) => {
         if (typeof value === 'function') {
@@ -353,6 +356,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         mapStyleDefs={mapStyleDefs}
                         scaleFactor={scaleFactor}
                         setHighlightLine={setHighlightLineDispatch}
+                        enableInlineEditing={featureSwitches?.enableNoteInlineEditing || false}
                     />
                 ))}
             </g>
