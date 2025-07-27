@@ -47,6 +47,12 @@ interface ModernUnifiedMapCanvasProps {
     showCancellationHint?: boolean;
     isSourceDeleted?: boolean;
     isTargetDeleted?: boolean;
+    // New props for PST box drawing functionality
+    onMouseDown?: (position: {x: number; y: number}) => void;
+    onMouseUp?: (position: {x: number; y: number}) => void;
+    isDrawing?: boolean;
+    drawingStartPosition?: {x: number; y: number} | null;
+    drawingCurrentPosition?: {x: number; y: number};
 }
 
 function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
@@ -352,6 +358,28 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     );
 
     const handleMapClick = (event: any) => {
+        // Handle PST box drawing when in drawing mode
+        if (props.selectedToolbarItem?.toolType === 'drawing' && props.onMouseDown) {
+            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+
+            // Adjust for SVG viewBox offset (-35, -45)
+            const adjustedX = svgX + 35;
+            const adjustedY = svgY + 45;
+
+            // Convert to map coordinates (maturity and visibility)
+            const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+            const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+
+            // Validate and clamp coordinates to valid range [0, 1]
+            const clampedMaturity = Math.max(0, Math.min(1, maturity));
+            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+
+            props.onMouseDown({x: clampedMaturity, y: clampedVisibility});
+            return; // Don't process other click handlers when in drawing mode
+        }
+
         // Handle component linking when in linking mode
         if (props.linkingState && props.linkingState !== 'idle' && props.onComponentClick) {
             // The react-svg-pan-zoom library provides SVG coordinates directly in the event
@@ -559,6 +587,14 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             });
         }
 
+        // Handle mouse move for drawing functionality
+        if (props.selectedToolbarItem?.toolType === 'drawing' && props.onMouseMove) {
+            props.onMouseMove({
+                x: clampedMaturity,
+                y: clampedVisibility,
+            });
+        }
+
         // Update current mouse position for linking preview
         setCurrentMousePosition({x: clampedMaturity, y: clampedVisibility});
 
@@ -578,6 +614,29 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 y: clampedVisibility,
                 nearestComponent,
             });
+        }
+    };
+
+    const handleMapMouseUp = (event: any) => {
+        // Handle PST box drawing completion when in drawing mode
+        if (props.isDrawing && props.onMouseUp) {
+            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+
+            // Adjust for SVG viewBox offset (-35, -45)
+            const adjustedX = svgX + 35;
+            const adjustedY = svgY + 45;
+
+            // Convert to map coordinates (maturity and visibility)
+            const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+            const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+
+            // Validate and clamp coordinates to valid range [0, 1]
+            const clampedMaturity = Math.max(0, Math.min(1, maturity));
+            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+
+            props.onMouseUp({x: clampedMaturity, y: clampedVisibility});
         }
     };
 
@@ -668,7 +727,11 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     // Determine cursor style based on toolbar item selection with compatibility
     const getCursorStyle = () => {
         if (props.selectedToolbarItem) {
-            // Check if current position is a valid drop zone
+            // Show crosshair for drawing tools (PST boxes)
+            if (props.selectedToolbarItem.toolType === 'drawing') {
+                return 'crosshair';
+            }
+            // Check if current position is a valid drop zone for other tools
             const isValid = true; // For now, assume valid - this could be enhanced
             return isValid ? 'crosshair' : 'not-allowed';
         }
@@ -699,11 +762,13 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 onClick={handleMapClick}
                 onDoubleClick={handleMapDoubleClick}
                 onMouseMove={handleMapMouseMove}
+                onMouseUp={handleMapMouseUp}
                 onZoom={handleZoomChange}
                 scaleFactorOnWheel={allowMapZoomMouseWheel ? 1.1 : 1}
                 style={{
                     userSelect: 'none',
                     fontFamily: mapStyleDefs.fontFamily,
+                    cursor: getCursorStyle(),
                     width: '100%',
                     height: '100%', // Use full height since toolbar is now fixed position
                     display: 'block',
@@ -856,6 +921,10 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         showCancellationHint={props.showCancellationHint}
                         isSourceDeleted={props.isSourceDeleted}
                         isTargetDeleted={props.isTargetDeleted}
+                        isDrawing={props.isDrawing}
+                        drawingStartPosition={props.drawingStartPosition}
+                        drawingCurrentPosition={props.drawingCurrentPosition}
+                        selectedToolbarItem={props.selectedToolbarItem}
                     />
                 </svg>
             </UncontrolledReactSVGPanZoom>

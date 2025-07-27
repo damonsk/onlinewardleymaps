@@ -65,6 +65,11 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     const [currentMousePosition, setCurrentMousePosition] = useState<{x: number; y: number}>({x: 0, y: 0});
     const [showCancellationHint, setShowCancellationHint] = useState(false);
 
+    // PST box drawing state management
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [drawingStartPosition, setDrawingStartPosition] = useState<{x: number; y: number} | null>(null);
+    const [drawingCurrentPosition, setDrawingCurrentPosition] = useState<{x: number; y: number}>({x: 0, y: 0});
+
     // User feedback state for error handling
     const [userFeedback, setUserFeedback] = useState<{
         message: string;
@@ -195,14 +200,33 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setHighlightedComponent(null);
                 setShowCancellationHint(false);
                 showUserFeedback('Hover & click components to link', 'info');
-            } else {
-                // Reset linking state when switching to other tools
+                // Reset drawing state when switching to linking
+                setIsDrawing(false);
+                setDrawingStartPosition(null);
+            } else if (item?.toolType === 'drawing') {
+                // Handle PST drawing tool selection
+                if (item.selectedSubItem) {
+                    showUserFeedback(`Click and drag to draw ${item.selectedSubItem.label} box`, 'info');
+                } else {
+                    showUserFeedback('Select a PST type from the dropdown first', 'warning');
+                }
+                // Reset linking state when switching to drawing
                 setLinkingState('idle');
                 setSourceComponent(null);
                 setHighlightedComponent(null);
                 setIsDuplicateLink(false);
                 setIsInvalidTarget(false);
                 setShowCancellationHint(false);
+            } else {
+                // Reset both linking and drawing state when switching to other tools
+                setLinkingState('idle');
+                setSourceComponent(null);
+                setHighlightedComponent(null);
+                setIsDuplicateLink(false);
+                setIsInvalidTarget(false);
+                setShowCancellationHint(false);
+                setIsDrawing(false);
+                setDrawingStartPosition(null);
             }
 
             // Use compatibility utility to synchronize state
@@ -565,6 +589,11 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 // Update current mouse position for linking preview
                 setCurrentMousePosition({x: position.x, y: position.y});
 
+                // Update drawing current position if drawing
+                if (isDrawing) {
+                    setDrawingCurrentPosition({x: position.x, y: position.y});
+                }
+
                 // Check if source component still exists during linking
                 if (linkingState !== 'idle' && sourceComponent) {
                     const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
@@ -651,7 +680,182 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setIsValidDropZone(false);
             }
         },
-        [linkingState, sourceComponent, props.wardleyMap.components, props.wardleyMap.anchors],
+        [linkingState, sourceComponent, props.wardleyMap.components, props.wardleyMap.anchors, isDrawing],
+    );
+
+    // Handle mouse down for PST box drawing
+    const handleMouseDown = useCallback(
+        (position: {x: number; y: number}) => {
+            // Only start drawing if PST tool is selected and has a sub-item
+            if (selectedToolbarItem?.toolType === 'drawing' && selectedToolbarItem.selectedSubItem) {
+                setIsDrawing(true);
+                setDrawingStartPosition({x: position.x, y: position.y});
+                setDrawingCurrentPosition({x: position.x, y: position.y});
+            }
+        },
+        [selectedToolbarItem],
+    );
+
+    // Handle mouse up for PST box drawing completion
+    const handleMouseUp = useCallback(
+        (position: {x: number; y: number}) => {
+            if (isDrawing && drawingStartPosition && selectedToolbarItem?.selectedSubItem) {
+                // Validate input coordinates
+                if (
+                    !position ||
+                    typeof position.x !== 'number' ||
+                    typeof position.y !== 'number' ||
+                    isNaN(position.x) ||
+                    isNaN(position.y)
+                ) {
+                    console.error('Invalid position coordinates for PST box:', position);
+                    showUserFeedback('Invalid position. Please try drawing the PST box again.', 'error');
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                    return;
+                }
+
+                // Convert map coordinates to correct coordinates accounting for viewBox offset
+                // This applies the same transformation as DrawingPreview to ensure consistency
+                const convertMapCoordinates = (mapCoord: {x: number; y: number}) => {
+                    // The coordinates from UnifiedMapCanvas have been incorrectly transformed due to viewBox offset
+                    // We need to reverse this transformation to get the correct map coordinates
+
+                    // Step 1: Convert map coordinates (0-1) back to adjusted coordinates
+                    const adjustedX = mapCoord.x * props.mapDimensions.width;
+                    const adjustedY = (1 - mapCoord.y) * props.mapDimensions.height;
+
+                    // Step 2: Remove the incorrect viewBox offset that was added in UnifiedMapCanvas
+                    const correctedAdjustedX = adjustedX - 35;
+                    const correctedAdjustedY = adjustedY - 45;
+
+                    // Step 3: Convert back to correct map coordinates (0-1)
+                    const correctedMaturity = correctedAdjustedX / props.mapDimensions.width;
+                    const correctedVisibility = 1 - correctedAdjustedY / props.mapDimensions.height;
+
+                    // Clamp to valid range [0, 1]
+                    return {
+                        x: Math.max(0, Math.min(1, correctedMaturity)),
+                        y: Math.max(0, Math.min(1, correctedVisibility)),
+                    };
+                };
+
+                // Apply coordinate correction to both start and current positions
+                const correctedStart = convertMapCoordinates(drawingStartPosition);
+                const correctedCurrent = convertMapCoordinates(drawingCurrentPosition);
+
+                // Calculate rectangle dimensions with proper coordinate ordering
+                const minX = Math.min(correctedStart.x, correctedCurrent.x);
+                const minY = Math.min(correctedStart.y, correctedCurrent.y);
+                const maxX = Math.max(correctedStart.x, correctedCurrent.x);
+                const maxY = Math.max(correctedStart.y, correctedCurrent.y);
+
+                // For PST boxes, we need to order by visibility (Y-axis) with highest visibility first
+                // Since higher Y values = lower visibility in map coordinates, we need maxY first
+                const highVisibility = maxY; // Higher Y value = lower on screen = higher visibility
+                const lowVisibility = minY; // Lower Y value = higher on screen = lower visibility
+
+                // Validate boundary constraints - ensure coordinates are within valid map bounds (0-1)
+                if (minX < 0 || minY < 0 || maxX > 1 || maxY > 1) {
+                    console.warn('PST box coordinates outside map boundaries:', {minX, minY, maxX, maxY});
+                    showUserFeedback('PST box extends outside map boundaries. Please draw within the map area.', 'warning');
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                    return;
+                }
+
+                // Additional boundary validation - ensure reasonable coordinate ranges
+                if (minX < -0.1 || minY < -0.1 || maxX > 1.1 || maxY > 1.1) {
+                    console.warn('PST box coordinates outside reasonable bounds:', {minX, minY, maxX, maxY});
+                    showUserFeedback('PST box position is invalid. Please draw within the visible map area.', 'warning');
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                    return;
+                }
+
+                // Check minimum size validation (at least 0.05 in map coordinates, roughly 50px)
+                const minSize = 0.05;
+                const width = maxX - minX;
+                const height = maxY - minY;
+
+                if (width < minSize || height < minSize) {
+                    console.debug('PST box too small:', {width, height, minSize});
+                    showUserFeedback(
+                        `PST box too small (${Math.round(width * 100)}% × ${Math.round(height * 100)}%). Draw a larger rectangle.`,
+                        'warning',
+                    );
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                    return;
+                }
+
+                // Validate maximum size to prevent overly large boxes
+                const maxSize = 0.8; // Maximum 80% of map width/height
+                if (width > maxSize || height > maxSize) {
+                    console.debug('PST box too large:', {width, height, maxSize});
+                    showUserFeedback(
+                        `PST box too large (${Math.round(width * 100)}% × ${Math.round(height * 100)}%). Draw a smaller rectangle.`,
+                        'warning',
+                    );
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                    return;
+                }
+
+                try {
+                    // Generate PST box text using the template with proper coordinate ordering
+                    // PST syntax requires: [visibility_high, maturity1, visibility_low, maturity2]
+                    // Template expects (maturity1, visibility_high, maturity2, visibility_low)
+                    const pstText = selectedToolbarItem.selectedSubItem.template(
+                        minX.toFixed(2), // maturity1 (left edge)
+                        highVisibility.toFixed(2), // visibility_high (higher visibility)
+                        maxX.toFixed(2), // maturity2 (right edge)
+                        lowVisibility.toFixed(2), // visibility_low (lower visibility)
+                    );
+
+                    // Validate generated PST text
+                    if (!pstText || typeof pstText !== 'string' || pstText.trim().length === 0) {
+                        throw new Error('Generated PST text is empty or invalid');
+                    }
+
+                    // Add to map text with proper formatting
+                    const currentText = props.mapText || '';
+                    const updatedMapText = currentText.trim() + (currentText.trim() ? '\n' : '') + pstText;
+
+                    // Update map text and provide user feedback
+                    props.mutateMapText(updatedMapText);
+
+                    const boxSize = `${Math.round(width * 100)}% × ${Math.round(height * 100)}%`;
+                    showUserFeedback(`${selectedToolbarItem.selectedSubItem.label} box created successfully! (${boxSize})`, 'success');
+
+                    console.log('PST box created:', {
+                        type: selectedToolbarItem.selectedSubItem.label,
+                        coordinates: {minX, minY, maxX, maxY, highVisibility, lowVisibility},
+                        size: {width, height},
+                        text: pstText,
+                    });
+
+                    // Clear selection and drawing state
+                    setSelectedToolbarItem(null);
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                } catch (error) {
+                    console.error('Failed to create PST box:', error);
+                    showUserFeedback('Failed to create PST box. Please try again.', 'error');
+                    setIsDrawing(false);
+                    setDrawingStartPosition(null);
+                }
+            }
+        },
+        [
+            isDrawing,
+            drawingStartPosition,
+            drawingCurrentPosition,
+            selectedToolbarItem,
+            props.mapText,
+            props.mutateMapText,
+            showUserFeedback,
+        ],
     );
 
     // Handle clicks outside the map to deselect toolbar items and cancel linking
@@ -812,6 +1016,11 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     showCancellationHint={showCancellationHint}
                     isSourceDeleted={isSourceDeleted}
                     isTargetDeleted={isTargetDeleted}
+                    onMouseDown={handleMouseDown}
+                    onMouseUp={handleMouseUp}
+                    isDrawing={isDrawing}
+                    drawingStartPosition={drawingStartPosition}
+                    drawingCurrentPosition={drawingCurrentPosition}
                 />
             </div>
 

@@ -24,6 +24,7 @@ import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
 import Note from './Note';
 import LinkingPreview from './LinkingPreview';
+import DrawingPreview from './DrawingPreview';
 
 interface ModernUnifiedMapContentProps {
     mapAttitudes: any[];
@@ -63,6 +64,11 @@ interface ModernUnifiedMapContentProps {
     showCancellationHint?: boolean;
     isSourceDeleted?: boolean;
     isTargetDeleted?: boolean;
+    // New props for PST drawing functionality
+    isDrawing?: boolean;
+    drawingStartPosition?: {x: number; y: number} | null;
+    drawingCurrentPosition?: {x: number; y: number};
+    selectedToolbarItem?: any;
 }
 
 const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
@@ -395,6 +401,16 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                 showCancellationHint={props.showCancellationHint || false}
                 isSourceDeleted={props.isSourceDeleted || false}
                 isTargetDeleted={props.isTargetDeleted || false}
+            />
+
+            {/* Drawing preview for PST box drawing functionality */}
+            <DrawingPreview
+                isDrawing={props.isDrawing || false}
+                startPosition={props.drawingStartPosition || null}
+                currentPosition={props.drawingCurrentPosition || {x: 0, y: 0}}
+                selectedPSTType={props.selectedToolbarItem?.selectedSubItem || null}
+                mapStyleDefs={mapStyleDefs}
+                mapDimensions={mapDimensions}
             />
         </g>
     );

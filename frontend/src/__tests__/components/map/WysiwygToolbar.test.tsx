@@ -438,7 +438,15 @@ describe('WysiwygToolbar', () => {
                 act(() => {
                     button?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
                 });
-                expect(mockOnItemSelect).toHaveBeenCalledWith(item);
+                
+                // Items with sub-items (like PST) open a dropdown instead of calling onItemSelect directly
+                if (item.subItems && item.subItems.length > 0) {
+                    // For dropdown items, we don't expect onItemSelect to be called on the main item click
+                    expect(mockOnItemSelect).not.toHaveBeenCalled();
+                } else {
+                    // For regular items, onItemSelect should be called
+                    expect(mockOnItemSelect).toHaveBeenCalledWith(item);
+                }
             });
         });
     });

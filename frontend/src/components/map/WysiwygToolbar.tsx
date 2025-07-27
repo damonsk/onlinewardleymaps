@@ -1,7 +1,7 @@
 import React, {memo, useCallback, useEffect, useState, useRef} from 'react';
 import styled from 'styled-components';
 import {TOOLBAR_ITEMS, getToolbarItemById} from '../../constants/toolbarItems';
-import {ToolbarItem as ToolbarItemType, WysiwygToolbarProps} from '../../types/toolbar';
+import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
 import {ToolbarItem} from './ToolbarItem';
 import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
 
@@ -280,11 +280,30 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
             [onItemSelect],
         );
 
+        /**
+         * Handle PST sub-item selection
+         */
+        const handleSubItemSelect = useCallback(
+            (subItem: ToolbarSubItem) => {
+                // For PST items, we need to create a modified toolbar item that includes the selected sub-item
+                const pstItem = getToolbarItemById('pst');
+                if (pstItem) {
+                    const modifiedItem: ToolbarItemType = {
+                        ...pstItem,
+                        selectedSubItem: subItem,
+                    };
+                    onItemSelect?.(modifiedItem);
+                }
+            },
+            [onItemSelect],
+        );
+
         // Group items by category for better organization
         const componentItems = TOOLBAR_ITEMS.filter(item => item.category === 'component');
         const methodItems = TOOLBAR_ITEMS.filter(item => item.category === 'method');
         const noteItems = TOOLBAR_ITEMS.filter(item => item.category === 'note');
         const linkItems = TOOLBAR_ITEMS.filter(item => item.category === 'link');
+        const pstItems = TOOLBAR_ITEMS.filter(item => item.category === 'pst');
         const otherItems = TOOLBAR_ITEMS.filter(item => item.category === 'pipeline' || item.category === 'other');
 
         return (
@@ -363,7 +382,22 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         />
                     ))}
 
-                    {/* Separator between links and other items */}
+                    {/* Separator between links and PST items */}
+                    {pstItems.length > 0 && <ToolbarSeparator />}
+
+                    {/* PST items */}
+                    {pstItems.map(item => (
+                        <ToolbarItem
+                            key={item.id}
+                            item={item}
+                            isSelected={selectedItem?.id === item.id}
+                            onClick={() => handleItemClick(item)}
+                            onSubItemSelect={handleSubItemSelect}
+                            mapStyleDefs={mapStyleDefs}
+                        />
+                    ))}
+
+                    {/* Separator between PST and other items */}
                     {otherItems.length > 0 && <ToolbarSeparator />}
 
                     {/* Other items (pipeline, anchor, etc.) */}

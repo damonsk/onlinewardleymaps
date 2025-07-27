@@ -97,3 +97,62 @@ export const ToolbarAnchorIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs,
 export const ToolbarLinkIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
     <LinkIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
 );
+
+/**
+ * PST Icon component for the toolbar
+ * Shows a generic box icon representing PST (Pioneers, Settlers, Town Planners) boxes
+ */
+export const ToolbarPSTIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
+    <svg
+        id={id}
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        onClick={onClick}
+        style={{ cursor: 'pointer' }}
+    >
+        {/* Main box outline */}
+        <rect
+            x="3"
+            y="3"
+            width="18"
+            height="18"
+            rx="2"
+            stroke={mapStyleDefs.component.stroke}
+            strokeWidth="2"
+            fill="none"
+        />
+        
+        {/* Three horizontal sections representing P, S, T */}
+        <line
+            x1="3"
+            y1="9"
+            x2="21"
+            y2="9"
+            stroke={mapStyleDefs.component.stroke}
+            strokeWidth="1"
+            strokeDasharray="2,2"
+        />
+        <line
+            x1="3"
+            y1="15"
+            x2="21"
+            y2="15"
+            stroke={mapStyleDefs.component.stroke}
+            strokeWidth="1"
+            strokeDasharray="2,2"
+        />
+        
+        {/* Small dropdown indicator arrow */}
+        <path
+            d="M18 6 L20 8 L18 10"
+            stroke={mapStyleDefs.component.stroke}
+            strokeWidth="1.5"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </svg>
+);

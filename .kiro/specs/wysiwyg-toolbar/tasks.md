@@ -104,21 +104,21 @@
   - Ensure proper state cleanup when linking is cancelled or completed
   - _Requirements: 8.8, 8.7_
 
-- [ ] 16. Create PST dropdown and selection system
+- [x] 16. Create PST dropdown and selection system
   - Create ToolbarDropdown component for PST type selection
   - Implement PSTIcon component for the main toolbar button
   - Add PST tool configuration with three sub-items (Pioneers, Settlers, Town Planners)
   - Implement dropdown positioning and interaction logic
   - _Requirements: 9.1, 9.2_
 
-- [ ] 17. Implement PST box drawing functionality
+- [x] 17. Implement PST box drawing functionality
   - Create DrawingPreview component for rectangle drawing feedback
   - Implement click-and-drag drawing interaction with crosshair cursor
   - Add real-time preview rectangle that follows mouse during drag
   - Apply distinct color coding for each PST type during drawing
   - _Requirements: 9.3, 9.4, 9.6, 9.7, 9.8_
 
-- [ ] 18. Complete PST box creation and map text generation
+- [x] 18. Complete PST box creation and map text generation
   - Implement PST box completion logic when mouse is released after drag
   - Generate appropriate PST syntax for map text based on selected type
   - Add validation for minimum box size and boundary constraints

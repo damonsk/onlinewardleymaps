@@ -2,6 +2,16 @@ import React from 'react';
 import {MapTheme} from '../../constants/mapstyles';
 
 /**
+ * Interface for toolbar sub-items (used in dropdowns like PST)
+ */
+export interface ToolbarSubItem {
+    id: string;
+    label: string;
+    color: string;
+    template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => string;
+}
+
+/**
  * Interface for individual toolbar items
  */
 export interface ToolbarItem {
@@ -9,10 +19,12 @@ export interface ToolbarItem {
     label: string;
     icon: React.ComponentType<ToolbarIconProps>;
     template?: (name: string, y: string, x: string) => string;
-    category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'other';
+    category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'pst' | 'other';
     defaultName?: string;
-    toolType?: 'placement' | 'linking';
+    toolType?: 'placement' | 'linking' | 'drawing';
     keyboardShortcut?: string; // Single character keyboard shortcut
+    subItems?: ToolbarSubItem[]; // For dropdown items like PST
+    selectedSubItem?: ToolbarSubItem; // Currently selected sub-item for dropdown tools
 }
 
 /**
@@ -62,6 +74,7 @@ export interface ToolbarItemProps {
     isSelected: boolean;
     onClick: () => void;
     mapStyleDefs: MapTheme;
+    onSubItemSelect?: (subItem: ToolbarSubItem) => void;
 }
 
 /**
@@ -98,4 +111,16 @@ export interface KeyboardShortcutHandlerProps {
     onToolSelect: (toolId: string | null) => void;
     isEnabled: boolean;
     currentSelectedTool: string | null;
+}
+
+/**
+ * Props interface for the ToolbarDropdown component
+ */
+export interface ToolbarDropdownProps {
+    items: ToolbarSubItem[];
+    isOpen: boolean;
+    onSelect: (item: ToolbarSubItem) => void;
+    onClose: () => void;
+    position: { x: number; y: number };
+    mapStyleDefs: MapTheme;
 }

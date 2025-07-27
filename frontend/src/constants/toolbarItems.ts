@@ -10,8 +10,9 @@ import {
     ToolbarMarketIcon,
     ToolbarOutSourceMethodIcon,
     ToolbarPipelineIcon,
+    ToolbarPSTIcon,
 } from '../components/map/ToolbarIconWrappers';
-import {ToolbarCategory, ToolbarConfiguration, ToolbarItem} from '../types/toolbar';
+import {ToolbarCategory, ToolbarConfiguration, ToolbarItem, ToolbarSubItem} from '../types/toolbar';
 
 /**
  * Template functions for generating map text syntax
@@ -28,6 +29,33 @@ export const TOOLBAR_TEMPLATES = {
     pipeline: (name: string, y: string, x: string) => `pipeline ${name} [${y}, ${x}]`,
     anchor: (name: string, y: string, x: string) => `anchor ${name} [${y}, ${x}]`,
 } as const;
+
+/**
+ * PST sub-items configuration for dropdown selection
+ */
+export const PST_SUB_ITEMS: ToolbarSubItem[] = [
+    {
+        id: 'pioneers',
+        label: 'Pioneers',
+        color: '#FF6B6B', // Red
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
+            `pioneers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`
+    },
+    {
+        id: 'settlers',
+        label: 'Settlers',
+        color: '#4ECDC4', // Teal
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
+            `settlers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`
+    },
+    {
+        id: 'townplanners',
+        label: 'Town Planners',
+        color: '#45B7D1', // Blue
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
+            `townplanners [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`
+    }
+];
 
 /**
  * Default names for new components
@@ -155,6 +183,16 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         toolType: 'linking',
         keyboardShortcut: 'l',
     },
+    // PST tool with dropdown
+    {
+        id: 'pst',
+        label: 'PST Boxes',
+        icon: ToolbarPSTIcon,
+        category: 'pst',
+        toolType: 'drawing',
+        keyboardShortcut: 't',
+        subItems: PST_SUB_ITEMS,
+    },
 ];
 
 /**
@@ -185,6 +223,11 @@ export const TOOLBAR_CATEGORIES: ToolbarCategory[] = [
         id: 'link',
         label: 'Links',
         items: ['link'],
+    },
+    {
+        id: 'pst',
+        label: 'PST Boxes',
+        items: ['pst'],
     },
     {
         id: 'other',
@@ -228,6 +271,7 @@ export const KEYBOARD_SHORTCUTS: Record<string, string> = {
     p: 'pipeline',
     a: 'anchor',
     m: 'buy', // Method - using 'buy' as the primary method tool
+    t: 'pst', // PST boxes
 };
 
 /**
