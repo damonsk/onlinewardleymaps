@@ -1,6 +1,24 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react';
 import Note from '../../../components/map/Note';
+import { EditingProvider } from '../../../components/EditingContext';
+
+// Mock the InlineEditor component
+jest.mock('../../../components/map/InlineEditor', () => {
+    return function MockInlineEditor({value, onChange, onSave, onCancel, ...props}: any) {
+        return (
+            <div data-testid="inline-editor">
+                <input data-testid="inline-editor-input" value={value} onChange={e => onChange(e.target.value)} />
+                <button data-testid="save-button" onClick={onSave}>
+                    Save
+                </button>
+                <button data-testid="cancel-button" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
+        );
+    };
+});
 
 // Mock navigator.userAgent for Chrome detection
 const mockUserAgent = (userAgent: string) => {
@@ -34,8 +52,34 @@ describe('Note Chrome Compatibility', () => {
                 fontSize: '14px',
                 fontWeight: 'normal',
                 textColor: '#000000',
+                evolvedTextColor: '#666',
             },
             fontFamily: 'Arial, sans-serif',
+            attitudes: {},
+            methods: {
+                buy: { color: '#ccc', label: 'Buy' },
+                build: { color: '#ccc', label: 'Build' },
+                outsource: { color: '#ccc', label: 'Outsource' },
+            },
+            component: {
+                fill: '#fff',
+                stroke: '#000',
+                strokeWidth: 1,
+                fontSize: '14px',
+                fontWeight: 'normal',
+                textColor: '#000',
+                evolvedTextColor: '#666',
+            },
+            annotation: {
+                fill: '#fff',
+                stroke: '#000',
+                strokeWidth: 1,
+                text: '#000',
+                boxStroke: '#000',
+                boxStrokeWidth: 1,
+                boxFill: '#fff',
+                boxTextColour: '#000',
+            },
         },
         setHighlightLine: jest.fn(),
         scaleFactor: 1,
@@ -60,9 +104,11 @@ describe('Note Chrome Compatibility', () => {
         mockVendor('Google Inc.');
 
         render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -86,9 +132,11 @@ describe('Note Chrome Compatibility', () => {
         mockVendor('Apple Computer, Inc.');
 
         render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -104,9 +152,11 @@ describe('Note Chrome Compatibility', () => {
         mockVendor('');
 
         render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -126,9 +176,11 @@ describe('Note Chrome Compatibility', () => {
         const mockMutateMapText = jest.fn();
 
         render(
-            <svg>
-                <Note {...defaultProps} mutateMapText={mockMutateMapText} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} mutateMapText={mockMutateMapText} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -161,9 +213,11 @@ describe('Note Chrome Compatibility', () => {
         mockVendor('Google Inc.');
 
         render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -208,9 +262,11 @@ describe('Note Chrome Compatibility', () => {
         mockVendor('Google Inc.');
 
         const {container: chromeContainer, unmount: chromeUnmount} = render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const chromeNoteText = screen.getByTestId('modern_note_text_note1');
@@ -234,9 +290,11 @@ describe('Note Chrome Compatibility', () => {
         mockVendor('Apple Computer, Inc.');
 
         const {container: safariContainer, unmount: safariUnmount} = render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const safariNoteText = screen.getByTestId('modern_note_text_note1');
@@ -270,9 +328,11 @@ describe('Note Chrome Compatibility', () => {
         };
 
         const {container} = render(
-            <svg>
-                <Note {...propsWithSpecificPosition} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...propsWithSpecificPosition} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');

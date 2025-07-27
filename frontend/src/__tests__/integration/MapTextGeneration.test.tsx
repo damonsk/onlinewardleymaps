@@ -2,6 +2,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {act} from 'react';
 import {MapView} from '../../components/map/MapView';
+import {EditingProvider} from '../../components/EditingContext';
 import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
@@ -245,7 +246,11 @@ describe('Map Text Generation Integration Tests', () => {
 
     const renderComponent = (props: any = {}) => {
         act(() => {
-            root.render(<MapView {...defaultProps} {...props} />);
+            root.render(
+                <EditingProvider>
+                    <MapView {...defaultProps} {...props} />
+                </EditingProvider>
+            );
         });
     };
 

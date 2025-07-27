@@ -2,6 +2,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {act} from 'react';
 import {MapView} from '../../components/map/MapView';
+import {EditingProvider} from '../../components/EditingContext';
 
 // Mock ReactDOMServer to avoid MessageChannel issues in tests
 jest.mock('react-dom/server', () => ({
@@ -159,6 +160,29 @@ describe('Toolbar Component Editing Integration Tests', () => {
     const mockMapStyleDefs: MapTheme = {
         className: 'wardley',
         fontFamily: 'Arial, sans-serif',
+        component: {
+            fill: '#000',
+            stroke: '#000',
+            strokeWidth: 1,
+        },
+        attitudes: {
+            pioneers: {fill: '#000'},
+            settlers: {fill: '#000'},
+            townPlanners: {fill: '#000'},
+        },
+        methods: {
+            buy: {fill: '#000'},
+            build: {fill: '#000'},
+            outsource: {fill: '#000'},
+        },
+        annotation: {
+            fill: '#000',
+            stroke: '#000',
+        },
+        note: {
+            fill: '#000',
+            stroke: '#000',
+        },
     };
 
     const mockEvolutionStates: EvolutionStages = {
@@ -324,7 +348,11 @@ component Toolbar Component [0.2, 0.8]`,
 
     const renderComponent = (props: any = {}) => {
         act(() => {
-            root.render(<MapView {...defaultProps} {...props} />);
+            root.render(
+                <EditingProvider>
+                    <MapView {...defaultProps} {...props} />
+                </EditingProvider>
+            );
         });
     };
 

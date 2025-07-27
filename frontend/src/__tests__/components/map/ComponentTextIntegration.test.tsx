@@ -2,6 +2,7 @@ import React from 'react';
 import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ComponentText from '../../../components/map/ComponentText';
+import {EditingProvider} from '../../../components/EditingContext';
 import {FeatureSwitchesProvider} from '../../../components/FeatureSwitchesContext';
 import {UnifiedComponent} from '../../../types/unified';
 
@@ -105,11 +106,13 @@ describe('ComponentText Integration with InlineEditor', () => {
 
     const renderWithFeatureSwitches = (props: any, enableDoubleClickRename = true) => {
         return render(
-            <FeatureSwitchesProvider value={{enableDoubleClickRename}}>
-                <svg>
-                    <ComponentText {...props} />
-                </svg>
-            </FeatureSwitchesProvider>,
+            <EditingProvider>
+                <FeatureSwitchesProvider value={{enableDoubleClickRename}}>
+                    <svg>
+                        <ComponentText {...props} />
+                    </svg>
+                </FeatureSwitchesProvider>
+            </EditingProvider>,
         );
     };
 

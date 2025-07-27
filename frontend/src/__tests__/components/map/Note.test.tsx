@@ -2,13 +2,14 @@ import React from 'react';
 import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Note from '../../../components/map/Note';
+import {EditingProvider} from '../../../components/EditingContext';
 import {MapNotes} from '../../../types/base';
 import {MapDimensions} from '../../../constants/defaults';
 import {MapTheme} from '../../../constants/mapstyles';
 
 // Mock the renameNote function
 jest.mock('../../../constants/renameNote', () => ({
-    renameNote: jest.fn(),
+    renameNote: jest.fn().mockReturnValue({success: true}),
 }));
 
 // Mock the InlineEditor component
@@ -65,6 +66,7 @@ describe('Note Component with Inline Editing', () => {
             textColor: '#000000',
             fontSize: '14px',
             fontWeight: 'normal',
+            evolvedTextColor: '#666',
         },
         component: {
             fill: '#ffffff',
@@ -72,7 +74,26 @@ describe('Note Component with Inline Editing', () => {
             textColor: '#000000',
             fontSize: '14px',
             fontWeight: 'normal',
+            strokeWidth: 1,
+            evolvedTextColor: '#666',
         },
+        attitudes: {},
+        methods: {
+            buy: {},
+            build: {},
+            outsource: {},
+        },
+        annotation: {
+            fill: '#fff',
+            stroke: '#000',
+            strokeWidth: 1,
+            text: '#000',
+            boxStroke: '#000',
+            boxStrokeWidth: 1,
+            boxFill: '#fff',
+            boxTextColour: '#000',
+        },
+        fontFamily: 'Arial, sans-serif',
     };
 
     const defaultProps = {
@@ -89,9 +110,13 @@ describe('Note Component with Inline Editing', () => {
         jest.clearAllMocks();
     });
 
+    const renderWithProvider = (component: React.ReactElement) => {
+        return render(<EditingProvider>{component}</EditingProvider>);
+    };
+
     describe('Basic Rendering', () => {
         it('should render note in normal mode by default', () => {
-            render(<Note {...defaultProps} />);
+            renderWithProvider(<Note {...defaultProps} />);
 
             expect(screen.getByTestId('component-text-symbol')).toBeInTheDocument();
             expect(screen.getByText('Test Note Content')).toBeInTheDocument();
@@ -99,7 +124,7 @@ describe('Note Component with Inline Editing', () => {
         });
 
         it('should render note with proper text content', () => {
-            render(<Note {...defaultProps} />);
+            renderWithProvider(<Note {...defaultProps} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             expect(textSymbol).toHaveTextContent('Test Note Content');
@@ -107,7 +132,7 @@ describe('Note Component with Inline Editing', () => {
 
         it('should call setHighlightLine when note is clicked', () => {
             const mockSetHighlightLine = jest.fn();
-            render(<Note {...defaultProps} setHighlightLine={mockSetHighlightLine} />);
+            renderWithProvider(<Note {...defaultProps} setHighlightLine={mockSetHighlightLine} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             fireEvent.click(textSymbol);
@@ -118,7 +143,7 @@ describe('Note Component with Inline Editing', () => {
 
     describe('Inline Editing Disabled', () => {
         it('should not enter edit mode on double-click when inline editing is disabled', () => {
-            render(<Note {...defaultProps} enableInlineEditing={false} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={false} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             fireEvent.doubleClick(textSymbol);
@@ -128,7 +153,7 @@ describe('Note Component with Inline Editing', () => {
         });
 
         it('should not enter edit mode on double-click when enableInlineEditing is undefined', () => {
-            render(<Note {...defaultProps} />);
+            renderWithProvider(<Note {...defaultProps} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             fireEvent.doubleClick(textSymbol);
@@ -140,7 +165,7 @@ describe('Note Component with Inline Editing', () => {
 
     describe('Inline Editing Enabled', () => {
         it('should enter edit mode on double-click when inline editing is enabled', () => {
-            render(<Note {...defaultProps} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             fireEvent.doubleClick(textSymbol);
@@ -150,7 +175,7 @@ describe('Note Component with Inline Editing', () => {
         });
 
         it('should initialize edit text with current note text', () => {
-            render(<Note {...defaultProps} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             fireEvent.doubleClick(textSymbol);
@@ -160,7 +185,7 @@ describe('Note Component with Inline Editing', () => {
         });
 
         it('should update edit text when typing in editor', () => {
-            render(<Note {...defaultProps} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} />);
 
             const textSymbol = screen.getByTestId('component-text-symbol');
             fireEvent.doubleClick(textSymbol);
@@ -176,8 +201,9 @@ describe('Note Component with Inline Editing', () => {
         it('should save changes and exit edit mode when save is clicked', async () => {
             const mockMutateMapText = jest.fn();
             const {renameNote} = require('../../../constants/renameNote');
+            renameNote.mockReturnValue({success: true});
 
-            render(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -210,8 +236,9 @@ describe('Note Component with Inline Editing', () => {
         it('should not save when text is unchanged', () => {
             const mockMutateMapText = jest.fn();
             const {renameNote} = require('../../../constants/renameNote');
+            renameNote.mockClear();
 
-            render(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -228,8 +255,9 @@ describe('Note Component with Inline Editing', () => {
         it('should not save when text is empty', () => {
             const mockMutateMapText = jest.fn();
             const {renameNote} = require('../../../constants/renameNote');
+            renameNote.mockClear();
 
-            render(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -250,8 +278,10 @@ describe('Note Component with Inline Editing', () => {
         it('should trim whitespace before saving', () => {
             const mockMutateMapText = jest.fn();
             const {renameNote} = require('../../../constants/renameNote');
+            renameNote.mockClear();
+            renameNote.mockReturnValue({success: true});
 
-            render(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -280,8 +310,9 @@ describe('Note Component with Inline Editing', () => {
         it('should cancel changes and exit edit mode when cancel is clicked', async () => {
             const mockMutateMapText = jest.fn();
             const {renameNote} = require('../../../constants/renameNote');
+            renameNote.mockClear();
 
-            render(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} mutateMapText={mockMutateMapText} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -306,7 +337,7 @@ describe('Note Component with Inline Editing', () => {
         });
 
         it('should reset edit text to original when entering edit mode again after cancel', () => {
-            render(<Note {...defaultProps} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} />);
 
             // Enter edit mode
             let textSymbol = screen.getByTestId('component-text-symbol');
@@ -332,7 +363,7 @@ describe('Note Component with Inline Editing', () => {
 
     describe('InlineEditor Integration', () => {
         it('should pass correct props to InlineEditor', () => {
-            render(<Note {...defaultProps} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} enableInlineEditing={true} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -353,7 +384,7 @@ describe('Note Component with Inline Editing', () => {
                 text: 'Line 1\\nLine 2\\nLine 3', // Use escaped newlines for testing
             };
 
-            render(<Note {...defaultProps} note={noteWithMultiLine} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} note={noteWithMultiLine} enableInlineEditing={true} />);
 
             // Enter edit mode
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -370,7 +401,7 @@ describe('Note Component with Inline Editing', () => {
             const note1 = {...mockNote, id: 'note-1', text: 'Note 1'};
             const note2 = {...mockNote, id: 'note-2', text: 'Note 2'};
 
-            const {rerender} = render(<Note {...defaultProps} note={note1} enableInlineEditing={true} />);
+            const {rerender} = renderWithProvider(<Note {...defaultProps} note={note1} enableInlineEditing={true} />);
 
             // Enter edit mode for note 1
             const textSymbol1 = screen.getByTestId('component-text-symbol');
@@ -379,7 +410,7 @@ describe('Note Component with Inline Editing', () => {
             expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
 
             // Switch to note 2 - this should reset edit mode due to useEffect
-            rerender(<Note {...defaultProps} note={note2} enableInlineEditing={true} />);
+            rerender(<EditingProvider><Note {...defaultProps} note={note2} enableInlineEditing={true} /></EditingProvider>);
 
             // Should not be in edit mode for note 2 (edit mode resets when note changes)
             expect(screen.queryByTestId('inline-editor')).not.toBeInTheDocument();
@@ -390,7 +421,7 @@ describe('Note Component with Inline Editing', () => {
             const note1 = {...mockNote, id: 'note-1', text: 'Original Note 1'};
             const note2 = {...mockNote, id: 'note-2', text: 'Original Note 2'};
 
-            const {rerender} = render(<Note {...defaultProps} note={note1} enableInlineEditing={true} />);
+            const {rerender} = renderWithProvider(<Note {...defaultProps} note={note1} enableInlineEditing={true} />);
 
             // Enter edit mode and change text
             const textSymbol = screen.getByTestId('component-text-symbol');
@@ -400,7 +431,7 @@ describe('Note Component with Inline Editing', () => {
             fireEvent.change(input, {target: {value: 'Modified Text'}});
 
             // Switch to different note - this should reset edit mode and text
-            rerender(<Note {...defaultProps} note={note2} enableInlineEditing={true} />);
+            rerender(<EditingProvider><Note {...defaultProps} note={note2} enableInlineEditing={true} /></EditingProvider>);
 
             // Enter edit mode for new note
             const newTextSymbol = screen.getByTestId('component-text-symbol');
@@ -414,7 +445,7 @@ describe('Note Component with Inline Editing', () => {
 
     describe('Error Handling', () => {
         it('should handle missing mapStyleDefs gracefully', () => {
-            render(<Note {...defaultProps} mapStyleDefs={undefined as any} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} mapStyleDefs={undefined as any} enableInlineEditing={true} />);
 
             // Should still render without errors
             expect(screen.getByTestId('component-text-symbol')).toBeInTheDocument();
@@ -429,7 +460,7 @@ describe('Note Component with Inline Editing', () => {
         it('should handle empty note text', () => {
             const emptyNote = {...mockNote, text: ''};
 
-            render(<Note {...defaultProps} note={emptyNote} enableInlineEditing={true} />);
+            renderWithProvider(<Note {...defaultProps} note={emptyNote} enableInlineEditing={true} />);
 
             expect(screen.getByTestId('component-text-symbol')).toBeInTheDocument();
 

@@ -16,6 +16,7 @@ import {
 } from '../../utils/toolbarCompatibility';
 import {findNearestComponent, linkExists, addLinkToMapText} from '../../utils/componentDetection';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {EditingProvider} from '../EditingContext';
 import CanvasSpeedDial from './CanvasSpeedDial';
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
@@ -887,8 +888,9 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     );
 
     return (
-        <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
-            {featureSwitches.enableQuickAdd && <CanvasSpeedDial setQuickAdd={setQuickAdd} mapStyleDefs={props.mapStyleDefs} />}
+        <EditingProvider>
+            <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
+                {featureSwitches.enableQuickAdd && <CanvasSpeedDial setQuickAdd={setQuickAdd} mapStyleDefs={props.mapStyleDefs} />}
 
             {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
             <WysiwygToolbar
@@ -1037,6 +1039,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     }
                 }
             `}</style>
-        </div>
+            </div>
+        </EditingProvider>
     );
 };

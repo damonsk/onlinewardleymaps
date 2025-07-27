@@ -1,6 +1,24 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react';
 import Note from '../../../components/map/Note';
+import {EditingProvider} from '../../../components/EditingContext';
+
+// Mock the InlineEditor component
+jest.mock('../../../components/map/InlineEditor', () => {
+    return function MockInlineEditor({value, onChange, onSave, onCancel, ...props}: any) {
+        return (
+            <div data-testid="inline-editor">
+                <input data-testid="inline-editor-input" value={value} onChange={e => onChange(e.target.value)} />
+                <button data-testid="save-button" onClick={onSave}>
+                    Save
+                </button>
+                <button data-testid="cancel-button" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
+        );
+    };
+});
 
 // Mock navigator.userAgent for browser detection
 const mockUserAgent = (userAgent: string) => {
@@ -59,9 +77,11 @@ describe('Note Positioning Tests', () => {
         mockVendor('Google Inc.');
 
         const {container} = render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -92,9 +112,11 @@ describe('Note Positioning Tests', () => {
         };
 
         const {container} = render(
-            <svg>
-                <Note {...propsTopLeft} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...propsTopLeft} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -125,9 +147,11 @@ describe('Note Positioning Tests', () => {
         };
 
         const {container} = render(
-            <svg>
-                <Note {...propsBottomRight} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...propsBottomRight} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -163,9 +187,11 @@ describe('Note Positioning Tests', () => {
         mockVendor('Google Inc.');
 
         const {container: chromeContainer} = render(
-            <svg>
-                <Note {...propsWithPosition} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...propsWithPosition} />
+                </svg>
+            </EditingProvider>,
         );
 
         const chromeNoteText = screen.getByTestId('modern_note_text_note1');
@@ -189,9 +215,11 @@ describe('Note Positioning Tests', () => {
         mockVendor('Apple Computer, Inc.');
 
         const {container: safariContainer} = render(
-            <svg>
-                <Note {...propsWithPosition} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...propsWithPosition} />
+                </svg>
+            </EditingProvider>,
         );
 
         const safariNoteText = screen.getByTestId('modern_note_text_note1');
@@ -219,9 +247,11 @@ describe('Note Positioning Tests', () => {
         mockVendor('Google Inc.');
 
         const {container} = render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');
@@ -242,9 +272,11 @@ describe('Note Positioning Tests', () => {
         mockVendor('Apple Computer, Inc.');
 
         const {container} = render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} />
+                </svg>
+            </EditingProvider>,
         );
 
         const noteText = screen.getByTestId('modern_note_text_note1');

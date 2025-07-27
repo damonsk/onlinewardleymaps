@@ -1,6 +1,24 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react';
 import Note from '../../../components/map/Note';
+import {EditingProvider} from '../../../components/EditingContext';
+
+// Mock the InlineEditor component
+jest.mock('../../../components/map/InlineEditor', () => {
+    return function MockInlineEditor({value, onChange, onSave, onCancel, ...props}: any) {
+        return (
+            <div data-testid="inline-editor">
+                <input data-testid="inline-editor-input" value={value} onChange={e => onChange(e.target.value)} />
+                <button data-testid="save-button" onClick={onSave}>
+                    Save
+                </button>
+                <button data-testid="cancel-button" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
+        );
+    };
+});
 
 describe('Note Feature Switch Integration', () => {
     const defaultProps = {
@@ -29,12 +47,18 @@ describe('Note Feature Switch Integration', () => {
         jest.clearAllMocks();
     });
 
-    it('should enable inline editing when enableInlineEditing is true', () => {
-        render(
-            <svg>
-                <Note {...defaultProps} enableInlineEditing={true} />
-            </svg>,
+    const renderWithProvider = (props: any) => {
+        return render(
+            <EditingProvider>
+                <svg>
+                    <Note {...defaultProps} {...props} />
+                </svg>
+            </EditingProvider>
         );
+    };
+
+    it('should enable inline editing when enableInlineEditing is true', () => {
+        renderWithProvider({enableInlineEditing: true});
 
         const noteText = screen.getByTestId('modern_note_text_note1');
         expect(noteText).toBeInTheDocument();
@@ -48,11 +72,7 @@ describe('Note Feature Switch Integration', () => {
     });
 
     it('should disable inline editing when enableInlineEditing is false', () => {
-        render(
-            <svg>
-                <Note {...defaultProps} enableInlineEditing={false} />
-            </svg>,
-        );
+        renderWithProvider({enableInlineEditing: false});
 
         const noteText = screen.getByTestId('modern_note_text_note1');
         expect(noteText).toBeInTheDocument();
@@ -66,11 +86,7 @@ describe('Note Feature Switch Integration', () => {
     });
 
     it('should disable inline editing when enableInlineEditing is undefined', () => {
-        render(
-            <svg>
-                <Note {...defaultProps} />
-            </svg>,
-        );
+        renderWithProvider({});
 
         const noteText = screen.getByTestId('modern_note_text_note1');
         expect(noteText).toBeInTheDocument();
