@@ -132,3 +132,18 @@ This feature introduces a WYSIWYG (What You See Is What You Get) editor interfac
 10. WHEN I press a keyboard shortcut while another tool is selected THEN the system SHALL switch to the new tool immediately
 11. WHEN keyboard shortcuts are active THEN the system SHALL not interfere with text editing in other parts of the interface
 12. WHEN I press an unassigned key THEN the system SHALL not change the current toolbar selection
+
+### Requirement 11
+
+**User Story:** As a map creator, I want to apply method decorators (build, buy, outsource) to existing components by selecting a method from the toolbar and clicking on components, so that I can quickly update component methods without manually editing the map text.
+
+#### Acceptance Criteria
+
+1. WHEN I select a method tool (build, buy, or outsource) from the toolbar THEN the system SHALL enter method application mode
+2. WHEN I am in method application mode and hover over an existing component THEN the system SHALL highlight the component to indicate it can be modified
+3. WHEN I click on an existing component while in method application mode THEN the system SHALL update the component's DSL to include the selected method decorator
+4. WHEN I apply a method to a component that already has a method THEN the system SHALL replace the existing method with the new one
+5. WHEN I apply a method to a component THEN the system SHALL update the map text from `component foo [...]` to `component foo [...] (method)`
+6. WHEN I apply a method to a component THEN the system SHALL automatically deselect the method tool and return to normal cursor mode
+7. WHEN I click elsewhere on the map while in method application mode THEN the system SHALL deselect the method tool without applying any changes
+8. WHEN I apply a method to a component THEN the system SHALL trigger a re-render of the map to reflect the visual changes

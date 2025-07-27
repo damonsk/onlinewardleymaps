@@ -13,6 +13,7 @@ import {LoadMap} from '../repository/LoadMap';
 import {MapIteration, OwnApiWardleyMap} from '../repository/OwnApiWardleyMap';
 import {SaveMap} from '../repository/SaveMap';
 import {MapAnnotationsPosition, MapSize} from '../types/base';
+import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
 import {ModKeyPressedProvider} from './KeyPressContext';
 import QuickAdd from './actions/QuickAdd';
@@ -575,25 +576,27 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                                     height: '100%',
                                 }}>
                                 <ModKeyPressedProvider>
-                                    <MapView
-                                        wardleyMap={unifiedMapState.getUnifiedMap()}
-                                        shouldHideNav={shouldHideNav}
-                                        hideNav={hideNav}
-                                        mapTitle={mapTitle}
-                                        mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                        mapStyleDefs={legacyState.mapStyleDefs}
-                                        mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                        mapDimensions={legacyState.mapDimensions}
-                                        mapEvolutionStates={legacyState.mapEvolutionStates}
-                                        mapRef={mapRef}
-                                        mapText={legacyState.mapText}
-                                        mutateMapText={mutateMapText}
-                                        evolutionOffsets={Defaults.EvoOffsets}
-                                        launchUrl={launchUrl}
-                                        setHighlightLine={legacyState.setHighlightLine}
-                                        setNewComponentContext={legacyState.setNewComponentContext}
-                                        showLinkedEvolved={legacyState.showLinkedEvolved}
-                                    />
+                                    <EditingProvider>
+                                        <MapView
+                                            wardleyMap={unifiedMapState.getUnifiedMap()}
+                                            shouldHideNav={shouldHideNav}
+                                            hideNav={hideNav}
+                                            mapTitle={mapTitle}
+                                            mapAnnotationsPresentation={mapAnnotationsPresentation}
+                                            mapStyleDefs={legacyState.mapStyleDefs}
+                                            mapCanvasDimensions={legacyState.mapCanvasDimensions}
+                                            mapDimensions={legacyState.mapDimensions}
+                                            mapEvolutionStates={legacyState.mapEvolutionStates}
+                                            mapRef={mapRef}
+                                            mapText={legacyState.mapText}
+                                            mutateMapText={mutateMapText}
+                                            evolutionOffsets={Defaults.EvoOffsets}
+                                            launchUrl={launchUrl}
+                                            setHighlightLine={legacyState.setHighlightLine}
+                                            setNewComponentContext={legacyState.setNewComponentContext}
+                                            showLinkedEvolved={legacyState.showLinkedEvolved}
+                                        />
+                                    </EditingProvider>
                                 </ModKeyPressedProvider>
                             </Box>
                         }
@@ -607,25 +610,27 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                             height: '100%',
                         }}>
                         <ModKeyPressedProvider>
-                            <MapView
-                                wardleyMap={unifiedMapState.getUnifiedMap()}
-                                shouldHideNav={shouldHideNav}
-                                hideNav={hideNav}
-                                mapTitle={mapTitle}
-                                mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                mapStyleDefs={legacyState.mapStyleDefs}
-                                mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                mapDimensions={legacyState.mapDimensions}
-                                mapEvolutionStates={legacyState.mapEvolutionStates}
-                                mapRef={mapRef}
-                                mapText={legacyState.mapText}
-                                mutateMapText={mutateMapText}
-                                evolutionOffsets={Defaults.EvoOffsets}
-                                launchUrl={launchUrl}
-                                setHighlightLine={legacyState.setHighlightLine}
-                                setNewComponentContext={legacyState.setNewComponentContext}
-                                showLinkedEvolved={legacyState.showLinkedEvolved}
-                            />
+                            <EditingProvider>
+                                <MapView
+                                    wardleyMap={unifiedMapState.getUnifiedMap()}
+                                    shouldHideNav={shouldHideNav}
+                                    hideNav={hideNav}
+                                    mapTitle={mapTitle}
+                                    mapAnnotationsPresentation={mapAnnotationsPresentation}
+                                    mapStyleDefs={legacyState.mapStyleDefs}
+                                    mapCanvasDimensions={legacyState.mapCanvasDimensions}
+                                    mapDimensions={legacyState.mapDimensions}
+                                    mapEvolutionStates={legacyState.mapEvolutionStates}
+                                    mapRef={mapRef}
+                                    mapText={legacyState.mapText}
+                                    mutateMapText={mutateMapText}
+                                    evolutionOffsets={Defaults.EvoOffsets}
+                                    launchUrl={launchUrl}
+                                    setHighlightLine={legacyState.setHighlightLine}
+                                    setNewComponentContext={legacyState.setNewComponentContext}
+                                    showLinkedEvolved={legacyState.showLinkedEvolved}
+                                />
+                            </EditingProvider>
                         </ModKeyPressedProvider>
                     </Box>
                 )}

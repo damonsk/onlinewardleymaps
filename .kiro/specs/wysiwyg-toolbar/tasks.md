@@ -153,10 +153,40 @@
   - Ensure keyboard shortcuts work with high contrast and accessibility modes
   - _Requirements: 10.9, 10.11_
 
-- [ ] 23. Write comprehensive tests for new functionality
+- [ ] 23. Implement method application toolbar tools
+  - Create BuildIcon, BuyIcon, and OutsourceIcon components for method tools
+  - Add method application tools (build, buy, outsource) to toolbar configuration
+  - Implement method-application toolType handling in toolbar selection logic
+  - Add keyboard shortcuts (B for build, U for buy, O for outsource) for method tools
+  - _Requirements: 11.1_
+
+- [ ] 24. Add component highlighting for method application
+  - Implement component hover detection and highlighting during method application mode
+  - Add visual feedback to indicate which components can receive method decorators
+  - Create component validation logic to determine method compatibility
+  - Ensure highlighting works consistently across all map themes
+  - _Requirements: 11.2_
+
+- [ ] 25. Implement method application click handling
+  - Add component click detection when in method application mode
+  - Implement method decorator application logic to update component DSL
+  - Create map text mutation logic to replace existing methods or add new ones
+  - Add automatic tool deselection after successful method application
+  - _Requirements: 11.3, 11.4, 11.5, 11.6_
+
+- [ ] 26. Add method application cancellation and error handling
+  - Implement click-elsewhere cancellation during method application mode
+  - Add error handling for invalid component types or parsing failures
+  - Create user feedback for failed method applications
+  - Ensure proper map re-rendering after method changes
+  - _Requirements: 11.7, 11.8_
+
+- [ ] 27. Write comprehensive tests for new functionality
   - Create unit tests for LinkingPreview, DrawingPreview, ToolbarDropdown, and KeyboardShortcutHandler components
   - Write integration tests for component linking workflow end-to-end
   - Add integration tests for PST box drawing and map text generation
   - Test keyboard shortcut integration and conflict prevention
   - Test magnetic component detection and highlighting accuracy
-  - _Requirements: 8.1-8.8, 9.1-9.9, 10.1-10.12_
+  - Add unit and integration tests for method application functionality
+  - Test method decorator replacement and map text mutation accuracy
+  - _Requirements: 8.1-8.8, 9.1-9.9, 10.1-10.12, 11.1-11.8_

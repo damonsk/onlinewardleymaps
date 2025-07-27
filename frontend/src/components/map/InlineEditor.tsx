@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useCallback} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {MapTheme} from '../../types/map/styles';
 
@@ -36,6 +36,8 @@ export interface InlineEditorProps {
     realTimeValidation?: boolean;
     showCharacterCount?: boolean;
     autoResize?: boolean;
+    ariaLabel?: string;
+    ariaDescription?: string;
 }
 
 interface StyledEditorProps {
@@ -67,6 +69,17 @@ const EditorContainer = styled.div<StyledEditorProps>`
     background-color: transparent;
     /* Ensure proper rendering across browsers */
     z-index: 1;
+
+    /* Responsive design adjustments */
+    @media (max-width: 768px) {
+        min-width: ${props => Math.min(props.$minWidth || 120, 100)}px;
+        width: ${props => (props.$width ? `${Math.min(props.$width, 200)}px` : 'auto')};
+    }
+
+    @media (max-width: 480px) {
+        min-width: 80px;
+        width: ${props => (props.$width ? `${Math.min(props.$width, 150)}px` : 'auto')};
+    }
 `;
 
 const StyledInput = styled.input<StyledEditorProps>`
@@ -74,13 +87,28 @@ const StyledInput = styled.input<StyledEditorProps>`
     min-width: ${props => props.$minWidth || 120}px;
     padding: 4px 8px;
     margin: 0;
-    border: 2px solid ${props => (props.$hasError ? '#ff4444' : props.$hasWarning ? '#ffaa00' : props.$theme.component?.stroke || '#ccc')};
+    border: 2px solid ${props => (props.$hasError ? '#ff4444' : (props.$hasWarning ? '#ffaa00' : props.$theme.component?.stroke || '#ccc'))};
     border-radius: 4px;
     background-color: ${props => props.$theme.component?.fill || 'white'};
     color: ${props => props.$theme.component?.textColor || 'black'};
     font-family: ${props => props.$fontFamily || props.$theme.fontFamily || 'Arial, sans-serif'};
     font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
     font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
+
+    /* Responsive font size adjustments */
+    @media (max-width: 768px) {
+        font-size: ${props => {
+            const baseFontSize = parseInt(props.$fontSize || props.$theme.component?.fontSize || '14', 10);
+            return `${Math.max(baseFontSize - 1, 12)}px`;
+        }};
+    }
+
+    @media (max-width: 480px) {
+        font-size: ${props => {
+            const baseFontSize = parseInt(props.$fontSize || props.$theme.component?.fontSize || '14', 10);
+            return `${Math.max(baseFontSize - 2, 11)}px`;
+        }};
+    }
     outline: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition:
@@ -97,8 +125,18 @@ const StyledInput = styled.input<StyledEditorProps>`
     z-index: 1;
 
     &:focus {
-        border-color: ${props => props.$theme.component?.evolved || '#007bff'};
-        box-shadow: 0 0 0 2px ${props => props.$theme.component?.evolved || '#007bff'}33;
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px #007bff 33;
+        /* High contrast focus ring for accessibility */
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+    }
+
+    @media (prefers-contrast: high) {
+        &:focus {
+            outline: 2px solid ${props => props.$theme.component?.evolved || '#007bff'};
+            outline-offset: 2px;
+        }
     }
 
     &::placeholder {
@@ -122,6 +160,21 @@ const StyledTextarea = styled.textarea<StyledEditorProps>`
     font-family: ${props => props.$fontFamily || props.$theme.fontFamily || 'Arial, sans-serif'};
     font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
     font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
+
+    /* Responsive font size adjustments */
+    @media (max-width: 768px) {
+        font-size: ${props => {
+            const baseFontSize = parseInt(props.$fontSize || props.$theme.component?.fontSize || '14', 10);
+            return `${Math.max(baseFontSize - 1, 12)}px`;
+        }};
+    }
+
+    @media (max-width: 480px) {
+        font-size: ${props => {
+            const baseFontSize = parseInt(props.$fontSize || props.$theme.component?.fontSize || '14', 10);
+            return `${Math.max(baseFontSize - 2, 11)}px`;
+        }};
+    }
     line-height: 1.4;
     outline: none;
     resize: ${props => (props.$autoResize ? 'none' : 'vertical')};
@@ -144,12 +197,22 @@ const StyledTextarea = styled.textarea<StyledEditorProps>`
     z-index: 1;
 
     &:focus {
-        border-color: ${props => props.$theme.component?.evolved || '#007bff'};
-        box-shadow: 0 0 0 2px ${props => props.$theme.component?.evolved || '#007bff'}33;
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px #007bff 33;
+        /* High contrast focus ring for accessibility */
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+    }
+
+    @media (prefers-contrast: high) {
+        &:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
     }
 
     &::placeholder {
-        color: ${props => props.$theme.component?.textColor || '#999'}66;
+        color: ${props => props.$theme.component?.textColor || '#999'} 66;
         opacity: 0.7;
     }
 `;
@@ -203,9 +266,11 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
     autoFocus = true,
     selectAllOnFocus = true,
     validation,
-    realTimeValidation = false,
-    showCharacterCount = false,
+    realTimeValidation = true,
+    showCharacterCount = true,
     autoResize = true,
+    ariaLabel,
+    ariaDescription,
 }) => {
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const [validationError, setValidationError] = useState<string | null>(null);
@@ -345,10 +410,11 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
             newValue = sanitizeInput(newValue);
         }
 
+
         onChange(newValue);
 
-        // Handle real-time validation
-        if (realTimeValidation && showRealTimeValidation) {
+        // Always run validation on every change if realTimeValidation is true
+        if (realTimeValidation) {
             const error = validateValue(newValue);
             setValidationError(error);
         } else if (validationError) {
@@ -428,8 +494,14 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
             return;
         }
 
-        setValidationError(null);
-        onSave();
+        try {
+            setValidationError(null);
+            onSave();
+        } catch (err) {
+            console.error('Error during save:', err);
+            setValidationError('Failed to save. Please try again.');
+            // Keep the editor open for retry
+        }
     };
 
     const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -441,7 +513,15 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         // Auto-save on blur if no validation errors
         const error = validateValue(value);
         if (!error) {
-            onSave();
+            try {
+                onSave();
+            } catch (err) {
+                console.error('Error during auto-save on blur:', err);
+                // Keep the editor open if save fails
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }
         } else {
             setValidationError(error);
             setShowRealTimeValidation(true); // Enable real-time validation after blur with error
@@ -464,6 +544,10 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         onBlur: handleBlur,
         onFocus: handleFocus,
         placeholder,
+        'aria-label': ariaLabel || (isMultiLine ? 'Multi-line text editor' : 'Text editor'),
+        'aria-describedby': ariaDescription || validationError ? 'inline-editor-description' : undefined,
+        'aria-invalid': !!validationError,
+        'aria-required': validation?.required || false,
         $width: width,
         $minWidth: minWidth,
         $maxHeight: maxHeight,
@@ -495,7 +579,11 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
             ) : (
                 <StyledInput {...commonProps} data-testid="inline-editor-input" />
             )}
-            {validationError && <ErrorMessage $theme={mapStyleDefs}>{validationError}</ErrorMessage>}
+            {validationError && (
+                <ErrorMessage $theme={mapStyleDefs} id="inline-editor-description" role="alert">
+                    {validationError}
+                </ErrorMessage>
+            )}
             {showCharacterCount && validation?.maxLength && (
                 <CharacterCounter
                     $theme={mapStyleDefs}

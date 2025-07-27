@@ -192,23 +192,27 @@ interface EnhancedUnifiedMapCanvasProps extends ModernUnifiedMapCanvasProps {
   onComponentClick: (component: MapComponent) => void;
   onLinkingComplete: (source: MapComponent, target: MapComponent) => void;
   onDrawingComplete: (startPos: { x: number; y: number }, endPos: { x: number; y: number }, pstType: ToolbarSubItem) => void;
+  onMethodApplication: (component: MapComponent, method: string) => void;
 }
 
 interface ToolState {
-  type: 'placement' | 'linking' | 'drawing';
+  type: 'placement' | 'linking' | 'drawing' | 'method-application';
   linkingState?: 'selecting-source' | 'selecting-target';
   sourceComponent?: MapComponent;
   drawingStart?: { x: number; y: number };
   selectedPSTType?: ToolbarSubItem;
+  selectedMethod?: string;
 }
 ```
 
 **New Responsibilities**:
 - Handle mouse move events for all tool types
-- Detect component proximity for magnetic linking
+- Detect component proximity for magnetic linking and method application
 - Manage drawing state for PST boxes
 - Convert screen coordinates to map coordinates
 - Trigger appropriate actions based on tool type
+- Highlight components during method application mode
+- Handle component clicks for method application
 
 ## Data Models
 
@@ -221,9 +225,10 @@ interface ToolbarItem {
   template?: (name: string, y: string, x: string) => string;
   category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'pst' | 'other';
   defaultName?: string;
-  toolType: 'placement' | 'linking' | 'drawing';
+  toolType: 'placement' | 'linking' | 'drawing' | 'method-application';
   keyboardShortcut?: string; // Single character keyboard shortcut
   subItems?: ToolbarSubItem[]; // For PST dropdown
+  methodName?: string; // For method application tools (build, buy, outsource)
 }
 
 interface ToolbarSubItem {
@@ -278,16 +283,6 @@ const TOOLBAR_ITEMS: ToolbarItem[] = [
     toolType: 'placement',
     keyboardShortcut: 'a'
   },
-  {
-    id: 'method',
-    label: 'Method',
-    icon: MethodIcon,
-    template: (name, y, x) => `method ${name} [${y}, ${x}]`,
-    category: 'method',
-    defaultName: 'New Method',
-    toolType: 'placement',
-    keyboardShortcut: 'm'
-  },
   // ... other existing items with toolType: 'placement' ...
   
   // New linking tool
@@ -298,6 +293,35 @@ const TOOLBAR_ITEMS: ToolbarItem[] = [
     category: 'link',
     toolType: 'linking',
     keyboardShortcut: 'l'
+  },
+  
+  // Method application tools
+  {
+    id: 'method-build',
+    label: 'Build Method',
+    icon: BuildIcon,
+    category: 'method',
+    toolType: 'method-application',
+    methodName: 'build',
+    keyboardShortcut: 'b'
+  },
+  {
+    id: 'method-buy',
+    label: 'Buy Method',
+    icon: BuyIcon,
+    category: 'method',
+    toolType: 'method-application',
+    methodName: 'buy',
+    keyboardShortcut: 'u'
+  },
+  {
+    id: 'method-outsource',
+    label: 'Outsource Method',
+    icon: OutsourceIcon,
+    category: 'method',
+    toolType: 'method-application',
+    methodName: 'outsource',
+    keyboardShortcut: 'o'
   },
   
   // New PST tool with dropdown
@@ -338,7 +362,9 @@ const KEYBOARD_SHORTCUTS: Record<string, string> = {
   'n': 'note',
   'p': 'pipeline',
   'a': 'anchor',
-  'm': 'method',
+  'b': 'method-build',
+  'u': 'method-buy',
+  'o': 'method-outsource',
   't': 'pst'
 };
 ```
@@ -382,6 +408,14 @@ const KEYBOARD_SHORTCUTS: Record<string, string> = {
 - Handle cases where text input fields are focused
 - Provide fallback behavior when shortcuts are disabled
 - Ensure shortcuts don't interfere with browser default behaviors
+
+### Method Application Errors
+- Handle cases where components are not found or invalid for method application
+- Validate component types that can receive method decorators
+- Prevent method application to incompatible component types (notes, anchors, etc.)
+- Provide user feedback when method application fails
+- Handle map text parsing errors when updating component methods
+- Ensure proper regex matching for existing method replacement
 
 ## Testing Strategy
 

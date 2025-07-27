@@ -1,6 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {rename} from '../../constants/rename';
 import {UnifiedComponent} from '../../types/unified';
+import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
@@ -24,6 +25,7 @@ interface ModernComponentTextProps {
     scaleFactor?: number;
     mapStyleDefs?: any;
     onClick?: () => void;
+    mapDimensions?: {width: number; height: number};
 }
 
 const ComponentText: React.FC<ModernComponentTextProps> = ({
@@ -39,8 +41,10 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     onClick,
     id,
     element,
+    mapDimensions,
 }) => {
     const {enableDoubleClickRename} = useFeatureSwitches();
+    const {startEditing, stopEditing, isElementEditing} = useEditing();
     const [editMode, setEditMode] = useState(false);
 
     const actualComponent = element
@@ -55,24 +59,43 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         setText(actualComponent.name);
     }, [actualComponent.name]);
 
+    // Cleanup effect to handle component unmounting during editing
+    useEffect(() => {
+        return () => {
+            if (editMode) {
+                stopEditing(); // Clean up editing state if component is unmounted while editing
+            }
+        };
+    }, [editMode, stopEditing]);
+
     const handleDoubleClick = () => {
         if (onClick) {
             onClick();
         } else if (enableDoubleClickRename && mapText) {
             setEditMode(true);
+            startEditing(component.id, 'component');
         }
     };
 
     const handleSave = () => {
-        setEditMode(false);
         if (mutateMapText && mapText && text !== component.name && component.line) {
-            rename(component.line, component.name, text, mapText, mutateMapText);
+            const result = rename(component.line, component.name, text, mapText, mutateMapText);
+            if (!result.success) {
+                console.error('Failed to save component:', result.error);
+                // For now, just log the error. In a production app, you might show a toast notification
+                // or keep the editor open to allow the user to retry
+                alert(result.error); // Simple error notification - could be enhanced with a proper toast system
+                return; // Don't close the editor if save failed
+            }
         }
+        setEditMode(false);
+        stopEditing();
     };
 
     const handleCancel = () => {
         setText(actualComponent.name);
         setEditMode(false);
+        stopEditing();
     };
     const getX = () => {
         return component.label?.x || 0;

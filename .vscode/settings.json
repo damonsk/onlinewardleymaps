@@ -1,34 +1,34 @@
-// {
-//   "editor.formatOnSave": false,
-//   "editor.insertSpaces": true,
-//   "editor.tabSize": 4,
-//   "typescript.tsc.autoDetect": "on",
-//   "typescript.preferences.quoteStyle": "single",
-//   "editor.codeActionsOnSave": {
-//     "source.fixAll.eslint": "explicit",
-//     "source.organizeImports": "explicit"
-//   },
-//   "files.exclude": {
-//     "node_modules": true,
-//     "*/node_modules": true,
-//     "*/.next": true,
-//     "*/.yarn": true,
-//     "**/**.bak": true,
-//     "frontend/coverage": true,
-//     "frontend/.scannerwork": true,
-//     "frontend/src/archived_legacy_components": true,
-//     "frontend/src/archived_unused_code": true,
-//     "frontend/tsconfig.tsbuildinfo": true,
-//     "frontend/sonar-project.js": true,
-//     ".husky": true,
-//   },
-//   "jestrunner.configPath": "frontend/jest.config.js",
-//   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
-//   "eslint.lintTask.enable": true,
-//   "eslint.run": "onSave",
-//   "eslint.workingDirectories": ["frontend"],
-//   "eslint.debug": true,
-//   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-//   "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-//   "typescript.preferences.includePackageJsonAutoImports": "off"
-// }
+{
+  "editor.formatOnSave": false,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "typescript.tsc.autoDetect": "on",
+  "typescript.preferences.quoteStyle": "single",
+  "editor.codeActionsOnSave": {
+    // "source.fixAll.eslint": "explicit",
+    // "source.organizeImports": "explicit"
+  },
+  "files.exclude": {
+    "node_modules": true,
+    "*/node_modules": true,
+    "*/.next": true,
+    "*/.yarn": true,
+    "**/**.bak": true,
+    "frontend/coverage": true,
+    "frontend/.scannerwork": true,
+    "frontend/src/archived_legacy_components": true,
+    "frontend/src/archived_unused_code": true,
+    "frontend/tsconfig.tsbuildinfo": true,
+    "frontend/sonar-project.js": true,
+    ".husky": true,
+  },
+  "jestrunner.configPath": "frontend/jest.config.js",
+  "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
+  "eslint.lintTask.enable": true,
+  "eslint.run": "onSave",
+  "eslint.workingDirectories": ["frontend"],
+  "eslint.debug": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off"
+}

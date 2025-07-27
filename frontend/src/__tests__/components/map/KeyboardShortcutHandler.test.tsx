@@ -1,8 +1,7 @@
-import React from 'react';
-import {createRoot} from 'react-dom/client';
-import {act} from 'react';
-import {KeyboardShortcutHandler} from '../../../components/map/KeyboardShortcutHandler';
-import {TOOLBAR_ITEMS} from '../../../constants/toolbarItems';
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { KeyboardShortcutHandler } from '../../../components/map/KeyboardShortcutHandler';
+import { TOOLBAR_ITEMS } from '../../../constants/toolbarItems';
 
 // Mock the toolbar items module
 jest.mock('../../../constants/toolbarItems', () => ({

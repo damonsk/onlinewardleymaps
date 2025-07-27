@@ -10,6 +10,7 @@ import {processLinks} from '../../utils/mapProcessing';
 import {findNearestComponent} from '../../utils/componentDetection';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {useModKeyPressedConsumer} from '../KeyPressContext';
+import {useEditing} from '../EditingContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import PositionCalculator from './PositionCalculator';
@@ -83,6 +84,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
     } = props;
 
     const isModKeyPressed = useModKeyPressedConsumer();
+    const {isAnyElementEditing} = useEditing();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
     const mapElements = useMemo(() => {
@@ -125,6 +127,13 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
 
     const [enableZoomOnClick] = useState(true);
     const [tool, setTool] = useState(TOOL_NONE as any);
+
+    // Disable pan/zoom when editing is active
+    useEffect(() => {
+        if (isAnyElementEditing()) {
+            setTool(TOOL_NONE);
+        }
+    }, [isAnyElementEditing]);
     const [scaleFactor, setScaleFactor] = useState(1);
     const [value, setValue] = useState({
         version: 2 as const,
@@ -676,7 +685,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                 width={mapCanvasDimensions.width || window.innerWidth - 100} // Use larger fallback width
                 height={mapCanvasDimensions.height || window.innerHeight - 200} // Use larger fallback height
                 detectAutoPan={false}
-                detectWheel={allowMapZoomMouseWheel}
+                detectWheel={allowMapZoomMouseWheel && !isAnyElementEditing()}
                 miniatureProps={{
                     position: 'none',
                     background: '#eee',
