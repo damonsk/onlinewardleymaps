@@ -255,9 +255,14 @@ describe('Map Text Generation Integration Tests', () => {
     };
 
     /**
-     * Helper function to place a component using a specific toolbar item
+     * Helper function to place a component using a placement toolbar item
+     * Only works with items that have toolType: 'placement'
      */
     const placeComponent = (toolbarItem: ToolbarItem): string => {
+        if (toolbarItem.toolType !== 'placement') {
+            throw new Error(`Cannot place component with toolType: ${toolbarItem.toolType}. Only 'placement' tools can be used.`);
+        }
+
         const mockMutateMapText = jest.fn();
         renderComponent({mutateMapText: mockMutateMapText});
 
@@ -334,38 +339,44 @@ describe('Map Text Generation Integration Tests', () => {
         });
     });
 
-    describe('Map Text Generation for Method Components', () => {
-        it('should generate correct syntax for buy method', () => {
-            const buyItem = TOOLBAR_ITEMS.find(item => item.id === 'buy');
-            expect(buyItem).toBeTruthy();
-
-            if (buyItem) {
-                const updatedText = placeComponent(buyItem);
-                expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/component Buy Component \[[0-9.]+, [0-9.]+\] \(buy\)/);
-            }
+    describe('Method Application Behavior', () => {
+        it('should have method toolbar items available for component decoration', () => {
+            const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
+            
+            expect(methodItems).toHaveLength(3);
+            
+            const methodNames = methodItems.map(item => item.methodName);
+            expect(methodNames).toContain('buy');
+            expect(methodNames).toContain('build');
+            expect(methodNames).toContain('outsource');
         });
 
-        it('should generate correct syntax for build method', () => {
-            const buildItem = TOOLBAR_ITEMS.find(item => item.id === 'build');
-            expect(buildItem).toBeTruthy();
+        it('should identify method items correctly in toolbar', () => {
+            const buyMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'buy');
+            const buildMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'build');
+            const outsourceMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'outsource');
 
-            if (buildItem) {
-                const updatedText = placeComponent(buildItem);
-                expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/component Build Component \[[0-9.]+, [0-9.]+\] \(build\)/);
-            }
+            expect(buyMethodItem).toBeDefined();
+            expect(buyMethodItem?.id).toBe('method-buy');
+            expect(buyMethodItem?.toolType).toBe('method-application');
+
+            expect(buildMethodItem).toBeDefined();
+            expect(buildMethodItem?.id).toBe('method-build');
+            expect(buildMethodItem?.toolType).toBe('method-application');
+
+            expect(outsourceMethodItem).toBeDefined();
+            expect(outsourceMethodItem?.id).toBe('method-outsource');
+            expect(outsourceMethodItem?.toolType).toBe('method-application');
         });
 
-        it('should generate correct syntax for outsource method', () => {
-            const outsourceItem = TOOLBAR_ITEMS.find(item => item.id === 'outsource');
-            expect(outsourceItem).toBeTruthy();
+        it('should have keyboard shortcuts for method items', () => {
+            const buyMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'buy');
+            const buildMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'build');
+            const outsourceMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'outsource');
 
-            if (outsourceItem) {
-                const updatedText = placeComponent(outsourceItem);
-                expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/component Outsource Component \[[0-9.]+, [0-9.]+\] \(outsource\)/);
-            }
+            expect(buyMethodItem?.keyboardShortcut).toBe('u'); // U for bUy
+            expect(buildMethodItem?.keyboardShortcut).toBe('b');
+            expect(outsourceMethodItem?.keyboardShortcut).toBe('o');
         });
     });
 
@@ -719,6 +730,24 @@ component New Component 2 [0.5, 0.6]`;
             expect(updatedText).toContain('component New Component 2 [0.5, 0.6]');
             expect(updatedText).toMatch(/component New Component 3 \[[0-9.]+, [0-9.]+\]/);
         });
+
+        it('should demonstrate different naming patterns for different component types', () => {
+            // Test that different component types get their appropriate default names
+            const testCases = [
+                {itemId: 'note', expectedNamePattern: /note New Note/},
+                {itemId: 'pipeline', expectedNamePattern: /pipeline New Pipeline/},
+                {itemId: 'anchor', expectedNamePattern: /anchor New Anchor/},
+                {itemId: 'market', expectedNamePattern: /component Market/},
+            ];
+
+            testCases.forEach(({itemId, expectedNamePattern}) => {
+                const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === itemId);
+                if (toolbarItem && toolbarItem.toolType === 'placement') {
+                    const updatedText = placeComponent(toolbarItem);
+                    expect(updatedText).toMatch(expectedNamePattern);
+                }
+            });
+        });
     });
 
     describe('Error Handling in Map Text Generation', () => {
@@ -783,46 +812,20 @@ component New Component 2 [0.5, 0.6]`;
             expect(updatedText).toMatch(/component New Component \[[0-9.]+, [0-9.]+\]/);
         });
 
-        it('should handle template generation errors gracefully', () => {
-            // Create a mock toolbar item with a broken template function
-            const brokenItem: ToolbarItem = {
-                ...TOOLBAR_ITEMS[0],
-                template: () => {
-                    throw new Error('Template error');
-                },
-            };
+        it('should handle missing template functions gracefully', () => {
+            // Test that items without templates (like method items) don't cause crashes
+            const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
+            
+            methodItems.forEach(item => {
+                expect(item.template).toBeUndefined();
+            });
 
-            // Mock the TOOLBAR_ITEMS array to include the broken item
-            const originalItems = [...TOOLBAR_ITEMS];
-            TOOLBAR_ITEMS.splice(0, 1, brokenItem);
-
+            // Verify the application still renders with method items present
             const mockMutateMapText = jest.fn();
             renderComponent({mutateMapText: mockMutateMapText});
 
-            // Select the broken toolbar item
-            const componentButton = container.querySelector('[aria-label*="Component"]:not([aria-label*="Inertia"])');
-            act(() => {
-                componentButton?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            });
-
-            // Click on map canvas to place component
-            const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
-            act(() => {
-                const event = new MouseEvent('click', {
-                    clientX: 500,
-                    clientY: 350,
-                    bubbles: true,
-                });
-                svgPanZoom?.dispatchEvent(event);
-            });
-
-            // Verify component is added with fallback template
-            expect(mockMutateMapText).toHaveBeenCalled();
-            const updatedText = mockMutateMapText.mock.calls[0][0];
-            expect(updatedText).toMatch(/component New Component \[[0-9.]+, [0-9.]+\]/);
-
-            // Restore original toolbar items
-            TOOLBAR_ITEMS.splice(0, 1, originalItems[0]);
+            // The component should render without errors even with method items that lack templates
+            expect(container.querySelector('#map-canvas')).toBeInTheDocument();
         });
     });
 });

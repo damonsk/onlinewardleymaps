@@ -117,8 +117,8 @@ describe('Map Text Generation and Mutation', () => {
     });
 
     describe('Map Text Template Generation', () => {
-        it('should generate correct syntax for different component types', () => {
-            const testCases = [
+        it('should generate correct syntax for placement component types', () => {
+            const placementTestCases = [
                 {
                     itemId: 'component',
                     expectedTemplate: 'component Test Component [0.50, 0.60]',
@@ -136,18 +136,6 @@ describe('Map Text Generation and Mutation', () => {
                     expectedTemplate: 'component Test Component [0.50, 0.60] (ecosystem)',
                 },
                 {
-                    itemId: 'buy',
-                    expectedTemplate: 'component Test Component [0.50, 0.60] (buy)',
-                },
-                {
-                    itemId: 'build',
-                    expectedTemplate: 'component Test Component [0.50, 0.60] (build)',
-                },
-                {
-                    itemId: 'outsource',
-                    expectedTemplate: 'component Test Component [0.50, 0.60] (outsource)',
-                },
-                {
                     itemId: 'note',
                     expectedTemplate: 'note Test Component [0.50, 0.60]',
                 },
@@ -161,14 +149,28 @@ describe('Map Text Generation and Mutation', () => {
                 },
             ];
 
-            testCases.forEach(({itemId, expectedTemplate}) => {
+            placementTestCases.forEach(({itemId, expectedTemplate}) => {
                 const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === itemId);
                 expect(toolbarItem).toBeDefined();
+                expect(toolbarItem?.toolType).toBe('placement');
 
-                if (toolbarItem) {
+                if (toolbarItem && toolbarItem.template) {
                     const generatedTemplate = toolbarItem.template('Test Component', '0.50', '0.60');
                     expect(generatedTemplate).toBe(expectedTemplate);
                 }
+            });
+        });
+
+        it('should handle method toolbar items correctly', () => {
+            const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
+
+            expect(methodItems).toHaveLength(3);
+            expect(methodItems.map(item => item.methodName)).toEqual(expect.arrayContaining(['buy', 'build', 'outsource']));
+
+            // Method items don't have templates because they work by applying decorators to existing components
+            methodItems.forEach(item => {
+                expect(item.template).toBeUndefined();
+                expect(item.methodName).toBeDefined();
             });
         });
 
@@ -176,7 +178,7 @@ describe('Map Text Generation and Mutation', () => {
             const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === 'component');
             expect(toolbarItem).toBeDefined();
 
-            if (toolbarItem) {
+            if (toolbarItem && toolbarItem.template) {
                 // Test various coordinate formats
                 expect(toolbarItem.template('Test', '0.12', '0.34')).toBe('component Test [0.12, 0.34]');
                 expect(toolbarItem.template('Test', '1.00', '0.00')).toBe('component Test [1.00, 0.00]');
@@ -236,8 +238,8 @@ component C [0.5, 0.6]`);
             const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === 'component');
             expect(toolbarItem).toBeDefined();
 
-            if (toolbarItem) {
-                // Test with invalid coordinate values
+            if (toolbarItem && toolbarItem.template) {
+                // Test with invalid coordinate values - template should still produce output
                 expect(toolbarItem.template('Test', 'invalid', '0.5')).toBe('component Test [invalid, 0.5]');
                 expect(toolbarItem.template('Test', '0.5', 'invalid')).toBe('component Test [0.5, invalid]');
                 expect(toolbarItem.template('Test', '', '')).toBe('component Test [, ]');
@@ -248,7 +250,7 @@ component C [0.5, 0.6]`);
             const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === 'component');
             expect(toolbarItem).toBeDefined();
 
-            if (toolbarItem) {
+            if (toolbarItem && toolbarItem.template) {
                 expect(toolbarItem.template('', '0.5', '0.6')).toBe('component  [0.5, 0.6]');
             }
         });
@@ -257,7 +259,7 @@ component C [0.5, 0.6]`);
             const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === 'component');
             expect(toolbarItem).toBeDefined();
 
-            if (toolbarItem) {
+            if (toolbarItem && toolbarItem.template) {
                 expect(toolbarItem.template('Test & Component', '0.5', '0.6')).toBe('component Test & Component [0.5, 0.6]');
                 expect(toolbarItem.template('Test (Component)', '0.5', '0.6')).toBe('component Test (Component) [0.5, 0.6]');
                 expect(toolbarItem.template('Test-Component', '0.5', '0.6')).toBe('component Test-Component [0.5, 0.6]');
@@ -266,15 +268,21 @@ component C [0.5, 0.6]`);
     });
 
     describe('Integration with Default Names', () => {
-        it('should use correct default names for each toolbar item', () => {
+        it('should use correct default names for placement toolbar items', () => {
+            const placementItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'placement');
+
+            placementItems.forEach(item => {
+                expect(item.defaultName).toBeDefined();
+                expect(typeof item.defaultName).toBe('string');
+                expect(item.defaultName.length).toBeGreaterThan(0);
+            });
+
+            // Test specific expected defaults for placement items
             const expectedDefaults = {
                 component: 'New Component',
                 'component-inertia': 'Inertia Component',
                 market: 'Market',
                 ecosystem: 'Ecosystem',
-                buy: 'Buy Component',
-                build: 'Build Component',
-                outsource: 'Outsource Component',
                 note: 'New Note',
                 pipeline: 'New Pipeline',
                 anchor: 'New Anchor',
@@ -284,6 +292,15 @@ component C [0.5, 0.6]`);
                 const toolbarItem = TOOLBAR_ITEMS.find(item => item.id === itemId);
                 expect(toolbarItem).toBeDefined();
                 expect(toolbarItem?.defaultName).toBe(expectedDefault);
+            });
+        });
+
+        it('should not have default names for method application items', () => {
+            const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
+
+            methodItems.forEach(item => {
+                // Method items don't need default names since they apply to existing components
+                expect(item.defaultName).toBeUndefined();
             });
         });
     });
