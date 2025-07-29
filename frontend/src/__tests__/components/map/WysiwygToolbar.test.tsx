@@ -1,9 +1,9 @@
-import React, { act } from 'react';
-import { createRoot } from 'react-dom/client';
-import { WysiwygToolbar } from '../../../components/map/WysiwygToolbar';
-import { MapTheme } from '../../../constants/mapstyles';
-import { TOOLBAR_ITEMS } from '../../../constants/toolbarItems';
-import { WysiwygToolbarProps } from '../../../types/toolbar';
+import React, {act} from 'react';
+import {createRoot} from 'react-dom/client';
+import {WysiwygToolbar} from '../../../components/map/WysiwygToolbar';
+import {MapTheme} from '../../../constants/mapstyles';
+import {TOOLBAR_ITEMS} from '../../../constants/toolbarItems';
+import {WysiwygToolbarProps} from '../../../types/toolbar';
 
 // Mock icon component for testing
 const MockIcon: React.FC<{id: string; mapStyleDefs: MapTheme; onClick?: React.MouseEventHandler<SVGSVGElement>}> = ({id}) => (
@@ -118,7 +118,7 @@ describe('WysiwygToolbar', () => {
 
             const toolbar = container.querySelector('[role="toolbar"]');
             expect(toolbar).toBeTruthy();
-            expect(toolbar?.getAttribute('aria-label')).toBe('Map component toolbar');
+            expect(toolbar?.getAttribute('aria-label')).toBe('Map component toolbar with keyboard shortcuts');
         });
 
         it('renders all toolbar items from configuration', () => {
@@ -330,7 +330,7 @@ describe('WysiwygToolbar', () => {
             renderComponent();
 
             const toolbar = container.querySelector('[role="toolbar"]');
-            expect(toolbar?.getAttribute('aria-label')).toBe('Map component toolbar');
+            expect(toolbar?.getAttribute('aria-label')).toBe('Map component toolbar with keyboard shortcuts');
         });
 
         it('maintains proper focus management', () => {
@@ -438,7 +438,7 @@ describe('WysiwygToolbar', () => {
                 act(() => {
                     button?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
                 });
-                
+
                 // Items with sub-items (like PST) open a dropdown instead of calling onItemSelect directly
                 if (item.subItems && item.subItems.length > 0) {
                     // For dropdown items, we don't expect onItemSelect to be called on the main item click

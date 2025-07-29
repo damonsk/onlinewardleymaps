@@ -410,7 +410,11 @@ describe('Note Component with Inline Editing', () => {
             expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
 
             // Switch to note 2 - this should reset edit mode due to useEffect
-            rerender(<EditingProvider><Note {...defaultProps} note={note2} enableInlineEditing={true} /></EditingProvider>);
+            rerender(
+                <EditingProvider>
+                    <Note {...defaultProps} note={note2} enableInlineEditing={true} />
+                </EditingProvider>,
+            );
 
             // Should not be in edit mode for note 2 (edit mode resets when note changes)
             expect(screen.queryByTestId('inline-editor')).not.toBeInTheDocument();
@@ -431,7 +435,11 @@ describe('Note Component with Inline Editing', () => {
             fireEvent.change(input, {target: {value: 'Modified Text'}});
 
             // Switch to different note - this should reset edit mode and text
-            rerender(<EditingProvider><Note {...defaultProps} note={note2} enableInlineEditing={true} /></EditingProvider>);
+            rerender(
+                <EditingProvider>
+                    <Note {...defaultProps} note={note2} enableInlineEditing={true} />
+                </EditingProvider>,
+            );
 
             // Enter edit mode for new note
             const newTextSymbol = screen.getByTestId('component-text-symbol');

@@ -87,7 +87,7 @@ const StyledInput = styled.input<StyledEditorProps>`
     min-width: ${props => props.$minWidth || 120}px;
     padding: 4px 8px;
     margin: 0;
-    border: 2px solid ${props => (props.$hasError ? '#ff4444' : (props.$hasWarning ? '#ffaa00' : props.$theme.component?.stroke || '#ccc'))};
+    border: 2px solid ${props => (props.$hasError ? '#ff4444' : props.$hasWarning ? '#ffaa00' : props.$theme.component?.stroke || '#ccc')};
     border-radius: 4px;
     background-color: ${props => props.$theme.component?.fill || 'white'};
     color: ${props => props.$theme.component?.textColor || 'black'};
@@ -409,7 +409,6 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         if (validation?.sanitizeInput) {
             newValue = sanitizeInput(newValue);
         }
-
 
         onChange(newValue);
 

@@ -139,28 +139,28 @@
   - Add Escape key handling to deselect current toolbar item
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8_
 
-- [ ] 21. Integrate keyboard shortcuts with toolbar selection system
+- [x] 21. Integrate keyboard shortcuts with toolbar selection system
   - Connect KeyboardShortcutHandler with WysiwygToolbar component
   - Implement visual feedback for keyboard-selected tools matching mouse selection
   - Add logic to prevent keyboard shortcuts from interfering with text editing contexts
   - Ensure keyboard shortcuts work alongside existing mouse-based tool selection
   - _Requirements: 10.9, 10.10, 10.11, 10.12_
 
-- [ ] 22. Add keyboard shortcut visual indicators and accessibility
+- [x] 22. Add keyboard shortcut visual indicators and accessibility
   - Display keyboard shortcuts in toolbar item tooltips
   - Add visual indicators showing which key corresponds to each tool
   - Implement screen reader announcements for keyboard shortcut activation
   - Ensure keyboard shortcuts work with high contrast and accessibility modes
   - _Requirements: 10.9, 10.11_
 
-- [ ] 23. Implement method application toolbar tools
+- [x] 23. Implement method application toolbar tools
   - Create BuildIcon, BuyIcon, and OutsourceIcon components for method tools
   - Add method application tools (build, buy, outsource) to toolbar configuration
   - Implement method-application toolType handling in toolbar selection logic
   - Add keyboard shortcuts (B for build, U for buy, O for outsource) for method tools
   - _Requirements: 11.1_
 
-- [ ] 24. Add component highlighting for method application
+- [x] 24. Add component highlighting for method application
   - Implement component hover detection and highlighting during method application mode
   - Add visual feedback to indicate which components can receive method decorators
   - Create component validation logic to determine method compatibility

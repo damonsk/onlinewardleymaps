@@ -38,23 +38,23 @@ export const PST_SUB_ITEMS: ToolbarSubItem[] = [
         id: 'pioneers',
         label: 'Pioneers',
         color: '#FF6B6B', // Red
-        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
-            `pioneers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
+            `pioneers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
     },
     {
         id: 'settlers',
         label: 'Settlers',
         color: '#4ECDC4', // Teal
-        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
-            `settlers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
+            `settlers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
     },
     {
         id: 'townplanners',
         label: 'Town Planners',
         color: '#45B7D1', // Blue
-        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
-            `townplanners [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`
-    }
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
+            `townplanners [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
+    },
 ];
 
 /**
@@ -115,32 +115,31 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         toolType: 'placement',
     },
     {
-        id: 'buy',
-        label: 'Buy',
-        icon: ToolbarBuyMethodIcon,
-        template: TOOLBAR_TEMPLATES.buy,
-        category: 'method',
-        defaultName: DEFAULT_COMPONENT_NAMES.buy,
-        toolType: 'placement',
-        keyboardShortcut: 'm',
-    },
-    {
-        id: 'build',
-        label: 'Build',
+        id: 'method-build',
+        label: 'Build Method',
         icon: ToolbarBuildMethodIcon,
-        template: TOOLBAR_TEMPLATES.build,
         category: 'method',
-        defaultName: DEFAULT_COMPONENT_NAMES.build,
-        toolType: 'placement',
+        toolType: 'method-application',
+        methodName: 'build',
+        keyboardShortcut: 'b',
     },
     {
-        id: 'outsource',
-        label: 'Outsource',
-        icon: ToolbarOutSourceMethodIcon,
-        template: TOOLBAR_TEMPLATES.outsource,
+        id: 'method-buy',
+        label: 'Buy Method',
+        icon: ToolbarBuyMethodIcon,
         category: 'method',
-        defaultName: DEFAULT_COMPONENT_NAMES.outsource,
-        toolType: 'placement',
+        toolType: 'method-application',
+        methodName: 'buy',
+        keyboardShortcut: 'u',
+    },
+    {
+        id: 'method-outsource',
+        label: 'Outsource Method',
+        icon: ToolbarOutSourceMethodIcon,
+        category: 'method',
+        toolType: 'method-application',
+        methodName: 'outsource',
+        keyboardShortcut: 'o',
     },
     {
         id: 'note',
@@ -207,7 +206,7 @@ export const TOOLBAR_CATEGORIES: ToolbarCategory[] = [
     {
         id: 'method',
         label: 'Methods',
-        items: ['buy', 'build', 'outsource'],
+        items: ['method-build', 'method-buy', 'method-outsource'],
     },
     {
         id: 'note',
@@ -270,7 +269,9 @@ export const KEYBOARD_SHORTCUTS: Record<string, string> = {
     n: 'note',
     p: 'pipeline',
     a: 'anchor',
-    m: 'buy', // Method - using 'buy' as the primary method tool
+    b: 'method-build', // Build method
+    u: 'method-buy', // Buy method (U for bUy)
+    o: 'method-outsource', // Outsource method
     t: 'pst', // PST boxes
 };
 

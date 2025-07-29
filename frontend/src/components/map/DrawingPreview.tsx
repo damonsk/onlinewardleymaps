@@ -15,8 +15,6 @@ export interface DrawingPreviewProps {
     mapDimensions: {width: number; height: number};
 }
 
-
-
 /**
  * Helper function to convert map coordinates (0-1) back to SVG coordinates
  * This exactly reverses the transformation done in UnifiedMapCanvas:
@@ -25,11 +23,11 @@ export interface DrawingPreviewProps {
  */
 const mapToSVGCoordinates = (mapCoord: {x: number; y: number}, mapDimensions: {width: number; height: number}) => {
     const positionCalculator = new PositionCalculator();
-    
+
     // Step 1: Convert map coordinates (0-1) back to adjusted coordinates
     const adjustedX = positionCalculator.maturityToX(mapCoord.x, mapDimensions.width);
     const adjustedY = positionCalculator.visibilityToY(mapCoord.y, mapDimensions.height);
-    
+
     // Step 2: Remove the SVG viewBox offset to get raw SVG coordinates
     // In UnifiedMapCanvas: adjustedX = svgX + 35, adjustedY = svgY + 45
     // So: svgX = adjustedX - 35, svgY = adjustedY - 45

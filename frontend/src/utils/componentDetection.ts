@@ -41,6 +41,42 @@ export const findNearestComponent = (
 };
 
 /**
+ * Find the nearest component to a given position with improved coordinate handling
+ * This version accounts for the coordinate transformation used in visual positioning
+ */
+export const findNearestComponentWithTransform = (
+    mousePosition: {x: number; y: number},
+    components: UnifiedComponent[],
+    mapDimensions: {width: number; height: number},
+    maxDistance: number = 0.05, // Reduced default distance for more precision
+): UnifiedComponent | null => {
+    if (!components || components.length === 0) {
+        return null;
+    }
+
+    let nearestComponent: UnifiedComponent | null = null;
+    let minDistance = Infinity;
+
+    for (const component of components) {
+        // Skip components without valid coordinates
+        if (typeof component.maturity !== 'number' || typeof component.visibility !== 'number') {
+            continue;
+        }
+
+        // Calculate distance in normalized coordinates (0-1 scale)
+        // This matches how the visual positioning works
+        const distance = calculateDistance(mousePosition.x, mousePosition.y, component.maturity, component.visibility);
+
+        if (distance < minDistance && distance <= maxDistance) {
+            minDistance = distance;
+            nearestComponent = component;
+        }
+    }
+
+    return nearestComponent;
+};
+
+/**
  * Check if a link already exists between two components
  */
 export const linkExists = (

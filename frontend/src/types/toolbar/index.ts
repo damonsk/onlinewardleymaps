@@ -21,10 +21,11 @@ export interface ToolbarItem {
     template?: (name: string, y: string, x: string) => string;
     category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'pst' | 'other';
     defaultName?: string;
-    toolType?: 'placement' | 'linking' | 'drawing';
+    toolType?: 'placement' | 'linking' | 'drawing' | 'method-application';
     keyboardShortcut?: string; // Single character keyboard shortcut
     subItems?: ToolbarSubItem[]; // For dropdown items like PST
     selectedSubItem?: ToolbarSubItem; // Currently selected sub-item for dropdown tools
+    methodName?: string; // For method application tools (build, buy, outsource)
 }
 
 /**
@@ -121,6 +122,6 @@ export interface ToolbarDropdownProps {
     isOpen: boolean;
     onSelect: (item: ToolbarSubItem) => void;
     onClose: () => void;
-    position: { x: number; y: number };
+    position: {x: number; y: number};
     mapStyleDefs: MapTheme;
 }

@@ -249,7 +249,7 @@ describe('Map Text Generation Integration Tests', () => {
             root.render(
                 <EditingProvider>
                     <MapView {...defaultProps} {...props} />
-                </EditingProvider>
+                </EditingProvider>,
             );
         });
     };

@@ -4,6 +4,20 @@ import {ToolbarItem as ToolbarItemType, ToolbarItemProps, ToolbarSubItem} from '
 import {ToolbarDropdown} from './ToolbarDropdown';
 
 /**
+ * Screen reader announcement component for accessibility
+ */
+const ScreenReaderAnnouncement = styled.div`
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+`;
+
+/**
  * Styled button for individual toolbar items with MIRO-style design
  * Enhanced with theme-specific styling for consistent appearance across all map themes
  */
@@ -153,6 +167,55 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
         `}
     }
 
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        background: ${props => (props.$isSelected ? '#000000' : 'transparent')};
+        border: 1px solid ${props => (props.$isSelected ? '#000000' : 'transparent')};
+
+        &:hover {
+            background: ${props => (props.$isSelected ? '#000000' : '#f0f0f0')};
+            border: 1px solid #000000;
+        }
+
+        &:focus-visible {
+            outline: 3px solid #000000;
+            outline-offset: 2px;
+        }
+
+        ${props =>
+            props.$isSelected &&
+            `
+            &::after {
+                background: #ffffff;
+                border: 1px solid #000000;
+            }
+        `}
+    }
+
+    @media (prefers-color-scheme: dark) and (prefers-contrast: high) {
+        background: ${props => (props.$isSelected ? '#ffffff' : 'transparent')};
+        border: 1px solid ${props => (props.$isSelected ? '#ffffff' : 'transparent')};
+
+        &:hover {
+            background: ${props => (props.$isSelected ? '#ffffff' : '#333333')};
+            border: 1px solid #ffffff;
+        }
+
+        &:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        ${props =>
+            props.$isSelected &&
+            `
+            &::after {
+                background: #000000;
+                border: 1px solid #ffffff;
+            }
+        `}
+    }
+
     /* Responsive behavior */
     @media (max-width: 768px) {
         width: 38px;
@@ -183,10 +246,71 @@ const IconContainer = styled.div`
 `;
 
 /**
+ * Keyboard shortcut indicator positioned in the bottom-right corner
+ */
+const KeyboardShortcutIndicator = styled.div<{$isSelected: boolean}>`
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: ${props => (props.$isSelected ? '#1976d2' : '#666')};
+    color: white;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    line-height: 1;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        background: ${props => (props.$isSelected ? '#000' : '#333')};
+        border: 1px solid ${props => (props.$isSelected ? '#fff' : '#ccc')};
+        font-weight: 700;
+    }
+
+    /* Dark theme support */
+    @media (prefers-color-scheme: dark) {
+        background: ${props => (props.$isSelected ? '#63b3ed' : '#4a5568')};
+        color: ${props => (props.$isSelected ? '#000' : '#fff')};
+    }
+
+    /* Theme-specific styling */
+    .wardley & {
+        background: ${props => (props.$isSelected ? '#1976d2' : '#666')};
+    }
+
+    .colour & {
+        background: ${props => (props.$isSelected ? '#8cb358' : '#666')};
+    }
+
+    .dark & {
+        background: ${props => (props.$isSelected ? '#63b3ed' : '#4a5568')};
+        color: ${props => (props.$isSelected ? '#000' : '#fff')};
+    }
+
+    /* Responsive behavior */
+    @media (max-width: 768px) {
+        width: 12px;
+        height: 12px;
+        font-size: 8px;
+        bottom: 1px;
+        right: 1px;
+    }
+`;
+
+/**
  * Individual toolbar item component with visual states and accessibility support
  */
 export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, onClick, mapStyleDefs, onSubItemSelect}) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [announceText, setAnnounceText] = useState('');
     const buttonRef = useRef<HTMLButtonElement>(null);
     const IconComponent = item.icon;
 
@@ -194,11 +318,19 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, 
         if (item.subItems && item.subItems.length > 0) {
             // If item has sub-items, toggle dropdown
             setIsDropdownOpen(!isDropdownOpen);
+            // Announce dropdown state for screen readers
+            setAnnounceText(`${item.label} dropdown ${isDropdownOpen ? 'closed' : 'opened'}`);
         } else {
             // Regular item click
             onClick();
+            // Announce tool selection for screen readers
+            const shortcutText = item.keyboardShortcut ? ` (keyboard shortcut ${item.keyboardShortcut.toUpperCase()})` : '';
+            setAnnounceText(`${item.label} tool ${isSelected ? 'deselected' : 'selected'}${shortcutText}`);
         }
-    }, [onClick, item.subItems, isDropdownOpen]);
+
+        // Clear announcement after a short delay
+        setTimeout(() => setAnnounceText(''), 1000);
+    }, [onClick, item.subItems, item.label, item.keyboardShortcut, isSelected, isDropdownOpen]);
 
     const handleKeyDown = useCallback(
         (event: KeyboardEvent<HTMLButtonElement>) => {
@@ -213,12 +345,15 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, 
         [handleClick, isDropdownOpen],
     );
 
-    const handleSubItemSelect = useCallback((subItem: ToolbarSubItem) => {
-        setIsDropdownOpen(false);
-        if (onSubItemSelect) {
-            onSubItemSelect(subItem);
-        }
-    }, [onSubItemSelect]);
+    const handleSubItemSelect = useCallback(
+        (subItem: ToolbarSubItem) => {
+            setIsDropdownOpen(false);
+            if (onSubItemSelect) {
+                onSubItemSelect(subItem);
+            }
+        },
+        [onSubItemSelect],
+    );
 
     const handleDropdownClose = useCallback(() => {
         setIsDropdownOpen(false);
@@ -226,12 +361,12 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, 
 
     // Calculate dropdown position
     const getDropdownPosition = useCallback(() => {
-        if (!buttonRef.current) return { x: 0, y: 0 };
-        
+        if (!buttonRef.current) return {x: 0, y: 0};
+
         const rect = buttonRef.current.getBoundingClientRect();
         return {
             x: rect.right + 8, // Position to the right of the button
-            y: rect.top
+            y: rect.top,
         };
     }, []);
 
@@ -260,8 +395,22 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, 
                         onClick={() => {}} // Icon click is handled by button
                     />
                 </IconContainer>
+
+                {/* Keyboard shortcut visual indicator */}
+                {item.keyboardShortcut && (
+                    <KeyboardShortcutIndicator $isSelected={isSelected} aria-hidden="true">
+                        {item.keyboardShortcut.toUpperCase()}
+                    </KeyboardShortcutIndicator>
+                )}
             </StyledToolbarButton>
-            
+
+            {/* Screen reader announcements */}
+            {announceText && (
+                <ScreenReaderAnnouncement role="status" aria-live="polite" aria-atomic="true">
+                    {announceText}
+                </ScreenReaderAnnouncement>
+            )}
+
             {/* Dropdown for items with sub-items */}
             {item.subItems && (
                 <ToolbarDropdown

@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react';
 import Note from '../../../components/map/Note';
-import { EditingProvider } from '../../../components/EditingContext';
+import {EditingProvider} from '../../../components/EditingContext';
 
 // Mock the InlineEditor component
 jest.mock('../../../components/map/InlineEditor', () => {
@@ -57,9 +57,9 @@ describe('Note Chrome Compatibility', () => {
             fontFamily: 'Arial, sans-serif',
             attitudes: {},
             methods: {
-                buy: { color: '#ccc', label: 'Buy' },
-                build: { color: '#ccc', label: 'Build' },
-                outsource: { color: '#ccc', label: 'Outsource' },
+                buy: {color: '#ccc', label: 'Buy'},
+                build: {color: '#ccc', label: 'Build'},
+                outsource: {color: '#ccc', label: 'Outsource'},
             },
             component: {
                 fill: '#fff',

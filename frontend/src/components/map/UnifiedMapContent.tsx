@@ -25,6 +25,8 @@ import MethodElement from './MethodElement';
 import Note from './Note';
 import LinkingPreview from './LinkingPreview';
 import DrawingPreview from './DrawingPreview';
+import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernUnifiedMapContentProps {
     mapAttitudes: any[];
@@ -69,7 +71,30 @@ interface ModernUnifiedMapContentProps {
     drawingStartPosition?: {x: number; y: number} | null;
     drawingCurrentPosition?: {x: number; y: number};
     selectedToolbarItem?: any;
+    // New props for method application functionality
+    methodHighlightedComponent?: UnifiedComponent | null;
 }
+
+/**
+ * Helper function to convert component coordinates to SVG coordinates
+ * This accounts for the SVG viewBox offset (-35, -45) used in UnifiedMapCanvas
+ * Same logic as used in DrawingPreview for consistent positioning
+ */
+const componentToSVGCoordinates = (component: UnifiedComponent, mapDimensions: {width: number; height: number}) => {
+    const positionCalculator = new PositionCalculator();
+
+    // Step 1: Convert map coordinates (0-1) back to adjusted coordinates
+    const adjustedX = positionCalculator.maturityToX(component.maturity, mapDimensions.width);
+    const adjustedY = positionCalculator.visibilityToY(component.visibility, mapDimensions.height);
+
+    // Step 2: Remove the SVG viewBox offset to get raw SVG coordinates
+    // In UnifiedMapCanvas: adjustedX = svgX + 35, adjustedY = svgY + 45
+    // So: svgX = adjustedX - 35, svgY = adjustedY - 45
+    const svgX = adjustedX - 35;
+    const svgY = adjustedY - 45;
+
+    return {x: svgX, y: svgY};
+};
 
 const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
     const {
@@ -105,6 +130,19 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
 
     return (
         <g id="mapContent">
+            {/* CSS animations for method application highlighting */}
+            <defs>
+                <style>
+                    {`
+                        @keyframes pulse {
+                            0% { stroke-opacity: 0.8; r: 25; }
+                            50% { stroke-opacity: 0.4; r: 30; }
+                            100% { stroke-opacity: 0.8; r: 25; }
+                        }
+                    `}
+                </style>
+            </defs>
+
             <g id="attitudes">
                 {props.mapAttitudes &&
                     props.mapAttitudes.map((a: any, i: number) => (
@@ -263,92 +301,123 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                 {mapElements
                     .getMergedComponents()
                     .filter((c: UnifiedComponent) => c.type !== 'anchor')
-                    .map((el: UnifiedComponent, i: number) => (
-                        <MapComponent
-                            key={i}
-                            launchUrl={launchUrl}
-                            mapDimensions={mapDimensions}
-                            component={passComponent(el)}
-                            mapText={mapText}
-                            mutateMapText={mutateMapText}
-                            mapStyleDefs={mapStyleDefs}
-                            setHighlightLine={setHighlightLineDispatch}
-                            scaleFactor={scaleFactor}>
-                            {el.type === 'component' && !el.pipeline && (
-                                <ComponentSymbol
-                                    id={`element_circle_${el.id}`}
-                                    styles={mapStyleDefs.component}
-                                    component={el}
-                                    onClick={(e: MouseEvent<SVGElement>) =>
-                                        clicked({
-                                            el: passComponent(el),
-                                            e,
-                                        })
-                                    }
-                                />
-                            )}
+                    .map((el: UnifiedComponent, i: number) => {
+                        // Check if this component should be highlighted for method application
+                        const isMethodHighlighted = props.methodHighlightedComponent?.id === el.id;
+                        const isMethodCompatible = el.type === 'component' && !el.pipeline;
+                        const isInMethodApplicationMode = props.selectedToolbarItem?.toolType === 'method-application';
 
-                            {el.pipeline && (
-                                <PipelineComponentSymbol
-                                    id={`element_square_${el.id}`}
-                                    styles={mapStyleDefs.component}
-                                    component={el}
-                                    onClick={e =>
-                                        clicked({
-                                            el: passComponent(el),
-                                            e: e,
-                                        })
-                                    }
-                                />
-                            )}
+                        // Calculate the same position that MapComponent uses for the Movable wrapper
+                        const calculatedPosition = new ModernPositionCalculator();
+                        const posX = calculatedPosition.maturityToX(el.maturity, mapDimensions.width);
+                        const posY = calculatedPosition.visibilityToY(el.visibility, mapDimensions.height) + (el.offsetY ? el.offsetY : 0);
 
-                            {(el.decorators?.ecosystem || el.type === 'ecosystem') && (
-                                <EcosystemSymbol
-                                    id={`ecosystem_circle_${el.id}`}
-                                    styles={mapStyleDefs.component}
-                                    component={el}
-                                    onClick={(e: MouseEvent<SVGGElement>) =>
-                                        clicked({
-                                            el: passComponent(el),
-                                            e,
-                                        })
-                                    }
-                                />
-                            )}
+                        return (
+                            <React.Fragment key={i}>
+                                {/* Method application highlighting - positioned at the same coordinates as the Movable component */}
+                                {isInMethodApplicationMode && isMethodCompatible && (
+                                    <circle
+                                        cx={posX}
+                                        cy={posY}
+                                        r={isMethodHighlighted ? 25 : 20}
+                                        fill="none"
+                                        stroke={isMethodHighlighted ? '#4CAF50' : '#2196F3'}
+                                        strokeWidth={isMethodHighlighted ? 3 : 2}
+                                        strokeOpacity={isMethodHighlighted ? 0.8 : 0.5}
+                                        strokeDasharray={isMethodHighlighted ? '0' : '5,5'}
+                                        pointerEvents="none"
+                                        style={{
+                                            animation: isMethodHighlighted ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                                        }}
+                                    />
+                                )}
 
-                            {(el.decorators?.market || el.type === 'market') && (
-                                <MarketSymbol
-                                    id={`market_circle_${el.id}`}
-                                    styles={mapStyleDefs.component}
-                                    component={el}
-                                    onClick={(e: MouseEvent<SVGElement>) =>
-                                        clicked({
-                                            el: passComponent(el),
-                                            e,
-                                        })
-                                    }
-                                />
-                            )}
+                                <MapComponent
+                                    launchUrl={launchUrl}
+                                    mapDimensions={mapDimensions}
+                                    component={passComponent(el)}
+                                    mapText={mapText}
+                                    mutateMapText={mutateMapText}
+                                    mapStyleDefs={mapStyleDefs}
+                                    setHighlightLine={setHighlightLineDispatch}
+                                    scaleFactor={scaleFactor}>
+                                    {el.type === 'component' && !el.pipeline && (
+                                        <ComponentSymbol
+                                            id={`element_circle_${el.id}`}
+                                            styles={mapStyleDefs.component}
+                                            component={el}
+                                            onClick={(e: MouseEvent<SVGElement>) =>
+                                                clicked({
+                                                    el: passComponent(el),
+                                                    e,
+                                                })
+                                            }
+                                        />
+                                    )}
 
-                            {el.type === 'submap' && (
-                                <SubMapSymbol
-                                    styles={mapStyleDefs.component}
-                                    component={el}
-                                    onClick={(e: MouseEvent<SVGElement>) =>
-                                        clicked({
-                                            el: passComponent(el),
-                                            e,
-                                        })
-                                    }
-                                    launchUrl={
-                                        el.url && typeof el.url === 'object' && 'url' in el.url && (el.url as any).url
-                                            ? () => launchUrl?.((el.url as any).url)
-                                            : undefined
-                                    }
-                                />
-                            )}
-                        </MapComponent>
-                    ))}
+                                    {el.pipeline && (
+                                        <PipelineComponentSymbol
+                                            id={`element_square_${el.id}`}
+                                            styles={mapStyleDefs.component}
+                                            component={el}
+                                            onClick={e =>
+                                                clicked({
+                                                    el: passComponent(el),
+                                                    e: e,
+                                                })
+                                            }
+                                        />
+                                    )}
+
+                                    {(el.decorators?.ecosystem || el.type === 'ecosystem') && (
+                                        <EcosystemSymbol
+                                            id={`ecosystem_circle_${el.id}`}
+                                            styles={mapStyleDefs.component}
+                                            component={el}
+                                            onClick={(e: MouseEvent<SVGGElement>) =>
+                                                clicked({
+                                                    el: passComponent(el),
+                                                    e,
+                                                })
+                                            }
+                                        />
+                                    )}
+
+                                    {(el.decorators?.market || el.type === 'market') && (
+                                        <MarketSymbol
+                                            id={`market_circle_${el.id}`}
+                                            styles={mapStyleDefs.component}
+                                            component={el}
+                                            onClick={(e: MouseEvent<SVGElement>) =>
+                                                clicked({
+                                                    el: passComponent(el),
+                                                    e,
+                                                })
+                                            }
+                                        />
+                                    )}
+
+                                    {el.type === 'submap' && (
+                                        <SubMapSymbol
+                                            styles={mapStyleDefs.component}
+                                            component={el}
+                                            onClick={(e: MouseEvent<SVGElement>) =>
+                                                clicked({
+                                                    el: passComponent(el),
+                                                    e,
+                                                })
+                                            }
+                                            launchUrl={
+                                                el.url && typeof el.url === 'object' && 'url' in el.url && (el.url as any).url
+                                                    ? () => launchUrl?.((el.url as any).url)
+                                                    : undefined
+                                            }
+                                        />
+                                    )}
+                                </MapComponent>
+                            </React.Fragment>
+                        );
+                    })}
             </g>
 
             <g id="notes">

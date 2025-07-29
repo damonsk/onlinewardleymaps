@@ -53,7 +53,7 @@ describe('Note Feature Switch Integration', () => {
                 <svg>
                     <Note {...defaultProps} {...props} />
                 </svg>
-            </EditingProvider>
+            </EditingProvider>,
         );
     };
 

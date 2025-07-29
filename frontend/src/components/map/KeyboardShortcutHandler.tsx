@@ -1,6 +1,21 @@
-import React, {useEffect, useCallback, memo} from 'react';
+import React, {useEffect, useCallback, memo, useState} from 'react';
+import styled from 'styled-components';
 import {KeyboardShortcutHandlerProps} from '../../types/toolbar';
 import {getToolbarItemByShortcut} from '../../constants/toolbarItems';
+
+/**
+ * Screen reader announcement component for keyboard shortcut activation
+ */
+const ScreenReaderAnnouncement = styled.div`
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+`;
 
 /**
  * KeyboardShortcutHandler component manages keyboard event listeners for toolbar shortcuts
@@ -17,6 +32,7 @@ import {getToolbarItemByShortcut} from '../../constants/toolbarItems';
  */
 export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = memo(
     ({toolbarItems, onToolSelect, isEnabled, currentSelectedTool}) => {
+        const [announceText, setAnnounceText] = useState('');
         /**
          * Check if keyboard shortcuts should be active
          * Prevents interference with text editing contexts
@@ -58,6 +74,8 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                 if (event.key === 'Escape') {
                     event.preventDefault();
                     onToolSelect(null);
+                    setAnnounceText('All tools deselected');
+                    setTimeout(() => setAnnounceText(''), 1000);
                     return;
                 }
 
@@ -73,12 +91,17 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                 if (toolbarItem) {
                     event.preventDefault();
 
-                    // Toggle selection - if already selected, deselect
+                    // Toggle behavior: if the same tool is already selected, deselect it
+                    // Otherwise, select the new tool (requirement 10.10: switch to new tool immediately)
                     if (currentSelectedTool === toolbarItem.id) {
                         onToolSelect(null);
+                        setAnnounceText(`${toolbarItem.label} tool deselected using keyboard shortcut ${key.toUpperCase()}`);
                     } else {
                         onToolSelect(toolbarItem.id);
+                        setAnnounceText(`${toolbarItem.label} tool selected using keyboard shortcut ${key.toUpperCase()}`);
                     }
+
+                    setTimeout(() => setAnnounceText(''), 1000);
                 }
             },
             [shouldHandleShortcuts, onToolSelect, currentSelectedTool],
@@ -97,8 +120,16 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
             };
         }, [isEnabled, handleKeyDown]);
 
-        // This component doesn't render anything - it only manages event listeners
-        return null;
+        // Render screen reader announcements for keyboard shortcut activation
+        return (
+            <>
+                {announceText && (
+                    <ScreenReaderAnnouncement role="status" aria-live="polite" aria-atomic="true">
+                        {announceText}
+                    </ScreenReaderAnnouncement>
+                )}
+            </>
+        );
     },
 );
 

@@ -43,6 +43,19 @@ const ToolbarContainer = styled.div<{$isDragging: boolean}>`
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        background: #ffffff;
+        border: 2px solid #000000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (prefers-color-scheme: dark) and (prefers-contrast: high) {
+        background: #000000;
+        border: 2px solid #ffffff;
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    }
+
     /* Highlight when dragging */
     ${props =>
         props.$isDragging &&
@@ -88,6 +101,31 @@ const DragHandle = styled.div`
         }
     }
 
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        &:hover {
+            background: #f0f0f0;
+            border: 1px solid #000000;
+        }
+
+        &:active {
+            background: #e0e0e0;
+            border: 1px solid #000000;
+        }
+    }
+
+    @media (prefers-color-scheme: dark) and (prefers-contrast: high) {
+        &:hover {
+            background: #333333;
+            border: 1px solid #ffffff;
+        }
+
+        &:active {
+            background: #444444;
+            border: 1px solid #ffffff;
+        }
+    }
+
     /* Drag indicator dots */
     &::before {
         content: '';
@@ -101,6 +139,19 @@ const DragHandle = styled.div`
     @media (prefers-color-scheme: dark) {
         &::before {
             background: repeating-linear-gradient(to right, #718096 0px, #718096 2px, transparent 2px, transparent 4px);
+        }
+    }
+
+    /* High contrast mode dots */
+    @media (prefers-contrast: high) {
+        &::before {
+            background: repeating-linear-gradient(to right, #000000 0px, #000000 2px, transparent 2px, transparent 4px);
+        }
+    }
+
+    @media (prefers-color-scheme: dark) and (prefers-contrast: high) {
+        &::before {
+            background: repeating-linear-gradient(to right, #ffffff 0px, #ffffff 2px, transparent 2px, transparent 4px);
         }
     }
 `;
@@ -117,6 +168,17 @@ const ToolbarSeparator = styled.div`
     /* Dark theme support (system preference only) */
     @media (prefers-color-scheme: dark) {
         background: #4a5568;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        background: #000000;
+        height: 2px;
+    }
+
+    @media (prefers-color-scheme: dark) and (prefers-contrast: high) {
+        background: #ffffff;
+        height: 2px;
     }
 `;
 
@@ -320,12 +382,26 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     key={renderKey}
                     ref={toolbarRef}
                     role="toolbar"
-                    aria-label="Map component toolbar"
+                    aria-label="Map component toolbar with keyboard shortcuts"
+                    aria-describedby="toolbar-instructions"
                     $isDragging={isDragging}
                     style={{
                         left: `${position.x}px`,
                         top: `${position.y}px`,
                     }}>
+                    {/* Hidden instructions for screen readers */}
+                    <div
+                        id="toolbar-instructions"
+                        style={{
+                            position: 'absolute',
+                            left: '-10000px',
+                            width: '1px',
+                            height: '1px',
+                            overflow: 'hidden',
+                        }}>
+                        Use keyboard shortcuts to quickly select tools: C for Component, L for Link, N for Note, P for Pipeline, A for
+                        Anchor, M for Method, T for PST. Press Escape to deselect.
+                    </div>
                     {/* Drag handle */}
                     <DragHandle onMouseDown={handleMouseDown} title="Drag to move toolbar" aria-label="Drag handle to move toolbar" />
 

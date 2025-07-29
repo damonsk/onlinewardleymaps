@@ -35,7 +35,7 @@ describe('DrawingPreview', () => {
         id: 'pioneers',
         label: 'Pioneers',
         color: '#FF6B6B',
-        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
+        template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
             `pioneers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
     };
 
@@ -99,7 +99,7 @@ describe('DrawingPreview', () => {
             id: 'settlers',
             label: 'Settlers',
             color: '#4ECDC4',
-            template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) => 
+            template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
                 `settlers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
         };
 

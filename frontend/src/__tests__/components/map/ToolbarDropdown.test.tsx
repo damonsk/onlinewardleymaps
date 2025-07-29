@@ -1,9 +1,9 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import {render, screen, fireEvent} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { ToolbarDropdown } from '../../../components/map/ToolbarDropdown';
-import { ToolbarSubItem } from '../../../types/toolbar';
-import { MapTheme } from '../../../constants/mapstyles';
+import {ToolbarDropdown} from '../../../components/map/ToolbarDropdown';
+import {ToolbarSubItem} from '../../../types/toolbar';
+import {MapTheme} from '../../../constants/mapstyles';
 
 // Mock map style definitions
 const mockMapStyleDefs: MapTheme = {
@@ -19,26 +19,26 @@ const mockPSTItems: ToolbarSubItem[] = [
         id: 'pioneers',
         label: 'Pioneers',
         color: '#FF6B6B',
-        template: (x1, y1, x2, y2) => `pioneers [${y1}, ${x1}] [${y2}, ${x2}]`
+        template: (x1, y1, x2, y2) => `pioneers [${y1}, ${x1}] [${y2}, ${x2}]`,
     },
     {
         id: 'settlers',
         label: 'Settlers',
         color: '#4ECDC4',
-        template: (x1, y1, x2, y2) => `settlers [${y1}, ${x1}] [${y2}, ${x2}]`
+        template: (x1, y1, x2, y2) => `settlers [${y1}, ${x1}] [${y2}, ${x2}]`,
     },
     {
         id: 'townplanners',
         label: 'Town Planners',
         color: '#45B7D1',
-        template: (x1, y1, x2, y2) => `townplanners [${y1}, ${x1}] [${y2}, ${x2}]`
-    }
+        template: (x1, y1, x2, y2) => `townplanners [${y1}, ${x1}] [${y2}, ${x2}]`,
+    },
 ];
 
 describe('ToolbarDropdown', () => {
     const mockOnSelect = jest.fn();
     const mockOnClose = jest.fn();
-    const mockPosition = { x: 100, y: 200 };
+    const mockPosition = {x: 100, y: 200};
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -53,7 +53,7 @@ describe('ToolbarDropdown', () => {
                 onClose={mockOnClose}
                 position={mockPosition}
                 mapStyleDefs={mockMapStyleDefs}
-            />
+            />,
         );
 
         expect(screen.getByRole('menu')).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('ToolbarDropdown', () => {
                 onClose={mockOnClose}
                 position={mockPosition}
                 mapStyleDefs={mockMapStyleDefs}
-            />
+            />,
         );
 
         expect(screen.queryByRole('menu')).not.toBeInTheDocument();
@@ -86,7 +86,7 @@ describe('ToolbarDropdown', () => {
                 onClose={mockOnClose}
                 position={mockPosition}
                 mapStyleDefs={mockMapStyleDefs}
-            />
+            />,
         );
 
         fireEvent.click(screen.getByText('Pioneers'));
@@ -104,10 +104,10 @@ describe('ToolbarDropdown', () => {
                 onClose={mockOnClose}
                 position={mockPosition}
                 mapStyleDefs={mockMapStyleDefs}
-            />
+            />,
         );
 
-        fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+        fireEvent.keyDown(screen.getByRole('menu'), {key: 'Escape'});
 
         expect(mockOnClose).toHaveBeenCalled();
     });
@@ -121,7 +121,7 @@ describe('ToolbarDropdown', () => {
                 onClose={mockOnClose}
                 position={mockPosition}
                 mapStyleDefs={mockMapStyleDefs}
-            />
+            />,
         );
 
         const dropdownItems = screen.getAllByRole('menuitem');
@@ -134,7 +134,7 @@ describe('ToolbarDropdown', () => {
     });
 
     it('positions dropdown correctly', () => {
-        const { container } = render(
+        const {container} = render(
             <ToolbarDropdown
                 items={mockPSTItems}
                 isOpen={true}
@@ -142,7 +142,7 @@ describe('ToolbarDropdown', () => {
                 onClose={mockOnClose}
                 position={mockPosition}
                 mapStyleDefs={mockMapStyleDefs}
-            />
+            />,
         );
 
         const dropdown = container.firstChild as HTMLElement;

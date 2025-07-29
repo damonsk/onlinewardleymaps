@@ -351,7 +351,7 @@ component Toolbar Component [0.2, 0.8]`,
             root.render(
                 <EditingProvider>
                     <MapView {...defaultProps} {...props} />
-                </EditingProvider>
+                </EditingProvider>,
             );
         });
     };

@@ -1,12 +1,12 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, {memo, useCallback, useEffect, useRef} from 'react';
 import styled from 'styled-components';
-import { ToolbarDropdownProps, ToolbarSubItem } from '../../types/toolbar';
+import {ToolbarDropdownProps, ToolbarSubItem} from '../../types/toolbar';
 
 /**
  * Styled container for the dropdown menu
  * Positioned absolutely relative to the toolbar item
  */
-const DropdownContainer = styled.div<{ $position: { x: number; y: number } }>`
+const DropdownContainer = styled.div<{$position: {x: number; y: number}}>`
     position: fixed;
     left: ${props => props.$position.x}px;
     top: ${props => props.$position.y}px;
@@ -20,7 +20,7 @@ const DropdownContainer = styled.div<{ $position: { x: number; y: number } }>`
     gap: 2px;
     z-index: 1001;
     min-width: 140px;
-    
+
     /* Dark theme support */
     @media (prefers-color-scheme: dark) {
         background: #2d3748;
@@ -32,7 +32,7 @@ const DropdownContainer = styled.div<{ $position: { x: number; y: number } }>`
 /**
  * Styled dropdown item button
  */
-const DropdownItem = styled.button<{ $color: string }>`
+const DropdownItem = styled.button<{$color: string}>`
     width: 100%;
     padding: 8px 12px;
     border: none;
@@ -66,7 +66,7 @@ const DropdownItem = styled.button<{ $color: string }>`
     /* Dark theme support */
     @media (prefers-color-scheme: dark) {
         color: #e2e8f0;
-        
+
         &:hover {
             background: #4a5568;
         }
@@ -76,7 +76,7 @@ const DropdownItem = styled.button<{ $color: string }>`
 /**
  * Color indicator for each PST type
  */
-const ColorIndicator = styled.div<{ $color: string }>`
+const ColorIndicator = styled.div<{$color: string}>`
     width: 16px;
     height: 16px;
     border-radius: 4px;
@@ -89,32 +89,31 @@ const ColorIndicator = styled.div<{ $color: string }>`
  * ToolbarDropdown component for PST type selection
  * Provides a dropdown menu with color-coded options for Pioneers, Settlers, and Town Planners
  */
-export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({
-    items,
-    isOpen,
-    onSelect,
-    onClose,
-    position,
-    mapStyleDefs
-}) => {
+export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({items, isOpen, onSelect, onClose, position, mapStyleDefs}) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     /**
      * Handle item selection
      */
-    const handleItemSelect = useCallback((item: ToolbarSubItem) => {
-        onSelect(item);
-        onClose();
-    }, [onSelect, onClose]);
+    const handleItemSelect = useCallback(
+        (item: ToolbarSubItem) => {
+            onSelect(item);
+            onClose();
+        },
+        [onSelect, onClose],
+    );
 
     /**
      * Handle keyboard navigation
      */
-    const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-        if (event.key === 'Escape') {
-            onClose();
-        }
-    }, [onClose]);
+    const handleKeyDown = useCallback(
+        (event: React.KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        },
+        [onClose],
+    );
 
     /**
      * Handle clicks outside the dropdown to close it
@@ -156,13 +155,7 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({
     }
 
     return (
-        <DropdownContainer
-            ref={dropdownRef}
-            $position={position}
-            role="menu"
-            aria-label="PST type selection"
-            onKeyDown={handleKeyDown}
-        >
+        <DropdownContainer ref={dropdownRef} $position={position} role="menu" aria-label="PST type selection" onKeyDown={handleKeyDown}>
             {items.map((item, index) => (
                 <DropdownItem
                     key={item.id}
@@ -171,8 +164,7 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({
                     role="menuitem"
                     tabIndex={0}
                     aria-label={`Select ${item.label}`}
-                    data-testid={`dropdown-item-${item.id}`}
-                >
+                    data-testid={`dropdown-item-${item.id}`}>
                     <ColorIndicator $color={item.color} />
                     {item.label}
                 </DropdownItem>

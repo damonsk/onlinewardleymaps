@@ -14,6 +14,7 @@ import {useEditing} from '../EditingContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import PositionCalculator from './PositionCalculator';
+import ModernPositionCalculator from './ModernPositionCalculator';
 import UnifiedMapContent from './UnifiedMapContent';
 
 interface ModernUnifiedMapCanvasProps {
@@ -53,6 +54,9 @@ interface ModernUnifiedMapCanvasProps {
     isDrawing?: boolean;
     drawingStartPosition?: {x: number; y: number} | null;
     drawingCurrentPosition?: {x: number; y: number};
+    // New props for method application functionality
+    onMethodApplication?: (component: UnifiedComponent, method: string) => void;
+    methodHighlightedComponent?: UnifiedComponent | null;
 }
 
 function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
@@ -380,6 +384,87 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             return; // Don't process other click handlers when in drawing mode
         }
 
+        // Handle method application when in method application mode
+        if (props.selectedToolbarItem?.toolType === 'method-application' && props.onMethodApplication) {
+            // The react-svg-pan-zoom library provides SVG coordinates directly in the event
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+
+            // Adjust for SVG viewBox offset (-35, -45)
+            const adjustedX = svgX + 35;
+            const adjustedY = svgY + 45;
+
+            // Convert to map coordinates (maturity and visibility)
+            const maturity = parseFloat(positionCalculator.xToMaturity(adjustedX, mapDimensions.width));
+            const visibility = parseFloat(positionCalculator.yToVisibility(adjustedY, mapDimensions.height));
+
+            // Validate and clamp coordinates to valid range [0, 1]
+            const clampedMaturity = Math.max(0, Math.min(1, maturity));
+            const clampedVisibility = Math.max(0, Math.min(1, visibility));
+
+            // Find the nearest method-compatible component
+            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+            const methodCompatibleComponents = allComponents.filter(component => {
+                return component.type === 'component' && !component.pipeline;
+            });
+
+            // Prioritize highlighted component if it exists (for better UX when component is highlighted)
+            if (props.highlightedComponent && methodCompatibleComponents.some(c => c.id === props.highlightedComponent!.id)) {
+                props.onMethodApplication(props.highlightedComponent, props.selectedToolbarItem.methodName || '');
+            } else {
+                // Fallback: Find the nearest method-compatible component to the click position
+                // Use raw SVG coordinates for consistency with component positioning
+                const rawMaturity = parseFloat(positionCalculator.xToMaturity(svgX, mapDimensions.width));
+                const rawVisibility = parseFloat(positionCalculator.yToVisibility(svgY, mapDimensions.height));
+                const clampedRawMaturity = Math.max(0, Math.min(1, rawMaturity));
+                const clampedRawVisibility = Math.max(0, Math.min(1, rawVisibility));
+
+                const clickedComponent = findNearestComponent(
+                    {x: clampedRawMaturity, y: clampedRawVisibility},
+                    methodCompatibleComponents,
+                    0.05, // Slightly larger threshold since we're using raw coordinates
+                );
+
+                if (clickedComponent) {
+                    // Apply method to existing component
+                    props.onMethodApplication(clickedComponent, props.selectedToolbarItem.methodName || '');
+                } else {
+                    // No compatible component found - create a new component with the method
+                    // Use the same offset correction as regular component placement
+                    if (props.onToolbarItemDrop) {
+                        // Apply the same correction factor used for regular component placement
+                        const offsetCorrectionX = -30; // Same as regular placement
+                        const offsetCorrectionY = -40; // Same as regular placement
+
+                        const correctedX = adjustedX + offsetCorrectionX;
+                        const correctedY = adjustedY + offsetCorrectionY;
+
+                        const correctedMaturity = parseFloat(positionCalculator.xToMaturity(correctedX, mapDimensions.width));
+                        const correctedVisibility = parseFloat(positionCalculator.yToVisibility(correctedY, mapDimensions.height));
+
+                        // Validate and clamp corrected coordinates to valid range [0, 1]
+                        const clampedCorrectedMaturity = Math.max(0, Math.min(1, correctedMaturity));
+                        const clampedCorrectedVisibility = Math.max(0, Math.min(1, correctedVisibility));
+
+                        // Create a modified toolbar item that includes the method
+                        const methodName = props.selectedToolbarItem.methodName || '';
+                        const modifiedToolbarItem = {
+                            ...props.selectedToolbarItem,
+                            toolType: 'placement' as const,
+                            template: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (${methodName})`,
+                            defaultName: `New ${methodName.charAt(0).toUpperCase() + methodName.slice(1)} Component`,
+                        };
+
+                        props.onToolbarItemDrop(modifiedToolbarItem, {
+                            x: clampedCorrectedMaturity,
+                            y: clampedCorrectedVisibility,
+                        });
+                    }
+                }
+            }
+            return; // Always return early when in method application mode to prevent other handlers
+        }
+
         // Handle component linking when in linking mode
         if (props.linkingState && props.linkingState !== 'idle' && props.onComponentClick) {
             // The react-svg-pan-zoom library provides SVG coordinates directly in the event
@@ -595,6 +680,38 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
             });
         }
 
+        // Handle mouse move for method application functionality
+        if (props.selectedToolbarItem?.toolType === 'method-application' && props.onMouseMove) {
+            // Find the nearest component for method application highlighting
+            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+
+            // Filter components that can receive method decorators
+            // Only regular components (not notes, anchors, or other special types) can have methods applied
+            const methodCompatibleComponents = allComponents.filter(component => {
+                return component.type === 'component' && !component.pipeline;
+            });
+
+            // Try using the raw SVG coordinates (without viewBox offset) for component detection
+            // This matches how double-click positioning works
+            const rawMaturity = parseFloat(positionCalculator.xToMaturity(svgX, mapDimensions.width));
+            const rawVisibility = parseFloat(positionCalculator.yToVisibility(svgY, mapDimensions.height));
+            const clampedRawMaturity = Math.max(0, Math.min(1, rawMaturity));
+            const clampedRawVisibility = Math.max(0, Math.min(1, rawVisibility));
+
+            const nearestComponent = findNearestComponent(
+                {x: clampedRawMaturity, y: clampedRawVisibility},
+                methodCompatibleComponents,
+                0.05, // Slightly larger threshold since we're using raw coordinates
+            );
+
+            // Pass mouse position and highlighted component to parent
+            props.onMouseMove({
+                x: clampedMaturity,
+                y: clampedVisibility,
+                nearestComponent,
+            });
+        }
+
         // Update current mouse position for linking preview
         setCurrentMousePosition({x: clampedMaturity, y: clampedVisibility});
 
@@ -772,7 +889,6 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                     width: '100%',
                     height: '100%', // Use full height since toolbar is now fixed position
                     display: 'block',
-                    cursor: getCursorStyle(),
                 }}>
                 <svg
                     className={[mapStyleDefs.className, 'mapCanvas'].join(' ')}
@@ -925,6 +1041,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         drawingStartPosition={props.drawingStartPosition}
                         drawingCurrentPosition={props.drawingCurrentPosition}
                         selectedToolbarItem={props.selectedToolbarItem}
+                        methodHighlightedComponent={props.methodHighlightedComponent}
                     />
                 </svg>
             </UncontrolledReactSVGPanZoom>
@@ -942,7 +1059,7 @@ function UnifiedMapCanvas(props: ModernUnifiedMapCanvasProps) {
                         border: '1px solid rgba(0,0,0,0.1)',
                     }}>
                     <MapCanvasToolbar
-                        shouldHideNav={props.shouldHideNav || (() => {})}
+                        shouldHideNav={props.shouldHideNav || (() => { })}
                         hideNav={props.hideNav || false}
                         tool={tool}
                         handleChangeTool={(event, newTool) => setTool(newTool)}
