@@ -774,8 +774,16 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 const [, name, coordinates, existingMethod, rest] = match;
 
                 // Create the new component line with the method
-                const newMethod = `(${methodName})`;
-                const newComponentLine = `component ${name} ${coordinates} ${newMethod}${rest || ''}`;
+                // Handle inertia specially - it can be written without parentheses
+                let newComponentLine;
+                if (methodName === 'inertia') {
+                    // For inertia, we can use the simpler syntax without parentheses
+                    newComponentLine = `component ${name} ${coordinates} ${methodName}${rest || ''}`;
+                } else {
+                    // For other methods (market, ecosystem, buy, build, outsource), use parentheses
+                    const newMethod = `(${methodName})`;
+                    newComponentLine = `component ${name} ${coordinates} ${newMethod}${rest || ''}`;
+                }
 
                 // Update the map text
                 const updatedLines = [...lines];

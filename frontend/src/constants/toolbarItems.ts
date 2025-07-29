@@ -88,32 +88,30 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         keyboardShortcut: 'c',
     },
     {
-        id: 'component-inertia',
-        label: 'Component with Inertia',
+        id: 'method-inertia',
+        label: 'Inertia',
         icon: ToolbarInertiaIcon,
-        template: TOOLBAR_TEMPLATES.componentInertia,
-        category: 'component',
-        defaultName: DEFAULT_COMPONENT_NAMES.componentInertia,
-        toolType: 'placement',
+        category: 'method',
+        toolType: 'method-application',
+        methodName: 'inertia',
+        keyboardShortcut: 'i',
     },
     {
-        id: 'market',
+        id: 'method-market',
         label: 'Market',
         icon: ToolbarMarketIcon,
-        template: TOOLBAR_TEMPLATES.market,
-        category: 'component',
-        defaultName: DEFAULT_COMPONENT_NAMES.market,
-        toolType: 'placement',
+        category: 'method',
+        toolType: 'method-application',
+        methodName: 'market',
         keyboardShortcut: 'm',
     },
     {
-        id: 'ecosystem',
+        id: 'method-ecosystem',
         label: 'Ecosystem',
         icon: ToolbarEcosystemIcon,
-        template: TOOLBAR_TEMPLATES.ecosystem,
-        category: 'component',
-        defaultName: DEFAULT_COMPONENT_NAMES.ecosystem,
-        toolType: 'placement',
+        category: 'method',
+        toolType: 'method-application',
+        methodName: 'ecosystem',
         keyboardShortcut: 'e',
     },
     {
@@ -203,12 +201,12 @@ export const TOOLBAR_CATEGORIES: ToolbarCategory[] = [
     {
         id: 'component',
         label: 'Components',
-        items: ['component', 'component-inertia', 'market', 'ecosystem'],
+        items: ['component'],
     },
     {
         id: 'method',
         label: 'Methods',
-        items: ['method-build', 'method-buy', 'method-outsource'],
+        items: ['method-build', 'method-buy', 'method-outsource', 'method-inertia', 'method-market', 'method-ecosystem'],
     },
     {
         id: 'note',
@@ -267,8 +265,6 @@ export const getToolbarItemsByCategory = (categoryId: string): ToolbarItem[] => 
  */
 export const KEYBOARD_SHORTCUTS: Record<string, string> = {
     c: 'component',
-    m: 'market',
-    e: 'ecosystem',
     l: 'link',
     n: 'note',
     p: 'pipeline',
@@ -276,6 +272,9 @@ export const KEYBOARD_SHORTCUTS: Record<string, string> = {
     b: 'method-build', // Build method
     u: 'method-buy', // Buy method (U for bUy)
     o: 'method-outsource', // Outsource method
+    i: 'method-inertia', // Inertia method
+    m: 'method-market', // Market method
+    e: 'method-ecosystem', // Ecosystem method
     t: 'pst', // PST boxes
 };
 

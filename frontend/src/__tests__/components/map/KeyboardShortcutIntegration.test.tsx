@@ -239,7 +239,7 @@ describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
             });
         });
 
-        test('should select market tool when M key is pressed', async () => {
+        test('should select market method tool when M key is pressed', async () => {
             renderToolbarWithKeyboardShortcuts();
 
             fireEvent.keyDown(document, {key: 'm', code: 'KeyM'});
@@ -247,14 +247,14 @@ describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
             await waitFor(() => {
                 expect(mockOnItemSelect).toHaveBeenCalledWith(
                     expect.objectContaining({
-                        id: 'market',
+                        id: 'method-market',
                         keyboardShortcut: 'm',
                     }),
                 );
             });
         });
 
-        test('should select ecosystem tool when E key is pressed', async () => {
+        test('should select ecosystem method tool when E key is pressed', async () => {
             renderToolbarWithKeyboardShortcuts();
 
             fireEvent.keyDown(document, {key: 'e', code: 'KeyE'});
@@ -262,8 +262,23 @@ describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
             await waitFor(() => {
                 expect(mockOnItemSelect).toHaveBeenCalledWith(
                     expect.objectContaining({
-                        id: 'ecosystem',
+                        id: 'method-ecosystem',
                         keyboardShortcut: 'e',
+                    }),
+                );
+            });
+        });
+
+        test('should select inertia method tool when I key is pressed', async () => {
+            renderToolbarWithKeyboardShortcuts();
+
+            fireEvent.keyDown(document, {key: 'i', code: 'KeyI'});
+
+            await waitFor(() => {
+                expect(mockOnItemSelect).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        id: 'method-inertia',
+                        keyboardShortcut: 'i',
                     }),
                 );
             });
@@ -381,7 +396,7 @@ describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
             renderToolbarWithKeyboardShortcuts();
 
             // Press various unassigned keys
-            const unassignedKeys = ['x', 'y', 'z', 'q', 'w', 'r', 'i'];
+            const unassignedKeys = ['x', 'y', 'z', 'q', 'w', 'r', 'j'];
 
             for (const key of unassignedKeys) {
                 fireEvent.keyDown(document, {key, code: `Key${key.toUpperCase()}`});

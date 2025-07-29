@@ -200,8 +200,6 @@ describe('KeyboardShortcutHandler', () => {
     it('handles all defined keyboard shortcuts', () => {
         const shortcuts = [
             {key: 'c', toolId: 'component'},
-            {key: 'm', toolId: 'market'},
-            {key: 'e', toolId: 'ecosystem'},
             {key: 'l', toolId: 'link'},
             {key: 'n', toolId: 'note'},
             {key: 'p', toolId: 'pipeline'},
@@ -209,6 +207,9 @@ describe('KeyboardShortcutHandler', () => {
             {key: 'b', toolId: 'method-build'},
             {key: 'u', toolId: 'method-buy'},
             {key: 'o', toolId: 'method-outsource'},
+            {key: 'i', toolId: 'method-inertia'},
+            {key: 'm', toolId: 'method-market'},
+            {key: 'e', toolId: 'method-ecosystem'},
             {key: 't', toolId: 'pst'},
         ];
 

@@ -305,37 +305,25 @@ describe('Map Text Generation Integration Tests', () => {
             }
         });
 
-        it('should generate correct syntax for component with inertia', () => {
-            const inertiaItem = TOOLBAR_ITEMS.find(item => item.id === 'component-inertia');
+        it('should have method-inertia tool available for method application', () => {
+            const inertiaItem = TOOLBAR_ITEMS.find(item => item.id === 'method-inertia');
             expect(inertiaItem).toBeTruthy();
-
-            if (inertiaItem) {
-                const updatedText = placeComponent(inertiaItem);
-                expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/component Inertia Component \[[0-9.]+, [0-9.]+\] inertia/);
-            }
+            expect(inertiaItem?.toolType).toBe('method-application');
+            expect(inertiaItem?.methodName).toBe('inertia');
         });
 
-        it('should generate correct syntax for market component', () => {
-            const marketItem = TOOLBAR_ITEMS.find(item => item.id === 'market');
+        it('should have method-market tool available for method application', () => {
+            const marketItem = TOOLBAR_ITEMS.find(item => item.id === 'method-market');
             expect(marketItem).toBeTruthy();
-
-            if (marketItem) {
-                const updatedText = placeComponent(marketItem);
-                expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/component Market \[[0-9.]+, [0-9.]+\] \(market\)/);
-            }
+            expect(marketItem?.toolType).toBe('method-application');
+            expect(marketItem?.methodName).toBe('market');
         });
 
-        it('should generate correct syntax for ecosystem component', () => {
-            const ecosystemItem = TOOLBAR_ITEMS.find(item => item.id === 'ecosystem');
+        it('should have method-ecosystem tool available for method application', () => {
+            const ecosystemItem = TOOLBAR_ITEMS.find(item => item.id === 'method-ecosystem');
             expect(ecosystemItem).toBeTruthy();
-
-            if (ecosystemItem) {
-                const updatedText = placeComponent(ecosystemItem);
-                expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/component Ecosystem \[[0-9.]+, [0-9.]+\] \(ecosystem\)/);
-            }
+            expect(ecosystemItem?.toolType).toBe('method-application');
+            expect(ecosystemItem?.methodName).toBe('ecosystem');
         });
     });
 
@@ -343,18 +331,24 @@ describe('Map Text Generation Integration Tests', () => {
         it('should have method toolbar items available for component decoration', () => {
             const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
 
-            expect(methodItems).toHaveLength(3);
+            expect(methodItems).toHaveLength(6);
 
             const methodNames = methodItems.map(item => item.methodName);
             expect(methodNames).toContain('buy');
             expect(methodNames).toContain('build');
             expect(methodNames).toContain('outsource');
+            expect(methodNames).toContain('inertia');
+            expect(methodNames).toContain('market');
+            expect(methodNames).toContain('ecosystem');
         });
 
         it('should identify method items correctly in toolbar', () => {
             const buyMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'buy');
             const buildMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'build');
             const outsourceMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'outsource');
+            const inertiaMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'inertia');
+            const marketMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'market');
+            const ecosystemMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'ecosystem');
 
             expect(buyMethodItem).toBeDefined();
             expect(buyMethodItem?.id).toBe('method-buy');
@@ -367,16 +361,34 @@ describe('Map Text Generation Integration Tests', () => {
             expect(outsourceMethodItem).toBeDefined();
             expect(outsourceMethodItem?.id).toBe('method-outsource');
             expect(outsourceMethodItem?.toolType).toBe('method-application');
+
+            expect(inertiaMethodItem).toBeDefined();
+            expect(inertiaMethodItem?.id).toBe('method-inertia');
+            expect(inertiaMethodItem?.toolType).toBe('method-application');
+
+            expect(marketMethodItem).toBeDefined();
+            expect(marketMethodItem?.id).toBe('method-market');
+            expect(marketMethodItem?.toolType).toBe('method-application');
+
+            expect(ecosystemMethodItem).toBeDefined();
+            expect(ecosystemMethodItem?.id).toBe('method-ecosystem');
+            expect(ecosystemMethodItem?.toolType).toBe('method-application');
         });
 
         it('should have keyboard shortcuts for method items', () => {
             const buyMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'buy');
             const buildMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'build');
             const outsourceMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'outsource');
+            const inertiaMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'inertia');
+            const marketMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'market');
+            const ecosystemMethodItem = TOOLBAR_ITEMS.find(item => item.methodName === 'ecosystem');
 
             expect(buyMethodItem?.keyboardShortcut).toBe('u'); // U for bUy
             expect(buildMethodItem?.keyboardShortcut).toBe('b');
             expect(outsourceMethodItem?.keyboardShortcut).toBe('o');
+            expect(inertiaMethodItem?.keyboardShortcut).toBe('i');
+            expect(marketMethodItem?.keyboardShortcut).toBe('m');
+            expect(ecosystemMethodItem?.keyboardShortcut).toBe('e');
         });
     });
 

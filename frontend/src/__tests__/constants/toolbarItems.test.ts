@@ -46,31 +46,54 @@ describe('Toolbar Items Configuration', () => {
     });
 
     describe('Component Tools', () => {
-        test('should have market tool with correct keyboard shortcut', () => {
-            const marketTool = getToolbarItemById('market');
+        test('should have method-market tool with correct keyboard shortcut', () => {
+            const marketTool = getToolbarItemById('method-market');
 
             expect(marketTool).toBeDefined();
-            expect(marketTool?.id).toBe('market');
+            expect(marketTool?.id).toBe('method-market');
             expect(marketTool?.label).toBe('Market');
             expect(marketTool?.keyboardShortcut).toBe('m');
-            expect(KEYBOARD_SHORTCUTS['m']).toBe('market');
+            expect(marketTool?.toolType).toBe('method-application');
+            expect(marketTool?.methodName).toBe('market');
+            expect(KEYBOARD_SHORTCUTS['m']).toBe('method-market');
         });
 
-        test('should have ecosystem tool with correct keyboard shortcut', () => {
-            const ecosystemTool = getToolbarItemById('ecosystem');
+        test('should have method-ecosystem tool with correct keyboard shortcut', () => {
+            const ecosystemTool = getToolbarItemById('method-ecosystem');
 
             expect(ecosystemTool).toBeDefined();
-            expect(ecosystemTool?.id).toBe('ecosystem');
+            expect(ecosystemTool?.id).toBe('method-ecosystem');
             expect(ecosystemTool?.label).toBe('Ecosystem');
             expect(ecosystemTool?.keyboardShortcut).toBe('e');
-            expect(KEYBOARD_SHORTCUTS['e']).toBe('ecosystem');
+            expect(ecosystemTool?.toolType).toBe('method-application');
+            expect(ecosystemTool?.methodName).toBe('ecosystem');
+            expect(KEYBOARD_SHORTCUTS['e']).toBe('method-ecosystem');
+        });
+
+        test('should have method-inertia tool with correct keyboard shortcut', () => {
+            const inertiaTool = getToolbarItemById('method-inertia');
+
+            expect(inertiaTool).toBeDefined();
+            expect(inertiaTool?.id).toBe('method-inertia');
+            expect(inertiaTool?.label).toBe('Inertia');
+            expect(inertiaTool?.keyboardShortcut).toBe('i');
+            expect(inertiaTool?.toolType).toBe('method-application');
+            expect(inertiaTool?.methodName).toBe('inertia');
+            expect(KEYBOARD_SHORTCUTS['i']).toBe('method-inertia');
         });
 
         test('should have all method tools in the method category', () => {
             const methodTools = TOOLBAR_ITEMS.filter(item => item.category === 'method');
 
-            expect(methodTools).toHaveLength(3);
-            expect(methodTools.map(tool => tool.id)).toEqual(expect.arrayContaining(['method-build', 'method-buy', 'method-outsource']));
+            expect(methodTools).toHaveLength(6);
+            expect(methodTools.map(tool => tool.id)).toEqual(expect.arrayContaining([
+                'method-build', 
+                'method-buy', 
+                'method-outsource',
+                'method-inertia',
+                'method-market',
+                'method-ecosystem'
+            ]));
         });
 
         test('should have method-application toolType for all method tools', () => {
