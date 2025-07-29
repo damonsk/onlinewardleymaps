@@ -200,11 +200,16 @@ describe('KeyboardShortcutHandler', () => {
     it('handles all defined keyboard shortcuts', () => {
         const shortcuts = [
             {key: 'c', toolId: 'component'},
+            {key: 'm', toolId: 'market'},
+            {key: 'e', toolId: 'ecosystem'},
             {key: 'l', toolId: 'link'},
             {key: 'n', toolId: 'note'},
             {key: 'p', toolId: 'pipeline'},
             {key: 'a', toolId: 'anchor'},
-            {key: 'm', toolId: 'buy'},
+            {key: 'b', toolId: 'method-build'},
+            {key: 'u', toolId: 'method-buy'},
+            {key: 'o', toolId: 'method-outsource'},
+            {key: 't', toolId: 'pst'},
         ];
 
         shortcuts.forEach(shortcut => {
@@ -218,6 +223,11 @@ describe('KeyboardShortcutHandler', () => {
             document.body.appendChild(container);
             root = createRoot(container);
             mockOnToolSelect.mockClear();
+            
+            // Mock the function to return the correct toolbar item for this shortcut
+            const expectedToolbarItem = TOOLBAR_ITEMS.find(item => item.id === shortcut.toolId);
+            mockGetToolbarItemByShortcut.mockReturnValue(expectedToolbarItem);
+            
             renderComponent();
             act(() => {
                 document.dispatchEvent(new KeyboardEvent('keydown', {key: shortcut.key}));

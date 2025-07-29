@@ -239,6 +239,36 @@ describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
             });
         });
 
+        test('should select market tool when M key is pressed', async () => {
+            renderToolbarWithKeyboardShortcuts();
+
+            fireEvent.keyDown(document, {key: 'm', code: 'KeyM'});
+
+            await waitFor(() => {
+                expect(mockOnItemSelect).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        id: 'market',
+                        keyboardShortcut: 'm',
+                    }),
+                );
+            });
+        });
+
+        test('should select ecosystem tool when E key is pressed', async () => {
+            renderToolbarWithKeyboardShortcuts();
+
+            fireEvent.keyDown(document, {key: 'e', code: 'KeyE'});
+
+            await waitFor(() => {
+                expect(mockOnItemSelect).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        id: 'ecosystem',
+                        keyboardShortcut: 'e',
+                    }),
+                );
+            });
+        });
+
         test('should deselect current tool when Escape key is pressed', async () => {
             renderToolbarWithKeyboardShortcuts();
 
@@ -351,7 +381,7 @@ describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
             renderToolbarWithKeyboardShortcuts();
 
             // Press various unassigned keys
-            const unassignedKeys = ['x', 'y', 'z', 'q', 'w', 'e', 'r'];
+            const unassignedKeys = ['x', 'y', 'z', 'q', 'w', 'r', 'i'];
 
             for (const key of unassignedKeys) {
                 fireEvent.keyDown(document, {key, code: `Key${key.toUpperCase()}`});

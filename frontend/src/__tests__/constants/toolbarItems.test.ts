@@ -43,6 +43,28 @@ describe('Toolbar Items Configuration', () => {
             expect(KEYBOARD_SHORTCUTS['u']).toBe('method-buy');
             expect(KEYBOARD_SHORTCUTS['o']).toBe('method-outsource');
         });
+    });
+
+    describe('Component Tools', () => {
+        test('should have market tool with correct keyboard shortcut', () => {
+            const marketTool = getToolbarItemById('market');
+
+            expect(marketTool).toBeDefined();
+            expect(marketTool?.id).toBe('market');
+            expect(marketTool?.label).toBe('Market');
+            expect(marketTool?.keyboardShortcut).toBe('m');
+            expect(KEYBOARD_SHORTCUTS['m']).toBe('market');
+        });
+
+        test('should have ecosystem tool with correct keyboard shortcut', () => {
+            const ecosystemTool = getToolbarItemById('ecosystem');
+
+            expect(ecosystemTool).toBeDefined();
+            expect(ecosystemTool?.id).toBe('ecosystem');
+            expect(ecosystemTool?.label).toBe('Ecosystem');
+            expect(ecosystemTool?.keyboardShortcut).toBe('e');
+            expect(KEYBOARD_SHORTCUTS['e']).toBe('ecosystem');
+        });
 
         test('should have all method tools in the method category', () => {
             const methodTools = TOOLBAR_ITEMS.filter(item => item.category === 'method');

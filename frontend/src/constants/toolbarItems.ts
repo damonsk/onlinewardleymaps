@@ -104,6 +104,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         category: 'component',
         defaultName: DEFAULT_COMPONENT_NAMES.market,
         toolType: 'placement',
+        keyboardShortcut: 'm',
     },
     {
         id: 'ecosystem',
@@ -113,6 +114,7 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         category: 'component',
         defaultName: DEFAULT_COMPONENT_NAMES.ecosystem,
         toolType: 'placement',
+        keyboardShortcut: 'e',
     },
     {
         id: 'method-build',
@@ -265,6 +267,8 @@ export const getToolbarItemsByCategory = (categoryId: string): ToolbarItem[] => 
  */
 export const KEYBOARD_SHORTCUTS: Record<string, string> = {
     c: 'component',
+    m: 'market',
+    e: 'ecosystem',
     l: 'link',
     n: 'note',
     p: 'pipeline',
