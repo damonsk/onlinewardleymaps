@@ -342,9 +342,9 @@ describe('Map Text Generation Integration Tests', () => {
     describe('Method Application Behavior', () => {
         it('should have method toolbar items available for component decoration', () => {
             const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
-            
+
             expect(methodItems).toHaveLength(3);
-            
+
             const methodNames = methodItems.map(item => item.methodName);
             expect(methodNames).toContain('buy');
             expect(methodNames).toContain('build');
@@ -815,7 +815,7 @@ component New Component 2 [0.5, 0.6]`;
         it('should handle missing template functions gracefully', () => {
             // Test that items without templates (like method items) don't cause crashes
             const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
-            
+
             methodItems.forEach(item => {
                 expect(item.template).toBeUndefined();
             });
