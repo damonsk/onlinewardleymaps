@@ -134,10 +134,27 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
             <defs>
                 <style>
                     {`
-                        @keyframes pulse {
-                            0% { stroke-opacity: 0.8; r: 25; }
-                            50% { stroke-opacity: 0.4; r: 30; }
-                            100% { stroke-opacity: 0.8; r: 25; }
+                        @keyframes methodHighlightPulse {
+                            0%, 100% {
+                                stroke-opacity: 0.3;
+                                stroke-width: 2;
+                            }
+                            50% {
+                                stroke-opacity: 0.8;
+                                stroke-width: 3;
+                            }
+                        }
+
+                        .method-hover-circle {
+                            animation: methodHighlightPulse 1.5s ease-in-out infinite;
+                        }
+
+                        .method-hover-circle:hover {
+                            stroke: #4CAF50 !important;
+                            stroke-width: 3 !important;
+                            stroke-opacity: 0.8 !important;
+                            stroke-dasharray: 0 !important;
+                            animation: none !important;
                         }
                     `}
                 </style>
@@ -305,12 +322,28 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         // Check if this component should be highlighted for method application
                         const isMethodHighlighted = props.methodHighlightedComponent?.id === el.id;
                         const isMethodCompatible = el.type === 'component' && !el.pipeline;
-                        const isInMethodApplicationMode = props.selectedToolbarItem?.toolType === 'method-application';
+                        const isInMethodApplicationMode = props.selectedToolbarItem?.toolType === 'method-application' || props.selectedToolbarItem?.id === 'component';
 
                         // Calculate the same position that MapComponent uses for the Movable wrapper
                         const calculatedPosition = new ModernPositionCalculator();
                         const posX = calculatedPosition.maturityToX(el.maturity, mapDimensions.width);
                         const posY = calculatedPosition.visibilityToY(el.visibility, mapDimensions.height) + (el.offsetY ? el.offsetY : 0);
+
+                        // Calculate highlight circle radius based on component type/decorators
+                        const getHighlightRadius = (component: UnifiedComponent): number => {
+                            if (component.decorators?.ecosystem) {
+                                return 35; // Ecosystem symbol has r="30", so highlight should be slightly larger
+                            }
+                            if (component.decorators?.market) {
+                                return 25; // Market symbol is medium-sized, needs larger highlight
+                            }
+                            if (component.decorators?.buy || component.decorators?.build || component.decorators?.outsource) {
+                                return 20; // Method symbols have r="15", so highlight should be larger to be visible
+                            }
+                            return 15; // Default size for regular components
+                        };
+
+                        const highlightRadius = getHighlightRadius(el);
 
                         return (
                             <React.Fragment key={i}>
@@ -319,15 +352,17 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                     <circle
                                         cx={posX}
                                         cy={posY}
-                                        r={isMethodHighlighted ? 25 : 20}
+                                        r={highlightRadius}
                                         fill="none"
-                                        stroke={isMethodHighlighted ? '#4CAF50' : '#2196F3'}
-                                        strokeWidth={isMethodHighlighted ? 3 : 2}
-                                        strokeOpacity={isMethodHighlighted ? 0.8 : 0.5}
-                                        strokeDasharray={isMethodHighlighted ? '0' : '5,5'}
-                                        pointerEvents="none"
+                                        stroke="#2196F3"
+                                        strokeWidth="2"
+                                        strokeOpacity="0.5"
+                                        strokeDasharray="5,5"
+                                        pointerEvents="all"
+                                        className="method-hover-circle"
                                         style={{
-                                            animation: isMethodHighlighted ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease-in-out',
                                         }}
                                     />
                                 )}

@@ -48,8 +48,6 @@ const activeKeys = [
     // Usage.tsx
     'editor.example',
 
-    // QuickAdd.tsx
-    'components.quickAdd',
     'components.type',
     'components.text',
     'common.add',

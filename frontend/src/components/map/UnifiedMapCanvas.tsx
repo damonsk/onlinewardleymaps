@@ -11,6 +11,7 @@ import UnifiedMapContent from './UnifiedMapContent';
 import {useMapEventHandlers} from './hooks/useMapEventHandlers';
 import {DebugOverlay} from './debug/DebugOverlay';
 import {UnifiedMapCanvasProps} from './types/MapCanvasProps';
+import {findNearestComponent} from '../../utils/componentDetection';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
@@ -155,11 +156,37 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         enableZoomOnClick,
     });
 
-    // Handle element clicks for linking functionality
+    // Handle element clicks for linking functionality, method application, and component conversion
     const clicked = useCallback(
         (ctx: {el: any; e: MouseEvent<Element> | null}) => {
             console.log('mapElementsClicked::clicked', ctx);
             setHighlightLine(ctx.el.line || 0);
+
+            // Handle method application when a method tool is selected
+            if (props.selectedToolbarItem?.toolType === 'method-application' && ctx.el) {
+                const methodName = props.selectedToolbarItem.methodName;
+                if (methodName && props.onMethodApplication) {
+                    props.onMethodApplication(ctx.el, methodName);
+                }
+                return;
+            }
+
+            // Handle component conversion when component tool is selected
+            if (props.selectedToolbarItem?.id === 'component' && ctx.el) {
+                // Convert method components back to regular components
+                if (props.onMethodApplication) {
+                    props.onMethodApplication(ctx.el, 'component');
+                }
+                return;
+            }
+
+            // Handle component clicks for linking (existing functionality)
+            if (props.onComponentClick) {
+                props.onComponentClick(ctx.el);
+                return;
+            }
+
+            // Original linking functionality (fallback for old behavior)
             if (isModKeyPressed === false) return;
             if (ctx.e === null) return;
             const s = [...mapElementsClicked, {el: ctx.el, e: ctx.e}];
@@ -168,7 +195,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 setMapElementsClicked([]);
             } else setMapElementsClicked(s);
         },
-        [isModKeyPressed, mapElementsClicked, setHighlightLine, mutateMapText, mapText],
+        [isModKeyPressed, mapElementsClicked, setHighlightLine, mutateMapText, mapText, props.selectedToolbarItem, props.onMethodApplication, props.onComponentClick],
     );
 
     useEffect(() => {
@@ -364,7 +391,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         border: '1px solid rgba(0,0,0,0.1)',
                     }}>
                     <MapCanvasToolbar
-                        shouldHideNav={props.shouldHideNav || (() => {})}
+                        shouldHideNav={props.shouldHideNav || (() => { })}
                         hideNav={props.hideNav || false}
                         tool={tool}
                         handleChangeTool={(_event, newTool) => setTool(newTool)}

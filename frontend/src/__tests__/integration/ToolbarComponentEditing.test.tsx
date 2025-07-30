@@ -16,7 +16,6 @@ import {UnifiedWardleyMap} from '../../types/unified/map';
 // Mock the FeatureSwitchesContext
 jest.mock('../../components/FeatureSwitchesContext', () => ({
     useFeatureSwitches: () => ({
-        enableQuickAdd: true,
         enableAccelerators: true,
         showMapToolbar: true,
         allowMapZoomMouseWheel: true,

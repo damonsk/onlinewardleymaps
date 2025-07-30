@@ -16,7 +16,6 @@ import {UnifiedWardleyMap} from '../../types/unified/map';
 // Mock the FeatureSwitchesContext to enable both QuickAdd and toolbar
 jest.mock('../../components/FeatureSwitchesContext', () => ({
     useFeatureSwitches: () => ({
-        enableQuickAdd: true,
         enableAccelerators: true,
         showMapToolbar: true,
         allowMapZoomMouseWheel: true,
@@ -64,22 +63,8 @@ jest.mock('react-svg-pan-zoom', () => {
 
 // Mock other components to simplify testing
 jest.mock('../../components/map/CanvasSpeedDial', () => {
-    return function MockCanvasSpeedDial({setQuickAdd}: {setQuickAdd: (quickAdd: any) => void}) {
-        return (
-            <div data-testid="canvas-speed-dial">
-                <button
-                    data-testid="quickadd-activate"
-                    onClick={() => {
-                        console.log('QuickAdd activated in test');
-                        setQuickAdd({
-                            cursor: <div>cursor</div>,
-                            template: () => 'component QuickAdd Component [0.5, 0.5]',
-                        });
-                    }}>
-                    Activate QuickAdd
-                </button>
-            </div>
-        );
+    return function MockCanvasSpeedDial() {
+        return <div data-testid="canvas-speed-dial">Speed Dial Mock</div>;
     };
 });
 
@@ -293,8 +278,8 @@ describe('Toolbar Compatibility Integration Tests', () => {
         });
     };
 
-    describe('Requirement 6.1: Toolbar compatibility with QuickAdd functionality', () => {
-        it('should render both toolbar and QuickAdd speed dial', () => {
+    describe('Requirement 6.1: Toolbar functionality', () => {
+        it('should render toolbar and speed dial', () => {
             renderComponent();
 
             const toolbar = container.querySelector('[role="toolbar"]');
@@ -302,31 +287,6 @@ describe('Toolbar Compatibility Integration Tests', () => {
 
             expect(toolbar).toBeTruthy();
             expect(speedDial).toBeTruthy();
-        });
-
-        it('should allow switching between toolbar and QuickAdd modes', () => {
-            renderComponent();
-
-            // Select a toolbar item
-            const componentButton = container.querySelector('[aria-label*="Component"]');
-            act(() => {
-                componentButton?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            });
-            expect(componentButton?.getAttribute('aria-pressed')).toBe('true');
-
-            // Activate QuickAdd - should clear toolbar selection
-            const quickAddButton = container.querySelector('[data-testid="quickadd-activate"]');
-            act(() => {
-                quickAddButton?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            });
-
-            // Allow state updates to complete
-            act(() => {
-                // Force a re-render to ensure state is synchronized
-            });
-
-            // Toolbar selection should be cleared
-            expect(componentButton?.getAttribute('aria-pressed')).toBe('false');
         });
     });
 
@@ -415,7 +375,7 @@ A->B`;
             const mockSetNewComponentContext = jest.fn();
             renderComponent({setNewComponentContext: mockSetNewComponentContext});
 
-            // Double-click should trigger QuickAdd context
+            // Double-click should trigger component context
             const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
             act(() => {
                 const event = new MouseEvent('dblclick', {

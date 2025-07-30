@@ -2,7 +2,7 @@
 
 ## Overview
 
-The WYSIWYG toolbar feature will introduce a MIRO-style vertical toolbar positioned on the left side of the map canvas. This toolbar will provide visual icons for all available map components, allowing users to drag and drop elements directly onto the map. The feature builds upon the existing QuickAdd functionality but provides a more intuitive, visual interface.
+The WYSIWYG toolbar feature will introduce a MIRO-style vertical toolbar positioned on the left side of the map canvas. This toolbar will provide visual icons for all available map components, allowing users to drag and drop elements directly onto the map. The feature provides a visual interface for component placement.
 
 The design leverages the existing map infrastructure including the UnifiedMapCanvas, position calculation utilities, and map text mutation functions. The toolbar will integrate seamlessly with the current map rendering and editing capabilities.
 
@@ -18,7 +18,7 @@ MapView
 │   ├── LinkingPreview (NEW) - For component linking
 │   └── DrawingPreview (NEW) - For PST box drawing
 ├── UnifiedMapCanvas (MODIFIED)
-└── QuickAdd (EXISTING - Enhanced)
+└── Component Templates (EXISTING)
 ```
 
 ### State Management
@@ -37,7 +37,7 @@ The toolbar will use React state to manage:
 ### Integration Points
 - **UnifiedMapCanvas**: Enhanced to handle drop events and coordinate conversion
 - **MapView**: Container for the new toolbar component
-- **QuickAdd**: Template generation logic will be reused
+- **Component Templates**: Template generation logic will be reused
 - **Position Calculator**: Used for coordinate conversion from screen to map coordinates
 
 ## Components and Interfaces
@@ -461,7 +461,7 @@ const KEYBOARD_SHORTCUTS: Record<string, string> = {
 - Magnetic component detection and highlighting
 - Keyboard shortcut integration with toolbar selection
 - Keyboard shortcut behavior during different tool states
-- Interaction with existing QuickAdd functionality
+- Interaction with existing component placement functionality
 - Multi-tool usage scenarios
 
 ### Visual Regression Tests

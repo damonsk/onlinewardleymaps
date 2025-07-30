@@ -6,31 +6,6 @@
 import {ToolbarItem} from '../types/toolbar';
 
 /**
- * Ensures proper state synchronization between toolbar and QuickAdd functionality
- * Requirement 6.1: Toolbar compatibility with QuickAdd functionality
- */
-export const synchronizeToolbarQuickAddState = (
-    toolbarItem: ToolbarItem | null,
-    quickAddInProgress: boolean,
-    setQuickAddInProgress: (inProgress: boolean) => void,
-    setQuickAddTemplate: (template: () => () => string) => void,
-): {shouldClearQuickAdd: boolean; shouldClearToolbar: boolean} => {
-    // If toolbar item is selected and QuickAdd is in progress, clear QuickAdd
-    if (toolbarItem && quickAddInProgress) {
-        setQuickAddInProgress(false);
-        setQuickAddTemplate(() => () => 'nullTemplate');
-        return {shouldClearQuickAdd: true, shouldClearToolbar: false};
-    }
-
-    // If QuickAdd is activated and toolbar item is selected, clear toolbar
-    if (quickAddInProgress && toolbarItem) {
-        return {shouldClearQuickAdd: false, shouldClearToolbar: true};
-    }
-
-    return {shouldClearQuickAdd: false, shouldClearToolbar: false};
-};
-
-/**
  * Validates that toolbar placement doesn't interfere with existing map interactions
  * Requirement 6.3: Non-interference with map interactions
  */

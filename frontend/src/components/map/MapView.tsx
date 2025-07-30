@@ -6,10 +6,10 @@ import {MapAnnotationsPosition} from '../../types/base';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
 import {UnifiedWardleyMap} from '../../types/unified/map';
+import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {UnifiedComponent} from '../../types/unified/components';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
 import {
-    synchronizeToolbarQuickAddState,
     validateMapInteractionCompatibility,
     ensureToolbarComponentEditingCompatibility,
     getCompatibleCursorStyle,
@@ -17,7 +17,7 @@ import {
 import {findNearestComponent, linkExists, addLinkToMapText} from '../../utils/componentDetection';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {EditingProvider} from '../EditingContext';
-import CanvasSpeedDial from './CanvasSpeedDial';
+
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
 import WysiwygToolbar from './WysiwygToolbar';
@@ -45,8 +45,6 @@ export interface ModernMapViewProps {
 
 export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     const featureSwitches = useFeatureSwitches();
-    const [quickAddTemplate, setQuickAddTemplate] = useState(() => () => console.log('nullTemplate'));
-    const [quickAddInProgress, setQuickAddInProgress] = useState(false);
 
     // Debug mode for positioning issues
     const DEBUG_POSITIONING = true;
@@ -155,42 +153,25 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         return `url('data:image/svg+xml;base64,${base64SVG}')`;
     }
 
-    const setQuickAdd = (quickAdd: any) => {
-        // Use compatibility utility to synchronize state BEFORE changing QuickAdd state
-        const {shouldClearToolbar} = synchronizeToolbarQuickAddState(
-            selectedToolbarItem,
-            quickAddInProgress, // Current QuickAdd state
-            setQuickAddInProgress,
-            setQuickAddTemplate,
-        );
-
-        // Now activate QuickAdd
-        setQuickAddInProgress(true);
-        svgToBase64Url(ReactDOMServer.renderToString(quickAdd.cursor), 15, 15);
-        setQuickAddTemplate(() => () => quickAdd.template);
-
-        // Clear toolbar if needed (this will always be true when toolbar is selected)
-        if (selectedToolbarItem) {
-            setSelectedToolbarItem(null);
-            setIsValidDropZone(false);
-            showUserFeedback('Switched to QuickAdd mode', 'info');
-        }
-    };
-
-    const handleMapCanvasClick = () => {
-        if (!featureSwitches.enableQuickAdd) return;
-        if (quickAddInProgress) {
-            quickAddTemplate();
-            setQuickAddInProgress(false);
-        }
-    };
-
     // Handle toolbar item selection with enhanced state synchronization
     const handleToolbarItemSelect = useCallback(
         (item: ToolbarItem | null) => {
             console.log('Toolbar item selection changed:', item?.id || 'none');
 
-            setSelectedToolbarItem(item);
+            // Special handling for PST tool - default to Pioneer if no sub-item is selected
+            let finalItem = item;
+            if (item?.id === 'pst' && !item.selectedSubItem && item.subItems) {
+                const pioneerSubItem = PST_SUB_ITEMS.find(subItem => subItem.id === 'pioneers');
+                if (pioneerSubItem) {
+                    finalItem = {
+                        ...item,
+                        selectedSubItem: pioneerSubItem,
+                    };
+                    console.log('Auto-selected Pioneer for PST tool via keyboard shortcut');
+                }
+            }
+
+            setSelectedToolbarItem(finalItem);
 
             // Reset drop zone validation when selection changes
             if (!item) {
@@ -248,19 +229,6 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setMethodHighlightedComponent(null);
             }
 
-            // Use compatibility utility to synchronize state
-            const {shouldClearQuickAdd} = synchronizeToolbarQuickAddState(
-                item,
-                quickAddInProgress,
-                setQuickAddInProgress,
-                setQuickAddTemplate,
-            );
-
-            if (shouldClearQuickAdd) {
-                console.log('Clearing QuickAdd state due to toolbar selection');
-                showUserFeedback('Switched to toolbar mode', 'info');
-            }
-
             // Ensure map state is synchronized when toolbar selection changes
             if (item) {
                 // Clear any existing component context that might interfere with toolbar placement
@@ -273,7 +241,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 console.log('Toolbar deselected, returning to normal map interaction mode');
             }
         },
-        [quickAddInProgress, props.setNewComponentContext, showUserFeedback],
+        [props.setNewComponentContext, showUserFeedback],
     );
 
     // Helper function to handle pipeline placement with corresponding component
@@ -494,7 +462,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
     // Handle component click for linking workflow
     const handleComponentClick = useCallback(
-        (component: UnifiedComponent | null) => {
+        (component: UnifiedComponent | null, position?: {x: number; y: number}) => {
             // Helper function to reset all linking state
             const resetLinkingState = () => {
                 setLinkingState('idle');
@@ -508,9 +476,46 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setIsTargetDeleted(false);
             };
 
-            // Handle cancellation when clicking on empty areas (component is null)
+            // Handle clicking on empty areas (component is null)
             if (component === null) {
-                if (linkingState !== 'idle') {
+                // If we're selecting a target and have a position, create a new component and link to it
+                if (linkingState === 'selecting-target' && position && sourceComponent) {
+                    try {
+                        // Validate position
+                        if (position.x < 0 || position.x > 1 || position.y < 0 || position.y > 1) {
+                            showUserFeedback('Cannot create component outside the map boundaries.', 'error');
+                            return;
+                        }
+
+                        // Create a unique component name
+                        const existingComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                        const baseName = 'New Component';
+                        let componentName = baseName;
+                        let counter = 1;
+                        while (existingComponents.some(c => c.name === componentName)) {
+                            componentName = `${baseName} ${counter}`;
+                            counter++;
+                        }
+
+                        // Create the component text
+                        const componentText = `component ${componentName} [${position.y.toFixed(2)}, ${position.x.toFixed(2)}]`;
+                        const linkText = `${sourceComponent.name}->${componentName}`;
+
+                        // Add both component and link to map text
+                        const updatedMapText = props.mapText + '\r\n' + componentText + '\r\n' + linkText;
+                        props.mutateMapText(updatedMapText);
+
+                        showUserFeedback(`Created "${componentName}" and linked from "${sourceComponent.name}"`, 'success');
+
+                        // Reset linking state
+                        resetLinkingState();
+                    } catch (error) {
+                        console.error('Failed to create component and link:', error);
+                        showUserFeedback('Failed to create component and link. Please try again.', 'error');
+                        resetLinkingState();
+                    }
+                } else if (linkingState !== 'idle') {
+                    // For other cases, cancel linking
                     resetLinkingState();
                     showUserFeedback('Linking cancelled', 'info');
                 }
@@ -613,14 +618,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     setDrawingCurrentPosition({x: position.x, y: position.y});
                 }
 
-                // Handle method application highlighting
-                if (selectedToolbarItem?.toolType === 'method-application') {
-                    // Set the highlighted component for method application
-                    setMethodHighlightedComponent(position.nearestComponent || null);
-                } else {
-                    // Clear method highlighting when not in method application mode
-                    setMethodHighlightedComponent(null);
-                }
+                // Using CSS hover effects instead of JavaScript coordinate detection
+                setMethodHighlightedComponent(null);
 
                 // Check if source component still exists during linking
                 if (linkingState !== 'idle' && sourceComponent) {
@@ -762,7 +761,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 }
 
                 // Parse the existing component line to extract parts
-                const componentRegex = /^component\s+(.+?)\s*(\[.+?\])(\s*\([^)]+\))?(.*)$/;
+                // Updated regex to capture method and inertia separately
+                const componentRegex = /^component\s+(.+?)\s*(\[.+?\])(\s*\([^)]+\))?(\s+inertia)?(.*)$/;
                 const match = componentLine.match(componentRegex);
 
                 if (!match) {
@@ -771,18 +771,31 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     return;
                 }
 
-                const [, name, coordinates, existingMethod, rest] = match;
+                const [, name, coordinates, existingMethod, existingInertia, rest] = match;
 
-                // Create the new component line with the method
-                // Handle inertia specially - it can be written without parentheses
                 let newComponentLine;
-                if (methodName === 'inertia') {
-                    // For inertia, we can use the simpler syntax without parentheses
-                    newComponentLine = `component ${name} ${coordinates} ${methodName}${rest || ''}`;
+
+                if (methodName === 'component') {
+                    // Convert back to regular component - remove method but keep inertia if it exists
+                    newComponentLine = `component ${name} ${coordinates}${existingInertia || ''}${rest || ''}`;
+                    showUserFeedback(`Converted "${component.name}" back to regular component`, 'success');
+                } else if (methodName === 'inertia') {
+                    // Add or remove inertia - preserve existing method
+                    if (existingInertia) {
+                        // Remove inertia
+                        newComponentLine = `component ${name} ${coordinates}${existingMethod || ''}${rest || ''}`;
+                        showUserFeedback(`Removed inertia from "${component.name}"`, 'success');
+                    } else {
+                        // Add inertia
+                        newComponentLine = `component ${name} ${coordinates}${existingMethod || ''} inertia${rest || ''}`;
+                        showUserFeedback(`Added inertia to "${component.name}"`, 'success');
+                    }
                 } else {
-                    // For other methods (market, ecosystem, buy, build, outsource), use parentheses
+                    // Apply other methods (market, ecosystem, buy, build, outsource) - preserve inertia
                     const newMethod = `(${methodName})`;
-                    newComponentLine = `component ${name} ${coordinates} ${newMethod}${rest || ''}`;
+                    newComponentLine = `component ${name} ${coordinates} ${newMethod}${existingInertia || ''}${rest || ''}`;
+                    const actionText = existingMethod ? 'updated' : 'applied';
+                    showUserFeedback(`${methodName} method ${actionText} to "${component.name}"`, 'success');
                 }
 
                 // Update the map text
@@ -792,10 +805,6 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
                 // Apply the changes
                 props.mutateMapText(updatedMapText);
-
-                // Show success feedback
-                const actionText = existingMethod ? 'updated' : 'applied';
-                showUserFeedback(`${methodName} method ${actionText} to "${component.name}"`, 'success');
 
                 // Clear the toolbar selection and highlighting
                 setSelectedToolbarItem(null);
@@ -986,6 +995,13 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         ],
     );
 
+    // Handle map canvas click for zoom functionality
+    const handleMapCanvasClick = useCallback((pos: {x: number; y: number}) => {
+        // This handler is used for zoom functionality when enableZoomOnClick is true
+        // Currently no specific zoom behavior is implemented
+        console.log('Map canvas clicked at:', pos);
+    }, []);
+
     // Handle clicks outside the map to deselect toolbar items and cancel linking
     const handleContainerClick = useCallback(
         (event: React.MouseEvent) => {
@@ -1017,8 +1033,6 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     return (
         <EditingProvider>
             <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
-                {featureSwitches.enableQuickAdd && <CanvasSpeedDial setQuickAdd={setQuickAdd} mapStyleDefs={props.mapStyleDefs} />}
-
                 {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
                 <WysiwygToolbar
                     mapStyleDefs={props.mapStyleDefs}
@@ -1027,7 +1041,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     mutateMapText={props.mutateMapText}
                     selectedItem={selectedToolbarItem}
                     onItemSelect={handleToolbarItemSelect}
-                    keyboardShortcutsEnabled={!quickAddInProgress}
+                    keyboardShortcutsEnabled={true}
                 />
 
                 {/* Drag Preview */}

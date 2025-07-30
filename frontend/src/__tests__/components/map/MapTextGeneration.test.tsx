@@ -165,7 +165,9 @@ describe('Map Text Generation and Mutation', () => {
             const methodItems = TOOLBAR_ITEMS.filter(item => item.toolType === 'method-application');
 
             expect(methodItems).toHaveLength(6);
-            expect(methodItems.map(item => item.methodName)).toEqual(expect.arrayContaining(['buy', 'build', 'outsource', 'inertia', 'market', 'ecosystem']));
+            expect(methodItems.map(item => item.methodName)).toEqual(
+                expect.arrayContaining(['buy', 'build', 'outsource', 'inertia', 'market', 'ecosystem']),
+            );
 
             // Method items don't have templates because they work by applying decorators to existing components
             methodItems.forEach(item => {

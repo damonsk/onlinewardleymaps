@@ -93,6 +93,26 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({items, isO
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     /**
+     * Get theme-aware color for PST items
+     */
+    const getThemeColor = useCallback(
+        (itemId: string): string => {
+            if (mapStyleDefs.attitude && mapStyleDefs.attitude[itemId as keyof typeof mapStyleDefs.attitude]) {
+                const attitudeStyle = mapStyleDefs.attitude[itemId as keyof typeof mapStyleDefs.attitude];
+                return (attitudeStyle as any).fill || (attitudeStyle as any).stroke || '#3ccaf8';
+            }
+            // Fallback to original colors if theme doesn't have attitude colors
+            const fallbackColors: Record<string, string> = {
+                pioneers: '#3ccaf8',
+                settlers: '#599afa',
+                townplanners: '#936ff9',
+            };
+            return fallbackColors[itemId] || '#3ccaf8';
+        },
+        [mapStyleDefs],
+    );
+
+    /**
      * Handle item selection
      */
     const handleItemSelect = useCallback(
@@ -156,19 +176,22 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({items, isO
 
     return (
         <DropdownContainer ref={dropdownRef} $position={position} role="menu" aria-label="PST type selection" onKeyDown={handleKeyDown}>
-            {items.map((item, index) => (
-                <DropdownItem
-                    key={item.id}
-                    $color={item.color}
-                    onClick={() => handleItemSelect(item)}
-                    role="menuitem"
-                    tabIndex={0}
-                    aria-label={`Select ${item.label}`}
-                    data-testid={`dropdown-item-${item.id}`}>
-                    <ColorIndicator $color={item.color} />
-                    {item.label}
-                </DropdownItem>
-            ))}
+            {items.map((item, index) => {
+                const themeColor = getThemeColor(item.id);
+                return (
+                    <DropdownItem
+                        key={item.id}
+                        $color={themeColor}
+                        onClick={() => handleItemSelect(item)}
+                        role="menuitem"
+                        tabIndex={0}
+                        aria-label={`Select ${item.label}`}
+                        data-testid={`dropdown-item-${item.id}`}>
+                        <ColorIndicator $color={themeColor} />
+                        {item.label}
+                    </DropdownItem>
+                );
+            })}
         </DropdownContainer>
     );
 });

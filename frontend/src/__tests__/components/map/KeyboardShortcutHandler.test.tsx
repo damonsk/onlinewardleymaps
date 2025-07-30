@@ -224,11 +224,11 @@ describe('KeyboardShortcutHandler', () => {
             document.body.appendChild(container);
             root = createRoot(container);
             mockOnToolSelect.mockClear();
-            
+
             // Mock the function to return the correct toolbar item for this shortcut
             const expectedToolbarItem = TOOLBAR_ITEMS.find(item => item.id === shortcut.toolId);
             mockGetToolbarItemByShortcut.mockReturnValue(expectedToolbarItem);
-            
+
             renderComponent();
             act(() => {
                 document.dispatchEvent(new KeyboardEvent('keydown', {key: shortcut.key}));

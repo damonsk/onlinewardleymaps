@@ -239,7 +239,7 @@ export const PipelineStrategyRunner: any;
 export const PipelineVersion2: any;
 export const PositionCalculator: any;
 export const PresentationExtractionStrategy: any;
-export const QuickAdd: any;
+
 export const RelativeMovable: any;
 export const SubMapExtractionStrategy: any;
 export const SubMapSymbol: any;

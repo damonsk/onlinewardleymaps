@@ -29,7 +29,7 @@ const PreviewContainer = styled.div<{
  * Compact and subtle design for better user experience
  */
 const GhostPreview = styled.div<{isValidDropZone: boolean}>`
-    background: ${props => (props.isValidDropZone ? 'rgba(25, 118, 210, 0.1)' : 'rgba(211, 47, 47, 0.1)')};
+    background: ${props => (props.isValidDropZone ? 'rgba(25, 118, 210, 0.05)' : 'rgba(211, 47, 47, 0.05)')};
     border: 1px solid ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
     border-radius: 4px;
     padding: 4px 8px;
@@ -66,18 +66,18 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
 
     /* Theme-specific styling */
     .wardley & {
-        background: ${props => (props.isValidDropZone ? '#e3f2fd' : '#ffebee')};
+        background: ${props => (props.isValidDropZone ? 'rgba(227, 242, 253, 0.3)' : 'rgba(255, 235, 238, 0.3)')};
         border-color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
 
         @keyframes pulse-valid {
             0%,
             100% {
                 border-color: #1976d2;
-                background: #e3f2fd;
+                background: rgba(227, 242, 253, 0.3);
             }
             50% {
                 border-color: #42a5f5;
-                background: #f3f9ff;
+                background: rgba(243, 249, 255, 0.3);
             }
         }
 
@@ -85,28 +85,28 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
             0%,
             100% {
                 border-color: #d32f2f;
-                background: #ffebee;
+                background: rgba(255, 235, 238, 0.3);
             }
             50% {
                 border-color: #f44336;
-                background: #fce4ec;
+                background: rgba(252, 228, 236, 0.3);
             }
         }
     }
 
     .colour & {
-        background: ${props => (props.isValidDropZone ? '#eaf5e0' : '#ffebee')};
+        background: ${props => (props.isValidDropZone ? 'rgba(234, 245, 224, 0.3)' : 'rgba(255, 235, 238, 0.3)')};
         border-color: ${props => (props.isValidDropZone ? '#8cb358' : '#d32f2f')};
 
         @keyframes pulse-valid {
             0%,
             100% {
                 border-color: #8cb358;
-                background: #eaf5e0;
+                background: rgba(234, 245, 224, 0.3);
             }
             50% {
                 border-color: #a4c97e;
-                background: #f3f9e8;
+                background: rgba(243, 249, 232, 0.3);
             }
         }
 
@@ -114,28 +114,28 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
             0%,
             100% {
                 border-color: #d32f2f;
-                background: #ffebee;
+                background: rgba(255, 235, 238, 0.3);
             }
             50% {
                 border-color: #f44336;
-                background: #fce4ec;
+                background: rgba(252, 228, 236, 0.3);
             }
         }
     }
 
     .plain & {
-        background: ${props => (props.isValidDropZone ? '#e3f2fd' : '#ffebee')};
+        background: ${props => (props.isValidDropZone ? 'rgba(227, 242, 253, 0.3)' : 'rgba(255, 235, 238, 0.3)')};
         border-color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
     }
 
     .handwritten & {
-        background: ${props => (props.isValidDropZone ? '#f0f4f8' : '#ffebee')};
+        background: ${props => (props.isValidDropZone ? 'rgba(240, 244, 248, 0.3)' : 'rgba(255, 235, 238, 0.3)')};
         border-color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
         font-family: 'Gloria Hallelujah', cursive;
     }
 
     .dark & {
-        background: ${props => (props.isValidDropZone ? '#1e3a8a' : '#7f1d1d')};
+        background: ${props => (props.isValidDropZone ? 'rgba(30, 58, 138, 0.3)' : 'rgba(127, 29, 29, 0.3)')};
         border-color: ${props => (props.isValidDropZone ? '#3b82f6' : '#ef4444')};
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 
@@ -143,11 +143,11 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
             0%,
             100% {
                 border-color: #3b82f6;
-                background: #1e3a8a;
+                background: rgba(30, 58, 138, 0.3);
             }
             50% {
                 border-color: #60a5fa;
-                background: #1e40af;
+                background: rgba(30, 64, 175, 0.3);
             }
         }
 
@@ -155,18 +155,18 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
             0%,
             100% {
                 border-color: #ef4444;
-                background: #7f1d1d;
+                background: rgba(127, 29, 29, 0.3);
             }
             50% {
                 border-color: #f87171;
-                background: #991b1b;
+                background: rgba(153, 27, 27, 0.3);
             }
         }
     }
 
     /* Dark theme support */
     @media (prefers-color-scheme: dark) {
-        background: ${props => (props.isValidDropZone ? '#1e3a8a' : '#7f1d1d')};
+        background: ${props => (props.isValidDropZone ? 'rgba(30, 58, 138, 0.3)' : 'rgba(127, 29, 29, 0.3)')};
         border-color: ${props => (props.isValidDropZone ? '#3b82f6' : '#ef4444')};
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 
@@ -174,11 +174,11 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
             0%,
             100% {
                 border-color: #3b82f6;
-                background: #1e3a8a;
+                background: rgba(30, 58, 138, 0.3);
             }
             50% {
                 border-color: #60a5fa;
-                background: #1e40af;
+                background: rgba(30, 64, 175, 0.3);
             }
         }
 
@@ -186,11 +186,11 @@ const GhostPreview = styled.div<{isValidDropZone: boolean}>`
             0%,
             100% {
                 border-color: #ef4444;
-                background: #7f1d1d;
+                background: rgba(127, 29, 29, 0.3);
             }
             50% {
                 border-color: #f87171;
-                background: #991b1b;
+                background: rgba(153, 27, 27, 0.3);
             }
         }
     }
@@ -402,9 +402,8 @@ export const DragPreview: React.FC<DragPreviewProps> = memo(({selectedItem, mous
                         onClick={() => {}} // No-op for preview
                     />
                 </PreviewIcon>
-                <PreviewLabel isValidDropZone={isValidDropZone}>{selectedItem.label}</PreviewLabel>
                 <DropZoneIndicator isValidDropZone={isValidDropZone}>
-                    {isValidDropZone ? 'Drop to place' : 'Invalid drop zone'}
+                    {isValidDropZone ? 'Click to Drop' : 'Invalid drop zone'}
                 </DropZoneIndicator>
             </GhostPreview>
         </PreviewContainer>

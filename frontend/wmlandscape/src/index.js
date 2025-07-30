@@ -53,7 +53,6 @@ import * as FeatureSwitches from '../../src/constants/featureswitches';
 import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
 
-import QuickAdd from '../../src/components/actions/QuickAdd';
 import {FeatureSwitchesContext, FeatureSwitchesProvider, useFeatureSwitches} from '../../src/components/FeatureSwitchesContext';
 import {ModKeyPressedContext, ModKeyPressedProvider, useModKeyPressedConsumer} from '../../src/components/KeyPressContext';
 import FluidLink from '../../src/components/map/FluidLink';
@@ -186,7 +185,6 @@ export {
     PipelineVersion2,
     PositionCalculator,
     PresentationExtractionStrategy,
-    QuickAdd,
     RelativeMovable,
     SingletonPositionUpdater,
     SubMapExtractionStrategy,

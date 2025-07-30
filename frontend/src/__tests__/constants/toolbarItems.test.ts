@@ -86,14 +86,16 @@ describe('Toolbar Items Configuration', () => {
             const methodTools = TOOLBAR_ITEMS.filter(item => item.category === 'method');
 
             expect(methodTools).toHaveLength(6);
-            expect(methodTools.map(tool => tool.id)).toEqual(expect.arrayContaining([
-                'method-build', 
-                'method-buy', 
-                'method-outsource',
-                'method-inertia',
-                'method-market',
-                'method-ecosystem'
-            ]));
+            expect(methodTools.map(tool => tool.id)).toEqual(
+                expect.arrayContaining([
+                    'method-build',
+                    'method-buy',
+                    'method-outsource',
+                    'method-inertia',
+                    'method-market',
+                    'method-ecosystem',
+                ]),
+            );
         });
 
         test('should have method-application toolType for all method tools', () => {

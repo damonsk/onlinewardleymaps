@@ -21,7 +21,7 @@ interface MapEventHandlersProps {
     onMouseMove?: (position: {x: number; y: number; nearestComponent?: UnifiedComponent | null}) => void;
     onMouseDown?: (position: {x: number; y: number}) => void;
     onMouseUp?: (position: {x: number; y: number}) => void;
-    onComponentClick?: (component: UnifiedComponent | null) => void;
+    onComponentClick?: (component: UnifiedComponent | null, position?: {x: number; y: number}) => void;
     onMethodApplication?: (component: UnifiedComponent, method: string) => void;
     handleMapCanvasClick?: (pos: {x: number; y: number}) => void;
     setNewComponentContext?: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
@@ -102,6 +102,50 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
         ],
     );
 
+    const handleComponentConversion = useCallback(
+        (event: any) => {
+            if (!props.onMethodApplication || !props.selectedToolbarItem || props.selectedToolbarItem.id !== 'component') return false;
+
+            const svgX = event.x || 0;
+            const svgY = event.y || 0;
+            const coordinates = convertSvgToMapCoordinates(svgX, svgY);
+
+            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const methodCompatibleComponents = allComponents.filter(component => {
+                return component.type === 'component' && !component.pipeline;
+            });
+
+            if (props.highlightedComponent && methodCompatibleComponents.some(c => c.id === props.highlightedComponent!.id)) {
+                // Convert the highlighted component to a regular component
+                props.onMethodApplication(props.highlightedComponent, 'component');
+            } else {
+                // Use raw SVG coordinates for component detection (matches double-click behavior)
+                const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
+                const clickedComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
+
+                if (clickedComponent) {
+                    // Convert the clicked component to a regular component
+                    props.onMethodApplication(clickedComponent, 'component');
+                } else if (props.onToolbarItemDrop) {
+                    // Create new regular component using corrected coordinates
+                    const offsetCorrection = {x: -30, y: -40};
+                    const correctedCoordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
+
+                    props.onToolbarItemDrop(props.selectedToolbarItem, correctedCoordinates);
+                }
+            }
+            return true;
+        },
+        [
+            props.onMethodApplication,
+            props.selectedToolbarItem,
+            props.highlightedComponent,
+            props.wardleyMap,
+            props.onToolbarItemDrop,
+            convertSvgToMapCoordinates,
+        ],
+    );
+
     const handleLinkingMode = useCallback(
         (event: any) => {
             if (!props.linkingState || props.linkingState === 'idle' || !props.onComponentClick) return false;
@@ -116,11 +160,18 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
                 const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
                 const clickedComponent = findNearestComponent(coordinates, allComponents, 0.05);
 
-                props.onComponentClick(clickedComponent || null);
+                if (clickedComponent) {
+                    props.onComponentClick(clickedComponent);
+                } else {
+                    // Pass the coordinates when no component is found
+                    const offsetCorrection = {x: -30, y: -40};
+                    const correctedCoordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
+                    props.onComponentClick(null, correctedCoordinates);
+                }
             }
             return true;
         },
-        [props.linkingState, props.onComponentClick, props.highlightedComponent, props.wardleyMap, convertSvgToMapCoordinates],
+        [props.linkingState, props.onComponentClick, props.highlightedComponent, props.wardleyMap, props.onToolbarItemDrop, convertSvgToMapCoordinates],
     );
 
     const handleToolbarItemPlacement = useCallback(
@@ -145,6 +196,7 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
             // Handle different interaction modes in priority order
             if (props.selectedToolbarItem?.toolType === 'drawing' && handleDrawingMode(event)) return;
             if (props.selectedToolbarItem?.toolType === 'method-application' && handleMethodApplication(event)) return;
+            if (props.selectedToolbarItem?.id === 'component' && handleComponentConversion(event)) return;
             if (handleLinkingMode(event)) return;
             if (handleToolbarItemPlacement(event)) return;
 
@@ -160,6 +212,7 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
             props.handleMapCanvasClick,
             handleDrawingMode,
             handleMethodApplication,
+            handleComponentConversion,
             handleLinkingMode,
             handleToolbarItemPlacement,
         ],
@@ -202,6 +255,16 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
                 const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
                 const nearestComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
                 props.onMouseMove({...coordinates, nearestComponent});
+            } else if (props.selectedToolbarItem?.id === 'component') {
+                // Handle component conversion mode - same logic as method application
+                const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                const methodCompatibleComponents = allComponents.filter(component => {
+                    return component.type === 'component' && !component.pipeline;
+                });
+                // Use raw SVG coordinates for component detection (matches double-click behavior)
+                const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
+                const nearestComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
+                props.onMouseMove({...coordinates, nearestComponent});
             } else if (props.linkingState === 'selecting-source' || props.linkingState === 'selecting-target') {
                 const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
                 const nearestComponent = findNearestComponent(coordinates, allComponents, 0.1);
@@ -213,7 +276,7 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
 
     const handleMapMouseUp = useCallback(
         (event: any) => {
-            if (!props.onMouseUp || !props.selectedToolbarItem?.toolType === 'drawing') return;
+            if (!props.onMouseUp || props.selectedToolbarItem?.toolType !== 'drawing') return;
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;

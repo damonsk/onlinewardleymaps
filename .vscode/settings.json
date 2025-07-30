@@ -26,7 +26,6 @@
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
   "eslint.lintTask.enable": true,
   "eslint.run": "onSave",
-  "eslint.workingDirectories": ["frontend"],
   "eslint.debug": true,
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
   "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,

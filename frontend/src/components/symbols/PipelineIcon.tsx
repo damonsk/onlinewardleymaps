@@ -24,11 +24,10 @@ export const PipelineIcon: React.FunctionComponent<IconProps> = ({id, hideLabel,
                 </text>
             )}
             <g transform="translate(21, 21) scale(0.8)">
-                {/* Pipeline box representation */}
-                <rect x="-15" y="-10" width="30" height="20" stroke={stroke} strokeWidth="1" fill={fill} />
-                {/* Internal pipeline segments */}
-                <line x1="-15" y1="-3" x2="15" y2="-3" stroke={stroke} strokeWidth="1" />
-                <line x1="-15" y1="4" x2="15" y2="4" stroke={stroke} strokeWidth="1" />
+                {/* Horizontal pipeline box - wider and thinner */}
+                <rect x="-18" y="-6" width="36" height="12" stroke={stroke} strokeWidth="2" fill={fill} />
+                {/* Small square centered on top line both horizontally and vertically */}
+                <rect x="-3" y="-9" width="6" height="6" stroke={stroke} strokeWidth="2" fill={fill} />
             </g>
         </SVGWrapper>
     );

@@ -16,7 +16,7 @@ import {MapAnnotationsPosition, MapSize} from '../types/base';
 import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
 import {ModKeyPressedProvider} from './KeyPressContext';
-import QuickAdd from './actions/QuickAdd';
+
 import {ResizableSplitPane} from './common/ResizableSplitPane';
 import {Breadcrumb} from './editor/Breadcrumb';
 import Editor from './editor/Editor';
@@ -653,14 +653,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                     <Button onClick={() => mapActions.setShowUsage(false)}>{t('common.close', 'Close')}</Button>
                 </DialogActions>
             </Dialog>
-
-            <QuickAdd
-                newComponentContext={legacyState.newComponentContext}
-                mutateMapText={mutateMapText}
-                setNewComponentContext={legacyState.setNewComponentContext}
-                mapText={legacyState.mapText}
-                mapStyleDefs={legacyState.mapStyleDefs}
-            />
 
             <Backdrop
                 sx={{
