@@ -4,6 +4,8 @@ import {TOOLBAR_ITEMS, getToolbarItemById} from '../../constants/toolbarItems';
 import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
 import {ToolbarItem} from './ToolbarItem';
 import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
+import {ToolbarUndoIcon, ToolbarRedoIcon} from './ToolbarIconWrappers';
+import {useUndoRedo} from '../UndoRedoProvider';
 
 /**
  * Styled container for the WYSIWYG toolbar
@@ -183,6 +185,211 @@ const ToolbarSeparator = styled.div`
 `;
 
 /**
+ * Specialized toolbar item component for undo/redo actions
+ * Handles disabled state and shows appropriate tooltips
+ */
+const UndoRedoToolbarItem: React.FC<{
+    item: ToolbarItemType;
+    isDisabled: boolean;
+    onClick: () => void;
+    mapStyleDefs: any;
+    tooltipText: string;
+}> = memo(({item, isDisabled, onClick, mapStyleDefs, tooltipText}) => {
+    const [announceText, setAnnounceText] = useState('');
+
+    const handleClick = useCallback(() => {
+        if (isDisabled) return;
+
+        onClick();
+
+        // Announce action for screen readers
+        setAnnounceText(`${item.label} action performed`);
+        setTimeout(() => setAnnounceText(''), 1000);
+    }, [onClick, item.label, isDisabled]);
+
+    const handleKeyDown = useCallback(
+        (event: React.KeyboardEvent<HTMLButtonElement>) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                handleClick();
+            }
+        },
+        [handleClick],
+    );
+
+    return (
+        <>
+            <StyledToolbarButton
+                $isSelected={false}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                title={tooltipText}
+                aria-label={`${item.label}${isDisabled ? ' (disabled)' : ''}`}
+                disabled={isDisabled}
+                role="button"
+                tabIndex={0}
+                data-testid={`toolbar-item-${item.id}`}>
+                <IconContainer>
+                    {item.id === 'undo' ? (
+                        <ToolbarUndoIcon id={`toolbar-${item.id}`} mapStyleDefs={mapStyleDefs} disabled={isDisabled} />
+                    ) : (
+                        <ToolbarRedoIcon id={`toolbar-${item.id}`} mapStyleDefs={mapStyleDefs} disabled={isDisabled} />
+                    )}
+                </IconContainer>
+            </StyledToolbarButton>
+
+            {/* Screen reader announcements */}
+            {announceText && (
+                <ScreenReaderAnnouncement role="status" aria-live="polite" aria-atomic="true">
+                    {announceText}
+                </ScreenReaderAnnouncement>
+            )}
+        </>
+    );
+});
+
+UndoRedoToolbarItem.displayName = 'UndoRedoToolbarItem';
+
+/**
+ * Screen reader announcement component for accessibility
+ */
+const ScreenReaderAnnouncement = styled.div`
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+`;
+
+/**
+ * Styled button for individual toolbar items with MIRO-style design
+ * Enhanced with theme-specific styling for consistent appearance across all map themes
+ */
+const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 8px;
+    background: ${props => (props.$isSelected ? '#e3f2fd' : 'transparent')};
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+    outline: none;
+
+    /* Hover state */
+    &:hover {
+        background: ${props => (props.$isSelected ? '#e3f2fd' : '#f5f5f5')};
+        transform: scale(1.05);
+    }
+
+    /* Active state */
+    &:active {
+        transform: scale(0.95);
+    }
+
+    /* Focus state for keyboard navigation */
+    &:focus-visible {
+        outline: 2px solid #1976d2;
+        outline-offset: 2px;
+    }
+
+    /* Selected state indicator */
+    ${props =>
+        props.$isSelected &&
+        `
+        &::after {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 20px;
+            background: #1976d2;
+            border-radius: 2px;
+        }
+    `}
+
+    /* Disabled state */
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+
+        &:hover {
+            transform: none;
+            background: transparent;
+        }
+    }
+
+    /* Dark theme support */
+    @media (prefers-color-scheme: dark) {
+        background: ${props => (props.$isSelected ? '#3182ce' : 'transparent')};
+
+        &:hover {
+            background: ${props => (props.$isSelected ? '#3182ce' : '#4a5568')};
+        }
+
+        &:focus-visible {
+            outline-color: #63b3ed;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        background: ${props => (props.$isSelected ? '#000000' : 'transparent')};
+        border: 1px solid ${props => (props.$isSelected ? '#000000' : 'transparent')};
+
+        &:hover {
+            background: ${props => (props.$isSelected ? '#000000' : '#f0f0f0')};
+            border: 1px solid #000000;
+        }
+
+        &:focus-visible {
+            outline: 3px solid #000000;
+            outline-offset: 2px;
+        }
+    }
+
+    @media (prefers-color-scheme: dark) and (prefers-contrast: high) {
+        background: ${props => (props.$isSelected ? '#ffffff' : 'transparent')};
+        border: 1px solid ${props => (props.$isSelected ? '#ffffff' : 'transparent')};
+
+        &:hover {
+            background: ${props => (props.$isSelected ? '#ffffff' : '#333333')};
+            border: 1px solid #ffffff;
+        }
+
+        &:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 2px;
+        }
+    }
+
+    /* Responsive behavior */
+    @media (max-width: 768px) {
+        width: 38px;
+        height: 38px;
+    }
+`;
+
+/**
+ * Icon container with consistent scaling
+ */
+const IconContainer = styled.div`
+    transform: scale(0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+/**
  * Hook for managing toolbar position and drag functionality
  */
 const useToolbarDrag = () => {
@@ -296,11 +503,25 @@ const useToolbarDrag = () => {
 };
 
 /**
+ * Hook to safely access undo/redo context (returns null if not available)
+ */
+const useOptionalUndoRedo = () => {
+    try {
+        return useUndoRedo();
+    } catch (error) {
+        // UndoRedoProvider not available, return null
+        return null;
+    }
+};
+
+/**
  * Main WYSIWYG Toolbar component
  * Provides a moveable vertical toolbar with all available map components
  */
 export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
     ({mapStyleDefs, selectedItem, onItemSelect, keyboardShortcutsEnabled = true}) => {
+        // Access undo/redo context (optional)
+        const undoRedoContext = useOptionalUndoRedo();
         // Force a re-render after initial mount to ensure styled-components classes are stable
         const [renderKey, setRenderKey] = useState(0);
 
@@ -315,6 +536,16 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
 
         const handleItemClick = useCallback(
             (item: ToolbarItemType) => {
+                // Handle action items (undo/redo) differently
+                if (item.toolType === 'action' && undoRedoContext) {
+                    if (item.action === 'undo') {
+                        undoRedoContext.undo();
+                    } else if (item.action === 'redo') {
+                        undoRedoContext.redo();
+                    }
+                    return;
+                }
+
                 // Toggle selection - if already selected, deselect
                 if (selectedItem?.id === item.id) {
                     onItemSelect?.(null);
@@ -322,7 +553,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     onItemSelect?.(item);
                 }
             },
-            [selectedItem, onItemSelect],
+            [selectedItem, onItemSelect, undoRedoContext],
         );
 
         /**
@@ -367,6 +598,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         const linkItems = TOOLBAR_ITEMS.filter(item => item.category === 'link');
         const pstItems = TOOLBAR_ITEMS.filter(item => item.category === 'pst');
         const otherItems = TOOLBAR_ITEMS.filter(item => item.category === 'pipeline' || item.category === 'other');
+        // Only show action items if undo/redo context is available
+        const actionItems = undoRedoContext ? TOOLBAR_ITEMS.filter(item => item.category === 'action') : [];
 
         return (
             <>
@@ -486,6 +719,44 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                             mapStyleDefs={mapStyleDefs}
                         />
                     ))}
+
+                    {/* Separator between other items and actions */}
+                    {actionItems.length > 0 && <ToolbarSeparator />}
+
+                    {/* Action items (undo/redo) - only show if context is available */}
+                    {undoRedoContext &&
+                        actionItems.map(item => {
+                            const isUndo = item.action === 'undo';
+                            const isRedo = item.action === 'redo';
+                            const isDisabled = isUndo ? !undoRedoContext.canUndo : !undoRedoContext.canRedo;
+
+                            // Get tooltip text with action description
+                            let tooltipText = item.label;
+                            if (isUndo && undoRedoContext.canUndo) {
+                                const lastAction = undoRedoContext.getLastAction();
+                                if (lastAction) {
+                                    tooltipText = `Undo: ${lastAction.actionDescription}`;
+                                }
+                            } else if (isRedo && undoRedoContext.canRedo) {
+                                const nextAction = undoRedoContext.getNextAction();
+                                if (nextAction) {
+                                    tooltipText = `Redo: ${nextAction.actionDescription}`;
+                                }
+                            } else {
+                                tooltipText = isUndo ? 'No actions to undo' : 'No actions to redo';
+                            }
+
+                            return (
+                                <UndoRedoToolbarItem
+                                    key={item.id}
+                                    item={item}
+                                    isDisabled={isDisabled}
+                                    onClick={() => handleItemClick(item)}
+                                    mapStyleDefs={mapStyleDefs}
+                                    tooltipText={tooltipText}
+                                />
+                            );
+                        })}
                 </ToolbarContainer>
             </>
         );

@@ -6,6 +6,7 @@ import {MapAnnotationsPosition} from '../../types/base';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
 import {UnifiedWardleyMap} from '../../types/unified/map';
+import {ActionType} from '../../types/undo-redo';
 import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {UnifiedComponent} from '../../types/unified/components';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
@@ -35,7 +36,7 @@ export interface ModernMapViewProps {
     mapEvolutionStates: EvolutionStages;
     mapRef: React.MutableRefObject<HTMLElement | null>;
     mapText: string;
-    mutateMapText: (newText: string) => void;
+    mutateMapText: (newText: string, actionType?: ActionType, description?: string, groupId?: string) => void;
     evolutionOffsets: Offsets;
     launchUrl: (urlId: string) => void;
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
@@ -45,6 +46,9 @@ export interface ModernMapViewProps {
 
 export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     const featureSwitches = useFeatureSwitches();
+
+    // Use the mutateMapText prop passed down from MapEnvironment (which is already enhanced)
+    const enhancedMutateMapText = props.mutateMapText;
 
     // Debug mode for positioning issues
     const DEBUG_POSITIONING = true;
@@ -281,7 +285,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 const updatedMapText = currentText.trim() + (currentText.trim() ? '\n' : '') + combinedText;
 
                 // Update map text
-                props.mutateMapText(updatedMapText);
+                enhancedMutateMapText(updatedMapText, 'toolbar-component', `Added pipeline component "${componentName}"`);
                 showUserFeedback(`Pipeline "${componentName}" with component added successfully!`, 'success');
 
                 return true;
@@ -290,7 +294,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 return false;
             }
         },
-        [props.wardleyMap.components, props.mapText, props.mutateMapText, showUserFeedback],
+        [props.wardleyMap.components, props.mapText, enhancedMutateMapText, showUserFeedback],
     );
 
     // Handle toolbar item drop (component placement) with comprehensive error handling
@@ -375,7 +379,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
                 // Update map text with the enhanced result
                 try {
-                    props.mutateMapText(result.updatedMapText);
+                    enhancedMutateMapText(result.updatedMapText, 'toolbar-component', `Added component "${result.componentName}"`);
                     showUserFeedback(`Component "${result.componentName}" added successfully!`, 'success');
                 } catch (mutationError) {
                     console.error('Map text mutation failed:', mutationError);
@@ -440,7 +444,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
                     // Apply the map text mutation with error handling
                     try {
-                        props.mutateMapText(updatedMapText);
+                        enhancedMutateMapText(updatedMapText, 'toolbar-component', `Added component "${componentName}" (fallback method)`);
                         showUserFeedback(`Component "${componentName}" added successfully!`, 'success');
                         console.log('Component placed using fallback method');
                     } catch (mutationError) {
@@ -457,7 +461,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setIsValidDropZone(false);
             }
         },
-        [props.wardleyMap.components, props.mapText, props.mutateMapText, handlePipelinePlacement],
+        [props.wardleyMap.components, props.mapText, enhancedMutateMapText, handlePipelinePlacement],
     );
 
     // Handle component click for linking workflow
@@ -503,7 +507,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
                         // Add both component and link to map text
                         const updatedMapText = props.mapText + '\r\n' + componentText + '\r\n' + linkText;
-                        props.mutateMapText(updatedMapText);
+                        enhancedMutateMapText(updatedMapText, 'toolbar-component', `Added component "${componentName}" with link`);
 
                         showUserFeedback(`Created "${componentName}" and linked from "${sourceComponent.name}"`, 'success');
 
@@ -567,7 +571,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 try {
                     // Add link to map text
                     const updatedMapText = addLinkToMapText(props.mapText, sourceComponent, component);
-                    props.mutateMapText(updatedMapText);
+                    enhancedMutateMapText(updatedMapText, 'toolbar-link', `Added link: "${sourceComponent.name}" → "${component.name}"`);
                     showUserFeedback(`Link created: "${sourceComponent.name}" → "${component.name}"`, 'success');
 
                     // Reset linking state
@@ -587,7 +591,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             props.wardleyMap.components,
             props.wardleyMap.anchors,
             props.mapText,
-            props.mutateMapText,
+            enhancedMutateMapText,
             showUserFeedback,
         ],
     );
@@ -804,7 +808,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 const updatedMapText = updatedLines.join('\n');
 
                 // Apply the changes
-                props.mutateMapText(updatedMapText);
+                enhancedMutateMapText(updatedMapText, 'toolbar-method', `Applied method to "${component.name}"`);
 
                 // Clear the toolbar selection and highlighting
                 setSelectedToolbarItem(null);
@@ -817,7 +821,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 setMethodHighlightedComponent(null);
             }
         },
-        [props.wardleyMap.components, props.wardleyMap.anchors, props.mapText, props.mutateMapText, showUserFeedback],
+        [props.wardleyMap.components, props.wardleyMap.anchors, props.mapText, enhancedMutateMapText, showUserFeedback],
     );
 
     // Handle mouse down for PST box drawing
@@ -960,7 +964,11 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     const updatedMapText = currentText.trim() + (currentText.trim() ? '\n' : '') + pstText;
 
                     // Update map text and provide user feedback
-                    props.mutateMapText(updatedMapText);
+                    enhancedMutateMapText(
+                        updatedMapText,
+                        'toolbar-pst',
+                        `Added PST box (${Math.round(width * 100)}% × ${Math.round(height * 100)}%)`,
+                    );
 
                     const boxSize = `${Math.round(width * 100)}% × ${Math.round(height * 100)}%`;
                     showUserFeedback(`${selectedToolbarItem.selectedSubItem.label} box created successfully! (${boxSize})`, 'success');
@@ -990,7 +998,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             drawingCurrentPosition,
             selectedToolbarItem,
             props.mapText,
-            props.mutateMapText,
+            enhancedMutateMapText,
             showUserFeedback,
         ],
     );
@@ -1038,7 +1046,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     mapStyleDefs={props.mapStyleDefs}
                     mapDimensions={props.mapDimensions}
                     mapText={props.mapText}
-                    mutateMapText={props.mutateMapText}
+                    mutateMapText={enhancedMutateMapText}
                     selectedItem={selectedToolbarItem}
                     onItemSelect={handleToolbarItemSelect}
                     keyboardShortcutsEnabled={true}
@@ -1139,7 +1147,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                         mapEvolutionStates={props.mapEvolutionStates}
                         evolutionOffsets={props.evolutionOffsets}
                         mapText={props.mapText}
-                        mutateMapText={props.mutateMapText}
+                        mutateMapText={enhancedMutateMapText}
                         setHighlightLine={props.setHighlightLine}
                         setNewComponentContext={props.setNewComponentContext}
                         launchUrl={props.launchUrl}

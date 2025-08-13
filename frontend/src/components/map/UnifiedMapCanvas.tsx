@@ -195,7 +195,16 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 setMapElementsClicked([]);
             } else setMapElementsClicked(s);
         },
-        [isModKeyPressed, mapElementsClicked, setHighlightLine, mutateMapText, mapText, props.selectedToolbarItem, props.onMethodApplication, props.onComponentClick],
+        [
+            isModKeyPressed,
+            mapElementsClicked,
+            setHighlightLine,
+            mutateMapText,
+            mapText,
+            props.selectedToolbarItem,
+            props.onMethodApplication,
+            props.onComponentClick,
+        ],
     );
 
     useEffect(() => {
@@ -391,7 +400,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         border: '1px solid rgba(0,0,0,0.1)',
                     }}>
                     <MapCanvasToolbar
-                        shouldHideNav={props.shouldHideNav || (() => { })}
+                        shouldHideNav={props.shouldHideNav || (() => {})}
                         hideNav={props.hideNav || false}
                         tool={tool}
                         handleChangeTool={(_event, newTool) => setTool(newTool)}

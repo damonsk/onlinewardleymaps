@@ -97,8 +97,8 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({items, isO
      */
     const getThemeColor = useCallback(
         (itemId: string): string => {
-            if (mapStyleDefs.attitude && mapStyleDefs.attitude[itemId as keyof typeof mapStyleDefs.attitude]) {
-                const attitudeStyle = mapStyleDefs.attitude[itemId as keyof typeof mapStyleDefs.attitude];
+            if (mapStyleDefs.attitudes && mapStyleDefs.attitudes[itemId as keyof typeof mapStyleDefs.attitudes]) {
+                const attitudeStyle = mapStyleDefs.attitudes[itemId as keyof typeof mapStyleDefs.attitudes];
                 return (attitudeStyle as any).fill || (attitudeStyle as any).stroke || '#3ccaf8';
             }
             // Fallback to original colors if theme doesn't have attitude colors

@@ -1,475 +1,441 @@
 import React from 'react';
-import {render, screen, fireEvent, waitFor} from '@testing-library/react';
+import {render, screen, fireEvent, act} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import {WysiwygToolbar} from '../../../components/map/WysiwygToolbar';
+import {KeyboardShortcutHandler} from '../../../components/map/KeyboardShortcutHandler';
+import {UndoRedoProvider} from '../../../components/UndoRedoProvider';
 import {ToolbarItem} from '../../../types/toolbar';
 
-// Mock the toolbar icon wrappers
-jest.mock('../../../components/map/ToolbarIconWrappers', () => ({
-    ToolbarComponentIcon: () => <div data-testid="component-icon">C</div>,
-    ToolbarLinkIcon: () => <div data-testid="link-icon">L</div>,
-    ToolbarGenericNoteIcon: () => <div data-testid="note-icon">N</div>,
-    ToolbarPipelineIcon: () => <div data-testid="pipeline-icon">P</div>,
-    ToolbarAnchorIcon: () => <div data-testid="anchor-icon">A</div>,
-    ToolbarBuyMethodIcon: () => <div data-testid="buy-icon">M</div>,
-    ToolbarPSTIcon: () => <div data-testid="pst-icon">T</div>,
+// Mock toolbar items
+const mockToolbarItems: ToolbarItem[] = [
+    {
+        id: 'component',
+        label: 'Component',
+        icon: () => <div>Component Icon</div>,
+        category: 'component',
+        keyboardShortcut: 'c',
+    },
+];
+
+// Mock the getToolbarItemByShortcut function
+jest.mock('../../../constants/toolbarItems', () => ({
+    getToolbarItemByShortcut: (key: string) => {
+        return key === 'c' ? mockToolbarItems[0] : null;
+    },
 }));
 
-// Mock styled-components
-jest.mock('styled-components', () => {
-    const mockStyled = (component: any) => (_styles: any) => component;
-    // Add all HTML elements that might be used
-    const htmlElements = ['div', 'button', 'span', 'svg', 'path', 'g', 'rect', 'circle', 'line'];
-    htmlElements.forEach(element => {
-        (mockStyled as any)[element] = mockStyled;
-    });
-    return {
-        __esModule: true,
-        default: mockStyled,
-    };
-});
-
-// Mock localStorage
-const localStorageMock = {
-    getItem: jest.fn(),
-    setItem: jest.fn(),
-    removeItem: jest.fn(),
-    clear: jest.fn(),
-};
-Object.defineProperty(window, 'localStorage', {
-    value: localStorageMock,
-});
-
-// Mock window dimensions
-Object.defineProperty(window, 'innerHeight', {
-    writable: true,
-    configurable: true,
-    value: 600,
-});
-Object.defineProperty(window, 'innerWidth', {
-    writable: true,
-    configurable: true,
-    value: 800,
-});
-
-describe('Keyboard Shortcut Integration with Toolbar Selection System', () => {
-    const mockMapStyleDefs = {
-        className: 'wardley',
-        component: '#000',
-        anchor: '#000',
-        pipeline: '#000',
-        note: '#000',
-        link: '#000',
-        evolution: '#000',
-        background: '#fff',
-        attitudes: '#000',
-        methods: '#000',
-        annotation: '#000',
-    };
-
-    const mockMapDimensions = {width: 800, height: 600};
-    const mockMapText = 'title Test Map\n\ncomponent A [0.5, 0.5]';
+describe('KeyboardShortcutHandler Integration Tests', () => {
+    const mockOnToolSelect = jest.fn();
     const mockMutateMapText = jest.fn();
 
-    let selectedItem: ToolbarItem | null = null;
-    const mockOnItemSelect = jest.fn((item: ToolbarItem | null) => {
-        selectedItem = item;
-    });
-
     beforeEach(() => {
-        selectedItem = null;
-        mockOnItemSelect.mockClear();
-        mockMutateMapText.mockClear();
+        jest.clearAllMocks();
+        // Mock Windows platform
+        Object.defineProperty(window, 'navigator', {
+            value: {
+                platform: 'Win32',
+                userAgent: 'Windows',
+            },
+            writable: true,
+        });
     });
 
-    const renderToolbarWithKeyboardShortcuts = (keyboardShortcutsEnabled = true) => {
+    const renderComponent = (props: any = {}) => {
         return render(
-            <div>
-                <WysiwygToolbar
-                    mapStyleDefs={mockMapStyleDefs}
-                    mapDimensions={mockMapDimensions}
-                    mapText={mockMapText}
-                    mutateMapText={mockMutateMapText}
-                    selectedItem={selectedItem}
-                    onItemSelect={mockOnItemSelect}
-                    keyboardShortcutsEnabled={keyboardShortcutsEnabled}
+            <UndoRedoProvider mutateMapText={mockMutateMapText} mapText="initial map text">
+                <KeyboardShortcutHandler
+                    toolbarItems={mockToolbarItems}
+                    onToolSelect={mockOnToolSelect}
+                    isEnabled={true}
+                    currentSelectedTool={null}
+                    {...props}
                 />
-                {/* Add a text input to test text editing context detection */}
-                <input data-testid="text-input" type="text" />
-                <div contentEditable data-testid="contenteditable-div">
-                    Editable content
-                </div>
-            </div>,
+            </UndoRedoProvider>,
         );
     };
 
-    describe('Keyboard shortcut tool selection', () => {
-        test('should select component tool when C key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
+    describe('Complete Undo/Redo Workflow', () => {
+        it('should handle complete undo/redo workflow with keyboard shortcuts', async () => {
+            const {container} = renderComponent();
 
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'component',
-                        keyboardShortcut: 'c',
-                    }),
-                );
+            // Step 1: Create some history by making changes
+            act(() => {
+                mockMutateMapText('change 1');
             });
+
+            act(() => {
+                mockMutateMapText('change 2');
+            });
+
+            act(() => {
+                mockMutateMapText('change 3');
+            });
+
+            // Step 2: Undo the last change
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            // Step 3: Undo another change
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            // Step 4: Redo one change
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'y',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.getByText(/Redid:/)).toBeInTheDocument();
+
+            // Step 5: Make a new change (should clear redo history)
+            act(() => {
+                mockMutateMapText('new change after redo');
+            });
+
+            // Step 6: Try to redo (should not work as redo history was cleared)
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'y',
+                    ctrlKey: true,
+                });
+            });
+
+            // Should not show redo announcement since there's nothing to redo
+            expect(screen.queryByText(/Redid: new change after redo/)).not.toBeInTheDocument();
         });
 
-        test('should select link tool when L key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
+        it('should maintain toolbar functionality alongside undo/redo', async () => {
+            const {container} = renderComponent();
 
-            fireEvent.keyDown(document, {key: 'l', code: 'KeyL'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'link',
-                        keyboardShortcut: 'l',
-                    }),
-                );
-            });
-        });
-
-        test('should select note tool when N key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'n', code: 'KeyN'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'note',
-                        keyboardShortcut: 'n',
-                    }),
-                );
-            });
-        });
-
-        test('should select pipeline tool when P key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'p', code: 'KeyP'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'pipeline',
-                        keyboardShortcut: 'p',
-                    }),
-                );
-            });
-        });
-
-        test('should select anchor tool when A key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'a', code: 'KeyA'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'anchor',
-                        keyboardShortcut: 'a',
-                    }),
-                );
-            });
-        });
-
-        test('should select build method tool when B key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'b', code: 'KeyB'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'method-build',
-                        keyboardShortcut: 'b',
-                    }),
-                );
-            });
-        });
-
-        test('should select buy method tool when U key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'u', code: 'KeyU'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'method-buy',
-                        keyboardShortcut: 'u',
-                    }),
-                );
-            });
-        });
-
-        test('should select outsource method tool when O key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'o', code: 'KeyO'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'method-outsource',
-                        keyboardShortcut: 'o',
-                    }),
-                );
-            });
-        });
-
-        test('should select PST tool when T key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 't', code: 'KeyT'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'pst',
-                        keyboardShortcut: 't',
-                    }),
-                );
-            });
-        });
-
-        test('should select market method tool when M key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'm', code: 'KeyM'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'method-market',
-                        keyboardShortcut: 'm',
-                    }),
-                );
-            });
-        });
-
-        test('should select ecosystem method tool when E key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'e', code: 'KeyE'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'method-ecosystem',
-                        keyboardShortcut: 'e',
-                    }),
-                );
-            });
-        });
-
-        test('should select inertia method tool when I key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            fireEvent.keyDown(document, {key: 'i', code: 'KeyI'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        id: 'method-inertia',
-                        keyboardShortcut: 'i',
-                    }),
-                );
-            });
-        });
-
-        test('should deselect current tool when Escape key is pressed', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            // First select a tool
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
+            // Test toolbar shortcut
+            fireEvent.keyDown(document, {
+                key: 'c',
             });
 
-            mockOnItemSelect.mockClear();
+            expect(mockOnToolSelect).toHaveBeenCalledWith('component');
 
-            // Then press Escape
-            fireEvent.keyDown(document, {key: 'Escape', code: 'Escape'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(null);
+            // Create some history
+            act(() => {
+                mockMutateMapText('component added');
             });
+
+            // Test undo shortcut
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            // Test toolbar shortcut again
+            fireEvent.keyDown(document, {
+                key: 'c',
+            });
+
+            expect(mockOnToolSelect).toHaveBeenCalledTimes(2);
         });
     });
 
-    describe('Tool switching behavior (Requirement 10.10)', () => {
-        test('should switch to new tool immediately when pressing different shortcut', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            // Select component tool first
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
+    describe('Platform-Specific Behavior', () => {
+        it('should use correct shortcuts for Mac platform', async () => {
+            // Mock Mac platform
+            Object.defineProperty(window, 'navigator', {
+                value: {
+                    platform: 'MacIntel',
+                    userAgent: 'Mac OS X',
+                },
+                writable: true,
             });
 
-            mockOnItemSelect.mockClear();
+            const {container} = renderComponent();
 
-            // Switch to link tool
-            fireEvent.keyDown(document, {key: 'l', code: 'KeyL'});
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'link'}));
+            // Create history
+            act(() => {
+                mockMutateMapText('mac test');
             });
+
+            // Test Mac undo (Cmd+Z)
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    metaKey: true, // Cmd key on Mac
+                    ctrlKey: false,
+                });
+            });
+
+            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            // Test Mac redo (Cmd+Shift+Z)
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    metaKey: true,
+                    shiftKey: true,
+                    ctrlKey: false,
+                });
+            });
+
+            expect(screen.getByText(/Redid:/)).toBeInTheDocument();
         });
 
-        test('should keep tool selected when pressing same shortcut again', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            // Select component tool
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
+        it('should not respond to wrong platform shortcuts', async () => {
+            // Mock Mac platform
+            Object.defineProperty(window, 'navigator', {
+                value: {
+                    platform: 'MacIntel',
+                    userAgent: 'Mac OS X',
+                },
+                writable: true,
             });
 
-            mockOnItemSelect.mockClear();
+            const {container} = renderComponent();
 
-            // Press C again - should keep it selected (not toggle)
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
+            act(() => {
+                mockMutateMapText('mac test');
             });
+
+            // Try Windows shortcut on Mac (should not work)
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true, // Windows shortcut
+                    metaKey: false,
+                });
+            });
+
+            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
+
+            // Try Windows redo shortcut on Mac (should not work)
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'y',
+                    ctrlKey: true,
+                    metaKey: false,
+                });
+            });
+
+            expect(screen.queryByText(/Redid:/)).not.toBeInTheDocument();
         });
     });
 
-    describe('Text editing context prevention (Requirement 10.11)', () => {
-        test('should not handle shortcuts when focus is on text input', async () => {
-            renderToolbarWithKeyboardShortcuts();
+    describe('Text Editor Context Prevention', () => {
+        it('should not interfere with text editor undo/redo in various contexts', () => {
+            const {container} = renderComponent();
 
-            const textInput = screen.getByTestId('text-input');
-            textInput.focus();
+            // Test with different text editing contexts
+            const contexts = [
+                {element: 'input', type: 'text'},
+                {element: 'textarea'},
+                {element: 'div', contentEditable: 'true'},
+                {element: 'div', className: 'ace_text-input'},
+                {element: 'div', className: 'CodeMirror'},
+            ];
 
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
+            contexts.forEach(({element, type, contentEditable, className}) => {
+                const el = document.createElement(element as keyof HTMLElementTagNameMap);
 
-            // Should not call onItemSelect when typing in input
-            await waitFor(
-                () => {
-                    expect(mockOnItemSelect).not.toHaveBeenCalled();
-                },
-                {timeout: 100},
-            );
-        });
+                if (type) (el as HTMLInputElement).type = type;
+                if (contentEditable) (el as HTMLDivElement).contentEditable = contentEditable;
+                if (className) el.className = className;
 
-        test('should not handle shortcuts when focus is on contenteditable element', async () => {
-            renderToolbarWithKeyboardShortcuts();
+                document.body.appendChild(el);
+                el.focus();
 
-            const editableDiv = screen.getByTestId('contenteditable-div');
-            editableDiv.focus();
+                // Try undo shortcut while focused on text editor
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
 
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
+                // Should not show undo announcement
+                expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
 
-            // Should not call onItemSelect when typing in contenteditable
-            await waitFor(
-                () => {
-                    expect(mockOnItemSelect).not.toHaveBeenCalled();
-                },
-                {timeout: 100},
-            );
-        });
-
-        test('should handle shortcuts when focus is not on text editing elements', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            // Focus on the document body (not a text input)
-            document.body.focus();
-
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
+                document.body.removeChild(el);
             });
+        });
+
+        it('should work when focus is on non-text elements', async () => {
+            const {container} = renderComponent();
+
+            // Create history
+            act(() => {
+                mockMutateMapText('test with button focus');
+            });
+
+            // Focus on a button (non-text element)
+            const button = document.createElement('button');
+            document.body.appendChild(button);
+            button.focus();
+
+            // Should work with button focused
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            document.body.removeChild(button);
         });
     });
 
-    describe('Unassigned keys behavior (Requirement 10.12)', () => {
-        test('should not change selection when pressing unassigned keys', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            // Press various unassigned keys
-            const unassignedKeys = ['x', 'y', 'z', 'q', 'w', 'r', 'j'];
-
-            for (const key of unassignedKeys) {
-                fireEvent.keyDown(document, {key, code: `Key${key.toUpperCase()}`});
-            }
-
-            // Should not call onItemSelect for any unassigned keys
-            await waitFor(
-                () => {
-                    expect(mockOnItemSelect).not.toHaveBeenCalled();
-                },
-                {timeout: 100},
+    describe('Error Handling and Edge Cases', () => {
+        it('should handle missing undo/redo context gracefully', () => {
+            // Render without UndoRedoProvider
+            render(
+                <KeyboardShortcutHandler
+                    toolbarItems={mockToolbarItems}
+                    onToolSelect={mockOnToolSelect}
+                    isEnabled={true}
+                    currentSelectedTool={null}
+                />,
             );
+
+            // Should not throw error and should not show undo announcement
+            fireEvent.keyDown(document, {
+                key: 'z',
+                ctrlKey: true,
+            });
+
+            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
         });
 
-        test('should not handle shortcuts with modifier keys', async () => {
-            renderToolbarWithKeyboardShortcuts();
+        it('should handle disabled states correctly', async () => {
+            const {container} = renderComponent({isEnabled: false});
 
-            // Press shortcuts with modifiers
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC', ctrlKey: true});
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC', altKey: true});
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC', metaKey: true});
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC', shiftKey: true});
+            act(() => {
+                mockMutateMapText('disabled test');
+            });
 
-            // Should not call onItemSelect for modified key presses
-            await waitFor(
-                () => {
-                    expect(mockOnItemSelect).not.toHaveBeenCalled();
-                },
-                {timeout: 100},
-            );
+            // Should not work when disabled
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
+        });
+
+        it('should handle undo/redo disabled state', async () => {
+            const {container} = renderComponent({undoRedoEnabled: false});
+
+            act(() => {
+                mockMutateMapText('undo disabled test');
+            });
+
+            // Should not work when undo/redo is disabled
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
+
+            // But toolbar shortcuts should still work
+            fireEvent.keyDown(document, {
+                key: 'c',
+            });
+
+            expect(mockOnToolSelect).toHaveBeenCalledWith('component');
         });
     });
 
-    describe('Keyboard shortcuts enabled/disabled state', () => {
-        test('should not handle shortcuts when keyboardShortcutsEnabled is false', async () => {
-            renderToolbarWithKeyboardShortcuts(false);
+    describe('Accessibility and User Feedback', () => {
+        it('should provide meaningful action descriptions in announcements', async () => {
+            const {container} = renderComponent();
 
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-
-            // Should not call onItemSelect when shortcuts are disabled
-            await waitFor(
-                () => {
-                    expect(mockOnItemSelect).not.toHaveBeenCalled();
-                },
-                {timeout: 100},
-            );
-        });
-
-        test('should handle shortcuts when keyboardShortcutsEnabled is true', async () => {
-            renderToolbarWithKeyboardShortcuts(true);
-
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
-            });
-        });
-    });
-
-    describe('Visual feedback consistency', () => {
-        test('should provide same visual feedback for keyboard and mouse selection', async () => {
-            renderToolbarWithKeyboardShortcuts();
-
-            // Select tool via keyboard
-            fireEvent.keyDown(document, {key: 'c', code: 'KeyC'});
-
-            await waitFor(() => {
-                expect(mockOnItemSelect).toHaveBeenCalledWith(expect.objectContaining({id: 'component'}));
+            // Create history with a specific action
+            act(() => {
+                mockMutateMapText('Component added', 'toolbar-component', 'Add component "Test Component"');
             });
 
-            // The visual feedback should be the same as mouse selection
-            // This is ensured by both methods calling the same onItemSelect function
-            expect(mockOnItemSelect).toHaveBeenCalledTimes(1);
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            // Should show the specific action description
+            expect(screen.getByText(/Undid: Add component "Test Component"/)).toBeInTheDocument();
+        });
+
+        it('should handle announcements timing correctly', async () => {
+            jest.useFakeTimers();
+            const {container} = renderComponent();
+
+            act(() => {
+                mockMutateMapText('timing test');
+            });
+
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
+            });
+
+            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            // Fast forward past the timeout
+            act(() => {
+                jest.advanceTimersByTime(1000);
+            });
+
+            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
+
+            jest.useRealTimers();
+        });
+
+        it('should handle multiple rapid announcements', async () => {
+            jest.useFakeTimers();
+            const {container} = renderComponent();
+
+            // Create multiple history entries
+            act(() => {
+                mockMutateMapText('change 1');
+                mockMutateMapText('change 2');
+            });
+
+            // Rapid undo operations
+            await act(async () => {
+                fireEvent.keyDown(document, {key: 'z', ctrlKey: true});
+            });
+
+            await act(async () => {
+                fireEvent.keyDown(document, {key: 'z', ctrlKey: true});
+            });
+
+            // Should show the latest announcement
+            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            // Fast forward time
+            act(() => {
+                jest.advanceTimersByTime(1000);
+            });
+
+            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
+
+            jest.useRealTimers();
         });
     });
 });

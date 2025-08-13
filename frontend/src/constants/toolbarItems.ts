@@ -11,6 +11,8 @@ import {
     ToolbarOutSourceMethodIcon,
     ToolbarPipelineIcon,
     ToolbarPSTIcon,
+    ToolbarUndoIcon,
+    ToolbarRedoIcon,
 } from '../components/map/ToolbarIconWrappers';
 import {ToolbarCategory, ToolbarConfiguration, ToolbarItem, ToolbarSubItem} from '../types/toolbar';
 
@@ -192,6 +194,25 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         keyboardShortcut: 't',
         subItems: PST_SUB_ITEMS,
     },
+    // Undo/Redo action tools
+    {
+        id: 'undo',
+        label: 'Undo',
+        icon: ToolbarUndoIcon,
+        category: 'action',
+        toolType: 'action',
+        keyboardShortcut: 'ctrl+z', // Platform-specific handling in component
+        action: 'undo',
+    },
+    {
+        id: 'redo',
+        label: 'Redo',
+        icon: ToolbarRedoIcon,
+        category: 'action',
+        toolType: 'action',
+        keyboardShortcut: 'ctrl+y', // Platform-specific handling in component
+        action: 'redo',
+    },
 ];
 
 /**
@@ -232,6 +253,11 @@ export const TOOLBAR_CATEGORIES: ToolbarCategory[] = [
         id: 'other',
         label: 'Other',
         items: ['anchor'],
+    },
+    {
+        id: 'action',
+        label: 'Actions',
+        items: ['undo', 'redo'],
     },
 ];
 
@@ -276,6 +302,8 @@ export const KEYBOARD_SHORTCUTS: Record<string, string> = {
     m: 'method-market', // Market method
     e: 'method-ecosystem', // Ecosystem method
     t: 'pst', // PST boxes
+    'ctrl+z': 'undo', // Undo action (platform-specific handling in component)
+    'ctrl+y': 'redo', // Redo action (platform-specific handling in component)
 };
 
 /**

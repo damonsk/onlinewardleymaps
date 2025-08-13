@@ -322,7 +322,8 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         // Check if this component should be highlighted for method application
                         const isMethodHighlighted = props.methodHighlightedComponent?.id === el.id;
                         const isMethodCompatible = el.type === 'component' && !el.pipeline;
-                        const isInMethodApplicationMode = props.selectedToolbarItem?.toolType === 'method-application' || props.selectedToolbarItem?.id === 'component';
+                        const isInMethodApplicationMode =
+                            props.selectedToolbarItem?.toolType === 'method-application' || props.selectedToolbarItem?.id === 'component';
 
                         // Calculate the same position that MapComponent uses for the Movable wrapper
                         const calculatedPosition = new ModernPositionCalculator();

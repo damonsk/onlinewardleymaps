@@ -1,13 +1,13 @@
 # Implementation Plan
 
-- [-] 1. Create core undo/redo data structures and types
+- [x] 1. Create core undo/redo data structures and types
   - Define HistoryEntry interface and ActionType enum in types directory
   - Create configuration constants for history limits and debouncing
   - Define UndoRedoContextValue and related interfaces
   - Write utility functions for generating action descriptions
   - _Requirements: 1.1, 8.1, 8.4_
 
-- [ ] 2. Implement useUndoRedoManager hook with history stack logic
+- [x] 2. Implement useUndoRedoManager hook with history stack logic
   - Create useUndoRedoManager hook with undo/redo stack management
   - Implement debounced change recording with grouping logic
   - Add history size limit enforcement and cleanup mechanisms
@@ -15,7 +15,7 @@
   - Write unit tests for hook functionality and edge cases
   - _Requirements: 4.1, 4.2, 4.5, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 8.1, 8.2_
 
-- [ ] 3. Create UndoRedoProvider context component
+- [x] 3. Create UndoRedoProvider context component
   - Implement UndoRedoProvider component using useUndoRedoManager hook
   - Create context provider with proper state management and memoization
   - Add error handling for invalid states and memory constraints
@@ -23,7 +23,7 @@
   - Write unit tests for provider functionality and context propagation
   - _Requirements: 4.3, 4.4, 8.3, 8.5_
 
-- [ ] 4. Create undo and redo toolbar icons
+- [x] 4. Create undo and redo toolbar icons
   - Design UndoIcon and RedoIcon components following existing icon patterns
   - Implement proper SVG icons with accessibility attributes
   - Add visual states for enabled/disabled conditions
@@ -31,7 +31,7 @@
   - Write unit tests for icon rendering and visual states
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 5. Extend toolbar configuration with undo/redo items
+- [x] 5. Extend toolbar configuration with undo/redo items
   - Add undo and redo items to TOOLBAR_ITEMS configuration
   - Implement new 'action' category and 'action' toolType
   - Add keyboard shortcut definitions for platform-specific handling
@@ -39,7 +39,7 @@
   - Write unit tests for toolbar configuration changes
   - _Requirements: 1.1, 7.1, 7.2_
 
-- [ ] 6. Enhance WysiwygToolbar with undo/redo functionality
+- [x] 6. Enhance WysiwygToolbar with undo/redo functionality
   - Integrate UndoRedoProvider context into WysiwygToolbar component
   - Add undo/redo toolbar items with proper positioning and styling
   - Implement click handlers that delegate to context undo/redo functions
@@ -47,7 +47,7 @@
   - Write unit tests for toolbar integration and user interactions
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 7. Enhance KeyboardShortcutHandler with undo/redo shortcuts
+- [x] 7. Enhance KeyboardShortcutHandler with undo/redo shortcuts
   - Add platform detection for Ctrl vs Cmd key combinations
   - Implement Ctrl+Z/Cmd+Z for undo and Ctrl+Y/Cmd+Shift+Z for redo
   - Add logic to prevent interference with text editor undo/redo
@@ -55,7 +55,7 @@
   - Write unit tests for keyboard shortcut handling and platform detection
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 8. Enhance MapEnvironment with undo/redo integration
+- [x] 8. Enhance MapEnvironment with undo/redo integration
   - Wrap MapEnvironment with UndoRedoProvider at the appropriate level
   - Enhance mutateMapText function to record history before applying changes
   - Add action type and description parameters to mutateMapText calls

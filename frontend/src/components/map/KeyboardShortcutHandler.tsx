@@ -2,6 +2,8 @@ import React, {useEffect, useCallback, memo, useState} from 'react';
 import styled from 'styled-components';
 import {KeyboardShortcutHandlerProps} from '../../types/toolbar';
 import {getToolbarItemByShortcut} from '../../constants/toolbarItems';
+import {useUndoRedo} from '../UndoRedoProvider';
+import {UNDO_REDO_SHORTCUTS} from '../../constants/undoRedo';
 
 /**
  * Screen reader announcement component for keyboard shortcut activation
@@ -18,6 +20,19 @@ const ScreenReaderAnnouncement = styled.div`
 `;
 
 /**
+ * Detect the current platform for keyboard shortcuts
+ */
+const detectPlatform = (): 'mac' | 'windows' => {
+    if (typeof navigator !== 'undefined') {
+        const platform = navigator.platform.toLowerCase();
+        const userAgent = navigator.userAgent.toLowerCase();
+
+        return platform.includes('mac') || userAgent.includes('mac') ? 'mac' : 'windows';
+    }
+    return 'windows';
+};
+
+/**
  * KeyboardShortcutHandler component manages keyboard event listeners for toolbar shortcuts
  *
  * Handles:
@@ -29,10 +44,22 @@ const ScreenReaderAnnouncement = styled.div`
  * - M for Method
  * - T for PST (future implementation)
  * - Escape to deselect current tool
+ * - Ctrl+Z/Cmd+Z for undo
+ * - Ctrl+Y/Cmd+Shift+Z for redo
  */
 export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = memo(
-    ({toolbarItems, onToolSelect, isEnabled, currentSelectedTool}) => {
+    ({toolbarItems, onToolSelect, isEnabled, currentSelectedTool, undoRedoEnabled = true}) => {
         const [announceText, setAnnounceText] = useState('');
+        const [platform] = useState(() => detectPlatform());
+
+        // Get undo/redo context (with error handling for when it's not available)
+        let undoRedoContext: ReturnType<typeof useUndoRedo> | null = null;
+        try {
+            undoRedoContext = useUndoRedo();
+        } catch (error) {
+            // UndoRedoProvider not available, undo/redo shortcuts will be disabled
+            console.warn('UndoRedoProvider not available, undo/redo shortcuts disabled');
+        }
         /**
          * Check if keyboard shortcuts should be active
          * Prevents interference with text editing contexts
@@ -64,11 +91,61 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
         }, [isEnabled]);
 
         /**
+         * Handle undo/redo keyboard shortcuts
+         */
+        const handleUndoRedoShortcuts = useCallback(
+            (event: KeyboardEvent): boolean => {
+                if (!undoRedoEnabled || !undoRedoContext) return false;
+
+                const key = event.key.toLowerCase();
+                const isMac = platform === 'mac';
+                const isCtrlOrCmd = isMac ? event.metaKey : event.ctrlKey;
+
+                // Undo: Ctrl+Z (Windows) or Cmd+Z (Mac)
+                if (key === 'z' && isCtrlOrCmd && !event.shiftKey && !event.altKey) {
+                    if (undoRedoContext.canUndo) {
+                        event.preventDefault();
+                        undoRedoContext.undo();
+                        const lastAction = undoRedoContext.getLastAction();
+                        const actionDescription = lastAction ? lastAction.actionDescription : 'last action';
+                        setAnnounceText(`Undid: ${actionDescription}`);
+                        setTimeout(() => setAnnounceText(''), 1000);
+                    }
+                    return true;
+                }
+
+                // Redo: Ctrl+Y (Windows) or Cmd+Shift+Z (Mac)
+                if (
+                    (key === 'y' && isCtrlOrCmd && !isMac && !event.shiftKey && !event.altKey) ||
+                    (key === 'z' && isCtrlOrCmd && isMac && event.shiftKey && !event.altKey)
+                ) {
+                    if (undoRedoContext.canRedo) {
+                        event.preventDefault();
+                        undoRedoContext.redo();
+                        const nextAction = undoRedoContext.getNextAction();
+                        const actionDescription = nextAction ? nextAction.actionDescription : 'next action';
+                        setAnnounceText(`Redid: ${actionDescription}`);
+                        setTimeout(() => setAnnounceText(''), 1000);
+                    }
+                    return true;
+                }
+
+                return false;
+            },
+            [undoRedoEnabled, undoRedoContext, platform],
+        );
+
+        /**
          * Handle keyboard events for toolbar shortcuts
          */
         const handleKeyDown = useCallback(
             (event: KeyboardEvent) => {
                 if (!shouldHandleShortcuts()) return;
+
+                // Handle undo/redo shortcuts first (they have priority and use modifiers)
+                if (handleUndoRedoShortcuts(event)) {
+                    return;
+                }
 
                 // Handle Escape key to deselect current tool
                 if (event.key === 'Escape') {
@@ -79,7 +156,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     return;
                 }
 
-                // Only handle single character keys (no modifiers)
+                // Only handle single character keys (no modifiers) for toolbar shortcuts
                 if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) {
                     return;
                 }
@@ -104,7 +181,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     setTimeout(() => setAnnounceText(''), 1000);
                 }
             },
-            [shouldHandleShortcuts, onToolSelect, currentSelectedTool],
+            [shouldHandleShortcuts, onToolSelect, currentSelectedTool, handleUndoRedoShortcuts],
         );
 
         /**

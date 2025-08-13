@@ -171,7 +171,14 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
             }
             return true;
         },
-        [props.linkingState, props.onComponentClick, props.highlightedComponent, props.wardleyMap, props.onToolbarItemDrop, convertSvgToMapCoordinates],
+        [
+            props.linkingState,
+            props.onComponentClick,
+            props.highlightedComponent,
+            props.wardleyMap,
+            props.onToolbarItemDrop,
+            convertSvgToMapCoordinates,
+        ],
     );
 
     const handleToolbarItemPlacement = useCallback(

@@ -13,6 +13,8 @@ import {
 import PipelineIcon from '../symbols/PipelineIcon';
 import AnchorIcon from '../symbols/AnchorIcon';
 import LinkIcon from '../symbols/LinkIcon';
+import UndoIcon from '../symbols/UndoIcon';
+import RedoIcon from '../symbols/RedoIcon';
 
 /**
  * Wrapper for ComponentIcon to normalize props
@@ -115,4 +117,25 @@ export const ToolbarPSTIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, on
         {/* Empty box outline */}
         <rect x="3" y="3" width="18" height="18" rx="2" stroke={mapStyleDefs.component.stroke} strokeWidth="2" fill="none" />
     </svg>
+);
+
+/**
+ * Enhanced toolbar icon props that include disabled state
+ */
+export interface EnhancedToolbarIconProps extends ToolbarIconProps {
+    disabled?: boolean;
+}
+
+/**
+ * Wrapper for UndoIcon to normalize props
+ */
+export const ToolbarUndoIcon: React.FC<EnhancedToolbarIconProps> = ({id, mapStyleDefs, onClick, disabled = false}) => (
+    <UndoIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} disabled={disabled} />
+);
+
+/**
+ * Wrapper for RedoIcon to normalize props
+ */
+export const ToolbarRedoIcon: React.FC<EnhancedToolbarIconProps> = ({id, mapStyleDefs, onClick, disabled = false}) => (
+    <RedoIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} disabled={disabled} />
 );

@@ -16,6 +16,7 @@ import {MapAnnotationsPosition, MapSize} from '../types/base';
 import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
 import {ModKeyPressedProvider} from './KeyPressContext';
+import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
 
 import {ResizableSplitPane} from './common/ResizableSplitPane';
 import {Breadcrumb} from './editor/Breadcrumb';
@@ -54,6 +55,7 @@ const getHeight = () => {
     // The toolbar is positioned absolutely at bottom: 20px, so we need some space for it
     return Math.max(clientHeight - 60, 400); // Increased margin to account for toolbar
 };
+
 const getWidth = () => {
     const mapElement = document.getElementById('map');
     const clientWidth = mapElement?.clientWidth;
@@ -77,7 +79,20 @@ interface MapEnvironmentProps {
     setCurrentId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
+interface MapEnvironmentWithUndoRedoProps extends MapEnvironmentProps {
+    saveOutstanding: boolean;
+    setSaveOutstanding: React.Dispatch<React.SetStateAction<boolean>>;
+    mapIterations: MapIteration[];
+    setMapIterations: React.Dispatch<React.SetStateAction<MapIteration[]>>;
+    currentIteration: number;
+    setCurrentIteration: React.Dispatch<React.SetStateAction<number>>;
+    unifiedMapState: any; // Pass the unified state from parent
+}
+
+/**
+ * Component that uses the UndoRedoProvider's enhanced mutateMapText
+ */
+const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoProps> = ({
     toggleMenu,
     menuVisible,
     toggleTheme,
@@ -88,27 +103,22 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     currentId,
     setCurrentId,
     setShouldLoad,
+    saveOutstanding,
+    setSaveOutstanding,
+    mapIterations,
+    setMapIterations,
+    currentIteration,
+    setCurrentIteration,
+    unifiedMapState,
 }) => {
     const featureSwitches = useFeatureSwitches();
     const mapRef = useRef<HTMLElement | null>(null);
     const {t} = useI18n();
 
-    // Initialize unified map state
-    const unifiedMapState = useUnifiedMapState({
-        mapText: '',
-        showUsage: false,
-        isLoading: false,
-        errors: [],
-        mapDimensions: Defaults.MapDimensions,
-        mapCanvasDimensions: Defaults.MapDimensions,
-        mapStyleDefs: MapStyles.Plain,
-        mapEvolutionStates: Defaults.EvolutionStages,
-        highlightedLine: 0,
-        newComponentContext: null,
-        showLinkedEvolved: false,
-    });
+    // Get the undo/redo context
+    const undoRedoContext = useUndoRedo();
 
-    // Extract state and actions from unified state
+    // Use the unified state passed from parent
     const {state: mapState, actions: mapActions} = unifiedMapState;
 
     // Extract individual values for backward compatibility using legacy hook
@@ -123,21 +133,40 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         maturity: 0,
         visibility: 0,
     });
-    const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
     const [mapSize, setMapSize] = useState<MapSize>({width: 0, height: 0});
     const [mapStyle, setMapStyle] = useState('plain');
-    const [saveOutstanding, setSaveOutstanding] = useState(false);
     const [errorLine, setErrorLine] = useState<number[]>([]);
     const [showLineNumbers, setShowLineNumbers] = useState(false);
     const [mapOnlyView, setMapOnlyView] = useState(false);
-    const [currentIteration, setCurrentIteration] = useState(-1);
     const [actionInProgress, setActionInProgress] = useState(false);
     const [hideNav, setHideNav] = useState(false);
 
-    // Wrapper function for setting map text that also handles iterations and save state
-    const mutateMapText = (newText: string) => {
-        legacyState.mutateMapText(newText);
+    // Enhanced mutateMapText function that records history for normal operations
+    const mutateMapText = (
+        newText: string,
+        actionType?: Parameters<typeof undoRedoContext.recordChange>[1],
+        description?: string,
+        groupId?: string,
+    ) => {
+        // Record the change in history (if not an undo/redo operation)
+        if (!undoRedoContext.isUndoRedoOperation) {
+            undoRedoContext.recordChange(newText, actionType || 'editor-text', description || 'Map text changed', groupId);
+        }
+
+        // Apply the change using the parent's mapActions
+        mapActions.setMapText(newText);
+
+        // Parse the new map text and update the unified map state
+        try {
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+            const unifiedMap = unifiedConverter.parse(newText);
+            mapActions.setMap(unifiedMap);
+        } catch (err) {
+            console.log('Error parsing map text:', err);
+        }
+
         setSaveOutstanding(true);
+
         if (currentIteration !== null && currentIteration > -1) {
             const newList = [...mapIterations];
             const item = newList[currentIteration];
@@ -265,7 +294,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 link.click();
                 tempElement.remove();
             })
-
             .catch(_ => {
                 tempElement.remove();
             });
@@ -440,7 +468,6 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         }, 500);
 
         // Handle panel resize events specifically
-
         const handlePanelResize = (event: CustomEvent) => {
             // Update both map dimensions and canvas dimensions when panel resizes
             // This should work exactly like browser window resize
@@ -663,6 +690,82 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
                 <CircularProgress color="inherit" />
             </Backdrop>
         </Box>
+    );
+};
+
+/**
+ * Main MapEnvironment component with integrated UndoRedoProvider
+ */
+const MapEnvironment: FunctionComponent<MapEnvironmentProps> = props => {
+    const featureSwitches = useFeatureSwitches();
+
+    // Initialize unified map state
+    const unifiedMapState = useUnifiedMapState({
+        mapText: '',
+        showUsage: false,
+        isLoading: false,
+        errors: [],
+        mapDimensions: Defaults.MapDimensions,
+        mapCanvasDimensions: Defaults.MapDimensions,
+        mapStyleDefs: MapStyles.Plain,
+        mapEvolutionStates: Defaults.EvolutionStages,
+        highlightedLine: 0,
+        newComponentContext: null,
+        showLinkedEvolved: false,
+    });
+
+    // Extract state and actions from unified state
+    const {actions: mapActions} = unifiedMapState;
+
+    // Extract individual values for backward compatibility using legacy hook
+    const legacyState = useLegacyMapState(unifiedMapState);
+
+    // State for save and iterations that needs to be shared with UndoRedoProvider
+    const [saveOutstanding, setSaveOutstanding] = useState(false);
+    const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
+    const [currentIteration, setCurrentIteration] = useState(-1);
+
+    // Base mutateMapText function that handles save state and iterations
+    // This is what the UndoRedoProvider will call for undo/redo operations
+    const baseMutateMapText = (newText: string) => {
+        // Update the map text directly using the actions
+        mapActions.setMapText(newText);
+
+        // Parse the new map text and update the unified map state
+        try {
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+            const unifiedMap = unifiedConverter.parse(newText);
+            mapActions.setMap(unifiedMap);
+        } catch (err) {
+            console.log('Error parsing map text:', err);
+        }
+
+        // Handle save state and iterations
+        setSaveOutstanding(true);
+
+        if (currentIteration !== null && currentIteration > -1) {
+            const newList = [...mapIterations];
+            const item = newList[currentIteration];
+            item.mapText = newText;
+            newList.splice(currentIteration, 1);
+            newList.splice(currentIteration, 0, item);
+            setMapIterations(newList);
+        }
+    };
+
+    return (
+        <UndoRedoProvider mutateMapText={baseMutateMapText} mapText={legacyState.mapText} maxHistorySize={50} debounceMs={300}>
+            <MapEnvironmentWithUndoRedo
+                {...props}
+                saveOutstanding={saveOutstanding}
+                setSaveOutstanding={setSaveOutstanding}
+                mapIterations={mapIterations}
+                setMapIterations={setMapIterations}
+                currentIteration={currentIteration}
+                setCurrentIteration={setCurrentIteration}
+                unifiedMapState={unifiedMapState}
+            />
+        </UndoRedoProvider>
     );
 };
 

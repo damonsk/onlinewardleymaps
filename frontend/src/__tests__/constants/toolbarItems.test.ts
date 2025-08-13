@@ -1,4 +1,4 @@
-import {TOOLBAR_ITEMS, getToolbarItemById, KEYBOARD_SHORTCUTS} from '../../constants/toolbarItems';
+import {TOOLBAR_ITEMS, TOOLBAR_CATEGORIES, getToolbarItemById, KEYBOARD_SHORTCUTS} from '../../constants/toolbarItems';
 
 describe('Toolbar Items Configuration', () => {
     describe('Method Application Tools', () => {
@@ -104,6 +104,85 @@ describe('Toolbar Items Configuration', () => {
             methodTools.forEach(tool => {
                 expect(tool.toolType).toBe('method-application');
                 expect(tool.methodName).toBeDefined();
+            });
+        });
+    });
+
+    describe('Action Tools', () => {
+        test('should have undo tool with correct configuration', () => {
+            const undoTool = getToolbarItemById('undo');
+
+            expect(undoTool).toBeDefined();
+            expect(undoTool?.id).toBe('undo');
+            expect(undoTool?.label).toBe('Undo');
+            expect(undoTool?.category).toBe('action');
+            expect(undoTool?.toolType).toBe('action');
+            expect(undoTool?.action).toBe('undo');
+            expect(undoTool?.keyboardShortcut).toBe('ctrl+z');
+        });
+
+        test('should have redo tool with correct configuration', () => {
+            const redoTool = getToolbarItemById('redo');
+
+            expect(redoTool).toBeDefined();
+            expect(redoTool?.id).toBe('redo');
+            expect(redoTool?.label).toBe('Redo');
+            expect(redoTool?.category).toBe('action');
+            expect(redoTool?.toolType).toBe('action');
+            expect(redoTool?.action).toBe('redo');
+            expect(redoTool?.keyboardShortcut).toBe('ctrl+y');
+        });
+
+        test('should have correct keyboard shortcuts mapping for action tools', () => {
+            expect(KEYBOARD_SHORTCUTS['ctrl+z']).toBe('undo');
+            expect(KEYBOARD_SHORTCUTS['ctrl+y']).toBe('redo');
+        });
+
+        test('should have all action tools in the action category', () => {
+            const actionTools = TOOLBAR_ITEMS.filter(item => item.category === 'action');
+
+            expect(actionTools).toHaveLength(2);
+            expect(actionTools.map(tool => tool.id)).toEqual(expect.arrayContaining(['undo', 'redo']));
+        });
+
+        test('should have action toolType for all action tools', () => {
+            const actionTools = TOOLBAR_ITEMS.filter(item => item.category === 'action');
+
+            actionTools.forEach(tool => {
+                expect(tool.toolType).toBe('action');
+                expect(tool.action).toBeDefined();
+            });
+        });
+
+        test('should not have template or defaultName for action tools', () => {
+            const actionTools = TOOLBAR_ITEMS.filter(item => item.category === 'action');
+
+            actionTools.forEach(tool => {
+                expect(tool.template).toBeUndefined();
+                expect(tool.defaultName).toBeUndefined();
+                expect(tool.methodName).toBeUndefined();
+                expect(tool.subItems).toBeUndefined();
+            });
+        });
+    });
+
+    describe('Toolbar Categories', () => {
+        test('should have action category with correct items', () => {
+            const actionCategory = TOOLBAR_CATEGORIES.find(cat => cat.id === 'action');
+
+            expect(actionCategory).toBeDefined();
+            expect(actionCategory?.id).toBe('action');
+            expect(actionCategory?.label).toBe('Actions');
+            expect(actionCategory?.items).toEqual(['undo', 'redo']);
+        });
+
+        test('should include all action tools in action category', () => {
+            const actionCategory = TOOLBAR_CATEGORIES.find(cat => cat.id === 'action');
+            const actionTools = TOOLBAR_ITEMS.filter(item => item.category === 'action');
+
+            expect(actionCategory?.items).toHaveLength(actionTools.length);
+            actionTools.forEach(tool => {
+                expect(actionCategory?.items).toContain(tool.id);
             });
         });
     });

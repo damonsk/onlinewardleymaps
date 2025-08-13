@@ -19,13 +19,14 @@ export interface ToolbarItem {
     label: string;
     icon: React.ComponentType<ToolbarIconProps>;
     template?: (name: string, y: string, x: string) => string;
-    category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'pst' | 'other';
+    category: 'component' | 'method' | 'note' | 'pipeline' | 'link' | 'pst' | 'other' | 'action';
     defaultName?: string;
-    toolType?: 'placement' | 'linking' | 'drawing' | 'method-application';
+    toolType?: 'placement' | 'linking' | 'drawing' | 'method-application' | 'action';
     keyboardShortcut?: string; // Single character keyboard shortcut
     subItems?: ToolbarSubItem[]; // For dropdown items like PST
     selectedSubItem?: ToolbarSubItem; // Currently selected sub-item for dropdown tools
     methodName?: string; // For method application tools (build, buy, outsource)
+    action?: string; // For action tools (undo, redo)
 }
 
 /**
@@ -112,6 +113,7 @@ export interface KeyboardShortcutHandlerProps {
     onToolSelect: (toolId: string | null) => void;
     isEnabled: boolean;
     currentSelectedTool: string | null;
+    undoRedoEnabled?: boolean; // Default: true
 }
 
 /**
