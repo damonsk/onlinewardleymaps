@@ -114,6 +114,8 @@ export interface UseUndoRedoManagerResult {
     recordChange: (newText: string, actionType: ActionType, description: string, groupId?: string) => void;
     /** Function to clear all history */
     clearHistory: () => void;
+    /** Function to clean up corrupted history entries */
+    cleanupHistory: () => void;
     /** Function to get the last action that can be undone */
     getLastAction: () => HistoryEntry | null;
     /** Function to get the next action that can be redone */

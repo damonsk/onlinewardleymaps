@@ -27,6 +27,7 @@ export const useUndoRedoManager = ({
 
     // Flag to prevent recursive history recording during undo/redo operations
     const [isUndoRedoOperation, setIsUndoRedoOperation] = useState(false);
+    const isUndoRedoOperationRef = useRef(false);
 
     // Refs for managing debounced operations and grouping
     const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -61,6 +62,46 @@ export const useUndoRedoManager = ({
     }, []);
 
     /**
+     * Validates and cleans a history stack to remove invalid entries
+     */
+    const cleanHistoryStack = useCallback((stack: HistoryEntry[]): HistoryEntry[] => {
+        const cleanedStack: HistoryEntry[] = [];
+
+        for (let i = 0; i < stack.length; i++) {
+            const entry = stack[i];
+
+            // Skip entries that don't actually represent a change
+            if (entry.previousMapText === entry.currentMapText) {
+                console.warn('Removing no-op history entry:', entry.id);
+                continue;
+            }
+
+            // Skip duplicate consecutive entries
+            const lastCleanEntry = cleanedStack[cleanedStack.length - 1];
+            if (
+                lastCleanEntry &&
+                lastCleanEntry.currentMapText === entry.currentMapText &&
+                lastCleanEntry.previousMapText === entry.previousMapText
+            ) {
+                console.warn('Removing duplicate history entry:', entry.id);
+                continue;
+            }
+
+            cleanedStack.push(entry);
+        }
+
+        return cleanedStack;
+    }, []);
+
+    /**
+     * Cleans up corrupted history entries from both stacks
+     */
+    const cleanupHistory = useCallback(() => {
+        setUndoStack(prevStack => cleanHistoryStack(prevStack));
+        setRedoStack(prevStack => cleanHistoryStack(prevStack));
+    }, [cleanHistoryStack]);
+
+    /**
      * Gets the last action that can be undone
      */
     const getLastAction = useCallback((): HistoryEntry | null => {
@@ -81,7 +122,8 @@ export const useUndoRedoManager = ({
         (entry: HistoryEntry) => {
             setUndoStack(prevStack => {
                 const newStack = [...prevStack, entry];
-                return truncateHistoryStack(newStack, maxHistorySize);
+                const cleanedStack = cleanHistoryStack(newStack);
+                return truncateHistoryStack(cleanedStack, maxHistorySize);
             });
 
             // Clear redo stack when new action is performed
@@ -90,7 +132,7 @@ export const useUndoRedoManager = ({
             // Update last action reference
             lastActionRef.current = entry;
         },
-        [maxHistorySize],
+        [maxHistorySize, cleanHistoryStack],
     );
 
     /**
@@ -101,7 +143,7 @@ export const useUndoRedoManager = ({
         if (!pending) return;
 
         // Don't process if we're in the middle of an undo/redo operation
-        if (isUndoRedoOperation) {
+        if (isUndoRedoOperation || isUndoRedoOperationRef.current) {
             return;
         }
 
@@ -110,11 +152,21 @@ export const useUndoRedoManager = ({
         // Validate the new map text
         if (!isValidMapText(newText)) {
             console.warn('Invalid map text provided to undo/redo system:', newText);
+            pendingChangeRef.current = null;
             return;
         }
 
         // Don't record if text hasn't actually changed
         if (newText === mapText) {
+            pendingChangeRef.current = null;
+            return;
+        }
+
+        // Don't record if this would create a duplicate entry
+        const lastEntry = undoStack[undoStack.length - 1];
+        if (lastEntry && lastEntry.currentMapText === newText && lastEntry.previousMapText === mapText) {
+            console.warn('Duplicate history entry detected, skipping');
+            pendingChangeRef.current = null;
             return;
         }
 
@@ -123,7 +175,7 @@ export const useUndoRedoManager = ({
 
         addToHistory(entry);
         pendingChangeRef.current = null;
-    }, [mapText, addToHistory, isUndoRedoOperation]);
+    }, [mapText, addToHistory, isUndoRedoOperation, undoStack]);
 
     /**
      * Debounced function to process pending changes
@@ -141,7 +193,7 @@ export const useUndoRedoManager = ({
     const recordChange = useCallback(
         (newText: string, actionType: ActionType, description: string, groupId?: string) => {
             // Don't record changes during undo/redo operations
-            if (isUndoRedoOperation) {
+            if (isUndoRedoOperation || isUndoRedoOperationRef.current) {
                 return;
             }
 
@@ -220,66 +272,60 @@ export const useUndoRedoManager = ({
      * Performs an undo operation
      */
     const undo = useCallback(() => {
-        if (isUndoRedoOperation) {
+        if (isUndoRedoOperation || isUndoRedoOperationRef.current || undoStack.length === 0) {
             return;
         }
 
-        // Process any pending changes first
-        if (pendingChangeRef.current) {
-            if (debounceTimeoutRef.current) {
-                clearTimeout(debounceTimeoutRef.current);
-                debounceTimeoutRef.current = null;
-            }
-            processPendingChangeImmediate();
+        // Set flag immediately to prevent race conditions
+        isUndoRedoOperationRef.current = true;
+        setIsUndoRedoOperation(true);
+
+        // Clear any pending changes without processing them
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current);
+            debounceTimeoutRef.current = null;
         }
+        pendingChangeRef.current = null;
 
-        // After processing pending changes, check if we can undo
-        // Use a timeout to allow state to update
-        setTimeout(() => {
-            setUndoStack(currentUndoStack => {
-                if (currentUndoStack.length === 0) {
-                    return currentUndoStack;
-                }
+        try {
+            const lastEntry = undoStack[undoStack.length - 1];
 
-                const lastEntry = currentUndoStack[currentUndoStack.length - 1];
+            // Validate that the undo would actually change the state
+            if (lastEntry.previousMapText === mapText) {
+                console.warn('Undo operation would not change state, skipping');
+                setIsUndoRedoOperation(false);
+                return;
+            }
 
-                // Set flag to prevent recursive recording
-                setIsUndoRedoOperation(true);
+            // Apply the previous state
+            mutateMapText(lastEntry.previousMapText);
 
-                try {
-                    // Apply the previous state
-                    mutateMapText(lastEntry.previousMapText);
-
-                    // Move entry from undo to redo stack
-                    setRedoStack(prevStack => {
-                        const newStack = [...prevStack, lastEntry];
-                        return truncateHistoryStack(newStack, maxHistorySize);
-                    });
-
-                    // Update references
-                    const newLastAction = currentUndoStack.length > 1 ? currentUndoStack[currentUndoStack.length - 2] : null;
-                    lastActionRef.current = newLastAction;
-
-                    // Reset flag after a brief delay
-                    setTimeout(() => {
-                        setIsUndoRedoOperation(false);
-                    }, 50);
-
-                    return currentUndoStack.slice(0, -1);
-                } catch (error) {
-                    console.error('Error during undo operation:', error);
-                    setIsUndoRedoOperation(false);
-                    return currentUndoStack;
-                }
+            // Move entry from undo to redo stack
+            setUndoStack(prevStack => prevStack.slice(0, -1));
+            setRedoStack(prevStack => {
+                const newStack = [...prevStack, lastEntry];
+                return truncateHistoryStack(newStack, maxHistorySize);
             });
-        }, 0);
-    }, [isUndoRedoOperation, mutateMapText, maxHistorySize, processPendingChangeImmediate]);
+
+            // Update references
+            const newLastAction = undoStack.length > 1 ? undoStack[undoStack.length - 2] : null;
+            lastActionRef.current = newLastAction;
+        } catch (error) {
+            console.error('Error during undo operation:', error);
+        } finally {
+            // Reset flag after a brief delay to allow map text to update
+            setTimeout(() => {
+                isUndoRedoOperationRef.current = false;
+                setIsUndoRedoOperation(false);
+            }, 50);
+        }
+    }, [isUndoRedoOperation, undoStack, mapText, mutateMapText, maxHistorySize]);
 
     /**
      * Performs a redo operation
      */
     const redo = useCallback(() => {
-        if (!canRedo || isUndoRedoOperation) {
+        if (!canRedo || isUndoRedoOperation || isUndoRedoOperationRef.current || redoStack.length === 0) {
             return;
         }
 
@@ -288,10 +334,25 @@ export const useUndoRedoManager = ({
             return;
         }
 
-        // Set flag to prevent recursive recording
+        // Set flag immediately to prevent race conditions
+        isUndoRedoOperationRef.current = true;
         setIsUndoRedoOperation(true);
 
+        // Clear any pending changes without processing them
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current);
+            debounceTimeoutRef.current = null;
+        }
+        pendingChangeRef.current = null;
+
         try {
+            // Validate that the redo would actually change the state
+            if (nextEntry.currentMapText === mapText) {
+                console.warn('Redo operation would not change state, skipping');
+                setIsUndoRedoOperation(false);
+                return;
+            }
+
             // Apply the next state
             mutateMapText(nextEntry.currentMapText);
 
@@ -309,10 +370,11 @@ export const useUndoRedoManager = ({
         } finally {
             // Reset flag after a brief delay to allow map text to update
             setTimeout(() => {
+                isUndoRedoOperationRef.current = false;
                 setIsUndoRedoOperation(false);
             }, 50);
         }
-    }, [canRedo, isUndoRedoOperation, redoStack, mutateMapText, maxHistorySize]);
+    }, [canRedo, isUndoRedoOperation, redoStack, mapText, mutateMapText, maxHistorySize]);
 
     // Cleanup effect
     useEffect(() => {
@@ -326,7 +388,7 @@ export const useUndoRedoManager = ({
     // Process any pending changes when component unmounts or mapText changes externally
     useEffect(() => {
         // If mapText changed externally and we have a pending change, process it
-        if (pendingChangeRef.current && !isUndoRedoOperation) {
+        if (pendingChangeRef.current && !isUndoRedoOperation && !isUndoRedoOperationRef.current) {
             const pending = pendingChangeRef.current;
             if (pending.newText !== mapText) {
                 // External change detected, clear pending change
@@ -348,6 +410,7 @@ export const useUndoRedoManager = ({
         redo,
         recordChange,
         clearHistory,
+        cleanupHistory,
         getLastAction,
         getNextAction,
         isUndoRedoOperation,
