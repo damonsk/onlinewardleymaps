@@ -50,7 +50,7 @@ describe('ResizeHandles Component - Core Functionality', () => {
         mockOnResizeStart = jest.fn();
         mockOnResizeMove = jest.fn();
         mockOnResizeEnd = jest.fn();
-        
+
         // Update defaultProps with fresh mocks
         Object.assign(defaultProps, {
             onResizeStart: mockOnResizeStart,
@@ -74,7 +74,7 @@ describe('ResizeHandles Component - Core Functionality', () => {
         return render(
             <svg>
                 <ResizeHandles {...props} />
-            </svg>
+            </svg>,
         );
     };
 

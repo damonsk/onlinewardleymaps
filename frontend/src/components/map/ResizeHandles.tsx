@@ -60,24 +60,27 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     }, []);
 
     // Calculate handle position based on bounds and handle type
-    const getHandlePosition = useCallback((handle: ResizeHandle) => {
-        const {x, y, width, height} = bounds;
-        const handleSize = getHandleSize();
-        const offset = handleSize / 2;
+    const getHandlePosition = useCallback(
+        (handle: ResizeHandle) => {
+            const {x, y, width, height} = bounds;
+            const handleSize = getHandleSize();
+            const offset = handleSize / 2;
 
-        const positions: Record<ResizeHandle, {x: number; y: number}> = {
-            'top-left': {x: x - offset, y: y - offset},
-            'top-center': {x: x + width / 2 - offset, y: y - offset},
-            'top-right': {x: x + width - offset, y: y - offset},
-            'middle-left': {x: x - offset, y: y + height / 2 - offset},
-            'middle-right': {x: x + width - offset, y: y + height / 2 - offset},
-            'bottom-left': {x: x - offset, y: y + height - offset},
-            'bottom-center': {x: x + width / 2 - offset, y: y + height - offset},
-            'bottom-right': {x: x + width - offset, y: y + height - offset},
-        };
+            const positions: Record<ResizeHandle, {x: number; y: number}> = {
+                'top-left': {x: x - offset, y: y - offset},
+                'top-center': {x: x + width / 2 - offset, y: y - offset},
+                'top-right': {x: x + width - offset, y: y - offset},
+                'middle-left': {x: x - offset, y: y + height / 2 - offset},
+                'middle-right': {x: x + width - offset, y: y + height / 2 - offset},
+                'bottom-left': {x: x - offset, y: y + height - offset},
+                'bottom-center': {x: x + width / 2 - offset, y: y + height - offset},
+                'bottom-right': {x: x + width - offset, y: y + height - offset},
+            };
 
-        return positions[handle];
-    }, [bounds, getHandleSize]);
+            return positions[handle];
+        },
+        [bounds, getHandleSize],
+    );
 
     // Handle mouse down on resize handle
     const handleMouseDown = useCallback(
@@ -89,7 +92,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
             setActiveHandle(handle);
             setIsDragging(true);
             setDragStartPosition(startPosition);
-            
+
             if (onResizeStart) {
                 onResizeStart(handle, startPosition);
             }
@@ -104,7 +107,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
 
             event.preventDefault();
             const currentPosition = {x: event.clientX, y: event.clientY};
-            
+
             if (onResizeMove) {
                 onResizeMove(activeHandle, currentPosition);
             }
@@ -122,7 +125,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
             const currentActiveHandle = activeHandle;
             setActiveHandle(null);
             setDragStartPosition(null);
-            
+
             if (onResizeEnd) {
                 onResizeEnd(currentActiveHandle);
             }
@@ -185,7 +188,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                             transition: isDragging ? 'none' : 'all 0.2s ease-in-out',
                         }}
                         onMouseDown={event => handleMouseDown(handle, event)}
-                        onMouseEnter={(event) => {
+                        onMouseEnter={event => {
                             // Add hover effect
                             const element = event.currentTarget as SVGRectElement;
                             if (!isDragging) {
@@ -193,7 +196,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                                 element.style.transform = 'scale(1.1)';
                             }
                         }}
-                        onMouseLeave={(event) => {
+                        onMouseLeave={event => {
                             // Remove hover effect
                             const element = event.currentTarget as SVGRectElement;
                             if (!isDragging) {
@@ -224,12 +227,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
             })}
 
             {/* Hidden element for screen reader instructions */}
-            <text
-                id="resize-instructions"
-                x={-1000}
-                y={-1000}
-                style={{opacity: 0, pointerEvents: 'none'}}
-                aria-hidden="true">
+            <text id="resize-instructions" x={-1000} y={-1000} style={{opacity: 0, pointerEvents: 'none'}} aria-hidden="true">
                 Use arrow keys or drag to resize. Press Escape to cancel.
             </text>
         </g>

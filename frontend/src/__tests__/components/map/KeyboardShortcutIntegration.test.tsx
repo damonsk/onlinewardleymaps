@@ -1,9 +1,60 @@
 import React from 'react';
-import {render, screen, fireEvent, act} from '@testing-library/react';
+import {render, screen, fireEvent, act, waitFor} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {KeyboardShortcutHandler} from '../../../components/map/KeyboardShortcutHandler';
-import {UndoRedoProvider} from '../../../components/UndoRedoProvider';
+import {UndoRedoProvider, useUndoRedo} from '../../../components/UndoRedoProvider';
 import {ToolbarItem} from '../../../types/toolbar';
+
+// Mock useUndoRedoManager only for this specific test file
+jest.mock('../../../hooks/useUndoRedoManager', () => {
+    const originalModule = jest.requireActual('../../../hooks/useUndoRedoManager');
+    return {
+        ...originalModule,
+        useUndoRedoManager: jest.fn(),
+    };
+});
+
+// Import after mocking
+import {useUndoRedoManager} from '../../../hooks/useUndoRedoManager';
+
+const mockUseUndoRedoManager = useUndoRedoManager as jest.MockedFunction<typeof useUndoRedoManager>;
+
+const mockUndoRedoManager = {
+    canUndo: true,
+    canRedo: true,
+    undo: jest.fn(),
+    redo: jest.fn(),
+    recordChange: jest.fn(),
+    clearHistory: jest.fn(),
+    getLastAction: jest.fn(() => ({
+        id: 'test-action',
+        timestamp: Date.now(),
+        previousMapText: 'old text',
+        currentMapText: 'new text',
+        actionType: 'toolbar-component' as const,
+        actionDescription: 'Add component',
+    })),
+    getNextAction: jest.fn(() => ({
+        id: 'test-action-next',
+        timestamp: Date.now(),
+        previousMapText: 'current text',
+        currentMapText: 'next text',
+        actionType: 'toolbar-component' as const,
+        actionDescription: 'Add another component',
+    })),
+    isUndoRedoOperation: false,
+    undoStack: [],
+    redoStack: [],
+};
+
+// Set up the mock return value
+mockUseUndoRedoManager.mockReturnValue(mockUndoRedoManager);
+
+// Clean up after tests to prevent interference with other test files
+afterAll(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+});
 
 // Mock toolbar items
 const mockToolbarItems: ToolbarItem[] = [
@@ -29,6 +80,14 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        // Reset mock implementations
+        mockUndoRedoManager.undo.mockClear();
+        mockUndoRedoManager.redo.mockClear();
+        mockUndoRedoManager.recordChange.mockClear();
+        mockUndoRedoManager.clearHistory.mockClear();
+        mockUndoRedoManager.getLastAction.mockClear();
+        mockUndoRedoManager.getNextAction.mockClear();
+
         // Mock Windows platform
         Object.defineProperty(window, 'navigator', {
             value: {
@@ -40,8 +99,14 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
     });
 
     const renderComponent = (props: any = {}) => {
+        // Ensure mockMutateMapText has proper implementation for testing
+        const testMutateMapText = jest.fn().mockImplementation((newText: string) => {
+            // Mock the actual mutation behavior that the UndoRedoProvider expects
+            console.log('Mock mutateMapText called with:', newText);
+        });
+
         return render(
-            <UndoRedoProvider mutateMapText={mockMutateMapText} mapText="initial map text">
+            <UndoRedoProvider mutateMapText={testMutateMapText} mapText="initial map text">
                 <KeyboardShortcutHandler
                     toolbarItems={mockToolbarItems}
                     onToolSelect={mockOnToolSelect}
@@ -55,20 +120,32 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
 
     describe('Complete Undo/Redo Workflow', () => {
         it('should handle complete undo/redo workflow with keyboard shortcuts', async () => {
-            const {container} = renderComponent();
+            const mutateMapText = jest.fn();
 
-            // Step 1: Create some history by making changes
-            act(() => {
-                mockMutateMapText('change 1');
+            const {container} = render(
+                <UndoRedoProvider mutateMapText={mutateMapText} mapText="current text">
+                    <KeyboardShortcutHandler
+                        toolbarItems={mockToolbarItems}
+                        onToolSelect={mockOnToolSelect}
+                        isEnabled={true}
+                        currentSelectedTool={null}
+                    />
+                </UndoRedoProvider>,
+            );
+
+            // Test undo keyboard shortcut (Ctrl+Z)
+            await act(async () => {
+                fireEvent.keyDown(document, {
+                    key: 'z',
+                    ctrlKey: true,
+                });
             });
 
-            act(() => {
-                mockMutateMapText('change 2');
-            });
+            // Verify that undo was called
+            expect(mockUndoRedoManager.undo).toHaveBeenCalledTimes(1);
 
-            act(() => {
-                mockMutateMapText('change 3');
-            });
+            // Verify that the announcement was created
+            expect(screen.getByText(/Undid: Add component/)).toBeInTheDocument();
 
             // Step 2: Undo the last change
             await act(async () => {
@@ -78,7 +155,21 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
                 });
             });
 
+            // Give time for the announcement to appear
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            });
+
+            // Debug: check if any announcement text exists
+            const announcements = container.querySelectorAll('[role="status"]');
+            console.log('Found announcements:', announcements.length);
+            announcements.forEach((el, idx) => {
+                console.log(`Announcement ${idx}:`, el.textContent);
+            });
+
             expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+
+            jest.useRealTimers();
 
             // Step 3: Undo another change
             await act(async () => {
@@ -233,7 +324,18 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
 
     describe('Text Editor Context Prevention', () => {
         it('should not interfere with text editor undo/redo in various contexts', () => {
-            const {container} = renderComponent();
+            const mutateMapText = jest.fn();
+
+            const {container} = render(
+                <UndoRedoProvider mutateMapText={mutateMapText} mapText="current text">
+                    <KeyboardShortcutHandler
+                        toolbarItems={mockToolbarItems}
+                        onToolSelect={mockOnToolSelect}
+                        isEnabled={true}
+                        currentSelectedTool={null}
+                    />
+                </UndoRedoProvider>,
+            );
 
             // Test with different text editing contexts
             const contexts = [
@@ -244,21 +346,39 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
                 {element: 'div', className: 'CodeMirror'},
             ];
 
-            contexts.forEach(({element, type, contentEditable, className}) => {
+            contexts.forEach(({element, type, contentEditable, className}, index) => {
+                // Clear any existing announcements before each test
+                const existingAnnouncements = container.querySelectorAll('[role="status"]');
+                existingAnnouncements.forEach(el => el.remove());
+
                 const el = document.createElement(element as keyof HTMLElementTagNameMap);
 
                 if (type) (el as HTMLInputElement).type = type;
-                if (contentEditable) (el as HTMLDivElement).contentEditable = contentEditable;
-                if (className) el.className = className;
+                if (contentEditable) {
+                    (el as HTMLDivElement).contentEditable = contentEditable;
+                    // Make contenteditable elements focusable
+                    el.tabIndex = 0;
+                }
+                if (className) {
+                    el.className = className;
+                    // Make text editing class elements focusable
+                    el.tabIndex = 0;
+                }
 
                 document.body.appendChild(el);
                 el.focus();
+
+                // Clear mock call history for this test
+                mockUndoRedoManager.undo.mockClear();
 
                 // Try undo shortcut while focused on text editor
                 fireEvent.keyDown(document, {
                     key: 'z',
                     ctrlKey: true,
                 });
+
+                // Should NOT have called undo when focused on text editor
+                expect(mockUndoRedoManager.undo).not.toHaveBeenCalled();
 
                 // Should not show undo announcement
                 expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
@@ -361,12 +481,28 @@ describe('KeyboardShortcutHandler Integration Tests', () => {
 
     describe('Accessibility and User Feedback', () => {
         it('should provide meaningful action descriptions in announcements', async () => {
-            const {container} = renderComponent();
-
-            // Create history with a specific action
-            act(() => {
-                mockMutateMapText('Component added', 'toolbar-component', 'Add component "Test Component"');
+            // Update the mock to return a specific action description for this test
+            mockUndoRedoManager.getLastAction.mockReturnValueOnce({
+                id: 'test-action-specific',
+                timestamp: Date.now(),
+                previousMapText: 'old text',
+                currentMapText: 'Component added',
+                actionType: 'toolbar-component' as const,
+                actionDescription: 'Add component "Test Component"',
             });
+
+            const mutateMapText = jest.fn();
+
+            const {container} = render(
+                <UndoRedoProvider mutateMapText={mutateMapText} mapText="current text">
+                    <KeyboardShortcutHandler
+                        toolbarItems={mockToolbarItems}
+                        onToolSelect={mockOnToolSelect}
+                        isEnabled={true}
+                        currentSelectedTool={null}
+                    />
+                </UndoRedoProvider>,
+            );
 
             await act(async () => {
                 fireEvent.keyDown(document, {

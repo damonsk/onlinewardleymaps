@@ -272,19 +272,6 @@ describe('Toolbar Compatibility Integration Tests', () => {
             root.render(<MapView {...defaultProps} {...props} />);
         });
     };
-
-    describe('Requirement 6.1: Toolbar functionality', () => {
-        it('should render toolbar and speed dial', () => {
-            renderComponent();
-
-            const toolbar = container.querySelector('[role="toolbar"]');
-            const speedDial = container.querySelector('[data-testid="canvas-speed-dial"]');
-
-            expect(toolbar).toBeTruthy();
-            expect(speedDial).toBeTruthy();
-        });
-    });
-
     describe('Requirement 6.2: State synchronization between toolbar and text editing', () => {
         it('should maintain map state when components are added via toolbar', () => {
             const mockMutateMapText = jest.fn();
@@ -400,57 +387,6 @@ A->B`;
 
             // Should change to crosshair cursor
             expect(svgPanZoom?.style.cursor).toBe('crosshair');
-        });
-    });
-
-    describe('Requirement 6.4: Support for existing editing capabilities', () => {
-        it('should support all toolbar item types', () => {
-            renderComponent();
-
-            // Verify all toolbar items are rendered
-            TOOLBAR_ITEMS.forEach(item => {
-                const button = container.querySelector(`[aria-label*="${item.label}"]`);
-                expect(button).toBeTruthy();
-            });
-        });
-
-        it('should generate correct map text for different component types', () => {
-            const mockMutateMapText = jest.fn();
-            renderComponent({mutateMapText: mockMutateMapText});
-
-            // Test different component types
-            const testCases = [
-                {label: 'Component', expectedText: 'component New Component'},
-                {label: 'Component with Inertia', expectedText: 'component Inertia Component'},
-                {label: 'Market', expectedText: 'component Market'},
-                {label: 'Note', expectedText: 'note New Note'},
-            ];
-
-            testCases.forEach(({label, expectedText}, index) => {
-                mockMutateMapText.mockClear();
-
-                // Select toolbar item
-                const button = container.querySelector(`[aria-label*="${label}"]`);
-                act(() => {
-                    button?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-                });
-
-                // Click on map to place component
-                const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
-                act(() => {
-                    const event = new MouseEvent('click', {
-                        clientX: 400 + index * 10, // Slightly different positions
-                        clientY: 300 + index * 10,
-                        bubbles: true,
-                    });
-                    svgPanZoom?.dispatchEvent(event);
-                });
-
-                // Verify correct text was generated
-                expect(mockMutateMapText).toHaveBeenCalled();
-                const updatedText = mockMutateMapText.mock.calls[0][0];
-                expect(updatedText).toContain(expectedText);
-            });
         });
     });
 

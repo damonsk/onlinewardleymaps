@@ -452,11 +452,11 @@ describe('WysiwygToolbar Undo/Redo Integration', () => {
 
         it('enables undo button when there are actions to undo', async () => {
             renderComponentWithUndoRedo();
-            
+
             // Initially, undo should be disabled
             const initialUndoButton = container.querySelector('[data-testid="toolbar-item-undo"]') as HTMLButtonElement;
             expect(initialUndoButton?.disabled).toBe(true);
-            
+
             // This test focuses on the user behavior rather than internal state management
             // In a real scenario, the user would interact with the map to create an action
             // For now, we verify the button exists and responds to disabled state
@@ -481,10 +481,10 @@ describe('WysiwygToolbar Undo/Redo Integration', () => {
 
         it('renders with undo/redo functionality when provider is present', () => {
             renderComponentWithUndoRedo();
-            
+
             const undoButton = container.querySelector('[data-testid="toolbar-item-undo"]');
             const redoButton = container.querySelector('[data-testid="toolbar-item-redo"]');
-            
+
             expect(undoButton).toBeInTheDocument();
             expect(redoButton).toBeInTheDocument();
         });

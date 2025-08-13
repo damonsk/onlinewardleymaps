@@ -120,7 +120,7 @@ describe('useUndoRedoManager - Corruption Bug Fixes', () => {
 
             // Try to undo - should detect that no change is needed
             const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-            
+
             act(() => {
                 result.current.undo();
                 jest.advanceTimersByTime(100);
@@ -165,7 +165,7 @@ describe('useUndoRedoManager - Corruption Bug Fixes', () => {
             // Try to redo - should detect that no change is needed
             const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
             const callCountBefore = mockMutateMapText.mock.calls.length;
-            
+
             act(() => {
                 result.current.redo();
                 jest.advanceTimersByTime(100);
@@ -252,13 +252,13 @@ describe('useUndoRedoManager - Corruption Bug Fixes', () => {
 
             // Try to perform multiple undo operations simultaneously
             const callCountBefore = mockMutateMapText.mock.calls.length;
-            
+
             act(() => {
                 result.current.undo();
                 // The second undo should be ignored because isUndoRedoOperation is now true
-                result.current.undo(); 
+                result.current.undo();
             });
-            
+
             // Allow the async operations to complete
             act(() => {
                 jest.advanceTimersByTime(100);

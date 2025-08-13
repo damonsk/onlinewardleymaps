@@ -167,9 +167,9 @@ describe('DragPreview', () => {
             const positions = [
                 {x: 150, y: 250},
                 {x: 0, y: 0},
-                {x: 9999, y: 9999}
+                {x: 9999, y: 9999},
             ];
-            
+
             positions.forEach(position => {
                 renderComponent({mousePosition: position});
                 const preview = container.querySelector('[data-testid="drag-preview"]');
@@ -319,7 +319,6 @@ describe('DragPreview', () => {
         });
     });
 
-
     describe('Edge Cases', () => {
         it('handles no selected item', () => {
             renderComponent({selectedItem: null});
@@ -331,9 +330,9 @@ describe('DragPreview', () => {
             const items = [
                 {...mockToolbarItem, label: 'Component'},
                 {...mockToolbarItem, label: 'Note', id: 'note'},
-                {...mockToolbarItem, label: 'Pipeline', id: 'pipeline'}
+                {...mockToolbarItem, label: 'Pipeline', id: 'pipeline'},
             ];
-            
+
             items.forEach(item => {
                 renderComponent({selectedItem: item});
                 const preview = container.querySelector('[data-testid="drag-preview"]');
@@ -341,5 +340,4 @@ describe('DragPreview', () => {
             });
         });
     });
-
 });

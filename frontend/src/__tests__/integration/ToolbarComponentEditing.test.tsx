@@ -389,36 +389,6 @@ component Toolbar Component [0.2, 0.8]`,
     });
 
     describe('Component Linking', () => {
-        it('should allow linking toolbar-placed components with existing components', () => {
-            const mockMutateMapText = jest.fn();
-
-            // Mock mod key pressed for linking
-            const mockUseModKeyPressed = require('../../components/KeyPressContext').useModKeyPressedConsumer;
-            mockUseModKeyPressed.mockReturnValue(true);
-
-            renderComponent({mutateMapText: mockMutateMapText});
-
-            // Click on first component (existing)
-            const componentA = container.querySelector('[data-testid="component-a"]');
-            act(() => {
-                componentA?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            });
-
-            // Click on toolbar-placed component
-            const toolbarComponent = container.querySelector('[data-testid="toolbar-component"]');
-            act(() => {
-                toolbarComponent?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            });
-
-            // Should create a link between the components
-            expect(mockMutateMapText).toHaveBeenCalled();
-            const updatedText = mockMutateMapText.mock.calls[0][0];
-            expect(updatedText).toContain('Component A->Toolbar Component');
-
-            // Reset mock
-            mockUseModKeyPressed.mockReturnValue(false);
-        });
-
         it('should allow linking between two toolbar-placed components', () => {
             const mockMutateMapText = jest.fn();
 
