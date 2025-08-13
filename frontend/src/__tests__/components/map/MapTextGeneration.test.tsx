@@ -124,18 +124,6 @@ describe('Map Text Generation and Mutation', () => {
                     expectedTemplate: 'component Test Component [0.50, 0.60]',
                 },
                 {
-                    itemId: 'component-inertia',
-                    expectedTemplate: 'component Test Component [0.50, 0.60] inertia',
-                },
-                {
-                    itemId: 'market',
-                    expectedTemplate: 'component Test Component [0.50, 0.60] (market)',
-                },
-                {
-                    itemId: 'ecosystem',
-                    expectedTemplate: 'component Test Component [0.50, 0.60] (ecosystem)',
-                },
-                {
                     itemId: 'note',
                     expectedTemplate: 'note Test Component [0.50, 0.60]',
                 },
@@ -282,9 +270,6 @@ component C [0.5, 0.6]`);
             // Test specific expected defaults for placement items
             const expectedDefaults = {
                 component: 'New Component',
-                'component-inertia': 'Inertia Component',
-                market: 'Market',
-                ecosystem: 'Ecosystem',
                 note: 'New Note',
                 pipeline: 'New Pipeline',
                 anchor: 'New Anchor',

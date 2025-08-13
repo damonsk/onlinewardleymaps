@@ -2,6 +2,7 @@ import React, {MouseEvent} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapElements} from '../../processing/MapElements';
 import {MapTheme} from '../../types/map/styles';
+import {PSTElement, PSTCoordinates, PSTBounds, ResizeHandle} from '../../types/map/pst';
 import {UnifiedComponent} from '../../types/unified';
 import {getMapElementsDecorated} from '../../utils/mapProcessing';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
@@ -73,6 +74,15 @@ interface ModernUnifiedMapContentProps {
     selectedToolbarItem?: any;
     // New props for method application functionality
     methodHighlightedComponent?: UnifiedComponent | null;
+    // New props for PST resize functionality
+    hoveredPSTElement?: PSTElement | null;
+    resizingPSTElement?: PSTElement | null;
+    resizeHandle?: ResizeHandle | null;
+    resizePreviewBounds?: PSTBounds | null;
+    onPSTHover?: (element: PSTElement | null) => void;
+    onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle) => void;
+    onPSTResizeMove?: (newBounds: PSTBounds) => void;
+    onPSTResizeEnd?: (element: PSTElement, newCoordinates: PSTCoordinates) => void;
 }
 
 /**

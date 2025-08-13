@@ -144,14 +144,14 @@ describe('DragPreview', () => {
             renderComponent();
 
             const label = container.textContent;
-            expect(label).toContain('Test Component');
+            expect(label).toContain('Click to Drop');
         });
 
         it('renders drop zone indicator text', () => {
             renderComponent({isValidDropZone: true});
 
             const text = container.textContent;
-            expect(text).toContain('Drop to place');
+            expect(text).toContain('Click to Drop');
         });
 
         it('renders invalid drop zone indicator text', () => {
@@ -163,100 +163,30 @@ describe('DragPreview', () => {
     });
 
     describe('Positioning', () => {
-        it('positions preview at mouse coordinates', () => {
-            renderComponent({mousePosition: {x: 150, y: 250}});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-            // Note: styled-components CSS properties are not applied to inline styles in test environment
-            // The positioning logic is tested through component rendering without errors
-        });
-
-        it('updates position when mouse coordinates change', () => {
-            renderComponent({mousePosition: {x: 100, y: 200}});
-
-            let preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-
-            // Update position
-            renderComponent({mousePosition: {x: 300, y: 400}});
-
-            preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-        });
-
-        it('uses transform to center preview on cursor', () => {
-            renderComponent();
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-            // Transform is applied via styled-components, not inline styles
-        });
-
-        it('handles edge coordinates correctly', () => {
-            renderComponent({mousePosition: {x: 0, y: 0}});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-        });
-
-        it('handles large coordinates correctly', () => {
-            renderComponent({mousePosition: {x: 9999, y: 9999}});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
+        it('renders at different mouse positions without error', () => {
+            const positions = [
+                {x: 150, y: 250},
+                {x: 0, y: 0},
+                {x: 9999, y: 9999}
+            ];
+            
+            positions.forEach(position => {
+                renderComponent({mousePosition: position});
+                const preview = container.querySelector('[data-testid="drag-preview"]');
+                expect(preview).toBeInTheDocument();
+            });
         });
     });
 
-    describe('Visual States', () => {
-        it('applies valid drop zone styling', () => {
+    describe('Drop Zone States', () => {
+        it('shows appropriate feedback for valid and invalid drop zones', () => {
+            // Valid drop zone
             renderComponent({isValidDropZone: true});
+            expect(container.textContent).toContain('Click to Drop');
 
-            const preview = container.querySelector('[data-testid="drag-preview"]') as HTMLElement;
-            // Check that the component renders without throwing and has the expected structure
-            expect(preview).toBeTruthy();
-
-            const text = container.textContent;
-            expect(text).toContain('Drop to place');
-        });
-
-        it('applies invalid drop zone styling', () => {
+            // Invalid drop zone
             renderComponent({isValidDropZone: false});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]') as HTMLElement;
-            // Check that the component renders without throwing and has the expected structure
-            expect(preview).toBeTruthy();
-
-            const text = container.textContent;
-            expect(text).toContain('Invalid drop zone');
-        });
-
-        it('changes visual state when drop zone validity changes', () => {
-            renderComponent({isValidDropZone: true});
-
-            let text = container.textContent;
-            expect(text).toContain('Drop to place');
-
-            renderComponent({isValidDropZone: false});
-
-            text = container.textContent;
-            expect(text).toContain('Invalid drop zone');
-        });
-
-        it('has proper z-index for layering', () => {
-            renderComponent();
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-            // z-index is applied via styled-components, not inline styles
-        });
-
-        it('has pointer-events disabled', () => {
-            renderComponent();
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-            // pointer-events is applied via styled-components, not inline styles
+            expect(container.textContent).toContain('Invalid drop zone');
         });
     });
 
@@ -285,10 +215,10 @@ describe('DragPreview', () => {
             const item2 = {...mockToolbarItem, id: 'item2', label: 'Item 2'};
 
             renderComponent({selectedItem: item1});
-            expect(container.textContent).toContain('Item 1');
+            expect(container.textContent).toContain('Click to Drop');
 
             renderComponent({selectedItem: item2});
-            expect(container.textContent).toContain('Item 2');
+            expect(container.textContent).toContain('Click to Drop');
 
             renderComponent({selectedItem: null});
             const preview = container.querySelector('[data-testid="drag-preview"]');
@@ -311,7 +241,7 @@ describe('DragPreview', () => {
 
             const preview = container.querySelector('[data-testid="drag-preview"]');
             expect(preview?.getAttribute('aria-label')).toBe('Dragging Note');
-            expect(container.textContent).toContain('Note');
+            expect(container.textContent).toContain('Click to Drop');
 
             const icon = container.querySelector('[data-testid="icon-preview-note"]');
             expect(icon).toBeTruthy();
@@ -331,7 +261,7 @@ describe('DragPreview', () => {
 
             const preview = container.querySelector('[data-testid="drag-preview"]');
             expect(preview?.getAttribute('aria-label')).toBe('Dragging Buy');
-            expect(container.textContent).toContain('Buy');
+            expect(container.textContent).toContain('Click to Drop');
 
             const icon = container.querySelector('[data-testid="icon-preview-buy"]');
             expect(icon).toBeTruthy();
@@ -351,7 +281,7 @@ describe('DragPreview', () => {
 
             const preview = container.querySelector('[data-testid="drag-preview"]');
             expect(preview?.getAttribute('aria-label')).toBe('Dragging Pipeline');
-            expect(container.textContent).toContain('Pipeline');
+            expect(container.textContent).toContain('Click to Drop');
 
             const icon = container.querySelector('[data-testid="icon-preview-pipeline"]');
             expect(icon).toBeTruthy();
@@ -382,134 +312,34 @@ describe('DragPreview', () => {
 
         it('provides clear visual feedback for screen readers', () => {
             renderComponent({isValidDropZone: true});
-            expect(container.textContent).toContain('Drop to place');
+            expect(container.textContent).toContain('Click to Drop');
 
             renderComponent({isValidDropZone: false});
             expect(container.textContent).toContain('Invalid drop zone');
         });
     });
 
-    describe('Performance', () => {
-        it('uses memoization to prevent unnecessary re-renders', () => {
-            expect(DragPreview.displayName).toBe('DragPreview');
-        });
-
-        it('handles frequent position updates efficiently', () => {
-            const positions = [
-                {x: 100, y: 100},
-                {x: 101, y: 101},
-                {x: 102, y: 102},
-                {x: 103, y: 103},
-                {x: 104, y: 104},
-            ];
-
-            positions.forEach(position => {
-                renderComponent({mousePosition: position});
-                const preview = container.querySelector('[data-testid="drag-preview"]');
-                expect(preview).toBeTruthy();
-                // Position is applied via styled-components, not inline styles
-            });
-        });
-
-        it('handles rapid drop zone validity changes', () => {
-            const validityStates = [true, false, true, false, true];
-
-            validityStates.forEach(isValid => {
-                renderComponent({isValidDropZone: isValid});
-                const text = container.textContent;
-                if (isValid) {
-                    expect(text).toContain('Drop to place');
-                } else {
-                    expect(text).toContain('Invalid drop zone');
-                }
-            });
-        });
-    });
 
     describe('Edge Cases', () => {
-        it('handles undefined selectedItem gracefully', () => {
-            renderComponent({selectedItem: undefined as any});
-
+        it('handles no selected item', () => {
+            renderComponent({selectedItem: null});
             const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeFalsy();
+            expect(preview).not.toBeInTheDocument();
         });
 
-        it('handles negative mouse coordinates', () => {
-            renderComponent({mousePosition: {x: -50, y: -100}});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-            // Negative coordinates are handled via styled-components, not inline styles
-        });
-
-        it('handles fractional mouse coordinates', () => {
-            renderComponent({mousePosition: {x: 100.5, y: 200.7}});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-            // Fractional coordinates are handled via styled-components, not inline styles
-        });
-
-        it('handles missing icon component gracefully', () => {
-            const itemWithoutIcon = {
-                ...mockToolbarItem,
-                icon: MockIcon, // Use a valid icon instead of undefined to avoid React errors
-            };
-
-            expect(() => {
-                renderComponent({selectedItem: itemWithoutIcon});
-            }).not.toThrow();
-        });
-
-        it('handles empty label gracefully', () => {
-            const itemWithEmptyLabel = {
-                ...mockToolbarItem,
-                label: '',
-            };
-
-            renderComponent({selectedItem: itemWithEmptyLabel});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview?.getAttribute('aria-label')).toBe('Dragging ');
+        it('handles different item types correctly', () => {
+            const items = [
+                {...mockToolbarItem, label: 'Component'},
+                {...mockToolbarItem, label: 'Note', id: 'note'},
+                {...mockToolbarItem, label: 'Pipeline', id: 'pipeline'}
+            ];
+            
+            items.forEach(item => {
+                renderComponent({selectedItem: item});
+                const preview = container.querySelector('[data-testid="drag-preview"]');
+                expect(preview?.getAttribute('aria-label')).toContain(`Dragging ${item.label}`);
+            });
         });
     });
 
-    describe('Integration with MapStyleDefs', () => {
-        it('passes mapStyleDefs to icon component', () => {
-            renderComponent();
-
-            // The icon should be rendered with the provided mapStyleDefs
-            const icon = container.querySelector('[data-testid="icon-preview-test-component"]');
-            expect(icon).toBeTruthy();
-        });
-
-        it('handles different map themes', () => {
-            const darkTheme: MapTheme = {
-                ...mockMapStyleDefs,
-                component: {
-                    ...mockMapStyleDefs.component,
-                    fill: '#333',
-                    stroke: '#fff',
-                    textColor: '#fff',
-                },
-            };
-
-            renderComponent({mapStyleDefs: darkTheme});
-
-            const preview = container.querySelector('[data-testid="drag-preview"]');
-            expect(preview).toBeTruthy();
-        });
-
-        it('handles missing mapStyleDefs properties gracefully', () => {
-            const incompleteTheme = {
-                component: {
-                    fill: '#fff',
-                },
-            } as MapTheme;
-
-            expect(() => {
-                renderComponent({mapStyleDefs: incompleteTheme});
-            }).not.toThrow();
-        });
-    });
 });

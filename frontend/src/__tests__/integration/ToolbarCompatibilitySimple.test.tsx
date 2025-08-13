@@ -62,11 +62,6 @@ jest.mock('react-svg-pan-zoom', () => {
 });
 
 // Mock other components to simplify testing
-jest.mock('../../components/map/CanvasSpeedDial', () => {
-    return function MockCanvasSpeedDial() {
-        return <div data-testid="canvas-speed-dial">Speed Dial Mock</div>;
-    };
-});
 
 jest.mock('../../components/map/MapGridGroup', () => {
     return function MockMapGridGroup() {
