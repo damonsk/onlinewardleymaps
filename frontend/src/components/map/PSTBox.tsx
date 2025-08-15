@@ -67,14 +67,14 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
-    
+
     // Refs for managing timeouts and drag state
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const dragStartPositionRef = useRef<{x: number; y: number} | null>(null);
 
     // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
-    
+
     // Get colors from map styles instead of PST_CONFIG, with fallback to PST_CONFIG
     const pstColors = mapStyleDefs.attitudes?.[pstElement.type] || {
         fill: pstConfig.color,
@@ -269,12 +269,12 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 clearTimeout(hoverTimeoutRef.current);
                 hoverTimeoutRef.current = null;
             }
-            
+
             // Clean up drag state if component unmounts during drag
             if (isDragActive) {
                 setIsDragActive(false);
                 dragStartPositionRef.current = null;
-                
+
                 // Restore text selection
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
@@ -301,10 +301,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 width={bounds.width}
                 height={bounds.height}
                 fill={pstColors.fill}
-                fillOpacity={isHovered ? (pstColors.fillOpacity || 0.8) : (pstColors.fillOpacity || 0.6)}
+                fillOpacity={isHovered ? pstColors.fillOpacity || 0.8 : pstColors.fillOpacity || 0.6}
                 stroke={pstColors.stroke}
                 strokeWidth={isHovered ? 2 : 1}
-                strokeOpacity={isHovered ? 1 : (pstColors.strokeOpacity || 0.8)}
+                strokeOpacity={isHovered ? 1 : pstColors.strokeOpacity || 0.8}
                 rx={4}
                 ry={4}
                 style={{
@@ -328,7 +328,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 x={labelX}
                 y={labelY}
                 fill="white"
-                fontSize={Math.max(10, 12 / scaleFactor)}
+                fontSize="12"
                 fontWeight="600"
                 textAnchor="middle"
                 dominantBaseline="middle"
@@ -350,8 +350,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 scaleFactor={scaleFactor}
                 mapStyleDefs={mapStyleDefs}
             />
-
-
 
             {/* Hidden description for screen readers */}
             <text
