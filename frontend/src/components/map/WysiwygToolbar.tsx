@@ -618,6 +618,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     aria-label="Map component toolbar with keyboard shortcuts"
                     aria-describedby="toolbar-instructions"
                     $isDragging={isDragging}
+                    suppressHydrationWarning={true}
                     style={{
                         left: `${position.x}px`,
                         top: `${position.y}px`,
