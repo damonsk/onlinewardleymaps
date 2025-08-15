@@ -114,6 +114,8 @@ export interface KeyboardShortcutHandlerProps {
     isEnabled: boolean;
     currentSelectedTool: string | null;
     undoRedoEnabled?: boolean; // Default: true
+    selectedComponentId?: string | null; // Currently selected component for deletion
+    onDeleteComponent?: (componentId: string) => void; // Callback for component deletion
 }
 
 /**

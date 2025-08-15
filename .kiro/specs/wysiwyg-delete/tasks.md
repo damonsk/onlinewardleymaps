@@ -1,18 +1,18 @@
 # Implementation Plan
 
-- [-] 1. Create component selection infrastructure
+- [x] 1. Create component selection infrastructure
   - Implement MapComponentSelector service for tracking selected components
   - Create selection state management with single component selection
   - Add component selection methods (select, deselect, clear)
   - _Requirements: 3.2_
 
-- [ ] 2. Implement visual selection feedback
+- [x] 2. Implement visual selection feedback
   - Add selection styling to map components when selected
   - Create hover indicators for deletable components
   - Implement smooth visual transitions for selection state changes
   - _Requirements: 3.1, 3.2, 3.4_
 
-- [ ] 3. Extend KeyboardShortcutHandler for deletion
+- [-] 3. Extend KeyboardShortcutHandler for deletion
   - Add Delete and Backspace key handling to existing KeyboardShortcutHandler
   - Integrate with component selection to identify target for deletion
   - Ensure keyboard shortcuts only work when components are selected

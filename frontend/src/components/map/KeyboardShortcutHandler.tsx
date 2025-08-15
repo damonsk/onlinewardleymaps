@@ -44,11 +44,12 @@ const detectPlatform = (): 'mac' | 'windows' => {
  * - M for Method
  * - T for PST (future implementation)
  * - Escape to deselect current tool
+ * - Delete/Backspace for component deletion
  * - Ctrl+Z/Cmd+Z for undo
  * - Ctrl+Y/Cmd+Shift+Z for redo
  */
 export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = memo(
-    ({toolbarItems, onToolSelect, isEnabled, currentSelectedTool, undoRedoEnabled = true}) => {
+    ({toolbarItems, onToolSelect, isEnabled, currentSelectedTool, undoRedoEnabled = true, selectedComponentId, onDeleteComponent}) => {
         const [announceText, setAnnounceText] = useState('');
         const [platform] = useState(() => detectPlatform());
 
@@ -89,6 +90,29 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
             return !hasTextEditingClass;
         }, [isEnabled]);
+
+        /**
+         * Handle component deletion keyboard shortcuts
+         */
+        const handleDeletionShortcuts = useCallback(
+            (event: KeyboardEvent): boolean => {
+                if (!selectedComponentId || !onDeleteComponent) return false;
+
+                const key = event.key;
+
+                // Handle Delete and Backspace keys (no modifiers)
+                if ((key === 'Delete' || key === 'Backspace') && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
+                    event.preventDefault();
+                    onDeleteComponent(selectedComponentId);
+                    setAnnounceText(`Component deleted`);
+                    setTimeout(() => setAnnounceText(''), 1000);
+                    return true;
+                }
+
+                return false;
+            },
+            [selectedComponentId, onDeleteComponent],
+        );
 
         /**
          * Handle undo/redo keyboard shortcuts
@@ -147,6 +171,11 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     return;
                 }
 
+                // Handle deletion shortcuts (Delete/Backspace keys)
+                if (handleDeletionShortcuts(event)) {
+                    return;
+                }
+
                 // Handle Escape key to deselect current tool
                 if (event.key === 'Escape') {
                     event.preventDefault();
@@ -181,7 +210,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     setTimeout(() => setAnnounceText(''), 1000);
                 }
             },
-            [shouldHandleShortcuts, onToolSelect, currentSelectedTool, handleUndoRedoShortcuts],
+            [shouldHandleShortcuts, onToolSelect, currentSelectedTool, handleUndoRedoShortcuts, handleDeletionShortcuts],
         );
 
         /**
