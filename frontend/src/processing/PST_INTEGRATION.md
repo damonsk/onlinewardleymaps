@@ -15,9 +15,9 @@ PST elements are extracted from the `attitudes` array in the UnifiedWardleyMap a
 PST elements are converted to UnifiedComponent objects and integrated into the main component processing system:
 
 - **Type**: `'pst'`
-- **PST-specific properties**: 
-  - `pstType`: The PST type ('pioneers', 'settlers', 'townplanners')
-  - `pstCoordinates`: The full coordinate structure with maturity1, visibility1, maturity2, visibility2
+- **PST-specific properties**:
+    - `pstType`: The PST type ('pioneers', 'settlers', 'townplanners')
+    - `pstCoordinates`: The full coordinate structure with maturity1, visibility1, maturity2, visibility2
 - **Primary coordinates**: Uses maturity1/visibility1 as the primary maturity/visibility for compatibility
 
 ### New Methods
@@ -55,10 +55,10 @@ The UnifiedMapContent component now uses PST elements directly from MapElements 
 
 ```typescript
 // Before
-{props.mapAttitudes && 
+{props.mapAttitudes &&
   extractPSTElementsFromAttitudes(props.mapAttitudes).map(...)}
 
-// After  
+// After
 {mapElements.getPSTElements().map(...)}
 ```
 

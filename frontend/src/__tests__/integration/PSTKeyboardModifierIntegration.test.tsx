@@ -20,12 +20,16 @@ jest.mock('../../utils/pstCoordinateUtils', () => ({
         height: 100,
     })),
     calculateResizedBounds: jest.fn((originalBounds, handle, deltaX, deltaY, constraints, mapDimensions, modifiers) => ({
-        x: originalBounds.x + (modifiers?.resizeFromCenter ? -deltaX/2 : (handle.includes('left') ? deltaX : 0)),
-        y: originalBounds.y + (modifiers?.resizeFromCenter ? -deltaY/2 : (handle.includes('top') ? deltaY : 0)),
-        width: originalBounds.width + (modifiers?.resizeFromCenter ? Math.abs(deltaX) : (handle.includes('right') ? deltaX : handle.includes('left') ? -deltaX : 0)),
-        height: originalBounds.height + (modifiers?.resizeFromCenter ? Math.abs(deltaY) : (handle.includes('bottom') ? deltaY : handle.includes('top') ? -deltaY : 0)),
+        x: originalBounds.x + (modifiers?.resizeFromCenter ? -deltaX / 2 : handle.includes('left') ? deltaX : 0),
+        y: originalBounds.y + (modifiers?.resizeFromCenter ? -deltaY / 2 : handle.includes('top') ? deltaY : 0),
+        width:
+            originalBounds.width +
+            (modifiers?.resizeFromCenter ? Math.abs(deltaX) : handle.includes('right') ? deltaX : handle.includes('left') ? -deltaX : 0),
+        height:
+            originalBounds.height +
+            (modifiers?.resizeFromCenter ? Math.abs(deltaY) : handle.includes('bottom') ? deltaY : handle.includes('top') ? -deltaY : 0),
     })),
-    constrainPSTBounds: jest.fn((bounds) => bounds),
+    constrainPSTBounds: jest.fn(bounds => bounds),
 }));
 
 describe('PST Keyboard Modifier Integration', () => {
@@ -80,10 +84,7 @@ describe('PST Keyboard Modifier Integration', () => {
     it('should show visual feedback when maintainAspectRatio modifier is active', () => {
         render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: false}}
-                />
+                <PSTBox {...defaultProps} keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: false}} />
             </svg>,
         );
 
@@ -100,10 +101,7 @@ describe('PST Keyboard Modifier Integration', () => {
     it('should show visual feedback when resizeFromCenter modifier is active', () => {
         render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    keyboardModifiers={{maintainAspectRatio: false, resizeFromCenter: true}}
-                />
+                <PSTBox {...defaultProps} keyboardModifiers={{maintainAspectRatio: false, resizeFromCenter: true}} />
             </svg>,
         );
 
@@ -120,10 +118,7 @@ describe('PST Keyboard Modifier Integration', () => {
     it('should show both modifiers when both are active', () => {
         render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: true}}
-                />
+                <PSTBox {...defaultProps} keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: true}} />
             </svg>,
         );
 
@@ -141,10 +136,7 @@ describe('PST Keyboard Modifier Integration', () => {
     it('should not show modifier indicators when no modifiers are active', () => {
         render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    keyboardModifiers={{maintainAspectRatio: false, resizeFromCenter: false}}
-                />
+                <PSTBox {...defaultProps} keyboardModifiers={{maintainAspectRatio: false, resizeFromCenter: false}} />
             </svg>,
         );
 
@@ -161,11 +153,11 @@ describe('PST Keyboard Modifier Integration', () => {
 
     it('should pass keyboard modifiers to resize handlers', () => {
         const onResizeMove = jest.fn();
-        
+
         render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
+                <PSTBox
+                    {...defaultProps}
                     onResizeMove={onResizeMove}
                     keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: true}}
                 />
@@ -173,30 +165,23 @@ describe('PST Keyboard Modifier Integration', () => {
         );
 
         const resizeHandle = screen.getByTestId('resize-handle-bottom-right');
-        
+
         // Simulate resize start
         fireEvent.mouseDown(resizeHandle, {clientX: 300, clientY: 200});
-        
+
         // Simulate resize move
         act(() => {
             fireEvent.mouseMove(document, {clientX: 320, clientY: 220});
         });
 
         // Verify that resize move handler was called
-        expect(onResizeMove).toHaveBeenCalledWith(
-            'bottom-right',
-            {x: 320, y: 220}
-        );
+        expect(onResizeMove).toHaveBeenCalledWith('bottom-right', {x: 320, y: 220});
     });
 
     it('should handle keyboard modifier changes during resize operation', () => {
         const {rerender} = render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    isResizing={true}
-                    keyboardModifiers={{maintainAspectRatio: false, resizeFromCenter: false}}
-                />
+                <PSTBox {...defaultProps} isResizing={true} keyboardModifiers={{maintainAspectRatio: false, resizeFromCenter: false}} />
             </svg>,
         );
 
@@ -206,11 +191,7 @@ describe('PST Keyboard Modifier Integration', () => {
         // Update with Shift modifier
         rerender(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    isResizing={true}
-                    keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: false}}
-                />
+                <PSTBox {...defaultProps} isResizing={true} keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: false}} />
             </svg>,
         );
 
@@ -221,11 +202,7 @@ describe('PST Keyboard Modifier Integration', () => {
         // Update with both modifiers
         rerender(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    isResizing={true}
-                    keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: true}}
-                />
+                <PSTBox {...defaultProps} isResizing={true} keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: true}} />
             </svg>,
         );
 
@@ -237,16 +214,13 @@ describe('PST Keyboard Modifier Integration', () => {
     it('should position modifier indicators relative to PST box bounds', () => {
         render(
             <svg>
-                <PSTBox 
-                    {...defaultProps} 
-                    keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: false}}
-                />
+                <PSTBox {...defaultProps} keyboardModifiers={{maintainAspectRatio: true, resizeFromCenter: false}} />
             </svg>,
         );
 
         // Find the modifier indicator background
         const modifierBackground = screen.getByText('Shift: Aspect Ratio').previousElementSibling;
-        
+
         // Should be positioned relative to the PST box (bounds.x + bounds.width + 10)
         // Mock bounds are x: 100, width: 200, so indicator should be at x: 310
         expect(modifierBackground).toHaveAttribute('x', '310');

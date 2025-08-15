@@ -598,8 +598,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             };
 
             setKeyboardModifiers(prev => {
-                if (prev.maintainAspectRatio !== newModifiers.maintainAspectRatio || 
-                    prev.resizeFromCenter !== newModifiers.resizeFromCenter) {
+                if (
+                    prev.maintainAspectRatio !== newModifiers.maintainAspectRatio ||
+                    prev.resizeFromCenter !== newModifiers.resizeFromCenter
+                ) {
                     return newModifiers;
                 }
                 return prev;
@@ -616,8 +618,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             };
 
             setKeyboardModifiers(prev => {
-                if (prev.maintainAspectRatio !== newModifiers.maintainAspectRatio || 
-                    prev.resizeFromCenter !== newModifiers.resizeFromCenter) {
+                if (
+                    prev.maintainAspectRatio !== newModifiers.maintainAspectRatio ||
+                    prev.resizeFromCenter !== newModifiers.resizeFromCenter
+                ) {
                     return newModifiers;
                 }
                 return prev;

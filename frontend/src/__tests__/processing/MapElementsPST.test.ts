@@ -2,9 +2,9 @@
  * Tests for PST element integration in MapElements class
  */
 
-import { MapElements } from '../../processing/MapElements';
-import { UnifiedWardleyMap, createEmptyMap } from '../../types/unified/map';
-import { PSTElement } from '../../types/map/pst';
+import {MapElements} from '../../processing/MapElements';
+import {UnifiedWardleyMap, createEmptyMap} from '../../types/unified/map';
+import {PSTElement} from '../../types/map/pst';
 
 describe('MapElements PST Integration', () => {
     let mockMap: UnifiedWardleyMap;
@@ -59,7 +59,7 @@ describe('MapElements PST Integration', () => {
             const pstElements = mapElements.getPSTElements();
 
             expect(pstElements).toHaveLength(3); // Only PST attitudes, not the 'other_attitude'
-            
+
             // Check pioneers element
             const pioneersElement = pstElements.find(el => el.type === 'pioneers');
             expect(pioneersElement).toBeDefined();
@@ -119,7 +119,7 @@ describe('MapElements PST Integration', () => {
             const pstComponents = mapElements.getPSTComponents();
 
             expect(pstComponents).toHaveLength(3);
-            
+
             // Check that PST components are included in all components
             const pstComponentsInAll = allComponents.filter(comp => comp.type === 'pst');
             expect(pstComponentsInAll).toHaveLength(3);
@@ -177,7 +177,7 @@ describe('MapElements PST Integration', () => {
     describe('PST Element Filtering', () => {
         it('should filter PST elements by type', () => {
             const mapElements = new MapElements(mockMap);
-            
+
             const pioneersElements = mapElements.getPSTElementsByType('pioneers');
             expect(pioneersElements).toHaveLength(1);
             expect(pioneersElements[0].type).toBe('pioneers');
@@ -196,10 +196,10 @@ describe('MapElements PST Integration', () => {
 
         it('should get components by type including PST', () => {
             const mapElements = new MapElements(mockMap);
-            
+
             const pstComponents = mapElements.getComponentsByType('pst');
             expect(pstComponents).toHaveLength(3);
-            
+
             pstComponents.forEach(component => {
                 expect(component.type).toBe('pst');
                 expect(component.pstType).toBeDefined();

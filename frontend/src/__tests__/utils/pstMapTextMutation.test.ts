@@ -413,15 +413,15 @@ townplanners [0.60, 0.30, 0.40, 0.50] Town Planners`;
             const result = extractPSTElementsFromMapText(mapText);
 
             expect(result).toHaveLength(3);
-            
+
             expect(result[0].type).toBe('pioneers');
             expect(result[0].name).toBe('Test Pioneers');
             expect(result[0].line).toBe(1);
-            
+
             expect(result[1].type).toBe('settlers');
             expect(result[1].name).toBeUndefined();
             expect(result[1].line).toBe(2);
-            
+
             expect(result[2].type).toBe('townplanners');
             expect(result[2].name).toBe('Town Planners');
             expect(result[2].line).toBe(4);

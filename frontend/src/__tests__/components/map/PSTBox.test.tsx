@@ -484,7 +484,7 @@ describe('PSTBox Component', () => {
 
             // Test that mouse events are handled correctly
             fireEvent.mouseEnter(pstBox);
-            
+
             // Wait for first enter to be processed
             await waitFor(() => {
                 expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);

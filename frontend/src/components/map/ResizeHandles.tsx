@@ -94,7 +94,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
 
                 // Validate event and position
                 if (isNaN(event.clientX) || isNaN(event.clientY)) {
-                    console.warn('Invalid mouse position in resize handle mousedown:', { x: event.clientX, y: event.clientY });
+                    console.warn('Invalid mouse position in resize handle mousedown:', {x: event.clientX, y: event.clientY});
                     return;
                 }
 
@@ -124,10 +124,10 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                 if (!isDragging || !activeHandle || !dragStartPosition) return;
 
                 event.preventDefault();
-                
+
                 // Validate mouse position
                 if (isNaN(event.clientX) || isNaN(event.clientY)) {
-                    console.warn('Invalid mouse position during resize move:', { x: event.clientX, y: event.clientY });
+                    console.warn('Invalid mouse position during resize move:', {x: event.clientX, y: event.clientY});
                     return;
                 }
 
@@ -151,10 +151,10 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                 if (!isDragging || !activeHandle) return;
 
                 event.preventDefault();
-                
+
                 // Store current handle before resetting state
                 const currentActiveHandle = activeHandle;
-                
+
                 // Reset drag state
                 setIsDragging(false);
                 setActiveHandle(null);
@@ -178,10 +178,10 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     // Set up global mouse event listeners for drag operations
     useEffect(() => {
         if (isDragging) {
-            document.addEventListener('mousemove', handleMouseMove, { passive: false });
-            document.addEventListener('mouseup', handleMouseUp, { passive: false });
-            document.addEventListener('mouseleave', handleMouseUp, { passive: false });
-            
+            document.addEventListener('mousemove', handleMouseMove, {passive: false});
+            document.addEventListener('mouseup', handleMouseUp, {passive: false});
+            document.addEventListener('mouseleave', handleMouseUp, {passive: false});
+
             // Prevent text selection during drag
             document.body.style.userSelect = 'none';
             document.body.style.webkitUserSelect = 'none';
@@ -190,7 +190,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                 document.removeEventListener('mousemove', handleMouseMove);
                 document.removeEventListener('mouseup', handleMouseUp);
                 document.removeEventListener('mouseleave', handleMouseUp);
-                
+
                 // Restore text selection
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
@@ -206,7 +206,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                 setIsDragging(false);
                 setActiveHandle(null);
                 setDragStartPosition(null);
-                
+
                 // Restore text selection
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
@@ -240,8 +240,8 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     ];
 
     return (
-        <g 
-            className="resize-handles" 
+        <g
+            className="resize-handles"
             data-testid="resize-handles"
             onMouseEnter={event => {
                 // Prevent parent from hiding handles when mouse is over resize handles
@@ -250,8 +250,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
             onMouseLeave={event => {
                 // Allow parent to handle mouse leave
                 event.stopPropagation();
-            }}
-        >
+            }}>
             {handles.map(handle => {
                 const position = getHandlePosition(handle);
                 const isActive = activeHandle === handle;
@@ -264,8 +263,20 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                         y={position.y}
                         width={handleSize}
                         height={handleSize}
-                        fill={isActive ? '#2196F3' : (keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter) ? '#FFC107' : '#ffffff'}
-                        stroke={isActive ? '#1976D2' : (keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter) ? '#FF8F00' : '#666666'}
+                        fill={
+                            isActive
+                                ? '#2196F3'
+                                : keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter
+                                  ? '#FFC107'
+                                  : '#ffffff'
+                        }
+                        stroke={
+                            isActive
+                                ? '#1976D2'
+                                : keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter
+                                  ? '#FF8F00'
+                                  : '#666666'
+                        }
                         strokeWidth={keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter ? 2 : 1}
                         rx={2}
                         ry={2}
@@ -333,7 +344,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                         ry={4}
                         pointerEvents="none"
                     />
-                    
+
                     {/* Shift key indicator */}
                     {keyboardModifiers.maintainAspectRatio && (
                         <text
@@ -343,12 +354,11 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                             fontSize="10"
                             fontWeight="600"
                             pointerEvents="none"
-                            style={{userSelect: 'none'}}
-                        >
+                            style={{userSelect: 'none'}}>
                             Shift: Aspect Ratio
                         </text>
                     )}
-                    
+
                     {/* Alt key indicator */}
                     {keyboardModifiers.resizeFromCenter && (
                         <text
@@ -358,8 +368,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                             fontSize="10"
                             fontWeight="600"
                             pointerEvents="none"
-                            style={{userSelect: 'none'}}
-                        >
+                            style={{userSelect: 'none'}}>
                             Alt: Resize from Center
                         </text>
                     )}
