@@ -240,6 +240,14 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
         <g 
             className="resize-handles" 
             data-testid="resize-handles"
+            onMouseEnter={event => {
+                // Prevent parent from hiding handles when mouse is over resize handles
+                event.stopPropagation();
+            }}
+            onMouseLeave={event => {
+                // Allow parent to handle mouse leave
+                event.stopPropagation();
+            }}
         >
             {handles.map(handle => {
                 const position = getHandlePosition(handle);
@@ -265,12 +273,14 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                         }}
                         onMouseDown={event => handleMouseDown(handle, event)}
                         onMouseEnter={event => {
-                            // Add hover effect
+                            // Add hover effect and prevent parent from hiding handles
                             const element = event.currentTarget as SVGRectElement;
                             if (!isDragging) {
                                 element.style.opacity = '1';
                                 element.style.transform = 'scale(1.1)';
                             }
+                            // Prevent event from bubbling to parent
+                            event.stopPropagation();
                         }}
                         onMouseLeave={event => {
                             // Remove hover effect
@@ -279,6 +289,8 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                                 element.style.opacity = '0.8';
                                 element.style.transform = 'scale(1)';
                             }
+                            // Prevent event from bubbling to parent
+                            event.stopPropagation();
                         }}
                         // Accessibility attributes
                         role="button"

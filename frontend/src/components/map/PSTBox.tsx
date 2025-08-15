@@ -52,14 +52,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     mutateMapText,
     mapText,
 }) => {
-    // State for managing hover timing and visual feedback
+    // Simplified state management - rely on parent state and minimal local state
     const [showHandles, setShowHandles] = useState(false);
-    const [isMouseInside, setIsMouseInside] = useState(false);
-
-    // Refs for managing hover timing and tracking mouse state
+    
+    // Single timeout ref for managing hover delays
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const mouseInsideRef = useRef(false); // Use ref to track actual mouse state
 
     // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
@@ -71,57 +68,38 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     const labelX = bounds.x + bounds.width / 2;
     const labelY = bounds.y + bounds.height / 2;
 
-    // Handle mouse enter with improved timing to prevent flickering
+    // Handle mouse enter - simplified logic
     const handleMouseEnter = useCallback(() => {
-        console.log('PST Box mouse enter:', pstElement.id, 'current showHandles:', showHandles);
-        
-        // Use ref to track mouse state immediately
-        mouseInsideRef.current = true;
-        setIsMouseInside(true);
-
-        // Clear any pending hide timeout immediately
-        if (hideTimeoutRef.current) {
-            clearTimeout(hideTimeoutRef.current);
-            hideTimeoutRef.current = null;
-        }
-
-        // Clear any pending show timeout to avoid duplicate calls
+        // Clear any pending timeout
         if (hoverTimeoutRef.current) {
             clearTimeout(hoverTimeoutRef.current);
             hoverTimeoutRef.current = null;
         }
 
-        // Notify parent of hover state
+        // Immediately show handles and notify parent
+        setShowHandles(true);
         onHover(pstElement);
-        console.log('PST Box notified parent of hover');
-    }, [onHover, pstElement, showHandles]);
+    }, [onHover, pstElement]);
 
-    // Handle mouse leave with longer delay to prevent flickering when moving to handles
+    // Handle mouse leave - simplified with delay for moving to handles
     const handleMouseLeave = useCallback(() => {
-        console.log('PST Box mouse leave:', pstElement.id);
-        
-        // Use ref to track mouse state immediately
-        mouseInsideRef.current = false;
-        setIsMouseInside(false);
-
-        // Clear any pending show timeout
+        // Clear any pending timeout
         if (hoverTimeoutRef.current) {
             clearTimeout(hoverTimeoutRef.current);
             hoverTimeoutRef.current = null;
         }
 
-        // Hide handles after a longer delay unless we're resizing
-        // This gives time for the mouse to move to the resize handles
-        if (!isResizing) {
-            hideTimeoutRef.current = setTimeout(() => {
-                // Double-check using ref (more reliable than state)
-                if (!mouseInsideRef.current && !isResizing) {
-                    setShowHandles(false);
-                    onHover(null);
-                }
-            }, 500); // Increased delay to prevent flickering
+        // Don't hide immediately if resizing
+        if (isResizing) {
+            return;
         }
-    }, [isResizing, onHover, pstElement.id]);
+
+        // Hide handles after delay to allow moving to resize handles
+        hoverTimeoutRef.current = setTimeout(() => {
+            setShowHandles(false);
+            onHover(null);
+        }, 300);
+    }, [isResizing, onHover]);
 
     // Handle resize start
     const handleResizeStart = useCallback(
@@ -159,82 +137,28 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeEnd, pstElement],
     );
 
-    // Clean up timeouts and state on unmount or when element changes
+    // Show handles when hovered externally or resizing
+    useEffect(() => {
+        if (isHovered || isResizing) {
+            setShowHandles(true);
+        } else if (!isResizing) {
+            // Small delay to prevent flickering when moving between elements
+            const timeout = setTimeout(() => {
+                setShowHandles(false);
+            }, 100);
+            return () => clearTimeout(timeout);
+        }
+    }, [isHovered, isResizing]);
+
+    // Cleanup timeouts on unmount
     useEffect(() => {
         return () => {
             if (hoverTimeoutRef.current) {
                 clearTimeout(hoverTimeoutRef.current);
                 hoverTimeoutRef.current = null;
             }
-            if (hideTimeoutRef.current) {
-                clearTimeout(hideTimeoutRef.current);
-                hideTimeoutRef.current = null;
-            }
-
-            // Clear hover state on unmount
-            if (showHandles) {
-                onHover(null);
-            }
         };
-    }, [showHandles, onHover]);
-
-    // Reset local state when PST element changes
-    useEffect(() => {
-        // Clear any pending timeouts first
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-            hoverTimeoutRef.current = null;
-        }
-        if (hideTimeoutRef.current) {
-            clearTimeout(hideTimeoutRef.current);
-            hideTimeoutRef.current = null;
-        }
-
-        // Reset state
-        setShowHandles(false);
-        setIsMouseInside(false);
-        onHover(null);
-    }, [pstElement.id, onHover]);
-
-    // Simplified handle visibility management - rely primarily on internal state
-    useEffect(() => {
-        console.log('PST Box effect triggered:', {
-            isMouseInside,
-            isResizing,
-            currentShowHandles: showHandles,
-            mouseInsideRef: mouseInsideRef.current,
-        });
-
-        // Clear any existing timeout
-        if (hideTimeoutRef.current) {
-            clearTimeout(hideTimeoutRef.current);
-            hideTimeoutRef.current = null;
-        }
-
-        // Show handles if mouse is inside or resizing (use ref for more reliable check)
-        if (mouseInsideRef.current || isResizing) {
-            console.log('Setting showHandles to true (using ref)');
-            setShowHandles(true);
-        } else {
-            // Hide handles after a delay when not hovered and not resizing
-            console.log('Starting hide timer (using ref)');
-            hideTimeoutRef.current = setTimeout(() => {
-                // Double-check conditions using ref before hiding
-                if (!mouseInsideRef.current && !isResizing) {
-                    console.log('Hiding handles after timeout (using ref)');
-                    setShowHandles(false);
-                }
-            }, 1000); // Much longer delay to prevent flickering when moving to handles
-        }
-
-        // Cleanup function
-        return () => {
-            if (hideTimeoutRef.current) {
-                clearTimeout(hideTimeoutRef.current);
-                hideTimeoutRef.current = null;
-            }
-        };
-    }, [isMouseInside, isResizing]); // Keep state dependency but use ref for logic
+    }, []);
 
     return (
         <g
@@ -303,12 +227,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 mapStyleDefs={mapStyleDefs}
             />
 
-            {/* Debug info */}
-            {process.env.NODE_ENV === 'development' && (
-                <text x={bounds.x} y={bounds.y - 10} fill="red" fontSize="10" pointerEvents="none">
-                    {`showHandles: ${showHandles}, isHovered: ${isHovered}, isMouseInside: ${isMouseInside}`}
-                </text>
-            )}
+
 
             {/* Hidden description for screen readers */}
             <text
@@ -320,24 +239,24 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 {`${pstConfig.label} box positioned at maturity ${Math.round(pstElement.coordinates.maturity1 * 100)}% to ${Math.round(pstElement.coordinates.maturity2 * 100)}%, visibility ${Math.round(pstElement.coordinates.visibility2 * 100)}% to ${Math.round(pstElement.coordinates.visibility1 * 100)}%. Hover to show resize handles.`}
             </text>
 
-            {/* Visual feedback for hover state */}
+            {/* Visual feedback for hover state - subtle outline */}
             {isHovered && (
                 <rect
                     data-testid={`pst-box-hover-outline-${pstElement.id}`}
-                    x={bounds.x - 2}
-                    y={bounds.y - 2}
-                    width={bounds.width + 4}
-                    height={bounds.height + 4}
+                    x={bounds.x - 1}
+                    y={bounds.y - 1}
+                    width={bounds.width + 2}
+                    height={bounds.height + 2}
                     fill="none"
                     stroke={pstConfig.color}
                     strokeWidth={1}
-                    strokeOpacity={0.5}
-                    strokeDasharray="3,3"
-                    rx={6}
-                    ry={6}
+                    strokeOpacity={0.6}
+                    strokeDasharray="2,2"
+                    rx={5}
+                    ry={5}
                     pointerEvents="none"
                     style={{
-                        animation: 'pstHoverPulse 2s ease-in-out infinite',
+                        animation: 'pstHoverPulse 1.5s ease-in-out infinite',
                     }}
                 />
             )}
