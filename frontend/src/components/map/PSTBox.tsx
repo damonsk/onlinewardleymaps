@@ -4,6 +4,7 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {PST_CONFIG} from '../../constants/pstConfig';
 import {convertPSTCoordinatesToBounds} from '../../utils/pstCoordinateUtils';
+import {useComponentSelection} from '../ComponentSelectionContext';
 import ResizeHandles from './ResizeHandles';
 
 interface PSTBoxProps {
@@ -67,6 +68,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     mutateMapText,
     mapText,
 }) => {
+    const {isSelected, selectComponent, clearSelection} = useComponentSelection();
     // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
@@ -99,6 +101,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // Calculate label position (center of the box)
     const labelX = bounds.x + bounds.width / 2;
     const labelY = bounds.y + bounds.height / 2;
+
+    // Check if this PST element is currently selected
+    const isElementSelected = isSelected(pstElement.id);
 
     // Handle mouse enter - simplified logic
     const handleMouseEnter = useCallback(() => {
@@ -170,6 +175,15 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeEnd, pstElement],
     );
 
+    // Handle component selection
+    const handleComponentClick = useCallback(
+        (event: React.MouseEvent | React.TouchEvent) => {
+            // Select this component when clicked
+            selectComponent(pstElement.id);
+        },
+        [selectComponent, pstElement.id],
+    );
+
     // Handle pointer start (mouse or touch) for drag
     const handlePointerStart = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
@@ -183,6 +197,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             if (target && target.getAttribute && target.getAttribute('data-resize-handle')) {
                 return;
             }
+
+            // Select component on pointer start
+            selectComponent(pstElement.id);
 
             event.preventDefault();
             event.stopPropagation();
@@ -209,7 +226,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 onDragStart(pstElement, startPosition);
             }
         },
-        [isResizing, onDragStart, pstElement],
+        [isResizing, onDragStart, pstElement, selectComponent],
     );
 
     // Handle drag start (legacy mouse support)
@@ -458,23 +475,31 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 width={bounds.width}
                 height={bounds.height}
                 fill={pstColors.fill}
-                fillOpacity={isHovered ? pstColors.fillOpacity || 0.8 : pstColors.fillOpacity || 0.6}
-                stroke={pstColors.stroke}
-                strokeWidth={isHovered ? 2 : 1}
-                strokeOpacity={isHovered ? 1 : pstColors.strokeOpacity || 0.8}
+                fillOpacity={
+                    isElementSelected 
+                        ? (pstColors.fillOpacity || 0.6) + 0.2 
+                        : isHovered 
+                        ? pstColors.fillOpacity || 0.8 
+                        : pstColors.fillOpacity || 0.6
+                }
+                stroke={isElementSelected ? '#2196F3' : pstColors.stroke}
+                strokeWidth={isElementSelected ? 3 : isHovered ? 2 : 1}
+                strokeOpacity={isElementSelected || isHovered ? 1 : pstColors.strokeOpacity || 0.8}
                 rx={4}
                 ry={4}
                 style={{
                     transition: isResizing || isDragActive || isDragging ? 'none' : 'all 0.2s ease-in-out',
-                    filter: isHovered ? 'brightness(1.1)' : 'none',
-                    cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'grab',
+                    filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 8px rgba(33, 150, 243, 0.4))' : isHovered ? 'brightness(1.1)' : 'none',
+                    cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'pointer',
                 }}
                 onMouseDown={handleDragStart}
                 onTouchStart={handleTouchStart}
+                onClick={handleComponentClick}
                 onKeyDown={event => {
                     // Support keyboard interaction
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
+                        handleComponentClick(event as any);
                         handleMouseEnter();
                     }
                 }}
@@ -520,8 +545,30 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 {`${pstConfig.label} box positioned at maturity ${Math.round(pstElement.coordinates.maturity1 * 100)}% to ${Math.round(pstElement.coordinates.maturity2 * 100)}%, visibility ${Math.round(pstElement.coordinates.visibility2 * 100)}% to ${Math.round(pstElement.coordinates.visibility1 * 100)}%. Hover to show resize handles.`}
             </text>
 
-            {/* Visual feedback for hover state - subtle outline */}
-            {isHovered && (
+            {/* Visual feedback for selection state - prominent outline */}
+            {isElementSelected && (
+                <rect
+                    data-testid={`pst-box-selection-outline-${pstElement.id}`}
+                    x={bounds.x - 3}
+                    y={bounds.y - 3}
+                    width={bounds.width + 6}
+                    height={bounds.height + 6}
+                    fill="none"
+                    stroke="#2196F3"
+                    strokeWidth={2}
+                    strokeOpacity={0.8}
+                    strokeDasharray="4,2"
+                    rx={7}
+                    ry={7}
+                    pointerEvents="none"
+                    style={{
+                        animation: 'pstSelectionPulse 2s ease-in-out infinite',
+                    }}
+                />
+            )}
+
+            {/* Visual feedback for hover state - subtle outline (only when not selected) */}
+            {isHovered && !isElementSelected && (
                 <rect
                     data-testid={`pst-box-hover-outline-${pstElement.id}`}
                     x={bounds.x - 1}
@@ -540,6 +587,37 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                         animation: 'pstHoverPulse 1.5s ease-in-out infinite',
                     }}
                 />
+            )}
+
+            {/* Deletable indicator - small icon when hovered and not selected */}
+            {isHovered && !isElementSelected && (
+                <g
+                    data-testid={`pst-box-delete-indicator-${pstElement.id}`}
+                    transform={`translate(${bounds.x + bounds.width - 16}, ${bounds.y + 4})`}
+                    pointerEvents="none"
+                    style={{
+                        opacity: 0.7,
+                        animation: 'fadeIn 0.2s ease-in-out',
+                    }}>
+                    <circle
+                        cx="8"
+                        cy="8"
+                        r="8"
+                        fill="rgba(244, 67, 54, 0.9)"
+                        stroke="white"
+                        strokeWidth="1"
+                    />
+                    <text
+                        x="8"
+                        y="8"
+                        fill="white"
+                        fontSize="10"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle">
+                        ×
+                    </text>
+                </g>
             )}
 
             {/* Visual feedback for touch selection - solid outline */}
@@ -575,6 +653,16 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 stroke-opacity: 0.7;
               }
             }
+            @keyframes pstSelectionPulse {
+              0%, 100% {
+                stroke-opacity: 0.6;
+                stroke-width: 2;
+              }
+              50% {
+                stroke-opacity: 1;
+                stroke-width: 3;
+              }
+            }
             @keyframes pstTouchPulse {
               0%, 100% {
                 stroke-opacity: 0.5;
@@ -583,6 +671,16 @@ const PSTBox: React.FC<PSTBoxProps> = ({
               50% {
                 stroke-opacity: 1;
                 stroke-width: 3;
+              }
+            }
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: scale(0.8);
+              }
+              to {
+                opacity: 0.7;
+                transform: scale(1);
               }
             }
           `}

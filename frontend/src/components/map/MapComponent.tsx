@@ -3,6 +3,7 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
 import {useModKeyPressedConsumer} from '../KeyPressContext';
+import {useComponentSelection} from '../ComponentSelectionContext';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -37,13 +38,20 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
     children,
 }) => {
     const isModKeyPressed = useModKeyPressedConsumer();
+    const {isSelected, selectComponent} = useComponentSelection();
     const calculatedPosition = new ModernPositionCalculator();
     const posX = calculatedPosition.maturityToX(component.maturity, mapDimensions.width);
     const posY = calculatedPosition.visibilityToY(component.visibility, mapDimensions.height) + (component.offsetY ? component.offsetY : 0);
 
+    // Check if this component is currently selected
+    const isElementSelected = isSelected(component.id);
+
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+
+        // Select this component
+        selectComponent(component.id);
 
         if (component.line) {
             setHighlightLine(component.line);
@@ -117,8 +125,62 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 shouldShowMoving={true}
                 isModKeyPressed={component.evolved ? false : isModKeyPressed}
                 scaleFactor={scaleFactor}>
-                <g id={component.id} onClick={handleClick} style={{cursor: 'pointer'}}>
+                <g 
+                    id={component.id} 
+                    onClick={handleClick} 
+                    style={{
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease-in-out',
+                        filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
+                    }}
+                    data-testid={`map-component-${component.id}`}>
+                    
+                    {/* Selection indicator background */}
+                    {isElementSelected && (
+                        <circle
+                            cx={0}
+                            cy={0}
+                            r={12}
+                            fill="rgba(33, 150, 243, 0.1)"
+                            stroke="#2196F3"
+                            strokeWidth={2}
+                            strokeOpacity={0.6}
+                            strokeDasharray="3,2"
+                            style={{
+                                animation: 'componentSelectionPulse 2s ease-in-out infinite',
+                            }}
+                        />
+                    )}
+                    
                     {children}
+                    
+                    {/* Hover indicator for deletable components */}
+                    <g 
+                        className="component-hover-indicator"
+                        style={{
+                            opacity: 0,
+                            transition: 'opacity 0.2s ease-in-out',
+                            pointerEvents: 'none',
+                        }}>
+                        <circle
+                            cx={8}
+                            cy={-8}
+                            r={6}
+                            fill="rgba(244, 67, 54, 0.9)"
+                            stroke="white"
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={8}
+                            y={-8}
+                            fill="white"
+                            fontSize="8"
+                            fontWeight="bold"
+                            textAnchor="middle"
+                            dominantBaseline="middle">
+                            ×
+                        </text>
+                    </g>
                 </g>
             </Movable>
 
@@ -149,12 +211,36 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     mapText={mapText}
                     mutateMapText={mutateMapText}
                     onClick={() => {
+                        selectComponent(component.id);
                         if (component.line) {
                             setHighlightLine(component.line);
                         }
                     }}
                 />
             </g>
+
+            {/* CSS animations for component selection */}
+            <defs>
+                <style>
+                    {`
+                    @keyframes componentSelectionPulse {
+                      0%, 100% {
+                        stroke-opacity: 0.4;
+                        r: 12;
+                      }
+                      50% {
+                        stroke-opacity: 0.8;
+                        r: 14;
+                      }
+                    }
+                    
+                    g[data-testid^="map-component-"]:hover .component-hover-indicator {
+                      opacity: 0.8 !important;
+                      animation: fadeIn 0.2s ease-in-out;
+                    }
+                    `}
+                </style>
+            </defs>
         </>
     );
 };
