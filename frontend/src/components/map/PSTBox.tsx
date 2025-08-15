@@ -74,6 +74,14 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
     // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
+    
+    // Get colors from map styles instead of PST_CONFIG, with fallback to PST_CONFIG
+    const pstColors = mapStyleDefs.attitudes?.[pstElement.type] || {
+        fill: pstConfig.color,
+        stroke: pstConfig.color,
+        fillOpacity: 0.6,
+        strokeOpacity: 0.8,
+    };
 
     // Convert PST coordinates to SVG bounds for rendering
     const bounds = convertPSTCoordinatesToBounds(pstElement.coordinates, mapDimensions);
@@ -292,11 +300,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 y={bounds.y}
                 width={bounds.width}
                 height={bounds.height}
-                fill={pstConfig.color}
-                fillOpacity={isHovered ? 0.8 : 0.6}
-                stroke={pstConfig.color}
+                fill={pstColors.fill}
+                fillOpacity={isHovered ? (pstColors.fillOpacity || 0.8) : (pstColors.fillOpacity || 0.6)}
+                stroke={pstColors.stroke}
                 strokeWidth={isHovered ? 2 : 1}
-                strokeOpacity={isHovered ? 1 : 0.8}
+                strokeOpacity={isHovered ? 1 : (pstColors.strokeOpacity || 0.8)}
                 rx={4}
                 ry={4}
                 style={{
@@ -364,7 +372,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                     width={bounds.width + 2}
                     height={bounds.height + 2}
                     fill="none"
-                    stroke={pstConfig.color}
+                    stroke={pstColors.stroke}
                     strokeWidth={1}
                     strokeOpacity={0.6}
                     strokeDasharray="2,2"

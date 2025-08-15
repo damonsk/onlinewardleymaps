@@ -10,19 +10,19 @@ import {PSTType, PSTTypeConfig, ResizeConstraints} from '../types/map/pst';
  */
 export const PST_CONFIG: Record<PSTType, PSTTypeConfig> = {
     pioneers: {
-        color: '#FF6B6B',
+        color: '#3ccaf8', // Light blue (matches map styles)
         label: 'Pioneers',
         minWidth: 50,
         minHeight: 30,
     },
     settlers: {
-        color: '#4ECDC4',
+        color: '#599afa', // Blue (matches map styles)
         label: 'Settlers',
         minWidth: 50,
         minHeight: 30,
     },
     townplanners: {
-        color: '#45B7D1',
+        color: '#936ff9', // Purple (matches map styles)
         label: 'Town Planners',
         minWidth: 50,
         minHeight: 30,

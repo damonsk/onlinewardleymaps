@@ -39,21 +39,21 @@ export const PST_SUB_ITEMS: ToolbarSubItem[] = [
     {
         id: 'pioneers',
         label: 'Pioneers',
-        color: '#FF6B6B', // Red
+        color: '#3ccaf8', // Light blue (matches map styles)
         template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
             `pioneers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
     },
     {
         id: 'settlers',
         label: 'Settlers',
-        color: '#4ECDC4', // Teal
+        color: '#599afa', // Blue (matches map styles)
         template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
             `settlers [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
     },
     {
         id: 'townplanners',
         label: 'Town Planners',
-        color: '#45B7D1', // Blue
+        color: '#936ff9', // Purple (matches map styles)
         template: (maturity1: string, visibilityHigh: string, maturity2: string, visibilityLow: string) =>
             `townplanners [${visibilityHigh}, ${maturity1}, ${visibilityLow}, ${maturity2}]`,
     },
