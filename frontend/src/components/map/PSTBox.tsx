@@ -19,12 +19,20 @@ interface PSTBoxProps {
     isHovered: boolean;
     /** Whether this PST element is currently being resized */
     isResizing: boolean;
+    /** Whether this PST element is currently being dragged */
+    isDragging?: boolean;
     /** Callback when resize operation starts */
     onResizeStart: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
     /** Callback during resize operation */
     onResizeMove?: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
     /** Callback when resize operation ends */
     onResizeEnd: (element: PSTElement, newCoordinates: any) => void;
+    /** Callback when drag operation starts */
+    onDragStart?: (element: PSTElement, startPosition: {x: number; y: number}) => void;
+    /** Callback during drag operation */
+    onDragMove?: (element: PSTElement, currentPosition: {x: number; y: number}) => void;
+    /** Callback when drag operation ends */
+    onDragEnd?: (element: PSTElement) => void;
     /** Callback when hover state changes */
     onHover: (element: PSTElement | null) => void;
     /** Function to update map text */
@@ -45,18 +53,24 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     scaleFactor,
     isHovered,
     isResizing,
+    isDragging = false,
     onResizeStart,
     onResizeMove,
     onResizeEnd,
+    onDragStart,
+    onDragMove,
+    onDragEnd,
     onHover,
     mutateMapText,
     mapText,
 }) => {
-    // Simplified state management - rely on parent state and minimal local state
+    // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
+    const [isDragActive, setIsDragActive] = useState(false);
     
-    // Single timeout ref for managing hover delays
+    // Refs for managing timeouts and drag state
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const dragStartPositionRef = useRef<{x: number; y: number} | null>(null);
 
     // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
@@ -139,6 +153,88 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeEnd, pstElement],
     );
 
+    // Handle drag start
+    const handleDragStart = useCallback(
+        (event: React.MouseEvent) => {
+            // Don't start drag if we're already resizing or if resize handles are being interacted with
+            if (isResizing || event.target !== event.currentTarget) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const startPosition = {x: event.clientX, y: event.clientY};
+            dragStartPositionRef.current = startPosition;
+            setIsDragActive(true);
+
+            if (onDragStart) {
+                onDragStart(pstElement, startPosition);
+            }
+        },
+        [isResizing, onDragStart, pstElement],
+    );
+
+    // Handle drag move
+    const handleDragMove = useCallback(
+        (event: MouseEvent) => {
+            if (!isDragActive || !dragStartPositionRef.current) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const currentPosition = {x: event.clientX, y: event.clientY};
+
+            if (onDragMove) {
+                onDragMove(pstElement, currentPosition);
+            }
+        },
+        [isDragActive, onDragMove, pstElement],
+    );
+
+    // Handle drag end
+    const handleDragEnd = useCallback(
+        (event: MouseEvent) => {
+            if (!isDragActive) {
+                return;
+            }
+
+            event.preventDefault();
+
+            setIsDragActive(false);
+            dragStartPositionRef.current = null;
+
+            if (onDragEnd) {
+                onDragEnd(pstElement);
+            }
+        },
+        [isDragActive, onDragEnd, pstElement],
+    );
+
+    // Set up global mouse event listeners for drag operations
+    useEffect(() => {
+        if (isDragActive) {
+            document.addEventListener('mousemove', handleDragMove, {passive: false});
+            document.addEventListener('mouseup', handleDragEnd, {passive: false});
+            document.addEventListener('mouseleave', handleDragEnd, {passive: false});
+
+            // Prevent text selection during drag
+            document.body.style.userSelect = 'none';
+            document.body.style.webkitUserSelect = 'none';
+
+            return () => {
+                document.removeEventListener('mousemove', handleDragMove);
+                document.removeEventListener('mouseup', handleDragEnd);
+                document.removeEventListener('mouseleave', handleDragEnd);
+
+                // Restore text selection
+                document.body.style.userSelect = '';
+                document.body.style.webkitUserSelect = '';
+            };
+        }
+    }, [isDragActive, handleDragMove, handleDragEnd]);
+
     // Show handles when hovered externally or resizing
     useEffect(() => {
         if (isHovered || isResizing) {
@@ -152,15 +248,25 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         }
     }, [isHovered, isResizing]);
 
-    // Cleanup timeouts on unmount
+    // Cleanup timeouts and drag state on unmount
     useEffect(() => {
         return () => {
             if (hoverTimeoutRef.current) {
                 clearTimeout(hoverTimeoutRef.current);
                 hoverTimeoutRef.current = null;
             }
+            
+            // Clean up drag state if component unmounts during drag
+            if (isDragActive) {
+                setIsDragActive(false);
+                dragStartPositionRef.current = null;
+                
+                // Restore text selection
+                document.body.style.userSelect = '';
+                document.body.style.webkitUserSelect = '';
+            }
         };
-    }, []);
+    }, [isDragActive]);
 
     return (
         <g
@@ -172,7 +278,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             aria-describedby={`pst-box-description-${pstElement.id}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            style={{cursor: isResizing ? 'grabbing' : 'pointer'}}>
+            style={{cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'grab'}}>
             {/* Main PST box rectangle */}
             <rect
                 data-testid={`pst-box-rect-${pstElement.id}`}
@@ -188,9 +294,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 rx={4}
                 ry={4}
                 style={{
-                    transition: isResizing ? 'none' : 'all 0.2s ease-in-out',
+                    transition: isResizing || isDragActive || isDragging ? 'none' : 'all 0.2s ease-in-out',
                     filter: isHovered ? 'brightness(1.1)' : 'none',
+                    cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'grab',
                 }}
+                onMouseDown={handleDragStart}
                 onKeyDown={event => {
                     // Support keyboard interaction
                     if (event.key === 'Enter' || event.key === ' ') {

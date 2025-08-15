@@ -47,11 +47,16 @@ const PSTContainer: React.FC<PSTContainerProps> = ({
             {({
                 hoveredElement,
                 resizingElement,
+                draggingElement,
                 onPSTHover,
                 onPSTResizeStart,
                 onPSTResizeMove,
                 onPSTResizeEnd,
+                onPSTDragStart,
+                onPSTDragMove,
+                onPSTDragEnd,
                 getResizePreviewBounds,
+                getDragPreviewBounds,
             }) => (
                 <g className="pst-container">
                     {pstElements.map(element => (
@@ -63,9 +68,13 @@ const PSTContainer: React.FC<PSTContainerProps> = ({
                             scaleFactor={scaleFactor}
                             isHovered={hoveredElement?.id === element.id}
                             isResizing={resizingElement?.id === element.id}
+                            isDragging={draggingElement?.id === element.id}
                             onResizeStart={onPSTResizeStart}
                             onResizeMove={onPSTResizeMove}
                             onResizeEnd={onPSTResizeEnd}
+                            onDragStart={onPSTDragStart}
+                            onDragMove={onPSTDragMove}
+                            onDragEnd={onPSTDragEnd}
                             onHover={onPSTHover}
                             mutateMapText={onMapTextUpdate}
                             mapText={mapText}
@@ -90,6 +99,33 @@ const PSTContainer: React.FC<PSTContainerProps> = ({
                                         strokeWidth={2}
                                         strokeDasharray="4,4"
                                         opacity={0.7}
+                                        pointerEvents="none"
+                                        rx={4}
+                                        ry={4}
+                                    />
+                                );
+                            })()}
+                        </g>
+                    )}
+                    
+                    {/* Drag preview overlay */}
+                    {draggingElement && (
+                        <g className="pst-drag-preview">
+                            {(() => {
+                                const previewBounds = getDragPreviewBounds(draggingElement);
+                                if (!previewBounds) return null;
+                                
+                                return (
+                                    <rect
+                                        x={previewBounds.x}
+                                        y={previewBounds.y}
+                                        width={previewBounds.width}
+                                        height={previewBounds.height}
+                                        fill="none"
+                                        stroke="#FF9800"
+                                        strokeWidth={2}
+                                        strokeDasharray="8,4"
+                                        opacity={0.6}
                                         pointerEvents="none"
                                         rx={4}
                                         ry={4}
