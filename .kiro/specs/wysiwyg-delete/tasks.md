@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Create component selection infrastructure
+- [-] 1. Create component selection infrastructure
   - Implement MapComponentSelector service for tracking selected components
   - Create selection state management with single component selection
   - Add component selection methods (select, deselect, clear)
