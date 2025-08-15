@@ -25,11 +25,11 @@ jest.mock('../../utils/pstCoordinateUtils', () => ({
         maturity2: (bounds.x + bounds.width) / mapDimensions.width,
         visibility2: 1 - (bounds.y + bounds.height) / mapDimensions.height,
     })),
-    constrainPSTBounds: jest.fn((bounds) => bounds),
+    constrainPSTBounds: jest.fn(bounds => bounds),
     calculateResizedBounds: jest.fn((originalBounds, handle, deltaX, deltaY) => {
         // Simple mock implementation for resize bounds calculation
         let {x, y, width, height} = originalBounds;
-        
+
         switch (handle) {
             case 'top-right':
                 y += deltaY;
@@ -44,7 +44,7 @@ jest.mock('../../utils/pstCoordinateUtils', () => ({
             default:
                 break;
         }
-        
+
         return {x, y, width, height};
     }),
 }));
@@ -127,7 +127,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         const updatedMapText = mockOnMapTextUpdate.mock.calls[0][0];
         expect(updatedMapText).toContain('pioneers');
         expect(updatedMapText).toContain('Test Pioneers');
-        
+
         // Verify other elements remain unchanged
         expect(updatedMapText).toContain('settlers [0.70, 0.20, 0.50, 0.40] Test Settlers');
         expect(updatedMapText).toContain('townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners');
@@ -150,7 +150,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         );
 
         const pioneersRect = screen.getByTestId('pst-box-rect-pst-pioneers-1');
-        
+
         // Start drag
         fireEvent.mouseDown(pioneersRect, {
             clientX: 200,
@@ -249,7 +249,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
 
         // Test dragging settlers element
         const settlersRect = screen.getByTestId('pst-box-rect-pst-settlers-2');
-        
+
         // Drag settlers
         fireEvent.mouseDown(settlersRect, {clientX: 300, clientY: 300});
         fireEvent.mouseMove(document, {clientX: 350, clientY: 320});
@@ -263,7 +263,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         const updatedMapText = mockOnMapTextUpdate.mock.calls[0][0];
         expect(updatedMapText).toContain('settlers');
         expect(updatedMapText).toContain('Test Settlers');
-        
+
         // Other elements should remain unchanged
         expect(updatedMapText).toContain('pioneers [0.80, 0.10, 0.60, 0.30] Test Pioneers');
         expect(updatedMapText).toContain('townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners');
@@ -318,13 +318,13 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         );
 
         const pioneersRect = screen.getByTestId('pst-box-rect-pst-pioneers-1');
-        
+
         // Start drag
         fireEvent.mouseDown(pioneersRect, {clientX: 100, clientY: 100});
-        
+
         // Move mouse
         fireEvent.mouseMove(document, {clientX: 150, clientY: 120});
-        
+
         // Simulate mouse leave (cancel drag)
         fireEvent.mouseLeave(document);
 

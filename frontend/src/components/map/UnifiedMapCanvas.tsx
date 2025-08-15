@@ -20,6 +20,7 @@ import {
     constrainPSTBounds,
 } from '../../utils/pstCoordinateUtils';
 import {updatePSTInMapText} from '../../utils/pstElementUtils';
+import {DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
@@ -131,6 +132,12 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     const [resizePreviewBounds, setResizePreviewBounds] = useState<any>(null);
     const [resizeStartPosition, setResizeStartPosition] = useState<{x: number; y: number} | null>(null);
     const [originalBounds, setOriginalBounds] = useState<any>(null);
+
+    // PST drag state management
+    const [draggingPSTElement, setDraggingPSTElement] = useState<any>(null);
+    const [dragPreviewBounds, setDragPreviewBounds] = useState<any>(null);
+    const [dragStartPosition, setDragStartPosition] = useState<{x: number; y: number} | null>(null);
+    const [dragOriginalBounds, setDragOriginalBounds] = useState<any>(null);
 
     // Disable pan/zoom when editing is active
     useEffect(() => {
@@ -404,6 +411,163 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         [resizingPSTElement, resizePreviewBounds, mapDimensions, mapText, mutateMapText, resetResizeState],
     );
 
+    // PST drag event handlers
+    const resetDragState = useCallback(() => {
+        setDraggingPSTElement(null);
+        setDragPreviewBounds(null);
+        setDragStartPosition(null);
+        setDragOriginalBounds(null);
+    }, []);
+
+    const handlePSTDragStart = useCallback(
+        (element: PSTElement, startPosition: {x: number; y: number}) => {
+            try {
+                console.log('PST drag started:', {element: element.id, startPosition});
+
+                // Don't start drag if we're already resizing
+                if (resizingPSTElement) {
+                    console.warn('Cannot start drag while resizing');
+                    return;
+                }
+
+                // Validate element and coordinates
+                if (!element || !element.coordinates) {
+                    console.warn('Invalid PST element for drag start:', {element});
+                    return;
+                }
+
+                // Set drag state
+                setDraggingPSTElement(element);
+                setDragStartPosition(startPosition);
+
+                // Convert PST coordinates to bounds for drag operations
+                const bounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
+                setDragOriginalBounds(bounds);
+                setDragPreviewBounds(bounds);
+
+                // Clear hover state during drag to prevent conflicts
+                setHoveredPSTElement(null);
+            } catch (error) {
+                console.error('Error starting PST drag:', error);
+                // Reset state on error
+                resetDragState();
+            }
+        },
+        [resizingPSTElement, mapDimensions, resetDragState],
+    );
+
+    const handlePSTDragMove = useCallback(
+        (element: PSTElement, currentPosition: {x: number; y: number}) => {
+            try {
+                // Validate drag state
+                if (!draggingPSTElement || !dragOriginalBounds || !dragStartPosition) {
+                    console.warn('Invalid drag state during move:', {
+                        hasElement: !!draggingPSTElement,
+                        hasBounds: !!dragOriginalBounds,
+                        hasStartPos: !!dragStartPosition,
+                    });
+                    return;
+                }
+
+                // Ensure we're dragging the correct element
+                if (element.id !== draggingPSTElement.id) {
+                    console.warn('Drag move element mismatch:', {
+                        expected: draggingPSTElement.id,
+                        received: element.id,
+                    });
+                    return;
+                }
+
+                // Calculate delta from start position
+                const deltaX = currentPosition.x - dragStartPosition.x;
+                const deltaY = currentPosition.y - dragStartPosition.y;
+
+                // Calculate new bounds by translating the original bounds
+                const newBounds = {
+                    x: dragOriginalBounds.x + deltaX,
+                    y: dragOriginalBounds.y + deltaY,
+                    width: dragOriginalBounds.width,
+                    height: dragOriginalBounds.height,
+                };
+
+                // Constrain bounds to map boundaries
+                const constrainedBounds = constrainPSTBounds(newBounds, mapDimensions, DEFAULT_RESIZE_CONSTRAINTS);
+
+                // Update preview bounds
+                setDragPreviewBounds(constrainedBounds);
+            } catch (error) {
+                console.error('Error during PST drag move:', error);
+                // Don't reset state during move to avoid interrupting the operation
+            }
+        },
+        [draggingPSTElement, dragOriginalBounds, dragStartPosition, mapDimensions],
+    );
+
+    const handlePSTDragEnd = useCallback(
+        (element: PSTElement) => {
+            try {
+                // Validate drag state
+                if (!draggingPSTElement) {
+                    console.warn('No active drag operation to end');
+                    resetDragState();
+                    return;
+                }
+
+                // Ensure we're ending the drag for the correct element
+                if (element.id !== draggingPSTElement.id) {
+                    console.warn('Drag end element mismatch:', {
+                        expected: draggingPSTElement.id,
+                        received: element.id,
+                    });
+                    resetDragState();
+                    return;
+                }
+
+                // Use preview bounds if available, otherwise use original bounds
+                let finalCoordinates;
+                if (dragPreviewBounds) {
+                    finalCoordinates = convertBoundsToPSTCoordinates(dragPreviewBounds, mapDimensions);
+                } else {
+                    console.warn('No drag preview bounds available, using original coordinates');
+                    finalCoordinates = element.coordinates;
+                }
+
+                // Validate coordinate values
+                const coords = [
+                    finalCoordinates.maturity1,
+                    finalCoordinates.maturity2,
+                    finalCoordinates.visibility1,
+                    finalCoordinates.visibility2,
+                ];
+                if (coords.some(coord => isNaN(coord) || coord < 0 || coord > 1)) {
+                    console.warn('Invalid final coordinates for drag:', finalCoordinates);
+                    resetDragState();
+                    return;
+                }
+
+                // Update map text with new coordinates
+                const updatedMapText = updatePSTInMapText(mapText, element, finalCoordinates);
+
+                // Validate that map text was actually updated
+                if (updatedMapText === mapText) {
+                    console.warn('Map text was not updated during drag end');
+                } else {
+                    mutateMapText(updatedMapText);
+                    console.log('PST drag completed successfully:', {
+                        element: element.id,
+                        newCoordinates: finalCoordinates,
+                    });
+                }
+            } catch (error) {
+                console.error('Error ending PST drag:', error);
+            } finally {
+                // Always reset state, even on error
+                resetDragState();
+            }
+        },
+        [draggingPSTElement, dragPreviewBounds, mapDimensions, mapText, mutateMapText, resetDragState],
+    );
+
     // Handle escape key to cancel resize operations
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -629,6 +793,11 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         onPSTResizeStart={handlePSTResizeStart}
                         onPSTResizeMove={handlePSTResizeMove}
                         onPSTResizeEnd={handlePSTResizeEnd}
+                        draggingPSTElement={draggingPSTElement}
+                        dragPreviewBounds={dragPreviewBounds}
+                        onPSTDragStart={handlePSTDragStart}
+                        onPSTDragMove={handlePSTDragMove}
+                        onPSTDragEnd={handlePSTDragEnd}
                     />
                 </svg>
             </UncontrolledReactSVGPanZoom>

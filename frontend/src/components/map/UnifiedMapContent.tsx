@@ -87,6 +87,12 @@ interface ModernUnifiedMapContentProps {
     onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
     onPSTResizeMove?: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
     onPSTResizeEnd?: (element: PSTElement, newCoordinates: PSTCoordinates) => void;
+    // New props for PST drag functionality
+    draggingPSTElement?: PSTElement | null;
+    dragPreviewBounds?: PSTBounds | null;
+    onPSTDragStart?: (element: PSTElement, startPosition: {x: number; y: number}) => void;
+    onPSTDragMove?: (element: PSTElement, currentPosition: {x: number; y: number}) => void;
+    onPSTDragEnd?: (element: PSTElement) => void;
 }
 
 /**
@@ -203,6 +209,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         scaleFactor={scaleFactor}
                         isHovered={props.hoveredPSTElement?.id === pstElement.id}
                         isResizing={props.resizingPSTElement?.id === pstElement.id}
+                        isDragging={props.draggingPSTElement?.id === pstElement.id}
                         onResizeStart={(element, handle, startPosition) => {
                             try {
                                 if (props.onPSTResizeStart) {
@@ -239,6 +246,33 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 console.error('Error in PST hover coordination:', error);
                             }
                         }}
+                        onDragStart={(element, startPosition) => {
+                            try {
+                                if (props.onPSTDragStart) {
+                                    props.onPSTDragStart(element, startPosition);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST drag start coordination:', error);
+                            }
+                        }}
+                        onDragMove={(element, currentPosition) => {
+                            try {
+                                if (props.onPSTDragMove) {
+                                    props.onPSTDragMove(element, currentPosition);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST drag move coordination:', error);
+                            }
+                        }}
+                        onDragEnd={(element) => {
+                            try {
+                                if (props.onPSTDragEnd) {
+                                    props.onPSTDragEnd(element);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST drag end coordination:', error);
+                            }
+                        }}
                         mutateMapText={mutateMapText}
                         mapText={mapText}
                     />
@@ -253,6 +287,24 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                     previewBounds={props.resizePreviewBounds}
                     pstType={props.resizingPSTElement.type}
                     mapStyleDefs={mapStyleDefs}
+                />
+            )}
+
+            {/* Drag preview overlay */}
+            {props.dragPreviewBounds && props.draggingPSTElement && (
+                <rect
+                    x={props.dragPreviewBounds.x}
+                    y={props.dragPreviewBounds.y}
+                    width={props.dragPreviewBounds.width}
+                    height={props.dragPreviewBounds.height}
+                    fill="none"
+                    stroke="#FF9800"
+                    strokeWidth={2}
+                    strokeDasharray="8,4"
+                    opacity={0.6}
+                    pointerEvents="none"
+                    rx={4}
+                    ry={4}
                 />
             )}
 

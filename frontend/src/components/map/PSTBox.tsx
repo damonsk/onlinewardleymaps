@@ -156,8 +156,14 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // Handle drag start
     const handleDragStart = useCallback(
         (event: React.MouseEvent) => {
-            // Don't start drag if we're already resizing or if resize handles are being interacted with
-            if (isResizing || event.target !== event.currentTarget) {
+            // Don't start drag if we're already resizing
+            if (isResizing) {
+                return;
+            }
+
+            // Don't start drag if clicking on resize handles (they have specific data attributes)
+            const target = event.target as Element;
+            if (target && target.getAttribute && target.getAttribute('data-resize-handle')) {
                 return;
             }
 
