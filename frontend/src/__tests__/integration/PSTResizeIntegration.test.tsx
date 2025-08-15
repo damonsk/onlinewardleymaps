@@ -88,9 +88,12 @@ describe('PST Resize Integration', () => {
         // Mouse leave should call onHover with null after delay
         fireEvent.mouseLeave(pstBox);
 
-        await waitFor(() => {
-            expect(defaultProps.onHover).toHaveBeenCalledWith(null);
-        }, { timeout: 500 });
+        await waitFor(
+            () => {
+                expect(defaultProps.onHover).toHaveBeenCalledWith(null);
+            },
+            {timeout: 500},
+        );
     });
 
     it('should show resize handles when isHovered prop is true', () => {
@@ -132,16 +135,12 @@ describe('PST Resize Integration', () => {
         });
 
         // Should call onResizeStart
-        expect(defaultProps.onResizeStart).toHaveBeenCalledWith(
-            defaultProps.pstElement,
-            'top-left',
-            { x: 100, y: 100 }
-        );
+        expect(defaultProps.onResizeStart).toHaveBeenCalledWith(defaultProps.pstElement, 'top-left', {x: 100, y: 100});
     });
 
     it('should handle rapid mouse movements without excessive calls', async () => {
         const onHover = jest.fn();
-        
+
         render(
             <svg>
                 <PSTBox {...defaultProps} onHover={onHover} />
@@ -172,7 +171,7 @@ describe('PST Resize Integration', () => {
         );
 
         const hoverOutline = screen.getByTestId('pst-box-hover-outline-test-pst-1');
-        
+
         // Check that outline is only slightly larger than the box
         expect(hoverOutline).toHaveAttribute('x', '99'); // bounds.x - 1
         expect(hoverOutline).toHaveAttribute('y', '99'); // bounds.y - 1

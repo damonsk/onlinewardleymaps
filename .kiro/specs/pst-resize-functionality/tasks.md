@@ -63,7 +63,7 @@
   - Add proper cleanup and state reset when resize operations complete
   - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 10. Add map text mutation for PST resize operations
+- [-] 10. Add map text mutation for PST resize operations
   - Implement map text update logic when PST elements are resized
   - Create PST syntax generation functions for updated coordinates
   - Add line-specific map text replacement for individual PST elements
