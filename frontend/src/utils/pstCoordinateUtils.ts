@@ -3,7 +3,7 @@
  * Handles conversion between map coordinates (0-1) and SVG coordinates for PST elements
  */
 
-import {PSTCoordinates, PSTBounds, ResizeConstraints} from '../types/map/pst';
+import {PSTCoordinates, PSTBounds, ResizeConstraints, ResizeModifiers} from '../types/map/pst';
 import {MapDimensions} from '../constants/defaults';
 import {DEFAULT_RESIZE_CONSTRAINTS} from '../constants/pstConfig';
 
@@ -144,6 +144,8 @@ export function snapToGrid(value: number, gridSize: number = 10, enabled: boolea
     return Math.round(value / gridSize) * gridSize;
 }
 
+
+
 /**
  * Calculate new bounds when resizing from a specific handle
  */
@@ -154,10 +156,19 @@ export function calculateResizedBounds(
     deltaY: number,
     constraints: ResizeConstraints = DEFAULT_RESIZE_CONSTRAINTS,
     mapDimensions: MapDimensions,
+    modifiers: ResizeModifiers = { maintainAspectRatio: false, resizeFromCenter: false },
 ): PSTBounds {
     let {x, y, width, height} = originalBounds;
+    
+    // Store original aspect ratio for constraint calculations
+    const originalAspectRatio = originalBounds.width / originalBounds.height;
 
-    // Apply resize based on handle position
+    // If resizing from center, we need to apply deltas differently
+    if (modifiers.resizeFromCenter) {
+        return calculateCenterResizedBounds(originalBounds, handlePosition, deltaX, deltaY, constraints, mapDimensions, modifiers.maintainAspectRatio);
+    }
+
+    // Apply resize based on handle position (standard corner/edge resize)
     switch (handlePosition) {
         case 'top-left':
             x += deltaX;
@@ -195,6 +206,129 @@ export function calculateResizedBounds(
             break;
     }
 
+    // Apply aspect ratio constraint if requested
+    if (modifiers.maintainAspectRatio) {
+        const result = applyAspectRatioConstraint({x, y, width, height}, originalAspectRatio, handlePosition);
+        x = result.x;
+        y = result.y;
+        width = result.width;
+        height = result.height;
+    }
+
     // Apply constraints and return constrained bounds
     return constrainPSTBounds({x, y, width, height}, mapDimensions, constraints);
+}
+
+/**
+ * Calculate bounds when resizing from center point (Alt key modifier)
+ */
+function calculateCenterResizedBounds(
+    originalBounds: PSTBounds,
+    handlePosition: string,
+    deltaX: number,
+    deltaY: number,
+    constraints: ResizeConstraints,
+    mapDimensions: MapDimensions,
+    maintainAspectRatio: boolean,
+): PSTBounds {
+    const {x: centerX, y: centerY, width: originalWidth, height: originalHeight} = originalBounds;
+    const originalAspectRatio = originalWidth / originalHeight;
+    
+    // Calculate center point
+    const centerPointX = centerX + originalWidth / 2;
+    const centerPointY = centerY + originalHeight / 2;
+
+    let newWidth = originalWidth;
+    let newHeight = originalHeight;
+
+    // Calculate new dimensions based on handle position
+    // For center resize, we apply the delta symmetrically
+    switch (handlePosition) {
+        case 'top-left':
+        case 'bottom-right':
+            // Diagonal handles - apply both deltas
+            newWidth = originalWidth + Math.abs(deltaX) * 2;
+            newHeight = originalHeight + Math.abs(deltaY) * 2;
+            break;
+        case 'top-right':
+        case 'bottom-left':
+            // Diagonal handles - apply both deltas
+            newWidth = originalWidth + Math.abs(deltaX) * 2;
+            newHeight = originalHeight + Math.abs(deltaY) * 2;
+            break;
+        case 'top-center':
+        case 'bottom-center':
+            // Vertical handles - only height changes
+            newHeight = originalHeight + Math.abs(deltaY) * 2;
+            if (maintainAspectRatio) {
+                newWidth = newHeight * originalAspectRatio;
+            }
+            break;
+        case 'middle-left':
+        case 'middle-right':
+            // Horizontal handles - only width changes
+            newWidth = originalWidth + Math.abs(deltaX) * 2;
+            if (maintainAspectRatio) {
+                newHeight = newWidth / originalAspectRatio;
+            }
+            break;
+    }
+
+    // Apply aspect ratio constraint if requested
+    if (maintainAspectRatio && !['top-center', 'bottom-center', 'middle-left', 'middle-right'].includes(handlePosition)) {
+        // For diagonal handles, use the larger delta to maintain aspect ratio
+        const deltaRatio = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+        newWidth = originalWidth + deltaRatio * 2;
+        newHeight = newWidth / originalAspectRatio;
+    }
+
+    // Calculate new position (centered around the original center point)
+    const newX = centerPointX - newWidth / 2;
+    const newY = centerPointY - newHeight / 2;
+
+    return constrainPSTBounds({x: newX, y: newY, width: newWidth, height: newHeight}, mapDimensions, constraints);
+}
+
+/**
+ * Apply aspect ratio constraint to resize bounds
+ */
+function applyAspectRatioConstraint(
+    bounds: PSTBounds,
+    originalAspectRatio: number,
+    handlePosition: string,
+): PSTBounds {
+    let {x, y, width, height} = bounds;
+
+    // For edge handles (not corners), don't apply aspect ratio constraint
+    if (['top-center', 'bottom-center', 'middle-left', 'middle-right'].includes(handlePosition)) {
+        return bounds;
+    }
+
+    // Calculate which dimension should drive the aspect ratio
+    // Use the dimension that changed more significantly
+    const newAspectRatio = width / height;
+    
+    if (newAspectRatio > originalAspectRatio) {
+        // Width is too large, adjust height
+        const newHeight = width / originalAspectRatio;
+        const heightDelta = newHeight - height;
+        
+        // Adjust position based on handle
+        if (handlePosition.includes('top')) {
+            y -= heightDelta;
+        }
+        height = newHeight;
+    } else {
+        // Height is too large, adjust width
+        const newWidth = height * originalAspectRatio;
+        const widthDelta = newWidth - width;
+        
+        // Adjust position based on handle
+        if (handlePosition.includes('left')) {
+            x -= widthDelta;
+        }
+        width = newWidth;
+    }
+
+    return {x, y, width, height};
 }

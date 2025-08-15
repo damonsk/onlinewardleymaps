@@ -132,6 +132,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     const [resizePreviewBounds, setResizePreviewBounds] = useState<any>(null);
     const [resizeStartPosition, setResizeStartPosition] = useState<{x: number; y: number} | null>(null);
     const [originalBounds, setOriginalBounds] = useState<any>(null);
+    const [keyboardModifiers, setKeyboardModifiers] = useState<{maintainAspectRatio: boolean; resizeFromCenter: boolean}>({
+        maintainAspectRatio: false,
+        resizeFromCenter: false,
+    });
 
     // PST drag state management
     const [draggingPSTElement, setDraggingPSTElement] = useState<any>(null);
@@ -307,7 +311,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 const deltaX = currentPosition.x - resizeStartPosition.x;
                 const deltaY = currentPosition.y - resizeStartPosition.y;
 
-                // Calculate new bounds based on the handle and delta
+                // Calculate new bounds based on the handle and delta, with keyboard modifiers
                 const newBounds = calculateResizedBounds(
                     originalBounds,
                     handle,
@@ -315,6 +319,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     deltaY,
                     undefined, // Use default constraints
                     mapDimensions,
+                    keyboardModifiers,
                 );
 
                 // Validate calculated bounds
@@ -331,7 +336,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 // Don't reset state during move to avoid interrupting the operation
             }
         },
-        [resizingPSTElement, originalBounds, resizeStartPosition, mapDimensions],
+        [resizingPSTElement, originalBounds, resizeStartPosition, mapDimensions, keyboardModifiers],
     );
 
     const resetResizeState = useCallback(() => {
@@ -340,6 +345,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         setResizePreviewBounds(null);
         setOriginalBounds(null);
         setResizeStartPosition(null);
+        setKeyboardModifiers({
+            maintainAspectRatio: false,
+            resizeFromCenter: false,
+        });
     }, []);
 
     const handlePSTResizeEnd = useCallback(
@@ -568,20 +577,60 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         [draggingPSTElement, dragPreviewBounds, mapDimensions, mapText, mutateMapText, resetDragState],
     );
 
-    // Handle escape key to cancel resize operations
+    // Handle keyboard modifiers and escape key during resize operations
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && resizingPSTElement) {
+            if (!resizingPSTElement) return;
+
+            // Handle Escape key to cancel resize
+            if (event.key === 'Escape') {
                 console.log('Resize operation cancelled by user');
                 resetResizeState();
                 event.preventDefault();
                 event.stopPropagation();
+                return;
             }
+
+            // Update keyboard modifiers
+            const newModifiers = {
+                maintainAspectRatio: event.shiftKey,
+                resizeFromCenter: event.altKey,
+            };
+
+            setKeyboardModifiers(prev => {
+                if (prev.maintainAspectRatio !== newModifiers.maintainAspectRatio || 
+                    prev.resizeFromCenter !== newModifiers.resizeFromCenter) {
+                    return newModifiers;
+                }
+                return prev;
+            });
+        };
+
+        const handleKeyUp = (event: KeyboardEvent) => {
+            if (!resizingPSTElement) return;
+
+            // Update keyboard modifiers
+            const newModifiers = {
+                maintainAspectRatio: event.shiftKey,
+                resizeFromCenter: event.altKey,
+            };
+
+            setKeyboardModifiers(prev => {
+                if (prev.maintainAspectRatio !== newModifiers.maintainAspectRatio || 
+                    prev.resizeFromCenter !== newModifiers.resizeFromCenter) {
+                    return newModifiers;
+                }
+                return prev;
+            });
         };
 
         if (resizingPSTElement) {
             document.addEventListener('keydown', handleKeyDown);
-            return () => document.removeEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            return () => {
+                document.removeEventListener('keydown', handleKeyDown);
+                document.removeEventListener('keyup', handleKeyUp);
+            };
         }
     }, [resizingPSTElement, resetResizeState]);
 
@@ -789,6 +838,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         resizingPSTElement={resizingPSTElement}
                         resizeHandle={resizeHandle}
                         resizePreviewBounds={resizePreviewBounds}
+                        keyboardModifiers={keyboardModifiers}
                         onPSTHover={handlePSTHover}
                         onPSTResizeStart={handlePSTResizeStart}
                         onPSTResizeMove={handlePSTResizeMove}

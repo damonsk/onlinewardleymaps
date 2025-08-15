@@ -21,6 +21,8 @@ interface PSTBoxProps {
     isResizing: boolean;
     /** Whether this PST element is currently being dragged */
     isDragging?: boolean;
+    /** Keyboard modifiers for resize operations */
+    keyboardModifiers?: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
     /** Callback when resize operation starts */
     onResizeStart: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
     /** Callback during resize operation */
@@ -54,6 +56,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     isHovered,
     isResizing,
     isDragging = false,
+    keyboardModifiers = {maintainAspectRatio: false, resizeFromCenter: false},
     onResizeStart,
     onResizeMove,
     onResizeEnd,
@@ -349,6 +352,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 onResizeEnd={handleResizeEnd}
                 scaleFactor={scaleFactor}
                 mapStyleDefs={mapStyleDefs}
+                keyboardModifiers={keyboardModifiers}
             />
 
             {/* Hidden description for screen readers */}

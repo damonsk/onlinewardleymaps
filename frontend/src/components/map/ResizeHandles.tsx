@@ -17,6 +17,8 @@ interface ResizeHandlesProps {
     scaleFactor: number;
     /** Map theme for styling */
     mapStyleDefs: MapTheme;
+    /** Keyboard modifiers for visual feedback */
+    keyboardModifiers?: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
 }
 
 /**
@@ -31,6 +33,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     onResizeEnd,
     scaleFactor,
     mapStyleDefs,
+    keyboardModifiers = {maintainAspectRatio: false, resizeFromCenter: false},
 }) => {
     const [activeHandle, setActiveHandle] = useState<ResizeHandle | null>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -261,9 +264,9 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                         y={position.y}
                         width={handleSize}
                         height={handleSize}
-                        fill={isActive ? '#2196F3' : '#ffffff'}
-                        stroke={isActive ? '#1976D2' : '#666666'}
-                        strokeWidth={1}
+                        fill={isActive ? '#2196F3' : (keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter) ? '#FFC107' : '#ffffff'}
+                        stroke={isActive ? '#1976D2' : (keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter) ? '#FF8F00' : '#666666'}
+                        strokeWidth={keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter ? 2 : 1}
                         rx={2}
                         ry={2}
                         style={{
@@ -313,6 +316,55 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                     />
                 );
             })}
+
+            {/* Keyboard modifier indicators */}
+            {(keyboardModifiers.maintainAspectRatio || keyboardModifiers.resizeFromCenter) && (
+                <g className="keyboard-modifier-indicators">
+                    {/* Background for modifier text */}
+                    <rect
+                        x={bounds.x + bounds.width + 10}
+                        y={bounds.y - 5}
+                        width={120}
+                        height={keyboardModifiers.maintainAspectRatio && keyboardModifiers.resizeFromCenter ? 35 : 20}
+                        fill="rgba(0, 0, 0, 0.8)"
+                        stroke="#FFC107"
+                        strokeWidth={1}
+                        rx={4}
+                        ry={4}
+                        pointerEvents="none"
+                    />
+                    
+                    {/* Shift key indicator */}
+                    {keyboardModifiers.maintainAspectRatio && (
+                        <text
+                            x={bounds.x + bounds.width + 15}
+                            y={bounds.y + 8}
+                            fill="#FFC107"
+                            fontSize="10"
+                            fontWeight="600"
+                            pointerEvents="none"
+                            style={{userSelect: 'none'}}
+                        >
+                            Shift: Aspect Ratio
+                        </text>
+                    )}
+                    
+                    {/* Alt key indicator */}
+                    {keyboardModifiers.resizeFromCenter && (
+                        <text
+                            x={bounds.x + bounds.width + 15}
+                            y={keyboardModifiers.maintainAspectRatio ? bounds.y + 23 : bounds.y + 8}
+                            fill="#FFC107"
+                            fontSize="10"
+                            fontWeight="600"
+                            pointerEvents="none"
+                            style={{userSelect: 'none'}}
+                        >
+                            Alt: Resize from Center
+                        </text>
+                    )}
+                </g>
+            )}
 
             {/* Hidden element for screen reader instructions */}
             <text id="resize-instructions" x={-1000} y={-1000} style={{opacity: 0, pointerEvents: 'none'}} aria-hidden="true">
