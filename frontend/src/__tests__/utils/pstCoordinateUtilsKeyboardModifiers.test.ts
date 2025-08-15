@@ -3,9 +3,7 @@
  * Tests aspect ratio maintenance and center resize functionality
  */
 
-import {
-    calculateResizedBounds,
-} from '../../utils/pstCoordinateUtils';
+import {calculateResizedBounds} from '../../utils/pstCoordinateUtils';
 import {PSTBounds, ResizeModifiers} from '../../types/map/pst';
 import {MapDimensions} from '../../constants/defaults';
 import {DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
@@ -25,15 +23,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
 
     describe('calculateResizedBounds with keyboard modifiers', () => {
         it('should resize normally without modifiers', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'bottom-right',
-                50,
-                30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: false, resizeFromCenter: false}
-            );
+            const result = calculateResizedBounds(mockBounds, 'bottom-right', 50, 30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: false,
+                resizeFromCenter: false,
+            });
 
             expect(result).toEqual({
                 x: 100,
@@ -44,15 +37,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should maintain aspect ratio when Shift key is pressed', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'bottom-right',
-                50,
-                30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: true, resizeFromCenter: false}
-            );
+            const result = calculateResizedBounds(mockBounds, 'bottom-right', 50, 30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: true,
+                resizeFromCenter: false,
+            });
 
             // Original aspect ratio is 200/100 = 2:1
             // With aspect ratio constraint, height should adjust to maintain ratio
@@ -60,15 +48,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should resize from center when Alt key is pressed', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'bottom-right',
-                50,
-                30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: false, resizeFromCenter: true}
-            );
+            const result = calculateResizedBounds(mockBounds, 'bottom-right', 50, 30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: false,
+                resizeFromCenter: true,
+            });
 
             // Center should remain the same
             const originalCenterX = mockBounds.x + mockBounds.width / 2;
@@ -81,15 +64,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should combine both modifiers when both keys are pressed', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'bottom-right',
-                50,
-                30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: true, resizeFromCenter: true}
-            );
+            const result = calculateResizedBounds(mockBounds, 'bottom-right', 50, 30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: true,
+                resizeFromCenter: true,
+            });
 
             // Should maintain aspect ratio
             expect(result.width / result.height).toBeCloseTo(2, 1);
@@ -105,18 +83,22 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should handle different resize handles with center resize', () => {
-            const handles = ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
-            
+            const handles = [
+                'top-left',
+                'top-center',
+                'top-right',
+                'middle-left',
+                'middle-right',
+                'bottom-left',
+                'bottom-center',
+                'bottom-right',
+            ];
+
             handles.forEach(handle => {
-                const result = calculateResizedBounds(
-                    mockBounds,
-                    handle as any,
-                    20,
-                    20,
-                    DEFAULT_RESIZE_CONSTRAINTS,
-                    mockMapDimensions,
-                    {maintainAspectRatio: false, resizeFromCenter: true}
-                );
+                const result = calculateResizedBounds(mockBounds, handle as any, 20, 20, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                    maintainAspectRatio: false,
+                    resizeFromCenter: true,
+                });
 
                 // Center should remain the same for all handles
                 const originalCenterX = mockBounds.x + mockBounds.width / 2;
@@ -131,17 +113,12 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
 
         it('should not apply aspect ratio to edge handles', () => {
             const edgeHandles = ['top-center', 'bottom-center', 'middle-left', 'middle-right'];
-            
+
             edgeHandles.forEach(handle => {
-                const result = calculateResizedBounds(
-                    mockBounds,
-                    handle as any,
-                    50,
-                    30,
-                    DEFAULT_RESIZE_CONSTRAINTS,
-                    mockMapDimensions,
-                    {maintainAspectRatio: true, resizeFromCenter: false}
-                );
+                const result = calculateResizedBounds(mockBounds, handle as any, 50, 30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                    maintainAspectRatio: true,
+                    resizeFromCenter: false,
+                });
 
                 // Edge handles should not be constrained by aspect ratio
                 // The aspect ratio constraint should only apply to corner handles
@@ -156,18 +133,13 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should handle negative deltas correctly', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'bottom-right',
-                -50,
-                -30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: false, resizeFromCenter: false}
-            );
+            const result = calculateResizedBounds(mockBounds, 'bottom-right', -50, -30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: false,
+                resizeFromCenter: false,
+            });
 
             expect(result.width).toBe(150); // 200 - 50
-            expect(result.height).toBe(70);  // 100 - 30
+            expect(result.height).toBe(70); // 100 - 30
         });
 
         it('should respect minimum size constraints with modifiers', () => {
@@ -178,15 +150,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
                 height: 40,
             };
 
-            const result = calculateResizedBounds(
-                smallBounds,
-                'bottom-right',
-                -50,
-                -30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: false, resizeFromCenter: false}
-            );
+            const result = calculateResizedBounds(smallBounds, 'bottom-right', -50, -30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: false,
+                resizeFromCenter: false,
+            });
 
             // Should not go below minimum constraints
             expect(result.width).toBeGreaterThanOrEqual(DEFAULT_RESIZE_CONSTRAINTS.minWidth);
@@ -196,15 +163,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
 
     describe('Center resize calculations', () => {
         it('should calculate symmetric resize for diagonal handles', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'bottom-right',
-                50,
-                30,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: false, resizeFromCenter: true}
-            );
+            const result = calculateResizedBounds(mockBounds, 'bottom-right', 50, 30, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: false,
+                resizeFromCenter: true,
+            });
 
             // Width should increase by 2 * deltaX (symmetric)
             expect(result.width).toBe(mockBounds.width + 2 * Math.abs(50));
@@ -213,15 +175,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should handle edge handles correctly with center resize', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'middle-right',
-                50,
-                0,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: false, resizeFromCenter: true}
-            );
+            const result = calculateResizedBounds(mockBounds, 'middle-right', 50, 0, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: false,
+                resizeFromCenter: true,
+            });
 
             // Only width should change for horizontal edge handles
             expect(result.width).toBe(mockBounds.width + 2 * Math.abs(50));
@@ -232,17 +189,12 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
     describe('Aspect ratio maintenance', () => {
         it('should maintain aspect ratio for corner handles', () => {
             const cornerHandles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
-            
+
             cornerHandles.forEach(handle => {
-                const result = calculateResizedBounds(
-                    mockBounds,
-                    handle as any,
-                    60,
-                    20,
-                    DEFAULT_RESIZE_CONSTRAINTS,
-                    mockMapDimensions,
-                    {maintainAspectRatio: true, resizeFromCenter: false}
-                );
+                const result = calculateResizedBounds(mockBounds, handle as any, 60, 20, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                    maintainAspectRatio: true,
+                    resizeFromCenter: false,
+                });
 
                 // Should maintain original aspect ratio (2:1)
                 expect(result.width / result.height).toBeCloseTo(2, 1);
@@ -250,15 +202,10 @@ describe('PST Coordinate Utils - Keyboard Modifiers', () => {
         });
 
         it('should not constrain edge handles with aspect ratio', () => {
-            const result = calculateResizedBounds(
-                mockBounds,
-                'middle-right',
-                50,
-                0,
-                DEFAULT_RESIZE_CONSTRAINTS,
-                mockMapDimensions,
-                {maintainAspectRatio: true, resizeFromCenter: false}
-            );
+            const result = calculateResizedBounds(mockBounds, 'middle-right', 50, 0, DEFAULT_RESIZE_CONSTRAINTS, mockMapDimensions, {
+                maintainAspectRatio: true,
+                resizeFromCenter: false,
+            });
 
             // Edge handles should resize freely even with aspect ratio enabled
             expect(result.width).toBe(250);

@@ -29,21 +29,9 @@ interface PSTContainerProps {
  * PST Container manages PST elements with resize functionality
  * Coordinates between individual PST boxes and the resize manager
  */
-const PSTContainer: React.FC<PSTContainerProps> = ({
-    pstElements,
-    mapDimensions,
-    mapStyleDefs,
-    scaleFactor,
-    mapText,
-    onMapTextUpdate,
-}) => {
+const PSTContainer: React.FC<PSTContainerProps> = ({pstElements, mapDimensions, mapStyleDefs, scaleFactor, mapText, onMapTextUpdate}) => {
     return (
-        <PSTResizeManager
-            pstElements={pstElements}
-            mapDimensions={mapDimensions}
-            mapText={mapText}
-            onMapTextUpdate={onMapTextUpdate}
-        >
+        <PSTResizeManager pstElements={pstElements} mapDimensions={mapDimensions} mapText={mapText} onMapTextUpdate={onMapTextUpdate}>
             {({
                 hoveredElement,
                 resizingElement,
@@ -80,14 +68,14 @@ const PSTContainer: React.FC<PSTContainerProps> = ({
                             mapText={mapText}
                         />
                     ))}
-                    
+
                     {/* Resize preview overlay */}
                     {resizingElement && (
                         <g className="pst-resize-preview">
                             {(() => {
                                 const previewBounds = getResizePreviewBounds(resizingElement);
                                 if (!previewBounds) return null;
-                                
+
                                 return (
                                     <rect
                                         x={previewBounds.x}
@@ -107,14 +95,14 @@ const PSTContainer: React.FC<PSTContainerProps> = ({
                             })()}
                         </g>
                     )}
-                    
+
                     {/* Drag preview overlay */}
                     {draggingElement && (
                         <g className="pst-drag-preview">
                             {(() => {
                                 const previewBounds = getDragPreviewBounds(draggingElement);
                                 if (!previewBounds) return null;
-                                
+
                                 return (
                                     <rect
                                         x={previewBounds.x}

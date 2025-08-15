@@ -239,7 +239,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 console.error('Error in PST resize end coordination:', error);
                             }
                         }}
-                        onHover={(element) => {
+                        onHover={element => {
                             try {
                                 if (props.onPSTHover) {
                                     props.onPSTHover(element);
@@ -266,7 +266,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 console.error('Error in PST drag move coordination:', error);
                             }
                         }}
-                        onDragEnd={(element) => {
+                        onDragEnd={element => {
                             try {
                                 if (props.onPSTDragEnd) {
                                     props.onPSTDragEnd(element);

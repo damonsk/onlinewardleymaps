@@ -144,8 +144,6 @@ export function snapToGrid(value: number, gridSize: number = 10, enabled: boolea
     return Math.round(value / gridSize) * gridSize;
 }
 
-
-
 /**
  * Calculate new bounds when resizing from a specific handle
  */
@@ -156,16 +154,24 @@ export function calculateResizedBounds(
     deltaY: number,
     constraints: ResizeConstraints = DEFAULT_RESIZE_CONSTRAINTS,
     mapDimensions: MapDimensions,
-    modifiers: ResizeModifiers = { maintainAspectRatio: false, resizeFromCenter: false },
+    modifiers: ResizeModifiers = {maintainAspectRatio: false, resizeFromCenter: false},
 ): PSTBounds {
     let {x, y, width, height} = originalBounds;
-    
+
     // Store original aspect ratio for constraint calculations
     const originalAspectRatio = originalBounds.width / originalBounds.height;
 
     // If resizing from center, we need to apply deltas differently
     if (modifiers.resizeFromCenter) {
-        return calculateCenterResizedBounds(originalBounds, handlePosition, deltaX, deltaY, constraints, mapDimensions, modifiers.maintainAspectRatio);
+        return calculateCenterResizedBounds(
+            originalBounds,
+            handlePosition,
+            deltaX,
+            deltaY,
+            constraints,
+            mapDimensions,
+            modifiers.maintainAspectRatio,
+        );
     }
 
     // Apply resize based on handle position (standard corner/edge resize)
@@ -233,7 +239,7 @@ function calculateCenterResizedBounds(
 ): PSTBounds {
     const {x: centerX, y: centerY, width: originalWidth, height: originalHeight} = originalBounds;
     const originalAspectRatio = originalWidth / originalHeight;
-    
+
     // Calculate center point
     const centerPointX = centerX + originalWidth / 2;
     const centerPointY = centerY + originalHeight / 2;
@@ -292,11 +298,7 @@ function calculateCenterResizedBounds(
 /**
  * Apply aspect ratio constraint to resize bounds
  */
-function applyAspectRatioConstraint(
-    bounds: PSTBounds,
-    originalAspectRatio: number,
-    handlePosition: string,
-): PSTBounds {
+function applyAspectRatioConstraint(bounds: PSTBounds, originalAspectRatio: number, handlePosition: string): PSTBounds {
     let {x, y, width, height} = bounds;
 
     // For edge handles (not corners), don't apply aspect ratio constraint
@@ -307,12 +309,12 @@ function applyAspectRatioConstraint(
     // Calculate which dimension should drive the aspect ratio
     // Use the dimension that changed more significantly
     const newAspectRatio = width / height;
-    
+
     if (newAspectRatio > originalAspectRatio) {
         // Width is too large, adjust height
         const newHeight = width / originalAspectRatio;
         const heightDelta = newHeight - height;
-        
+
         // Adjust position based on handle
         if (handlePosition.includes('top')) {
             y -= heightDelta;
@@ -322,7 +324,7 @@ function applyAspectRatioConstraint(
         // Height is too large, adjust width
         const newWidth = height * originalAspectRatio;
         const widthDelta = newWidth - width;
-        
+
         // Adjust position based on handle
         if (handlePosition.includes('left')) {
             x -= widthDelta;

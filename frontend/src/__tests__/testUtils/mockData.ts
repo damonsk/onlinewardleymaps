@@ -2,9 +2,9 @@
  * Mock data utilities for testing
  */
 
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
-import { UnifiedWardleyMap } from '../../types/unified';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedWardleyMap} from '../../types/unified';
 
 export function createMockWardleyMap(): UnifiedWardleyMap {
     return {

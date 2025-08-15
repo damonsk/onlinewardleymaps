@@ -91,7 +91,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
     React.useEffect(() => {
         keyboardModifiersRef.current = keyboardModifiers;
     }, [keyboardModifiers]);
-    
+
     // Track component mount/unmount
     React.useEffect(() => {
         isMountedRef.current = true;
@@ -223,7 +223,6 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                     startBounds,
                     currentBounds: startBounds,
                 };
-                
 
                 setResizeState(newResizeState);
             } catch (error) {
@@ -253,13 +252,13 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 let newBounds;
                 try {
                     newBounds = calculateResizedBounds(
-                        startBounds, 
-                        handle, 
-                        deltaX, 
-                        deltaY, 
-                        DEFAULT_RESIZE_CONSTRAINTS, 
+                        startBounds,
+                        handle,
+                        deltaX,
+                        deltaY,
+                        DEFAULT_RESIZE_CONSTRAINTS,
                         mapDimensions,
-                        keyboardModifiersRef.current
+                        keyboardModifiersRef.current,
                     );
                 } catch (error) {
                     console.error('Error calculating resized bounds:', error);
@@ -313,7 +312,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 });
                 return;
             }
-            
+
             if (!isMountedRef.current) {
                 console.warn('PST resize end called on unmounted component');
                 return;
