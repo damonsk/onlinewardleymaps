@@ -127,8 +127,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 // The parent component should have calculated new coordinates during resize moves
                 // We signal the end of the resize operation so the parent can finalize the update
                 if (onResizeEnd) {
-                    // Pass the handle information so parent knows which resize operation completed
-                    onResizeEnd(pstElement, {handle});
+                    // Call without additional parameters - let parent handle coordinate calculation
+                    // The parent (UnifiedMapCanvas) expects: (element, newCoordinates?)
+                    // It will calculate coordinates from its own resize state
+                    onResizeEnd(pstElement);
                 }
             } catch (error) {
                 console.error('Error in PST resize end:', error);
