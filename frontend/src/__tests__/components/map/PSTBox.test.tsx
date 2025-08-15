@@ -519,4 +519,180 @@ describe('PSTBox Component', () => {
             clearTimeoutSpy.mockRestore();
         });
     });
+
+    describe('Touch Device Support', () => {
+        beforeEach(() => {
+            // Mock touch device detection
+            Object.defineProperty(window, 'ontouchstart', {
+                writable: true,
+                value: true,
+            });
+            Object.defineProperty(navigator, 'maxTouchPoints', {
+                writable: true,
+                value: 5,
+            });
+        });
+
+        afterEach(() => {
+            // Clean up touch device mocks
+            delete (window as any).ontouchstart;
+            Object.defineProperty(navigator, 'maxTouchPoints', {
+                writable: true,
+                value: 0,
+            });
+        });
+
+        it('should handle touch start events for drag operations', () => {
+            const onDragStart = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onDragStart).toHaveBeenCalledWith(defaultProps.pstElement, {x: 100, y: 50});
+        });
+
+        it('should handle touch move events during drag', () => {
+            const onDragMove = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragMove={onDragMove} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // Start touch drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Simulate touch move on document
+            fireEvent.touchMove(document, {
+                touches: [{clientX: 110, clientY: 60}],
+            });
+
+            expect(onDragMove).toHaveBeenCalledWith(defaultProps.pstElement, {x: 110, y: 60});
+        });
+
+        it('should handle touch end events to complete drag', () => {
+            const onDragEnd = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragEnd={onDragEnd} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // Start and end touch drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+            fireEvent.touchEnd(document);
+
+            expect(onDragEnd).toHaveBeenCalledWith(defaultProps.pstElement);
+        });
+
+        it('should prevent scrolling during touch drag operations', () => {
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // Start touch drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Check that touch-action is disabled
+            expect(document.body.style.touchAction).toBe('none');
+        });
+
+        it('should restore scrolling after touch drag completes', () => {
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // Start and end touch drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+            fireEvent.touchEnd(document);
+
+            // Check that touch-action is restored
+            expect(document.body.style.touchAction).toBe('');
+        });
+
+        it('should handle touch cancel events properly', () => {
+            const onDragEnd = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragEnd={onDragEnd} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // Start touch drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Cancel touch
+            fireEvent.touchCancel(document);
+
+            expect(onDragEnd).toHaveBeenCalledWith(defaultProps.pstElement);
+        });
+
+        it('should not start drag during resize operations on touch', () => {
+            const onDragStart = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} isResizing={true} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onDragStart).not.toHaveBeenCalled();
+        });
+
+        it('should handle multi-touch scenarios gracefully', () => {
+            const onDragStart = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // Start with multiple touches (should use first touch)
+            fireEvent.touchStart(rect, {
+                touches: [
+                    {clientX: 100, clientY: 50},
+                    {clientX: 200, clientY: 150},
+                ],
+            });
+
+            expect(onDragStart).toHaveBeenCalledWith(defaultProps.pstElement, {x: 100, y: 50});
+        });
+    });
 });

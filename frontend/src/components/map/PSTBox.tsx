@@ -163,9 +163,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeEnd, pstElement],
     );
 
-    // Handle drag start
-    const handleDragStart = useCallback(
-        (event: React.MouseEvent) => {
+    // Handle pointer start (mouse or touch) for drag
+    const handlePointerStart = useCallback(
+        (event: React.MouseEvent | React.TouchEvent) => {
             // Don't start drag if we're already resizing
             if (isResizing) {
                 return;
@@ -180,7 +180,21 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             event.preventDefault();
             event.stopPropagation();
 
-            const startPosition = {x: event.clientX, y: event.clientY};
+            // Get position from mouse or touch event
+            let clientX: number, clientY: number;
+            if ('touches' in event && event.touches.length > 0) {
+                // Touch event
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else if ('clientX' in event) {
+                // Mouse event
+                clientX = event.clientX;
+                clientY = event.clientY;
+            } else {
+                return;
+            }
+
+            const startPosition = {x: clientX, y: clientY};
             dragStartPositionRef.current = startPosition;
             setIsDragActive(true);
 
@@ -191,16 +205,46 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isResizing, onDragStart, pstElement],
     );
 
-    // Handle drag move
-    const handleDragMove = useCallback(
-        (event: MouseEvent) => {
+    // Handle drag start (legacy mouse support)
+    const handleDragStart = useCallback(
+        (event: React.MouseEvent) => {
+            handlePointerStart(event);
+        },
+        [handlePointerStart],
+    );
+
+    // Handle touch start for drag
+    const handleTouchStart = useCallback(
+        (event: React.TouchEvent) => {
+            handlePointerStart(event);
+        },
+        [handlePointerStart],
+    );
+
+    // Handle pointer move during drag (mouse or touch)
+    const handlePointerMove = useCallback(
+        (event: MouseEvent | TouchEvent) => {
             if (!isDragActive || !dragStartPositionRef.current) {
                 return;
             }
 
             event.preventDefault();
 
-            const currentPosition = {x: event.clientX, y: event.clientY};
+            // Get position from mouse or touch event
+            let clientX: number, clientY: number;
+            if ('touches' in event && event.touches.length > 0) {
+                // Touch event
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else if ('clientX' in event) {
+                // Mouse event
+                clientX = event.clientX;
+                clientY = event.clientY;
+            } else {
+                return;
+            }
+
+            const currentPosition = {x: clientX, y: clientY};
 
             if (onDragMove) {
                 onDragMove(pstElement, currentPosition);
@@ -209,9 +253,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isDragActive, onDragMove, pstElement],
     );
 
-    // Handle drag end
-    const handleDragEnd = useCallback(
-        (event: MouseEvent) => {
+    // Handle pointer end to end drag (mouse or touch)
+    const handlePointerEnd = useCallback(
+        (event: MouseEvent | TouchEvent) => {
             if (!isDragActive) {
                 return;
             }
@@ -228,28 +272,72 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isDragActive, onDragEnd, pstElement],
     );
 
-    // Set up global mouse event listeners for drag operations
+    // Legacy mouse handlers
+    const handleDragMove = useCallback(
+        (event: MouseEvent) => {
+            handlePointerMove(event);
+        },
+        [handlePointerMove],
+    );
+
+    const handleDragEnd = useCallback(
+        (event: MouseEvent) => {
+            handlePointerEnd(event);
+        },
+        [handlePointerEnd],
+    );
+
+    // Touch handlers
+    const handleTouchMove = useCallback(
+        (event: TouchEvent) => {
+            handlePointerMove(event);
+        },
+        [handlePointerMove],
+    );
+
+    const handleTouchEnd = useCallback(
+        (event: TouchEvent) => {
+            handlePointerEnd(event);
+        },
+        [handlePointerEnd],
+    );
+
+    // Set up global pointer event listeners for drag operations (mouse and touch)
     useEffect(() => {
         if (isDragActive) {
+            // Mouse events
             document.addEventListener('mousemove', handleDragMove, {passive: false});
             document.addEventListener('mouseup', handleDragEnd, {passive: false});
             document.addEventListener('mouseleave', handleDragEnd, {passive: false});
 
-            // Prevent text selection during drag
+            // Touch events
+            document.addEventListener('touchmove', handleTouchMove, {passive: false});
+            document.addEventListener('touchend', handleTouchEnd, {passive: false});
+            document.addEventListener('touchcancel', handleTouchEnd, {passive: false});
+
+            // Prevent text selection and scrolling during drag
             document.body.style.userSelect = 'none';
             document.body.style.webkitUserSelect = 'none';
+            document.body.style.touchAction = 'none';
 
             return () => {
+                // Remove mouse events
                 document.removeEventListener('mousemove', handleDragMove);
                 document.removeEventListener('mouseup', handleDragEnd);
                 document.removeEventListener('mouseleave', handleDragEnd);
 
-                // Restore text selection
+                // Remove touch events
+                document.removeEventListener('touchmove', handleTouchMove);
+                document.removeEventListener('touchend', handleTouchEnd);
+                document.removeEventListener('touchcancel', handleTouchEnd);
+
+                // Restore text selection and scrolling
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
+                document.body.style.touchAction = '';
             };
         }
-    }, [isDragActive, handleDragMove, handleDragEnd]);
+    }, [isDragActive, handleDragMove, handleDragEnd, handleTouchMove, handleTouchEnd]);
 
     // Show handles when hovered externally or resizing
     useEffect(() => {
@@ -277,9 +365,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 setIsDragActive(false);
                 dragStartPositionRef.current = null;
 
-                // Restore text selection
+                // Restore text selection and touch action
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
+                document.body.style.touchAction = '';
             }
         };
     }, [isDragActive]);
@@ -315,6 +404,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                     cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'grab',
                 }}
                 onMouseDown={handleDragStart}
+                onTouchStart={handleTouchStart}
                 onKeyDown={event => {
                     // Support keyboard interaction
                     if (event.key === 'Enter' || event.key === ' ') {
