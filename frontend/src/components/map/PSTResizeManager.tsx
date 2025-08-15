@@ -51,14 +51,24 @@ interface ResizeState {
 const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDimensions, mapText, onMapTextUpdate, children}) => {
     const [hoveredElement, setHoveredElement] = useState<PSTElement | null>(null);
     const [resizeState, setResizeState] = useState<ResizeState | null>(null);
-    
+
     // Use ref to store current resize state for stable access in callbacks
     const resizeStateRef = useRef<ResizeState | null>(null);
-    
+    const isMountedRef = useRef(true);
+
     // Update ref whenever state changes
     React.useEffect(() => {
         resizeStateRef.current = resizeState;
     }, [resizeState]);
+    
+    // Track component mount/unmount
+    React.useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+            console.log('PSTResizeManager unmounting during resize:', !!resizeStateRef.current);
+        };
+    }, []);
 
     // Track if we're in the middle of a resize operation
     const isResizing = resizeState !== null;
@@ -82,7 +92,13 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 }
 
                 // Convert PST coordinates to SVG bounds
-                const startBounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
+                let startBounds;
+                try {
+                    startBounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
+                } catch (error) {
+                    console.error('Error converting PST coordinates to bounds:', error);
+                    return;
+                }
 
                 // Validate the converted bounds
                 if (
@@ -100,18 +116,22 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                         startBounds,
                         coordinates: element.coordinates,
                         mapDimensions,
+                        convertFunction: typeof convertPSTCoordinatesToBounds,
                     });
                     return;
                 }
 
                 // Initialize resize state
-                setResizeState({
+                const newResizeState = {
                     element,
                     handle,
                     startPosition,
                     startBounds,
                     currentBounds: startBounds,
-                });
+                };
+                
+
+                setResizeState(newResizeState);
             } catch (error) {
                 console.error('Failed to start PST resize:', error);
             }
@@ -136,10 +156,22 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 const deltaY = currentPosition.y - startPosition.y;
 
                 // Calculate new bounds based on handle and delta
-                const newBounds = calculateResizedBounds(startBounds, handle, deltaX, deltaY, DEFAULT_RESIZE_CONSTRAINTS, mapDimensions);
+                let newBounds;
+                try {
+                    newBounds = calculateResizedBounds(startBounds, handle, deltaX, deltaY, DEFAULT_RESIZE_CONSTRAINTS, mapDimensions);
+                } catch (error) {
+                    console.error('Error calculating resized bounds:', error);
+                    return;
+                }
 
                 // Constrain bounds to valid ranges
-                const constrainedBounds = constrainPSTBounds(newBounds, mapDimensions, DEFAULT_RESIZE_CONSTRAINTS);
+                let constrainedBounds;
+                try {
+                    constrainedBounds = constrainPSTBounds(newBounds, mapDimensions, DEFAULT_RESIZE_CONSTRAINTS);
+                } catch (error) {
+                    console.error('Error constraining PST bounds:', error);
+                    return;
+                }
 
                 // Update resize state with new bounds
                 setResizeState(prev =>
@@ -162,11 +194,28 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
         (element: PSTElement, data: any) => {
             const currentResizeState = resizeStateRef.current;
             if (!currentResizeState) {
-                console.warn('PST resize end called without active resize state');
+                console.error('PST resize end called without active resize state');
+                console.error('This may indicate a component lifecycle issue or missing coordinate conversion functions');
+                console.error('Debug info:', {
+                    element: element.id,
+                    data,
+                    hasResizeState: !!resizeState,
+                    isMounted: isMountedRef.current,
+                    mapDimensions,
+                    hasConvertFunctions: {
+                        convertPSTCoordinatesToBounds: typeof convertPSTCoordinatesToBounds,
+                        convertBoundsToPSTCoordinates: typeof convertBoundsToPSTCoordinates,
+                        calculateResizedBounds: typeof calculateResizedBounds,
+                        constrainPSTBounds: typeof constrainPSTBounds,
+                    },
+                });
                 return;
             }
             
-
+            if (!isMountedRef.current) {
+                console.warn('PST resize end called on unmounted component');
+                return;
+            }
 
             try {
                 // Use currentBounds if available, otherwise fall back to startBounds
@@ -199,7 +248,14 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 }
 
                 // Convert final bounds back to PST coordinates
-                const newCoordinates = convertBoundsToPSTCoordinates(finalBounds, mapDimensions);
+                let newCoordinates;
+                try {
+                    newCoordinates = convertBoundsToPSTCoordinates(finalBounds, mapDimensions);
+                } catch (error) {
+                    console.error('Error converting bounds to PST coordinates:', error);
+                    setResizeState(null);
+                    return;
+                }
 
                 // Validate the new coordinates
                 if (
