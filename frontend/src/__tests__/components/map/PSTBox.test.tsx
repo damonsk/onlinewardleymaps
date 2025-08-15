@@ -542,11 +542,11 @@ describe('PSTBox Component', () => {
             });
         });
 
-        it('should handle touch start events for drag operations', () => {
-            const onDragStart = jest.fn();
+        it('should handle touch start events for selection (first touch)', () => {
+            const onHover = jest.fn();
             render(
                 <svg>
-                    <PSTBox {...defaultProps} onDragStart={onDragStart} />
+                    <PSTBox {...defaultProps} onHover={onHover} />
                 </svg>,
             );
 
@@ -555,10 +555,11 @@ describe('PSTBox Component', () => {
                 touches: [{clientX: 100, clientY: 50}],
             });
 
-            expect(onDragStart).toHaveBeenCalledWith(defaultProps.pstElement, {x: 100, y: 50});
+            // First touch should select, not start drag
+            expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
         });
 
-        it('should handle touch move events during drag', () => {
+        it('should handle touch move events during drag (after selection)', () => {
             const onDragMove = jest.fn();
             render(
                 <svg>
@@ -568,7 +569,12 @@ describe('PSTBox Component', () => {
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
             
-            // Start touch drag
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
@@ -581,7 +587,7 @@ describe('PSTBox Component', () => {
             expect(onDragMove).toHaveBeenCalledWith(defaultProps.pstElement, {x: 110, y: 60});
         });
 
-        it('should handle touch end events to complete drag', () => {
+        it('should handle touch end events to complete drag (after selection)', () => {
             const onDragEnd = jest.fn();
             render(
                 <svg>
@@ -591,10 +597,17 @@ describe('PSTBox Component', () => {
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
             
-            // Start and end touch drag
+            // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // End touch drag
             fireEvent.touchEnd(document);
 
             expect(onDragEnd).toHaveBeenCalledWith(defaultProps.pstElement);
@@ -609,7 +622,12 @@ describe('PSTBox Component', () => {
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
             
-            // Start touch drag
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
@@ -627,10 +645,17 @@ describe('PSTBox Component', () => {
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
             
-            // Start and end touch drag
+            // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // End touch drag
             fireEvent.touchEnd(document);
 
             // Check that touch-action is restored
@@ -647,7 +672,12 @@ describe('PSTBox Component', () => {
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
             
-            // Start touch drag
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
@@ -684,7 +714,7 @@ describe('PSTBox Component', () => {
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
             
-            // Start with multiple touches (should use first touch)
+            // First touch should select the element (not start drag)
             fireEvent.touchStart(rect, {
                 touches: [
                     {clientX: 100, clientY: 50},
@@ -692,7 +722,79 @@ describe('PSTBox Component', () => {
                 ],
             });
 
+            // First touch should not start drag, just select
+            expect(onDragStart).not.toHaveBeenCalled();
+        });
+
+        it('should show resize handles on first touch and start drag on second touch', () => {
+            const onDragStart = jest.fn();
+            const onHover = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} onHover={onHover} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // First touch should select and show handles
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
+            expect(onDragStart).not.toHaveBeenCalled();
+
+            // Second touch should start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
             expect(onDragStart).toHaveBeenCalledWith(defaultProps.pstElement, {x: 100, y: 50});
+        });
+
+        it('should show touch selection outline when selected', () => {
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // First touch should show touch outline
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(screen.getByTestId(`pst-box-touch-outline-${defaultProps.pstElement.id}`)).toBeInTheDocument();
+        });
+
+        it('should auto-hide handles after timeout on touch devices', async () => {
+            jest.useFakeTimers();
+            const onHover = jest.fn();
+            
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onHover={onHover} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            
+            // First touch should select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
+
+            // Fast-forward 5 seconds
+            jest.advanceTimersByTime(5000);
+
+            expect(onHover).toHaveBeenCalledWith(null);
+            
+            jest.useRealTimers();
         });
     });
 });

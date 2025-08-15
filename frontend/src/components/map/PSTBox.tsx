@@ -70,10 +70,17 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
+    const [touchSelected, setTouchSelected] = useState(false);
 
     // Refs for managing timeouts and drag state
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const dragStartPositionRef = useRef<{x: number; y: number} | null>(null);
+    const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Detect if device supports touch
+    const isTouchDevice = useCallback(() => {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }, []);
 
     // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
@@ -216,9 +223,35 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // Handle touch start for drag
     const handleTouchStart = useCallback(
         (event: React.TouchEvent) => {
+            // On touch devices, first touch shows handles, second touch starts drag
+            if (isTouchDevice()) {
+                if (!touchSelected && !isResizing) {
+                    // First touch - show handles and select the element
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    setTouchSelected(true);
+                    setShowHandles(true);
+                    onHover(pstElement);
+                    
+                    // Auto-hide handles after 5 seconds if no interaction
+                    if (touchTimeoutRef.current) {
+                        clearTimeout(touchTimeoutRef.current);
+                    }
+                    touchTimeoutRef.current = setTimeout(() => {
+                        setTouchSelected(false);
+                        setShowHandles(false);
+                        onHover(null);
+                    }, 5000);
+                    
+                    return;
+                }
+            }
+            
+            // Second touch or non-touch device - start drag
             handlePointerStart(event);
         },
-        [handlePointerStart],
+        [handlePointerStart, isTouchDevice, touchSelected, isResizing, onHover, pstElement],
     );
 
     // Handle pointer move during drag (mouse or touch)
@@ -343,14 +376,42 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     useEffect(() => {
         if (isHovered || isResizing) {
             setShowHandles(true);
-        } else if (!isResizing) {
+        } else if (!isResizing && !touchSelected) {
             // Small delay to prevent flickering when moving between elements
             const timeout = setTimeout(() => {
                 setShowHandles(false);
             }, 100);
             return () => clearTimeout(timeout);
         }
-    }, [isHovered, isResizing]);
+    }, [isHovered, isResizing, touchSelected]);
+
+    // Handle touch outside to deselect on touch devices
+    useEffect(() => {
+        if (!isTouchDevice() || !touchSelected) return;
+
+        const handleTouchOutside = (event: TouchEvent) => {
+            // Check if touch is outside this element
+            const target = event.target as Element;
+            const pstElement = document.querySelector(`[data-testid="pst-box-${pstElement.id}"]`);
+            
+            if (pstElement && !pstElement.contains(target)) {
+                setTouchSelected(false);
+                setShowHandles(false);
+                onHover(null);
+                
+                if (touchTimeoutRef.current) {
+                    clearTimeout(touchTimeoutRef.current);
+                    touchTimeoutRef.current = null;
+                }
+            }
+        };
+
+        document.addEventListener('touchstart', handleTouchOutside, {passive: true});
+        
+        return () => {
+            document.removeEventListener('touchstart', handleTouchOutside);
+        };
+    }, [isTouchDevice, touchSelected, onHover, pstElement.id]);
 
     // Cleanup timeouts and drag state on unmount
     useEffect(() => {
@@ -358,6 +419,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             if (hoverTimeoutRef.current) {
                 clearTimeout(hoverTimeoutRef.current);
                 hoverTimeoutRef.current = null;
+            }
+
+            if (touchTimeoutRef.current) {
+                clearTimeout(touchTimeoutRef.current);
+                touchTimeoutRef.current = null;
             }
 
             // Clean up drag state if component unmounts during drag
@@ -432,10 +498,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 {pstElement.name || pstConfig.label}
             </text>
 
-            {/* Resize handles - only show when hovered or resizing */}
+            {/* Resize handles - show when hovered, resizing, or touch selected */}
             <ResizeHandles
                 bounds={bounds}
-                isVisible={showHandles || isResizing}
+                isVisible={showHandles || isResizing || touchSelected}
                 onResizeStart={handleResizeStart}
                 onResizeMove={handleResizeMove}
                 onResizeEnd={handleResizeEnd}
@@ -476,6 +542,27 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 />
             )}
 
+            {/* Visual feedback for touch selection - solid outline */}
+            {touchSelected && !isHovered && (
+                <rect
+                    data-testid={`pst-box-touch-outline-${pstElement.id}`}
+                    x={bounds.x - 2}
+                    y={bounds.y - 2}
+                    width={bounds.width + 4}
+                    height={bounds.height + 4}
+                    fill="none"
+                    stroke="#2196F3"
+                    strokeWidth={2}
+                    strokeOpacity={0.8}
+                    rx={6}
+                    ry={6}
+                    pointerEvents="none"
+                    style={{
+                        animation: 'pstTouchPulse 2s ease-in-out infinite',
+                    }}
+                />
+            )}
+
             {/* CSS animations */}
             <defs>
                 <style>
@@ -486,6 +573,16 @@ const PSTBox: React.FC<PSTBoxProps> = ({
               }
               50% {
                 stroke-opacity: 0.7;
+              }
+            }
+            @keyframes pstTouchPulse {
+              0%, 100% {
+                stroke-opacity: 0.5;
+                stroke-width: 2;
+              }
+              50% {
+                stroke-opacity: 1;
+                stroke-width: 3;
               }
             }
           `}
