@@ -14,13 +14,11 @@ const createMockMapState = (components: UnifiedComponent[]): UseMapStateResult =
     getAllComponents: () => components,
     getComponentsByType: () => [],
     findComponentByName: (name: string) => components.find(c => c.name === name),
-    getUnifiedMap: () => ({} as any),
+    getUnifiedMap: () => ({}) as any,
     resetToDefaults: () => {},
 });
 
-const wrapper = ({children}: {children: React.ReactNode}) => (
-    React.createElement(ComponentSelectionProvider, {}, children)
-);
+const wrapper = ({children}: {children: React.ReactNode}) => React.createElement(ComponentSelectionProvider, {}, children);
 
 describe('useMapComponentSelector', () => {
     const testComponent1 = createUnifiedComponent({

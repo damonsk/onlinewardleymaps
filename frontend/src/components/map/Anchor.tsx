@@ -53,14 +53,13 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({anchor, mapText, mu
     return (
         <>
             <Movable id={elementKey()} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false} isModKeyPressed={isModKeyPressed}>
-                <g 
+                <g
                     data-testid={`map-anchor-${anchor.id}`}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',
                         filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
                     }}>
-                    
                     {/* Selection indicator background */}
                     {isElementSelected && (
                         <rect
@@ -80,7 +79,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({anchor, mapText, mu
                             }}
                         />
                     )}
-                    
+
                     <ComponentTextSymbol
                         id={elementKey('text')}
                         text={anchor.name}
@@ -91,31 +90,17 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({anchor, mapText, mu
                         textTheme={mapStyleDefs.component}
                         onClick={handleClick}
                     />
-                    
+
                     {/* Hover indicator for deletable anchors */}
-                    <g 
+                    <g
                         className="anchor-hover-indicator"
                         style={{
                             opacity: 0,
                             transition: 'opacity 0.2s ease-in-out',
                             pointerEvents: 'none',
                         }}>
-                        <circle
-                            cx={15}
-                            cy={-15}
-                            r={6}
-                            fill="rgba(244, 67, 54, 0.9)"
-                            stroke="white"
-                            strokeWidth="1"
-                        />
-                        <text
-                            x={15}
-                            y={-15}
-                            fill="white"
-                            fontSize="8"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                            dominantBaseline="middle">
+                        <circle cx={15} cy={-15} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
+                        <text x={15} y={-15} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
                             ×
                         </text>
                     </g>

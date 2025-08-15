@@ -100,7 +100,7 @@ const renderWithProvider = (component: React.ReactElement) => {
             <svg width="800" height="600">
                 {component}
             </svg>
-        </ComponentSelectionProvider>
+        </ComponentSelectionProvider>,
     );
 };
 
@@ -124,7 +124,7 @@ describe('Visual Selection Feedback', () => {
             renderWithProvider(<PSTBox {...mockProps} />);
 
             const pstBox = screen.getByTestId(`pst-box-rect-${mockPSTElement.id}`);
-            
+
             // Click to select
             fireEvent.click(pstBox);
 
@@ -169,7 +169,7 @@ describe('Visual Selection Feedback', () => {
             renderWithProvider(<MapComponent {...mockProps} />);
 
             const component = screen.getByTestId(`map-component-${mockComponent.id}`);
-            
+
             // Click to select
             fireEvent.click(component);
 
@@ -193,7 +193,7 @@ describe('Visual Selection Feedback', () => {
             renderWithProvider(<Note {...mockProps} />);
 
             const note = screen.getByTestId(`map-note-${mockNote.id}`);
-            
+
             // Click to select
             fireEvent.click(note);
 
@@ -216,7 +216,7 @@ describe('Visual Selection Feedback', () => {
             renderWithProvider(<Anchor {...mockProps} />);
 
             const anchor = screen.getByTestId(`map-anchor-${mockAnchor.id}`);
-            
+
             // Click to select
             fireEvent.click(anchor);
 
@@ -244,7 +244,7 @@ describe('Visual Selection Feedback', () => {
             renderWithProvider(<PSTBox {...mockProps} />);
 
             const pstBox = screen.getByTestId(`pst-box-rect-${mockPSTElement.id}`);
-            
+
             // Should have transition style applied
             expect(pstBox).toHaveStyle('transition: all 0.2s ease-in-out');
         });

@@ -246,11 +246,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                     // First touch - show handles and select the element
                     event.preventDefault();
                     event.stopPropagation();
-                    
+
                     setTouchSelected(true);
                     setShowHandles(true);
                     onHover(pstElement);
-                    
+
                     // Auto-hide handles after 5 seconds if no interaction
                     if (touchTimeoutRef.current) {
                         clearTimeout(touchTimeoutRef.current);
@@ -260,11 +260,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                         setShowHandles(false);
                         onHover(null);
                     }, 5000);
-                    
+
                     return;
                 }
             }
-            
+
             // Second touch or non-touch device - start drag
             handlePointerStart(event);
         },
@@ -409,13 +409,13 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         const handleTouchOutside = (event: TouchEvent) => {
             // Check if touch is outside this element
             const target = event.target as Element;
-            const pstElement = document.querySelector(`[data-testid="pst-box-${pstElement.id}"]`);
-            
-            if (pstElement && !pstElement.contains(target)) {
+            const pstElementDOM = document.querySelector(`[data-testid="pst-box-${pstElement.id}"]`);
+
+            if (pstElementDOM && !pstElementDOM.contains(target)) {
                 setTouchSelected(false);
                 setShowHandles(false);
                 onHover(null);
-                
+
                 if (touchTimeoutRef.current) {
                     clearTimeout(touchTimeoutRef.current);
                     touchTimeoutRef.current = null;
@@ -424,7 +424,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         };
 
         document.addEventListener('touchstart', handleTouchOutside, {passive: true});
-        
+
         return () => {
             document.removeEventListener('touchstart', handleTouchOutside);
         };
@@ -476,11 +476,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 height={bounds.height}
                 fill={pstColors.fill}
                 fillOpacity={
-                    isElementSelected 
-                        ? (pstColors.fillOpacity || 0.6) + 0.2 
-                        : isHovered 
-                        ? pstColors.fillOpacity || 0.8 
-                        : pstColors.fillOpacity || 0.6
+                    isElementSelected
+                        ? (pstColors.fillOpacity || 0.6) + 0.2
+                        : isHovered
+                          ? pstColors.fillOpacity || 0.8
+                          : pstColors.fillOpacity || 0.6
                 }
                 stroke={isElementSelected ? '#2196F3' : pstColors.stroke}
                 strokeWidth={isElementSelected ? 3 : isHovered ? 2 : 1}
@@ -489,7 +489,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 ry={4}
                 style={{
                     transition: isResizing || isDragActive || isDragging ? 'none' : 'all 0.2s ease-in-out',
-                    filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 8px rgba(33, 150, 243, 0.4))' : isHovered ? 'brightness(1.1)' : 'none',
+                    filter: isElementSelected
+                        ? 'brightness(1.2) drop-shadow(0 0 8px rgba(33, 150, 243, 0.4))'
+                        : isHovered
+                          ? 'brightness(1.1)'
+                          : 'none',
                     cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'pointer',
                 }}
                 onMouseDown={handleDragStart}
@@ -599,22 +603,8 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                         opacity: 0.7,
                         animation: 'fadeIn 0.2s ease-in-out',
                     }}>
-                    <circle
-                        cx="8"
-                        cy="8"
-                        r="8"
-                        fill="rgba(244, 67, 54, 0.9)"
-                        stroke="white"
-                        strokeWidth="1"
-                    />
-                    <text
-                        x="8"
-                        y="8"
-                        fill="white"
-                        fontSize="10"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        dominantBaseline="middle">
+                    <circle cx="8" cy="8" r="8" fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
+                    <text x="8" y="8" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
                         ×
                     </text>
                 </g>

@@ -125,16 +125,15 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 shouldShowMoving={true}
                 isModKeyPressed={component.evolved ? false : isModKeyPressed}
                 scaleFactor={scaleFactor}>
-                <g 
-                    id={component.id} 
-                    onClick={handleClick} 
+                <g
+                    id={component.id}
+                    onClick={handleClick}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',
                         filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
                     }}
                     data-testid={`map-component-${component.id}`}>
-                    
                     {/* Selection indicator background */}
                     {isElementSelected && (
                         <circle
@@ -151,33 +150,19 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                             }}
                         />
                     )}
-                    
+
                     {children}
-                    
+
                     {/* Hover indicator for deletable components */}
-                    <g 
+                    <g
                         className="component-hover-indicator"
                         style={{
                             opacity: 0,
                             transition: 'opacity 0.2s ease-in-out',
                             pointerEvents: 'none',
                         }}>
-                        <circle
-                            cx={8}
-                            cy={-8}
-                            r={6}
-                            fill="rgba(244, 67, 54, 0.9)"
-                            stroke="white"
-                            strokeWidth="1"
-                        />
-                        <text
-                            x={8}
-                            y={-8}
-                            fill="white"
-                            fontSize="8"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                            dominantBaseline="middle">
+                        <circle cx={8} cy={-8} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
+                        <text x={8} y={-8} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
                             ×
                         </text>
                     </g>

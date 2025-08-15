@@ -256,14 +256,13 @@ const Note: React.FC<ModernNoteProps> = ({
     return (
         <>
             <Movable id={`modern_note_${note.id}`} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false} scaleFactor={scaleFactor}>
-                <g 
+                <g
                     data-testid={`map-note-${note.id}`}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',
                         filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
                     }}>
-                    
                     {/* Selection indicator background */}
                     {isElementSelected && (
                         <rect
@@ -283,7 +282,7 @@ const Note: React.FC<ModernNoteProps> = ({
                             }}
                         />
                     )}
-                    
+
                     {editMode ? (
                         renderEditMode()
                     ) : (
@@ -295,31 +294,17 @@ const Note: React.FC<ModernNoteProps> = ({
                             onDoubleClick={handleDoubleClick}
                         />
                     )}
-                    
+
                     {/* Hover indicator for deletable notes */}
-                    <g 
+                    <g
                         className="note-hover-indicator"
                         style={{
                             opacity: 0,
                             transition: 'opacity 0.2s ease-in-out',
                             pointerEvents: 'none',
                         }}>
-                        <circle
-                            cx={15}
-                            cy={-8}
-                            r={6}
-                            fill="rgba(244, 67, 54, 0.9)"
-                            stroke="white"
-                            strokeWidth="1"
-                        />
-                        <text
-                            x={15}
-                            y={-8}
-                            fill="white"
-                            fontSize="8"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                            dominantBaseline="middle">
+                        <circle cx={15} cy={-8} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
+                        <text x={15} y={-8} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
                             ×
                         </text>
                     </g>

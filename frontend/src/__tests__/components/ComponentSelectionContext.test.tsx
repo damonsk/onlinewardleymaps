@@ -2,9 +2,7 @@ import {renderHook, act} from '@testing-library/react';
 import React from 'react';
 import {ComponentSelectionProvider, useComponentSelection} from '../../components/ComponentSelectionContext';
 
-const wrapper = ({children}: {children: React.ReactNode}) => (
-    React.createElement(ComponentSelectionProvider, {}, children)
-);
+const wrapper = ({children}: {children: React.ReactNode}) => React.createElement(ComponentSelectionProvider, {}, children);
 
 describe('ComponentSelectionContext', () => {
     it('should initialize with no selection', () => {
@@ -65,7 +63,7 @@ describe('ComponentSelectionContext', () => {
 
     it('should throw error when used outside provider', () => {
         const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
-        
+
         expect(() => {
             renderHook(() => useComponentSelection());
         }).toThrow('useComponentSelection must be used within a ComponentSelectionProvider');

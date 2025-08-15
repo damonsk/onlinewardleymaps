@@ -21,30 +21,36 @@ export const useMapComponentSelector = (mapState: UseMapStateResult): MapCompone
         if (!selectedId) {
             return null;
         }
-        
+
         // Try to find by ID first, then by name as fallback
         const allComponents = getAllComponents();
         const componentById = allComponents.find(c => c.id === selectedId);
         if (componentById) {
             return componentById;
         }
-        
+
         // Fallback to finding by name (for backward compatibility)
         return findComponentByName(selectedId) || null;
     }, [getSelectedComponentId, getAllComponents, findComponentByName]);
 
-    const canSelectComponent = useCallback((componentId: string): boolean => {
-        // Check if the component exists in the map
-        const allComponents = getAllComponents();
-        const component = allComponents.find(c => c.id === componentId || c.name === componentId);
-        return component !== undefined;
-    }, [getAllComponents]);
+    const canSelectComponent = useCallback(
+        (componentId: string): boolean => {
+            // Check if the component exists in the map
+            const allComponents = getAllComponents();
+            const component = allComponents.find(c => c.id === componentId || c.name === componentId);
+            return component !== undefined;
+        },
+        [getAllComponents],
+    );
 
-    const selectComponentWithValidation = useCallback((componentId: string) => {
-        if (canSelectComponent(componentId)) {
-            selectComponent(componentId);
-        }
-    }, [canSelectComponent, selectComponent]);
+    const selectComponentWithValidation = useCallback(
+        (componentId: string) => {
+            if (canSelectComponent(componentId)) {
+                selectComponent(componentId);
+            }
+        },
+        [canSelectComponent, selectComponent],
+    );
 
     return {
         selectedComponentId: getSelectedComponentId(),

@@ -568,7 +568,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -596,7 +596,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -621,7 +621,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -644,7 +644,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -671,7 +671,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch to select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -713,7 +713,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch should select the element (not start drag)
             fireEvent.touchStart(rect, {
                 touches: [
@@ -736,7 +736,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch should select and show handles
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -761,7 +761,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch should show touch outline
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -773,7 +773,7 @@ describe('PSTBox Component', () => {
         it('should auto-hide handles after timeout on touch devices', async () => {
             jest.useFakeTimers();
             const onHover = jest.fn();
-            
+
             render(
                 <svg>
                     <PSTBox {...defaultProps} onHover={onHover} />
@@ -781,7 +781,7 @@ describe('PSTBox Component', () => {
             );
 
             const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            
+
             // First touch should select
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
@@ -793,7 +793,7 @@ describe('PSTBox Component', () => {
             jest.advanceTimersByTime(5000);
 
             expect(onHover).toHaveBeenCalledWith(null);
-            
+
             jest.useRealTimers();
         });
     });
