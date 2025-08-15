@@ -27,7 +27,7 @@ jest.mock('../../utils/pstCoordinateUtils', () => ({
     })),
     calculateResizedBounds: jest.fn((originalBounds, handle, deltaX, deltaY) => {
         let {x, y, width, height} = originalBounds;
-        
+
         // Simple resize calculation based on handle
         switch (handle) {
             case 'top-left':
@@ -65,10 +65,10 @@ jest.mock('../../utils/pstCoordinateUtils', () => ({
                 height += deltaY;
                 break;
         }
-        
+
         return {x, y, width, height};
     }),
-    constrainPSTBounds: jest.fn((bounds) => bounds),
+    constrainPSTBounds: jest.fn(bounds => bounds),
 }));
 
 describe('PST Resize Map Text Integration', () => {
@@ -158,7 +158,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         const updatedMapText = mockOnMapTextUpdate.mock.calls[0][0];
         expect(updatedMapText).toContain('pioneers');
         expect(updatedMapText).toContain('Test Pioneers');
-        
+
         // Verify other elements remain unchanged
         expect(updatedMapText).toContain('settlers [0.70, 0.20, 0.50, 0.40] Test Settlers');
         expect(updatedMapText).toContain('townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners');
@@ -190,7 +190,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         });
 
         const bottomRightHandle = screen.getByTestId('resize-handle-bottom-right');
-        
+
         // Start resize
         fireEvent.mouseDown(bottomRightHandle, {
             clientX: 200,
@@ -245,7 +245,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         });
 
         const middleRightHandle = screen.getByTestId('resize-handle-middle-right');
-        
+
         // Resize settlers
         fireEvent.mouseDown(middleRightHandle, {clientX: 300, clientY: 300});
         fireEvent.mouseMove(document, {clientX: 350, clientY: 300});
@@ -259,7 +259,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         const updatedMapText = mockOnMapTextUpdate.mock.calls[0][0];
         expect(updatedMapText).toContain('settlers');
         expect(updatedMapText).toContain('Test Settlers');
-        
+
         // Other elements should remain unchanged
         expect(updatedMapText).toContain('pioneers [0.80, 0.10, 0.60, 0.30] Test Pioneers');
         expect(updatedMapText).toContain('townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners');
@@ -273,17 +273,12 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
         // Create a component that will fail during map text update
-        const FailingPSTContainer: React.FC<any> = (props) => {
+        const FailingPSTContainer: React.FC<any> = props => {
             const failingOnMapTextUpdate = (newMapText: string) => {
                 throw new Error('Map text update failed');
             };
-            
-            return (
-                <PSTContainer
-                    {...props}
-                    onMapTextUpdate={failingOnMapTextUpdate}
-                />
-            );
+
+            return <PSTContainer {...props} onMapTextUpdate={failingOnMapTextUpdate} />;
         };
 
         render(
@@ -379,7 +374,7 @@ townplanners [0.60, 0.30, 0.40, 0.50] Test Town Planners`;
         // Should render without errors - check that container exists but no PST boxes
         const container = document.querySelector('.pst-container');
         expect(container).toBeInTheDocument();
-        
+
         // No PST boxes should be present
         const pstBoxes = screen.queryAllByTestId(/pst-box-/);
         expect(pstBoxes).toHaveLength(0);

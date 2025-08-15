@@ -73,8 +73,32 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({
             try {
                 console.log('PST resize started:', {element: element.id, handle, bounds: startPosition});
                 
+                // Validate input parameters
+                if (!element || !element.coordinates || !handle || !startPosition) {
+                    console.error('Invalid resize start parameters:', {element, handle, startPosition});
+                    return;
+                }
+                
                 // Convert PST coordinates to SVG bounds
                 const startBounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
+                
+                // Validate the converted bounds
+                if (!startBounds || 
+                    typeof startBounds.x !== 'number' ||
+                    typeof startBounds.y !== 'number' ||
+                    typeof startBounds.width !== 'number' ||
+                    typeof startBounds.height !== 'number' ||
+                    isNaN(startBounds.x) ||
+                    isNaN(startBounds.y) ||
+                    isNaN(startBounds.width) ||
+                    isNaN(startBounds.height)) {
+                    console.error('Invalid start bounds from coordinate conversion:', {
+                        startBounds,
+                        coordinates: element.coordinates,
+                        mapDimensions,
+                    });
+                    return;
+                }
                 
                 // Initialize resize state
                 setResizeState({
@@ -137,10 +161,61 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({
             }
 
             try {
-                const {currentBounds} = resizeState;
+                // Use currentBounds if available, otherwise fall back to startBounds
+                // This handles cases where resize end is called without any move events
+                const {currentBounds, startBounds} = resizeState;
+                const finalBounds = currentBounds || startBounds;
+                
+                // Validate that we have valid bounds
+                if (!finalBounds || 
+                    typeof finalBounds.x !== 'number' || 
+                    typeof finalBounds.y !== 'number' ||
+                    typeof finalBounds.width !== 'number' ||
+                    typeof finalBounds.height !== 'number' ||
+                    isNaN(finalBounds.x) ||
+                    isNaN(finalBounds.y) ||
+                    isNaN(finalBounds.width) ||
+                    isNaN(finalBounds.height)) {
+                    console.error('Invalid final coordinates:', {
+                        finalBounds,
+                        currentBounds,
+                        startBounds,
+                        resizeState,
+                        data,
+                        element: element.id,
+                    });
+                    setResizeState(null);
+                    return;
+                }
                 
                 // Convert final bounds back to PST coordinates
-                const newCoordinates = convertBoundsToPSTCoordinates(currentBounds, mapDimensions);
+                const newCoordinates = convertBoundsToPSTCoordinates(finalBounds, mapDimensions);
+                
+                // Validate the new coordinates
+                if (!newCoordinates || 
+                    typeof newCoordinates.maturity1 !== 'number' ||
+                    typeof newCoordinates.visibility1 !== 'number' ||
+                    typeof newCoordinates.maturity2 !== 'number' ||
+                    typeof newCoordinates.visibility2 !== 'number' ||
+                    isNaN(newCoordinates.maturity1) ||
+                    isNaN(newCoordinates.visibility1) ||
+                    isNaN(newCoordinates.maturity2) ||
+                    isNaN(newCoordinates.visibility2) ||
+                    newCoordinates.maturity1 < 0 || newCoordinates.maturity1 > 1 ||
+                    newCoordinates.visibility1 < 0 || newCoordinates.visibility1 > 1 ||
+                    newCoordinates.maturity2 < 0 || newCoordinates.maturity2 > 1 ||
+                    newCoordinates.visibility2 < 0 || newCoordinates.visibility2 > 1 ||
+                    newCoordinates.maturity2 <= newCoordinates.maturity1 ||
+                    newCoordinates.visibility1 <= newCoordinates.visibility2) {
+                    console.error('Invalid converted coordinates:', {
+                        newCoordinates,
+                        finalBounds,
+                        mapDimensions,
+                        element: element.id,
+                    });
+                    setResizeState(null);
+                    return;
+                }
                 
                 // Update map text with new coordinates
                 const updatedMapText = updatePSTElementInMapText({
@@ -156,6 +231,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({
                     element: element.id,
                     oldCoordinates: element.coordinates,
                     newCoordinates,
+                    finalBounds,
                 });
                 
                 // Clear resize state
