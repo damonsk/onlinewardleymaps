@@ -15,23 +15,30 @@ import {useUndoRedo} from '../UndoRedoProvider';
  */
 const ToolbarContainer = styled.div<{$isDragging: boolean}>`
     position: fixed;
-    width: 60px;
+    width: 48px;
     background: #ffffff;
     border: 1px solid #e1e5e9;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 6px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     z-index: 1000;
     transition: ${props => (props.$isDragging ? 'none' : 'all 0.2s ease')};
     cursor: ${props => (props.$isDragging ? 'grabbing' : 'default')};
 
     /* Responsive behavior for different screen sizes */
+    @media (max-width: 1200px) {
+        width: 44px;
+        padding: 5px;
+        gap: 2px;
+    }
+
     @media (max-width: 768px) {
-        width: 50px;
-        padding: 6px;
+        width: 40px;
+        padding: 4px;
+        gap: 2px;
     }
 
     /* Ensure toolbar stays visible even when map is zoomed or panned */
@@ -74,13 +81,13 @@ const ToolbarContainer = styled.div<{$isDragging: boolean}>`
  */
 const DragHandle = styled.div`
     width: 100%;
-    height: 20px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: grab;
-    border-radius: 8px;
-    margin-bottom: 4px;
+    border-radius: 6px;
+    margin-bottom: 3px;
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -131,10 +138,10 @@ const DragHandle = styled.div`
     /* Drag indicator dots */
     &::before {
         content: '';
-        width: 20px;
-        height: 4px;
-        background: repeating-linear-gradient(to right, #cbd5e0 0px, #cbd5e0 2px, transparent 2px, transparent 4px);
-        border-radius: 2px;
+        width: 16px;
+        height: 3px;
+        background: repeating-linear-gradient(to right, #cbd5e0 0px, #cbd5e0 1.5px, transparent 1.5px, transparent 3px);
+        border-radius: 1.5px;
     }
 
     /* Dark theme dots */
@@ -269,10 +276,10 @@ const ScreenReaderAnnouncement = styled.div`
  * Enhanced with theme-specific styling for consistent appearance across all map themes
  */
 const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background: ${props => (props.$isSelected ? '#e3f2fd' : 'transparent')};
     cursor: pointer;
     display: flex;
@@ -285,12 +292,12 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
     /* Hover state */
     &:hover {
         background: ${props => (props.$isSelected ? '#e3f2fd' : '#f5f5f5')};
-        transform: scale(1.05);
+        transform: scale(1.02);
     }
 
     /* Active state */
     &:active {
-        transform: scale(0.95);
+        transform: scale(0.98);
     }
 
     /* Focus state for keyboard navigation */
@@ -373,9 +380,14 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
     }
 
     /* Responsive behavior */
+    @media (max-width: 1200px) {
+        width: 32px;
+        height: 32px;
+    }
+
     @media (max-width: 768px) {
-        width: 38px;
-        height: 38px;
+        width: 28px;
+        height: 28px;
     }
 `;
 
@@ -383,10 +395,19 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
  * Icon container with consistent scaling
  */
 const IconContainer = styled.div`
-    transform: scale(0.7);
+    transform: scale(0.55);
     display: flex;
     align-items: center;
     justify-content: center;
+
+    /* Responsive scaling */
+    @media (max-width: 1200px) {
+        transform: scale(0.5);
+    }
+
+    @media (max-width: 768px) {
+        transform: scale(0.45);
+    }
 `;
 
 /**
