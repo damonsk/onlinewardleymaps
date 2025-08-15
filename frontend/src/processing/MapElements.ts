@@ -155,7 +155,7 @@ export class MapElements {
     }
 
     getEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => c.evolving);
+        return this.allComponents.filter(c => c.evolving && c.type !== 'pst');
     }
 
     getEvolvedComponents(): UnifiedComponent[] {
@@ -193,27 +193,27 @@ export class MapElements {
     }
 
     getStaticComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolved);
+        return this.allComponents.filter(c => !c.evolved && c.type !== 'pst');
     }
 
     getInertiaComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => c.inertia === true);
+        return this.allComponents.filter(c => c.inertia === true && c.type !== 'pst');
     }
 
     getNeitherEvolvedNorEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolving && !c.evolved);
+        return this.allComponents.filter(c => !c.evolving && !c.evolved && c.type !== 'pst');
     }
 
     getNonEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolving);
+        return this.allComponents.filter(c => !c.evolving && c.type !== 'pst');
     }
 
     getNonEvolvedComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolved);
+        return this.allComponents.filter(c => !c.evolved && c.type !== 'pst');
     }
 
     getEitherEvolvedOrEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => c.evolving || c.evolved);
+        return this.allComponents.filter(c => (c.evolving || c.evolved) && c.type !== 'pst');
     }
 
     getMergedComponents(): UnifiedComponent[] {
