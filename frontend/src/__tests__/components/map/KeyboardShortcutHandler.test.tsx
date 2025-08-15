@@ -48,6 +48,7 @@ const mockNavigator = (platform: string, userAgent: string = '') => {
 describe('KeyboardShortcutHandler', () => {
     const mockOnToolSelect = jest.fn();
     const mockMutateMapText = jest.fn();
+    const mockOnDeleteComponent = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -599,6 +600,173 @@ describe('KeyboardShortcutHandler', () => {
 
             // Should handle gracefully without errors
             expect(screen.getByText(/Undid:/)).toBeInTheDocument();
+        });
+    });
+
+    describe('Component Deletion Shortcuts', () => {
+        it('should handle Delete key when component is selected', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            expect(mockOnDeleteComponent).toHaveBeenCalledWith('test-component');
+            expect(screen.getByText('Component deleted')).toBeInTheDocument();
+        });
+
+        it('should handle Backspace key when component is selected', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Backspace',
+            });
+
+            expect(mockOnDeleteComponent).toHaveBeenCalledWith('test-component');
+            expect(screen.getByText('Component deleted')).toBeInTheDocument();
+        });
+
+        it('should not handle deletion when no component is selected', () => {
+            renderWithUndoRedo({
+                selectedComponentId: null,
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            expect(mockOnDeleteComponent).not.toHaveBeenCalled();
+            expect(screen.queryByText('Component deleted')).not.toBeInTheDocument();
+        });
+
+        it('should not handle deletion when onDeleteComponent is not provided', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: undefined,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            expect(mockOnDeleteComponent).not.toHaveBeenCalled();
+            expect(screen.queryByText('Component deleted')).not.toBeInTheDocument();
+        });
+
+        it('should not handle deletion with modifier keys', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+                ctrlKey: true,
+            });
+
+            expect(mockOnDeleteComponent).not.toHaveBeenCalled();
+            expect(screen.queryByText('Component deleted')).not.toBeInTheDocument();
+        });
+
+        it('should not handle deletion when focus is on text input', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            const input = document.createElement('input');
+            document.body.appendChild(input);
+            input.focus();
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            expect(mockOnDeleteComponent).not.toHaveBeenCalled();
+            expect(screen.queryByText('Component deleted')).not.toBeInTheDocument();
+
+            document.body.removeChild(input);
+        });
+
+        it('should prevent default behavior when deletion is triggered', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            const event = new KeyboardEvent('keydown', {
+                key: 'Delete',
+                bubbles: true,
+                cancelable: true,
+            });
+
+            const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+            fireEvent(document, event);
+
+            expect(preventDefaultSpy).toHaveBeenCalled();
+            expect(mockOnDeleteComponent).toHaveBeenCalledWith('test-component');
+        });
+
+        it('should provide screen reader announcement for deletion', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            const announcement = screen.getByRole('status');
+            expect(announcement).toHaveAttribute('aria-live', 'polite');
+            expect(announcement).toHaveAttribute('aria-atomic', 'true');
+            expect(announcement).toHaveTextContent('Component deleted');
+        });
+
+        it('should clear deletion announcement after timeout', () => {
+            jest.useFakeTimers();
+            
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            expect(screen.getByText('Component deleted')).toBeInTheDocument();
+
+            act(() => {
+                jest.advanceTimersByTime(1000);
+            });
+
+            expect(screen.queryByText('Component deleted')).not.toBeInTheDocument();
+
+            jest.useRealTimers();
+        });
+
+        it('should prioritize deletion over toolbar shortcuts', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'test-component',
+                onDeleteComponent: mockOnDeleteComponent,
+            });
+
+            // Delete key should trigger deletion, not any toolbar shortcut
+            fireEvent.keyDown(document, {
+                key: 'Delete',
+            });
+
+            expect(mockOnDeleteComponent).toHaveBeenCalledWith('test-component');
+            expect(mockOnToolSelect).not.toHaveBeenCalled();
         });
     });
 });

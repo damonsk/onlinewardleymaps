@@ -4,6 +4,7 @@ import {MapTheme} from '../../constants/mapstyles';
 import {renameNote} from '../../constants/renameNote';
 import {MapNotes} from '../../types/base';
 import {useEditing} from '../EditingContext';
+import {useComponentSelection} from '../ComponentSelectionContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -39,8 +40,12 @@ const Note: React.FC<ModernNoteProps> = ({
     enableInlineEditing = false,
 }) => {
     const {startEditing, stopEditing, isElementEditing} = useEditing();
+    const {isSelected, selectComponent} = useComponentSelection();
     const [editMode, setEditMode] = useState(false);
     const [editText, setEditText] = useState(note.text);
+
+    // Check if this note is currently selected
+    const isElementSelected = isSelected(note.id);
 
     // Reset edit state when note changes
     React.useEffect(() => {
@@ -72,6 +77,11 @@ const Note: React.FC<ModernNoteProps> = ({
         const maturity = positionCalc.xToMaturity(moved.x, mapDimensions.width);
         positionUpdater.update({param1: parseFloat(visibility), param2: parseFloat(maturity)}, note.text, note.line);
     }
+
+    const handleClick = () => {
+        selectComponent(note.id);
+        setHighlightLine(note.line);
+    };
 
     const handleDoubleClick = () => {
         if (enableInlineEditing) {
@@ -246,18 +256,81 @@ const Note: React.FC<ModernNoteProps> = ({
     return (
         <>
             <Movable id={`modern_note_${note.id}`} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false} scaleFactor={scaleFactor}>
-                {editMode ? (
-                    renderEditMode()
-                ) : (
-                    <ComponentTextSymbol
-                        id={`modern_note_text_${note.id}`}
-                        note={note.text}
-                        textTheme={mapStyleDefs?.note}
-                        onClick={() => setHighlightLine(note.line)}
-                        onDoubleClick={handleDoubleClick}
-                    />
-                )}
+                <g
+                    data-testid={`map-note-${note.id}`}
+                    style={{
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease-in-out',
+                        filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
+                    }}>
+                    {/* Selection indicator background */}
+                    {isElementSelected && (
+                        <rect
+                            x={-20}
+                            y={-10}
+                            width={40}
+                            height={20}
+                            fill="rgba(33, 150, 243, 0.1)"
+                            stroke="#2196F3"
+                            strokeWidth={1}
+                            strokeOpacity={0.6}
+                            strokeDasharray="3,2"
+                            rx={4}
+                            ry={4}
+                            style={{
+                                animation: 'noteSelectionPulse 2s ease-in-out infinite',
+                            }}
+                        />
+                    )}
+
+                    {editMode ? (
+                        renderEditMode()
+                    ) : (
+                        <ComponentTextSymbol
+                            id={`modern_note_text_${note.id}`}
+                            note={note.text}
+                            textTheme={mapStyleDefs?.note}
+                            onClick={handleClick}
+                            onDoubleClick={handleDoubleClick}
+                        />
+                    )}
+
+                    {/* Hover indicator for deletable notes */}
+                    <g
+                        className="note-hover-indicator"
+                        style={{
+                            opacity: 0,
+                            transition: 'opacity 0.2s ease-in-out',
+                            pointerEvents: 'none',
+                        }}>
+                        <circle cx={15} cy={-8} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
+                        <text x={15} y={-8} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+                            ×
+                        </text>
+                    </g>
+                </g>
             </Movable>
+
+            {/* CSS animations for note selection */}
+            <defs>
+                <style>
+                    {`
+                    @keyframes noteSelectionPulse {
+                      0%, 100% {
+                        stroke-opacity: 0.4;
+                      }
+                      50% {
+                        stroke-opacity: 0.8;
+                      }
+                    }
+                    
+                    g[data-testid^="map-note-"]:hover .note-hover-indicator {
+                      opacity: 0.8 !important;
+                      animation: fadeIn 0.2s ease-in-out;
+                    }
+                    `}
+                </style>
+            </defs>
         </>
     );
 };

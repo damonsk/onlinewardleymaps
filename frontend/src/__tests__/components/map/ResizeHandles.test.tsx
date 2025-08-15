@@ -226,15 +226,15 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Create a proper touch event
         fireEvent.touchStart(handle, {
             touches: [
                 {
                     clientX: 100,
                     clientY: 50,
-                }
-            ]
+                },
+            ],
         });
 
         expect(mockOnResizeStart).toHaveBeenCalledWith('top-left', {x: 100, y: 50});
@@ -244,7 +244,7 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Start touch
         const touchStartEvent = {
             touches: [{clientX: 100, clientY: 50}],
@@ -267,7 +267,7 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Start touch
         const touchStartEvent = {
             touches: [{clientX: 100, clientY: 50}],
@@ -289,7 +289,7 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Start touch
         fireEvent.touchStart(handle, {
             touches: [{clientX: 100, clientY: 50}],
@@ -303,7 +303,7 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Start and end touch
         fireEvent.touchStart(handle, {
             touches: [{clientX: 100, clientY: 50}],
@@ -318,7 +318,7 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Simulate touch start
         fireEvent.touchStart(handle, {
             touches: [{clientX: 100, clientY: 50}],
@@ -332,7 +332,7 @@ describe('ResizeHandles Component - Touch Device Support', () => {
         renderResizeHandles();
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Start touch
         const touchStartEvent = {
             touches: [{clientX: 100, clientY: 50}],

@@ -20,6 +20,9 @@ const PSTTouchDemo: React.FC = () => {
             fill: '#ffffff',
             stroke: '#000000',
             strokeWidth: 1,
+            fontWeight: 'normal',
+            evolvedTextColor: '#666666',
+            textColor: '#000000',
         },
         attitudes: {
             pioneers: {
@@ -41,18 +44,34 @@ const PSTTouchDemo: React.FC = () => {
                 strokeOpacity: 0.8,
             },
         },
-        annotations: {
+        annotation: {
             fill: '#eeeeee',
             stroke: '#999999',
             strokeWidth: 1,
+            text: '#000000',
+            boxStroke: '#999999',
+            boxStrokeWidth: 1,
+            boxFill: '#ffffff',
+            boxTextColour: '#000000',
         },
-        links: {
-            stroke: '#333333',
-            strokeWidth: 1,
+        note: {
+            fontWeight: 'normal',
+            evolvedTextColor: '#666666',
+            textColor: '#000000',
         },
-        text: {
-            fill: '#000000',
-            fontSize: 12,
+        methods: {
+            buy: {
+                fill: '#ff0000',
+                stroke: '#ff0000',
+            },
+            build: {
+                fill: '#00ff00',
+                stroke: '#00ff00',
+            },
+            outsource: {
+                fill: '#0000ff',
+                stroke: '#0000ff',
+            },
         },
     };
 
@@ -95,19 +114,11 @@ const PSTTouchDemo: React.FC = () => {
     return (
         <div style={{padding: '20px'}}>
             <h2>PST Touch Demo</h2>
-            <p>
-                Touch device detected: {('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 'Yes' : 'No'}
-            </p>
-            <p>
-                Hovered element: {hoveredElement?.id || 'None'}
-            </p>
-            <p>
-                Resizing element: {resizingElement?.id || 'None'}
-            </p>
-            <p>
-                Touch device: {('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 'Yes' : 'No'}
-            </p>
-            
+            <p>Touch device detected: {'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'Yes' : 'No'}</p>
+            <p>Hovered element: {hoveredElement?.id || 'None'}</p>
+            <p>Resizing element: {resizingElement?.id || 'None'}</p>
+            <p>Touch device: {'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'Yes' : 'No'}</p>
+
             <svg width="800" height="600" style={{border: '1px solid #ccc', background: '#f9f9f9'}}>
                 <PSTBox
                     pstElement={mockPSTElement}
@@ -125,11 +136,12 @@ const PSTTouchDemo: React.FC = () => {
                     mapText=""
                 />
             </svg>
-            
+
             <div style={{marginTop: '20px'}}>
                 <h3>Instructions:</h3>
                 <ul>
-                    <li><strong>Touch devices:</strong> 
+                    <li>
+                        <strong>Touch devices:</strong>
                         <ul>
                             <li>First tap: Select PST box and show resize handles (blue outline)</li>
                             <li>Second tap: Start drag operation to move the box</li>
@@ -138,7 +150,9 @@ const PSTTouchDemo: React.FC = () => {
                             <li>Handles auto-hide after 5 seconds</li>
                         </ul>
                     </li>
-                    <li><strong>Mouse devices:</strong> Hover to show handles, drag to resize/move</li>
+                    <li>
+                        <strong>Mouse devices:</strong> Hover to show handles, drag to resize/move
+                    </li>
                     <li>Check the console for interaction logs</li>
                 </ul>
             </div>

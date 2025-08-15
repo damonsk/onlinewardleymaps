@@ -108,7 +108,7 @@ describe('PST Touch Resize Integration', () => {
         );
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Test that touch events don't throw errors
         expect(() => {
             fireEvent.touchStart(handle, {
@@ -140,11 +140,11 @@ describe('PST Touch Resize Integration', () => {
         );
 
         const handle = screen.getByTestId('resize-handle-top-left');
-        
+
         // Create a mock touch event with preventDefault
         const preventDefault = jest.fn();
         const stopPropagation = jest.fn();
-        
+
         fireEvent.touchStart(handle, {
             touches: [{clientX: 100, clientY: 50}],
             preventDefault,
