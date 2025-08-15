@@ -22,10 +22,10 @@ const ScreenReaderAnnouncement = styled.div`
  * Enhanced with theme-specific styling for consistent appearance across all map themes
  */
 const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background: ${props => (props.$isSelected ? '#e3f2fd' : 'transparent')};
     cursor: pointer;
     display: flex;
@@ -38,12 +38,12 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
     /* Hover state */
     &:hover {
         background: ${props => (props.$isSelected ? '#e3f2fd' : '#f5f5f5')};
-        transform: scale(1.05);
+        transform: scale(1.02);
     }
 
     /* Active state */
     &:active {
-        transform: scale(0.95);
+        transform: scale(0.98);
     }
 
     /* Focus state for keyboard navigation */
@@ -217,9 +217,14 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
     }
 
     /* Responsive behavior */
+    @media (max-width: 1200px) {
+        width: 32px;
+        height: 32px;
+    }
+
     @media (max-width: 768px) {
-        width: 38px;
-        height: 38px;
+        width: 28px;
+        height: 28px;
     }
 
     /* Disabled state */
@@ -239,10 +244,19 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
  * Icon container with consistent scaling
  */
 const IconContainer = styled.div`
-    transform: scale(0.7);
+    transform: scale(0.55);
     display: flex;
     align-items: center;
     justify-content: center;
+
+    /* Responsive scaling */
+    @media (max-width: 1200px) {
+        transform: scale(0.5);
+    }
+
+    @media (max-width: 768px) {
+        transform: scale(0.45);
+    }
 `;
 
 /**
@@ -250,17 +264,17 @@ const IconContainer = styled.div`
  */
 const KeyboardShortcutIndicator = styled.div<{$isSelected: boolean}>`
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 14px;
-    height: 14px;
+    bottom: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
     background: ${props => (props.$isSelected ? '#1976d2' : '#666')};
     color: white;
-    border-radius: 3px;
+    border-radius: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
+    font-size: 7px;
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     text-transform: uppercase;
@@ -296,10 +310,16 @@ const KeyboardShortcutIndicator = styled.div<{$isSelected: boolean}>`
     }
 
     /* Responsive behavior */
+    @media (max-width: 1200px) {
+        width: 9px;
+        height: 9px;
+        font-size: 6px;
+    }
+
     @media (max-width: 768px) {
-        width: 12px;
-        height: 12px;
-        font-size: 8px;
+        width: 8px;
+        height: 8px;
+        font-size: 5px;
         bottom: 1px;
         right: 1px;
     }

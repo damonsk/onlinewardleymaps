@@ -4,7 +4,7 @@
  */
 
 import React, {useCallback, useState, useRef} from 'react';
-import {PSTElement, PSTCoordinates, ResizeHandle, PSTBounds} from '../../types/map/pst';
+import {PSTElement, PSTCoordinates, ResizeHandle, PSTBounds, ResizeModifiers} from '../../types/map/pst';
 import {MapDimensions} from '../../constants/defaults';
 import {
     convertPSTCoordinatesToBounds,
@@ -29,6 +29,7 @@ interface PSTResizeManagerProps {
         hoveredElement: PSTElement | null;
         resizingElement: PSTElement | null;
         draggingElement: PSTElement | null;
+        keyboardModifiers: ResizeModifiers;
         onPSTHover: (element: PSTElement | null) => void;
         onPSTResizeStart: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
         onPSTResizeMove: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
@@ -64,10 +65,18 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
     const [hoveredElement, setHoveredElement] = useState<PSTElement | null>(null);
     const [resizeState, setResizeState] = useState<ResizeState | null>(null);
     const [dragState, setDragState] = useState<DragState | null>(null);
+    const [keyboardModifiers, setKeyboardModifiers] = useState<ResizeModifiers>({
+        maintainAspectRatio: false,
+        resizeFromCenter: false,
+    });
 
     // Use refs to store current state for stable access in callbacks
     const resizeStateRef = useRef<ResizeState | null>(null);
     const dragStateRef = useRef<DragState | null>(null);
+    const keyboardModifiersRef = useRef<ResizeModifiers>({
+        maintainAspectRatio: false,
+        resizeFromCenter: false,
+    });
     const isMountedRef = useRef(true);
 
     // Update refs whenever state changes
@@ -78,7 +87,11 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
     React.useEffect(() => {
         dragStateRef.current = dragState;
     }, [dragState]);
-    
+
+    React.useEffect(() => {
+        keyboardModifiersRef.current = keyboardModifiers;
+    }, [keyboardModifiers]);
+
     // Track component mount/unmount
     React.useEffect(() => {
         isMountedRef.current = true;
@@ -90,6 +103,64 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
             });
         };
     }, []);
+
+    // Track keyboard modifiers during resize operations
+    React.useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (!resizeStateRef.current) return;
+
+            const newModifiers = {
+                maintainAspectRatio: event.shiftKey,
+                resizeFromCenter: event.altKey,
+            };
+
+            // Only update if modifiers actually changed
+            if (
+                newModifiers.maintainAspectRatio !== keyboardModifiersRef.current.maintainAspectRatio ||
+                newModifiers.resizeFromCenter !== keyboardModifiersRef.current.resizeFromCenter
+            ) {
+                setKeyboardModifiers(newModifiers);
+            }
+
+            // Handle Escape key to cancel resize
+            if (event.key === 'Escape') {
+                console.log('Resize operation cancelled by Escape key');
+                setResizeState(null);
+                setKeyboardModifiers({
+                    maintainAspectRatio: false,
+                    resizeFromCenter: false,
+                });
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
+
+        const handleKeyUp = (event: KeyboardEvent) => {
+            if (!resizeStateRef.current) return;
+
+            const newModifiers = {
+                maintainAspectRatio: event.shiftKey,
+                resizeFromCenter: event.altKey,
+            };
+
+            // Only update if modifiers actually changed
+            if (
+                newModifiers.maintainAspectRatio !== keyboardModifiersRef.current.maintainAspectRatio ||
+                newModifiers.resizeFromCenter !== keyboardModifiersRef.current.resizeFromCenter
+            ) {
+                setKeyboardModifiers(newModifiers);
+            }
+        };
+
+        if (resizeState) {
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            return () => {
+                document.removeEventListener('keydown', handleKeyDown);
+                document.removeEventListener('keyup', handleKeyUp);
+            };
+        }
+    }, [resizeState]);
 
     // Track if we're in the middle of operations
     const isResizing = resizeState !== null;
@@ -152,7 +223,6 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                     startBounds,
                     currentBounds: startBounds,
                 };
-                
 
                 setResizeState(newResizeState);
             } catch (error) {
@@ -178,10 +248,18 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 const deltaX = currentPosition.x - startPosition.x;
                 const deltaY = currentPosition.y - startPosition.y;
 
-                // Calculate new bounds based on handle and delta
+                // Calculate new bounds based on handle and delta, with keyboard modifiers
                 let newBounds;
                 try {
-                    newBounds = calculateResizedBounds(startBounds, handle, deltaX, deltaY, DEFAULT_RESIZE_CONSTRAINTS, mapDimensions);
+                    newBounds = calculateResizedBounds(
+                        startBounds,
+                        handle,
+                        deltaX,
+                        deltaY,
+                        DEFAULT_RESIZE_CONSTRAINTS,
+                        mapDimensions,
+                        keyboardModifiersRef.current,
+                    );
                 } catch (error) {
                     console.error('Error calculating resized bounds:', error);
                     return;
@@ -234,7 +312,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 });
                 return;
             }
-            
+
             if (!isMountedRef.current) {
                 console.warn('PST resize end called on unmounted component');
                 return;
@@ -329,14 +407,22 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                     finalBounds,
                 });
 
-                // Clear resize state
+                // Clear resize state and reset keyboard modifiers
                 setResizeState(null);
+                setKeyboardModifiers({
+                    maintainAspectRatio: false,
+                    resizeFromCenter: false,
+                });
             } catch (error) {
                 console.error('Failed to complete PST resize:', error);
                 console.warn('Map text was not updated during resize end');
 
-                // Clear resize state even on error
+                // Clear resize state and reset keyboard modifiers even on error
                 setResizeState(null);
+                setKeyboardModifiers({
+                    maintainAspectRatio: false,
+                    resizeFromCenter: false,
+                });
             }
         },
         [mapDimensions, mapText, onMapTextUpdate],
@@ -596,6 +682,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 hoveredElement,
                 resizingElement,
                 draggingElement,
+                keyboardModifiers,
                 onPSTHover: handlePSTHover,
                 onPSTResizeStart: handlePSTResizeStart,
                 onPSTResizeMove: handlePSTResizeMove,

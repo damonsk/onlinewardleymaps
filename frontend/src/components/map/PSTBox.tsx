@@ -4,6 +4,7 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {PST_CONFIG} from '../../constants/pstConfig';
 import {convertPSTCoordinatesToBounds} from '../../utils/pstCoordinateUtils';
+import {useComponentSelection} from '../ComponentSelectionContext';
 import ResizeHandles from './ResizeHandles';
 
 interface PSTBoxProps {
@@ -21,6 +22,8 @@ interface PSTBoxProps {
     isResizing: boolean;
     /** Whether this PST element is currently being dragged */
     isDragging?: boolean;
+    /** Keyboard modifiers for resize operations */
+    keyboardModifiers?: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
     /** Callback when resize operation starts */
     onResizeStart: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
     /** Callback during resize operation */
@@ -54,6 +57,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     isHovered,
     isResizing,
     isDragging = false,
+    keyboardModifiers = {maintainAspectRatio: false, resizeFromCenter: false},
     onResizeStart,
     onResizeMove,
     onResizeEnd,
@@ -64,13 +68,21 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     mutateMapText,
     mapText,
 }) => {
+    const {isSelected, selectComponent, clearSelection} = useComponentSelection();
     // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
+    const [touchSelected, setTouchSelected] = useState(false);
 
     // Refs for managing timeouts and drag state
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const dragStartPositionRef = useRef<{x: number; y: number} | null>(null);
+    const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Detect if device supports touch
+    const isTouchDevice = useCallback(() => {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }, []);
 
     // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
@@ -89,6 +101,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // Calculate label position (center of the box)
     const labelX = bounds.x + bounds.width / 2;
     const labelY = bounds.y + bounds.height / 2;
+
+    // Check if this PST element is currently selected
+    const isElementSelected = isSelected(pstElement.id);
 
     // Handle mouse enter - simplified logic
     const handleMouseEnter = useCallback(() => {
@@ -149,10 +164,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 // The parent component should have calculated new coordinates during resize moves
                 // We signal the end of the resize operation so the parent can finalize the update
                 if (onResizeEnd) {
-                    // Call without additional parameters - let parent handle coordinate calculation
-                    // The parent (UnifiedMapCanvas) expects: (element, newCoordinates?)
-                    // It will calculate coordinates from its own resize state
-                    onResizeEnd(pstElement);
+                    // Call with undefined coordinates - let parent handle coordinate calculation
+                    // The parent (UnifiedMapCanvas) will calculate coordinates from its own resize state
+                    onResizeEnd(pstElement, undefined);
                 }
             } catch (error) {
                 console.error('Error in PST resize end:', error);
@@ -161,9 +175,18 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeEnd, pstElement],
     );
 
-    // Handle drag start
-    const handleDragStart = useCallback(
-        (event: React.MouseEvent) => {
+    // Handle component selection
+    const handleComponentClick = useCallback(
+        (event: React.MouseEvent | React.TouchEvent) => {
+            // Select this component when clicked
+            selectComponent(pstElement.id);
+        },
+        [selectComponent, pstElement.id],
+    );
+
+    // Handle pointer start (mouse or touch) for drag
+    const handlePointerStart = useCallback(
+        (event: React.MouseEvent | React.TouchEvent) => {
             // Don't start drag if we're already resizing
             if (isResizing) {
                 return;
@@ -175,10 +198,27 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 return;
             }
 
+            // Select component on pointer start
+            selectComponent(pstElement.id);
+
             event.preventDefault();
             event.stopPropagation();
 
-            const startPosition = {x: event.clientX, y: event.clientY};
+            // Get position from mouse or touch event
+            let clientX: number, clientY: number;
+            if ('touches' in event && event.touches.length > 0) {
+                // Touch event
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else if ('clientX' in event) {
+                // Mouse event
+                clientX = event.clientX;
+                clientY = event.clientY;
+            } else {
+                return;
+            }
+
+            const startPosition = {x: clientX, y: clientY};
             dragStartPositionRef.current = startPosition;
             setIsDragActive(true);
 
@@ -186,19 +226,75 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 onDragStart(pstElement, startPosition);
             }
         },
-        [isResizing, onDragStart, pstElement],
+        [isResizing, onDragStart, pstElement, selectComponent],
     );
 
-    // Handle drag move
-    const handleDragMove = useCallback(
-        (event: MouseEvent) => {
+    // Handle drag start (legacy mouse support)
+    const handleDragStart = useCallback(
+        (event: React.MouseEvent) => {
+            handlePointerStart(event);
+        },
+        [handlePointerStart],
+    );
+
+    // Handle touch start for drag
+    const handleTouchStart = useCallback(
+        (event: React.TouchEvent) => {
+            // On touch devices, first touch shows handles, second touch starts drag
+            if (isTouchDevice()) {
+                if (!touchSelected && !isResizing) {
+                    // First touch - show handles and select the element
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    setTouchSelected(true);
+                    setShowHandles(true);
+                    onHover(pstElement);
+
+                    // Auto-hide handles after 5 seconds if no interaction
+                    if (touchTimeoutRef.current) {
+                        clearTimeout(touchTimeoutRef.current);
+                    }
+                    touchTimeoutRef.current = setTimeout(() => {
+                        setTouchSelected(false);
+                        setShowHandles(false);
+                        onHover(null);
+                    }, 5000);
+
+                    return;
+                }
+            }
+
+            // Second touch or non-touch device - start drag
+            handlePointerStart(event);
+        },
+        [handlePointerStart, isTouchDevice, touchSelected, isResizing, onHover, pstElement],
+    );
+
+    // Handle pointer move during drag (mouse or touch)
+    const handlePointerMove = useCallback(
+        (event: MouseEvent | TouchEvent) => {
             if (!isDragActive || !dragStartPositionRef.current) {
                 return;
             }
 
             event.preventDefault();
 
-            const currentPosition = {x: event.clientX, y: event.clientY};
+            // Get position from mouse or touch event
+            let clientX: number, clientY: number;
+            if ('touches' in event && event.touches.length > 0) {
+                // Touch event
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else if ('clientX' in event) {
+                // Mouse event
+                clientX = event.clientX;
+                clientY = event.clientY;
+            } else {
+                return;
+            }
+
+            const currentPosition = {x: clientX, y: clientY};
 
             if (onDragMove) {
                 onDragMove(pstElement, currentPosition);
@@ -207,9 +303,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isDragActive, onDragMove, pstElement],
     );
 
-    // Handle drag end
-    const handleDragEnd = useCallback(
-        (event: MouseEvent) => {
+    // Handle pointer end to end drag (mouse or touch)
+    const handlePointerEnd = useCallback(
+        (event: MouseEvent | TouchEvent) => {
             if (!isDragActive) {
                 return;
             }
@@ -226,41 +322,113 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isDragActive, onDragEnd, pstElement],
     );
 
-    // Set up global mouse event listeners for drag operations
+    // Legacy mouse handlers
+    const handleDragMove = useCallback(
+        (event: MouseEvent) => {
+            handlePointerMove(event);
+        },
+        [handlePointerMove],
+    );
+
+    const handleDragEnd = useCallback(
+        (event: MouseEvent) => {
+            handlePointerEnd(event);
+        },
+        [handlePointerEnd],
+    );
+
+    // Touch handlers
+    const handleTouchMove = useCallback(
+        (event: TouchEvent) => {
+            handlePointerMove(event);
+        },
+        [handlePointerMove],
+    );
+
+    const handleTouchEnd = useCallback(
+        (event: TouchEvent) => {
+            handlePointerEnd(event);
+        },
+        [handlePointerEnd],
+    );
+
+    // Set up global pointer event listeners for drag operations (mouse and touch)
     useEffect(() => {
         if (isDragActive) {
+            // Mouse events
             document.addEventListener('mousemove', handleDragMove, {passive: false});
             document.addEventListener('mouseup', handleDragEnd, {passive: false});
             document.addEventListener('mouseleave', handleDragEnd, {passive: false});
 
-            // Prevent text selection during drag
+            // Touch events
+            document.addEventListener('touchmove', handleTouchMove, {passive: false});
+            document.addEventListener('touchend', handleTouchEnd, {passive: false});
+            document.addEventListener('touchcancel', handleTouchEnd, {passive: false});
+
+            // Prevent text selection and scrolling during drag
             document.body.style.userSelect = 'none';
             document.body.style.webkitUserSelect = 'none';
+            document.body.style.touchAction = 'none';
 
             return () => {
+                // Remove mouse events
                 document.removeEventListener('mousemove', handleDragMove);
                 document.removeEventListener('mouseup', handleDragEnd);
                 document.removeEventListener('mouseleave', handleDragEnd);
 
-                // Restore text selection
+                // Remove touch events
+                document.removeEventListener('touchmove', handleTouchMove);
+                document.removeEventListener('touchend', handleTouchEnd);
+                document.removeEventListener('touchcancel', handleTouchEnd);
+
+                // Restore text selection and scrolling
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
+                document.body.style.touchAction = '';
             };
         }
-    }, [isDragActive, handleDragMove, handleDragEnd]);
+    }, [isDragActive, handleDragMove, handleDragEnd, handleTouchMove, handleTouchEnd]);
 
     // Show handles when hovered externally or resizing
     useEffect(() => {
         if (isHovered || isResizing) {
             setShowHandles(true);
-        } else if (!isResizing) {
+        } else if (!isResizing && !touchSelected) {
             // Small delay to prevent flickering when moving between elements
             const timeout = setTimeout(() => {
                 setShowHandles(false);
             }, 100);
             return () => clearTimeout(timeout);
         }
-    }, [isHovered, isResizing]);
+    }, [isHovered, isResizing, touchSelected]);
+
+    // Handle touch outside to deselect on touch devices
+    useEffect(() => {
+        if (!isTouchDevice() || !touchSelected) return;
+
+        const handleTouchOutside = (event: TouchEvent) => {
+            // Check if touch is outside this element
+            const target = event.target as Element;
+            const pstElementDOM = document.querySelector(`[data-testid="pst-box-${pstElement.id}"]`);
+
+            if (pstElementDOM && !pstElementDOM.contains(target)) {
+                setTouchSelected(false);
+                setShowHandles(false);
+                onHover(null);
+
+                if (touchTimeoutRef.current) {
+                    clearTimeout(touchTimeoutRef.current);
+                    touchTimeoutRef.current = null;
+                }
+            }
+        };
+
+        document.addEventListener('touchstart', handleTouchOutside, {passive: true});
+
+        return () => {
+            document.removeEventListener('touchstart', handleTouchOutside);
+        };
+    }, [isTouchDevice, touchSelected, onHover, pstElement.id]);
 
     // Cleanup timeouts and drag state on unmount
     useEffect(() => {
@@ -270,14 +438,20 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 hoverTimeoutRef.current = null;
             }
 
+            if (touchTimeoutRef.current) {
+                clearTimeout(touchTimeoutRef.current);
+                touchTimeoutRef.current = null;
+            }
+
             // Clean up drag state if component unmounts during drag
             if (isDragActive) {
                 setIsDragActive(false);
                 dragStartPositionRef.current = null;
 
-                // Restore text selection
+                // Restore text selection and touch action
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
+                document.body.style.touchAction = '';
             }
         };
     }, [isDragActive]);
@@ -301,22 +475,35 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 width={bounds.width}
                 height={bounds.height}
                 fill={pstColors.fill}
-                fillOpacity={isHovered ? pstColors.fillOpacity || 0.8 : pstColors.fillOpacity || 0.6}
-                stroke={pstColors.stroke}
-                strokeWidth={isHovered ? 2 : 1}
-                strokeOpacity={isHovered ? 1 : pstColors.strokeOpacity || 0.8}
+                fillOpacity={
+                    isElementSelected
+                        ? (pstColors.fillOpacity || 0.6) + 0.2
+                        : isHovered
+                          ? pstColors.fillOpacity || 0.8
+                          : pstColors.fillOpacity || 0.6
+                }
+                stroke={isElementSelected ? '#2196F3' : pstColors.stroke}
+                strokeWidth={isElementSelected ? 3 : isHovered ? 2 : 1}
+                strokeOpacity={isElementSelected || isHovered ? 1 : pstColors.strokeOpacity || 0.8}
                 rx={4}
                 ry={4}
                 style={{
                     transition: isResizing || isDragActive || isDragging ? 'none' : 'all 0.2s ease-in-out',
-                    filter: isHovered ? 'brightness(1.1)' : 'none',
-                    cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'grab',
+                    filter: isElementSelected
+                        ? 'brightness(1.2) drop-shadow(0 0 8px rgba(33, 150, 243, 0.4))'
+                        : isHovered
+                          ? 'brightness(1.1)'
+                          : 'none',
+                    cursor: isResizing ? 'grabbing' : isDragActive || isDragging ? 'grabbing' : 'pointer',
                 }}
                 onMouseDown={handleDragStart}
+                onTouchStart={handleTouchStart}
+                onClick={handleComponentClick}
                 onKeyDown={event => {
                     // Support keyboard interaction
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
+                        handleComponentClick(event as any);
                         handleMouseEnter();
                     }
                 }}
@@ -340,15 +527,16 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 {pstElement.name || pstConfig.label}
             </text>
 
-            {/* Resize handles - only show when hovered or resizing */}
+            {/* Resize handles - show when hovered, resizing, or touch selected */}
             <ResizeHandles
                 bounds={bounds}
-                isVisible={showHandles || isResizing}
+                isVisible={showHandles || isResizing || touchSelected}
                 onResizeStart={handleResizeStart}
                 onResizeMove={handleResizeMove}
                 onResizeEnd={handleResizeEnd}
                 scaleFactor={scaleFactor}
                 mapStyleDefs={mapStyleDefs}
+                keyboardModifiers={keyboardModifiers}
             />
 
             {/* Hidden description for screen readers */}
@@ -361,8 +549,30 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 {`${pstConfig.label} box positioned at maturity ${Math.round(pstElement.coordinates.maturity1 * 100)}% to ${Math.round(pstElement.coordinates.maturity2 * 100)}%, visibility ${Math.round(pstElement.coordinates.visibility2 * 100)}% to ${Math.round(pstElement.coordinates.visibility1 * 100)}%. Hover to show resize handles.`}
             </text>
 
-            {/* Visual feedback for hover state - subtle outline */}
-            {isHovered && (
+            {/* Visual feedback for selection state - prominent outline */}
+            {isElementSelected && (
+                <rect
+                    data-testid={`pst-box-selection-outline-${pstElement.id}`}
+                    x={bounds.x - 3}
+                    y={bounds.y - 3}
+                    width={bounds.width + 6}
+                    height={bounds.height + 6}
+                    fill="none"
+                    stroke="#2196F3"
+                    strokeWidth={2}
+                    strokeOpacity={0.8}
+                    strokeDasharray="4,2"
+                    rx={7}
+                    ry={7}
+                    pointerEvents="none"
+                    style={{
+                        animation: 'pstSelectionPulse 2s ease-in-out infinite',
+                    }}
+                />
+            )}
+
+            {/* Visual feedback for hover state - subtle outline (only when not selected) */}
+            {isHovered && !isElementSelected && (
                 <rect
                     data-testid={`pst-box-hover-outline-${pstElement.id}`}
                     x={bounds.x - 1}
@@ -383,6 +593,44 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 />
             )}
 
+            {/* Deletable indicator - small icon when hovered and not selected */}
+            {isHovered && !isElementSelected && (
+                <g
+                    data-testid={`pst-box-delete-indicator-${pstElement.id}`}
+                    transform={`translate(${bounds.x + bounds.width - 16}, ${bounds.y + 4})`}
+                    pointerEvents="none"
+                    style={{
+                        opacity: 0.7,
+                        animation: 'fadeIn 0.2s ease-in-out',
+                    }}>
+                    <circle cx="8" cy="8" r="8" fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
+                    <text x="8" y="8" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
+                        ×
+                    </text>
+                </g>
+            )}
+
+            {/* Visual feedback for touch selection - solid outline */}
+            {touchSelected && !isHovered && (
+                <rect
+                    data-testid={`pst-box-touch-outline-${pstElement.id}`}
+                    x={bounds.x - 2}
+                    y={bounds.y - 2}
+                    width={bounds.width + 4}
+                    height={bounds.height + 4}
+                    fill="none"
+                    stroke="#2196F3"
+                    strokeWidth={2}
+                    strokeOpacity={0.8}
+                    rx={6}
+                    ry={6}
+                    pointerEvents="none"
+                    style={{
+                        animation: 'pstTouchPulse 2s ease-in-out infinite',
+                    }}
+                />
+            )}
+
             {/* CSS animations */}
             <defs>
                 <style>
@@ -393,6 +641,36 @@ const PSTBox: React.FC<PSTBoxProps> = ({
               }
               50% {
                 stroke-opacity: 0.7;
+              }
+            }
+            @keyframes pstSelectionPulse {
+              0%, 100% {
+                stroke-opacity: 0.6;
+                stroke-width: 2;
+              }
+              50% {
+                stroke-opacity: 1;
+                stroke-width: 3;
+              }
+            }
+            @keyframes pstTouchPulse {
+              0%, 100% {
+                stroke-opacity: 0.5;
+                stroke-width: 2;
+              }
+              50% {
+                stroke-opacity: 1;
+                stroke-width: 3;
+              }
+            }
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: scale(0.8);
+              }
+              to {
+                opacity: 0.7;
+                transform: scale(1);
               }
             }
           `}

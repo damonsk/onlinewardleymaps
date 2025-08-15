@@ -5,7 +5,9 @@ import {DragPreviewProps} from '../../types/toolbar';
 /**
  * Styled container for the drag preview that follows the mouse cursor
  */
-const PreviewContainer = styled.div<{
+const PreviewContainer = styled.div.withConfig({
+    shouldForwardProp: prop => !['isValidDropZone', 'isVisible'].includes(prop),
+})<{
     x: number;
     y: number;
     isValidDropZone: boolean;
@@ -28,7 +30,9 @@ const PreviewContainer = styled.div<{
  * Styled ghost preview of the component being dragged
  * Compact and subtle design for better user experience
  */
-const GhostPreview = styled.div<{isValidDropZone: boolean}>`
+const GhostPreview = styled.div.withConfig({
+    shouldForwardProp: prop => prop !== 'isValidDropZone',
+})<{isValidDropZone: boolean}>`
     background: ${props => (props.isValidDropZone ? 'rgba(25, 118, 210, 0.05)' : 'rgba(211, 47, 47, 0.05)')};
     border: 1px solid ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
     border-radius: 4px;
@@ -217,7 +221,9 @@ const PreviewIcon = styled.div`
  * Text label for the preview
  * Enhanced with theme-specific styling for consistent appearance across all map themes
  */
-const PreviewLabel = styled.span<{isValidDropZone: boolean}>`
+const PreviewLabel = styled.span.withConfig({
+    shouldForwardProp: prop => prop !== 'isValidDropZone',
+})<{isValidDropZone: boolean}>`
     font-size: 12px;
     font-weight: 500;
     color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
@@ -263,7 +269,9 @@ const PreviewLabel = styled.span<{isValidDropZone: boolean}>`
  * Drop zone indicator text
  * Enhanced with theme-specific styling for consistent appearance across all map themes
  */
-const DropZoneIndicator = styled.div<{isValidDropZone: boolean}>`
+const DropZoneIndicator = styled.div.withConfig({
+    shouldForwardProp: prop => prop !== 'isValidDropZone',
+})<{isValidDropZone: boolean}>`
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;

@@ -25,7 +25,7 @@ note Test Note [0.40, 0.60]`;
         it('should extract PST elements, update coordinates, and regenerate map text', () => {
             // Step 1: Extract PST elements from map text
             const pstElements = extractPSTElementsFromMapText(sampleMapText);
-            
+
             expect(pstElements).toHaveLength(3);
             expect(pstElements[0].type).toBe('pioneers');
             expect(pstElements[1].type).toBe('settlers');
@@ -50,7 +50,7 @@ note Test Note [0.40, 0.60]`;
             // Step 4: Verify the update
             const lines = updatedMapText.split('\n');
             expect(lines[1]).toBe('pioneers [0.85, 0.15, 0.65, 0.35] Test Pioneers');
-            
+
             // Other lines should remain unchanged
             expect(lines[0]).toBe('title Test Map');
             expect(lines[2]).toBe('settlers [0.70, 0.20, 0.50, 0.40] Test Settlers');
@@ -61,7 +61,7 @@ note Test Note [0.40, 0.60]`;
 
         it('should handle multiple PST element updates in batch', () => {
             const pstElements = extractPSTElementsFromMapText(sampleMapText);
-            
+
             // Prepare batch updates
             const updates = [
                 {
@@ -191,7 +191,7 @@ settlers [0.70, 0.20, 0.50, 0.40]
 broken line without proper format`;
 
             const pstElements = extractPSTElementsFromMapText(malformedMapText);
-            
+
             // Should only extract valid PST elements
             expect(pstElements).toHaveLength(1);
             expect(pstElements[0].type).toBe('settlers');
@@ -232,13 +232,13 @@ broken line without proper format`;
             // Generate a large map with many PST elements
             const largePSTCount = 50;
             let largeMapText = 'title Large Test Map\n';
-            
+
             for (let i = 0; i < largePSTCount; i++) {
                 const type = ['pioneers', 'settlers', 'townplanners'][i % 3];
-                const y1 = (0.9 - (i * 0.01)).toFixed(2);
-                const x1 = (0.1 + (i * 0.01)).toFixed(2);
-                const y2 = (0.8 - (i * 0.01)).toFixed(2);
-                const x2 = (0.2 + (i * 0.01)).toFixed(2);
+                const y1 = (0.9 - i * 0.01).toFixed(2);
+                const x1 = (0.1 + i * 0.01).toFixed(2);
+                const y2 = (0.8 - i * 0.01).toFixed(2);
+                const x2 = (0.2 + i * 0.01).toFixed(2);
                 largeMapText += `${type} [${y1}, ${x1}, ${y2}, ${x2}] PST ${i}\n`;
             }
 
@@ -253,10 +253,10 @@ broken line without proper format`;
             const updates = pstElements.slice(0, 10).map((element, index) => ({
                 element,
                 newCoordinates: {
-                    maturity1: 0.1 + (index * 0.02),
-                    visibility1: 0.9 - (index * 0.02),
-                    maturity2: 0.2 + (index * 0.02),
-                    visibility2: 0.8 - (index * 0.02),
+                    maturity1: 0.1 + index * 0.02,
+                    visibility1: 0.9 - index * 0.02,
+                    maturity2: 0.2 + index * 0.02,
+                    visibility2: 0.8 - index * 0.02,
                 },
             }));
 
@@ -289,10 +289,10 @@ evolve Component A 0.8`;
             const updates = pstElements.map((element, index) => ({
                 element,
                 newCoordinates: {
-                    maturity1: 0.1 + (index * 0.1),
-                    visibility1: 0.9 - (index * 0.1),
-                    maturity2: 0.2 + (index * 0.1),
-                    visibility2: 0.8 - (index * 0.1),
+                    maturity1: 0.1 + index * 0.1,
+                    visibility1: 0.9 - index * 0.1,
+                    maturity2: 0.2 + index * 0.1,
+                    visibility2: 0.8 - index * 0.1,
                 },
             }));
 

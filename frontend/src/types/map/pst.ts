@@ -96,3 +96,13 @@ export interface ResizeConstraints {
     /** Whether to maintain aspect ratio during resize */
     maintainAspectRatio: boolean;
 }
+
+/**
+ * Keyboard modifier options for resize operations
+ */
+export interface ResizeModifiers {
+    /** Maintain aspect ratio during resize (Shift key) */
+    maintainAspectRatio: boolean;
+    /** Resize from center point instead of opposite corner (Alt key) */
+    resizeFromCenter: boolean;
+}

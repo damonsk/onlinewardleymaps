@@ -484,7 +484,7 @@ describe('PSTBox Component', () => {
 
             // Test that mouse events are handled correctly
             fireEvent.mouseEnter(pstBox);
-            
+
             // Wait for first enter to be processed
             await waitFor(() => {
                 expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
@@ -517,6 +517,284 @@ describe('PSTBox Component', () => {
 
             expect(clearTimeoutSpy).toHaveBeenCalled();
             clearTimeoutSpy.mockRestore();
+        });
+    });
+
+    describe('Touch Device Support', () => {
+        beforeEach(() => {
+            // Mock touch device detection
+            Object.defineProperty(window, 'ontouchstart', {
+                writable: true,
+                value: true,
+            });
+            Object.defineProperty(navigator, 'maxTouchPoints', {
+                writable: true,
+                value: 5,
+            });
+        });
+
+        afterEach(() => {
+            // Clean up touch device mocks
+            delete (window as any).ontouchstart;
+            Object.defineProperty(navigator, 'maxTouchPoints', {
+                writable: true,
+                value: 0,
+            });
+        });
+
+        it('should handle touch start events for selection (first touch)', () => {
+            const onHover = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onHover={onHover} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // First touch should select, not start drag
+            expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
+        });
+
+        it('should handle touch move events during drag (after selection)', () => {
+            const onDragMove = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragMove={onDragMove} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Simulate touch move on document
+            fireEvent.touchMove(document, {
+                touches: [{clientX: 110, clientY: 60}],
+            });
+
+            expect(onDragMove).toHaveBeenCalledWith(defaultProps.pstElement, {x: 110, y: 60});
+        });
+
+        it('should handle touch end events to complete drag (after selection)', () => {
+            const onDragEnd = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragEnd={onDragEnd} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // End touch drag
+            fireEvent.touchEnd(document);
+
+            expect(onDragEnd).toHaveBeenCalledWith(defaultProps.pstElement);
+        });
+
+        it('should prevent scrolling during touch drag operations', () => {
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Check that touch-action is disabled
+            expect(document.body.style.touchAction).toBe('none');
+        });
+
+        it('should restore scrolling after touch drag completes', () => {
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // End touch drag
+            fireEvent.touchEnd(document);
+
+            // Check that touch-action is restored
+            expect(document.body.style.touchAction).toBe('');
+        });
+
+        it('should handle touch cancel events properly', () => {
+            const onDragEnd = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragEnd={onDragEnd} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch to select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Second touch to start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            // Cancel touch
+            fireEvent.touchCancel(document);
+
+            expect(onDragEnd).toHaveBeenCalledWith(defaultProps.pstElement);
+        });
+
+        it('should not start drag during resize operations on touch', () => {
+            const onDragStart = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} isResizing={true} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onDragStart).not.toHaveBeenCalled();
+        });
+
+        it('should handle multi-touch scenarios gracefully', () => {
+            const onDragStart = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch should select the element (not start drag)
+            fireEvent.touchStart(rect, {
+                touches: [
+                    {clientX: 100, clientY: 50},
+                    {clientX: 200, clientY: 150},
+                ],
+            });
+
+            // First touch should not start drag, just select
+            expect(onDragStart).not.toHaveBeenCalled();
+        });
+
+        it('should show resize handles on first touch and start drag on second touch', () => {
+            const onDragStart = jest.fn();
+            const onHover = jest.fn();
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onDragStart={onDragStart} onHover={onHover} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch should select and show handles
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
+            expect(onDragStart).not.toHaveBeenCalled();
+
+            // Second touch should start drag
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onDragStart).toHaveBeenCalledWith(defaultProps.pstElement, {x: 100, y: 50});
+        });
+
+        it('should show touch selection outline when selected', () => {
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch should show touch outline
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(screen.getByTestId(`pst-box-touch-outline-${defaultProps.pstElement.id}`)).toBeInTheDocument();
+        });
+
+        it('should auto-hide handles after timeout on touch devices', async () => {
+            jest.useFakeTimers();
+            const onHover = jest.fn();
+
+            render(
+                <svg>
+                    <PSTBox {...defaultProps} onHover={onHover} />
+                </svg>,
+            );
+
+            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+
+            // First touch should select
+            fireEvent.touchStart(rect, {
+                touches: [{clientX: 100, clientY: 50}],
+            });
+
+            expect(onHover).toHaveBeenCalledWith(defaultProps.pstElement);
+
+            // Fast-forward 5 seconds
+            jest.advanceTimersByTime(5000);
+
+            expect(onHover).toHaveBeenCalledWith(null);
+
+            jest.useRealTimers();
         });
     });
 });

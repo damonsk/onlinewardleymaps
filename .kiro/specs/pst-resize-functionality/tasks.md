@@ -70,7 +70,7 @@
   - Ensure proper map text formatting and syntax validation after updates
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 11. Implement keyboard modifier support for resize operations
+- [x] 11. Implement keyboard modifier support for resize operations
   - Add Shift key support for maintaining aspect ratio during resize
   - Implement Alt key support for resizing from center point
   - Add Escape key handling to cancel resize operations and revert changes
@@ -98,7 +98,7 @@
   - Ensure high contrast mode compatibility and proper color contrast
   - _Requirements: 8.3, 8.4_
 
-- [ ] 15. Implement touch device support for resize operations
+- [x] 15. Implement touch device support for resize operations
   - Add touch event handling for mobile and tablet devices
   - Implement appropriately sized resize handles for finger interaction
   - Create touch-friendly drag operations with proper gesture recognition

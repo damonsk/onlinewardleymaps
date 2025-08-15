@@ -83,6 +83,7 @@ interface ModernUnifiedMapContentProps {
     resizingPSTElement?: PSTElement | null;
     resizeHandle?: ResizeHandle | null;
     resizePreviewBounds?: PSTBounds | null;
+    keyboardModifiers?: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
     onPSTHover?: (element: PSTElement | null) => void;
     onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
     onPSTResizeMove?: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
@@ -210,6 +211,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         isHovered={props.hoveredPSTElement?.id === pstElement.id}
                         isResizing={props.resizingPSTElement?.id === pstElement.id}
                         isDragging={props.draggingPSTElement?.id === pstElement.id}
+                        keyboardModifiers={props.keyboardModifiers}
                         onResizeStart={(element, handle, startPosition) => {
                             try {
                                 if (props.onPSTResizeStart) {
@@ -237,7 +239,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 console.error('Error in PST resize end coordination:', error);
                             }
                         }}
-                        onHover={(element) => {
+                        onHover={element => {
                             try {
                                 if (props.onPSTHover) {
                                     props.onPSTHover(element);
@@ -264,7 +266,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 console.error('Error in PST drag move coordination:', error);
                             }
                         }}
-                        onDragEnd={(element) => {
+                        onDragEnd={element => {
                             try {
                                 if (props.onPSTDragEnd) {
                                     props.onPSTDragEnd(element);
