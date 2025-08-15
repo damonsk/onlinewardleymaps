@@ -35,28 +35,28 @@
   - Apply PST type-specific styling (colors, labels) consistently
   - _Requirements: 1.1, 1.2, 1.4, 5.1, 5.3_
 
-- [ ] 6. Integrate resize handles with PSTBox component
+- [x] 6. Integrate resize handles with PSTBox component
   - Connect ResizeHandles component to PSTBox with proper event handling
   - Implement resize operation state management (idle, resizing, preview)
   - Add resize constraint validation and enforcement during drag operations
   - Ensure resize handles are properly positioned relative to PST box bounds
   - _Requirements: 2.1, 2.2, 2.3, 2.5_
 
-- [ ] 7. Add PST element parsing and identification to map processing
+- [x] 7. Add PST element parsing and identification to map processing
   - Modify MapElements class to include PST elements from attitudes array
   - Create PST element identification and extraction logic
   - Add PST element rendering integration with existing map element system
   - Ensure PST elements are properly included in unified component processing
   - _Requirements: 5.1, 5.2_
 
-- [ ] 8. Enhance UnifiedMapContent to render PST elements with resize capability
+- [x] 8. Enhance UnifiedMapContent to render PST elements with resize capability
   - Modify UnifiedMapContent to render PST elements using PSTBox component
   - Add hover state management for PST elements at the map level
   - Implement mouse event delegation for PST hover detection
   - Integrate PST rendering with existing map element rendering pipeline
   - _Requirements: 1.1, 1.2, 5.1, 5.2_
 
-- [ ] 9. Implement resize operation state management
+- [x] 9. Implement resize operation state management
   - Add resize state management to UnifiedMapCanvas component
   - Implement resize start, move, and end event handlers
   - Create resize operation coordination between PSTBox and parent components

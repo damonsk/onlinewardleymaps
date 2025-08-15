@@ -12,6 +12,14 @@ import {useMapEventHandlers} from './hooks/useMapEventHandlers';
 import {DebugOverlay} from './debug/DebugOverlay';
 import {UnifiedMapCanvasProps} from './types/MapCanvasProps';
 import {findNearestComponent} from '../../utils/componentDetection';
+import {PSTElement, PSTCoordinates, PSTBounds, ResizeHandle} from '../../types/map/pst';
+import {
+    convertPSTCoordinatesToBounds,
+    convertBoundsToPSTCoordinates,
+    calculateResizedBounds,
+    constrainPSTBounds,
+} from '../../utils/pstCoordinateUtils';
+import {updatePSTInMapText} from '../../utils/pstElementUtils';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
@@ -116,6 +124,14 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         }>
     >([]);
 
+    // PST resize state management
+    const [hoveredPSTElement, setHoveredPSTElement] = useState<any>(null);
+    const [resizingPSTElement, setResizingPSTElement] = useState<any>(null);
+    const [resizeHandle, setResizeHandle] = useState<any>(null);
+    const [resizePreviewBounds, setResizePreviewBounds] = useState<any>(null);
+    const [resizeStartPosition, setResizeStartPosition] = useState<{x: number; y: number} | null>(null);
+    const [originalBounds, setOriginalBounds] = useState<any>(null);
+
     // Disable pan/zoom when editing is active
     useEffect(() => {
         if (isAnyElementEditing()) {
@@ -206,6 +222,228 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             props.onComponentClick,
         ],
     );
+
+    // PST resize event handlers with enhanced state management
+    const handlePSTHover = useCallback(
+        (element: PSTElement | null) => {
+            // Only update hover state if not currently resizing
+            if (!resizingPSTElement) {
+                setHoveredPSTElement(element);
+            }
+        },
+        [resizingPSTElement],
+    );
+
+    const handlePSTResizeStart = useCallback(
+        (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => {
+            try {
+                // Validate element and coordinates
+                if (!element || !element.coordinates || !handle) {
+                    console.warn('Invalid PST element or handle for resize start:', {element, handle});
+                    return;
+                }
+
+                // Set resize state
+                setResizingPSTElement(element);
+                setResizeHandle(handle);
+                setResizeStartPosition(startPosition);
+
+                // Convert PST coordinates to bounds for resize operations
+                const bounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
+
+                // Validate bounds
+                if (isNaN(bounds.x) || isNaN(bounds.y) || isNaN(bounds.width) || isNaN(bounds.height)) {
+                    console.warn('Invalid bounds calculated for PST element:', {element, bounds});
+                    return;
+                }
+
+                setOriginalBounds(bounds);
+                setResizePreviewBounds(bounds);
+
+                // Disable pan/zoom during resize to prevent conflicts
+                setTool(TOOL_NONE);
+
+                // Clear hover state during resize to prevent conflicts
+                setHoveredPSTElement(null);
+
+                console.log('PST resize started:', {element: element.id, handle, bounds});
+            } catch (error) {
+                console.error('Error starting PST resize:', error);
+                // Reset state on error
+                resetResizeState();
+            }
+        },
+        [mapDimensions],
+    );
+
+    const handlePSTResizeMove = useCallback(
+        (handle: ResizeHandle, currentPosition: {x: number; y: number}) => {
+            try {
+                // Validate resize state
+                if (!resizingPSTElement || !originalBounds || !resizeStartPosition || !handle) {
+                    console.warn('Invalid resize state during move:', {
+                        hasElement: !!resizingPSTElement,
+                        hasBounds: !!originalBounds,
+                        hasStartPos: !!resizeStartPosition,
+                        handle,
+                    });
+                    return;
+                }
+
+                // Validate current position
+                if (isNaN(currentPosition.x) || isNaN(currentPosition.y)) {
+                    console.warn('Invalid current position during resize move:', currentPosition);
+                    return;
+                }
+
+                // Calculate the delta from the start position
+                const deltaX = currentPosition.x - resizeStartPosition.x;
+                const deltaY = currentPosition.y - resizeStartPosition.y;
+
+                // Calculate new bounds based on the handle and delta
+                const newBounds = calculateResizedBounds(
+                    originalBounds,
+                    handle,
+                    deltaX,
+                    deltaY,
+                    undefined, // Use default constraints
+                    mapDimensions,
+                );
+
+                // Validate calculated bounds
+                if (isNaN(newBounds.x) || isNaN(newBounds.y) || isNaN(newBounds.width) || isNaN(newBounds.height)) {
+                    console.warn('Invalid bounds calculated during resize move:', newBounds);
+                    return;
+                }
+
+                // Apply constraints to the new bounds
+                const constrainedBounds = constrainPSTBounds(newBounds, mapDimensions);
+                setResizePreviewBounds(constrainedBounds);
+            } catch (error) {
+                console.error('Error during PST resize move:', error);
+                // Don't reset state during move to avoid interrupting the operation
+            }
+        },
+        [resizingPSTElement, originalBounds, resizeStartPosition, mapDimensions],
+    );
+
+    const resetResizeState = useCallback(() => {
+        setResizingPSTElement(null);
+        setResizeHandle(null);
+        setResizePreviewBounds(null);
+        setOriginalBounds(null);
+        setResizeStartPosition(null);
+    }, []);
+
+    const handlePSTResizeEnd = useCallback(
+        (element: PSTElement, newCoordinates?: PSTCoordinates) => {
+            try {
+                // Validate resize state
+                if (!resizingPSTElement) {
+                    console.warn('No active resize operation to end');
+                    resetResizeState();
+                    return;
+                }
+
+                // Ensure we're ending the resize for the correct element
+                if (element.id !== resizingPSTElement.id) {
+                    console.warn('Resize end element mismatch:', {
+                        expected: resizingPSTElement.id,
+                        received: element.id,
+                    });
+                    resetResizeState();
+                    return;
+                }
+
+                // Use preview bounds if no coordinates provided
+                let finalCoordinates = newCoordinates;
+                if (!finalCoordinates && resizePreviewBounds) {
+                    finalCoordinates = convertBoundsToPSTCoordinates(resizePreviewBounds, mapDimensions);
+                }
+
+                // Validate final coordinates
+                if (!finalCoordinates) {
+                    console.warn('No valid coordinates for resize end');
+                    resetResizeState();
+                    return;
+                }
+
+                // Validate coordinate values
+                const coords = [
+                    finalCoordinates.maturity1,
+                    finalCoordinates.maturity2,
+                    finalCoordinates.visibility1,
+                    finalCoordinates.visibility2,
+                ];
+                if (coords.some(coord => isNaN(coord) || coord < 0 || coord > 1)) {
+                    console.warn('Invalid final coordinates:', finalCoordinates);
+                    resetResizeState();
+                    return;
+                }
+
+                // Update map text with new coordinates
+                const updatedMapText = updatePSTInMapText(mapText, element, finalCoordinates);
+
+                // Validate that map text was actually updated
+                if (updatedMapText === mapText) {
+                    console.warn('Map text was not updated during resize end');
+                } else {
+                    mutateMapText(updatedMapText);
+                    console.log('PST resize completed successfully:', {
+                        element: element.id,
+                        newCoordinates: finalCoordinates,
+                    });
+                }
+            } catch (error) {
+                console.error('Error ending PST resize:', error);
+            } finally {
+                // Always reset state, even on error
+                resetResizeState();
+            }
+        },
+        [resizingPSTElement, resizePreviewBounds, mapDimensions, mapText, mutateMapText, resetResizeState],
+    );
+
+    // Handle escape key to cancel resize operations
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && resizingPSTElement) {
+                console.log('Resize operation cancelled by user');
+                resetResizeState();
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
+
+        if (resizingPSTElement) {
+            document.addEventListener('keydown', handleKeyDown);
+            return () => document.removeEventListener('keydown', handleKeyDown);
+        }
+    }, [resizingPSTElement, resetResizeState]);
+
+    // Cleanup resize state when component unmounts or map changes
+    useEffect(() => {
+        return () => {
+            if (resizingPSTElement) {
+                console.log('Cleaning up resize state on unmount');
+                resetResizeState();
+            }
+        };
+    }, []);
+
+    // Reset resize state when map text changes externally (e.g., undo/redo)
+    useEffect(() => {
+        if (resizingPSTElement) {
+            // Check if the resizing element still exists in the current map
+            const currentPSTElements = mapElements.getPSTElements();
+            const elementStillExists = currentPSTElements.some(el => el.id === resizingPSTElement.id);
+
+            if (!elementStillExists) {
+                console.log('Resizing element no longer exists, resetting state');
+                resetResizeState();
+            }
+        }
+    }, [mapText, resizingPSTElement, mapElements, resetResizeState]);
 
     useEffect(() => {
         if (Viewer.current) {
@@ -383,6 +621,14 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         drawingCurrentPosition={props.drawingCurrentPosition}
                         selectedToolbarItem={props.selectedToolbarItem}
                         methodHighlightedComponent={props.methodHighlightedComponent}
+                        hoveredPSTElement={hoveredPSTElement}
+                        resizingPSTElement={resizingPSTElement}
+                        resizeHandle={resizeHandle}
+                        resizePreviewBounds={resizePreviewBounds}
+                        onPSTHover={handlePSTHover}
+                        onPSTResizeStart={handlePSTResizeStart}
+                        onPSTResizeMove={handlePSTResizeMove}
+                        onPSTResizeEnd={handlePSTResizeEnd}
                     />
                 </svg>
             </UncontrolledReactSVGPanZoom>

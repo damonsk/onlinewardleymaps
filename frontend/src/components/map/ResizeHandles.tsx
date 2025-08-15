@@ -85,16 +85,30 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     // Handle mouse down on resize handle
     const handleMouseDown = useCallback(
         (handle: ResizeHandle, event: React.MouseEvent) => {
-            event.preventDefault();
-            event.stopPropagation();
+            try {
+                event.preventDefault();
+                event.stopPropagation();
 
-            const startPosition = {x: event.clientX, y: event.clientY};
-            setActiveHandle(handle);
-            setIsDragging(true);
-            setDragStartPosition(startPosition);
+                // Validate event and position
+                if (isNaN(event.clientX) || isNaN(event.clientY)) {
+                    console.warn('Invalid mouse position in resize handle mousedown:', { x: event.clientX, y: event.clientY });
+                    return;
+                }
 
-            if (onResizeStart) {
-                onResizeStart(handle, startPosition);
+                const startPosition = {x: event.clientX, y: event.clientY};
+                setActiveHandle(handle);
+                setIsDragging(true);
+                setDragStartPosition(startPosition);
+
+                if (onResizeStart) {
+                    onResizeStart(handle, startPosition);
+                }
+            } catch (error) {
+                console.error('Error in resize handle mousedown:', error);
+                // Reset state on error
+                setActiveHandle(null);
+                setIsDragging(false);
+                setDragStartPosition(null);
             }
         },
         [onResizeStart],
@@ -103,13 +117,25 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     // Handle mouse move during drag
     const handleMouseMove = useCallback(
         (event: MouseEvent) => {
-            if (!isDragging || !activeHandle || !dragStartPosition) return;
+            try {
+                if (!isDragging || !activeHandle || !dragStartPosition) return;
 
-            event.preventDefault();
-            const currentPosition = {x: event.clientX, y: event.clientY};
+                event.preventDefault();
+                
+                // Validate mouse position
+                if (isNaN(event.clientX) || isNaN(event.clientY)) {
+                    console.warn('Invalid mouse position during resize move:', { x: event.clientX, y: event.clientY });
+                    return;
+                }
 
-            if (onResizeMove) {
-                onResizeMove(activeHandle, currentPosition);
+                const currentPosition = {x: event.clientX, y: event.clientY};
+
+                if (onResizeMove) {
+                    onResizeMove(activeHandle, currentPosition);
+                }
+            } catch (error) {
+                console.error('Error during resize move:', error);
+                // Don't reset state during move to avoid interrupting the operation
             }
         },
         [isDragging, activeHandle, dragStartPosition, onResizeMove],
@@ -118,16 +144,29 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     // Handle mouse up to end drag
     const handleMouseUp = useCallback(
         (event: MouseEvent) => {
-            if (!isDragging || !activeHandle) return;
+            try {
+                if (!isDragging || !activeHandle) return;
 
-            event.preventDefault();
-            setIsDragging(false);
-            const currentActiveHandle = activeHandle;
-            setActiveHandle(null);
-            setDragStartPosition(null);
+                event.preventDefault();
+                
+                // Store current handle before resetting state
+                const currentActiveHandle = activeHandle;
+                
+                // Reset drag state
+                setIsDragging(false);
+                setActiveHandle(null);
+                setDragStartPosition(null);
 
-            if (onResizeEnd) {
-                onResizeEnd(currentActiveHandle);
+                // Notify parent of resize end
+                if (onResizeEnd) {
+                    onResizeEnd(currentActiveHandle);
+                }
+            } catch (error) {
+                console.error('Error ending resize operation:', error);
+                // Always reset state, even on error
+                setIsDragging(false);
+                setActiveHandle(null);
+                setDragStartPosition(null);
             }
         },
         [isDragging, activeHandle, onResizeEnd],
@@ -136,17 +175,51 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     // Set up global mouse event listeners for drag operations
     useEffect(() => {
         if (isDragging) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-            document.addEventListener('mouseleave', handleMouseUp);
+            document.addEventListener('mousemove', handleMouseMove, { passive: false });
+            document.addEventListener('mouseup', handleMouseUp, { passive: false });
+            document.addEventListener('mouseleave', handleMouseUp, { passive: false });
+            
+            // Prevent text selection during drag
+            document.body.style.userSelect = 'none';
+            document.body.style.webkitUserSelect = 'none';
 
             return () => {
                 document.removeEventListener('mousemove', handleMouseMove);
                 document.removeEventListener('mouseup', handleMouseUp);
                 document.removeEventListener('mouseleave', handleMouseUp);
+                
+                // Restore text selection
+                document.body.style.userSelect = '';
+                document.body.style.webkitUserSelect = '';
             };
         }
     }, [isDragging, handleMouseMove, handleMouseUp]);
+
+    // Cleanup on unmount or when visibility changes
+    useEffect(() => {
+        return () => {
+            if (isDragging) {
+                // Force cleanup if component unmounts during drag
+                setIsDragging(false);
+                setActiveHandle(null);
+                setDragStartPosition(null);
+                
+                // Restore text selection
+                document.body.style.userSelect = '';
+                document.body.style.webkitUserSelect = '';
+            }
+        };
+    }, []);
+
+    // Reset state when handles become invisible
+    useEffect(() => {
+        if (!isVisible && isDragging) {
+            // Cancel drag operation if handles become invisible
+            setIsDragging(false);
+            setActiveHandle(null);
+            setDragStartPosition(null);
+        }
+    }, [isVisible, isDragging]);
 
     // Don't render if not visible
     if (!isVisible) return null;
@@ -164,7 +237,10 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     ];
 
     return (
-        <g className="resize-handles" data-testid="resize-handles">
+        <g 
+            className="resize-handles" 
+            data-testid="resize-handles"
+        >
             {handles.map(handle => {
                 const position = getHandlePosition(handle);
                 const isActive = activeHandle === handle;

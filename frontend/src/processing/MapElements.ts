@@ -1,17 +1,22 @@
 import {EvolvedElementData, PipelineData, UnifiedComponent, UnifiedWardleyMap, createUnifiedComponent} from '../types/unified';
+import {PSTElement} from '../types/map/pst';
+import {extractPSTElementsFromAttitudes} from '../utils/pstElementUtils';
 
 export class MapElements {
     private allComponents: UnifiedComponent[];
     private evolvedElements: EvolvedElementData[];
     private pipelines: PipelineData[];
+    private pstElements: PSTElement[];
 
     constructor(map: UnifiedWardleyMap) {
         this.allComponents = [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
         this.evolvedElements = map.evolved;
         this.pipelines = map.pipelines;
+        this.pstElements = extractPSTElementsFromAttitudes(map.attitudes);
 
         this.markEvolvingComponents();
         this.markPipelineComponents();
+        this.integratePSTElements();
     }
 
     private markEvolvingComponents(): void {
@@ -103,6 +108,44 @@ export class MapElements {
         });
     }
 
+    /**
+     * Integrate PST elements into the unified component system
+     * Converts PST elements to UnifiedComponent format for consistent processing
+     */
+    private integratePSTElements(): void {
+        const pstComponents: UnifiedComponent[] = this.pstElements.map(pstElement => {
+            return createUnifiedComponent({
+                id: pstElement.id,
+                name: pstElement.name || `${pstElement.type}_${pstElement.line}`,
+                type: 'pst',
+                maturity: pstElement.coordinates.maturity1, // Use left edge as primary maturity
+                visibility: pstElement.coordinates.visibility1, // Use top edge as primary visibility
+                line: pstElement.line,
+                // PST-specific properties
+                pstType: pstElement.type,
+                pstCoordinates: pstElement.coordinates,
+                // Standard component properties
+                evolving: false,
+                evolved: false,
+                inertia: false,
+                pseudoComponent: false,
+                offsetY: 0,
+                label: {x: 0, y: 0},
+                increaseLabelSpacing: 0,
+                decorators: {
+                    ecosystem: false,
+                    market: false,
+                    buy: false,
+                    build: false,
+                    outsource: false,
+                },
+            });
+        });
+
+        // Add PST components to the main components array
+        this.allComponents = [...this.allComponents, ...pstComponents];
+    }
+
     getAllComponents(): UnifiedComponent[] {
         return this.allComponents;
     }
@@ -183,6 +226,34 @@ export class MapElements {
         return this.pipelines;
     }
 
+    /**
+     * Get all PST elements
+     */
+    getPSTElements(): PSTElement[] {
+        return this.pstElements;
+    }
+
+    /**
+     * Get PST elements by type
+     */
+    getPSTElementsByType(type: string): PSTElement[] {
+        return this.pstElements.filter(element => element.type === type);
+    }
+
+    /**
+     * Get PST components (UnifiedComponent format)
+     */
+    getPSTComponents(): UnifiedComponent[] {
+        return this.allComponents.filter(component => component.type === 'pst');
+    }
+
+    /**
+     * Get all components including PST elements
+     */
+    getAllComponentsIncludingPST(): UnifiedComponent[] {
+        return this.allComponents;
+    }
+
     getLegacyAdapter(): any {
         return {
             getAllComponents: () => this.getAllComponents(),
@@ -192,6 +263,12 @@ export class MapElements {
             getMergedComponents: () => this.getMergedComponents(),
             getPipelineComponents: () => this.getPipelineComponents(),
             getInertiaComponents: () => this.getInertiaComponents(),
+
+            // PST-specific methods
+            getPSTElements: () => this.getPSTElements(),
+            getPSTElementsByType: (type: string) => this.getPSTElementsByType(type),
+            getPSTComponents: () => this.getPSTComponents(),
+            getAllComponentsIncludingPST: () => this.getAllComponentsIncludingPST(),
 
             getEvolveElements: () => this.getEvolvingComponents(),
             getEvolvedElements: () => this.getEvolvedComponents(),

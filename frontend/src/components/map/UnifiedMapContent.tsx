@@ -5,6 +5,8 @@ import {MapTheme} from '../../types/map/styles';
 import {PSTElement, PSTCoordinates, PSTBounds, ResizeHandle} from '../../types/map/pst';
 import {UnifiedComponent} from '../../types/unified';
 import {getMapElementsDecorated} from '../../utils/mapProcessing';
+
+import {convertPSTCoordinatesToBounds} from '../../utils/pstCoordinateUtils';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
@@ -28,6 +30,8 @@ import LinkingPreview from './LinkingPreview';
 import DrawingPreview from './DrawingPreview';
 import PositionCalculator from './PositionCalculator';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import PSTBox from './PSTBox';
+import ResizePreview from './ResizePreview';
 
 interface ModernUnifiedMapContentProps {
     mapAttitudes: any[];
@@ -80,8 +84,8 @@ interface ModernUnifiedMapContentProps {
     resizeHandle?: ResizeHandle | null;
     resizePreviewBounds?: PSTBounds | null;
     onPSTHover?: (element: PSTElement | null) => void;
-    onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle) => void;
-    onPSTResizeMove?: (newBounds: PSTBounds) => void;
+    onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
+    onPSTResizeMove?: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
     onPSTResizeEnd?: (element: PSTElement, newCoordinates: PSTCoordinates) => void;
 }
 
@@ -171,19 +175,86 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
             </defs>
 
             <g id="attitudes">
+                {/* Render non-PST attitudes using the original Attitude component */}
                 {props.mapAttitudes &&
-                    props.mapAttitudes.map((a: any, i: number) => (
-                        <Attitude
-                            key={i}
-                            attitude={a}
-                            mapDimensions={mapDimensions}
-                            mapText={mapText}
-                            mutateMapText={mutateMapText}
-                            mapStyleDefs={mapStyleDefs}
-                            scaleFactor={scaleFactor}
-                        />
-                    ))}
+                    props.mapAttitudes
+                        .filter((a: any) => !['pioneers', 'settlers', 'townplanners'].includes(a.attitude))
+                        .map((a: any, i: number) => (
+                            <Attitude
+                                key={i}
+                                attitude={a}
+                                mapDimensions={mapDimensions}
+                                mapText={mapText}
+                                mutateMapText={mutateMapText}
+                                mapStyleDefs={mapStyleDefs}
+                                scaleFactor={scaleFactor}
+                            />
+                        ))}
             </g>
+
+            <g id="pst-elements">
+                {/* Render PST elements with resize functionality */}
+                {mapElements.getPSTElements().map((pstElement: PSTElement) => (
+                    <PSTBox
+                        key={pstElement.id}
+                        pstElement={pstElement}
+                        mapDimensions={mapDimensions}
+                        mapStyleDefs={mapStyleDefs}
+                        scaleFactor={scaleFactor}
+                        isHovered={props.hoveredPSTElement?.id === pstElement.id}
+                        isResizing={props.resizingPSTElement?.id === pstElement.id}
+                        onResizeStart={(element, handle, startPosition) => {
+                            try {
+                                if (props.onPSTResizeStart) {
+                                    props.onPSTResizeStart(element, handle, startPosition);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST resize start coordination:', error);
+                            }
+                        }}
+                        onResizeMove={(handle, currentPosition) => {
+                            try {
+                                if (props.onPSTResizeMove) {
+                                    props.onPSTResizeMove(handle, currentPosition);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST resize move coordination:', error);
+                            }
+                        }}
+                        onResizeEnd={(element, newCoordinates) => {
+                            try {
+                                if (props.onPSTResizeEnd) {
+                                    props.onPSTResizeEnd(element, newCoordinates);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST resize end coordination:', error);
+                            }
+                        }}
+                        onHover={(element) => {
+                            try {
+                                if (props.onPSTHover) {
+                                    props.onPSTHover(element);
+                                }
+                            } catch (error) {
+                                console.error('Error in PST hover coordination:', error);
+                            }
+                        }}
+                        mutateMapText={mutateMapText}
+                        mapText={mapText}
+                    />
+                ))}
+            </g>
+
+            {/* Resize preview overlay */}
+            {props.resizePreviewBounds && props.resizingPSTElement && (
+                <ResizePreview
+                    isActive={true}
+                    originalBounds={convertPSTCoordinatesToBounds(props.resizingPSTElement.coordinates, mapDimensions)}
+                    previewBounds={props.resizePreviewBounds}
+                    pstType={props.resizingPSTElement.type}
+                    mapStyleDefs={mapStyleDefs}
+                />
+            )}
 
             <g id="links">
                 {props.links.map((current: any) => (

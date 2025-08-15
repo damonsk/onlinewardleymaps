@@ -56,6 +56,14 @@ export interface UrlElement {
 export interface UnifiedComponent extends BaseMapElement, LabelableElement, EvolvableElement, DecoratedElement, UrlElement {
     type: string;
     pipeline?: boolean;
+    // PST-specific properties (optional, only present for PST components)
+    pstType?: string;
+    pstCoordinates?: {
+        maturity1: number;
+        visibility1: number;
+        maturity2: number;
+        visibility2: number;
+    };
 }
 
 /**
@@ -81,10 +89,21 @@ export interface MapEcosystemData extends UnifiedComponent {
     type: 'ecosystem';
 }
 
+export interface MapPSTData extends UnifiedComponent {
+    type: 'pst';
+    pstType: string;
+    pstCoordinates: {
+        maturity1: number;
+        visibility1: number;
+        maturity2: number;
+        visibility2: number;
+    };
+}
+
 /**
  * Union type for all component types
  */
-export type ComponentData = MapComponentData | MapAnchorData | MapSubmapData | MapMarketData | MapEcosystemData;
+export type ComponentData = MapComponentData | MapAnchorData | MapSubmapData | MapMarketData | MapEcosystemData | MapPSTData;
 
 /**
  * Interface for evolved elements
@@ -151,6 +170,10 @@ export const isMarket = (component: UnifiedComponent): component is MapMarketDat
 
 export const isEcosystem = (component: UnifiedComponent): component is MapEcosystemData => {
     return component.decorators?.ecosystem ?? false;
+};
+
+export const isPST = (component: UnifiedComponent): component is MapPSTData => {
+    return component.type === 'pst';
 };
 
 /**
