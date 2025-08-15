@@ -124,11 +124,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     const handleResizeEnd = useCallback(
         (handle: ResizeHandle) => {
             try {
-                // The parent component will handle the actual coordinate calculation and map text update
-                // We just need to ensure proper cleanup of local state
+                // The parent component should have calculated new coordinates during resize moves
+                // We signal the end of the resize operation so the parent can finalize the update
                 if (onResizeEnd) {
-                    // Let parent handle the final coordinate calculation
-                    onResizeEnd(pstElement, pstElement.coordinates);
+                    // Pass the handle information so parent knows which resize operation completed
+                    onResizeEnd(pstElement, {handle});
                 }
             } catch (error) {
                 console.error('Error in PST resize end:', error);
