@@ -103,8 +103,13 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                 // Handle Delete and Backspace keys (no modifiers)
                 if ((key === 'Delete' || key === 'Backspace') && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
                     event.preventDefault();
-                    onDeleteComponent(selectedComponentId);
-                    setAnnounceText(`Component deleted`);
+                    try {
+                        onDeleteComponent(selectedComponentId);
+                        setAnnounceText(`Component deleted`);
+                    } catch (error) {
+                        console.error('Error deleting component:', error);
+                        setAnnounceText(`Error deleting component`);
+                    }
                     setTimeout(() => setAnnounceText(''), 1000);
                     return true;
                 }

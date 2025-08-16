@@ -6,6 +6,8 @@ import {ToolbarItem} from './ToolbarItem';
 import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
 import {ToolbarUndoIcon, ToolbarRedoIcon} from './ToolbarIconWrappers';
 import {useUndoRedo} from '../UndoRedoProvider';
+import {useComponentSelection} from '../ComponentSelectionContext';
+import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
 
 /**
  * Styled container for the WYSIWYG toolbar
@@ -540,9 +542,15 @@ const useOptionalUndoRedo = () => {
  * Provides a moveable vertical toolbar with all available map components
  */
 export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
-    ({mapStyleDefs, selectedItem, onItemSelect, keyboardShortcutsEnabled = true}) => {
+    ({mapStyleDefs, selectedItem, onItemSelect, keyboardShortcutsEnabled = true, mapText}) => {
         // Access undo/redo context (optional)
         const undoRedoContext = useOptionalUndoRedo();
+        
+        // Access component selection context
+        const componentSelection = useComponentSelection();
+        
+        // Access component deletion functionality
+        const {deleteComponent, canDelete} = useMapComponentDeletion();
         // Force a re-render after initial mount to ensure styled-components classes are stable
         const [renderKey, setRenderKey] = useState(0);
 
@@ -575,6 +583,34 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                 }
             },
             [selectedItem, onItemSelect, undoRedoContext],
+        );
+
+        /**
+         * Handle component deletion
+         */
+        const handleDeleteComponent = useCallback(
+            (componentId: string) => {
+                if (!componentId || !mapText) {
+                    console.warn('Cannot delete component: missing componentId or mapText');
+                    return;
+                }
+
+                try {
+                    // Attempt to delete the component
+                    deleteComponent({
+                        mapText,
+                        componentId,
+                        componentName: componentId, // Use componentId as name for now
+                    });
+
+                    // Clear the selection after successful deletion
+                    componentSelection.clearSelection();
+                } catch (error) {
+                    console.error('Failed to delete component:', error);
+                    // Optionally show user feedback here
+                }
+            },
+            [deleteComponent, mapText, componentSelection],
         );
 
         /**
@@ -630,6 +666,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     onToolSelect={handleKeyboardToolSelect}
                     isEnabled={keyboardShortcutsEnabled}
                     currentSelectedTool={selectedItem?.id || null}
+                    selectedComponentId={componentSelection.getSelectedComponentId()}
+                    onDeleteComponent={handleDeleteComponent}
                 />
 
                 <ToolbarContainer

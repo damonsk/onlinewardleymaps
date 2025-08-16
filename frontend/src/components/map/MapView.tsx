@@ -18,6 +18,7 @@ import {
 import {findNearestComponent, linkExists, addLinkToMapText} from '../../utils/componentDetection';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {EditingProvider} from '../EditingContext';
+import {ComponentSelectionProvider} from '../ComponentSelectionContext';
 
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
@@ -1039,8 +1040,9 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     );
 
     return (
-        <EditingProvider>
-            <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
+        <ComponentSelectionProvider>
+            <EditingProvider>
+                <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
                 {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
                 <WysiwygToolbar
                     mapStyleDefs={props.mapStyleDefs}
@@ -1191,7 +1193,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     }
                 }
             `}</style>
-            </div>
-        </EditingProvider>
+                </div>
+            </EditingProvider>
+        </ComponentSelectionProvider>
     );
 };

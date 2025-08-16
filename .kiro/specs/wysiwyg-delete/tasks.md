@@ -19,14 +19,14 @@
   - Prevent deletion when text editing contexts are active
   - _Requirements: 1.1, 1.2, 1.4_
 
-- [-] 4. Create MapComponentDeleter service
+- [x] 4. Create MapComponentDeleter service
   - Implement core deletion logic for removing components from mapText
   - Add support for PST box deletion using existing pstMapTextMutation utilities
   - Create component identification and line finding logic
   - Add basic validation to ensure components can be deleted
   - _Requirements: 5.1, 6.1_
 
-- [ ] 5. Integrate deletion with undo/redo system
+- [x] 5. Integrate deletion with undo/redo system
   - Connect MapComponentDeleter with existing UndoRedoProvider
   - Record deletion operations with 'canvas-delete' action type
   - Ensure deleted components can be restored via undo
