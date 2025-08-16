@@ -19,6 +19,8 @@ import {findNearestComponent, linkExists, addLinkToMapText} from '../../utils/co
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {EditingProvider} from '../EditingContext';
 import {ComponentSelectionProvider} from '../ComponentSelectionContext';
+import {ContextMenuProvider} from './ContextMenuProvider';
+import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
 
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
@@ -102,6 +104,38 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             setUserFeedback(prev => ({...prev, visible: false}));
         }, hideDelay);
     }, []);
+
+    // Component deletion functionality
+    const {deleteComponent, canDelete} = useMapComponentDeletion();
+
+    // Handle component deletion from context menu
+    const handleDeleteComponent = useCallback(
+        (componentId: string) => {
+            if (!componentId || !props.mapText) {
+                console.warn('Cannot delete component: missing componentId or mapText');
+                return;
+            }
+
+            if (!canDelete(componentId)) {
+                console.warn('Component cannot be deleted:', componentId);
+                return;
+            }
+
+            try {
+                deleteComponent({
+                    mapText: props.mapText,
+                    componentId,
+                    componentName: componentId,
+                });
+
+                showUserFeedback('Component deleted successfully', 'success');
+            } catch (error) {
+                console.error('Failed to delete component:', error);
+                showUserFeedback('Failed to delete component', 'error');
+            }
+        },
+        [deleteComponent, canDelete, props.mapText, showUserFeedback],
+    );
 
     // Monitor component deletion and automatically cancel linking if source or target is deleted
     useEffect(() => {
@@ -1041,7 +1075,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
     return (
         <ComponentSelectionProvider>
-            <EditingProvider>
+            <ContextMenuProvider mapText={props.mapText} onDeleteComponent={handleDeleteComponent}>
+                <EditingProvider>
                 <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
                 {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
                 <WysiwygToolbar
@@ -1195,6 +1230,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
             `}</style>
                 </div>
             </EditingProvider>
+            </ContextMenuProvider>
         </ComponentSelectionProvider>
     );
 };

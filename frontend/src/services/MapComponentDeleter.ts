@@ -170,7 +170,10 @@ export class MapComponentDeleter {
     /**
      * Parses a component line to extract component information
      */
-    private parseComponentLine(line: string, lineIndex: number): {
+    private parseComponentLine(
+        line: string,
+        lineIndex: number,
+    ): {
         type: string;
         name: string;
         id: string;

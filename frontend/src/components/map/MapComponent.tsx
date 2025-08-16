@@ -4,6 +4,7 @@ import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
 import {useModKeyPressedConsumer} from '../KeyPressContext';
 import {useComponentSelection} from '../ComponentSelectionContext';
+import {useContextMenu} from './ContextMenuProvider';
 import ComponentText from './ComponentText';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -39,6 +40,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 }) => {
     const isModKeyPressed = useModKeyPressedConsumer();
     const {isSelected, selectComponent} = useComponentSelection();
+    const {showContextMenu} = useContextMenu();
     const calculatedPosition = new ModernPositionCalculator();
     const posX = calculatedPosition.maturityToX(component.maturity, mapDimensions.width);
     const posY = calculatedPosition.visibilityToY(component.visibility, mapDimensions.height) + (component.offsetY ? component.offsetY : 0);
@@ -64,6 +66,22 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 launchUrl(component.url.url);
             }
         }
+    };
+
+    const handleContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Select the component first if not already selected
+        if (!isElementSelected) {
+            selectComponent(component.id);
+        }
+
+        // Show context menu at cursor position
+        showContextMenu(
+            {x: e.clientX, y: e.clientY},
+            component.id
+        );
     };
 
     const updatePosition = (movedPosition: MovedPosition) => {
@@ -128,6 +146,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 <g
                     id={component.id}
                     onClick={handleClick}
+                    onContextMenu={handleContextMenu}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',

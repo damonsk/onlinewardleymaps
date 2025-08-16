@@ -5,6 +5,7 @@ import {MapTheme} from '../../types/map/styles';
 import {PST_CONFIG} from '../../constants/pstConfig';
 import {convertPSTCoordinatesToBounds} from '../../utils/pstCoordinateUtils';
 import {useComponentSelection} from '../ComponentSelectionContext';
+import {useContextMenu} from './ContextMenuProvider';
 import ResizeHandles from './ResizeHandles';
 
 interface PSTBoxProps {
@@ -69,6 +70,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     mapText,
 }) => {
     const {isSelected, selectComponent, clearSelection} = useComponentSelection();
+    const {showContextMenu} = useContextMenu();
     // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
@@ -182,6 +184,25 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             selectComponent(pstElement.id);
         },
         [selectComponent, pstElement.id],
+    );
+
+    // Handle right-click context menu
+    const handleContextMenu = useCallback(
+        (event: React.MouseEvent) => {
+            event.preventDefault();
+            
+            // Select the component first if not already selected
+            if (!isElementSelected) {
+                selectComponent(pstElement.id);
+            }
+
+            // Show context menu at cursor position
+            showContextMenu(
+                {x: event.clientX, y: event.clientY},
+                pstElement.id
+            );
+        },
+        [isElementSelected, selectComponent, pstElement.id, showContextMenu],
     );
 
     // Handle pointer start (mouse or touch) for drag
@@ -499,6 +520,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 onMouseDown={handleDragStart}
                 onTouchStart={handleTouchStart}
                 onClick={handleComponentClick}
+                onContextMenu={handleContextMenu}
                 onKeyDown={event => {
                     // Support keyboard interaction
                     if (event.key === 'Enter' || event.key === ' ') {
