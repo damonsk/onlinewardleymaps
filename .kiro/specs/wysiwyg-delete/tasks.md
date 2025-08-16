@@ -19,7 +19,7 @@
   - Prevent deletion when text editing contexts are active
   - _Requirements: 1.1, 1.2, 1.4_
 
-- [ ] 4. Create MapComponentDeleter service
+- [-] 4. Create MapComponentDeleter service
   - Implement core deletion logic for removing components from mapText
   - Add support for PST box deletion using existing pstMapTextMutation utilities
   - Create component identification and line finding logic
