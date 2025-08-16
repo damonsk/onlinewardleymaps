@@ -57,12 +57,7 @@ describe('Component Deletion Undo/Redo Integration', () => {
 component User [0.9, 0.1]
 component System [0.5, 0.5]`;
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId="component-system-2"
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId="component-system-2" />);
 
             // Simulate Delete key press
             fireEvent.keyDown(document, {
@@ -79,12 +74,7 @@ component System [0.5, 0.5]`;
 component User [0.9, 0.1]
 component Database [0.2, 0.8]`;
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId="component-database-2"
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId="component-database-2" />);
 
             // Simulate Backspace key press
             fireEvent.keyDown(document, {
@@ -100,12 +90,7 @@ component Database [0.2, 0.8]`;
             const initialMapText = `title Test Map
 component User [0.9, 0.1]`;
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId={null}
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId={null} />);
 
             // Simulate Delete key press
             fireEvent.keyDown(document, {
@@ -124,13 +109,7 @@ component User [0.9, 0.1]`;
             // Create a separate mock for this test
             const mockOnDeleteComponentForTest = jest.fn();
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId="component-user-1"
-                    onDeleteComponent={undefined}
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId="component-user-1" onDeleteComponent={undefined} />);
 
             // Simulate Delete key press
             fireEvent.keyDown(document, {
@@ -148,12 +127,7 @@ component User [0.9, 0.1]`;
 component User [0.9, 0.1]
 component System [0.5, 0.5]`;
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId="component-system-2"
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId="component-system-2" />);
 
             // Simulate Delete key press
             fireEvent.keyDown(document, {
@@ -181,12 +155,7 @@ component System [0.5, 0.5]`;
 component User [0.9, 0.1]
 component System [0.5, 0.5]`;
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId="component-system-2"
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId="component-system-2" />);
 
             // Simulate Delete key press
             fireEvent.keyDown(document, {
@@ -219,11 +188,8 @@ component User [0.9, 0.1]`;
             render(
                 <div>
                     <input data-testid="text-input" />
-                    <TestComponent
-                        mapText={initialMapText}
-                        selectedComponentId="component-user-1"
-                    />
-                </div>
+                    <TestComponent mapText={initialMapText} selectedComponentId="component-user-1" />
+                </div>,
             );
 
             // Focus on text input
@@ -244,12 +210,7 @@ component User [0.9, 0.1]`;
             const initialMapText = `title Test Map
 component User [0.9, 0.1]`;
 
-            render(
-                <TestComponent
-                    mapText={initialMapText}
-                    selectedComponentId="component-user-1"
-                />
-            );
+            render(<TestComponent mapText={initialMapText} selectedComponentId="component-user-1" />);
 
             // Simulate Delete key press - fireEvent automatically creates preventDefault
             fireEvent.keyDown(document, {
@@ -265,7 +226,7 @@ component User [0.9, 0.1]`;
     describe('Error Handling', () => {
         it('should handle deletion errors gracefully', () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-            
+
             const mockOnDeleteComponentWithError = jest.fn().mockImplementation(() => {
                 throw new Error('Deletion failed');
             });
@@ -278,7 +239,7 @@ component User [0.9, 0.1]`;
                     mapText={initialMapText}
                     selectedComponentId="component-user-1"
                     onDeleteComponent={mockOnDeleteComponentWithError}
-                />
+                />,
             );
 
             // Simulate Delete key press - this should not throw an error
@@ -291,7 +252,7 @@ component User [0.9, 0.1]`;
 
             // Verify error was handled
             expect(mockOnDeleteComponentWithError).toHaveBeenCalled();
-            
+
             consoleErrorSpy.mockRestore();
         });
     });

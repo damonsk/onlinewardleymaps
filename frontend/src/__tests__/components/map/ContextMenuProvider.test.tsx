@@ -11,9 +11,7 @@ const TestComponent: React.FC = () => {
 
     return (
         <div>
-            <button
-                onClick={() => showContextMenu({x: 100, y: 200}, 'test-component')}
-                data-testid="show-context-menu">
+            <button onClick={() => showContextMenu({x: 100, y: 200}, 'test-component')} data-testid="show-context-menu">
                 Show Context Menu
             </button>
             <button onClick={hideContextMenu} data-testid="hide-context-menu">
@@ -34,7 +32,7 @@ const renderWithProviders = (mapText: string = 'component Test [0.5, 0.5]', onDe
                     <TestComponent />
                 </ContextMenuProvider>
             </ComponentSelectionProvider>
-        </UndoRedoProvider>
+        </UndoRedoProvider>,
     );
 };
 

@@ -31,14 +31,7 @@ describe('ContextMenu', () => {
     });
 
     it('renders context menu when open', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         expect(screen.getByRole('menu')).toBeInTheDocument();
         expect(screen.getByText('Delete')).toBeInTheDocument();
@@ -47,27 +40,13 @@ describe('ContextMenu', () => {
     });
 
     it('does not render when closed', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={false}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={false} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         expect(screen.queryByRole('menu')).not.toBeInTheDocument();
     });
 
     it('calls action when menu item is clicked', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         fireEvent.click(screen.getByText('Delete'));
 
@@ -76,14 +55,7 @@ describe('ContextMenu', () => {
     });
 
     it('does not call action for disabled items', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         fireEvent.click(screen.getByText('Disabled Action'));
 
@@ -92,14 +64,7 @@ describe('ContextMenu', () => {
     });
 
     it('closes menu when Escape key is pressed', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         fireEvent.keyDown(screen.getByRole('menu'), {key: 'Escape'});
 
@@ -107,42 +72,21 @@ describe('ContextMenu', () => {
     });
 
     it('applies correct styling for destructive items', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         const deleteButton = screen.getByTestId('context-menu-item-delete');
         expect(deleteButton).toHaveAttribute('data-testid', 'context-menu-item-delete');
     });
 
     it('applies correct styling for disabled items', () => {
-        render(
-            <ContextMenu
-                items={mockItems}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={mockItems} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         const disabledButton = screen.getByTestId('context-menu-item-disabled');
         expect(disabledButton).toBeDisabled();
     });
 
     it('does not render when items array is empty', () => {
-        render(
-            <ContextMenu
-                items={[]}
-                isOpen={true}
-                onClose={mockOnClose}
-                position={{x: 100, y: 200}}
-            />
-        );
+        render(<ContextMenu items={[]} isOpen={true} onClose={mockOnClose} position={{x: 100, y: 200}} />);
 
         expect(screen.queryByRole('menu')).not.toBeInTheDocument();
     });

@@ -69,11 +69,7 @@ component User [0.9, 0.1]`;
             expect(mockMapComponentDeleter.deleteComponent).toHaveBeenCalledWith(params);
 
             // Verify undo/redo was recorded
-            expect(mockUndoRedoContext.mutateMapText).toHaveBeenCalledWith(
-                updatedMapText,
-                'canvas-delete',
-                'Delete System',
-            );
+            expect(mockUndoRedoContext.mutateMapText).toHaveBeenCalledWith(updatedMapText, 'canvas-delete', 'Delete System');
 
             // Verify result is returned
             expect(result).toEqual(deletionResult);
@@ -107,11 +103,7 @@ component User [0.9, 0.1]`;
 
             deleter.deleteComponentWithUndo(params, mockUndoRedoContext);
 
-            expect(mockUndoRedoContext.mutateMapText).toHaveBeenCalledWith(
-                'title Test Map',
-                'canvas-delete',
-                'Delete component-user-1',
-            );
+            expect(mockUndoRedoContext.mutateMapText).toHaveBeenCalledWith('title Test Map', 'canvas-delete', 'Delete component-user-1');
         });
 
         it('should throw error for invalid deletion parameters', () => {

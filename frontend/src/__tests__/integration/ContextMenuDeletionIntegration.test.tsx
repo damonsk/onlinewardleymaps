@@ -135,9 +135,12 @@ pioneers PST Box [0.8, 0.2] [0.6, 0.4]`;
         await new Promise(resolve => setTimeout(resolve, 150));
 
         // Context menu should be closed
-        await waitFor(() => {
-            expect(screen.queryByRole('menu')).not.toBeInTheDocument();
-        }, {timeout: 2000});
+        await waitFor(
+            () => {
+                expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+            },
+            {timeout: 2000},
+        );
 
         // Deletion callback should not have been called
         expect(mockOnDeleteComponent).not.toHaveBeenCalled();

@@ -35,10 +35,7 @@ export class UndoRedoMapComponentDeleter {
     /**
      * Deletes a component and records the operation in undo/redo history
      */
-    public deleteComponentWithUndo(
-        params: UndoRedoDeletionParams,
-        undoRedoContext: UndoRedoContext,
-    ): ComponentDeletionResult {
+    public deleteComponentWithUndo(params: UndoRedoDeletionParams, undoRedoContext: UndoRedoContext): ComponentDeletionResult {
         // Validate parameters
         const validation = this.deleter.validateDeletionParams(params);
         if (!validation.isValid) {
@@ -54,11 +51,7 @@ export class UndoRedoMapComponentDeleter {
 
         // Record the change in undo/redo history using the enhanced mutateMapText
         // This will automatically handle the undo/redo recording
-        undoRedoContext.mutateMapText(
-            result.updatedMapText,
-            'canvas-delete',
-            actionDescription,
-        );
+        undoRedoContext.mutateMapText(result.updatedMapText, 'canvas-delete', actionDescription);
 
         return result;
     }

@@ -180,6 +180,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // Handle component selection
     const handleComponentClick = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
+            console.log('PSTBox clicked, selecting component:', pstElement.id);
             // Select this component when clicked
             selectComponent(pstElement.id);
         },
@@ -189,18 +190,20 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     // Handle right-click context menu
     const handleContextMenu = useCallback(
         (event: React.MouseEvent) => {
+            console.log('PSTBox context menu triggered for:', pstElement.id);
             event.preventDefault();
-            
+
             // Select the component first if not already selected
             if (!isElementSelected) {
+                console.log('Selecting component:', pstElement.id);
                 selectComponent(pstElement.id);
+            } else {
+                console.log('Component already selected:', pstElement.id);
             }
 
             // Show context menu at cursor position
-            showContextMenu(
-                {x: event.clientX, y: event.clientY},
-                pstElement.id
-            );
+            console.log('Showing context menu at:', {x: event.clientX, y: event.clientY});
+            showContextMenu({x: event.clientX, y: event.clientY}, pstElement.id);
         },
         [isElementSelected, selectComponent, pstElement.id, showContextMenu],
     );
@@ -216,6 +219,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             // Don't start drag if clicking on resize handles (they have specific data attributes)
             const target = event.target as Element;
             if (target && target.getAttribute && target.getAttribute('data-resize-handle')) {
+                return;
+            }
+
+            // Don't start drag if it's a right-click (allow context menu)
+            if ('button' in event && event.button === 2) {
                 return;
             }
 

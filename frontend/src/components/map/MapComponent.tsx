@@ -49,6 +49,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
     const isElementSelected = isSelected(component.id);
 
     const handleClick = (e: React.MouseEvent) => {
+        console.log('MapComponent clicked, selecting component:', component.id);
         e.preventDefault();
         e.stopPropagation();
 
@@ -69,19 +70,21 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
     };
 
     const handleContextMenu = (e: React.MouseEvent) => {
+        console.log('MapComponent context menu triggered for:', component.id);
         e.preventDefault();
         e.stopPropagation();
 
         // Select the component first if not already selected
         if (!isElementSelected) {
+            console.log('Selecting component:', component.id);
             selectComponent(component.id);
+        } else {
+            console.log('Component already selected:', component.id);
         }
 
         // Show context menu at cursor position
-        showContextMenu(
-            {x: e.clientX, y: e.clientY},
-            component.id
-        );
+        console.log('Showing context menu at:', {x: e.clientX, y: e.clientY});
+        showContextMenu({x: e.clientX, y: e.clientY}, component.id);
     };
 
     const updatePosition = (movedPosition: MovedPosition) => {

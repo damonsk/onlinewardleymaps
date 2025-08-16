@@ -21,18 +21,18 @@ describe('useMapComponentDeletion', () => {
                 UndoRedoProvider,
                 {
                     mutateMapText: mockMutateMapText,
-                    mapText: "title Test Map",
+                    mapText: 'title Test Map',
                     maxHistorySize: 50,
                     debounceMs: 300,
                 },
-                children
+                children,
             );
         };
     };
 
     beforeEach(() => {
         mockMutateMapText = jest.fn();
-        
+
         mockDeleter = {
             deleteComponentWithUndo: jest.fn(),
             canDelete: jest.fn(),

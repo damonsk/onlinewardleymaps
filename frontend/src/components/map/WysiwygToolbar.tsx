@@ -545,10 +545,10 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
     ({mapStyleDefs, selectedItem, onItemSelect, keyboardShortcutsEnabled = true, mapText}) => {
         // Access undo/redo context (optional)
         const undoRedoContext = useOptionalUndoRedo();
-        
+
         // Access component selection context
         const componentSelection = useComponentSelection();
-        
+
         // Access component deletion functionality
         const {deleteComponent, canDelete} = useMapComponentDeletion();
         // Force a re-render after initial mount to ensure styled-components classes are stable

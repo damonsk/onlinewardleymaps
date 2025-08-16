@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Debug Context Menu</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+            }
+            .test-component {
+                width: 200px;
+                height: 100px;
+                border: 2px solid #ccc;
+                margin: 20px;
+                padding: 20px;
+                cursor: pointer;
+                background: #f9f9f9;
+            }
+            .test-component:hover {
+                border-color: #007bff;
+                background: #e9f4ff;
+            }
+            .selected {
+                border-color: #007bff !important;
+                background: #e9f4ff !important;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Context Menu Debug Test</h1>
+        <p>Right-click on the components below to test context menu:</p>
+
+        <div class="test-component" id="comp1" oncontextmenu="showTestMenu(event, 'comp1')">Component 1 - Right click me!</div>
+
+        <div class="test-component" id="comp2" oncontextmenu="showTestMenu(event, 'comp2')">Component 2 - Right click me!</div>
+
+        <div
+            id="context-menu"
+            style="
+                display: none;
+                position: fixed;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 8px;
+                z-index: 1000;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            ">
+            <div onclick="deleteComponent()" style="padding: 8px 12px; cursor: pointer; color: #dc3545">Delete</div>
+            <div onclick="hideMenu()" style="padding: 8px 12px; cursor: pointer">Cancel</div>
+        </div>
+
+        <script>
+            let selectedComponent = null;
+
+            function showTestMenu(event, componentId) {
+                event.preventDefault();
+
+                // Select component
+                if (selectedComponent) {
+                    document.getElementById(selectedComponent).classList.remove('selected');
+                }
+                selectedComponent = componentId;
+                document.getElementById(componentId).classList.add('selected');
+
+                // Show context menu
+                const menu = document.getElementById('context-menu');
+                menu.style.display = 'block';
+                menu.style.left = event.clientX + 'px';
+                menu.style.top = event.clientY + 'px';
+
+                console.log('Context menu shown for:', componentId);
+            }
+
+            function deleteComponent() {
+                if (selectedComponent) {
+                    console.log('Deleting component:', selectedComponent);
+                    alert('Would delete: ' + selectedComponent);
+                    document.getElementById(selectedComponent).style.display = 'none';
+                }
+                hideMenu();
+            }
+
+            function hideMenu() {
+                document.getElementById('context-menu').style.display = 'none';
+            }
+
+            // Hide menu when clicking outside
+            document.addEventListener('click', function (event) {
+                const menu = document.getElementById('context-menu');
+                if (!menu.contains(event.target)) {
+                    hideMenu();
+                }
+            });
+
+            // Test keyboard deletion
+            document.addEventListener('keydown', function (event) {
+                if ((event.key === 'Delete' || event.key === 'Backspace') && selectedComponent) {
+                    console.log('Keyboard delete for:', selectedComponent);
+                    alert('Keyboard delete: ' + selectedComponent);
+                    document.getElementById(selectedComponent).style.display = 'none';
+                    selectedComponent = null;
+                }
+            });
+        </script>
+    </body>
+</html>

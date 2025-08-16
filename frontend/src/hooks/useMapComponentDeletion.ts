@@ -17,9 +17,7 @@ export interface UseMapComponentDeletionResult {
 /**
  * Hook that provides component deletion functionality with undo/redo integration
  */
-export const useMapComponentDeletion = (
-    deleter?: UndoRedoMapComponentDeleter,
-): UseMapComponentDeletionResult => {
+export const useMapComponentDeletion = (deleter?: UndoRedoMapComponentDeleter): UseMapComponentDeletionResult => {
     const undoRedoContext = useUndoRedo();
     const componentDeleter = deleter || new UndoRedoMapComponentDeleter();
 

@@ -65,6 +65,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({childre
      * Show context menu at the specified position for the given component
      */
     const showContextMenu = useCallback((position: {x: number; y: number}, componentId: string) => {
+        console.log('ContextMenuProvider showContextMenu called:', {position, componentId});
         setContextMenuState({
             isOpen: true,
             position,
@@ -125,10 +126,14 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({childre
         const selectedComponentId = getSelectedComponentId();
         const items: ContextMenuItem[] = [];
 
+        console.log('Generating context menu items for:', selectedComponentId);
+        console.log('Is selected:', selectedComponentId ? isSelected(selectedComponentId) : false);
+
         // Only show delete option if a component is selected and can be deleted
         if (selectedComponentId && isSelected(selectedComponentId)) {
             const canDeleteComponent = canDelete(selectedComponentId);
-            
+            console.log('Can delete component:', canDeleteComponent);
+
             items.push({
                 id: 'delete',
                 label: 'Delete',
@@ -139,6 +144,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({childre
             });
         }
 
+        console.log('Generated context menu items:', items);
         return items;
     }, [getSelectedComponentId, isSelected, canDelete, handleDeleteComponent]);
 

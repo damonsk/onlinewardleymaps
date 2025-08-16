@@ -96,16 +96,27 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
          */
         const handleDeletionShortcuts = useCallback(
             (event: KeyboardEvent): boolean => {
-                if (!selectedComponentId || !onDeleteComponent) return false;
+                console.log('KeyboardShortcutHandler deletion check:', {
+                    key: event.key,
+                    selectedComponentId,
+                    hasDeleteHandler: !!onDeleteComponent,
+                });
+
+                if (!selectedComponentId || !onDeleteComponent) {
+                    console.log('Deletion blocked - no selected component or delete handler');
+                    return false;
+                }
 
                 const key = event.key;
 
                 // Handle Delete and Backspace keys (no modifiers)
                 if ((key === 'Delete' || key === 'Backspace') && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
+                    console.log('Processing deletion for component:', selectedComponentId);
                     event.preventDefault();
                     try {
                         onDeleteComponent(selectedComponentId);
                         setAnnounceText(`Component deleted`);
+                        console.log('Component deletion successful');
                     } catch (error) {
                         console.error('Error deleting component:', error);
                         setAnnounceText(`Error deleting component`);

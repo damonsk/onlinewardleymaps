@@ -733,7 +733,7 @@ describe('KeyboardShortcutHandler', () => {
 
         it('should clear deletion announcement after timeout', () => {
             jest.useFakeTimers();
-            
+
             renderWithUndoRedo({
                 selectedComponentId: 'test-component',
                 onDeleteComponent: mockOnDeleteComponent,

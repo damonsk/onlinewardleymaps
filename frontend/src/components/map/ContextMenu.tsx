@@ -128,7 +128,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = memo(({items, isOpen, onC
     const handleItemSelect = useCallback(
         (item: ContextMenuItem) => {
             if (item.disabled) return;
-            
+
             item.action();
             onClose();
         },
@@ -219,7 +219,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = memo(({items, isOpen, onC
             role="menu"
             aria-label="Context menu"
             onKeyDown={handleKeyDown}>
-            {items.map((item) => (
+            {items.map(item => (
                 <ContextMenuItem
                     key={item.id}
                     $disabled={item.disabled}
