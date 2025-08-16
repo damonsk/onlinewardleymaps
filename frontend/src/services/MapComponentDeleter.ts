@@ -87,12 +87,16 @@ export class MapComponentDeleter {
      * Checks if a component can be deleted
      */
     public canDelete(componentId: string, componentType?: string): boolean {
+        console.log('MapComponentDeleter: canDelete called with:', {componentId, componentType, typeOfId: typeof componentId});
+        
         if (!componentId || typeof componentId !== 'string') {
+            console.log('MapComponentDeleter: canDelete returning false - invalid componentId');
             return false;
         }
 
         // For now, allow deletion of all component types
         // This can be extended with more sophisticated validation logic
+        console.log('MapComponentDeleter: canDelete returning true');
         return true;
     }
 
@@ -270,24 +274,35 @@ export class MapComponentDeleter {
         isValid: boolean;
         errors: string[];
     } {
+        console.log('MapComponentDeleter: validateDeletionParams called with:', params);
         const errors: string[] = [];
 
         if (!params.mapText || typeof params.mapText !== 'string') {
+            console.log('MapComponentDeleter: validation failed - invalid mapText');
             errors.push('Map text must be a non-empty string');
         }
 
         if (!params.componentId || typeof params.componentId !== 'string') {
+            console.log('MapComponentDeleter: validation failed - invalid componentId:', {
+                componentId: params.componentId,
+                type: typeof params.componentId,
+                truthy: !!params.componentId
+            });
             errors.push('Component ID must be a non-empty string');
         }
 
         if (params.componentType && !['pst', 'component', 'market', 'anchor', 'note', 'pipeline'].includes(params.componentType)) {
+            console.log('MapComponentDeleter: validation failed - invalid componentType');
             errors.push('Invalid component type specified');
         }
 
-        return {
+        const result = {
             isValid: errors.length === 0,
             errors,
         };
+        
+        console.log('MapComponentDeleter: validation result:', result);
+        return result;
     }
 }
 

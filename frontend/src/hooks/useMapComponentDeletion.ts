@@ -23,6 +23,7 @@ export const useMapComponentDeletion = (deleter?: UndoRedoMapComponentDeleter): 
 
     const deleteComponent = useCallback(
         (params: UndoRedoDeletionParams) => {
+            console.log('useMapComponentDeletion: deleteComponent called with params:', params);
             try {
                 componentDeleter.deleteComponentWithUndo(params, undoRedoContext);
             } catch (error) {
@@ -36,7 +37,9 @@ export const useMapComponentDeletion = (deleter?: UndoRedoMapComponentDeleter): 
 
     const canDelete = useCallback(
         (componentId: string, componentType?: string) => {
-            return componentDeleter.canDelete(componentId, componentType);
+            const result = componentDeleter.canDelete(componentId, componentType);
+            console.log('useMapComponentDeletion: canDelete called with:', {componentId, componentType, result});
+            return result;
         },
         [componentDeleter],
     );

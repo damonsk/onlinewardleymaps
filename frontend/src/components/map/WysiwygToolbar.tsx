@@ -596,12 +596,15 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                 }
 
                 try {
-                    // Attempt to delete the component
-                    deleteComponent({
+                    const deletionParams = {
                         mapText,
                         componentId,
                         componentName: componentId, // Use componentId as name for now
-                    });
+                    };
+                    console.log('WysiwygToolbar: Attempting to delete component with params:', deletionParams);
+                    
+                    // Attempt to delete the component
+                    deleteComponent(deletionParams);
 
                     // Clear the selection after successful deletion
                     componentSelection.clearSelection();
