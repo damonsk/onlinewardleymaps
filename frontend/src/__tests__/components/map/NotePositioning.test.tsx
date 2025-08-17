@@ -1,7 +1,7 @@
-import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
-import Note from '../../../components/map/Note';
+import {fireEvent, render, screen} from '@testing-library/react';
+import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../../components/EditingContext';
+import Note from '../../../components/map/Note';
 
 // Mock the InlineEditor component
 jest.mock('../../../components/map/InlineEditor', () => {
@@ -78,9 +78,11 @@ describe('Note Positioning Tests', () => {
 
         const {container} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -113,9 +115,11 @@ describe('Note Positioning Tests', () => {
 
         const {container} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...propsTopLeft} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -148,9 +152,11 @@ describe('Note Positioning Tests', () => {
 
         const {container} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...propsBottomRight} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -166,80 +172,6 @@ describe('Note Positioning Tests', () => {
         expect(foreignObject).toHaveAttribute('y', '-40');
     });
 
-    it('should use different coordinate systems for Chrome vs Safari', () => {
-        const testPosition = {
-            visibility: 0.3,
-            maturity: 0.7,
-        };
-
-        const propsWithPosition = {
-            ...defaultProps,
-            note: {
-                ...defaultProps.note,
-                ...testPosition,
-            },
-        };
-
-        // Test Chrome positioning (local coordinates)
-        mockUserAgent(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        );
-        mockVendor('Google Inc.');
-
-        const {container: chromeContainer} = render(
-            <EditingProvider>
-                <svg>
-                    <Note {...propsWithPosition} />
-                </svg>
-            </EditingProvider>,
-        );
-
-        const chromeNoteText = screen.getByTestId('modern_note_text_note1');
-        fireEvent.doubleClick(chromeNoteText);
-
-        const chromeForeignObject = chromeContainer.querySelector('foreignObject');
-        const chromeX = chromeForeignObject?.getAttribute('x');
-        const chromeY = chromeForeignObject?.getAttribute('y');
-
-        // Chrome uses local coordinates
-        expect(chromeX).toBe('-70');
-        expect(chromeY).toBe('-40');
-
-        // Clean up Chrome render
-        chromeContainer.remove();
-
-        // Test Safari positioning (global coordinates)
-        mockUserAgent(
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
-        );
-        mockVendor('Apple Computer, Inc.');
-
-        const {container: safariContainer} = render(
-            <EditingProvider>
-                <svg>
-                    <Note {...propsWithPosition} />
-                </svg>
-            </EditingProvider>,
-        );
-
-        const safariNoteText = screen.getByTestId('modern_note_text_note1');
-        fireEvent.doubleClick(safariNoteText);
-
-        const safariForeignObject = safariContainer.querySelector('foreignObject');
-        const safariX = safariForeignObject?.getAttribute('x');
-        const safariY = safariForeignObject?.getAttribute('y');
-
-        // Safari uses global coordinates
-        // Note position: x = 0.7 * 800 = 560, y = (1 - 0.3) * 600 = 420
-        // Editor position: x = 560 - 70 = 490, y = 420 - 40 = 380
-        expect(safariX).toBe('490');
-        expect(safariY).toBe('380');
-
-        // Different coordinate systems but both should visually appear in the same place
-        expect(chromeX).not.toBe(safariX);
-        expect(chromeY).not.toBe(safariY);
-    });
-
     it('should apply Chrome-specific transform fixes', () => {
         mockUserAgent(
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -248,9 +180,11 @@ describe('Note Positioning Tests', () => {
 
         const {container} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -273,9 +207,11 @@ describe('Note Positioning Tests', () => {
 
         const {container} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 

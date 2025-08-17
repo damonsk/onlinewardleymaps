@@ -46,7 +46,7 @@ export class UndoRedoMapComponentDeleter {
         const result = this.deleter.deleteComponent(params);
 
         // Generate a descriptive action description
-        const componentName = params.componentName || params.componentId;
+        const componentName = params.componentName || String(params.componentId);
         const actionDescription = ACTION_DESCRIPTIONS['canvas-delete'](componentName);
 
         // Record the change in undo/redo history using the enhanced mutateMapText
@@ -59,7 +59,7 @@ export class UndoRedoMapComponentDeleter {
     /**
      * Checks if a component can be deleted
      */
-    public canDelete(componentId: string, componentType?: string): boolean {
+    public canDelete(componentId: string | number, componentType?: string): boolean {
         return this.deleter.canDelete(componentId, componentType);
     }
 

@@ -11,7 +11,7 @@ import {UndoRedoMapComponentDeleter, UndoRedoDeletionParams} from '../services/U
  */
 export interface UseMapComponentDeletionResult {
     deleteComponent: (params: UndoRedoDeletionParams) => void;
-    canDelete: (componentId: string, componentType?: string) => boolean;
+    canDelete: (componentId: string | number, componentType?: string) => boolean;
 }
 
 /**
@@ -36,7 +36,7 @@ export const useMapComponentDeletion = (deleter?: UndoRedoMapComponentDeleter): 
     );
 
     const canDelete = useCallback(
-        (componentId: string, componentType?: string) => {
+        (componentId: string | number, componentType?: string) => {
             const result = componentDeleter.canDelete(componentId, componentType);
             console.log('useMapComponentDeletion: canDelete called with:', {componentId, componentType, result});
             return result;

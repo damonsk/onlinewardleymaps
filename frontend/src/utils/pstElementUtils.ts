@@ -15,8 +15,8 @@ export function convertAttitudeToPSTElement(attitude: any): PSTElement | null {
         return null;
     }
 
-    // Generate unique ID for the PST element
-    const id = `pst-${attitude.attitude}-${attitude.line}`;
+    // Generate simple numeric ID like regular components
+    const id = String(attitude.line);
 
     // Convert attitude coordinates to PST coordinates
     const coordinates: PSTCoordinates = {

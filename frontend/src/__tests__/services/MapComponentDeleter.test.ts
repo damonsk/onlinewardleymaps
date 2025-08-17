@@ -39,7 +39,7 @@ component System [0.5, 0.5]`;
 
             const result = deleter.deleteComponent({
                 mapText,
-                componentId: 'pst-pioneers-1',
+                componentId: 1, // Use numeric ID like regular components
                 componentType: 'pst',
             });
 
@@ -47,6 +47,37 @@ component System [0.5, 0.5]`;
 component System [0.5, 0.5]`);
             expect(result.deletedComponent.type).toBe('pst');
             expect(result.deletedComponent.line).toBe(1);
+            expect(result.deletedComponent.id).toBe('1'); // ID is the numeric line-based ID
+        });
+
+        it('should delete a PST component with numeric ID (line 0)', () => {
+            const mapText = 'pioneers [0.55, 0.34, 0.31, 0.63]';
+
+            const result = deleter.deleteComponent({
+                mapText,
+                componentId: 0, // Use line-based numeric ID like regular components
+                componentType: 'pst',
+            });
+
+            expect(result.updatedMapText).toBe('');
+            expect(result.deletedComponent.type).toBe('pst');
+            expect(result.deletedComponent.line).toBe(0);
+            expect(result.deletedComponent.id).toBe('0');
+        });
+
+        it('should delete a PST component using numeric line-based ID (delete key style)', () => {
+            const mapText = 'pioneers [0.55, 0.34, 0.31, 0.63]';
+
+            const result = deleter.deleteComponent({
+                mapText,
+                componentId: 1, // Using numeric ID like the delete key (1-based indexing for line 0)
+                componentType: 'pst',
+            });
+
+            expect(result.updatedMapText).toBe('');
+            expect(result.deletedComponent.type).toBe('pst');
+            expect(result.deletedComponent.line).toBe(0);
+            expect(result.deletedComponent.id).toBe('1');
         });
 
         it('should handle empty lines correctly', () => {
@@ -97,6 +128,19 @@ component User [0.9, 0.1]`;
                 });
             }).toThrow('Component ID must be a non-empty string');
         });
+
+        it('should delete a component using numeric line-based ID', () => {
+            const mapText = 'component New Component [0.75, 0.38]';
+            const result = deleter.deleteComponent({
+                mapText,
+                componentId: 1, // Using numeric ID that should match line 0 (1-based indexing)
+            });
+
+            expect(result.updatedMapText).toBe('');
+            expect(result.deletedComponent.id).toBe('1');
+            expect(result.deletedComponent.type).toBe('component');
+            expect(result.deletedComponent.line).toBe(0);
+        });
     });
 
     describe('canDelete', () => {
@@ -109,6 +153,13 @@ component User [0.9, 0.1]`;
             expect(deleter.canDelete('')).toBe(false);
             expect(deleter.canDelete(null as any)).toBe(false);
             expect(deleter.canDelete(undefined as any)).toBe(false);
+        });
+
+        it('should accept numeric component IDs', () => {
+            expect(deleter.canDelete(0)).toBe(true); // 0 is valid (line 0)
+            expect(deleter.canDelete(1)).toBe(true);
+            expect(deleter.canDelete(123)).toBe(true);
+            expect(deleter.canDelete(-1)).toBe(false); // Negative numbers are invalid
         });
     });
 
@@ -201,6 +252,37 @@ component System [0.5, 0.5]`;
 
             expect(result.isValid).toBe(false);
             expect(result.errors).toContain('Invalid component type specified');
+        });
+
+        it('should accept numeric component IDs', () => {
+            const result = deleter.validateDeletionParams({
+                mapText: 'component Test [0.5, 0.5]',
+                componentId: 123,
+                componentType: 'component',
+            });
+
+            expect(result.isValid).toBe(true);
+            expect(result.errors).toHaveLength(0);
+        });
+
+        it('should accept zero as component ID (line 0)', () => {
+            const result = deleter.validateDeletionParams({
+                mapText: 'component Test [0.5, 0.5]',
+                componentId: 0,
+            });
+
+            expect(result.isValid).toBe(true);
+            expect(result.errors).toHaveLength(0);
+        });
+
+        it('should reject negative component IDs', () => {
+            const result = deleter.validateDeletionParams({
+                mapText: 'component Test [0.5, 0.5]',
+                componentId: -1,
+            });
+
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContain('Component ID must be a non-negative number');
         });
     });
 });

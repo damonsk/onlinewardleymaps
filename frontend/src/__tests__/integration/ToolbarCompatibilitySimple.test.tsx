@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {act} from 'react';
 
 // Mock ReactDOMServer to avoid MessageChannel issues in tests
 jest.mock('react-dom/server', () => ({
@@ -8,7 +7,7 @@ jest.mock('react-dom/server', () => ({
 }));
 
 import {MapView} from '../../components/map/MapView';
-import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
+import {UndoRedoProvider} from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedWardleyMap} from '../../types/unified/map';
@@ -269,7 +268,11 @@ describe('Toolbar Compatibility Integration Tests', () => {
 
     const renderComponent = (props: any = {}) => {
         act(() => {
-            root.render(<MapView {...defaultProps} {...props} />);
+            root.render(
+                <UndoRedoProvider {...defaultProps} {...props}>
+                    <MapView {...defaultProps} {...props} />
+                </UndoRedoProvider>,
+            );
         });
     };
     describe('Requirement 6.2: State synchronization between toolbar and text editing', () => {

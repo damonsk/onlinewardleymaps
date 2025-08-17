@@ -360,7 +360,7 @@ export function extractPSTElementsFromMapText(mapText: string): PSTElement[] {
 
         if (parsed.isValid && parsed.type && parsed.coordinates) {
             elements.push({
-                id: `pst-${parsed.type}-${i}`,
+                id: String(i), // Use simple numeric line-based IDs like regular components
                 type: parsed.type,
                 coordinates: parsed.coordinates,
                 line: i,

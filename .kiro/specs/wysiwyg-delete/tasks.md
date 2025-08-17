@@ -33,7 +33,7 @@
   - Test undo/redo functionality with deletion operations
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 6. Implement context menu deletion
+- [x] 6. Implement context menu deletion
   - Create context menu provider for right-click interactions
   - Add delete option to context menu when component is selected
   - Handle context menu positioning and lifecycle

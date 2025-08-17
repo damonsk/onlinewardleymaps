@@ -12,7 +12,7 @@ import {findPSTElementLine, parsePSTSyntax} from '../utils/pstMapTextMutation';
  */
 export interface ComponentDeletionParams {
     mapText: string;
-    componentId: string;
+    componentId: string | number;
     componentType?: 'pst' | 'component' | 'market' | 'anchor' | 'note' | 'pipeline';
 }
 
@@ -53,20 +53,33 @@ export class MapComponentDeleter {
             throw new Error('Map text must be a non-empty string');
         }
 
-        if (!componentId || typeof componentId !== 'string') {
-            throw new Error('Component ID must be a non-empty string');
+        // Validate and convert componentId to string for identification
+        let componentIdStr: string;
+
+        if (typeof componentId === 'number') {
+            if (isNaN(componentId) || componentId < 0) {
+                throw new Error('Component ID must be a non-negative number');
+            }
+            componentIdStr = String(componentId);
+        } else if (typeof componentId === 'string') {
+            if (!componentId || componentId.trim() === '') {
+                throw new Error('Component ID must be a non-empty string');
+            }
+            componentIdStr = componentId;
+        } else {
+            throw new Error('Component ID must be a string or number');
         }
 
         // Identify the component in the map text
-        const identification = this.identifyComponent(mapText, componentId, componentType);
+        const identification = this.identifyComponent(mapText, componentIdStr, componentType);
 
         if (!identification.found) {
             throw new Error(`Component with ID "${componentId}" not found in map text`);
         }
 
         // Validate that the component can be deleted
-        if (!this.canDelete(componentId, identification.type)) {
-            throw new Error(`Component "${componentId}" cannot be deleted`);
+        if (!this.canDelete(componentIdStr, identification.type)) {
+            throw new Error(`Component "${componentIdStr}" cannot be deleted`);
         }
 
         // Remove the component line from map text
@@ -75,7 +88,7 @@ export class MapComponentDeleter {
         return {
             updatedMapText,
             deletedComponent: {
-                id: componentId,
+                id: componentIdStr,
                 type: identification.type,
                 line: identification.line,
                 originalText: identification.originalText,
@@ -86,35 +99,72 @@ export class MapComponentDeleter {
     /**
      * Checks if a component can be deleted
      */
-    public canDelete(componentId: string, componentType?: string): boolean {
-        console.log('MapComponentDeleter: canDelete called with:', {componentId, componentType, typeOfId: typeof componentId});
-        
-        if (!componentId || typeof componentId !== 'string') {
-            console.log('MapComponentDeleter: canDelete returning false - invalid componentId');
+    public canDelete(componentId: string | number, _componentType?: string): boolean {
+        // Handle numeric and string IDs
+        if (typeof componentId === 'number') {
+            // For numbers, check that it's not NaN and non-negative (allow 0 for line 0)
+            if (isNaN(componentId) || componentId < 0) {
+                return false;
+            }
+        } else if (typeof componentId === 'string') {
+            // For strings, check that it's not empty after trimming
+            if (!componentId || componentId.trim() === '') {
+                return false;
+            }
+        } else {
+            // Neither string nor number
             return false;
         }
 
         // For now, allow deletion of all component types
         // This can be extended with more sophisticated validation logic
-        console.log('MapComponentDeleter: canDelete returning true');
         return true;
     }
 
     /**
      * Identifies a component in map text and returns its location and type
      */
-    private identifyComponent(mapText: string, componentId: string, expectedType?: string): ComponentIdentification {
+    private identifyComponent(mapText: string, componentId: string, _expectedType?: string): ComponentIdentification {
         const lines = mapText.split('\n');
 
-        // Try PST component identification first if expected type is PST
-        if (expectedType === 'pst') {
-            const pstResult = this.identifyPSTComponent(mapText, componentId);
-            if (pstResult.found) {
-                return pstResult;
+        // Check if componentId is a simple numeric ID that might correspond to a line number
+        // This works for ALL component types including PST - treat PST exactly like regular components
+        const numericId = parseInt(componentId, 10);
+        if (!isNaN(numericId) && numericId >= 0) {
+            // Try both 0-based and 1-based indexing
+            const lineIndicesToTry = [numericId, numericId - 1];
+
+            for (const lineIndex of lineIndicesToTry) {
+                if (lineIndex >= 0 && lineIndex < lines.length) {
+                    const line = lines[lineIndex].trim();
+                    if (line) {
+                        // Try PST parsing first
+                        const pstParsed = parsePSTSyntax(line);
+                        if (pstParsed.isValid && pstParsed.type) {
+                            return {
+                                found: true,
+                                line: lineIndex,
+                                type: 'pst',
+                                originalText: line,
+                            };
+                        }
+
+                        // Try regular component parsing
+                        const componentMatch = this.parseComponentLine(line, lineIndex);
+                        if (componentMatch) {
+                            return {
+                                found: true,
+                                line: lineIndex,
+                                type: componentMatch.type,
+                                originalText: line,
+                            };
+                        }
+                    }
+                }
             }
         }
 
-        // Try regular component identification
+        // Try regular component identification by generated ID and name matching
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
@@ -127,39 +177,6 @@ export class MapComponentDeleter {
                     type: componentMatch.type,
                     originalText: line,
                 };
-            }
-        }
-
-        return {
-            found: false,
-            line: -1,
-            type: 'unknown',
-            originalText: '',
-        };
-    }
-
-    /**
-     * Identifies PST components using existing PST utilities
-     */
-    private identifyPSTComponent(mapText: string, componentId: string): ComponentIdentification {
-        const lines = mapText.split('\n');
-
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (!line) continue;
-
-            const parsed = parsePSTSyntax(line);
-            if (parsed.isValid && parsed.type) {
-                // Generate PST component ID similar to how it's done in extractPSTElementsFromMapText
-                const pstId = `pst-${parsed.type}-${i}`;
-                if (pstId === componentId) {
-                    return {
-                        found: true,
-                        line: i,
-                        type: 'pst',
-                        originalText: line,
-                    };
-                }
             }
         }
 
@@ -282,13 +299,32 @@ export class MapComponentDeleter {
             errors.push('Map text must be a non-empty string');
         }
 
-        if (!params.componentId || typeof params.componentId !== 'string') {
-            console.log('MapComponentDeleter: validation failed - invalid componentId:', {
+        // Validate componentId - handle both string and number types
+        if (typeof params.componentId === 'number') {
+            if (isNaN(params.componentId) || params.componentId < 0) {
+                console.log('MapComponentDeleter: validation failed - invalid numeric componentId:', {
+                    componentId: params.componentId,
+                    type: typeof params.componentId,
+                    isNaN: isNaN(params.componentId),
+                    isNonNegative: params.componentId >= 0,
+                });
+                errors.push('Component ID must be a non-negative number');
+            }
+        } else if (typeof params.componentId === 'string') {
+            if (!params.componentId || params.componentId.trim() === '') {
+                console.log('MapComponentDeleter: validation failed - invalid string componentId:', {
+                    componentId: params.componentId,
+                    type: typeof params.componentId,
+                    truthy: !!params.componentId,
+                });
+                errors.push('Component ID must be a non-empty string');
+            }
+        } else {
+            console.log('MapComponentDeleter: validation failed - componentId is neither string nor number:', {
                 componentId: params.componentId,
                 type: typeof params.componentId,
-                truthy: !!params.componentId
             });
-            errors.push('Component ID must be a non-empty string');
+            errors.push('Component ID must be a string or number');
         }
 
         if (params.componentType && !['pst', 'component', 'market', 'anchor', 'note', 'pipeline'].includes(params.componentType)) {
@@ -300,7 +336,7 @@ export class MapComponentDeleter {
             isValid: errors.length === 0,
             errors,
         };
-        
+
         console.log('MapComponentDeleter: validation result:', result);
         return result;
     }

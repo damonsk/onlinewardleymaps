@@ -602,7 +602,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         componentName: componentId, // Use componentId as name for now
                     };
                     console.log('WysiwygToolbar: Attempting to delete component with params:', deletionParams);
-                    
+
                     // Attempt to delete the component
                     deleteComponent(deletionParams);
 

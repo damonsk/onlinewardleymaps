@@ -1,35 +1,32 @@
 import React, {MouseEvent} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapElements} from '../../processing/MapElements';
+import {PSTBounds, PSTCoordinates, PSTElement, ResizeHandle} from '../../types/map/pst';
 import {MapTheme} from '../../types/map/styles';
-import {PSTElement, PSTCoordinates, PSTBounds, ResizeHandle} from '../../types/map/pst';
 import {UnifiedComponent} from '../../types/unified';
 import {getMapElementsDecorated} from '../../utils/mapProcessing';
-
 import {convertPSTCoordinatesToBounds} from '../../utils/pstCoordinateUtils';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import AcceleratorSymbol from '../symbols/AcceleratorSymbol';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import EcosystemSymbol from '../symbols/EcosystemSymbol';
 import MarketSymbol from '../symbols/MarketSymbol';
 import PipelineComponentSymbol from '../symbols/PipelineComponentSymbol';
 import SubMapSymbol from '../symbols/SubMapSymbol';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import Anchor from './Anchor';
 import AnnotationBox from './AnnotationBox';
 import AnnotationElement from './AnnotationElement';
-import Attitude from './Attitude';
 import ComponentLink from './ComponentLink';
+import DrawingPreview from './DrawingPreview';
 import EvolvingComponentLink from './EvolvingComponentLink';
 import FluidLink from './FluidLink';
+import LinkingPreview from './LinkingPreview';
 import MapAccelerator from './MapAccelerator';
 import MapComponent from './MapComponent';
 import MapPipelines from './MapPipelines';
 import MethodElement from './MethodElement';
-import Note from './Note';
-import LinkingPreview from './LinkingPreview';
-import DrawingPreview from './DrawingPreview';
-import PositionCalculator from './PositionCalculator';
 import ModernPositionCalculator from './ModernPositionCalculator';
+import Note from './Note';
 import PSTBox from './PSTBox';
 import ResizePreview from './ResizePreview';
 
@@ -96,27 +93,6 @@ interface ModernUnifiedMapContentProps {
     onPSTDragEnd?: (element: PSTElement) => void;
 }
 
-/**
- * Helper function to convert component coordinates to SVG coordinates
- * This accounts for the SVG viewBox offset (-35, -45) used in UnifiedMapCanvas
- * Same logic as used in DrawingPreview for consistent positioning
- */
-const componentToSVGCoordinates = (component: UnifiedComponent, mapDimensions: {width: number; height: number}) => {
-    const positionCalculator = new PositionCalculator();
-
-    // Step 1: Convert map coordinates (0-1) back to adjusted coordinates
-    const adjustedX = positionCalculator.maturityToX(component.maturity, mapDimensions.width);
-    const adjustedY = positionCalculator.visibilityToY(component.visibility, mapDimensions.height);
-
-    // Step 2: Remove the SVG viewBox offset to get raw SVG coordinates
-    // In UnifiedMapCanvas: adjustedX = svgX + 35, adjustedY = svgY + 45
-    // So: svgX = adjustedX - 35, svgY = adjustedY - 45
-    const svgX = adjustedX - 35;
-    const svgY = adjustedY - 45;
-
-    return {x: svgX, y: svgY};
-};
-
 const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
     const {
         mapDimensions,
@@ -180,27 +156,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                     `}
                 </style>
             </defs>
-
-            <g id="attitudes">
-                {/* Render non-PST attitudes using the original Attitude component */}
-                {props.mapAttitudes &&
-                    props.mapAttitudes
-                        .filter((a: any) => !['pioneers', 'settlers', 'townplanners'].includes(a.attitude))
-                        .map((a: any, i: number) => (
-                            <Attitude
-                                key={i}
-                                attitude={a}
-                                mapDimensions={mapDimensions}
-                                mapText={mapText}
-                                mutateMapText={mutateMapText}
-                                mapStyleDefs={mapStyleDefs}
-                                scaleFactor={scaleFactor}
-                            />
-                        ))}
-            </g>
-
             <g id="pst-elements">
-                {/* Render PST elements with resize functionality */}
                 {mapElements.getPSTElements().map((pstElement: PSTElement) => (
                     <PSTBox
                         key={pstElement.id}

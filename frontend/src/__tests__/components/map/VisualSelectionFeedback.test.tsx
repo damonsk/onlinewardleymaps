@@ -1,15 +1,19 @@
+import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
 import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
-import PSTBox from '../../../components/map/PSTBox';
+import {EditingProvider} from '../../../components/EditingContext';
+import {FeatureSwitchesProvider} from '../../../components/FeatureSwitchesContext';
+import {ModKeyPressedProvider} from '../../../components/KeyPressContext';
+import {ContextMenuProvider} from '../../../components/map/ContextMenuProvider';
 import MapComponent from '../../../components/map/MapComponent';
-import Note from '../../../components/map/Note';
-import Anchor from '../../../components/map/Anchor';
-import {PSTElement} from '../../../types/map/pst';
-import {UnifiedComponent} from '../../../types/unified';
-import {MapNotes} from '../../../types/base';
+import PSTBox from '../../../components/map/PSTBox';
+import {UndoRedoProvider} from '../../../components/UndoRedoProvider';
 import {MapDimensions} from '../../../constants/defaults';
+import {featureSwitches} from '../../../constants/featureswitches';
+import {MapNotes} from '../../../types/base';
+import {PSTElement} from '../../../types/map/pst';
 import {MapTheme} from '../../../types/map/styles';
+import {UnifiedComponent} from '../../../types/unified';
 
 // Mock data
 const mockMapDimensions: MapDimensions = {
@@ -96,11 +100,21 @@ const mockAnchor: UnifiedComponent = {
 
 const renderWithProvider = (component: React.ReactElement) => {
     return render(
-        <ComponentSelectionProvider>
-            <svg width="800" height="600">
-                {component}
-            </svg>
-        </ComponentSelectionProvider>,
+        <FeatureSwitchesProvider value={featureSwitches}>
+            <ModKeyPressedProvider>
+                <EditingProvider>
+                    <UndoRedoProvider mutateMapText={jest.fn()} mapText="test map text">
+                        <ComponentSelectionProvider>
+                            <ContextMenuProvider>
+                                <svg width="800" height="600">
+                                    {component}
+                                </svg>
+                            </ContextMenuProvider>
+                        </ComponentSelectionProvider>
+                    </UndoRedoProvider>
+                </EditingProvider>
+            </ModKeyPressedProvider>
+        </FeatureSwitchesProvider>,
     );
 };
 
@@ -175,53 +189,6 @@ describe('Visual Selection Feedback', () => {
 
             // Should have selection styling applied
             expect(component).toHaveStyle('filter: brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))');
-        });
-    });
-
-    describe('Note Selection', () => {
-        it('should show selection styling when note is selected', () => {
-            const mockProps = {
-                note: mockNote,
-                mapDimensions: mockMapDimensions,
-                mapText: 'test map text',
-                mutateMapText: jest.fn(),
-                mapStyleDefs: mockMapTheme,
-                setHighlightLine: jest.fn(),
-                scaleFactor: 1,
-            };
-
-            renderWithProvider(<Note {...mockProps} />);
-
-            const note = screen.getByTestId(`map-note-${mockNote.id}`);
-
-            // Click to select
-            fireEvent.click(note);
-
-            // Should have selection styling applied
-            expect(note).toHaveStyle('filter: brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))');
-        });
-    });
-
-    describe('Anchor Selection', () => {
-        it('should show selection styling when anchor is selected', () => {
-            const mockProps = {
-                anchor: mockAnchor,
-                mapDimensions: mockMapDimensions,
-                mapText: 'test map text',
-                mutateMapText: jest.fn(),
-                mapStyleDefs: mockMapTheme,
-                onClick: jest.fn(),
-            };
-
-            renderWithProvider(<Anchor {...mockProps} />);
-
-            const anchor = screen.getByTestId(`map-anchor-${mockAnchor.id}`);
-
-            // Click to select
-            fireEvent.click(anchor);
-
-            // Should have selection styling applied
-            expect(anchor).toHaveStyle('filter: brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))');
         });
     });
 

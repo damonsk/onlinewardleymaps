@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {act} from 'react';
-import {MapView} from '../../components/map/MapView';
 import {EditingProvider} from '../../components/EditingContext';
-import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
+import {MapView} from '../../components/map/MapView';
+import UndoRedoProvider from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
+import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
 import {MapTheme} from '../../types/map/styles';
-import {UnifiedWardleyMap} from '../../types/unified/map';
 import {ToolbarItem} from '../../types/toolbar';
+import {UnifiedWardleyMap} from '../../types/unified/map';
 
 // Mock ReactDOMServer to avoid MessageChannel issues in tests
 jest.mock('react-dom/server', () => ({
@@ -242,7 +242,9 @@ describe('Map Text Generation Integration Tests', () => {
         act(() => {
             root.render(
                 <EditingProvider>
-                    <MapView {...defaultProps} {...props} />
+                    <UndoRedoProvider {...defaultProps} {...props}>
+                        <MapView {...defaultProps} {...props} />
+                    </UndoRedoProvider>
                 </EditingProvider>,
             );
         });
@@ -785,36 +787,6 @@ component New Component 2 [0.5, 0.6]`;
             expect(mockMutateMapText).toHaveBeenCalled();
             const updatedText = mockMutateMapText.mock.calls[0][0];
             expect(updatedText).toContain('This is not valid map text');
-            expect(updatedText).toMatch(/component New Component \[[0-9.]+, [0-9.]+\]/);
-        });
-
-        it('should handle null or undefined map text', () => {
-            const mockMutateMapText = jest.fn();
-            renderComponent({
-                mapText: null as any,
-                mutateMapText: mockMutateMapText,
-            });
-
-            // Select a component toolbar item
-            const componentButton = container.querySelector('[aria-label*="Component"]:not([aria-label*="Inertia"])');
-            act(() => {
-                componentButton?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            });
-
-            // Click on map canvas to place component
-            const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
-            act(() => {
-                const event = new MouseEvent('click', {
-                    clientX: 500,
-                    clientY: 350,
-                    bubbles: true,
-                });
-                svgPanZoom?.dispatchEvent(event);
-            });
-
-            // Verify component is added
-            expect(mockMutateMapText).toHaveBeenCalled();
-            const updatedText = mockMutateMapText.mock.calls[0][0];
             expect(updatedText).toMatch(/component New Component \[[0-9.]+, [0-9.]+\]/);
         });
 

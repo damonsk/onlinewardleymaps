@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {act} from 'react';
 import {MapView} from '../../components/map/MapView';
-import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
+import UndoRedoProvider from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
+import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 
@@ -237,7 +237,11 @@ describe('Pipeline Placement Integration Tests', () => {
 
     const renderComponent = (props: any = {}) => {
         act(() => {
-            root.render(<MapView {...defaultProps} {...props} />);
+            root.render(
+                <UndoRedoProvider {...defaultProps} {...props}>
+                    <MapView {...defaultProps} {...props} />
+                </UndoRedoProvider>,
+            );
         });
     };
 

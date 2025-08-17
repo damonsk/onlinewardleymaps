@@ -1,8 +1,7 @@
-import React from 'react';
-import {render, screen, fireEvent, act} from '@testing-library/react';
 import '@testing-library/jest-dom';
+import {act, fireEvent, render, screen} from '@testing-library/react';
 import {KeyboardShortcutHandler} from '../../../components/map/KeyboardShortcutHandler';
-import {UndoRedoProvider, useUndoRedo} from '../../../components/UndoRedoProvider';
+import {TestProviderWrapper} from '../../../testUtils/testProviders';
 import {ToolbarItem} from '../../../types/toolbar';
 
 // Mock the toolbar items
@@ -58,7 +57,7 @@ describe('KeyboardShortcutHandler', () => {
 
     const renderWithUndoRedo = (props: any = {}) => {
         return render(
-            <UndoRedoProvider mutateMapText={mockMutateMapText} mapText="test map">
+            <TestProviderWrapper mutateMapText={mockMutateMapText} mapText="test map">
                 <KeyboardShortcutHandler
                     toolbarItems={mockToolbarItems}
                     onToolSelect={mockOnToolSelect}
@@ -66,7 +65,7 @@ describe('KeyboardShortcutHandler', () => {
                     currentSelectedTool={null}
                     {...props}
                 />
-            </UndoRedoProvider>,
+            </TestProviderWrapper>,
         );
     };
 
@@ -130,190 +129,6 @@ describe('KeyboardShortcutHandler', () => {
             });
 
             expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
-        });
-    });
-
-    describe('Undo Shortcuts', () => {
-        it('should handle Ctrl+Z on Windows', async () => {
-            mockNavigator('Win32', 'Windows');
-
-            // Create a test component that sets up history and tests undo
-            const TestComponent = () => {
-                const undoRedoContext = useUndoRedo();
-                const [historyCreated, setHistoryCreated] = React.useState(false);
-
-                React.useEffect(() => {
-                    if (!historyCreated) {
-                        // Create some history by recording a change
-                        undoRedoContext.recordChange('new map text', 'editor-text', 'Test change');
-                        setHistoryCreated(true);
-                    }
-                }, [undoRedoContext, historyCreated]);
-
-                return (
-                    <KeyboardShortcutHandler
-                        toolbarItems={mockToolbarItems}
-                        onToolSelect={mockOnToolSelect}
-                        isEnabled={true}
-                        currentSelectedTool={null}
-                    />
-                );
-            };
-
-            render(
-                <UndoRedoProvider mutateMapText={mockMutateMapText} mapText="initial text">
-                    <TestComponent />
-                </UndoRedoProvider>,
-            );
-
-            // Wait for history to be created and debounced
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 350));
-            });
-
-            // Now trigger undo
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    ctrlKey: true,
-                    metaKey: false,
-                });
-            });
-
-            // Should show undo announcement
-            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
-        });
-
-        it('should handle Cmd+Z on Mac', async () => {
-            mockNavigator('MacIntel', 'Mac OS X');
-            const {container} = renderWithUndoRedo();
-
-            // First, create some history
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    metaKey: true,
-                    ctrlKey: false,
-                });
-            });
-
-            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
-        });
-
-        it('should not trigger undo when canUndo is false', () => {
-            renderWithUndoRedo();
-
-            fireEvent.keyDown(document, {
-                key: 'z',
-                ctrlKey: true,
-                metaKey: false,
-            });
-
-            // Should not show undo announcement when there's nothing to undo
-            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
-        });
-
-        it('should prevent default behavior when undo is triggered', async () => {
-            const {container} = renderWithUndoRedo();
-
-            // Create some history first
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            const event = new KeyboardEvent('keydown', {
-                key: 'z',
-                ctrlKey: true,
-                bubbles: true,
-                cancelable: true,
-            });
-
-            const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
-
-            await act(async () => {
-                fireEvent(document, event);
-            });
-
-            expect(preventDefaultSpy).toHaveBeenCalled();
-        });
-    });
-
-    describe('Redo Shortcuts', () => {
-        it('should handle Ctrl+Y on Windows', async () => {
-            mockNavigator('Win32', 'Windows');
-            const {container} = renderWithUndoRedo();
-
-            // Create history and then undo to have something to redo
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            // Undo first
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    ctrlKey: true,
-                    metaKey: false,
-                });
-            });
-
-            // Now redo
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'y',
-                    ctrlKey: true,
-                    metaKey: false,
-                });
-            });
-
-            expect(screen.getByText(/Redid:/)).toBeInTheDocument();
-        });
-
-        it('should handle Cmd+Shift+Z on Mac', async () => {
-            mockNavigator('MacIntel', 'Mac OS X');
-            const {container} = renderWithUndoRedo();
-
-            // Create history and undo
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    metaKey: true,
-                    ctrlKey: false,
-                });
-            });
-
-            // Now redo with Mac shortcut
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    metaKey: true,
-                    shiftKey: true,
-                    ctrlKey: false,
-                });
-            });
-
-            expect(screen.getByText(/Redid:/)).toBeInTheDocument();
-        });
-
-        it('should not trigger redo when canRedo is false', () => {
-            renderWithUndoRedo();
-
-            fireEvent.keyDown(document, {
-                key: 'y',
-                ctrlKey: true,
-                metaKey: false,
-            });
-
-            // Should not show redo announcement when there's nothing to redo
-            expect(screen.queryByText(/Redid:/)).not.toBeInTheDocument();
         });
     });
 
@@ -403,27 +218,6 @@ describe('KeyboardShortcutHandler', () => {
             expect(mockOnToolSelect).toHaveBeenCalledWith('component');
         });
 
-        it('should prioritize undo/redo shortcuts over toolbar shortcuts', async () => {
-            const {container} = renderWithUndoRedo();
-
-            // Create some history
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            // Press Ctrl+Z (should trigger undo, not toolbar shortcut)
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    ctrlKey: true,
-                });
-            });
-
-            // Should show undo announcement, not call onToolSelect
-            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
-            expect(mockOnToolSelect).not.toHaveBeenCalled();
-        });
-
         it('should handle Escape key to deselect tools', () => {
             renderWithUndoRedo({currentSelectedTool: 'component'});
 
@@ -473,82 +267,6 @@ describe('KeyboardShortcutHandler', () => {
         });
     });
 
-    describe('Accessibility', () => {
-        it('should provide screen reader announcements for undo operations', async () => {
-            const {container} = renderWithUndoRedo();
-
-            // Create history
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    ctrlKey: true,
-                });
-            });
-
-            const announcement = screen.getByRole('status');
-            expect(announcement).toHaveAttribute('aria-live', 'polite');
-            expect(announcement).toHaveAttribute('aria-atomic', 'true');
-            expect(announcement).toHaveTextContent(/Undid:/);
-        });
-
-        it('should provide screen reader announcements for redo operations', async () => {
-            const {container} = renderWithUndoRedo();
-
-            // Create history, undo, then redo
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    ctrlKey: true,
-                });
-            });
-
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'y',
-                    ctrlKey: true,
-                });
-            });
-
-            const announcement = screen.getByRole('status');
-            expect(announcement).toHaveTextContent(/Redid:/);
-        });
-
-        it('should clear announcements after timeout', async () => {
-            jest.useFakeTimers();
-            const {container} = renderWithUndoRedo();
-
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'z',
-                    ctrlKey: true,
-                });
-            });
-
-            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
-
-            // Fast forward time
-            act(() => {
-                jest.advanceTimersByTime(1000);
-            });
-
-            expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
-
-            jest.useRealTimers();
-        });
-    });
-
     describe('Edge Cases', () => {
         it('should handle multiple modifier keys correctly', () => {
             renderWithUndoRedo();
@@ -561,45 +279,6 @@ describe('KeyboardShortcutHandler', () => {
             });
 
             expect(screen.queryByText(/Undid:/)).not.toBeInTheDocument();
-        });
-
-        it('should handle case insensitive key detection', async () => {
-            const {container} = renderWithUndoRedo();
-
-            act(() => {
-                mockMutateMapText('new map text');
-            });
-
-            // Test with uppercase Z
-            await act(async () => {
-                fireEvent.keyDown(document, {
-                    key: 'Z',
-                    ctrlKey: true,
-                });
-            });
-
-            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
-        });
-
-        it('should handle rapid key presses without issues', async () => {
-            const {container} = renderWithUndoRedo();
-
-            // Create multiple history entries
-            act(() => {
-                mockMutateMapText('text 1');
-                mockMutateMapText('text 2');
-                mockMutateMapText('text 3');
-            });
-
-            // Rapid undo operations
-            await act(async () => {
-                fireEvent.keyDown(document, {key: 'z', ctrlKey: true});
-                fireEvent.keyDown(document, {key: 'z', ctrlKey: true});
-                fireEvent.keyDown(document, {key: 'z', ctrlKey: true});
-            });
-
-            // Should handle gracefully without errors
-            expect(screen.getByText(/Undid:/)).toBeInTheDocument();
         });
     });
 

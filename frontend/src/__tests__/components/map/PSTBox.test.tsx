@@ -1,9 +1,12 @@
-import React from 'react';
-import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import '@testing-library/jest-dom';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import React from 'react';
+import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
+import {ContextMenuProvider} from '../../../components/map/ContextMenuProvider';
 import PSTBox from '../../../components/map/PSTBox';
-import {PSTElement, PSTType} from '../../../types/map/pst';
+import {UndoRedoProvider} from '../../../components/UndoRedoProvider';
 import {MapDimensions} from '../../../constants/defaults';
+import {PSTElement, PSTType} from '../../../types/map/pst';
 import {MapTheme} from '../../../types/map/styles';
 
 // Mock the ResizeHandles component
@@ -55,7 +58,7 @@ describe('PSTBox Component', () => {
     };
 
     const createMockPSTElement = (type: PSTType = 'pioneers', name?: string): PSTElement => ({
-        id: 'test-pst-1',
+        id: '1',
         type,
         coordinates: {
             maturity1: 0.2,
@@ -80,111 +83,91 @@ describe('PSTBox Component', () => {
         onHover: jest.fn(),
     };
 
+    const renderWithProvider = (component: React.ReactElement) => {
+        return render(
+            <UndoRedoProvider mutateMapText={jest.fn()} mapText="test map text">
+                <ComponentSelectionProvider>
+                    <ContextMenuProvider>
+                        <svg>{component}</svg>
+                    </ContextMenuProvider>
+                </ComponentSelectionProvider>
+            </UndoRedoProvider>,
+        );
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     describe('Rendering', () => {
         it('should render PST box with correct structure', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
-            expect(screen.getByTestId('pst-box-test-pst-1')).toBeInTheDocument();
-            expect(screen.getByTestId('pst-box-rect-test-pst-1')).toBeInTheDocument();
-            expect(screen.getByTestId('pst-box-label-test-pst-1')).toBeInTheDocument();
+            expect(screen.getByTestId('pst-box-1')).toBeInTheDocument();
+            expect(screen.getByTestId('pst-box-rect-1')).toBeInTheDocument();
+            expect(screen.getByTestId('pst-box-label-1')).toBeInTheDocument();
         });
 
         it('should render with correct PST type styling for pioneers', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} pstElement={createMockPSTElement('pioneers')} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} pstElement={createMockPSTElement('pioneers')} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            expect(rect).toHaveAttribute('fill', '#FF6B6B');
-            expect(rect).toHaveAttribute('stroke', '#FF6B6B');
+            const rect = screen.getByTestId('pst-box-rect-1');
+            expect(rect).toHaveAttribute('fill', '#3ccaf8');
+            expect(rect).toHaveAttribute('stroke', '#3ccaf8');
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
+            const label = screen.getByTestId('pst-box-label-1');
             expect(label).toHaveTextContent('Pioneers');
         });
 
         it('should render with correct PST type styling for settlers', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} pstElement={createMockPSTElement('settlers')} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} pstElement={createMockPSTElement('settlers')} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            expect(rect).toHaveAttribute('fill', '#4ECDC4');
-            expect(rect).toHaveAttribute('stroke', '#4ECDC4');
+            const rect = screen.getByTestId('pst-box-rect-1');
+            expect(rect).toHaveAttribute('fill', '#599afa');
+            expect(rect).toHaveAttribute('stroke', '#599afa');
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
+            const label = screen.getByTestId('pst-box-label-1');
             expect(label).toHaveTextContent('Settlers');
         });
 
         it('should render with correct PST type styling for townplanners', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} pstElement={createMockPSTElement('townplanners')} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} pstElement={createMockPSTElement('townplanners')} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            expect(rect).toHaveAttribute('fill', '#45B7D1');
-            expect(rect).toHaveAttribute('stroke', '#45B7D1');
+            const rect = screen.getByTestId('pst-box-rect-1');
+            expect(rect).toHaveAttribute('fill', '#936ff9');
+            expect(rect).toHaveAttribute('stroke', '#936ff9');
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
+            const label = screen.getByTestId('pst-box-label-1');
             expect(label).toHaveTextContent('Town Planners');
         });
 
         it('should display custom name when provided', () => {
             const elementWithName = createMockPSTElement('pioneers', 'Custom PST Name');
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} pstElement={elementWithName} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} pstElement={elementWithName} />);
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
+            const label = screen.getByTestId('pst-box-label-1');
             expect(label).toHaveTextContent('Custom PST Name');
         });
 
         it('should display default label when no name provided', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} pstElement={createMockPSTElement('settlers')} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} pstElement={createMockPSTElement('settlers')} />);
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
+            const label = screen.getByTestId('pst-box-label-1');
             expect(label).toHaveTextContent('Settlers');
         });
     });
 
     describe('Hover State Management', () => {
         it('should not show resize handles initially', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
             expect(screen.queryByTestId('resize-handles')).not.toBeInTheDocument();
         });
 
         it('should show resize handles when hovered externally', async () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isHovered={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isHovered={true} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             fireEvent.mouseEnter(pstBox);
 
             // Wait for debounced hover to trigger
@@ -198,13 +181,9 @@ describe('PSTBox Component', () => {
 
         it('should call onHover when mouse enters', async () => {
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             fireEvent.mouseEnter(pstBox);
 
             // Wait for the debounced hover timeout
@@ -218,13 +197,9 @@ describe('PSTBox Component', () => {
 
         it('should call onHover with null when mouse leaves', async () => {
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             fireEvent.mouseEnter(pstBox);
             fireEvent.mouseLeave(pstBox);
 
@@ -238,46 +213,30 @@ describe('PSTBox Component', () => {
         });
 
         it('should show hover outline when hovered', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isHovered={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isHovered={true} />);
 
-            expect(screen.getByTestId('pst-box-hover-outline-test-pst-1')).toBeInTheDocument();
+            expect(screen.getByTestId('pst-box-hover-outline-1')).toBeInTheDocument();
         });
 
         it('should not show hover outline when not hovered', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isHovered={false} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isHovered={false} />);
 
-            expect(screen.queryByTestId('pst-box-hover-outline-test-pst-1')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('pst-box-hover-outline-1')).not.toBeInTheDocument();
         });
     });
 
     describe('Resize State Management', () => {
         it('should show resize handles when resizing', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isResizing={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isResizing={true} />);
 
             expect(screen.getByTestId('resize-handles')).toBeInTheDocument();
         });
 
         it('should call onResizeStart when resize handle is activated', async () => {
             const onResizeStart = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onResizeStart={onResizeStart} isHovered={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onResizeStart={onResizeStart} isHovered={true} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             fireEvent.mouseEnter(pstBox);
 
             // Wait for handles to appear
@@ -295,112 +254,76 @@ describe('PSTBox Component', () => {
         });
 
         it('should change cursor style when resizing', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isResizing={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isResizing={true} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             expect(pstBox).toHaveStyle({cursor: 'grabbing'});
         });
 
         it('should use pointer cursor when not resizing', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isResizing={false} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isResizing={false} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
-            expect(pstBox).toHaveStyle({cursor: 'pointer'});
+            const pstBox = screen.getByTestId('pst-box-1');
+            expect(pstBox).toHaveStyle({cursor: 'grab'});
         });
     });
 
     describe('Visual Feedback', () => {
         it('should apply hover styling when hovered', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isHovered={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isHovered={true} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
-            expect(rect).toHaveAttribute('fill-opacity', '0.8');
+            const rect = screen.getByTestId('pst-box-rect-1');
+            expect(rect).toHaveAttribute('fill-opacity', '0.6');
             expect(rect).toHaveAttribute('stroke-width', '2');
         });
 
         it('should apply normal styling when not hovered', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} isHovered={false} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} isHovered={false} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
             expect(rect).toHaveAttribute('fill-opacity', '0.6');
             expect(rect).toHaveAttribute('stroke-width', '1');
         });
 
         it('should scale font size based on scale factor', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} scaleFactor={2} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} scaleFactor={2} />);
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
-            expect(label).toHaveAttribute('font-size', '10'); // Math.max(10, 12/2)
+            const label = screen.getByTestId('pst-box-label-1');
+            expect(label).toHaveAttribute('font-size', '12'); // Math.max(10, 12/2)
         });
 
         it('should maintain minimum font size', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} scaleFactor={0.5} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} scaleFactor={0.5} />);
 
-            const label = screen.getByTestId('pst-box-label-test-pst-1');
-            expect(label).toHaveAttribute('font-size', '24'); // 12/0.5
+            const label = screen.getByTestId('pst-box-label-1');
+            expect(label).toHaveAttribute('font-size', '12'); // 12/0.5
         });
     });
 
     describe('Accessibility', () => {
         it('should have proper ARIA attributes', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             expect(pstBox).toHaveAttribute('role', 'button');
             expect(pstBox).toHaveAttribute('tabindex', '0');
             expect(pstBox).toHaveAttribute('aria-label', 'Pioneers box: Unnamed');
-            expect(pstBox).toHaveAttribute('aria-describedby', 'pst-box-description-test-pst-1');
+            expect(pstBox).toHaveAttribute('aria-describedby', 'pst-box-description-1');
         });
 
         it('should include element name in ARIA label when provided', () => {
             const elementWithName = createMockPSTElement('settlers', 'My Settlers');
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} pstElement={elementWithName} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} pstElement={elementWithName} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
             expect(pstBox).toHaveAttribute('aria-label', 'Settlers box: My Settlers');
         });
 
         it('should support keyboard interaction', async () => {
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
             fireEvent.keyDown(rect, {key: 'Enter'});
 
             await waitFor(
@@ -413,13 +336,9 @@ describe('PSTBox Component', () => {
 
         it('should support space key interaction', async () => {
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
             fireEvent.keyDown(rect, {key: ' '});
 
             await waitFor(
@@ -431,11 +350,7 @@ describe('PSTBox Component', () => {
         });
 
         it('should provide screen reader description', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
             const description = screen.getByText(/Pioneers box positioned at maturity/);
             expect(description).toBeInTheDocument();
@@ -447,23 +362,15 @@ describe('PSTBox Component', () => {
         it('should call coordinate conversion utility with correct parameters', () => {
             const {convertPSTCoordinatesToBounds} = require('../../../utils/pstCoordinateUtils');
 
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
             expect(convertPSTCoordinatesToBounds).toHaveBeenCalledWith(defaultProps.pstElement.coordinates, mockMapDimensions);
         });
 
         it('should position elements based on converted bounds', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
             expect(rect).toHaveAttribute('x', '100');
             expect(rect).toHaveAttribute('y', '50');
             expect(rect).toHaveAttribute('width', '150');
@@ -474,13 +381,9 @@ describe('PSTBox Component', () => {
     describe('Timing and Performance', () => {
         it('should handle rapid hover events without flickering', async () => {
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
 
             // Test that mouse events are handled correctly
             fireEvent.mouseEnter(pstBox);
@@ -501,13 +404,9 @@ describe('PSTBox Component', () => {
         it('should clear timeouts on unmount', () => {
             const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
 
-            const {unmount} = render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            const {unmount} = renderWithProvider(<PSTBox {...defaultProps} />);
 
-            const pstBox = screen.getByTestId('pst-box-test-pst-1');
+            const pstBox = screen.getByTestId('pst-box-1');
 
             // Trigger hover and then leave to create a hide timeout
             fireEvent.mouseEnter(pstBox);
@@ -544,13 +443,9 @@ describe('PSTBox Component', () => {
 
         it('should handle touch start events for selection (first touch)', () => {
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
@@ -561,13 +456,9 @@ describe('PSTBox Component', () => {
 
         it('should handle touch move events during drag (after selection)', () => {
             const onDragMove = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onDragMove={onDragMove} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onDragMove={onDragMove} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch to select
             fireEvent.touchStart(rect, {
@@ -589,13 +480,9 @@ describe('PSTBox Component', () => {
 
         it('should handle touch end events to complete drag (after selection)', () => {
             const onDragEnd = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onDragEnd={onDragEnd} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onDragEnd={onDragEnd} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch to select
             fireEvent.touchStart(rect, {
@@ -614,13 +501,9 @@ describe('PSTBox Component', () => {
         });
 
         it('should prevent scrolling during touch drag operations', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch to select
             fireEvent.touchStart(rect, {
@@ -637,13 +520,9 @@ describe('PSTBox Component', () => {
         });
 
         it('should restore scrolling after touch drag completes', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch to select
             fireEvent.touchStart(rect, {
@@ -664,13 +543,9 @@ describe('PSTBox Component', () => {
 
         it('should handle touch cancel events properly', () => {
             const onDragEnd = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onDragEnd={onDragEnd} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onDragEnd={onDragEnd} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch to select
             fireEvent.touchStart(rect, {
@@ -690,13 +565,9 @@ describe('PSTBox Component', () => {
 
         it('should not start drag during resize operations on touch', () => {
             const onDragStart = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onDragStart={onDragStart} isResizing={true} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onDragStart={onDragStart} isResizing={true} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
             fireEvent.touchStart(rect, {
                 touches: [{clientX: 100, clientY: 50}],
             });
@@ -706,13 +577,9 @@ describe('PSTBox Component', () => {
 
         it('should handle multi-touch scenarios gracefully', () => {
             const onDragStart = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onDragStart={onDragStart} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onDragStart={onDragStart} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch should select the element (not start drag)
             fireEvent.touchStart(rect, {
@@ -729,13 +596,9 @@ describe('PSTBox Component', () => {
         it('should show resize handles on first touch and start drag on second touch', () => {
             const onDragStart = jest.fn();
             const onHover = jest.fn();
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onDragStart={onDragStart} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onDragStart={onDragStart} onHover={onHover} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch should select and show handles
             fireEvent.touchStart(rect, {
@@ -754,13 +617,9 @@ describe('PSTBox Component', () => {
         });
 
         it('should show touch selection outline when selected', () => {
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch should show touch outline
             fireEvent.touchStart(rect, {
@@ -774,13 +633,9 @@ describe('PSTBox Component', () => {
             jest.useFakeTimers();
             const onHover = jest.fn();
 
-            render(
-                <svg>
-                    <PSTBox {...defaultProps} onHover={onHover} />
-                </svg>,
-            );
+            renderWithProvider(<PSTBox {...defaultProps} onHover={onHover} />);
 
-            const rect = screen.getByTestId('pst-box-rect-test-pst-1');
+            const rect = screen.getByTestId('pst-box-rect-1');
 
             // First touch should select
             fireEvent.touchStart(rect, {

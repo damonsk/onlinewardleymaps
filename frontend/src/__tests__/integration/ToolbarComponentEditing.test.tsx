@@ -1,17 +1,16 @@
-import React from 'react';
+import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {act} from 'react';
-import {MapView} from '../../components/map/MapView';
 import {EditingProvider} from '../../components/EditingContext';
+import {MapView} from '../../components/map/MapView';
+import UndoRedoProvider from '../../components/UndoRedoProvider';
+import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
+import {UnifiedWardleyMap} from '../../types/unified/map';
 
 // Mock ReactDOMServer to avoid MessageChannel issues in tests
 jest.mock('react-dom/server', () => ({
     renderToString: jest.fn(() => '<svg>mock-cursor</svg>'),
 }));
-import {TOOLBAR_ITEMS} from '../../constants/toolbarItems';
-import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
-import {MapTheme} from '../../types/map/styles';
-import {UnifiedWardleyMap} from '../../types/unified/map';
 
 // Mock the FeatureSwitchesContext
 jest.mock('../../components/FeatureSwitchesContext', () => ({
@@ -344,7 +343,9 @@ component Toolbar Component [0.2, 0.8]`,
         act(() => {
             root.render(
                 <EditingProvider>
-                    <MapView {...defaultProps} {...props} />
+                    <UndoRedoProvider {...defaultProps} {...props}>
+                        <MapView {...defaultProps} {...props} />
+                    </UndoRedoProvider>
                 </EditingProvider>,
             );
         });

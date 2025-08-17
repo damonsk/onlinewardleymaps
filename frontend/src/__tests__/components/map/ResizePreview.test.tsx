@@ -1,6 +1,5 @@
-import React from 'react';
-import {render, screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
+import {render, screen} from '@testing-library/react';
 import ResizePreview from '../../../components/map/ResizePreview';
 import {PSTBounds, PSTType} from '../../../types/map/pst';
 import {MapTheme} from '../../../types/map/styles';
@@ -132,8 +131,8 @@ describe('ResizePreview', () => {
         );
 
         const previewBounds = screen.getByTestId('preview-bounds');
-        expect(previewBounds).toHaveAttribute('stroke', '#FF6B6B');
-        expect(previewBounds).toHaveAttribute('fill', '#FF6B6B');
+        expect(previewBounds).toHaveAttribute('stroke', '#3ccaf8');
+        expect(previewBounds).toHaveAttribute('fill', '#3ccaf8');
 
         rerender(
             <svg>
@@ -142,8 +141,8 @@ describe('ResizePreview', () => {
         );
 
         const settlersPreviewBounds = screen.getByTestId('preview-bounds');
-        expect(settlersPreviewBounds).toHaveAttribute('stroke', '#4ECDC4');
-        expect(settlersPreviewBounds).toHaveAttribute('fill', '#4ECDC4');
+        expect(settlersPreviewBounds).toHaveAttribute('stroke', '#599afa');
+        expect(settlersPreviewBounds).toHaveAttribute('fill', '#599afa');
 
         rerender(
             <svg>
@@ -152,8 +151,8 @@ describe('ResizePreview', () => {
         );
 
         const townplannersPreviewBounds = screen.getByTestId('preview-bounds');
-        expect(townplannersPreviewBounds).toHaveAttribute('stroke', '#45B7D1');
-        expect(townplannersPreviewBounds).toHaveAttribute('fill', '#45B7D1');
+        expect(townplannersPreviewBounds).toHaveAttribute('stroke', '#936ff9');
+        expect(townplannersPreviewBounds).toHaveAttribute('fill', '#936ff9');
     });
 
     it('should position original bounds outline correctly', () => {
@@ -238,7 +237,7 @@ describe('ResizePreview', () => {
         );
 
         const previewBounds = screen.getByTestId('preview-bounds');
-        expect(previewBounds).toHaveAttribute('stroke', '#FF6B6B'); // Pioneers color
+        expect(previewBounds).toHaveAttribute('stroke', '#3ccaf8'); // Pioneers color
         // Check for stroke-dasharray attribute (React converts strokeDasharray to stroke-dasharray)
         expect(previewBounds).toHaveAttribute('stroke-dasharray', '5,5');
     });

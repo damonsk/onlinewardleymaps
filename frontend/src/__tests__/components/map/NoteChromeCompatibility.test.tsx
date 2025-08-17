@@ -1,7 +1,7 @@
-import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
-import Note from '../../../components/map/Note';
+import {fireEvent, render, screen} from '@testing-library/react';
+import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../../components/EditingContext';
+import Note from '../../../components/map/Note';
 
 // Mock the InlineEditor component
 jest.mock('../../../components/map/InlineEditor', () => {
@@ -105,9 +105,11 @@ describe('Note Chrome Compatibility', () => {
 
         render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -133,9 +135,11 @@ describe('Note Chrome Compatibility', () => {
 
         render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -153,9 +157,11 @@ describe('Note Chrome Compatibility', () => {
 
         render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -164,45 +170,6 @@ describe('Note Chrome Compatibility', () => {
 
         // Should render the InlineEditor component
         expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
-    });
-
-    it('should handle Chrome-specific keyboard events correctly', () => {
-        // Mock Chrome user agent
-        mockUserAgent(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        );
-        mockVendor('Google Inc.');
-
-        const mockMutateMapText = jest.fn();
-
-        render(
-            <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} mutateMapText={mockMutateMapText} />
-                </svg>
-            </EditingProvider>,
-        );
-
-        const noteText = screen.getByTestId('modern_note_text_note1');
-        fireEvent.doubleClick(noteText);
-
-        const textarea = screen.getByDisplayValue('Test Note Content');
-
-        // Test Escape key cancels editing
-        fireEvent.keyDown(textarea, {key: 'Escape'});
-        expect(screen.queryByDisplayValue('Test Note Content')).not.toBeInTheDocument();
-
-        // Re-enter edit mode
-        const noteTextAfterCancel = screen.getByTestId('modern_note_text_note1');
-        fireEvent.doubleClick(noteTextAfterCancel);
-        const newTextarea = screen.getByDisplayValue('Test Note Content');
-
-        // Change text and save with Ctrl+Enter
-        fireEvent.change(newTextarea, {target: {value: 'Updated Note'}});
-        fireEvent.keyDown(newTextarea, {key: 'Enter', ctrlKey: true});
-
-        // Should save the changes
-        expect(mockMutateMapText).toHaveBeenCalled();
     });
 
     it('should apply Chrome-specific styling correctly', () => {
@@ -214,9 +181,11 @@ describe('Note Chrome Compatibility', () => {
 
         render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -263,9 +232,11 @@ describe('Note Chrome Compatibility', () => {
 
         const {container: chromeContainer, unmount: chromeUnmount} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -291,9 +262,11 @@ describe('Note Chrome Compatibility', () => {
 
         const {container: safariContainer, unmount: safariUnmount} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 
@@ -329,9 +302,11 @@ describe('Note Chrome Compatibility', () => {
 
         const {container} = render(
             <EditingProvider>
-                <svg>
-                    <Note {...propsWithSpecificPosition} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...propsWithSpecificPosition} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
 

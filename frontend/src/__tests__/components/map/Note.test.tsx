@@ -3,6 +3,7 @@ import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Note from '../../../components/map/Note';
 import {EditingProvider} from '../../../components/EditingContext';
+import {TestProviderWrapper} from '../../../testUtils/testProviders';
 import {MapNotes} from '../../../types/base';
 import {MapDimensions} from '../../../constants/defaults';
 import {MapTheme} from '../../../constants/mapstyles';
@@ -111,7 +112,13 @@ describe('Note Component with Inline Editing', () => {
     });
 
     const renderWithProvider = (component: React.ReactElement) => {
-        return render(<EditingProvider>{component}</EditingProvider>);
+        return render(
+            <TestProviderWrapper>
+                <EditingProvider>
+                    <svg>{component}</svg>
+                </EditingProvider>
+            </TestProviderWrapper>,
+        );
     };
 
     describe('Basic Rendering', () => {
@@ -411,9 +418,13 @@ describe('Note Component with Inline Editing', () => {
 
             // Switch to note 2 - this should reset edit mode due to useEffect
             rerender(
-                <EditingProvider>
-                    <Note {...defaultProps} note={note2} enableInlineEditing={true} />
-                </EditingProvider>,
+                <TestProviderWrapper>
+                    <EditingProvider>
+                        <svg>
+                            <Note {...defaultProps} note={note2} enableInlineEditing={true} />
+                        </svg>
+                    </EditingProvider>
+                </TestProviderWrapper>,
             );
 
             // Should not be in edit mode for note 2 (edit mode resets when note changes)
@@ -436,9 +447,13 @@ describe('Note Component with Inline Editing', () => {
 
             // Switch to different note - this should reset edit mode and text
             rerender(
-                <EditingProvider>
-                    <Note {...defaultProps} note={note2} enableInlineEditing={true} />
-                </EditingProvider>,
+                <TestProviderWrapper>
+                    <EditingProvider>
+                        <svg>
+                            <Note {...defaultProps} note={note2} enableInlineEditing={true} />
+                        </svg>
+                    </EditingProvider>
+                </TestProviderWrapper>,
             );
 
             // Enter edit mode for new note

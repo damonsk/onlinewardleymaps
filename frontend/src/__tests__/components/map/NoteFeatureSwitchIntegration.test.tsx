@@ -1,7 +1,7 @@
-import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
-import Note from '../../../components/map/Note';
+import {fireEvent, render, screen} from '@testing-library/react';
+import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../../components/EditingContext';
+import Note from '../../../components/map/Note';
 
 // Mock the InlineEditor component
 jest.mock('../../../components/map/InlineEditor', () => {
@@ -50,9 +50,11 @@ describe('Note Feature Switch Integration', () => {
     const renderWithProvider = (props: any) => {
         return render(
             <EditingProvider>
-                <svg>
-                    <Note {...defaultProps} {...props} />
-                </svg>
+                <ComponentSelectionProvider>
+                    <svg>
+                        <Note {...defaultProps} {...props} />
+                    </svg>
+                </ComponentSelectionProvider>
             </EditingProvider>,
         );
     };

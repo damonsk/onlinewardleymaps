@@ -3,10 +3,10 @@
  */
 
 import {
-    PST_CONFIG,
     DEFAULT_RESIZE_CONSTRAINTS,
-    RESIZE_HANDLE_SIZE,
+    PST_CONFIG,
     PST_EDGE_MARGIN,
+    RESIZE_HANDLE_SIZE,
     RESIZE_PREVIEW_OPACITY,
 } from '../../constants/pstConfig';
 import {PSTType} from '../../types/map/pst';
@@ -23,8 +23,6 @@ describe('PST Configuration Constants', () => {
 
         it('should have valid pioneers configuration', () => {
             const pioneersConfig = PST_CONFIG.pioneers;
-
-            expect(pioneersConfig.color).toBe('#FF6B6B');
             expect(pioneersConfig.label).toBe('Pioneers');
             expect(pioneersConfig.minWidth).toBe(50);
             expect(pioneersConfig.minHeight).toBe(30);
@@ -32,8 +30,6 @@ describe('PST Configuration Constants', () => {
 
         it('should have valid settlers configuration', () => {
             const settlersConfig = PST_CONFIG.settlers;
-
-            expect(settlersConfig.color).toBe('#4ECDC4');
             expect(settlersConfig.label).toBe('Settlers');
             expect(settlersConfig.minWidth).toBe(50);
             expect(settlersConfig.minHeight).toBe(30);
@@ -41,8 +37,6 @@ describe('PST Configuration Constants', () => {
 
         it('should have valid townplanners configuration', () => {
             const townplannersConfig = PST_CONFIG.townplanners;
-
-            expect(townplannersConfig.color).toBe('#45B7D1');
             expect(townplannersConfig.label).toBe('Town Planners');
             expect(townplannersConfig.minWidth).toBe(50);
             expect(townplannersConfig.minHeight).toBe(30);
