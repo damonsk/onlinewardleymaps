@@ -1,20 +1,14 @@
-import React, {memo, useCallback, useEffect, useState, useRef} from 'react';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TOOLBAR_ITEMS, getToolbarItemById} from '../../constants/toolbarItems';
-import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
-import {ToolbarItem} from './ToolbarItem';
-import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
-import {ToolbarUndoIcon, ToolbarRedoIcon} from './ToolbarIconWrappers';
-import {useUndoRedo} from '../UndoRedoProvider';
-import {useComponentSelection} from '../ComponentSelectionContext';
 import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
+import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
+import {useComponentSelection} from '../ComponentSelectionContext';
+import {useUndoRedo} from '../UndoRedoProvider';
+import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
+import {ToolbarRedoIcon, ToolbarUndoIcon} from './ToolbarIconWrappers';
+import {ToolbarItem} from './ToolbarItem';
 
-/**
- * Styled container for the WYSIWYG toolbar
- * Moveable toolbar with drag handle - can be positioned anywhere on screen
- * Fixed position ensures it stays in place during map zoom and pan operations
- * Consistent styling independent of map themes
- */
 const ToolbarContainer = styled.div<{$isDragging: boolean}>`
     position: fixed;
     width: 48px;
@@ -247,7 +241,6 @@ const UndoRedoToolbarItem: React.FC<{
                 </IconContainer>
             </StyledToolbarButton>
 
-            {/* Screen reader announcements */}
             {announceText && (
                 <ScreenReaderAnnouncement role="status" aria-live="polite" aria-atomic="true">
                     {announceText}
@@ -663,7 +656,6 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
 
         return (
             <>
-                {/* Keyboard shortcut handler */}
                 <KeyboardShortcutHandler
                     toolbarItems={TOOLBAR_ITEMS}
                     onToolSelect={handleKeyboardToolSelect}
@@ -685,7 +677,6 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         left: `${position.x}px`,
                         top: `${position.y}px`,
                     }}>
-                    {/* Hidden instructions for screen readers */}
                     <div
                         id="toolbar-instructions"
                         style={{
@@ -698,10 +689,9 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         Use keyboard shortcuts to quickly select tools: C for Component, L for Link, N for Note, P for Pipeline, A for
                         Anchor, M for Method, T for PST. Press Escape to deselect.
                     </div>
-                    {/* Drag handle */}
+
                     <DragHandle onMouseDown={handleMouseDown} title="Drag to move toolbar" aria-label="Drag handle to move toolbar" />
 
-                    {/* Component items */}
                     {componentItems.map(item => (
                         <ToolbarItem
                             key={item.id}
@@ -711,11 +701,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                             mapStyleDefs={mapStyleDefs}
                         />
                     ))}
-
-                    {/* Separator between components and methods */}
                     {methodItems.length > 0 && <ToolbarSeparator />}
 
-                    {/* Method items */}
                     {methodItems.map(item => (
                         <ToolbarItem
                             key={item.id}
@@ -726,10 +713,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         />
                     ))}
 
-                    {/* Separator between methods and notes */}
                     {noteItems.length > 0 && <ToolbarSeparator />}
 
-                    {/* Note items */}
                     {noteItems.map(item => (
                         <ToolbarItem
                             key={item.id}
@@ -740,10 +725,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         />
                     ))}
 
-                    {/* Separator between notes and links */}
                     {linkItems.length > 0 && <ToolbarSeparator />}
 
-                    {/* Link items */}
                     {linkItems.map(item => (
                         <ToolbarItem
                             key={item.id}
@@ -754,10 +737,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         />
                     ))}
 
-                    {/* Separator between links and PST items */}
                     {pstItems.length > 0 && <ToolbarSeparator />}
 
-                    {/* PST items */}
                     {pstItems.map(item => (
                         <ToolbarItem
                             key={item.id}
@@ -769,10 +750,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         />
                     ))}
 
-                    {/* Separator between PST and other items */}
                     {otherItems.length > 0 && <ToolbarSeparator />}
 
-                    {/* Other items (pipeline, anchor, etc.) */}
                     {otherItems.map(item => (
                         <ToolbarItem
                             key={item.id}
@@ -783,10 +762,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         />
                     ))}
 
-                    {/* Separator between other items and actions */}
                     {actionItems.length > 0 && <ToolbarSeparator />}
 
-                    {/* Action items (undo/redo) - only show if context is available */}
                     {undoRedoContext &&
                         actionItems.map(item => {
                             const isUndo = item.action === 'undo';

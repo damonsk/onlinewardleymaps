@@ -2,8 +2,8 @@
  * Test utility for providing all necessary React contexts for component testing
  */
 
-import React from 'react';
 import {render} from '@testing-library/react';
+import React from 'react';
 import {ComponentSelectionProvider} from '../components/ComponentSelectionContext';
 import {ContextMenuProvider} from '../components/map/ContextMenuProvider';
 import {UndoRedoProvider} from '../components/UndoRedoProvider';
@@ -26,7 +26,7 @@ export const TestProviderWrapper: React.FC<TestProviderWrapperProps> = ({
     return (
         <UndoRedoProvider mutateMapText={mutateMapText} mapText={mapText}>
             <ComponentSelectionProvider>
-                <ContextMenuProvider>{children}</ContextMenuProvider>
+                <ContextMenuProvider mapText={mapText}>{children}</ContextMenuProvider>
             </ComponentSelectionProvider>
         </UndoRedoProvider>
     );

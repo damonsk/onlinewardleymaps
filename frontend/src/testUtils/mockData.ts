@@ -2,9 +2,9 @@
  * Mock data utilities for testing
  */
 
-import {MapDimensions} from '../../constants/defaults';
-import {MapTheme} from '../../types/map/styles';
-import {UnifiedWardleyMap} from '../../types/unified';
+import {MapDimensions} from '../../src/constants/defaults';
+import {MapTheme} from '../../src/types/map/styles';
+import {UnifiedWardleyMap} from '../../src/types/unified';
 
 export function createMockWardleyMap(): UnifiedWardleyMap {
     return {
@@ -22,6 +22,14 @@ export function createMockWardleyMap(): UnifiedWardleyMap {
         notes: [],
         annotations: [],
         methods: [],
+        presentation: {
+            style: '',
+            annotations: {visibility: 0, maturity: 0},
+            size: {height: 600, width: 800},
+        },
+        errors: [],
+        evolution: [],
+        urls: [],
     };
 }
 
@@ -40,14 +48,34 @@ export function createMockMapStyleDefs(): MapTheme {
             fill: '#ffffff',
             stroke: '#000000',
             strokeWidth: 1,
+            fontWeight: '',
+            evolvedTextColor: '',
+            textColor: '',
         },
         link: {
             stroke: '#000000',
             strokeWidth: 1,
         },
-        text: {
-            fill: '#000000',
-            fontSize: 12,
+        attitudes: {},
+        methods: {
+            buy: {},
+            build: {},
+            outsource: {},
+        },
+        annotation: {
+            stroke: '',
+            strokeWidth: 0,
+            fill: '',
+            text: '',
+            boxStroke: '',
+            boxStrokeWidth: 0,
+            boxFill: '',
+            boxTextColour: '',
+        },
+        note: {
+            fontWeight: '',
+            evolvedTextColor: '',
+            textColor: '',
         },
     };
 }
