@@ -1,26 +1,25 @@
-import React, {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
+import {DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
 import {MapElements} from '../../processing/MapElements';
+import {PSTCoordinates, PSTElement, ResizeHandle} from '../../types/map/pst';
 import {processLinks} from '../../utils/mapProcessing';
+import {
+    calculateResizedBounds,
+    constrainPSTBounds,
+    convertBoundsToPSTCoordinates,
+    convertPSTCoordinatesToBounds,
+} from '../../utils/pstCoordinateUtils';
+import {updatePSTInMapText} from '../../utils/pstElementUtils';
+import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {useModKeyPressedConsumer} from '../KeyPressContext';
-import {useEditing} from '../EditingContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
-import {useMapEventHandlers} from './hooks/useMapEventHandlers';
 import {DebugOverlay} from './debug/DebugOverlay';
+import {useMapEventHandlers} from './hooks/useMapEventHandlers';
 import {UnifiedMapCanvasProps} from './types/MapCanvasProps';
-import {findNearestComponent} from '../../utils/componentDetection';
-import {PSTElement, PSTCoordinates, PSTBounds, ResizeHandle} from '../../types/map/pst';
-import {
-    convertPSTCoordinatesToBounds,
-    convertBoundsToPSTCoordinates,
-    calculateResizedBounds,
-    constrainPSTBounds,
-} from '../../utils/pstCoordinateUtils';
-import {updatePSTInMapText} from '../../utils/pstElementUtils';
-import {DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
