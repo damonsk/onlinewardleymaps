@@ -1,9 +1,8 @@
-import React from 'react';
-import {render} from '@testing-library/react';
 import '@testing-library/jest-dom';
+import {render} from '@testing-library/react';
 import DrawingPreview from '../../../components/map/DrawingPreview';
-import {ToolbarSubItem} from '../../../types/toolbar';
 import {MapTheme} from '../../../types/map/styles';
+import {ToolbarSubItem} from '../../../types/toolbar';
 
 describe('DrawingPreview', () => {
     const mockMapStyleDefs: MapTheme = {

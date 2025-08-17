@@ -1,5 +1,5 @@
-import Converter from '../conversion/Converter';
 import {useContext} from 'react';
+import Converter from '../conversion/Converter';
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),

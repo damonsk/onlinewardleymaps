@@ -1,8 +1,8 @@
-import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import {ContextMenuProvider, useContextMenu} from '../../../components/map/ContextMenuProvider';
+import {fireEvent, render, screen} from '@testing-library/react';
+import React from 'react';
 import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
+import {ContextMenuProvider, useContextMenu} from '../../../components/map/ContextMenuProvider';
 import {UndoRedoProvider} from '../../../components/UndoRedoProvider';
 
 // Test component that uses the context menu

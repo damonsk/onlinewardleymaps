@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {act} from 'react';
 import {DragPreview} from '../../../components/map/DragPreview';
-import {DragPreviewProps, ToolbarItem} from '../../../types/toolbar';
 import {MapTheme} from '../../../constants/mapstyles';
+import {DragPreviewProps, ToolbarItem} from '../../../types/toolbar';
 
 // Mock icon component for testing
 const MockIcon: React.FC<{id: string; mapStyleDefs: MapTheme; onClick?: React.MouseEventHandler<SVGSVGElement>}> = ({id}) => (

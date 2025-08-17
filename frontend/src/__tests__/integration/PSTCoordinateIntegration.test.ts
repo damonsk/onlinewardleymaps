@@ -2,15 +2,15 @@
  * Integration tests for PST coordinate utilities with existing configuration
  */
 
-import {
-    convertPSTCoordinatesToBounds,
-    convertBoundsToPSTCoordinates,
-    validatePSTBounds,
-    constrainPSTBounds,
-} from '../../utils/pstCoordinateUtils';
-import {PST_CONFIG, DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
-import {PSTCoordinates, PSTType} from '../../types/map/pst';
 import {MapDimensions} from '../../constants/defaults';
+import {DEFAULT_RESIZE_CONSTRAINTS, PST_CONFIG} from '../../constants/pstConfig';
+import {PSTCoordinates, PSTType} from '../../types/map/pst';
+import {
+    constrainPSTBounds,
+    convertBoundsToPSTCoordinates,
+    convertPSTCoordinatesToBounds,
+    validatePSTBounds,
+} from '../../utils/pstCoordinateUtils';
 
 describe('PST Coordinate Integration', () => {
     const mockMapDimensions: MapDimensions = {
