@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
-import {ToolbarSubItem} from '../../types/toolbar';
 import {MapTheme} from '../../types/map/styles';
+import {ToolbarSubItem} from '../../types/toolbar';
 import PositionCalculator from './PositionCalculator';
 
 /**

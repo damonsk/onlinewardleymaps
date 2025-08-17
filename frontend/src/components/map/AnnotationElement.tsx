@@ -26,12 +26,6 @@ interface MovedPosition {
     y: number;
 }
 
-/**
- * AnnotationElement - Modern implementation using unified types
- * Part of Phase 4 Component Interface Modernization
- *
- * This component renders a movable annotation element with number indicator
- */
 const AnnotationElement: React.FC<ModernAnnotationElementProps> = ({
     occurance,
     annotation,

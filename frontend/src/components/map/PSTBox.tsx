@@ -1,8 +1,8 @@
-import React, {useCallback, useState, useRef, useEffect} from 'react';
-import {PSTElement, PSTBounds, ResizeHandle} from '../../types/map/pst';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {MapDimensions} from '../../constants/defaults';
-import {MapTheme} from '../../types/map/styles';
 import {PST_CONFIG} from '../../constants/pstConfig';
+import {PSTElement, ResizeHandle} from '../../types/map/pst';
+import {MapTheme} from '../../types/map/styles';
 import {convertPSTCoordinatesToBounds} from '../../utils/pstCoordinateUtils';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {useContextMenu} from './ContextMenuProvider';
@@ -71,25 +71,20 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 }) => {
     const {isSelected, selectComponent, clearSelection} = useComponentSelection();
     const {showContextMenu} = useContextMenu();
-    // State management for local interactions
     const [showHandles, setShowHandles] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
     const [touchSelected, setTouchSelected] = useState(false);
 
-    // Refs for managing timeouts and drag state
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const dragStartPositionRef = useRef<{x: number; y: number} | null>(null);
     const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Detect if device supports touch
     const isTouchDevice = useCallback(() => {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }, []);
 
-    // Get PST configuration for styling
     const pstConfig = PST_CONFIG[pstElement.type];
 
-    // Get colors from map styles instead of PST_CONFIG, with fallback to PST_CONFIG
     const pstColors = mapStyleDefs.attitudes?.[pstElement.type] || {
         fill: pstConfig.color,
         stroke: pstConfig.color,
@@ -97,50 +92,39 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         strokeOpacity: 0.8,
     };
 
-    // Convert PST coordinates to SVG bounds for rendering
     const bounds = convertPSTCoordinatesToBounds(pstElement.coordinates, mapDimensions);
 
-    // Calculate label position (center of the box)
     const labelX = bounds.x + bounds.width / 2;
     const labelY = bounds.y + bounds.height / 2;
 
-    // Check if this PST element is currently selected
     const isElementSelected = isSelected(pstElement.id);
 
-    // Handle mouse enter - simplified logic
     const handleMouseEnter = useCallback(() => {
-        // Clear any pending timeout
         if (hoverTimeoutRef.current) {
             clearTimeout(hoverTimeoutRef.current);
             hoverTimeoutRef.current = null;
         }
 
-        // Immediately show handles and notify parent
         setShowHandles(true);
         onHover(pstElement);
     }, [onHover, pstElement]);
 
-    // Handle mouse leave - simplified with delay for moving to handles
     const handleMouseLeave = useCallback(() => {
-        // Clear any pending timeout
         if (hoverTimeoutRef.current) {
             clearTimeout(hoverTimeoutRef.current);
             hoverTimeoutRef.current = null;
         }
 
-        // Don't hide immediately if resizing
         if (isResizing) {
             return;
         }
 
-        // Hide handles after delay to allow moving to resize handles
         hoverTimeoutRef.current = setTimeout(() => {
             setShowHandles(false);
             onHover(null);
         }, 300);
     }, [isResizing, onHover]);
 
-    // Handle resize start
     const handleResizeStart = useCallback(
         (handle: ResizeHandle, startPosition: {x: number; y: number}) => {
             onResizeStart(pstElement, handle, startPosition);
@@ -148,10 +132,8 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeStart, pstElement],
     );
 
-    // Handle resize move - this will be called during drag operations
     const handleResizeMove = useCallback(
         (handle: ResizeHandle, currentPosition: {x: number; y: number}) => {
-            // Forward the resize move event to the parent component
             if (onResizeMove) {
                 onResizeMove(handle, currentPosition);
             }
@@ -159,15 +141,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeMove],
     );
 
-    // Handle resize end - coordinate with parent component
     const handleResizeEnd = useCallback(
         (handle: ResizeHandle) => {
             try {
-                // The parent component should have calculated new coordinates during resize moves
-                // We signal the end of the resize operation so the parent can finalize the update
                 if (onResizeEnd) {
-                    // Call with undefined coordinates - let parent handle coordinate calculation
-                    // The parent (UnifiedMapCanvas) will calculate coordinates from its own resize state
                     onResizeEnd(pstElement, undefined);
                 }
             } catch (error) {
@@ -177,23 +154,20 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [onResizeEnd, pstElement],
     );
 
-    // Handle component selection
     const handleComponentClick = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
             console.log('PSTBox clicked, selecting component:', pstElement.id);
-            // Select this component when clicked
+
             selectComponent(pstElement.id);
         },
         [selectComponent, pstElement.id],
     );
 
-    // Handle right-click context menu
     const handleContextMenu = useCallback(
         (event: React.MouseEvent) => {
             console.log('PSTBox context menu triggered for:', pstElement.id);
             event.preventDefault();
 
-            // Select the component first if not already selected
             if (!isElementSelected) {
                 console.log('Selecting component:', pstElement.id);
                 selectComponent(pstElement.id);
@@ -201,46 +175,37 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 console.log('Component already selected:', pstElement.id);
             }
 
-            // Show context menu at cursor position
             console.log('Showing context menu at:', {x: event.clientX, y: event.clientY});
             showContextMenu({x: event.clientX, y: event.clientY}, pstElement.id);
         },
         [isElementSelected, selectComponent, pstElement.id, showContextMenu],
     );
 
-    // Handle pointer start (mouse or touch) for drag
     const handlePointerStart = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
-            // Don't start drag if we're already resizing
             if (isResizing) {
                 return;
             }
 
-            // Don't start drag if clicking on resize handles (they have specific data attributes)
             const target = event.target as Element;
             if (target && target.getAttribute && target.getAttribute('data-resize-handle')) {
                 return;
             }
 
-            // Don't start drag if it's a right-click (allow context menu)
             if ('button' in event && event.button === 2) {
                 return;
             }
 
-            // Select component on pointer start
             selectComponent(pstElement.id);
 
             event.preventDefault();
             event.stopPropagation();
 
-            // Get position from mouse or touch event
             let clientX: number, clientY: number;
             if ('touches' in event && event.touches.length > 0) {
-                // Touch event
                 clientX = event.touches[0].clientX;
                 clientY = event.touches[0].clientY;
             } else if ('clientX' in event) {
-                // Mouse event
                 clientX = event.clientX;
                 clientY = event.clientY;
             } else {
@@ -258,7 +223,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isResizing, onDragStart, pstElement, selectComponent],
     );
 
-    // Handle drag start (legacy mouse support)
     const handleDragStart = useCallback(
         (event: React.MouseEvent) => {
             handlePointerStart(event);
@@ -266,13 +230,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [handlePointerStart],
     );
 
-    // Handle touch start for drag
     const handleTouchStart = useCallback(
         (event: React.TouchEvent) => {
-            // On touch devices, first touch shows handles, second touch starts drag
             if (isTouchDevice()) {
                 if (!touchSelected && !isResizing) {
-                    // First touch - show handles and select the element
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -280,7 +241,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                     setShowHandles(true);
                     onHover(pstElement);
 
-                    // Auto-hide handles after 5 seconds if no interaction
                     if (touchTimeoutRef.current) {
                         clearTimeout(touchTimeoutRef.current);
                     }
@@ -294,13 +254,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 }
             }
 
-            // Second touch or non-touch device - start drag
             handlePointerStart(event);
         },
         [handlePointerStart, isTouchDevice, touchSelected, isResizing, onHover, pstElement],
     );
 
-    // Handle pointer move during drag (mouse or touch)
     const handlePointerMove = useCallback(
         (event: MouseEvent | TouchEvent) => {
             if (!isDragActive || !dragStartPositionRef.current) {
@@ -309,14 +267,11 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
             event.preventDefault();
 
-            // Get position from mouse or touch event
             let clientX: number, clientY: number;
             if ('touches' in event && event.touches.length > 0) {
-                // Touch event
                 clientX = event.touches[0].clientX;
                 clientY = event.touches[0].clientY;
             } else if ('clientX' in event) {
-                // Mouse event
                 clientX = event.clientX;
                 clientY = event.clientY;
             } else {
@@ -332,7 +287,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isDragActive, onDragMove, pstElement],
     );
 
-    // Handle pointer end to end drag (mouse or touch)
     const handlePointerEnd = useCallback(
         (event: MouseEvent | TouchEvent) => {
             if (!isDragActive) {
@@ -351,7 +305,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [isDragActive, onDragEnd, pstElement],
     );
 
-    // Legacy mouse handlers
     const handleDragMove = useCallback(
         (event: MouseEvent) => {
             handlePointerMove(event);
@@ -366,7 +319,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [handlePointerEnd],
     );
 
-    // Touch handlers
     const handleTouchMove = useCallback(
         (event: TouchEvent) => {
             handlePointerMove(event);
@@ -381,36 +333,29 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         [handlePointerEnd],
     );
 
-    // Set up global pointer event listeners for drag operations (mouse and touch)
     useEffect(() => {
         if (isDragActive) {
-            // Mouse events
             document.addEventListener('mousemove', handleDragMove, {passive: false});
             document.addEventListener('mouseup', handleDragEnd, {passive: false});
             document.addEventListener('mouseleave', handleDragEnd, {passive: false});
 
-            // Touch events
             document.addEventListener('touchmove', handleTouchMove, {passive: false});
             document.addEventListener('touchend', handleTouchEnd, {passive: false});
             document.addEventListener('touchcancel', handleTouchEnd, {passive: false});
 
-            // Prevent text selection and scrolling during drag
             document.body.style.userSelect = 'none';
             document.body.style.webkitUserSelect = 'none';
             document.body.style.touchAction = 'none';
 
             return () => {
-                // Remove mouse events
                 document.removeEventListener('mousemove', handleDragMove);
                 document.removeEventListener('mouseup', handleDragEnd);
                 document.removeEventListener('mouseleave', handleDragEnd);
 
-                // Remove touch events
                 document.removeEventListener('touchmove', handleTouchMove);
                 document.removeEventListener('touchend', handleTouchEnd);
                 document.removeEventListener('touchcancel', handleTouchEnd);
 
-                // Restore text selection and scrolling
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
                 document.body.style.touchAction = '';
@@ -418,12 +363,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         }
     }, [isDragActive, handleDragMove, handleDragEnd, handleTouchMove, handleTouchEnd]);
 
-    // Show handles when hovered externally or resizing
     useEffect(() => {
         if (isHovered || isResizing) {
             setShowHandles(true);
         } else if (!isResizing && !touchSelected) {
-            // Small delay to prevent flickering when moving between elements
             const timeout = setTimeout(() => {
                 setShowHandles(false);
             }, 100);
@@ -431,12 +374,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         }
     }, [isHovered, isResizing, touchSelected]);
 
-    // Handle touch outside to deselect on touch devices
     useEffect(() => {
         if (!isTouchDevice() || !touchSelected) return;
 
         const handleTouchOutside = (event: TouchEvent) => {
-            // Check if touch is outside this element
             const target = event.target as Element;
             const pstElementDOM = document.querySelector(`[data-testid="pst-box-${pstElement.id}"]`);
 
@@ -459,7 +400,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
         };
     }, [isTouchDevice, touchSelected, onHover, pstElement.id]);
 
-    // Cleanup timeouts and drag state on unmount
     useEffect(() => {
         return () => {
             if (hoverTimeoutRef.current) {
@@ -472,12 +412,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 touchTimeoutRef.current = null;
             }
 
-            // Clean up drag state if component unmounts during drag
             if (isDragActive) {
                 setIsDragActive(false);
                 dragStartPositionRef.current = null;
 
-                // Restore text selection and touch action
                 document.body.style.userSelect = '';
                 document.body.style.webkitUserSelect = '';
                 document.body.style.touchAction = '';
@@ -530,7 +468,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 onClick={handleComponentClick}
                 onContextMenu={handleContextMenu}
                 onKeyDown={event => {
-                    // Support keyboard interaction
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
                         handleComponentClick(event as any);

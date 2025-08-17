@@ -1,7 +1,7 @@
-import React, {createContext, useContext, useState, useCallback, ReactNode} from 'react';
-import {ContextMenu, ContextMenuItem} from './ContextMenu';
-import {useComponentSelection} from '../ComponentSelectionContext';
+import React, {createContext, ReactNode, useCallback, useContext, useState} from 'react';
 import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
+import {useComponentSelection} from '../ComponentSelectionContext';
+import {ContextMenu, ContextMenuItem} from './ContextMenu';
 
 /**
  * Interface for context menu state

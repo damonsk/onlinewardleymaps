@@ -1,9 +1,8 @@
-import React, {useEffect, useCallback, memo, useState} from 'react';
+import React, {memo, useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {KeyboardShortcutHandlerProps} from '../../types/toolbar';
 import {getToolbarItemByShortcut} from '../../constants/toolbarItems';
+import {KeyboardShortcutHandlerProps} from '../../types/toolbar';
 import {useUndoRedo} from '../UndoRedoProvider';
-import {UNDO_REDO_SHORTCUTS} from '../../constants/undoRedo';
 
 /**
  * Screen reader announcement component for keyboard shortcut activation

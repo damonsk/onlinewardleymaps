@@ -1,26 +1,20 @@
 import React, {LegacyRef, useCallback, useEffect, useState} from 'react';
-import ReactDOMServer from 'react-dom/server';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 
+import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
+import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
 import {MapAnnotationsPosition} from '../../types/base';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
-import {UnifiedWardleyMap} from '../../types/unified/map';
 import {ActionType} from '../../types/undo-redo';
-import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {UnifiedComponent} from '../../types/unified/components';
+import {UnifiedWardleyMap} from '../../types/unified/map';
+import {addLinkToMapText, linkExists} from '../../utils/componentDetection';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
-import {
-    validateMapInteractionCompatibility,
-    ensureToolbarComponentEditingCompatibility,
-    getCompatibleCursorStyle,
-} from '../../utils/toolbarCompatibility';
-import {findNearestComponent, linkExists, addLinkToMapText} from '../../utils/componentDetection';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
-import {EditingProvider} from '../EditingContext';
 import {ComponentSelectionProvider} from '../ComponentSelectionContext';
+import {EditingProvider} from '../EditingContext';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
-import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
 
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';

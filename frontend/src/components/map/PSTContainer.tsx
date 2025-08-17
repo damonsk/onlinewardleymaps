@@ -4,11 +4,11 @@
  */
 
 import React from 'react';
-import {PSTElement} from '../../types/map/pst';
 import {MapDimensions} from '../../constants/defaults';
+import {PSTElement} from '../../types/map/pst';
 import {MapTheme} from '../../types/map/styles';
-import PSTResizeManager from './PSTResizeManager';
 import PSTBox from './PSTBox';
+import PSTResizeManager from './PSTResizeManager';
 
 interface PSTContainerProps {
     /** PST elements to render */
