@@ -32,49 +32,56 @@ export class MapComponentDeleter {
         return transformations.reduce((currentText, transform) => transform(currentText), text);
     }
 
-    public deleteComponent(params: ComponentDeletionParams): ComponentDeletionResult {
-        const {mapText, componentId, componentType} = params;
-
-        if (!mapText || typeof mapText !== 'string') {
-            throw new Error('Map text must be a non-empty string');
-        }
-
-        let componentIdStr: string;
-
+    private normalizeComponentId(componentId: string | number): string {
         if (typeof componentId === 'number') {
-            if (isNaN(componentId) || componentId < 0) {
-                throw new Error('Component ID must be a non-negative number');
-            }
-            componentIdStr = String(componentId);
-        } else if (typeof componentId === 'string') {
-            if (!componentId || componentId.trim() === '') {
-                throw new Error('Component ID must be a non-empty string');
-            }
-            componentIdStr = componentId;
-        } else {
-            throw new Error('Component ID must be a string or number');
+            return String(componentId);
         }
+        return componentId;
+    }
 
-        const identification = this.identifyComponent(mapText, componentIdStr, componentType);
-        if (!identification.found) {
-            throw new Error(`Component with ID "${componentId}" not found in map text`);
-        }
-
-        const updatedMapText = this.applyTransformations(mapText, [
+    private createDeletionTransformations(identification: ComponentIdentification): Array<(text: string) => string> {
+        return [
             text => this.removeComponentLine(text, identification.line),
             text => this.removeComponentLinks(text, identification.name),
             text => this.removeComponentEvolve(text, identification.name),
-        ]);
+        ];
+    }
 
+    private createDeletionResult(
+        updatedMapText: string, 
+        componentId: string, 
+        identification: ComponentIdentification
+    ): ComponentDeletionResult {
         return {
             updatedMapText,
             deletedComponent: {
-                id: componentIdStr,
+                id: componentId,
                 type: identification.type,
                 line: identification.line,
                 originalText: identification.originalText,
             },
         };
+    }
+
+    public deleteComponent(params: ComponentDeletionParams): ComponentDeletionResult {
+        const validation = this.validateDeletionParams(params);
+        if (!validation.isValid) {
+            throw new Error(`Invalid deletion parameters: ${validation.errors.join(', ')}`);
+        }
+
+        const {mapText, componentId, componentType} = params;
+        const componentIdStr = this.normalizeComponentId(componentId);
+        const identification = this.identifyComponent(mapText, componentIdStr, componentType);
+        
+        if (!identification.found) {
+            throw new Error(`Component with ID "${componentId}" not found in map text`);
+        }
+
+        const updatedMapText = this.applyTransformations(mapText, 
+            this.createDeletionTransformations(identification)
+        );
+
+        return this.createDeletionResult(updatedMapText, componentIdStr, identification);
     }
 
     private identifyComponent(mapText: string, componentId: string, _expectedType?: string): ComponentIdentification {
