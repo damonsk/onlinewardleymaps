@@ -3,7 +3,6 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
 import {useComponentSelection} from '../ComponentSelectionContext';
-import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentText from './ComponentText';
 import {useContextMenu} from './ContextMenuProvider';
 import Inertia from './Inertia';
@@ -38,7 +37,6 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
     scaleFactor,
     children,
 }) => {
-    const isModKeyPressed = useModKeyPressedConsumer();
     const {isSelected, selectComponent} = useComponentSelection();
     const {showContextMenu} = useContextMenu();
     const calculatedPosition = new ModernPositionCalculator();
@@ -146,7 +144,6 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                 fixedY={component.evolved}
                 fixedX={false}
                 shouldShowMoving={true}
-                isModKeyPressed={component.evolved ? false : isModKeyPressed}
                 scaleFactor={scaleFactor}>
                 <g
                     id={component.id}

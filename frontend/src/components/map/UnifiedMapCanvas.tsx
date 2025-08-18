@@ -13,7 +13,6 @@ import {
 import {updatePSTInMapText} from '../../utils/pstElementUtils';
 import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
-import {useModKeyPressedConsumer} from '../KeyPressContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
@@ -55,7 +54,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapAnnotationsPresentation,
     } = props;
 
-    const isModKeyPressed = useModKeyPressedConsumer();
     const {isAnyElementEditing} = useEditing();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
@@ -149,12 +147,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         }
     }, [isAnyElementEditing]);
 
-    useEffect(() => {
-        if (!isModKeyPressed && mapElementsClicked.length > 0) {
-            setMapElementsClicked([]);
-        }
-    }, [isModKeyPressed, mapElementsClicked]);
-
     const handleZoomChange = (newValue: any) => {
         setValue(newValue);
         setScaleFactor(newValue.a); // a is the scale factor
@@ -211,18 +203,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 props.onComponentClick(ctx.el);
                 return;
             }
-
-            // Original linking functionality (fallback for old behavior)
-            if (isModKeyPressed === false) return;
-            if (ctx.e === null) return;
-            const s = [...mapElementsClicked, {el: ctx.el, e: ctx.e}];
-            if (s.length === 2) {
-                mutateMapText(mapText + '\r\n' + s.map(r => r.el.name).join('->'));
-                setMapElementsClicked([]);
-            } else setMapElementsClicked(s);
         },
         [
-            isModKeyPressed,
             mapElementsClicked,
             setHighlightLine,
             mutateMapText,

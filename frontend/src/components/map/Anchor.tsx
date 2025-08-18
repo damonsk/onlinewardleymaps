@@ -3,7 +3,6 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
 import {useComponentSelection} from '../ComponentSelectionContext';
-import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
@@ -30,7 +29,6 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
     onClick,
     scaleFactor,
 }) => {
-    const isModKeyPressed = useModKeyPressedConsumer();
     const {isSelected, selectComponent} = useComponentSelection();
     const identity = 'anchor';
 
@@ -62,15 +60,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
 
     return (
         <>
-            <Movable
-                id={elementKey()}
-                scaleFactor={scaleFactor}
-                onMove={endDrag}
-                x={x()}
-                y={y()}
-                fixedY={false}
-                fixedX={false}
-                isModKeyPressed={isModKeyPressed}>
+            <Movable id={elementKey()} scaleFactor={scaleFactor} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false}>
                 <g
                     data-testid={`map-anchor-${anchor.id}`}
                     style={{

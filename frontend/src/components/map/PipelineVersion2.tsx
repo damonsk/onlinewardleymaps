@@ -2,7 +2,6 @@ import React, {MouseEvent} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {PipelineComponentData, PipelineData, UnifiedComponent} from '../../types/unified/components';
-import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import ModernPipelineBoxSymbol from '../symbols/ModernPipelineBoxSymbol';
 import ComponentText from './ComponentText';
@@ -35,7 +34,6 @@ interface ModernPipelineVersion2Props {
 
 function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element {
     const positionCalc = new PositionCalculator();
-    const isModKeyPressed = useModKeyPressedConsumer();
 
     const noLabelMatcher: MatcherFunction = {
         matcher: (line: string, identifier: string, type: string): boolean => {
@@ -141,16 +139,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                         id={`pipeline_v2_circle_${props.pipeline.id}_${i}`}
                         styles={props.mapStyleDefs.component}
                         component={component}
-                        onClick={(e: MouseEvent<SVGElement>) => {
-                            if (isModKeyPressed) {
-                                props.linkingFunction({
-                                    el: component,
-                                    e,
-                                });
-                                return;
-                            }
-                            props.setHighlightLine(c.pipelineComponent.line);
-                        }}
+                        onClick={() => props.setHighlightLine(c.pipelineComponent.line)}
                     />
                 </Movable>
                 {c.pipelineComponent.label && (

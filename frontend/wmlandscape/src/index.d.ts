@@ -160,10 +160,6 @@ export const FeatureSwitchesContext: React.Context<any>;
 export const FeatureSwitchesProvider: React.FC<{value: any; children: React.ReactNode}>;
 export function useFeatureSwitches(): any;
 
-export const ModKeyPressedContext: React.Context<boolean>;
-export const ModKeyPressedProvider: React.FC<{children: React.ReactNode}>;
-export function useModKeyPressedConsumer(): boolean;
-
 // State Hooks
 export function useUnifiedMapState(): {
     state: {
@@ -186,7 +182,6 @@ export function useFeatureSwitches(): any;
 export function useLegacyMapState(): any;
 export function useModKeyPressedConsumer(): any;
 
-export const ModKeyPressedProvider: React.FC<any>;
 export const FeatureSwitchesProvider: React.FC<any>;
 
 export const MapElements: any;

@@ -15,7 +15,6 @@ import {SaveMap} from '../repository/SaveMap';
 import {MapAnnotationsPosition, MapSize} from '../types/base';
 import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
-import {ModKeyPressedProvider} from './KeyPressContext';
 import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
 
 import {ResizableSplitPane} from './common/ResizableSplitPane';
@@ -603,31 +602,29 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                                     width: '100%',
                                     height: '100%',
                                 }}>
-                                <ModKeyPressedProvider>
-                                    <EditingProvider>
-                                        <ComponentSelectionProvider>
-                                            <MapView
-                                                wardleyMap={unifiedMapState.getUnifiedMap()}
-                                                shouldHideNav={shouldHideNav}
-                                                hideNav={hideNav}
-                                                mapTitle={mapTitle}
-                                                mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                                mapStyleDefs={legacyState.mapStyleDefs}
-                                                mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                                mapDimensions={legacyState.mapDimensions}
-                                                mapEvolutionStates={legacyState.mapEvolutionStates}
-                                                mapRef={mapRef}
-                                                mapText={legacyState.mapText}
-                                                mutateMapText={mutateMapText}
-                                                evolutionOffsets={Defaults.EvoOffsets}
-                                                launchUrl={launchUrl}
-                                                setHighlightLine={legacyState.setHighlightLine}
-                                                setNewComponentContext={legacyState.setNewComponentContext}
-                                                showLinkedEvolved={legacyState.showLinkedEvolved}
-                                            />
-                                        </ComponentSelectionProvider>
-                                    </EditingProvider>
-                                </ModKeyPressedProvider>
+                                <EditingProvider>
+                                    <ComponentSelectionProvider>
+                                        <MapView
+                                            wardleyMap={unifiedMapState.getUnifiedMap()}
+                                            shouldHideNav={shouldHideNav}
+                                            hideNav={hideNav}
+                                            mapTitle={mapTitle}
+                                            mapAnnotationsPresentation={mapAnnotationsPresentation}
+                                            mapStyleDefs={legacyState.mapStyleDefs}
+                                            mapCanvasDimensions={legacyState.mapCanvasDimensions}
+                                            mapDimensions={legacyState.mapDimensions}
+                                            mapEvolutionStates={legacyState.mapEvolutionStates}
+                                            mapRef={mapRef}
+                                            mapText={legacyState.mapText}
+                                            mutateMapText={mutateMapText}
+                                            evolutionOffsets={Defaults.EvoOffsets}
+                                            launchUrl={launchUrl}
+                                            setHighlightLine={legacyState.setHighlightLine}
+                                            setNewComponentContext={legacyState.setNewComponentContext}
+                                            showLinkedEvolved={legacyState.showLinkedEvolved}
+                                        />
+                                    </ComponentSelectionProvider>
+                                </EditingProvider>
                             </Box>
                         }
                     />
@@ -639,31 +636,29 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                             width: '100%',
                             height: '100%',
                         }}>
-                        <ModKeyPressedProvider>
-                            <EditingProvider>
-                                <ComponentSelectionProvider>
-                                    <MapView
-                                        wardleyMap={unifiedMapState.getUnifiedMap()}
-                                        shouldHideNav={shouldHideNav}
-                                        hideNav={hideNav}
-                                        mapTitle={mapTitle}
-                                        mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                        mapStyleDefs={legacyState.mapStyleDefs}
-                                        mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                        mapDimensions={legacyState.mapDimensions}
-                                        mapEvolutionStates={legacyState.mapEvolutionStates}
-                                        mapRef={mapRef}
-                                        mapText={legacyState.mapText}
-                                        mutateMapText={mutateMapText}
-                                        evolutionOffsets={Defaults.EvoOffsets}
-                                        launchUrl={launchUrl}
-                                        setHighlightLine={legacyState.setHighlightLine}
-                                        setNewComponentContext={legacyState.setNewComponentContext}
-                                        showLinkedEvolved={legacyState.showLinkedEvolved}
-                                    />
-                                </ComponentSelectionProvider>
-                            </EditingProvider>
-                        </ModKeyPressedProvider>
+                        <EditingProvider>
+                            <ComponentSelectionProvider>
+                                <MapView
+                                    wardleyMap={unifiedMapState.getUnifiedMap()}
+                                    shouldHideNav={shouldHideNav}
+                                    hideNav={hideNav}
+                                    mapTitle={mapTitle}
+                                    mapAnnotationsPresentation={mapAnnotationsPresentation}
+                                    mapStyleDefs={legacyState.mapStyleDefs}
+                                    mapCanvasDimensions={legacyState.mapCanvasDimensions}
+                                    mapDimensions={legacyState.mapDimensions}
+                                    mapEvolutionStates={legacyState.mapEvolutionStates}
+                                    mapRef={mapRef}
+                                    mapText={legacyState.mapText}
+                                    mutateMapText={mutateMapText}
+                                    evolutionOffsets={Defaults.EvoOffsets}
+                                    launchUrl={launchUrl}
+                                    setHighlightLine={legacyState.setHighlightLine}
+                                    setNewComponentContext={legacyState.setNewComponentContext}
+                                    showLinkedEvolved={legacyState.showLinkedEvolved}
+                                />
+                            </ComponentSelectionProvider>
+                        </EditingProvider>
                     </Box>
                 )}
             </Box>

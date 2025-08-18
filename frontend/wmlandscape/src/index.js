@@ -54,7 +54,6 @@ import * as MapStyles from '../../src/constants/mapstyles';
 import * as Usages from '../../src/constants/usages';
 
 import {FeatureSwitchesContext, FeatureSwitchesProvider, useFeatureSwitches} from '../../src/components/FeatureSwitchesContext';
-import {ModKeyPressedContext, ModKeyPressedProvider, useModKeyPressedConsumer} from '../../src/components/KeyPressContext';
 import FluidLink from '../../src/components/map/FluidLink';
 import MapAccelerator from '../../src/components/map/MapAccelerator';
 import PipelineVersion2 from '../../src/components/map/PipelineVersion2';
@@ -168,8 +167,6 @@ export {
     MethodElement,
     MethodExtractionStrategy,
     MethodSymbol,
-    ModKeyPressedContext,
-    ModKeyPressedProvider,
     Movable,
     NotDefinedCoordsMatcher,
     NotDefinedManyCoordsMatcher,
@@ -198,5 +195,6 @@ export {
     useLegacyMapState,
     useModKeyPressedConsumer,
     useUnifiedMapState,
-    XAxisLabelsExtractionStrategy,
+    XAxisLabelsExtractionStrategy
 };
+

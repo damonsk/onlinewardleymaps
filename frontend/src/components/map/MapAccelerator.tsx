@@ -43,7 +43,6 @@ const MapAccelerator: React.FC<MapAcceleratorProps> = ({element, mapDimensions, 
             fixedY={element.evolved}
             fixedX={false}
             shouldShowMoving={false}
-            isModKeyPressed={false}
             scaleFactor={scaleFactor}>
             <>{children}</>
         </Movable>
