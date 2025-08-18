@@ -194,7 +194,10 @@ export class MapComponentDeleter {
         let okLines = [];
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            if (line.trim().indexOf(removedComponent.trim() + '->') == -1 && line.trim().indexOf('->' + removedComponent.trim()) == -1) {
+            if (
+                line.trim().startsWith(removedComponent.trim() + '->') === false &&
+                line.endsWith('->' + removedComponent.trim()) === false
+            ) {
                 okLines.push(line);
             }
         }
