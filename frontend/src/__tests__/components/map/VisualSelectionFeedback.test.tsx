@@ -3,7 +3,6 @@ import React from 'react';
 import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../../components/EditingContext';
 import {FeatureSwitchesProvider} from '../../../components/FeatureSwitchesContext';
-import {ModKeyPressedProvider} from '../../../components/KeyPressContext';
 import {ContextMenuProvider} from '../../../components/map/ContextMenuProvider';
 import MapComponent from '../../../components/map/MapComponent';
 import PSTBox from '../../../components/map/PSTBox';
@@ -101,19 +100,17 @@ const mockAnchor: UnifiedComponent = {
 const renderWithProvider = (component: React.ReactElement) => {
     return render(
         <FeatureSwitchesProvider value={featureSwitches}>
-            <ModKeyPressedProvider>
-                <EditingProvider>
-                    <UndoRedoProvider mutateMapText={jest.fn()} mapText="test map text">
-                        <ComponentSelectionProvider>
-                            <ContextMenuProvider>
-                                <svg width="800" height="600">
-                                    {component}
-                                </svg>
-                            </ContextMenuProvider>
-                        </ComponentSelectionProvider>
-                    </UndoRedoProvider>
-                </EditingProvider>
-            </ModKeyPressedProvider>
+            <EditingProvider>
+                <UndoRedoProvider mutateMapText={jest.fn()} mapText="test map text">
+                    <ComponentSelectionProvider>
+                        <ContextMenuProvider>
+                            <svg width="800" height="600">
+                                {component}
+                            </svg>
+                        </ContextMenuProvider>
+                    </ComponentSelectionProvider>
+                </UndoRedoProvider>
+            </EditingProvider>
         </FeatureSwitchesProvider>,
     );
 };

@@ -13,7 +13,6 @@ import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../.
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 
-// Mock the FeatureSwitchesContext to enable both QuickAdd and toolbar
 jest.mock('../../components/FeatureSwitchesContext', () => ({
     useFeatureSwitches: () => ({
         enableAccelerators: true,
@@ -22,12 +21,6 @@ jest.mock('../../components/FeatureSwitchesContext', () => ({
     }),
 }));
 
-// Mock the KeyPressContext for mod key functionality
-jest.mock('../../components/KeyPressContext', () => ({
-    useModKeyPressedConsumer: () => false,
-}));
-
-// Mock react-svg-pan-zoom to avoid complex setup
 jest.mock('react-svg-pan-zoom', () => {
     const React = require('react');
     return {

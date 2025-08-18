@@ -13,7 +13,6 @@ jest.mock('react-dom/server', () => ({
     renderToString: jest.fn(() => '<svg>mock-cursor</svg>'),
 }));
 
-// Mock the FeatureSwitchesContext
 jest.mock('../../components/FeatureSwitchesContext', () => ({
     useFeatureSwitches: () => ({
         enableAccelerators: true,
@@ -22,12 +21,6 @@ jest.mock('../../components/FeatureSwitchesContext', () => ({
     }),
 }));
 
-// Mock the KeyPressContext
-jest.mock('../../components/KeyPressContext', () => ({
-    useModKeyPressedConsumer: () => false,
-}));
-
-// Mock react-svg-pan-zoom
 jest.mock('react-svg-pan-zoom', () => {
     const React = require('react');
     return {

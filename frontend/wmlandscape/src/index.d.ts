@@ -180,7 +180,6 @@ export function useLegacyMapState(): any;
 
 export function useFeatureSwitches(): any;
 export function useLegacyMapState(): any;
-export function useModKeyPressedConsumer(): any;
 
 export const FeatureSwitchesProvider: React.FC<any>;
 

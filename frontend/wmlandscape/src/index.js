@@ -193,7 +193,6 @@ export {
     Usages,
     useFeatureSwitches,
     useLegacyMapState,
-    useModKeyPressedConsumer,
     useUnifiedMapState,
     XAxisLabelsExtractionStrategy
 };

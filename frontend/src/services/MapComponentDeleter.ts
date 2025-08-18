@@ -22,6 +22,7 @@ export interface ComponentIdentification {
     line: number;
     type: string;
     originalText: string;
+    name: string;
 }
 
 export class MapComponentDeleter {
@@ -32,7 +33,6 @@ export class MapComponentDeleter {
             throw new Error('Map text must be a non-empty string');
         }
 
-        // Validate and convert componentId to string for identification
         let componentIdStr: string;
 
         if (typeof componentId === 'number') {
@@ -51,12 +51,13 @@ export class MapComponentDeleter {
 
         // Identify the component in the map text
         const identification = this.identifyComponent(mapText, componentIdStr, componentType);
-
+        console.log('identification', identification);
         if (!identification.found) {
             throw new Error(`Component with ID "${componentId}" not found in map text`);
         }
 
-        const updatedMapText = this.removeComponentLine(mapText, identification.line);
+        let updatedMapText = this.removeComponentLine(mapText, identification.line);
+        updatedMapText = this.removeComponentLinks(updatedMapText, identification.name);
 
         return {
             updatedMapText,
@@ -69,9 +70,6 @@ export class MapComponentDeleter {
         };
     }
 
-    /**
-     * Identifies a component in map text and returns its location and type
-     */
     private identifyComponent(mapText: string, componentId: string, _expectedType?: string): ComponentIdentification {
         const lines = mapText.split('\n');
         const numericId = parseInt(componentId, 10);
@@ -88,6 +86,7 @@ export class MapComponentDeleter {
                                 line: lineIndex,
                                 type: 'pst',
                                 originalText: line,
+                                name: '',
                             };
                         }
 
@@ -98,6 +97,7 @@ export class MapComponentDeleter {
                                 line: lineIndex,
                                 type: componentMatch.type,
                                 originalText: line,
+                                name: componentMatch.name,
                             };
                         }
                     }
@@ -117,6 +117,7 @@ export class MapComponentDeleter {
                     line: i,
                     type: componentMatch.type,
                     originalText: line,
+                    name: componentMatch.name,
                 };
             }
         }
@@ -126,12 +127,10 @@ export class MapComponentDeleter {
             line: -1,
             type: 'unknown',
             originalText: '',
+            name: '',
         };
     }
 
-    /**
-     * Parses a component line to extract component information
-     */
     private parseComponentLine(
         line: string,
         lineIndex: number,
@@ -143,7 +142,6 @@ export class MapComponentDeleter {
     } | null {
         const trimmedLine = line.trim();
 
-        // Component pattern: component Name [visibility, maturity] optional_decorators
         const componentPattern = /^(component|anchor|market|ecosystem|note|pipeline)\s+([^[]+)\s*\[([0-9.]+)\s*,\s*([0-9.]+)\]/i;
         const match = trimmedLine.match(componentPattern);
 
@@ -191,9 +189,18 @@ export class MapComponentDeleter {
         return false;
     }
 
-    /**
-     * Removes a component line from map text
-     */
+    private removeComponentLinks(mapText: string, removedComponent: string): string {
+        const lines = mapText.split('\n');
+        let okLines = [];
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.trim().indexOf(removedComponent.trim() + '->') == -1 && line.trim().indexOf('->' + removedComponent.trim()) == -1) {
+                okLines.push(line);
+            }
+        }
+        return okLines.join('\n');
+    }
+
     private removeComponentLine(mapText: string, lineIndex: number): string {
         if (lineIndex < 0) {
             throw new Error('Invalid line index for component deletion');
@@ -206,9 +213,6 @@ export class MapComponentDeleter {
         return lines.join('\n');
     }
 
-    /**
-     * Deletes a PST component using existing PST utilities
-     */
     public deletePSTComponent(mapText: string, pstElement: PSTElement): string {
         const lineIndex = findPSTElementLine(mapText, pstElement);
 

@@ -24,11 +24,6 @@ jest.mock('../../components/FeatureSwitchesContext', () => ({
     }),
 }));
 
-// Mock the KeyPressContext
-jest.mock('../../components/KeyPressContext', () => ({
-    useModKeyPressedConsumer: () => false,
-}));
-
 // Mock react-svg-pan-zoom
 jest.mock('react-svg-pan-zoom', () => {
     const React = require('react');

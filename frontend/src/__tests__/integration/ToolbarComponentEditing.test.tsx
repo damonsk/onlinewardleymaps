@@ -13,7 +13,6 @@ jest.mock('react-dom/server', () => ({
     renderToString: jest.fn(() => '<svg>mock-cursor</svg>'),
 }));
 
-// Mock the FeatureSwitchesContext
 jest.mock('../../components/FeatureSwitchesContext', () => ({
     useFeatureSwitches: () => ({
         enableAccelerators: true,
@@ -22,12 +21,6 @@ jest.mock('../../components/FeatureSwitchesContext', () => ({
     }),
 }));
 
-// Mock the KeyPressContext for mod key functionality
-jest.mock('../../components/KeyPressContext', () => ({
-    useModKeyPressedConsumer: jest.fn(() => false),
-}));
-
-// Mock react-svg-pan-zoom
 jest.mock('react-svg-pan-zoom', () => {
     const mockReact = require('react');
     return {
@@ -403,9 +396,6 @@ component Component B [0.4, 0.6]
 component Toolbar Component 1 [0.2, 0.8]
 component Toolbar Component 2 [0.6, 0.4]`;
 
-            const mockUseModKeyPressed = require('../../components/KeyPressContext').useModKeyPressedConsumer;
-            mockUseModKeyPressed.mockReturnValue(true);
-
             renderComponent({
                 mapText: mapWithTwoToolbarComponents,
                 mutateMapText: mockMutateMapText,
@@ -414,8 +404,6 @@ component Toolbar Component 2 [0.6, 0.4]`;
             // This would require updating the mock to handle the additional component
             // For now, we verify the structure supports linking
             expect(container.querySelector('[data-testid="unified-map-content"]')).toBeTruthy();
-
-            mockUseModKeyPressed.mockReturnValue(false);
         });
     });
 
