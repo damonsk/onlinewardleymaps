@@ -18,9 +18,18 @@ interface ModernAnchorProps {
     mutateMapText: (...args: any[]) => any;
     mapStyleDefs: MapTheme;
     onClick: (event: MouseEvent) => void;
+    scaleFactor: number;
 }
 
-const Anchor: React.FunctionComponent<ModernAnchorProps> = ({anchor, mapText, mutateMapText, mapDimensions, mapStyleDefs, onClick}) => {
+const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
+    anchor,
+    mapText,
+    mutateMapText,
+    mapDimensions,
+    mapStyleDefs,
+    onClick,
+    scaleFactor,
+}) => {
     const isModKeyPressed = useModKeyPressedConsumer();
     const {isSelected, selectComponent} = useComponentSelection();
     const identity = 'anchor';
@@ -48,11 +57,20 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({anchor, mapText, mu
     const handleClick = (event: MouseEvent) => {
         selectComponent(anchor.id);
         onClick(event);
+        event.stopPropagation();
     };
 
     return (
         <>
-            <Movable id={elementKey()} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false} isModKeyPressed={isModKeyPressed}>
+            <Movable
+                id={elementKey()}
+                scaleFactor={scaleFactor}
+                onMove={endDrag}
+                x={x()}
+                y={y()}
+                fixedY={false}
+                fixedX={false}
+                isModKeyPressed={isModKeyPressed}>
                 <g
                     data-testid={`map-anchor-${anchor.id}`}
                     style={{

@@ -78,9 +78,10 @@ const Note: React.FC<ModernNoteProps> = ({
         positionUpdater.update({param1: parseFloat(visibility), param2: parseFloat(maturity)}, note.text, note.line);
     }
 
-    const handleClick = () => {
+    const handleClick = (event: React.MouseEvent) => {
         selectComponent(note.id);
         setHighlightLine(note.line);
+        event.stopPropagation();
     };
 
     const handleDoubleClick = () => {

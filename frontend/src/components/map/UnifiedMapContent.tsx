@@ -322,6 +322,7 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                         mutateMapText={mutateMapText}
                         mapStyleDefs={mapStyleDefs}
                         onClick={() => setHighlightLine(a.line || 0)}
+                        scaleFactor={scaleFactor}
                     />
                 ))}
             </g>

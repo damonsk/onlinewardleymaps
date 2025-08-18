@@ -6,6 +6,7 @@ jest.mock('react-dom/server', () => ({
     renderToString: jest.fn(() => '<svg>mock-cursor</svg>'),
 }));
 
+import {ComponentSelectionProvider} from '../../components/ComponentSelectionContext';
 import {MapView} from '../../components/map/MapView';
 import {UndoRedoProvider} from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
@@ -269,9 +270,11 @@ describe('Toolbar Compatibility Integration Tests', () => {
     const renderComponent = (props: any = {}) => {
         act(() => {
             root.render(
-                <UndoRedoProvider {...defaultProps} {...props}>
-                    <MapView {...defaultProps} {...props} />
-                </UndoRedoProvider>,
+                <ComponentSelectionProvider>
+                    <UndoRedoProvider {...defaultProps} {...props}>
+                        <MapView {...defaultProps} {...props} />
+                    </UndoRedoProvider>
+                </ComponentSelectionProvider>,
             );
         });
     };

@@ -1,5 +1,6 @@
 import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
+import {ComponentSelectionProvider} from '../../components/ComponentSelectionContext';
 import {MapView} from '../../components/map/MapView';
 import UndoRedoProvider from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
@@ -238,9 +239,11 @@ describe('Pipeline Placement Integration Tests', () => {
     const renderComponent = (props: any = {}) => {
         act(() => {
             root.render(
-                <UndoRedoProvider {...defaultProps} {...props}>
-                    <MapView {...defaultProps} {...props} />
-                </UndoRedoProvider>,
+                <ComponentSelectionProvider>
+                    <UndoRedoProvider {...defaultProps} {...props}>
+                        <MapView {...defaultProps} {...props} />
+                    </UndoRedoProvider>
+                </ComponentSelectionProvider>,
             );
         });
     };

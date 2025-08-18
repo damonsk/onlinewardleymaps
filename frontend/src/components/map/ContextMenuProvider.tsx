@@ -82,6 +82,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({childre
 
     const getContextMenuItems = useCallback((): ContextMenuItem[] => {
         const selectedComponentId = getSelectedComponentId();
+        if (selectedComponentId === null || selectedComponentId === undefined) return [];
         const items: ContextMenuItem[] = [];
 
         console.log('Generating context menu items for:', selectedComponentId);

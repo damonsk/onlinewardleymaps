@@ -45,6 +45,7 @@ export const ComponentSelectionProvider: React.FC<ComponentSelectionProviderProp
     );
 
     const getSelectedComponentId = useCallback(() => {
+        if (selectionState.selectedComponentId === null) return;
         console.log('ComponentSelectionContext: getSelectedComponentId called, returning:', selectionState.selectedComponentId);
         return selectionState.selectedComponentId;
     }, [selectionState.selectedComponentId]);

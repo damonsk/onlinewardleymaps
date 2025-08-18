@@ -376,7 +376,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 const placementParams = {
                     item,
                     position,
-                    existingComponents: props.wardleyMap.components || [],
+                    existingComponents: props.wardleyMap.components.concat(props.wardleyMap.anchors) || [],
                     currentMapText: props.mapText,
                 };
 
@@ -1029,8 +1029,6 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     );
 
     const handleMapCanvasClick = useCallback((pos: {x: number; y: number}) => {
-        // This handler is used for zoom functionality when enableZoomOnClick is true
-        // Currently no specific zoom behavior is implemented
         clearSelection();
         console.log('Map canvas clicked at:', pos);
     }, []);

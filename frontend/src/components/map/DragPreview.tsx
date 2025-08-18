@@ -218,54 +218,6 @@ const PreviewIcon = styled.div`
 `;
 
 /**
- * Text label for the preview
- * Enhanced with theme-specific styling for consistent appearance across all map themes
- */
-const PreviewLabel = styled.span.withConfig({
-    shouldForwardProp: prop => prop !== 'isValidDropZone',
-})<{isValidDropZone: boolean}>`
-    font-size: 12px;
-    font-weight: 500;
-    color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
-    white-space: nowrap;
-
-    /* Theme-specific styling */
-    .wardley & {
-        color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
-        font-family:
-            Consolas,
-            Lucida Console,
-            monospace;
-    }
-
-    .colour & {
-        color: ${props => (props.isValidDropZone ? '#8cb358' : '#d32f2f')};
-    }
-
-    .plain & {
-        color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
-    }
-
-    .handwritten & {
-        color: ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
-        font-family: 'Gloria Hallelujah', cursive;
-    }
-
-    .dark & {
-        color: ${props => (props.isValidDropZone ? '#60a5fa' : '#f87171')};
-    }
-
-    @media (prefers-color-scheme: dark) {
-        color: ${props => (props.isValidDropZone ? '#60a5fa' : '#f87171')};
-    }
-
-    /* Responsive behavior */
-    @media (max-width: 768px) {
-        font-size: 11px;
-    }
-`;
-
-/**
  * Drop zone indicator text
  * Enhanced with theme-specific styling for consistent appearance across all map themes
  */

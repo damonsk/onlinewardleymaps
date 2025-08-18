@@ -11,8 +11,8 @@ import {
     ToolbarOutSourceMethodIcon,
     ToolbarPipelineIcon,
     ToolbarPSTIcon,
-    ToolbarUndoIcon,
     ToolbarRedoIcon,
+    ToolbarUndoIcon,
 } from '../components/map/ToolbarIconWrappers';
 import {ToolbarCategory, ToolbarConfiguration, ToolbarItem, ToolbarSubItem} from '../types/toolbar';
 
@@ -153,8 +153,6 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         toolType: 'placement',
         keyboardShortcut: 'n',
     },
-    // Note: Pipeline and Anchor icons will be created in a later task
-    // For now, we'll use placeholder icons that will be replaced
     {
         id: 'pipeline',
         label: 'Pipeline',
@@ -175,7 +173,6 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         toolType: 'placement',
         keyboardShortcut: 'a',
     },
-    // New linking tool
     {
         id: 'link',
         label: 'Link Components',
@@ -184,7 +181,6 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         toolType: 'linking',
         keyboardShortcut: 'l',
     },
-    // PST tool with dropdown
     {
         id: 'pst',
         label: 'PST Boxes',
@@ -194,7 +190,6 @@ export const TOOLBAR_ITEMS: ToolbarItem[] = [
         keyboardShortcut: 't',
         subItems: PST_SUB_ITEMS,
     },
-    // Undo/Redo action tools
     {
         id: 'undo',
         label: 'Undo',

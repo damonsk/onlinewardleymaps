@@ -1,5 +1,6 @@
 import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
+import {ComponentSelectionProvider} from '../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../components/EditingContext';
 import {MapView} from '../../components/map/MapView';
 import UndoRedoProvider from '../../components/UndoRedoProvider';
@@ -342,11 +343,13 @@ component Toolbar Component [0.2, 0.8]`,
     const renderComponent = (props: any = {}) => {
         act(() => {
             root.render(
-                <EditingProvider>
-                    <UndoRedoProvider {...defaultProps} {...props}>
-                        <MapView {...defaultProps} {...props} />
-                    </UndoRedoProvider>
-                </EditingProvider>,
+                <ComponentSelectionProvider>
+                    <EditingProvider>
+                        <UndoRedoProvider {...defaultProps} {...props}>
+                            <MapView {...defaultProps} {...props} />
+                        </UndoRedoProvider>
+                    </EditingProvider>
+                </ComponentSelectionProvider>,
             );
         });
     };
