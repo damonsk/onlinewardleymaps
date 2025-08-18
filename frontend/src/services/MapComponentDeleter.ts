@@ -80,7 +80,7 @@ export class MapComponentDeleter {
     private identifyComponent(mapText: string, componentId: string, _expectedType?: string): ComponentIdentification {
         const lines = mapText.split('\n');
         const numericId = parseInt(componentId, 10);
-        
+
         if (!isNaN(numericId) && numericId >= 0) {
             const lineIndex = numericId - 1;
             if (lineIndex >= 0 && lineIndex < lines.length) {
@@ -184,7 +184,7 @@ export class MapComponentDeleter {
         const trimmedComponent = removedComponent.trim();
         const linkStart = `${trimmedComponent}->`;
         const linkEnd = `->${trimmedComponent}`;
-        
+
         return mapText
             .split('\n')
             .filter(line => {
@@ -198,7 +198,7 @@ export class MapComponentDeleter {
         const trimmedComponent = removedComponent.trim();
         const evolveArrow = `evolve ${trimmedComponent}->`;
         const evolveSpace = `evolve ${trimmedComponent} `;
-        
+
         return mapText
             .split('\n')
             .filter(line => {
