@@ -58,6 +58,7 @@ export class MapComponentDeleter {
 
         let updatedMapText = this.removeComponentLine(mapText, identification.line);
         updatedMapText = this.removeComponentLinks(updatedMapText, identification.name);
+        updatedMapText = this.removeComponentEvolve(updatedMapText, identification.name);
 
         return {
             updatedMapText,
@@ -197,6 +198,21 @@ export class MapComponentDeleter {
             if (
                 line.trim().startsWith(removedComponent.trim() + '->') === false &&
                 line.endsWith('->' + removedComponent.trim()) === false
+            ) {
+                okLines.push(line);
+            }
+        }
+        return okLines.join('\n');
+    }
+
+    private removeComponentEvolve(mapText: string, removedComponent: string): string {
+        const lines = mapText.split('\n');
+        let okLines = [];
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (
+                line.trim().startsWith('evolve ' + removedComponent.trim() + '->') === false &&
+                line.trim().startsWith('evolve ' + removedComponent.trim() + ' ') === false
             ) {
                 okLines.push(line);
             }
