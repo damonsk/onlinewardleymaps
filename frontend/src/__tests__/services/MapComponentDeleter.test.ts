@@ -39,7 +39,7 @@ component System [0.5, 0.5]`;
 
             const result = deleter.deleteComponent({
                 mapText,
-                componentId: 1, // Use numeric ID like regular components
+                componentId: 2,
                 componentType: 'pst',
             });
 
@@ -47,7 +47,7 @@ component System [0.5, 0.5]`;
 component System [0.5, 0.5]`);
             expect(result.deletedComponent.type).toBe('pst');
             expect(result.deletedComponent.line).toBe(1);
-            expect(result.deletedComponent.id).toBe('1'); // ID is the numeric line-based ID
+            expect(result.deletedComponent.id).toBe('2');
         });
 
         it('should delete a PST component with numeric ID (line 0)', () => {
@@ -55,14 +55,14 @@ component System [0.5, 0.5]`);
 
             const result = deleter.deleteComponent({
                 mapText,
-                componentId: 0, // Use line-based numeric ID like regular components
+                componentId: 1, // Use line-based numeric ID like regular components
                 componentType: 'pst',
             });
 
             expect(result.updatedMapText).toBe('');
             expect(result.deletedComponent.type).toBe('pst');
             expect(result.deletedComponent.line).toBe(0);
-            expect(result.deletedComponent.id).toBe('0');
+            expect(result.deletedComponent.id).toBe('1');
         });
 
         it('should delete a PST component using numeric line-based ID (delete key style)', () => {
@@ -140,26 +140,6 @@ component User [0.9, 0.1]`;
             expect(result.deletedComponent.id).toBe('1');
             expect(result.deletedComponent.type).toBe('component');
             expect(result.deletedComponent.line).toBe(0);
-        });
-    });
-
-    describe('canDelete', () => {
-        it('should return true for valid component IDs', () => {
-            expect(deleter.canDelete('component-test-1')).toBe(true);
-            expect(deleter.canDelete('pst-pioneers-0')).toBe(true);
-        });
-
-        it('should return false for invalid component IDs', () => {
-            expect(deleter.canDelete('')).toBe(false);
-            expect(deleter.canDelete(null as any)).toBe(false);
-            expect(deleter.canDelete(undefined as any)).toBe(false);
-        });
-
-        it('should accept numeric component IDs', () => {
-            expect(deleter.canDelete(0)).toBe(true); // 0 is valid (line 0)
-            expect(deleter.canDelete(1)).toBe(true);
-            expect(deleter.canDelete(123)).toBe(true);
-            expect(deleter.canDelete(-1)).toBe(false); // Negative numbers are invalid
         });
     });
 

@@ -1,5 +1,4 @@
-import React, {createContext, useContext, useState, ReactNode, useCallback} from 'react';
-import {UnifiedComponent} from '../types/unified/components';
+import React, {createContext, ReactNode, useCallback, useContext, useState} from 'react';
 
 interface SelectionState {
     selectedComponentId: string | null;

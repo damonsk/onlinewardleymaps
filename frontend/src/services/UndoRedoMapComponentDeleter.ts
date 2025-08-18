@@ -3,9 +3,9 @@
  * Integrates MapComponentDeleter with the undo/redo system
  */
 
-import {MapComponentDeleter, ComponentDeletionParams, ComponentDeletionResult} from './MapComponentDeleter';
-import {ActionType} from '../types/undo-redo';
 import {ACTION_DESCRIPTIONS} from '../constants/undoRedo';
+import {ActionType} from '../types/undo-redo';
+import {ComponentDeletionParams, ComponentDeletionResult, MapComponentDeleter} from './MapComponentDeleter';
 
 /**
  * Interface for undo/redo context (to avoid circular dependency)
@@ -36,31 +36,19 @@ export class UndoRedoMapComponentDeleter {
      * Deletes a component and records the operation in undo/redo history
      */
     public deleteComponentWithUndo(params: UndoRedoDeletionParams, undoRedoContext: UndoRedoContext): ComponentDeletionResult {
-        // Validate parameters
         const validation = this.deleter.validateDeletionParams(params);
         if (!validation.isValid) {
             throw new Error(`Invalid deletion parameters: ${validation.errors.join(', ')}`);
         }
 
-        // Perform the deletion
         const result = this.deleter.deleteComponent(params);
 
-        // Generate a descriptive action description
         const componentName = params.componentName || String(params.componentId);
         const actionDescription = ACTION_DESCRIPTIONS['canvas-delete'](componentName);
 
-        // Record the change in undo/redo history using the enhanced mutateMapText
-        // This will automatically handle the undo/redo recording
         undoRedoContext.mutateMapText(result.updatedMapText, 'canvas-delete', actionDescription);
 
         return result;
-    }
-
-    /**
-     * Checks if a component can be deleted
-     */
-    public canDelete(componentId: string | number, componentType?: string): boolean {
-        return this.deleter.canDelete(componentId, componentType);
     }
 
     /**

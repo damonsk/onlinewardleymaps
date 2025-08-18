@@ -41,7 +41,6 @@ interface MapComponentSelector {
 ```typescript
 interface MapComponentDeleter {
   deleteComponent(componentId: string, mapText: string): string;
-  canDelete(componentId: string): boolean;
 }
 ```
 
@@ -99,7 +98,6 @@ interface DeletableComponent {
   id: string;
   type: 'pst' | 'component' | 'market' | 'anchor' | 'note';
   line: number;
-  canDelete: boolean;
 }
 ```
 

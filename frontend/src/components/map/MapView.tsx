@@ -11,7 +11,7 @@ import {UnifiedComponent} from '../../types/unified/components';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 import {addLinkToMapText, linkExists} from '../../utils/componentDetection';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
-import {ComponentSelectionProvider} from '../ComponentSelectionContext';
+import {useComponentSelection} from '../ComponentSelectionContext';
 import {EditingProvider} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
@@ -100,18 +100,14 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     }, []);
 
     // Component deletion functionality
-    const {deleteComponent, canDelete} = useMapComponentDeletion();
+    const {deleteComponent} = useMapComponentDeletion();
+    const {clearSelection} = useComponentSelection();
 
     // Handle component deletion from context menu
     const handleDeleteComponent = useCallback(
         (componentId: string) => {
             if (!componentId || !props.mapText) {
                 console.warn('Cannot delete component: missing componentId or mapText');
-                return;
-            }
-
-            if (!canDelete(componentId)) {
-                console.warn('Component cannot be deleted:', componentId);
                 return;
             }
 
@@ -128,7 +124,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                 showUserFeedback('Failed to delete component', 'error');
             }
         },
-        [deleteComponent, canDelete, props.mapText, showUserFeedback],
+        [deleteComponent, props.mapText, showUserFeedback],
     );
 
     // Monitor component deletion and automatically cancel linking if source or target is deleted
@@ -1032,10 +1028,10 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         ],
     );
 
-    // Handle map canvas click for zoom functionality
     const handleMapCanvasClick = useCallback((pos: {x: number; y: number}) => {
         // This handler is used for zoom functionality when enableZoomOnClick is true
         // Currently no specific zoom behavior is implemented
+        clearSelection();
         console.log('Map canvas clicked at:', pos);
     }, []);
 
@@ -1068,149 +1064,148 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
     );
 
     return (
-        <ComponentSelectionProvider>
-            <ContextMenuProvider mapText={props.mapText} onDeleteComponent={handleDeleteComponent}>
-                <EditingProvider>
-                    <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
-                        {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
-                        <WysiwygToolbar
-                            mapStyleDefs={props.mapStyleDefs}
+        <ContextMenuProvider mapText={props.mapText} onDeleteComponent={handleDeleteComponent}>
+            <EditingProvider>
+                <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
+                    {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
+                    <WysiwygToolbar
+                        mapStyleDefs={props.mapStyleDefs}
+                        mapDimensions={props.mapDimensions}
+                        mapText={props.mapText}
+                        mutateMapText={enhancedMutateMapText}
+                        selectedItem={selectedToolbarItem}
+                        onItemSelect={handleToolbarItemSelect}
+                        keyboardShortcutsEnabled={true}
+                    />
+
+                    {/* Drag Preview */}
+                    <DragPreview
+                        selectedItem={selectedToolbarItem}
+                        mousePosition={{x: 0, y: 0}} // Not used anymore, DragPreview tracks mouse globally
+                        isValidDropZone={isValidDropZone}
+                        mapStyleDefs={props.mapStyleDefs}
+                    />
+
+                    {/* User Feedback Notification */}
+                    {userFeedback.visible && (
+                        <div
+                            style={{
+                                position: 'fixed',
+                                top: '16px',
+                                right: '16px',
+                                zIndex: 10001,
+                                maxWidth: '280px',
+                                padding: '8px 12px',
+                                borderRadius: '6px',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                                border: '1px solid',
+                                fontSize: '12px',
+                                fontWeight: '400',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                animation: 'slideInFromRight 0.2s ease-out',
+                                backgroundColor:
+                                    userFeedback.type === 'success'
+                                        ? '#d4edda'
+                                        : userFeedback.type === 'error'
+                                          ? '#f8d7da'
+                                          : userFeedback.type === 'warning'
+                                            ? '#fff3cd'
+                                            : '#d1ecf1',
+                                borderColor:
+                                    userFeedback.type === 'success'
+                                        ? '#c3e6cb'
+                                        : userFeedback.type === 'error'
+                                          ? '#f5c6cb'
+                                          : userFeedback.type === 'warning'
+                                            ? '#ffeaa7'
+                                            : '#bee5eb',
+                                color:
+                                    userFeedback.type === 'success'
+                                        ? '#155724'
+                                        : userFeedback.type === 'error'
+                                          ? '#721c24'
+                                          : userFeedback.type === 'warning'
+                                            ? '#856404'
+                                            : '#0c5460',
+                            }}
+                            role="alert"
+                            aria-live="polite">
+                            <span
+                                style={{
+                                    fontSize: '16px',
+                                    marginRight: '4px',
+                                }}>
+                                {userFeedback.type === 'success'
+                                    ? '✅'
+                                    : userFeedback.type === 'error'
+                                      ? '❌'
+                                      : userFeedback.type === 'warning'
+                                        ? '⚠️'
+                                        : 'ℹ️'}
+                            </span>
+                            <span>{userFeedback.message}</span>
+                            <button
+                                onClick={() => setUserFeedback(prev => ({...prev, visible: false}))}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    fontSize: '18px',
+                                    cursor: 'pointer',
+                                    marginLeft: 'auto',
+                                    padding: '0 4px',
+                                    color: 'inherit',
+                                    opacity: 0.7,
+                                }}
+                                aria-label="Close notification">
+                                ×
+                            </button>
+                        </div>
+                    )}
+
+                    <div id="map" style={mapStyle}>
+                        <UnifiedMapCanvas
+                            wardleyMap={props.wardleyMap}
                             mapDimensions={props.mapDimensions}
+                            mapCanvasDimensions={props.mapCanvasDimensions}
+                            mapStyleDefs={props.mapStyleDefs}
+                            mapEvolutionStates={props.mapEvolutionStates}
+                            evolutionOffsets={props.evolutionOffsets}
                             mapText={props.mapText}
                             mutateMapText={enhancedMutateMapText}
-                            selectedItem={selectedToolbarItem}
-                            onItemSelect={handleToolbarItemSelect}
-                            keyboardShortcutsEnabled={true}
+                            setHighlightLine={props.setHighlightLine}
+                            setNewComponentContext={props.setNewComponentContext}
+                            launchUrl={props.launchUrl}
+                            showLinkedEvolved={props.showLinkedEvolved}
+                            shouldHideNav={props.shouldHideNav}
+                            hideNav={props.hideNav}
+                            mapAnnotationsPresentation={props.mapAnnotationsPresentation}
+                            handleMapCanvasClick={handleMapCanvasClick}
+                            selectedToolbarItem={selectedToolbarItem}
+                            onToolbarItemDrop={handleToolbarItemDrop}
+                            onMouseMove={handleMouseMove}
+                            onComponentClick={handleComponentClick}
+                            linkingState={linkingState}
+                            sourceComponent={sourceComponent}
+                            highlightedComponent={highlightedComponent}
+                            isDuplicateLink={isDuplicateLink}
+                            isInvalidTarget={isInvalidTarget}
+                            showCancellationHint={showCancellationHint}
+                            isSourceDeleted={isSourceDeleted}
+                            isTargetDeleted={isTargetDeleted}
+                            onMouseDown={handleMouseDown}
+                            onMouseUp={handleMouseUp}
+                            isDrawing={isDrawing}
+                            drawingStartPosition={drawingStartPosition}
+                            drawingCurrentPosition={drawingCurrentPosition}
+                            onMethodApplication={handleMethodApplication}
+                            methodHighlightedComponent={methodHighlightedComponent}
                         />
+                    </div>
 
-                        {/* Drag Preview */}
-                        <DragPreview
-                            selectedItem={selectedToolbarItem}
-                            mousePosition={{x: 0, y: 0}} // Not used anymore, DragPreview tracks mouse globally
-                            isValidDropZone={isValidDropZone}
-                            mapStyleDefs={props.mapStyleDefs}
-                        />
-
-                        {/* User Feedback Notification */}
-                        {userFeedback.visible && (
-                            <div
-                                style={{
-                                    position: 'fixed',
-                                    top: '16px',
-                                    right: '16px',
-                                    zIndex: 10001,
-                                    maxWidth: '280px',
-                                    padding: '8px 12px',
-                                    borderRadius: '6px',
-                                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                                    border: '1px solid',
-                                    fontSize: '12px',
-                                    fontWeight: '400',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    animation: 'slideInFromRight 0.2s ease-out',
-                                    backgroundColor:
-                                        userFeedback.type === 'success'
-                                            ? '#d4edda'
-                                            : userFeedback.type === 'error'
-                                              ? '#f8d7da'
-                                              : userFeedback.type === 'warning'
-                                                ? '#fff3cd'
-                                                : '#d1ecf1',
-                                    borderColor:
-                                        userFeedback.type === 'success'
-                                            ? '#c3e6cb'
-                                            : userFeedback.type === 'error'
-                                              ? '#f5c6cb'
-                                              : userFeedback.type === 'warning'
-                                                ? '#ffeaa7'
-                                                : '#bee5eb',
-                                    color:
-                                        userFeedback.type === 'success'
-                                            ? '#155724'
-                                            : userFeedback.type === 'error'
-                                              ? '#721c24'
-                                              : userFeedback.type === 'warning'
-                                                ? '#856404'
-                                                : '#0c5460',
-                                }}
-                                role="alert"
-                                aria-live="polite">
-                                <span
-                                    style={{
-                                        fontSize: '16px',
-                                        marginRight: '4px',
-                                    }}>
-                                    {userFeedback.type === 'success'
-                                        ? '✅'
-                                        : userFeedback.type === 'error'
-                                          ? '❌'
-                                          : userFeedback.type === 'warning'
-                                            ? '⚠️'
-                                            : 'ℹ️'}
-                                </span>
-                                <span>{userFeedback.message}</span>
-                                <button
-                                    onClick={() => setUserFeedback(prev => ({...prev, visible: false}))}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        fontSize: '18px',
-                                        cursor: 'pointer',
-                                        marginLeft: 'auto',
-                                        padding: '0 4px',
-                                        color: 'inherit',
-                                        opacity: 0.7,
-                                    }}
-                                    aria-label="Close notification">
-                                    ×
-                                </button>
-                            </div>
-                        )}
-
-                        <div id="map" style={mapStyle}>
-                            <UnifiedMapCanvas
-                                wardleyMap={props.wardleyMap}
-                                mapDimensions={props.mapDimensions}
-                                mapCanvasDimensions={props.mapCanvasDimensions}
-                                mapStyleDefs={props.mapStyleDefs}
-                                mapEvolutionStates={props.mapEvolutionStates}
-                                evolutionOffsets={props.evolutionOffsets}
-                                mapText={props.mapText}
-                                mutateMapText={enhancedMutateMapText}
-                                setHighlightLine={props.setHighlightLine}
-                                setNewComponentContext={props.setNewComponentContext}
-                                launchUrl={props.launchUrl}
-                                showLinkedEvolved={props.showLinkedEvolved}
-                                shouldHideNav={props.shouldHideNav}
-                                hideNav={props.hideNav}
-                                mapAnnotationsPresentation={props.mapAnnotationsPresentation}
-                                handleMapCanvasClick={handleMapCanvasClick}
-                                selectedToolbarItem={selectedToolbarItem}
-                                onToolbarItemDrop={handleToolbarItemDrop}
-                                onMouseMove={handleMouseMove}
-                                onComponentClick={handleComponentClick}
-                                linkingState={linkingState}
-                                sourceComponent={sourceComponent}
-                                highlightedComponent={highlightedComponent}
-                                isDuplicateLink={isDuplicateLink}
-                                isInvalidTarget={isInvalidTarget}
-                                showCancellationHint={showCancellationHint}
-                                isSourceDeleted={isSourceDeleted}
-                                isTargetDeleted={isTargetDeleted}
-                                onMouseDown={handleMouseDown}
-                                onMouseUp={handleMouseUp}
-                                isDrawing={isDrawing}
-                                drawingStartPosition={drawingStartPosition}
-                                drawingCurrentPosition={drawingCurrentPosition}
-                                onMethodApplication={handleMethodApplication}
-                                methodHighlightedComponent={methodHighlightedComponent}
-                            />
-                        </div>
-
-                        {/* CSS Animation for notification */}
-                        <style>{`
+                    {/* CSS Animation for notification */}
+                    <style>{`
                 @keyframes slideInFromRight {
                     from {
                         transform: translateX(100%);
@@ -1222,9 +1217,8 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     }
                 }
             `}</style>
-                    </div>
-                </EditingProvider>
-            </ContextMenuProvider>
-        </ComponentSelectionProvider>
+                </div>
+            </EditingProvider>
+        </ContextMenuProvider>
     );
 };

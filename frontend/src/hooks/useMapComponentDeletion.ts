@@ -4,14 +4,13 @@
 
 import {useCallback} from 'react';
 import {useUndoRedo} from '../components/UndoRedoProvider';
-import {UndoRedoMapComponentDeleter, UndoRedoDeletionParams} from '../services/UndoRedoMapComponentDeleter';
+import {UndoRedoDeletionParams, UndoRedoMapComponentDeleter} from '../services/UndoRedoMapComponentDeleter';
 
 /**
  * Interface for the deletion hook result
  */
 export interface UseMapComponentDeletionResult {
     deleteComponent: (params: UndoRedoDeletionParams) => void;
-    canDelete: (componentId: string | number, componentType?: string) => boolean;
 }
 
 /**
@@ -35,17 +34,7 @@ export const useMapComponentDeletion = (deleter?: UndoRedoMapComponentDeleter): 
         [componentDeleter, undoRedoContext],
     );
 
-    const canDelete = useCallback(
-        (componentId: string | number, componentType?: string) => {
-            const result = componentDeleter.canDelete(componentId, componentType);
-            console.log('useMapComponentDeletion: canDelete called with:', {componentId, componentType, result});
-            return result;
-        },
-        [componentDeleter],
-    );
-
     return {
         deleteComponent,
-        canDelete,
     };
 };

@@ -26,6 +26,7 @@ export const useMapComponentSelector = (mapState: UseMapStateResult): MapCompone
         const allComponents = getAllComponents();
         const componentById = allComponents.find(c => c.id === selectedId);
         if (componentById) {
+            console.log('useMapComponentSelector: Found component by ID:', componentById);
             return componentById;
         }
 

@@ -56,6 +56,8 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
         // Select this component
         selectComponent(component.id);
 
+        console.log('Component selected:', component);
+
         if (component.line) {
             setHighlightLine(component.line);
         }

@@ -543,7 +543,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         const componentSelection = useComponentSelection();
 
         // Access component deletion functionality
-        const {deleteComponent, canDelete} = useMapComponentDeletion();
+        const {deleteComponent} = useMapComponentDeletion();
         // Force a re-render after initial mount to ensure styled-components classes are stable
         const [renderKey, setRenderKey] = useState(0);
 

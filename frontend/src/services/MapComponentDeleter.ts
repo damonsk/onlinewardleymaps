@@ -1,24 +1,12 @@
-/**
- * MapComponentDeleter Service
- * Handles deletion of map components from mapText with support for different component types
- */
-
 import {PSTElement} from '../types/map/pst';
-import {UnifiedComponent} from '../types/unified/components';
 import {findPSTElementLine, parsePSTSyntax} from '../utils/pstMapTextMutation';
 
-/**
- * Interface for component deletion parameters
- */
 export interface ComponentDeletionParams {
     mapText: string;
     componentId: string | number;
     componentType?: 'pst' | 'component' | 'market' | 'anchor' | 'note' | 'pipeline';
 }
 
-/**
- * Interface for component deletion result
- */
 export interface ComponentDeletionResult {
     updatedMapText: string;
     deletedComponent: {
@@ -29,9 +17,6 @@ export interface ComponentDeletionResult {
     };
 }
 
-/**
- * Interface for component identification result
- */
 export interface ComponentIdentification {
     found: boolean;
     line: number;
@@ -39,13 +24,7 @@ export interface ComponentIdentification {
     originalText: string;
 }
 
-/**
- * MapComponentDeleter service for removing components from map text
- */
 export class MapComponentDeleter {
-    /**
-     * Deletes a component from map text
-     */
     public deleteComponent(params: ComponentDeletionParams): ComponentDeletionResult {
         const {mapText, componentId, componentType} = params;
 
@@ -77,12 +56,6 @@ export class MapComponentDeleter {
             throw new Error(`Component with ID "${componentId}" not found in map text`);
         }
 
-        // Validate that the component can be deleted
-        if (!this.canDelete(componentIdStr, identification.type)) {
-            throw new Error(`Component "${componentIdStr}" cannot be deleted`);
-        }
-
-        // Remove the component line from map text
         const updatedMapText = this.removeComponentLine(mapText, identification.line);
 
         return {
@@ -97,48 +70,17 @@ export class MapComponentDeleter {
     }
 
     /**
-     * Checks if a component can be deleted
-     */
-    public canDelete(componentId: string | number, _componentType?: string): boolean {
-        // Handle numeric and string IDs
-        if (typeof componentId === 'number') {
-            // For numbers, check that it's not NaN and non-negative (allow 0 for line 0)
-            if (isNaN(componentId) || componentId < 0) {
-                return false;
-            }
-        } else if (typeof componentId === 'string') {
-            // For strings, check that it's not empty after trimming
-            if (!componentId || componentId.trim() === '') {
-                return false;
-            }
-        } else {
-            // Neither string nor number
-            return false;
-        }
-
-        // For now, allow deletion of all component types
-        // This can be extended with more sophisticated validation logic
-        return true;
-    }
-
-    /**
      * Identifies a component in map text and returns its location and type
      */
     private identifyComponent(mapText: string, componentId: string, _expectedType?: string): ComponentIdentification {
         const lines = mapText.split('\n');
-
-        // Check if componentId is a simple numeric ID that might correspond to a line number
-        // This works for ALL component types including PST - treat PST exactly like regular components
         const numericId = parseInt(componentId, 10);
         if (!isNaN(numericId) && numericId >= 0) {
-            // Try both 0-based and 1-based indexing
-            const lineIndicesToTry = [numericId, numericId - 1];
-
+            const lineIndicesToTry = [numericId - 1];
             for (const lineIndex of lineIndicesToTry) {
                 if (lineIndex >= 0 && lineIndex < lines.length) {
                     const line = lines[lineIndex].trim();
                     if (line) {
-                        // Try PST parsing first
                         const pstParsed = parsePSTSyntax(line);
                         if (pstParsed.isValid && pstParsed.type) {
                             return {
@@ -149,7 +91,6 @@ export class MapComponentDeleter {
                             };
                         }
 
-                        // Try regular component parsing
                         const componentMatch = this.parseComponentLine(line, lineIndex);
                         if (componentMatch) {
                             return {
@@ -257,17 +198,11 @@ export class MapComponentDeleter {
         if (lineIndex < 0) {
             throw new Error('Invalid line index for component deletion');
         }
-
         const lines = mapText.split('\n');
-
         if (lineIndex >= lines.length) {
             throw new Error('Line index exceeds map text length');
         }
-
-        // Remove the line at the specified index
         lines.splice(lineIndex, 1);
-
-        // Return the updated map text
         return lines.join('\n');
     }
 

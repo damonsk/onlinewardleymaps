@@ -157,8 +157,8 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     const handleComponentClick = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
             console.log('PSTBox clicked, selecting component:', pstElement.id);
-
             selectComponent(pstElement.id);
+            event.stopPropagation();
         },
         [selectComponent, pstElement.id],
     );

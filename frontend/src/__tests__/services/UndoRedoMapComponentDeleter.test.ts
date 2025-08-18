@@ -2,9 +2,8 @@
  * Tests for UndoRedoMapComponentDeleter service
  */
 
-import {UndoRedoMapComponentDeleter, UndoRedoContext} from '../../services/UndoRedoMapComponentDeleter';
 import {MapComponentDeleter} from '../../services/MapComponentDeleter';
-import {ActionType} from '../../types/undo-redo';
+import {UndoRedoContext, UndoRedoMapComponentDeleter} from '../../services/UndoRedoMapComponentDeleter';
 
 describe('UndoRedoMapComponentDeleter', () => {
     let deleter: UndoRedoMapComponentDeleter;
@@ -145,17 +144,6 @@ component User [0.9, 0.1]`;
             }).toThrow('Component not found');
 
             expect(mockUndoRedoContext.mutateMapText).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('canDelete', () => {
-        it('should delegate to underlying deleter', () => {
-            mockMapComponentDeleter.canDelete.mockReturnValue(true);
-
-            const result = deleter.canDelete('test-component', 'component');
-
-            expect(mockMapComponentDeleter.canDelete).toHaveBeenCalledWith('test-component', 'component');
-            expect(result).toBe(true);
         });
     });
 
