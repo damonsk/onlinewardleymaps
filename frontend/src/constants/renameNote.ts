@@ -28,21 +28,73 @@ export const renameNote = (
 
         const elementAtLine: string = lines[currentLine - 1];
 
-        // Check if the line still contains the original text (concurrent edit detection)
-        if (!elementAtLine.includes(originalText)) {
+        // For quoted syntax, we need to check if the line contains the text in either escaped or unescaped form
+        // For unquoted syntax, we check for literal inclusion
+        const quotedPattern = /^(\s*note\s+)"((?:[^"\\]|\\.)*)"(\s+\[[^\]]+\])(\s*)$/;
+        const isQuotedSyntax = quotedPattern.test(elementAtLine);
+        
+        let containsOriginalText = false;
+        if (isQuotedSyntax) {
+            // For quoted syntax, extract and unescape the text to compare
+            const quotedMatch = elementAtLine.match(quotedPattern);
+            if (quotedMatch) {
+                const currentNoteText = quotedMatch[2];
+                const unescapedCurrentText = currentNoteText
+                    .replace(/\\n/g, '\n')   // Convert \n to line breaks
+                    .replace(/\\"/g, '"')    // Unescape quotes
+                    .replace(/\\\\/g, '\\'); // Unescape backslashes (must be last)
+                containsOriginalText = unescapedCurrentText === originalText;
+            }
+        } else {
+            // For unquoted syntax, check literal inclusion
+            containsOriginalText = elementAtLine.includes(originalText);
+        }
+        
+        if (!containsOriginalText) {
             return {
                 success: false,
                 error: 'The note has been modified by another operation. Please refresh and try again.',
             };
         }
 
-        // Parse note syntax: "note <text> [<visibility>, <maturity>]"
-        // The text part is everything after "note " until the first "["
-        const notePattern = /^(\s*note\s+)(.+?)(\s+\[[^\]]+\])(\s*)$/;
-        const match = elementAtLine.match(notePattern);
+        // Parse note syntax: supports both quoted and unquoted formats
+        // We already determined if it's quoted syntax above
+        
+        if (isQuotedSyntax) {
+            // We already have the quotedMatch from above
+            const quotedMatch = elementAtLine.match(quotedPattern);
+            if (quotedMatch) {
+                const [, prefix, currentNoteText, coordinates, suffix] = quotedMatch;
+                
+                // Determine if we need quoted syntax for the new text
+                const needsQuoting = newText.includes('\n') || newText.includes('"') || newText.includes('\\');
+                
+                if (needsQuoting) {
+                    // Escape the new text for quoted syntax
+                    const escapedText = newText
+                        .replace(/\\/g, '\\\\')  // Escape backslashes first
+                        .replace(/"/g, '\\"')    // Escape quotes
+                        .replace(/\n/g, '\\n');  // Convert line breaks to \n
+                    
+                    // Reconstruct with quoted syntax
+                    lines[currentLine - 1] = `${prefix}"${escapedText}"${coordinates}${suffix}`;
+                } else {
+                    // Simple text, can use unquoted syntax
+                    const sanitizedText = newText.trim().replace(/[\[\]]/g, ''); // Remove brackets that could break syntax
+                    lines[currentLine - 1] = `${prefix}${sanitizedText}${coordinates}${suffix}`;
+                }
+                
+                mutateMapMethod(lines.join('\n'));
+                return {success: true};
+            }
+        }
+        
+        // Try unquoted syntax
+        const unquotedPattern = /^(\s*note\s+)(.+?)(\s+\[[^\]]+\])(\s*)$/;
+        const unquotedMatch = elementAtLine.match(unquotedPattern);
 
-        if (match) {
-            const [, prefix, currentNoteText, coordinates, suffix] = match;
+        if (unquotedMatch) {
+            const [, prefix, currentNoteText, coordinates, suffix] = unquotedMatch;
 
             // Verify the original text matches what we expect
             if (currentNoteText.trim() !== originalText.trim()) {
@@ -52,11 +104,24 @@ export const renameNote = (
                 };
             }
 
-            // Sanitize the new text to prevent breaking the map syntax
-            const sanitizedText = newText.trim().replace(/[\[\]]/g, ''); // Remove brackets that could break syntax
+            // Determine if we need quoted syntax for the new text
+            const needsQuoting = newText.includes('\n') || newText.includes('"') || newText.includes('\\');
+            
+            if (needsQuoting) {
+                // Escape the new text for quoted syntax
+                const escapedText = newText
+                    .replace(/\\/g, '\\\\')  // Escape backslashes first
+                    .replace(/"/g, '\\"')    // Escape quotes
+                    .replace(/\n/g, '\\n');  // Convert line breaks to \n
+                
+                // Reconstruct with quoted syntax
+                lines[currentLine - 1] = `${prefix}"${escapedText}"${coordinates}${suffix}`;
+            } else {
+                // Simple text, keep unquoted syntax
+                const sanitizedText = newText.trim().replace(/[\[\]]/g, ''); // Remove brackets that could break syntax
+                lines[currentLine - 1] = `${prefix}${sanitizedText}${coordinates}${suffix}`;
+            }
 
-            // Reconstruct the line with new text while preserving coordinates and formatting
-            lines[currentLine - 1] = `${prefix}${sanitizedText}${coordinates}${suffix}`;
             mutateMapMethod(lines.join('\n'));
             return {success: true};
         } else {

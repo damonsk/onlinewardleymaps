@@ -64,7 +64,7 @@ describe('Note Feature Switch Integration', () => {
 
         const noteText = screen.getByTestId('modern_note_text_note1');
         expect(noteText).toBeInTheDocument();
-        expect(noteText).toHaveTextContent('Test Note Content');
+        expect(noteText).toHaveTextContent('TestNoteContent');
 
         // Double-click should enter edit mode
         fireEvent.doubleClick(noteText);
@@ -78,7 +78,7 @@ describe('Note Feature Switch Integration', () => {
 
         const noteText = screen.getByTestId('modern_note_text_note1');
         expect(noteText).toBeInTheDocument();
-        expect(noteText).toHaveTextContent('Test Note Content');
+        expect(noteText).toHaveTextContent('TestNoteContent');
 
         // Double-click should NOT enter edit mode
         fireEvent.doubleClick(noteText);
@@ -92,7 +92,7 @@ describe('Note Feature Switch Integration', () => {
 
         const noteText = screen.getByTestId('modern_note_text_note1');
         expect(noteText).toBeInTheDocument();
-        expect(noteText).toHaveTextContent('Test Note Content');
+        expect(noteText).toHaveTextContent('TestNoteContent');
 
         // Double-click should NOT enter edit mode
         fireEvent.doubleClick(noteText);

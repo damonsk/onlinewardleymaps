@@ -7,6 +7,51 @@ import {ToolbarItem} from '../types/toolbar';
 import {UnifiedComponent} from '../types/unified/components';
 
 /**
+ * Helper functions for multi-line note support
+ */
+
+/**
+ * Determines if text content requires quoted syntax
+ * @param text - Text content to check
+ * @returns True if quoting is required
+ */
+export function requiresQuoting(text: string): boolean {
+    return text.includes('\n') || text.includes('"') || text.includes('\\');
+}
+
+/**
+ * Escapes text content for quoted note syntax
+ * @param text - Text to escape
+ * @returns Escaped text suitable for quoted syntax
+ */
+export function escapeNoteText(text: string): string {
+    return text
+        .replace(/\\/g, '\\\\')  // Escape backslashes first
+        .replace(/"/g, '\\"')    // Escape quotes
+        .replace(/\n/g, '\\n');  // Convert line breaks to \n
+}
+
+/**
+ * Generates properly formatted note text with automatic quoting
+ * @param text - Note text content
+ * @param y - Y coordinate
+ * @param x - X coordinate
+ * @returns Formatted note text
+ */
+export function generateNoteText(text: string, y: string, x: string): string {
+    const trimmedText = text.trim();
+    
+    if (requiresQuoting(trimmedText)) {
+        const escapedText = escapeNoteText(trimmedText);
+        return `note "${escapedText}" [${y}, ${x}]`;
+    } else {
+        // Simple text, use unquoted syntax
+        const sanitizedText = trimmedText.replace(/[\[\]]/g, ''); // Remove brackets that could break syntax
+        return `note ${sanitizedText} [${y}, ${x}]`;
+    }
+}
+
+/**
  * Interface for component placement parameters
  */
 export interface ComponentPlacementParams {
@@ -146,11 +191,19 @@ export function validateTemplate(
  */
 export function createFallbackTemplate(itemId: string, category: string): (name: string, y: string, x: string) => string {
     return (name: string, y: string, x: string) => {
-        // Sanitize inputs
-        const safeName = (name || 'New Component')
-            .trim()
-            .replace(/[\r\n]+/g, ' ')
-            .replace(/\s+/g, ' ');
+        // Sanitize inputs - preserve line breaks for notes
+        let safeName: string;
+        if (category === 'note') {
+            // For notes, preserve line breaks and only trim whitespace
+            safeName = (name || 'New Note').trim();
+        } else {
+            // For other components, replace line breaks with spaces
+            safeName = (name || 'New Component')
+                .trim()
+                .replace(/[\r\n]+/g, ' ')
+                .replace(/\s+/g, ' ');
+        }
+        
         const safeY = formatCoordinate(parseFloat(y) || 0.5);
         const safeX = formatCoordinate(parseFloat(x) || 0.5);
 
@@ -179,7 +232,7 @@ export function createFallbackTemplate(itemId: string, category: string): (name:
                 }
 
             case 'note':
-                return `note ${safeName} [${safeY}, ${safeX}]`;
+                return generateNoteText(safeName, safeY, safeX);
 
             case 'pipeline':
                 return `pipeline ${safeName} [${safeY}, ${safeX}]`;
@@ -218,11 +271,19 @@ export function generateComponentMapText(item: ToolbarItem, componentName: strin
         throw new Error('Position must contain valid x and y coordinates');
     }
 
-    // Sanitize component name
-    const safeName = componentName
-        .trim()
-        .replace(/[\r\n]+/g, ' ')
-        .replace(/\s+/g, ' ');
+    // Sanitize component name - preserve line breaks for notes
+    let safeName: string;
+    if (item.category === 'note') {
+        // For notes, preserve line breaks and only trim whitespace
+        safeName = componentName.trim();
+    } else {
+        // For other components, replace line breaks with spaces
+        safeName = componentName
+            .trim()
+            .replace(/[\r\n]+/g, ' ')
+            .replace(/\s+/g, ' ');
+    }
+    
     if (!safeName) {
         throw new Error('Component name cannot be empty after sanitization');
     }

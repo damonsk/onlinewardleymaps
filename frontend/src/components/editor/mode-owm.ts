@@ -295,6 +295,20 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                         regex: '(component)(\\s+[a-zA-Z0-9\\s]+)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
+                        token: [
+                            'keyword',
+                            'punctuation.definition.string.begin.asp',
+                            'string.quoted.double.asp',
+                            'punctuation.definition.string.end.asp',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                            'constant.numeric',
+                            'punctuation',
+                        ],
+                        regex: '(note)(\\s*")((?:[^"\\\\]|\\\\.)*)(")(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                    },
+                    {
                         token: ['keyword', 'variable.parameter.function.asp'],
                         regex: '(deaccelerator|accelerator|evolution|note|anchor|annotations|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
                     },

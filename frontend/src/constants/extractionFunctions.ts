@@ -331,13 +331,77 @@ export const setInertia = (baseElement: IProvideBaseElement & {inertia?: boolean
 
 export const setText = (baseElement: IProvideBaseElement & {text?: string}, element: string, config: IProvideDecoratorsConfig): void => {
     const start = element.indexOf(config.keyword);
-    const text = element
-        .substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start)
-        .trim()
-        .split(' [')[0]
-        .trim();
+    const afterKeyword = element.substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start).trim();
+    
+    let text: string;
+    
+    // Check for quoted string (multi-line support)
+    if (afterKeyword.startsWith('"')) {
+        // Extract quoted content - handle escaped quotes and find the closing quote before coordinates
+        const quotedMatch = afterKeyword.match(/^"((?:[^"\\]|\\.)*)"\s*\[/);
+        if (quotedMatch) {
+            // Successfully matched quoted string with coordinates
+            text = quotedMatch[1]
+                .replace(/\\"/g, '"')     // Unescape quotes
+                .replace(/\\n/g, '\n')   // Convert explicit \n to actual line breaks
+                .replace(/\\\\/g, '\\'); // Unescape backslashes
+        } else {
+            // Malformed quoted string - try to extract what we can
+            const quoteEnd = findClosingQuote(afterKeyword, 1);
+            if (quoteEnd !== -1) {
+                text = afterKeyword.substring(1, quoteEnd)
+                    .replace(/\\"/g, '"')
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\\\/g, '\\');
+            } else {
+                // No closing quote found - fallback to legacy parsing
+                text = afterKeyword.split(' [')[0].trim();
+                // Remove leading quote if present
+                if (text.startsWith('"')) {
+                    text = text.substring(1);
+                }
+            }
+        }
+    } else {
+        // Legacy single-line parsing (backward compatibility)
+        // Check if afterKeyword starts directly with coordinates (no text)
+        if (afterKeyword.trim().startsWith('[')) {
+            text = '';
+        } else {
+            const parts = afterKeyword.split(' [');
+            text = parts[0].trim();
+        }
+    }
+    
     Object.assign(baseElement, {text});
 };
+
+/**
+ * Helper function to find the closing quote, handling escaped quotes
+ * @param str - The string to search in
+ * @param startIndex - The index to start searching from
+ * @returns The index of the closing quote, or -1 if not found
+ */
+function findClosingQuote(str: string, startIndex: number): number {
+    let i = startIndex;
+    while (i < str.length) {
+        if (str[i] === '"') {
+            // Check if this quote is escaped
+            let backslashCount = 0;
+            let j = i - 1;
+            while (j >= 0 && str[j] === '\\') {
+                backslashCount++;
+                j--;
+            }
+            // If even number of backslashes (including 0), the quote is not escaped
+            if (backslashCount % 2 === 0) {
+                return i;
+            }
+        }
+        i++;
+    }
+    return -1;
+}
 
 export const setContext = (
     baseElement: IProvideBaseElement & {context?: string},

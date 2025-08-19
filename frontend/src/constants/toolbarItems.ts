@@ -15,6 +15,7 @@ import {
     ToolbarUndoIcon,
 } from '../components/map/ToolbarIconWrappers';
 import {ToolbarCategory, ToolbarConfiguration, ToolbarItem, ToolbarSubItem} from '../types/toolbar';
+import {generateNoteText} from '../utils/mapTextGeneration';
 
 /**
  * Template functions for generating map text syntax
@@ -27,7 +28,7 @@ export const TOOLBAR_TEMPLATES = {
     buy: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (buy)`,
     build: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (build)`,
     outsource: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (outsource)`,
-    note: (name: string, y: string, x: string) => `note ${name} [${y}, ${x}]`,
+    note: (name: string, y: string, x: string) => generateNoteText(name, y, x),
     pipeline: (name: string, y: string, x: string) => `pipeline ${name} [${y}, ${x}]`,
     anchor: (name: string, y: string, x: string) => `anchor ${name} [${y}, ${x}]`,
 } as const;

@@ -32,6 +32,42 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     onDoubleClick,
     setShowTextField = null,
 }) => {
+    const renderMultiLineText = (id: string, textContent: string) => {
+        // Split by actual line breaks (\n) only - no word wrapping for multi-line content
+        const lines = textContent.split('\n');
+        const tspans: JSX.Element[] = [];
+
+        lines.forEach((line, lineIndex) => {
+            if (line === '') {
+                // Handle empty lines by adding a space to maintain line spacing
+                tspans.push(
+                    <tspan 
+                        key={`${id}_line_${lineIndex}_empty`} 
+                        x={0} 
+                        dy={lineIndex === 0 ? 0 : 15} 
+                        textAnchor="middle"
+                    >
+                        {' '}
+                    </tspan>
+                );
+            } else {
+                // Render each line as a single tspan - no word wrapping
+                tspans.push(
+                    <tspan 
+                        key={`${id}_line_${lineIndex}`} 
+                        x={0} 
+                        dy={lineIndex === 0 ? 0 : 15} 
+                        textAnchor="middle"
+                    >
+                        {line}
+                    </tspan>
+                );
+            }
+        });
+
+        return tspans;
+    };
+
     const trimText = (id: string, longText: string) =>
         longText
             .trim()
@@ -43,9 +79,32 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
             ));
 
     const displayFill = evolved ? textTheme?.evolvedTextColor : textTheme?.textColor || 'black';
-    const isLong = text && text.length > 14;
-    const trimmedText = isLong ? trimText(id, text) : text;
-    const transform = isLong ? 'translate(30, 10)' : '';
+    
+    // Determine the content to render (note takes precedence over text)
+    const contentToRender = note || text || '';
+    
+    // Check if content has line breaks (multi-line)
+    const hasLineBreaks = contentToRender.includes('\n');
+    
+    // Check if content is long (for word wrapping)
+    const isLong = contentToRender.length > 14;
+    
+    let renderedContent;
+    let transform = '';
+    
+    if (hasLineBreaks) {
+        // Multi-line content with actual line breaks
+        renderedContent = renderMultiLineText(id, contentToRender);
+        transform = ''; // No transform for multi-line text
+    } else if (isLong) {
+        // Long single-line content (word wrapping)
+        renderedContent = trimText(id, contentToRender);
+        transform = 'translate(30, 10)';
+    } else {
+        // Short single-line content
+        renderedContent = contentToRender;
+        transform = '';
+    }
     const handleDblClick = (e: React.MouseEvent<SVGTextElement, MouseEvent>): void => {
         e.stopPropagation();
 
@@ -74,7 +133,7 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
                 fill={textTheme?.textColor || displayFill}
                 onClick={onClick ? onClick : () => {}}
                 onDoubleClick={handleDblClick}>
-                {note || trimmedText}
+                {renderedContent}
             </text>
         </>
     );
