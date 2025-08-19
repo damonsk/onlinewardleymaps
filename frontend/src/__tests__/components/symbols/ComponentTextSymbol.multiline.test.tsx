@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import ComponentTextSymbol from '../../../components/symbols/ComponentTextSymbol';
-import { TextTheme } from '../../../constants/mapstyles';
+import {TextTheme} from '../../../constants/mapstyles';
 
 describe('ComponentTextSymbol Multi-line Support', () => {
     const mockTextTheme: TextTheme = {

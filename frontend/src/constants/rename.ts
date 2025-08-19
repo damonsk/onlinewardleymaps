@@ -29,75 +29,112 @@ export const rename = (
         const elementAtLine: string = lines[currentLine - 1];
 
         // Check if the line still contains the original component name (concurrent edit detection)
-        if (!elementAtLine.includes(toFind)) {
+        // For quoted names, we need to check for the escaped version in the line
+        let nameToFind = toFind;
+        if (elementAtLine.includes('"')) {
+            // This might be a quoted component, try to find the escaped version
+            const escapedToFind = toFind.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+            if (elementAtLine.includes(escapedToFind)) {
+                nameToFind = escapedToFind;
+            }
+        }
+
+        if (!elementAtLine.includes(nameToFind)) {
             return {
                 success: false,
                 error: 'The component has been modified by another operation. Please refresh and try again.',
             };
         }
 
-        // Sanitize the new name to prevent breaking the map syntax
-        const sanitizedName = replaceWith.trim().replace(/[\[\]\->]/g, ''); // Remove characters that could break syntax
+        // Handle sanitization differently for quoted vs unquoted names
+        let sanitizedName = replaceWith.trim();
 
-        // Validate the new name doesn't contain reserved keywords or patterns
-        const reservedKeywords = ['note', 'pipeline', 'build', 'buy', 'outsource', 'evolve', 'anchor'];
-        if (reservedKeywords.some(keyword => sanitizedName.toLowerCase() === keyword)) {
-            return {
-                success: false,
-                error: `"${sanitizedName}" is a reserved keyword and cannot be used as a component name`,
-            };
-        }
+        if (replaceWith.startsWith('"') && replaceWith.endsWith('"')) {
+            // For quoted names, validate the format but don't sanitize the content
+            // The content inside quotes can contain special characters
+            const innerContent = replaceWith.slice(1, -1); // Remove quotes
 
-        // Replace the component name on its definition line
-        lines[currentLine - 1] = elementAtLine.replace(toFind, sanitizedName);
-
-        // Update all references to the component throughout the map
-        for (let i = 0; i < lines.length; i++) {
-            const line: string = lines[i].trim();
-
-            // Handle link references (component1 -> component2)
-            if (line.includes(`->`) && line.split('->').length === 2) {
-                const parts: string[] = line.split('->');
-                const firstPart: string = parts[0].trim();
-                const secondPart: string = parts[1].trim();
-
-                if (firstPart === toFind) {
-                    lines[i] = [sanitizedName, secondPart].join('->');
-                }
-                if (secondPart === toFind) {
-                    lines[i] = [firstPart, sanitizedName].join('->');
-                }
-                if (secondPart.includes(';') && secondPart.split(';')[0].trim() === toFind) {
-                    const optionalNote: string = secondPart.split(';')[1].trim();
-                    lines[i] = [firstPart, `${sanitizedName};${optionalNote}`].join('->');
-                }
+            // Validate that the quoted content doesn't contain unescaped quotes
+            const unescapedQuoteRegex = /(?<!\\)"/;
+            if (unescapedQuoteRegex.test(innerContent)) {
+                return {
+                    success: false,
+                    error: 'Component name contains unescaped quotes. Use \\" for literal quotes.',
+                };
             }
 
-            // Handle pipeline references
-            ['pipeline', 'build', 'buy', 'outsource'].forEach((startsWith: string) => {
-                if (line.startsWith(startsWith) && line.split(startsWith).length > 1 && line.split(startsWith)[1].trim() === toFind) {
-                    lines[i] = `${startsWith} ${line.split(startsWith)[1].trim().replace(toFind, sanitizedName)}`;
-                }
-            });
+            // For quoted names, we don't sanitize the content as it's already properly escaped
+            // Just validate it's not empty when unescaped
+            const unescapedContent = innerContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
 
-            // Handle evolution references
-            ['evolve'].forEach((startsWith: string) => {
-                if (line.startsWith(startsWith) && line.split(startsWith).length > 1) {
-                    const evolvedWithMaturity: boolean = line.split(startsWith)[1].trim().split(' ')[0].trim() === toFind;
+            if (unescapedContent.trim().length === 0) {
+                return {
+                    success: false,
+                    error: 'Component name cannot be empty',
+                };
+            }
+        } else {
+            // For unquoted names, apply traditional sanitization
+            sanitizedName = replaceWith.replace(/[\[\]\->]/g, ''); // Remove characters that could break syntax
 
-                    if (evolvedWithMaturity) {
-                        lines[i] = `${startsWith} ${line.split(startsWith)[1].trim().replace(toFind, sanitizedName)}`;
-                    }
-
-                    const cleanedPart: string = line.split(startsWith)[1].trim().split(' ')[0].trim();
-                    const evolvedWithNewName: boolean = cleanedPart.includes(toFind) && cleanedPart.includes('->');
-
-                    if (evolvedWithNewName) {
-                        lines[i] = `${startsWith} ${line.split(startsWith)[1].trim().replace(toFind, sanitizedName)}`;
-                    }
-                }
-            });
+            // Validate the new name doesn't contain reserved keywords or patterns
+            const reservedKeywords = ['note', 'pipeline', 'build', 'buy', 'outsource', 'evolve', 'anchor'];
+            if (reservedKeywords.some(keyword => sanitizedName.toLowerCase() === keyword)) {
+                return {
+                    success: false,
+                    error: `"${sanitizedName}" is a reserved keyword and cannot be used as a component name`,
+                };
+            }
         }
+
+        // Handle quoted component names (multi-line support)
+        let updatedLine = elementAtLine;
+
+        // Check if we're dealing with a quoted component name
+        if (replaceWith.startsWith('"') && replaceWith.endsWith('"')) {
+            // This is a quoted name (potentially multi-line)
+            // Find the original quoted name in the line and replace it
+            const quotedNameRegex = /"([^"\\]|\\.)*"/;
+            const match = elementAtLine.match(quotedNameRegex);
+
+            if (match) {
+                // Replace the entire quoted section
+                updatedLine = elementAtLine.replace(match[0], replaceWith);
+            } else {
+                // Fallback to simple replacement if no quoted section found
+                updatedLine = elementAtLine.replace(nameToFind, replaceWith);
+            }
+        } else {
+            // Regular (non-quoted) replacement
+            updatedLine = elementAtLine.replace(nameToFind, sanitizedName);
+        }
+
+        lines[currentLine - 1] = updatedLine;
+
+        // Extract the actual component name for reference matching
+        // For quoted names, we need to match against the unescaped content
+        let nameForMatching = toFind;
+        let replacementForMatching = sanitizedName;
+
+        if (replaceWith.startsWith('"') && replaceWith.endsWith('"')) {
+            // For quoted replacement, extract the unescaped content for matching
+            replacementForMatching = replaceWith.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        }
+
+        // Update all references to the component throughout the map
+        // For multi-line component names, we need to handle references that span multiple lines
+        const mapTextContent = lines.join('\n');
+        let updatedMapText = mapTextContent;
+
+        // Replace all occurrences of the component name in references
+        // This handles multi-line names that appear in links, evolution, and pipeline references
+        const nameRegex = new RegExp(nameForMatching.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+        updatedMapText = updatedMapText.replace(nameRegex, replacementForMatching);
+
+        // Update the lines array with the modified content
+        const updatedLines = updatedMapText.split('\n');
+        lines.length = 0; // Clear the array
+        lines.push(...updatedLines); // Add all updated lines
 
         mutateMapMethod(lines.join('\n'));
         return {success: true};

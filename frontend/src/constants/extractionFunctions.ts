@@ -5,9 +5,9 @@ import * as Defaults from './defaults';
 export const setName = (baseElement: IProvideBaseElement & {name?: string}, element: string, config: IProvideDecoratorsConfig): void => {
     const start = element.indexOf(config.keyword);
     const afterKeyword = element.substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start).trim();
-    
+
     let name: string;
-    
+
     // Check for quoted string (multi-line support)
     if (afterKeyword.startsWith('"')) {
         // Extract quoted content - handle escaped quotes and find the closing quote before coordinates
@@ -15,17 +15,14 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         if (quotedMatch) {
             // Successfully matched quoted string with coordinates
             name = quotedMatch[1]
-                .replace(/\\"/g, '"')     // Unescape quotes
-                .replace(/\\n/g, '\n')   // Convert explicit \n to actual line breaks
+                .replace(/\\"/g, '"') // Unescape quotes
+                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
                 .replace(/\\\\/g, '\\'); // Unescape backslashes
         } else {
             // Malformed quoted string - try to extract what we can
             const quoteEnd = findClosingQuote(afterKeyword, 1);
             if (quoteEnd !== -1) {
-                name = afterKeyword.substring(1, quoteEnd)
-                    .replace(/\\"/g, '"')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\\\/g, '\\');
+                name = afterKeyword.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
             } else {
                 // No closing quote found - fallback to legacy parsing
                 name = afterKeyword.split(' [')[0].trim();
@@ -45,7 +42,7 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
             name = parts[0].trim();
         }
     }
-    
+
     Object.assign(baseElement, {name});
 };
 
@@ -374,9 +371,9 @@ export const setInertia = (baseElement: IProvideBaseElement & {inertia?: boolean
 export const setText = (baseElement: IProvideBaseElement & {text?: string}, element: string, config: IProvideDecoratorsConfig): void => {
     const start = element.indexOf(config.keyword);
     const afterKeyword = element.substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start).trim();
-    
+
     let text: string;
-    
+
     // Check for quoted string (multi-line support)
     if (afterKeyword.startsWith('"')) {
         // Extract quoted content - handle escaped quotes and find the closing quote before coordinates
@@ -384,17 +381,14 @@ export const setText = (baseElement: IProvideBaseElement & {text?: string}, elem
         if (quotedMatch) {
             // Successfully matched quoted string with coordinates
             text = quotedMatch[1]
-                .replace(/\\"/g, '"')     // Unescape quotes
-                .replace(/\\n/g, '\n')   // Convert explicit \n to actual line breaks
+                .replace(/\\"/g, '"') // Unescape quotes
+                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
                 .replace(/\\\\/g, '\\'); // Unescape backslashes
         } else {
             // Malformed quoted string - try to extract what we can
             const quoteEnd = findClosingQuote(afterKeyword, 1);
             if (quoteEnd !== -1) {
-                text = afterKeyword.substring(1, quoteEnd)
-                    .replace(/\\"/g, '"')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\\\/g, '\\');
+                text = afterKeyword.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
             } else {
                 // No closing quote found - fallback to legacy parsing
                 text = afterKeyword.split(' [')[0].trim();
@@ -414,7 +408,7 @@ export const setText = (baseElement: IProvideBaseElement & {text?: string}, elem
             text = parts[0].trim();
         }
     }
-    
+
     Object.assign(baseElement, {text});
 };
 

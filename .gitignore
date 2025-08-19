@@ -18,3 +18,4 @@ copilot_reports/*
 .husky/
 frontend/wmlandscape/.yarn
 frontend/.eslintcache
+frontend/rovo

@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { TextTheme } from '../../constants/mapstyles';
+import React, {memo} from 'react';
+import {TextTheme} from '../../constants/mapstyles';
 
 export interface ComponentTextSymbolProps {
     id: string;

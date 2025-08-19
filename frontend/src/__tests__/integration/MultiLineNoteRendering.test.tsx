@@ -67,7 +67,7 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note2');
             expect(noteText).toBeInTheDocument();
-            
+
             // Should have multiple tspan elements for word wrapping
             const tspans = noteText.querySelectorAll('tspan');
             expect(tspans.length).toBeGreaterThan(1);
@@ -88,11 +88,11 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note3');
             expect(noteText).toBeInTheDocument();
-            
+
             // Should have multiple tspan elements for each line
             const tspans = noteText.querySelectorAll('tspan');
             expect(tspans.length).toBe(3);
-            
+
             // Check content of each line
             expect(tspans[0]).toHaveTextContent('Line 1');
             expect(tspans[1]).toHaveTextContent('Line 2');
@@ -112,10 +112,10 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note4');
             expect(noteText).toBeInTheDocument();
-            
+
             const tspans = noteText.querySelectorAll('tspan');
             expect(tspans.length).toBe(3);
-            
+
             // First and third lines should have content
             expect(tspans[0]).toHaveTextContent('First line');
             expect(tspans[2]).toHaveTextContent('Third line');
@@ -136,7 +136,7 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note5');
             expect(noteText).toBeInTheDocument();
-            
+
             const tspans = noteText.querySelectorAll('tspan');
             // Should have more than 3 tspans due to word wrapping on the long line
             expect(tspans.length).toBeGreaterThan(3);
@@ -157,10 +157,10 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note6');
             expect(noteText).toBeInTheDocument();
-            
+
             const tspans = noteText.querySelectorAll('tspan');
             expect(tspans.length).toBeGreaterThan(3); // Multiple lines including empty line
-            
+
             // Check that the content is preserved
             expect(noteText).toHaveTextContent('Documentation:Thiscomponenthandlesuserauthentication See"auth.js"forimplementationdetails');
         });
@@ -178,10 +178,10 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note7');
             expect(noteText).toBeInTheDocument();
-            
+
             const tspans = noteText.querySelectorAll('tspan');
             expect(tspans.length).toBeGreaterThan(4); // May be word-wrapped
-            
+
             // Check that the code structure is preserved
             expect(noteText).toHaveTextContent('Code example:functiontest(){return"hello";}');
         });
@@ -199,11 +199,11 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteText = screen.getByTestId('modern_note_text_note8');
             expect(noteText).toBeInTheDocument();
-            
+
             const tspans = noteText.querySelectorAll('tspan');
             // Should have more than 4 tspans due to word wrapping on the long line
             expect(tspans.length).toBeGreaterThan(4);
-            
+
             // First and last lines should be short
             expect(tspans[0]).toHaveTextContent('Title');
             expect(tspans[tspans.length - 1]).toHaveTextContent('End');
@@ -257,7 +257,7 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const noteGroup = screen.getByTestId('map-note-note10');
             expect(noteGroup).toBeInTheDocument();
-            
+
             // Note should be positioned within the map bounds
             const noteText = screen.getByTestId('modern_note_text_note10');
             expect(noteText).toBeInTheDocument();

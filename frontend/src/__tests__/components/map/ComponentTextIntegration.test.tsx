@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
-import {EditingProvider} from '../../../components/EditingContext';
-import {FeatureSwitchesProvider} from '../../../components/FeatureSwitchesContext';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { EditingProvider } from '../../../components/EditingContext';
+import { FeatureSwitchesProvider } from '../../../components/FeatureSwitchesContext';
 import ComponentText from '../../../components/map/ComponentText';
-import {UnifiedComponent} from '../../../types/unified';
+import { UnifiedComponent } from '../../../types/unified';
 
 // Mock the InlineEditor component
 jest.mock('../../../components/map/InlineEditor', () => {
@@ -235,7 +235,7 @@ describe('ComponentText Integration with InlineEditor', () => {
         expect(foreignObject).toHaveAttribute('width', '140');
     });
 
-    it('should use native input for Safari browser', async () => {
+    it('should use InlineEditor for all browsers including Safari', async () => {
         // Mock Safari user agent
         const originalUserAgent = navigator.userAgent;
         Object.defineProperty(navigator, 'userAgent', {
@@ -250,10 +250,13 @@ describe('ComponentText Integration with InlineEditor', () => {
         fireEvent.click(textSymbol);
 
         await waitFor(() => {
-            // Should use native input instead of InlineEditor for Safari
-            const nativeInput = document.querySelector('input[type="text"]');
-            expect(nativeInput).toBeInTheDocument();
-            expect(nativeInput).toHaveValue('Test Component');
+            // Should use InlineEditor for consistent behavior across all browsers
+            const inlineEditor = screen.getByTestId('inline-editor');
+            expect(inlineEditor).toBeInTheDocument();
+
+            const editorInput = screen.getByTestId('inline-editor-input');
+            expect(editorInput).toBeInTheDocument();
+            expect(editorInput).toHaveValue('Test Component');
         });
 
         // Restore original user agent

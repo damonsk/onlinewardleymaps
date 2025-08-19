@@ -26,9 +26,9 @@ export function requiresQuoting(text: string): boolean {
  */
 export function escapeNoteText(text: string): string {
     return text
-        .replace(/\\/g, '\\\\')  // Escape backslashes first
-        .replace(/"/g, '\\"')    // Escape quotes
-        .replace(/\n/g, '\\n');  // Convert line breaks to \n
+        .replace(/\\/g, '\\\\') // Escape backslashes first
+        .replace(/"/g, '\\"') // Escape quotes
+        .replace(/\n/g, '\\n'); // Convert line breaks to \n
 }
 
 /**
@@ -40,7 +40,7 @@ export function escapeNoteText(text: string): string {
  */
 export function generateNoteText(text: string, y: string, x: string): string {
     const trimmedText = text.trim();
-    
+
     if (requiresQuoting(trimmedText)) {
         const escapedText = escapeNoteText(trimmedText);
         return `note "${escapedText}" [${y}, ${x}]`;
@@ -203,7 +203,7 @@ export function createFallbackTemplate(itemId: string, category: string): (name:
                 .replace(/[\r\n]+/g, ' ')
                 .replace(/\s+/g, ' ');
         }
-        
+
         const safeY = formatCoordinate(parseFloat(y) || 0.5);
         const safeX = formatCoordinate(parseFloat(x) || 0.5);
 
@@ -283,7 +283,7 @@ export function generateComponentMapText(item: ToolbarItem, componentName: strin
             .replace(/[\r\n]+/g, ' ')
             .replace(/\s+/g, ' ');
     }
-    
+
     if (!safeName) {
         throw new Error('Component name cannot be empty after sanitization');
     }

@@ -10,7 +10,7 @@ describe('setText function', () => {
         config = {
             keyword: 'note',
             containerName: 'notes',
-            defaultAttributes: {}
+            defaultAttributes: {},
         };
     });
 

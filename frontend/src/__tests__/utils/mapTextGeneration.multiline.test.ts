@@ -122,13 +122,13 @@ describe('Map Text Generation - Multi-line Note Support', () => {
     describe('createFallbackTemplate integration', () => {
         it('should use enhanced note generation for note category', () => {
             const template = createFallbackTemplate('note', 'note');
-            
+
             // Simple text
             expect(template('Simple note', '0.50', '0.70')).toBe('note Simple note [0.50, 0.70]');
-            
+
             // Multi-line text
             expect(template('Line 1\nLine 2', '0.50', '0.70')).toBe('note "Line 1\\nLine 2" [0.50, 0.70]');
-            
+
             // Text with quotes
             expect(template('Note with "quotes"', '0.50', '0.70')).toBe('note "Note with \\"quotes\\"" [0.50, 0.70]');
         });
@@ -136,7 +136,7 @@ describe('Map Text Generation - Multi-line Note Support', () => {
         it('should handle other categories normally', () => {
             const componentTemplate = createFallbackTemplate('component', 'component');
             expect(componentTemplate('Test Component', '0.50', '0.70')).toBe('component Test Component [0.50, 0.70]');
-            
+
             const pipelineTemplate = createFallbackTemplate('pipeline', 'pipeline');
             expect(pipelineTemplate('Test Pipeline', '0.50', '0.70')).toBe('pipeline Test Pipeline [0.50, 0.70]');
         });
@@ -170,7 +170,8 @@ describe('Map Text Generation - Multi-line Note Support', () => {
         it('should handle complex note content', () => {
             const complexNote = 'Documentation:\nThis component handles "user auth"\n\nSee C:\\auth\\login.js for details';
             const result = generateComponentMapText(mockNoteItem, complexNote, {x: 0.7, y: 0.5});
-            const expected = 'note "Documentation:\\nThis component handles \\"user auth\\"\\n\\nSee C:\\\\auth\\\\login.js for details" [0.50, 0.70]';
+            const expected =
+                'note "Documentation:\\nThis component handles \\"user auth\\"\\n\\nSee C:\\\\auth\\\\login.js for details" [0.50, 0.70]';
             expect(result).toBe(expected);
         });
 

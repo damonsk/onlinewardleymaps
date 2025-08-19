@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {rename} from '../../constants/rename';
-import {UnifiedComponent} from '../../types/unified';
-import {useEditing} from '../EditingContext';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import React, { useEffect, useState } from 'react';
+import { rename } from '../../constants/rename';
+import { UnifiedComponent } from '../../types/unified';
+import { useEditing } from '../EditingContext';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';
@@ -46,6 +46,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const {enableDoubleClickRename} = useFeatureSwitches();
     const {startEditing, stopEditing, isElementEditing} = useEditing();
     const [editMode, setEditMode] = useState(false);
+    const [forceMultiLine, setForceMultiLine] = useState(false);
 
     const actualComponent = element
         ? {
@@ -55,8 +56,19 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     const [text, setText] = useState(actualComponent.name);
 
+    // Enhanced setText that detects multi-line content
+    const handleTextChange = (newText: string) => {
+        setText(newText);
+        // If the user types line breaks, switch to multi-line mode
+        if (newText.includes('\n') && !forceMultiLine) {
+            setForceMultiLine(true);
+        }
+    };
+
     useEffect(() => {
         setText(actualComponent.name);
+        // Reset multi-line mode when component name changes
+        setForceMultiLine(actualComponent.name.includes('\n'));
     }, [actualComponent.name]);
 
     // Cleanup effect to handle component unmounting during editing
@@ -79,7 +91,21 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     const handleSave = () => {
         if (mutateMapText && mapText && text !== component.name && component.line) {
-            const result = rename(component.line, component.name, text, mapText, mutateMapText);
+            // Determine if we need quoted format for multi-line or special characters
+            const needsQuotes = text.includes('\n') || text.includes('"') || text.includes('\\');
+
+            let processedText = text;
+            if (needsQuotes) {
+                // Escape the text for DSL format
+                processedText = `"${
+                    text
+                        .replace(/\\/g, '\\\\') // Escape backslashes first
+                        .replace(/"/g, '\\"') // Escape quotes
+                        .replace(/\n/g, '\\n') // Escape line breaks
+                }"`;
+            }
+
+            const result = rename(component.line, component.name, processedText, mapText, mutateMapText);
             if (!result.success) {
                 console.error('Failed to save component:', result.error);
                 // For now, just log the error. In a production app, you might show a toast notification
@@ -89,12 +115,14 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             }
         }
         setEditMode(false);
+        setForceMultiLine(false); // Reset multi-line mode
         stopEditing();
     };
 
     const handleCancel = () => {
         setText(actualComponent.name);
         setEditMode(false);
+        setForceMultiLine(false); // Reset multi-line mode
         stopEditing();
     };
     const getX = () => {
@@ -109,61 +137,17 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const fontSize = styles?.fontSize || '14px';
 
     const renderEditMode = () => {
-        // Safari fallback - use native input instead of styled-components
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        // Always use the InlineEditor for consistent behavior across browsers
+        // Detect multi-line content dynamically
+        const isMultiLine = forceMultiLine || text.includes('\n') || component.name.includes('\n');
+        const editorHeight = isMultiLine ? 120 : 80;
 
-        if (isSafari) {
-            return (
-                <foreignObject x={Number(cx) + getX() - 60} y={Number(cy) + getY() - 30} width="140" height="50">
-                    <input
-                        type="text"
-                        value={text}
-                        onChange={e => setText(e.target.value)}
-                        onKeyDown={e => {
-                            e.stopPropagation();
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleSave();
-                            } else if (e.key === 'Escape') {
-                                e.preventDefault();
-                                handleCancel();
-                            }
-                        }}
-                        onBlur={handleSave}
-                        onFocus={e => {
-                            // Select all text on focus for easy replacement
-                            e.target.select();
-                        }}
-                        autoFocus
-                        maxLength={100}
-                        style={{
-                            width: '120px',
-                            padding: '4px 8px',
-                            margin: '0',
-                            border: '2px solid #ccc',
-                            borderRadius: '4px',
-                            backgroundColor: 'white',
-                            color: 'black',
-                            fontSize: fontSize,
-                            fontFamily: 'Arial, sans-serif',
-                            outline: 'none',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                            // Safari-specific fixes
-                            WebkitAppearance: 'none',
-                            appearance: 'none',
-                        }}
-                    />
-                </foreignObject>
-            );
-        }
-
-        // Chrome and other browsers - use the full InlineEditor
         return (
             <foreignObject
                 x={Number(cx) + getX() - 60}
                 y={Number(cy) + getY() - 30}
                 width="140"
-                height="80"
+                height={editorHeight}
                 style={{
                     overflow: 'visible',
                 }}>
@@ -175,7 +159,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     }}>
                     <InlineEditor
                         value={text}
-                        onChange={setText}
+                        onChange={handleTextChange}
                         onSave={handleSave}
                         onCancel={handleCancel}
                         x={0}
@@ -185,9 +169,11 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                         mapStyleDefs={mapStyleDefs}
                         autoFocus={true}
                         selectAllOnFocus={true}
+                        isMultiLine={isMultiLine}
+                        placeholder={isMultiLine ? 'Enter component name...\n(Ctrl+Enter to save)' : 'Enter component name...'}
                         validation={{
                             required: true,
-                            maxLength: 100,
+                            maxLength: 500, // Increased for multi-line content
                         }}
                     />
                 </div>

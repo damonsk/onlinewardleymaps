@@ -162,13 +162,16 @@ component B [0.8, 0.2]`;
 
     describe('real-world scenarios', () => {
         it('should handle documentation-style notes', () => {
-            const mapText = 'note "Documentation:\\nThis component handles user authentication\\n\\nSee \\"auth.js\\" for implementation details" [0.5, 0.7]';
+            const mapText =
+                'note "Documentation:\\nThis component handles user authentication\\n\\nSee \\"auth.js\\" for implementation details" [0.5, 0.7]';
             const originalText = 'Documentation:\nThis component handles user authentication\n\nSee "auth.js" for implementation details';
             const newText = 'Updated Documentation:\nThis component handles user login\n\nSee "login.js" for details';
             const result = renameNote(1, originalText, newText, mapText, mockMutateMapText);
 
             expect(result.success).toBe(true);
-            expect(mockMutateMapText).toHaveBeenCalledWith('note "Updated Documentation:\\nThis component handles user login\\n\\nSee \\"login.js\\" for details" [0.5, 0.7]');
+            expect(mockMutateMapText).toHaveBeenCalledWith(
+                'note "Updated Documentation:\\nThis component handles user login\\n\\nSee \\"login.js\\" for details" [0.5, 0.7]',
+            );
         });
 
         it('should handle code snippet notes', () => {
@@ -187,7 +190,9 @@ component B [0.8, 0.2]`;
             const result = renameNote(1, 'Simple note', newText, mapText, mockMutateMapText);
 
             expect(result.success).toBe(true);
-            expect(mockMutateMapText).toHaveBeenCalledWith('note "Complex note:\\n- Point 1\\n- Point 2\\n- \\"Important\\" note" [0.5, 0.7]');
+            expect(mockMutateMapText).toHaveBeenCalledWith(
+                'note "Complex note:\\n- Point 1\\n- Point 2\\n- \\"Important\\" note" [0.5, 0.7]',
+            );
         });
 
         it('should handle conversion from complex to simple content', () => {

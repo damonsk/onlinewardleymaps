@@ -8,7 +8,7 @@
   - Write unit tests for all parsing scenarios including edge cases and malformed input
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 6.1, 6.2_
 
-- [ ] 2. Update ComponentTextSymbol to render multi-line component names
+- [x] 2. Update ComponentTextSymbol to render multi-line component names
   - Leverage existing renderMultiLineText function for component names with line breaks
   - Ensure proper text centering and positioning for multi-line component text
   - Add logic to detect line breaks in component names and switch to multi-line rendering
@@ -16,7 +16,7 @@
   - Write unit tests for multi-line component name rendering and positioning
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 3. Enhance inline editing to support multi-line component names
+- [-] 3. Enhance inline editing to support multi-line component names
   - Update ComponentText component to detect multi-line names and enable multi-line editing mode
   - Implement proper save logic with escape sequence handling for DSL generation
   - Add support for Enter (new line) vs Ctrl+Enter (save) keyboard shortcuts in multi-line mode

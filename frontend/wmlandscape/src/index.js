@@ -194,6 +194,5 @@ export {
     useFeatureSwitches,
     useLegacyMapState,
     useUnifiedMapState,
-    XAxisLabelsExtractionStrategy
+    XAxisLabelsExtractionStrategy,
 };
-

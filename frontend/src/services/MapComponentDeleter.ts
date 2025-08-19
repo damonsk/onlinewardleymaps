@@ -48,9 +48,9 @@ export class MapComponentDeleter {
     }
 
     private createDeletionResult(
-        updatedMapText: string, 
-        componentId: string, 
-        identification: ComponentIdentification
+        updatedMapText: string,
+        componentId: string,
+        identification: ComponentIdentification,
     ): ComponentDeletionResult {
         return {
             updatedMapText,
@@ -72,14 +72,12 @@ export class MapComponentDeleter {
         const {mapText, componentId, componentType} = params;
         const componentIdStr = this.normalizeComponentId(componentId);
         const identification = this.identifyComponent(mapText, componentIdStr, componentType);
-        
+
         if (!identification.found) {
             throw new Error(`Component with ID "${componentId}" not found in map text`);
         }
 
-        const updatedMapText = this.applyTransformations(mapText, 
-            this.createDeletionTransformations(identification)
-        );
+        const updatedMapText = this.applyTransformations(mapText, this.createDeletionTransformations(identification));
 
         return this.createDeletionResult(updatedMapText, componentIdStr, identification);
     }

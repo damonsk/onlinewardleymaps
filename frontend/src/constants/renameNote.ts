@@ -32,7 +32,7 @@ export const renameNote = (
         // For unquoted syntax, we check for literal inclusion
         const quotedPattern = /^(\s*note\s+)"((?:[^"\\]|\\.)*)"(\s+\[[^\]]+\])(\s*)$/;
         const isQuotedSyntax = quotedPattern.test(elementAtLine);
-        
+
         let containsOriginalText = false;
         if (isQuotedSyntax) {
             // For quoted syntax, extract and unescape the text to compare
@@ -40,8 +40,8 @@ export const renameNote = (
             if (quotedMatch) {
                 const currentNoteText = quotedMatch[2];
                 const unescapedCurrentText = currentNoteText
-                    .replace(/\\n/g, '\n')   // Convert \n to line breaks
-                    .replace(/\\"/g, '"')    // Unescape quotes
+                    .replace(/\\n/g, '\n') // Convert \n to line breaks
+                    .replace(/\\"/g, '"') // Unescape quotes
                     .replace(/\\\\/g, '\\'); // Unescape backslashes (must be last)
                 containsOriginalText = unescapedCurrentText === originalText;
             }
@@ -49,7 +49,7 @@ export const renameNote = (
             // For unquoted syntax, check literal inclusion
             containsOriginalText = elementAtLine.includes(originalText);
         }
-        
+
         if (!containsOriginalText) {
             return {
                 success: false,
@@ -59,23 +59,23 @@ export const renameNote = (
 
         // Parse note syntax: supports both quoted and unquoted formats
         // We already determined if it's quoted syntax above
-        
+
         if (isQuotedSyntax) {
             // We already have the quotedMatch from above
             const quotedMatch = elementAtLine.match(quotedPattern);
             if (quotedMatch) {
                 const [, prefix, currentNoteText, coordinates, suffix] = quotedMatch;
-                
+
                 // Determine if we need quoted syntax for the new text
                 const needsQuoting = newText.includes('\n') || newText.includes('"') || newText.includes('\\');
-                
+
                 if (needsQuoting) {
                     // Escape the new text for quoted syntax
                     const escapedText = newText
-                        .replace(/\\/g, '\\\\')  // Escape backslashes first
-                        .replace(/"/g, '\\"')    // Escape quotes
-                        .replace(/\n/g, '\\n');  // Convert line breaks to \n
-                    
+                        .replace(/\\/g, '\\\\') // Escape backslashes first
+                        .replace(/"/g, '\\"') // Escape quotes
+                        .replace(/\n/g, '\\n'); // Convert line breaks to \n
+
                     // Reconstruct with quoted syntax
                     lines[currentLine - 1] = `${prefix}"${escapedText}"${coordinates}${suffix}`;
                 } else {
@@ -83,12 +83,12 @@ export const renameNote = (
                     const sanitizedText = newText.trim().replace(/[\[\]]/g, ''); // Remove brackets that could break syntax
                     lines[currentLine - 1] = `${prefix}${sanitizedText}${coordinates}${suffix}`;
                 }
-                
+
                 mutateMapMethod(lines.join('\n'));
                 return {success: true};
             }
         }
-        
+
         // Try unquoted syntax
         const unquotedPattern = /^(\s*note\s+)(.+?)(\s+\[[^\]]+\])(\s*)$/;
         const unquotedMatch = elementAtLine.match(unquotedPattern);
@@ -106,14 +106,14 @@ export const renameNote = (
 
             // Determine if we need quoted syntax for the new text
             const needsQuoting = newText.includes('\n') || newText.includes('"') || newText.includes('\\');
-            
+
             if (needsQuoting) {
                 // Escape the new text for quoted syntax
                 const escapedText = newText
-                    .replace(/\\/g, '\\\\')  // Escape backslashes first
-                    .replace(/"/g, '\\"')    // Escape quotes
-                    .replace(/\n/g, '\\n');  // Convert line breaks to \n
-                
+                    .replace(/\\/g, '\\\\') // Escape backslashes first
+                    .replace(/"/g, '\\"') // Escape quotes
+                    .replace(/\n/g, '\\n'); // Convert line breaks to \n
+
                 // Reconstruct with quoted syntax
                 lines[currentLine - 1] = `${prefix}"${escapedText}"${coordinates}${suffix}`;
             } else {
