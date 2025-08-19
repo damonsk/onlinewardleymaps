@@ -1,4 +1,4 @@
-import {setText} from '../../constants/extractionFunctions';
+import {setText, setName} from '../../constants/extractionFunctions';
 import {IProvideBaseElement, IProvideDecoratorsConfig} from '../../types/base';
 
 describe('setText function', () => {
@@ -208,6 +208,190 @@ describe('setText function', () => {
             const element = `note "${textWithManyQuotes}" [0.5, 0.5]`;
             setText(baseElement, element, config);
             expect(baseElement.text).toBe(Array(20).fill('"quote"').join(' '));
+        });
+    });
+});
+
+describe('setName function', () => {
+    let baseElement: IProvideBaseElement & {name?: string};
+    let config: IProvideDecoratorsConfig;
+
+    beforeEach(() => {
+        baseElement = {};
+        config = {keyword: 'component'};
+    });
+
+    describe('backward compatibility (legacy single-line parsing)', () => {
+        it('should parse simple single-line component names', () => {
+            const element = 'component Simple Component [0.5, 0.7]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Simple Component');
+        });
+
+        it('should handle component names with special characters', () => {
+            const element = 'component Component with +special &chars! [0.4, 0.6]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Component with +special &chars!');
+        });
+
+        it('should handle empty component names', () => {
+            const element = 'component [0.5, 0.5]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('');
+        });
+
+        it('should handle component names with numbers', () => {
+            const element = 'component Component 123 v2.0 [0.3, 0.8]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Component 123 v2.0');
+        });
+
+        it('should handle component names with hyphens and underscores', () => {
+            const element = 'component my-component_name [0.6, 0.4]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('my-component_name');
+        });
+    });
+
+    describe('new multi-line functionality', () => {
+        it('should parse quoted single-line component names', () => {
+            const element = 'component "Simple Quoted Component" [0.5, 0.7]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Simple Quoted Component');
+        });
+
+        it('should parse quoted multi-line component names with \\n', () => {
+            const element = 'component "Multi-line\\nComponent\\nName" [0.3, 0.8]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Multi-line\nComponent\nName');
+        });
+
+        it('should handle escaped quotes within quoted component names', () => {
+            const element = 'component "Component with \\"escaped quotes\\" inside" [0.4, 0.6]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Component with "escaped quotes" inside');
+        });
+
+        it('should handle complex escaping combinations', () => {
+            const element = 'component "Complex \\"quote\\" and \\n newline and \\\\\\\\ backslash" [0.1, 0.9]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Complex "quote" and \n newline and \\\\ backslash');
+        });
+
+        it('should handle empty quoted component names', () => {
+            const element = 'component "" [0.5, 0.5]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('');
+        });
+
+        it('should handle multi-line component names with empty lines', () => {
+            const element = 'component "Line 1\\n\\nLine 3" [0.2, 0.8]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Line 1\n\nLine 3');
+        });
+    });
+
+    describe('edge cases and malformed input', () => {
+        it('should handle unclosed quoted strings gracefully', () => {
+            const element = 'component "Unclosed quote [0.5, 0.5]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Unclosed quote');
+        });
+
+        it('should handle component names without coordinates', () => {
+            const element = 'component "Quoted without coordinates"';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Quoted without coordinates');
+        });
+
+        it('should handle malformed quotes at the beginning', () => {
+            const element = 'component "Partial quote content [0.5, 0.5]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Partial quote content');
+        });
+
+        it('should handle component names with only quotes', () => {
+            const element = 'component "\\"" [0.5, 0.5]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('"');
+        });
+
+        it('should handle component names with only line breaks', () => {
+            const element = 'component "\\n\\n\\n" [0.5, 0.5]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('\n\n\n');
+        });
+    });
+
+    describe('real-world examples', () => {
+        it('should handle documentation-style multi-line component names', () => {
+            const element = 'component "User Authentication\\nService\\n(OAuth 2.0)" [0.2, 0.8]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('User Authentication\nService\n(OAuth 2.0)');
+        });
+
+        it('should handle component names with technical details', () => {
+            const element = 'component "Database\\nPostgreSQL 13\\n(Primary)" [0.6, 0.4]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Database\nPostgreSQL 13\n(Primary)');
+        });
+
+        it('should handle component names with version information', () => {
+            const element = 'component "API Gateway\\nv2.1.0\\n(Load Balanced)" [0.4, 0.7]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('API Gateway\nv2.1.0\n(Load Balanced)');
+        });
+
+        it('should handle component names with special formatting', () => {
+            const element = 'component "Frontend App\\n- React 18\\n- TypeScript\\n- PWA" [0.8, 0.3]';
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Frontend App\n- React 18\n- TypeScript\n- PWA');
+        });
+    });
+
+    describe('different keywords', () => {
+        it('should work with different component types', () => {
+            const marketConfig = {keyword: 'market'};
+            const element = 'market "Multi-line\\nMarket\\nComponent" [0.1, 0.9]';
+            setName(baseElement, element, marketConfig);
+            expect(baseElement.name).toBe('Multi-line\nMarket\nComponent');
+        });
+
+        it('should work with ecosystem keyword', () => {
+            const ecosystemConfig = {keyword: 'ecosystem'};
+            const element = 'ecosystem "Cloud\\nEcosystem\\nProvider" [0.0, 1.0]';
+            setName(baseElement, element, ecosystemConfig);
+            expect(baseElement.name).toBe('Cloud\nEcosystem\nProvider');
+        });
+    });
+
+    describe('performance and stress tests', () => {
+        it('should handle very long quoted component names', () => {
+            const longName = 'A'.repeat(500);
+            const element = `component "${longName}" [0.5, 0.5]`;
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe(longName);
+        });
+
+        it('should handle many line breaks', () => {
+            const nameWithManyBreaks = Array(20).fill('line').join('\\n');
+            const element = `component "${nameWithManyBreaks}" [0.5, 0.5]`;
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe(Array(20).fill('line').join('\n'));
+        });
+
+        it('should handle many escaped quotes', () => {
+            const nameWithManyQuotes = Array(10).fill('\\"quote\\"').join(' ');
+            const element = `component "${nameWithManyQuotes}" [0.5, 0.5]`;
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe(Array(10).fill('"quote"').join(' '));
+        });
+
+        it('should handle complex mixed escaping', () => {
+            const complexName = 'Start\\n\\"Quote 1\\"\\n\\\\Backslash\\\\\\n\\"Quote 2\\"\\nEnd';
+            const element = `component "${complexName}" [0.5, 0.5]`;
+            setName(baseElement, element, config);
+            expect(baseElement.name).toBe('Start\n"Quote 1"\n\\Backslash\\\n"Quote 2"\nEnd');
         });
     });
 });

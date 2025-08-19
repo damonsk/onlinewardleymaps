@@ -3,7 +3,49 @@ import {ComponentLabel, IProvideBaseElement, IProvideDecoratorsConfig} from '../
 import * as Defaults from './defaults';
 
 export const setName = (baseElement: IProvideBaseElement & {name?: string}, element: string, config: IProvideDecoratorsConfig): void => {
-    const name = element.split(`${config.keyword} `)[1].trim().split(' [')[0].trim();
+    const start = element.indexOf(config.keyword);
+    const afterKeyword = element.substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start).trim();
+    
+    let name: string;
+    
+    // Check for quoted string (multi-line support)
+    if (afterKeyword.startsWith('"')) {
+        // Extract quoted content - handle escaped quotes and find the closing quote before coordinates
+        const quotedMatch = afterKeyword.match(/^"((?:[^"\\]|\\.)*)"\s*\[/);
+        if (quotedMatch) {
+            // Successfully matched quoted string with coordinates
+            name = quotedMatch[1]
+                .replace(/\\"/g, '"')     // Unescape quotes
+                .replace(/\\n/g, '\n')   // Convert explicit \n to actual line breaks
+                .replace(/\\\\/g, '\\'); // Unescape backslashes
+        } else {
+            // Malformed quoted string - try to extract what we can
+            const quoteEnd = findClosingQuote(afterKeyword, 1);
+            if (quoteEnd !== -1) {
+                name = afterKeyword.substring(1, quoteEnd)
+                    .replace(/\\"/g, '"')
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\\\/g, '\\');
+            } else {
+                // No closing quote found - fallback to legacy parsing
+                name = afterKeyword.split(' [')[0].trim();
+                // Remove leading quote if present
+                if (name.startsWith('"')) {
+                    name = name.substring(1);
+                }
+            }
+        }
+    } else {
+        // Legacy single-line parsing (backward compatibility)
+        // Check if afterKeyword starts directly with coordinates (no name)
+        if (afterKeyword.trim().startsWith('[')) {
+            name = '';
+        } else {
+            const parts = afterKeyword.split(' [');
+            name = parts[0].trim();
+        }
+    }
+    
     Object.assign(baseElement, {name});
 };
 
