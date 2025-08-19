@@ -1,5 +1,5 @@
-import React, {memo} from 'react';
-import {TextTheme} from '../../constants/mapstyles';
+import React, { memo } from 'react';
+import { TextTheme } from '../../constants/mapstyles';
 
 export interface ComponentTextSymbolProps {
     id: string;
@@ -37,30 +37,23 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
         const lines = textContent.split('\n');
         const tspans: JSX.Element[] = [];
 
+        // Use the textAnchor prop if provided, otherwise default to 'middle' for proper centering
+        const anchor = textAnchor || 'middle';
+
         lines.forEach((line, lineIndex) => {
             if (line === '') {
                 // Handle empty lines by adding a space to maintain line spacing
                 tspans.push(
-                    <tspan 
-                        key={`${id}_line_${lineIndex}_empty`} 
-                        x={0} 
-                        dy={lineIndex === 0 ? 0 : 15} 
-                        textAnchor="middle"
-                    >
+                    <tspan key={`${id}_line_${lineIndex}_empty`} x={0} dy={lineIndex === 0 ? 0 : 15} textAnchor={anchor}>
                         {' '}
-                    </tspan>
+                    </tspan>,
                 );
             } else {
                 // Render each line as a single tspan - no word wrapping
                 tspans.push(
-                    <tspan 
-                        key={`${id}_line_${lineIndex}`} 
-                        x={0} 
-                        dy={lineIndex === 0 ? 0 : 15} 
-                        textAnchor="middle"
-                    >
+                    <tspan key={`${id}_line_${lineIndex}`} x={0} dy={lineIndex === 0 ? 0 : 15} textAnchor={anchor}>
                         {line}
-                    </tspan>
+                    </tspan>,
                 );
             }
         });
@@ -79,21 +72,21 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
             ));
 
     const displayFill = evolved ? textTheme?.evolvedTextColor : textTheme?.textColor || 'black';
-    
+
     // Determine the content to render (note takes precedence over text)
     const contentToRender = note || text || '';
-    
+
     // Check if content has line breaks (multi-line)
     const hasLineBreaks = contentToRender.includes('\n');
-    
-    // Check if content is long (for word wrapping)
-    const isLong = contentToRender.length > 14;
-    
+
+    // Check if content is long (for word wrapping) - only for single-line content
+    const isLong = !hasLineBreaks && contentToRender.length > 14;
+
     let renderedContent;
     let transform = '';
-    
+
     if (hasLineBreaks) {
-        // Multi-line content with actual line breaks
+        // Multi-line content with actual line breaks (for both notes and component names)
         renderedContent = renderMultiLineText(id, contentToRender);
         transform = ''; // No transform for multi-line text
     } else if (isLong) {
