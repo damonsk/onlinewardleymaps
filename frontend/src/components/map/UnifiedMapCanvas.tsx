@@ -115,6 +115,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         miniatureOpen: false,
     });
 
+    // State to manage initial sizing completion
+    const [isInitialSizingComplete, setIsInitialSizingComplete] = useState(false);
+    const [waitingForPanelRestore, setWaitingForPanelRestore] = useState(false);
+
     const [mapElementsClicked, setMapElementsClicked] = useState<
         Array<{
             el: any;
@@ -652,12 +656,39 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         }
     }, [value]);
 
+    // Listen for panel restore completion
     useEffect(() => {
-        if (mapDimensions.width > 0 && mapDimensions.height > 0) {
+        const handlePanelResize = (event: CustomEvent) => {
+            console.log('UnifiedMapCanvas: Received panelResize event', event.detail);
+            setWaitingForPanelRestore(false);
+        };
+
+        // Check if we need to wait for panel restoration
+        const checkPanelRestore = () => {
+            if (typeof window !== 'undefined') {
+                const savedWidth = localStorage.getItem('resizableSplitPane_leftWidth');
+                if (savedWidth) {
+                    console.log('UnifiedMapCanvas: Waiting for panel restore');
+                    setWaitingForPanelRestore(true);
+                }
+            }
+        };
+
+        checkPanelRestore();
+        window.addEventListener('panelResize', handlePanelResize as EventListener);
+
+        return () => {
+            window.removeEventListener('panelResize', handlePanelResize as EventListener);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (mapDimensions.width > 0 && mapDimensions.height > 0 && !waitingForPanelRestore) {
             console.log('Initial fit effect triggered', {
                 width: mapDimensions.width,
                 height: mapDimensions.height,
                 components: wardleyMap.components.length,
+                waitingForPanelRestore,
             });
 
             const performDelayedFit = () => {
@@ -671,7 +702,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
 
                     if (renderedComponents && renderedComponents.length > 0) {
                         console.log('Components found, scheduling fit');
-                        // Wait for any localStorage restoration or other initialization to complete
+                        // Shorter delay since we've already waited for panel restore
                         setTimeout(() => {
                             if (Viewer.current && Viewer.current.fitSelection) {
                                 console.log('EXECUTING INITIAL FIT TO SELECTION');
@@ -682,29 +713,32 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                                     mapDimensions.width + 80, // Margin for evolution labels on right
                                     mapDimensions.height + 90, // Margin for evolution labels at bottom
                                 );
+                                // Mark sizing as complete
+                                setIsInitialSizingComplete(true);
                             }
-                        }, 1500); // Wait for localStorage restoration to complete
+                        }, 300); // Reduced delay since panel restore is already complete
                     } else {
                         console.log('Components not rendered yet, retrying...');
                         // Components not rendered yet, try again
-                        setTimeout(performDelayedFit, 300);
+                        setTimeout(performDelayedFit, 200);
                     }
                 } else {
                     console.log('Viewer.current or fitSelection not available');
                 }
             };
 
-            // Start the fit process after a delay
-            const timer = setTimeout(performDelayedFit, 800);
+            // Start the fit process after a shorter delay
+            const timer = setTimeout(performDelayedFit, 100);
             return () => clearTimeout(timer);
         } else {
             console.log('Initial fit conditions not met', {
                 width: mapDimensions.width,
                 height: mapDimensions.height,
                 components: wardleyMap.components.length,
+                waitingForPanelRestore,
             });
         }
-    }, [mapDimensions.width, mapDimensions.height]);
+    }, [mapDimensions.width, mapDimensions.height, waitingForPanelRestore]);
 
     // Style configuration
     const fill = {
@@ -727,8 +761,72 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         return 'default';
     }, [props.selectedToolbarItem]);
 
+    // Handle case where no panel restore is needed
+    useEffect(() => {
+        if (!waitingForPanelRestore && typeof window !== 'undefined') {
+            const savedWidth = localStorage.getItem('resizableSplitPane_leftWidth');
+            if (!savedWidth) {
+                // No saved width, no need to wait for panel restore
+                setIsInitialSizingComplete(true);
+            }
+        }
+    }, [waitingForPanelRestore]);
+
+    // Fallback timeout to ensure loading state doesn't persist indefinitely
+    useEffect(() => {
+        const fallbackTimer = setTimeout(() => {
+            if (!isInitialSizingComplete) {
+                console.warn('UnifiedMapCanvas: Fallback timeout - forcing sizing complete');
+                setIsInitialSizingComplete(true);
+            }
+        }, 3000); // 3 second fallback
+
+        return () => clearTimeout(fallbackTimer);
+    }, [isInitialSizingComplete]);
+
     return (
         <div id="map-canvas" style={{width: '100%', height: '100%', position: 'relative'}}>
+            {!isInitialSizingComplete && (
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 1000,
+                    }}>
+                    <div
+                        style={{
+                            fontSize: '14px',
+                            color: '#666',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}>
+                        <div
+                            style={{
+                                width: '20px',
+                                height: '20px',
+                                border: '2px solid #f3f3f3',
+                                borderTop: '2px solid #0085d0',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite',
+                            }}></div>
+                        Loading map...
+                    </div>
+                    <style>{`
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    `}</style>
+                </div>
+            )}
             <UncontrolledReactSVGPanZoom
                 ref={Viewer}
                 SVGBackground={svgBackground}
@@ -761,6 +859,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     width: '100%',
                     height: '100%', // Use full height since toolbar is now fixed position
                     display: 'block',
+                    opacity: isInitialSizingComplete ? 1 : 0,
+                    transition: isInitialSizingComplete ? 'opacity 0.3s ease-in' : 'none',
                 }}>
                 <svg
                     className={[mapStyleDefs.className, 'mapCanvas'].join(' ')}

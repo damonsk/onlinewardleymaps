@@ -57,8 +57,9 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
             setLeftWidth(initialWidth);
             onResize?.(initialWidth);
 
-            // Simple delayed panel resize event - let map handle its own zoom state
-            setTimeout(() => {
+            // Dispatch panel resize event immediately after setting width
+            // Use requestAnimationFrame to ensure the DOM has updated
+            requestAnimationFrame(() => {
                 console.log('ResizableSplitPane: Dispatching panelResize event');
                 const mapContainer = document.getElementById('map');
                 if (mapContainer) {
@@ -73,9 +74,25 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     window.dispatchEvent(panelResizeEvent);
                     console.log('ResizableSplitPane: panelResize event dispatched');
                 } else {
-                    console.log('ResizableSplitPane: map container not found');
+                    console.log('ResizableSplitPane: map container not found, retrying...');
+                    // Retry once if map container not found
+                    setTimeout(() => {
+                        const retryMapContainer = document.getElementById('map');
+                        if (retryMapContainer) {
+                            const retryEvent = new CustomEvent('panelResize', {
+                                detail: {
+                                    leftWidthPercent: initialWidth,
+                                    rightWidthPercent: 100 - initialWidth,
+                                    mapContainerWidth: retryMapContainer.clientWidth,
+                                    mapContainerHeight: retryMapContainer.clientHeight,
+                                },
+                            });
+                            window.dispatchEvent(retryEvent);
+                            console.log('ResizableSplitPane: panelResize event dispatched on retry');
+                        }
+                    }, 100);
                 }
-            }, 1000); // Simpler delay, let map handle its own initial state
+            });
         }
     }, []);
 
