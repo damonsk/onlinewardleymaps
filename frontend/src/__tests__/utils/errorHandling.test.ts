@@ -20,7 +20,7 @@ describe('Enhanced Error Handling', () => {
             it('should parse well-formed quoted strings', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Simple Component" [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBe('Simple Component');
                 expect(result.errors).toHaveLength(0);
@@ -30,7 +30,7 @@ describe('Enhanced Error Handling', () => {
             it('should parse multi-line quoted strings with escape sequences', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Multi-line\\nComponent\\nName" [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBe('Multi-line\nComponent\nName');
                 expect(result.errors).toHaveLength(0);
@@ -40,7 +40,7 @@ describe('Enhanced Error Handling', () => {
             it('should parse quoted strings with escaped quotes', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Component with \\"quotes\\"" [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBe('Component with "quotes"');
                 expect(result.errors).toHaveLength(0);
@@ -52,7 +52,7 @@ describe('Enhanced Error Handling', () => {
             it('should recover from missing closing quote with coordinates', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Unclosed Quote [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBeTruthy();
                 expect(result.wasRecovered).toBe(true);
@@ -62,7 +62,7 @@ describe('Enhanced Error Handling', () => {
             it('should recover from malformed escape sequences', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Component\\xwith\\bad\\escapes" [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBeTruthy();
                 expect(result.warnings.length).toBeGreaterThan(0);
@@ -71,7 +71,7 @@ describe('Enhanced Error Handling', () => {
             it('should handle quotes with extra whitespace', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Component Name  " [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBe('Component Name  ');
                 // May or may not be considered recovery depending on parsing strategy
@@ -82,7 +82,7 @@ describe('Enhanced Error Handling', () => {
             it('should recover from severely malformed quotes using boundary detection', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Malformed Component Name with no closing quote and stuff [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBeTruthy();
                 expect(result.wasRecovered).toBe(true);
@@ -92,7 +92,7 @@ describe('Enhanced Error Handling', () => {
             it('should handle quotes with line breaks as boundaries', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"Component\\nwith line break but no closing quote\\ncomponent "next" [0.5, 0.5]');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBeTruthy();
                 // May use different recovery strategy than expected
@@ -103,7 +103,7 @@ describe('Enhanced Error Handling', () => {
             it('should provide safe fallback for completely broken input', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"\\x\\y\\z\\invalid\\everything\\broken"malformed[]chaos');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBeTruthy();
                 expect(result.wasRecovered).toBe(true);
@@ -113,7 +113,7 @@ describe('Enhanced Error Handling', () => {
             it('should use absolute fallback when everything fails', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('');
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBe('Component');
                 expect(result.wasRecovered).toBe(true);
@@ -125,21 +125,21 @@ describe('Enhanced Error Handling', () => {
             it('should categorize syntax errors correctly', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('not a quoted string');
-                
+
                 expect(result.errors.some(e => e.type === 'syntax')).toBe(true);
             });
 
             it('should categorize validation errors correctly', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString(null as any);
-                
+
                 expect(result.errors.some(e => e.type === 'validation')).toBe(true);
             });
 
             it('should provide context in error messages', () => {
                 const parser = new QuotedStringParser(mockContext);
                 const result = parser.parseQuotedString('"invalid\\x"');
-                
+
                 // Check that if there are errors, they have context
                 result.errors.forEach(error => {
                     if (error.line !== undefined) {
@@ -164,7 +164,7 @@ describe('Enhanced Error Handling', () => {
             it('should parse valid map text successfully', () => {
                 const mapText = `title Test Map\ncomponent Test [0.5, 0.5]`;
                 const result = errorHandler.safeParseMapText(mapText, mockParser);
-                
+
                 expect(result.success).toBe(true);
                 expect(result.result).toBeDefined();
                 expect(result.errors).toHaveLength(0);
@@ -173,7 +173,7 @@ describe('Enhanced Error Handling', () => {
 
             it('should handle empty or null map text', () => {
                 const result = errorHandler.safeParseMapText('', mockParser);
-                
+
                 expect(result.success).toBe(false);
                 expect(result.errors.some(e => e.type === 'critical')).toBe(true);
             });
@@ -181,7 +181,7 @@ describe('Enhanced Error Handling', () => {
             it('should warn about very large map text', () => {
                 const largeMapText = 'title Large Map\n' + 'component Test [0.5, 0.5]\n'.repeat(10000);
                 const result = errorHandler.safeParseMapText(largeMapText, mockParser);
-                
+
                 expect(result.warnings.some(w => w.type === 'performance')).toBe(true);
             });
         });
@@ -190,7 +190,7 @@ describe('Enhanced Error Handling', () => {
             it('should detect and fix unmatched quotes', () => {
                 const mapText = `title Test Map\ncomponent "Unclosed Quote Component [0.5, 0.5]`;
                 const result = errorHandler.safeParseMapText(mapText, mockParser);
-                
+
                 expect(result.warnings.some(w => w.message.includes('quote'))).toBe(true);
                 expect(result.wasRecovered).toBe(true);
             });
@@ -201,7 +201,7 @@ component "First Unclosed [0.5, 0.5]
 component "Second Unclosed [0.6, 0.6]
 component "Third Unclosed [0.7, 0.7]`;
                 const result = errorHandler.safeParseMapText(mapText, mockParser);
-                
+
                 expect(result.wasRecovered).toBe(true);
             });
         });
@@ -210,7 +210,7 @@ component "Third Unclosed [0.7, 0.7]`;
             it('should detect and fix encoding issues', () => {
                 const mapTextWithEncodingIssues = `title Test Map\ncomponent Test\uFFFD [0.5, 0.5]`;
                 const result = errorHandler.safeParseMapText(mapTextWithEncodingIssues, mockParser);
-                
+
                 expect(result.warnings.some(w => w.type === 'formatting')).toBe(true);
                 expect(result.wasRecovered).toBe(true);
             });
@@ -218,7 +218,7 @@ component "Third Unclosed [0.7, 0.7]`;
             it('should remove control characters', () => {
                 const mapTextWithControlChars = `title Test Map\ncomponent Test\x00Component [0.5, 0.5]`;
                 const result = errorHandler.safeParseMapText(mapTextWithControlChars, mockParser);
-                
+
                 expect(result.wasRecovered).toBe(true);
                 expect(result.result?.toString().includes('\x00')).toBe(false);
             });
@@ -237,9 +237,9 @@ component "Third Unclosed [0.7, 0.7]`;
 component Good [0.5, 0.5]
 component Broken [invalid syntax
 component AlsoGood [0.7, 0.7]`;
-                
+
                 const result = errorHandler.safeParseMapText(mapText, faultyParser);
-                
+
                 // Should attempt recovery but success depends on specific implementation
                 expect(result.errors.length).toBeGreaterThan(0); // Should have captured errors
                 if (result.success) {
@@ -254,7 +254,7 @@ component AlsoGood [0.7, 0.7]`;
 
                 const mapText = `title Test Map\ncomponent Test [0.5, 0.5]`;
                 const result = errorHandler.safeParseMapText(mapText, faultyParser);
-                
+
                 // Should attempt recovery but might still fail
                 expect(result.errors.length).toBeGreaterThan(0);
             });
@@ -273,13 +273,13 @@ component AlsoGood [0.7, 0.7]`;
                     'build Test',
                     'buy Test',
                     'outsource Test',
-                    'ecosystem Test'
+                    'ecosystem Test',
                 ];
 
                 // This would be tested through the private method, but we test behavior through public methods
                 const mapText = `title Test Map\n${elementLines.join('\n')}`;
                 const result = errorHandler.safeParseMapText(mapText, mockParser);
-                
+
                 expect(result.success).toBe(true);
             });
         });
@@ -296,14 +296,14 @@ component AlsoGood [0.7, 0.7]`;
 
         it('should parse quoted strings using enhanced parser', () => {
             const result = safeParseComponentName('"Multi-line\\nComponent"', mockContext);
-            
+
             expect(result.success).toBe(true);
             expect(result.result).toBe('Multi-line\nComponent');
         });
 
         it('should parse simple unquoted names', () => {
             const result = safeParseComponentName('SimpleComponent [0.5, 0.5]', mockContext);
-            
+
             expect(result.success).toBe(true);
             expect(result.result).toBe('SimpleComponent');
             expect(result.wasRecovered).toBe(false);
@@ -311,7 +311,7 @@ component AlsoGood [0.7, 0.7]`;
 
         it('should handle empty names with fallback', () => {
             const result = safeParseComponentName('[0.5, 0.5]', mockContext, 'FallbackName');
-            
+
             expect(result.success).toBe(true);
             expect(result.result).toBe('FallbackName');
             expect(result.wasRecovered).toBe(true);
@@ -320,7 +320,7 @@ component AlsoGood [0.7, 0.7]`;
 
         it('should provide safe fallback for critical parsing failures', () => {
             const result = safeParseComponentName('"severely\\x\\broken\\quotes', mockContext, 'SafeFallback');
-            
+
             expect(result.success).toBe(true);
             expect(result.result).toBeTruthy(); // Should have some result
             // May be recovered value or fallback depending on what the parser can salvage
@@ -343,7 +343,7 @@ note "Note with unmatched quote [0.6, 0.6]
 component Regular Component [0.7, 0.7]`;
 
             const result = errorHandler.safeParseMapText(complexMapText, cascadingFailParser);
-            
+
             // Should attempt recovery and provide some result
             expect(result.errors.length).toBeGreaterThan(0);
             // The specific success depends on recovery capabilities
@@ -356,10 +356,8 @@ component Regular Component [0.7, 0.7]`;
             };
 
             // Create a map with many potentially problematic lines
-            const manyLinesMap = 'title Large Map\n' + 
-                Array.from({length: 1000}, (_, i) => 
-                    `component "Component\\x${i} [0.5, 0.5]`
-                ).join('\n');
+            const manyLinesMap =
+                'title Large Map\n' + Array.from({length: 1000}, (_, i) => `component "Component\\x${i} [0.5, 0.5]`).join('\n');
 
             const startTime = Date.now();
             const result = errorHandler.safeParseMapText(manyLinesMap, alwaysFailParser);

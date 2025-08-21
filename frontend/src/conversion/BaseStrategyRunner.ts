@@ -24,15 +24,15 @@ export default class BaseStrategyRunner implements IParseStrategy {
         const elementsToReturn: any[] = [];
         const errors = [];
         const errorHandler = new MapLoadingErrorHandler();
-        
+
         for (let i = 0; i < lines.length; i++) {
             const element = lines[i];
-            
+
             // Skip empty lines and comments
             if (!element.trim() || element.trim().startsWith('//') || element.trim().startsWith('/*')) {
                 continue;
             }
-            
+
             if (element.trim().indexOf(`${this.keyword} `) === 0) {
                 try {
                     const baseElement = Object.assign(
@@ -42,7 +42,7 @@ export default class BaseStrategyRunner implements IParseStrategy {
                         },
                         this.config.defaultAttributes,
                     );
-                    
+
                     // Apply decorators with individual error handling
                     let elementValid = true;
                     for (const decorator of this.decorators) {
@@ -54,16 +54,16 @@ export default class BaseStrategyRunner implements IParseStrategy {
                             });
                         } catch (decoratorError) {
                             console.warn(`Decorator error on line ${i + 1} for ${this.keyword}:`, decoratorError);
-                            
+
                             // Try to continue with partial element if possible
                             const errorMessage = decoratorError instanceof Error ? decoratorError.message : String(decoratorError);
                             errors.push({
                                 line: i + 1,
                                 name: `Decorator error: ${errorMessage}`,
                                 element: element,
-                                keyword: this.keyword
+                                keyword: this.keyword,
                             });
-                            
+
                             // For critical decorator failures, skip the element
                             if (errorMessage.includes('critical') || errorMessage.includes('name')) {
                                 elementValid = false;
@@ -71,28 +71,28 @@ export default class BaseStrategyRunner implements IParseStrategy {
                             }
                         }
                     }
-                    
+
                     if (elementValid) {
                         // Validate that the element has required properties
                         if (!baseElement.name && this.keyword !== 'title' && this.keyword !== 'presentation') {
                             console.warn(`Element on line ${i + 1} missing name, using fallback`);
                             baseElement.name = `${this.keyword.charAt(0).toUpperCase() + this.keyword.slice(1)} ${i + 1}`;
                         }
-                        
+
                         elementsToReturn.push(baseElement);
                     }
                 } catch (e) {
                     const errorMessage = e instanceof Error ? e.message : String(e);
                     console.error(`Critical error processing ${this.keyword} on line ${i + 1}:`, e);
-                    
+
                     errors.push({
                         line: i + 1,
                         name: `Critical parsing error: ${errorMessage}`,
                         element: element,
                         keyword: this.keyword,
-                        type: 'critical'
+                        type: 'critical',
                     });
-                    
+
                     // For critical errors, try to create a minimal safe element to prevent map corruption
                     if (this.keyword === 'component') {
                         try {
@@ -102,7 +102,7 @@ export default class BaseStrategyRunner implements IParseStrategy {
                                     line: 1 + i,
                                     name: `Component ${i + 1}`,
                                     maturity: 0.5,
-                                    visibility: 0.5
+                                    visibility: 0.5,
                                 },
                                 this.config.defaultAttributes,
                             );
@@ -115,14 +115,14 @@ export default class BaseStrategyRunner implements IParseStrategy {
                 }
             }
         }
-        
+
         // Log summary of parsing issues
         if (errors.length > 0) {
             const criticalErrors = errors.filter((e: any) => e.type === 'critical').length;
             const warningErrors = errors.length - criticalErrors;
             console.warn(`${this.keyword} parsing completed with ${criticalErrors} critical errors and ${warningErrors} warnings`);
         }
-        
+
         return {
             [this.containerName]: elementsToReturn,
             errors: errors,

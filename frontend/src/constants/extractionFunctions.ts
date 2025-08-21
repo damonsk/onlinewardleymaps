@@ -11,7 +11,7 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         Object.assign(baseElement, {name: 'Component'});
         return;
     }
-    
+
     const start = element.indexOf(config.keyword);
     const afterKeyword = element.substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start).trim();
 
@@ -20,7 +20,7 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         keyword: config.keyword,
         elementType: 'component',
         fullLine: element,
-        position: start
+        position: start,
     };
 
     let name: string;
@@ -28,9 +28,9 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
     // Try enhanced parsing for quoted strings, fallback to legacy for simple cases
     if (afterKeyword.startsWith('"')) {
         const parseResult = safeParseComponentName(afterKeyword, context, 'Component');
-        
+
         name = parseResult.result || 'Component';
-        
+
         // Log parsing issues for debugging
         if (parseResult.errors.length > 0) {
             console.warn(`Component name parsing errors on line ${context.line}:`, parseResult.errors);
@@ -53,7 +53,7 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
 
     // Additional validation and recovery
     const recovery = validateAndRecoverComponentName(name);
-    
+
     // Use the processed name (might be sanitized or recovered)
     Object.assign(baseElement, {name: recovery.processedName});
 
@@ -206,13 +206,13 @@ export const setMethod = (
     config: IProvideDecoratorsConfig,
 ): void => {
     const afterKeyword = element.substr(`${config.keyword} `.length).trim();
-    
+
     const context: ParsingContext = {
         line: (baseElement as any).line || 0,
         keyword: config.keyword,
         elementType: 'method',
         fullLine: element,
-        position: element.indexOf(config.keyword)
+        position: element.indexOf(config.keyword),
     };
 
     let name: string;
@@ -220,9 +220,9 @@ export const setMethod = (
     // Try enhanced parsing for quoted strings, fallback to legacy for simple cases
     if (afterKeyword.startsWith('"')) {
         const parseResult = safeParseComponentName(afterKeyword, context, 'Component');
-        
+
         name = parseResult.result || 'Component';
-        
+
         // Log parsing issues for debugging
         if (parseResult.errors.length > 0) {
             console.warn(`Method decorator parsing errors on line ${context.line}:`, parseResult.errors);
@@ -295,15 +295,15 @@ export const setNameWithMaturity = (
         Object.assign(baseElement, {name: 'Component', override: '', maturity: 0.85});
         return;
     }
-    
+
     const context: ParsingContext = {
         line: (baseElement as any).line || 0,
         keyword: 'evolve',
         elementType: 'evolution',
         fullLine: element,
-        position: element.indexOf('evolve')
+        position: element.indexOf('evolve'),
     };
-    
+
     let name: string;
     let override = '';
     let newPoint = 0.85;
@@ -312,10 +312,10 @@ export const setNameWithMaturity = (
     if (nameSection.startsWith('"')) {
         // Use enhanced parsing for quoted evolution names
         const parseResult = safeParseComponentName(nameSection, context, 'Component');
-        
+
         if (parseResult.success && parseResult.result) {
             name = parseResult.result;
-            
+
             // Look for additional evolution syntax after the quoted name
             // This is more complex because we need to handle the original nameSection parsing
             const quotedMatch = nameSection.match(/^"(?:[^"\\]|\\.)*"/);
@@ -355,7 +355,7 @@ export const setNameWithMaturity = (
             // Parsing failed, use fallback
             name = parseResult.result || 'Component';
         }
-        
+
         // Log parsing issues
         if (parseResult.errors.length > 0) {
             console.warn(`Evolution parsing errors on line ${context.line}:`, parseResult.errors);

@@ -120,7 +120,7 @@ export class QuotedStringParser {
 
             const content = input.substring(startIndex + 1, closingQuoteIndex);
             const unescaped = this.unescapeString(content);
-            
+
             if (unescaped.errors.length > 0) {
                 this.result.errors.push(...unescaped.errors);
                 return this.result;
@@ -153,7 +153,7 @@ export class QuotedStringParser {
                 if (match) {
                     const content = match[1];
                     const unescaped = this.unescapeString(content, true); // Lenient unescaping
-                    
+
                     this.result.success = true;
                     this.result.result = unescaped.result || content;
                     this.result.warnings.push(...unescaped.warnings);
@@ -176,14 +176,16 @@ export class QuotedStringParser {
         try {
             // Use heuristics to guess the intended string boundaries
             let endIndex = input.length;
-            
+
             // Look for likely boundaries: coordinates, line breaks, or end of string
             const boundaries = [
                 input.indexOf('[', startIndex), // Coordinates
                 input.indexOf('\n', startIndex), // Line break
                 input.indexOf('//', startIndex), // Comment
-                input.length // End of string
-            ].filter(idx => idx > startIndex).sort((a, b) => a - b);
+                input.length, // End of string
+            ]
+                .filter(idx => idx > startIndex)
+                .sort((a, b) => a - b);
 
             if (boundaries.length > 0) {
                 endIndex = boundaries[0];
@@ -191,13 +193,13 @@ export class QuotedStringParser {
 
             // Extract content between quotes, handling some escape issues
             let content = input.substring(startIndex + 1, endIndex);
-            
+
             // Clean up common issues
             content = content.replace(/"\s*$/, ''); // Remove trailing quote if present
             content = content.replace(/\\+$/, ''); // Remove trailing backslashes
-            
+
             const unescaped = this.unescapeString(content, true);
-            
+
             this.result.success = true;
             this.result.result = unescaped.result || content;
             this.result.warnings.push(...unescaped.warnings);
@@ -215,11 +217,11 @@ export class QuotedStringParser {
         try {
             // Just take everything after the quote until we hit something that looks like coordinates
             let content = input.substring(startIndex + 1);
-            
+
             // Remove the most obviously problematic parts
             content = content.split('[')[0].trim(); // Stop at coordinates
             content = content.replace(/"+\s*$/, ''); // Remove trailing quotes
-            
+
             if (content.length === 0) {
                 content = 'Recovered Component';
             }
@@ -273,7 +275,7 @@ export class QuotedStringParser {
 
         try {
             let unescaped = str;
-            
+
             // Standard escape sequences
             unescaped = unescaped.replace(/\\n/g, '\n');
             unescaped = unescaped.replace(/\\r/g, '\r');
@@ -384,15 +386,15 @@ export class MapLoadingErrorHandler {
             }
 
             const parseResult = parseFunction(processedText);
-            
+
             result.success = true;
             result.result = parseResult;
             result.wasRecovered = preValidation.wasRecovered;
-            
+
             return result;
         } catch (error) {
             this.addErrorToResult(result, 'critical', `Map parsing failed: ${this.getErrorMessage(error)}`);
-            
+
             // Attempt recovery by parsing line by line
             try {
                 const recoveryResult = this.attemptLineByLineRecovery(mapText, parseFunction);
@@ -427,7 +429,8 @@ export class MapLoadingErrorHandler {
             return result;
         }
 
-        if (mapText.length > 100000) { // 100KB limit for warning
+        if (mapText.length > 100000) {
+            // 100KB limit for warning
             this.addWarningToResult(result, 'performance', 'Very large map text may cause performance issues');
         }
 
@@ -514,15 +517,15 @@ export class MapLoadingErrorHandler {
 
         for (let lineNum = 0; lineNum < lines.length; lineNum++) {
             const line = lines[lineNum];
-            
+
             // Check for unmatched quotes
             let inQuotes = false;
             let escaped = false;
             let quoteCount = 0;
-            
+
             for (let i = 0; i < line.length; i++) {
                 const char = line[i];
-                
+
                 if (char === '"' && !escaped) {
                     quoteCount++;
                     inQuotes = !inQuotes;
@@ -530,15 +533,15 @@ export class MapLoadingErrorHandler {
                     escaped = true;
                     continue;
                 }
-                
+
                 escaped = false;
             }
-            
+
             if (inQuotes) {
                 issues.push({
                     line: lineNum + 1,
                     issue: 'unmatched_quote',
-                    position: line.lastIndexOf('"')
+                    position: line.lastIndexOf('"'),
                 });
             }
         }
@@ -548,8 +551,9 @@ export class MapLoadingErrorHandler {
 
     private fixQuoteIssues(text: string, issues: Array<{line: number; issue: string; position: number}>): string {
         let lines = text.split('\n');
-        
-        for (const issue of issues.reverse()) { // Process in reverse to maintain line numbers
+
+        for (const issue of issues.reverse()) {
+            // Process in reverse to maintain line numbers
             const lineIndex = issue.line - 1;
             if (issue.issue === 'unmatched_quote') {
                 // Add a closing quote at the end of the line before coordinates if present
@@ -563,7 +567,7 @@ export class MapLoadingErrorHandler {
                 }
             }
         }
-        
+
         return lines.join('\n');
     }
 
@@ -580,7 +584,19 @@ export class MapLoadingErrorHandler {
     }
 
     private isElementLine(line: string): boolean {
-        const elementKeywords = ['component', 'note', 'evolve', 'pipeline', 'anchor', 'link', 'market', 'build', 'buy', 'outsource', 'ecosystem'];
+        const elementKeywords = [
+            'component',
+            'note',
+            'evolve',
+            'pipeline',
+            'anchor',
+            'link',
+            'market',
+            'build',
+            'buy',
+            'outsource',
+            'ecosystem',
+        ];
         const trimmed = line.trim();
         return elementKeywords.some(keyword => trimmed.startsWith(keyword + ' '));
     }
@@ -618,12 +634,12 @@ export class MapLoadingErrorHandler {
 export const safeParseComponentName = (
     input: string,
     context: ParsingContext,
-    fallbackName: string = 'Component'
+    fallbackName: string = 'Component',
 ): ParseRecoveryResult<string> => {
     if (input.trim().startsWith('"')) {
         const parser = new QuotedStringParser(context);
         const result = parser.parseQuotedString(input.trim());
-        
+
         // Only provide fallback for truly critical failures
         if (!result.success && result.errors.some(e => e.type === 'critical')) {
             // Return safe fallback only for critical errors
@@ -633,10 +649,10 @@ export const safeParseComponentName = (
                 errors: result.errors,
                 warnings: result.warnings,
                 wasRecovered: true,
-                recoveryStrategy: 'safe_fallback'
+                recoveryStrategy: 'safe_fallback',
             };
         }
-        
+
         return result;
     } else {
         // Simple unquoted name - handle empty case but be less aggressive
@@ -646,18 +662,20 @@ export const safeParseComponentName = (
             return {
                 success: true,
                 result: '', // Allow empty names to be handled by existing validation
-                errors: [{
-                    type: 'validation',
-                    message: 'Empty component name',
-                    context: context.fullLine,
-                    line: context.line
-                }],
+                errors: [
+                    {
+                        type: 'validation',
+                        message: 'Empty component name',
+                        context: context.fullLine,
+                        line: context.line,
+                    },
+                ],
                 warnings: [],
                 wasRecovered: false, // Don't mark as recovered here
-                recoveryStrategy: undefined
+                recoveryStrategy: undefined,
             };
         }
-        
+
         return {
             success: true,
             result: name,

@@ -86,6 +86,7 @@ Use focused slash commands for reliable, efficient development:
 3. Write integration tests for APIs and data operations
 4. Implement code incrementally to satisfy tests
 5. Refactor continuously while maintaining green tests
+6. Commit often to help prevent big changesets and easier rollbacks 
 
 ## Interactive Workflow Patterns
 

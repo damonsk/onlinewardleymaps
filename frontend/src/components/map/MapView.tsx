@@ -13,7 +13,7 @@ import {addLinkToMapText, linkExists, generateLinkSyntax} from '../../utils/comp
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
 import {findComponentLineInMapText, parseComponentLine, buildComponentLine} from '../../utils/componentNameMatching';
 import {useComponentSelection} from '../ComponentSelectionContext';
-import {EditingProvider} from '../EditingContext';
+import {EditingProvider, useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
 
@@ -1073,149 +1073,366 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
         [selectedToolbarItem, linkingState, showUserFeedback],
     );
 
+    // Context menu callback functions - these will be enhanced in the EditingProvider wrapper
+    const handleEditComponent = useCallback((componentId: string) => {
+        // This will be overridden by the EditingMapViewWrapper
+        console.log('Edit component called for:', componentId);
+    }, []);
+
+    const createEditingCallbacks = useCallback(
+        (editingFunctions: {startEditing: (id: string, type: 'component' | 'note') => void}) => {
+            return (componentId: string) => {
+                // Find the component in the map data
+                const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                const component = allComponents.find(c => c.id === componentId);
+
+                if (!component) {
+                    showUserFeedback(`Component "${componentId}" not found`, 'error');
+                    return;
+                }
+
+                // Trigger inline editing using the EditingContext
+                console.log('Starting inline edit for component:', componentId);
+                editingFunctions.startEditing(componentId, 'component');
+            };
+        },
+        [props.wardleyMap, showUserFeedback],
+    );
+
+    const handleToggleInertia = useCallback(
+        (componentId: string) => {
+            // Find the component in the map data
+            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const component = allComponents.find(c => c.id === componentId);
+
+            if (!component) {
+                showUserFeedback(`Component "${componentId}" not found`, 'error');
+                return;
+            }
+
+            // Use the existing method application logic
+            handleMethodApplication(component, 'inertia');
+        },
+        [props.wardleyMap, handleMethodApplication, showUserFeedback],
+    );
+
+    const handleEvolveComponent = useCallback(
+        (componentId: string) => {
+            // Find the component in the map data
+            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const component = allComponents.find(c => c.id === componentId);
+
+            if (!component) {
+                showUserFeedback(`Component "${componentId}" not found`, 'error');
+                return;
+            }
+
+            if (component.evolved) {
+                showUserFeedback('Cannot evolve an already evolved component', 'warning');
+                return;
+            }
+
+            // TODO: Implement component evolution logic
+            // This will be implemented in task 2 of the spec
+            showUserFeedback(`Evolution feature for "${component.name}" will be implemented in the next task`, 'info');
+        },
+        [props.wardleyMap, showUserFeedback],
+    );
+
     return (
-        <ContextMenuProvider mapText={props.mapText} onDeleteComponent={handleDeleteComponent}>
-            <EditingProvider>
-                <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handleContainerClick}>
-                    {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
-                    <WysiwygToolbar
+        <EditingProvider>
+            <MapViewWithEditing
+                {...props}
+                handleDeleteComponent={handleDeleteComponent}
+                handleToggleInertia={handleToggleInertia}
+                handleEvolveComponent={handleEvolveComponent}
+                handleMethodApplication={handleMethodApplication}
+                selectedToolbarItem={selectedToolbarItem}
+                setSelectedToolbarItem={setSelectedToolbarItem}
+                linkingState={linkingState}
+                setLinkingState={setLinkingState}
+                sourceComponent={sourceComponent}
+                setSourceComponent={setSourceComponent}
+                highlightedComponent={highlightedComponent}
+                setHighlightedComponent={setHighlightedComponent}
+                isDuplicateLink={isDuplicateLink}
+                setIsDuplicateLink={setIsDuplicateLink}
+                isInvalidTarget={isInvalidTarget}
+                setIsInvalidTarget={setIsInvalidTarget}
+                showCancellationHint={showCancellationHint}
+                setShowCancellationHint={setShowCancellationHint}
+                isSourceDeleted={isSourceDeleted}
+                setIsSourceDeleted={setIsSourceDeleted}
+                isTargetDeleted={isTargetDeleted}
+                setIsTargetDeleted={setIsTargetDeleted}
+                showUserFeedback={showUserFeedback}
+                enhancedMutateMapText={enhancedMutateMapText}
+                isValidDropZone={isValidDropZone}
+                setIsValidDropZone={setIsValidDropZone}
+                isDrawing={isDrawing}
+                setIsDrawing={setIsDrawing}
+                drawingStartPosition={drawingStartPosition}
+                setDrawingStartPosition={setDrawingStartPosition}
+                drawingCurrentPosition={drawingCurrentPosition}
+                setDrawingCurrentPosition={setDrawingCurrentPosition}
+                methodHighlightedComponent={methodHighlightedComponent}
+                setMethodHighlightedComponent={setMethodHighlightedComponent}
+                legacyRef={legacyRef}
+                containerStyle={containerStyle}
+                handleContainerClick={handleContainerClick}
+                handleToolbarItemSelect={handleToolbarItemSelect}
+                handleToolbarItemDrop={handleToolbarItemDrop}
+                handleComponentClick={handleComponentClick}
+                handleMouseMove={handleMouseMove}
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                handleMapCanvasClick={handleMapCanvasClick}
+                userFeedback={userFeedback}
+                setUserFeedback={setUserFeedback}
+                mapStyle={mapStyle}
+            />
+        </EditingProvider>
+    );
+};
+
+// Inner component that has access to EditingContext
+interface MapViewWithEditingProps extends ModernMapViewProps {
+    handleDeleteComponent: (componentId: string) => void;
+    handleToggleInertia: (componentId: string) => void;
+    handleEvolveComponent: (componentId: string) => void;
+    handleMethodApplication: (component: UnifiedComponent, methodName: string) => void;
+    selectedToolbarItem: ToolbarItem | null;
+    setSelectedToolbarItem: (item: ToolbarItem | null) => void;
+    linkingState: 'idle' | 'selecting-source' | 'selecting-target';
+    setLinkingState: (state: 'idle' | 'selecting-source' | 'selecting-target') => void;
+    sourceComponent: UnifiedComponent | null;
+    setSourceComponent: (component: UnifiedComponent | null) => void;
+    highlightedComponent: UnifiedComponent | null;
+    setHighlightedComponent: (component: UnifiedComponent | null) => void;
+    isDuplicateLink: boolean;
+    setIsDuplicateLink: (isDuplicate: boolean) => void;
+    isInvalidTarget: boolean;
+    setIsInvalidTarget: (isInvalid: boolean) => void;
+    showCancellationHint: boolean;
+    setShowCancellationHint: (show: boolean) => void;
+    isSourceDeleted: boolean;
+    setIsSourceDeleted: (isDeleted: boolean) => void;
+    isTargetDeleted: boolean;
+    setIsTargetDeleted: (isDeleted: boolean) => void;
+    showUserFeedback: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
+    enhancedMutateMapText: (newText: string, actionType?: ActionType, description?: string, groupId?: string) => void;
+    isValidDropZone: boolean;
+    setIsValidDropZone: (isValid: boolean) => void;
+    isDrawing: boolean;
+    setIsDrawing: (isDrawing: boolean) => void;
+    drawingStartPosition: {x: number; y: number} | null;
+    setDrawingStartPosition: (position: {x: number; y: number} | null) => void;
+    drawingCurrentPosition: {x: number; y: number};
+    setDrawingCurrentPosition: (position: {x: number; y: number}) => void;
+    methodHighlightedComponent: UnifiedComponent | null;
+    setMethodHighlightedComponent: (component: UnifiedComponent | null) => void;
+    legacyRef: any;
+    containerStyle: React.CSSProperties;
+    handleContainerClick: (event: React.MouseEvent) => void;
+    handleToolbarItemSelect: (item: ToolbarItem | null) => void;
+    handleToolbarItemDrop: (item: ToolbarItem, position: {x: number; y: number}) => void;
+    handleComponentClick: (component: UnifiedComponent | null, position?: {x: number; y: number}) => void;
+    handleMouseMove: (position: {x: number; y: number; nearestComponent?: UnifiedComponent | null}) => void;
+    handleMouseDown: (position: {x: number; y: number}) => void;
+    handleMouseUp: (position: {x: number; y: number}) => void;
+    handleMapCanvasClick: (pos: {x: number; y: number}) => void;
+    userFeedback: {message: string; type: 'success' | 'error' | 'warning' | 'info'; visible: boolean};
+    setUserFeedback: React.Dispatch<
+        React.SetStateAction<{message: string; type: 'success' | 'error' | 'warning' | 'info'; visible: boolean}>
+    >;
+    mapStyle: React.CSSProperties;
+}
+
+const MapViewWithEditing: React.FC<MapViewWithEditingProps> = props => {
+    const {startEditing} = useEditing();
+
+    const handleEditComponent = useCallback(
+        (componentId: string) => {
+            // Find the component in the map data
+            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            console.log('handleEditComponent: Looking for component:', componentId);
+            console.log('handleEditComponent: Available components:', allComponents.map(c => ({id: c.id, name: c.name, idType: typeof c.id})));
+            
+            let component = allComponents.find(c => c.id === componentId);
+            
+            // Try with type conversion if not found
+            if (!component) {
+                component = allComponents.find(c => String(c.id) === String(componentId));
+                console.log('handleEditComponent: Found with type conversion:', component);
+            }
+
+            if (!component) {
+                props.showUserFeedback(`Component "${componentId}" not found`, 'error');
+                return;
+            }
+
+            // Trigger inline editing using the EditingContext
+            console.log('Starting inline edit for component:', componentId, 'component:', component);
+            console.log('Calling startEditing with:', componentId, 'component');
+            startEditing(componentId, 'component');
+        },
+        [props.wardleyMap, props.showUserFeedback, startEditing],
+    );
+
+    // Use the proper event handlers passed from the parent
+
+    return (
+        <ContextMenuProvider
+            mapText={props.mapText}
+            onDeleteComponent={props.handleDeleteComponent}
+            onEditComponent={handleEditComponent}
+            onToggleInertia={props.handleToggleInertia}
+            onEvolveComponent={props.handleEvolveComponent}
+            wardleyMap={props.wardleyMap}>
+            <div
+                ref={props.legacyRef}
+                className={props.mapStyleDefs.className}
+                style={props.containerStyle}
+                onClick={props.handleContainerClick}>
+                {/* WYSIWYG Toolbar - positioned outside map container to maintain fixed position during zoom/pan */}
+                <WysiwygToolbar
+                    mapStyleDefs={props.mapStyleDefs}
+                    mapDimensions={props.mapDimensions}
+                    mapText={props.mapText}
+                    mutateMapText={props.enhancedMutateMapText}
+                    selectedItem={props.selectedToolbarItem}
+                    onItemSelect={props.handleToolbarItemSelect}
+                    keyboardShortcutsEnabled={true}
+                />
+
+                {/* Drag Preview */}
+                <DragPreview
+                    selectedItem={props.selectedToolbarItem}
+                    mousePosition={{x: 0, y: 0}} // Not used anymore, DragPreview tracks mouse globally
+                    isValidDropZone={props.isValidDropZone}
+                    mapStyleDefs={props.mapStyleDefs}
+                />
+
+                {/* User Feedback Notification */}
+                {props.userFeedback.visible && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            top: '16px',
+                            right: '16px',
+                            zIndex: 10001,
+                            maxWidth: '280px',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                            border: '1px solid',
+                            fontSize: '12px',
+                            fontWeight: '400',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            animation: 'slideInFromRight 0.2s ease-out',
+                            backgroundColor:
+                                props.userFeedback.type === 'success'
+                                    ? '#d4edda'
+                                    : props.userFeedback.type === 'error'
+                                      ? '#f8d7da'
+                                      : props.userFeedback.type === 'warning'
+                                        ? '#fff3cd'
+                                        : '#d1ecf1',
+                            borderColor:
+                                props.userFeedback.type === 'success'
+                                    ? '#c3e6cb'
+                                    : props.userFeedback.type === 'error'
+                                      ? '#f5c6cb'
+                                      : props.userFeedback.type === 'warning'
+                                        ? '#ffeaa7'
+                                        : '#bee5eb',
+                            color:
+                                props.userFeedback.type === 'success'
+                                    ? '#155724'
+                                    : props.userFeedback.type === 'error'
+                                      ? '#721c24'
+                                      : props.userFeedback.type === 'warning'
+                                        ? '#856404'
+                                        : '#0c5460',
+                        }}
+                        role="alert"
+                        aria-live="polite">
+                        <span
+                            style={{
+                                fontSize: '16px',
+                                marginRight: '4px',
+                            }}>
+                            {props.userFeedback.type === 'success'
+                                ? '✅'
+                                : props.userFeedback.type === 'error'
+                                  ? '❌'
+                                  : props.userFeedback.type === 'warning'
+                                    ? '⚠️'
+                                    : 'ℹ️'}
+                        </span>
+                        <span>{props.userFeedback.message}</span>
+                        <button
+                            onClick={() => props.setUserFeedback(prev => ({...prev, visible: false}))}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                fontSize: '18px',
+                                cursor: 'pointer',
+                                marginLeft: 'auto',
+                                padding: '0 4px',
+                                color: 'inherit',
+                                opacity: 0.7,
+                            }}
+                            aria-label="Close notification">
+                            ×
+                        </button>
+                    </div>
+                )}
+
+                <div id="map" style={props.mapStyle}>
+                    <UnifiedMapCanvas
                         mapStyleDefs={props.mapStyleDefs}
                         mapDimensions={props.mapDimensions}
+                        mapCanvasDimensions={props.mapCanvasDimensions}
+                        mapEvolutionStates={props.mapEvolutionStates}
+                        evolutionOffsets={props.evolutionOffsets}
+                        wardleyMap={props.wardleyMap}
                         mapText={props.mapText}
-                        mutateMapText={enhancedMutateMapText}
-                        selectedItem={selectedToolbarItem}
-                        onItemSelect={handleToolbarItemSelect}
-                        keyboardShortcutsEnabled={true}
+                        mutateMapText={props.enhancedMutateMapText}
+                        setHighlightLine={props.setHighlightLine}
+                        setNewComponentContext={props.setNewComponentContext}
+                        launchUrl={props.launchUrl}
+                        showLinkedEvolved={props.showLinkedEvolved}
+                        shouldHideNav={props.shouldHideNav}
+                        hideNav={props.hideNav}
+                        mapAnnotationsPresentation={props.mapAnnotationsPresentation}
+                        handleMapCanvasClick={props.handleMapCanvasClick}
+                        selectedToolbarItem={props.selectedToolbarItem}
+                        onToolbarItemDrop={props.handleToolbarItemDrop}
+                        onMouseMove={props.handleMouseMove}
+                        onComponentClick={props.handleComponentClick}
+                        linkingState={props.linkingState}
+                        sourceComponent={props.sourceComponent}
+                        highlightedComponent={props.highlightedComponent}
+                        isDuplicateLink={props.isDuplicateLink}
+                        isInvalidTarget={props.isInvalidTarget}
+                        showCancellationHint={props.showCancellationHint}
+                        isSourceDeleted={props.isSourceDeleted}
+                        isTargetDeleted={props.isTargetDeleted}
+                        onMouseDown={props.handleMouseDown}
+                        onMouseUp={props.handleMouseUp}
+                        isDrawing={props.isDrawing}
+                        drawingStartPosition={props.drawingStartPosition}
+                        drawingCurrentPosition={props.drawingCurrentPosition}
+                        onMethodApplication={props.handleMethodApplication}
+                        methodHighlightedComponent={props.methodHighlightedComponent}
                     />
+                </div>
 
-                    {/* Drag Preview */}
-                    <DragPreview
-                        selectedItem={selectedToolbarItem}
-                        mousePosition={{x: 0, y: 0}} // Not used anymore, DragPreview tracks mouse globally
-                        isValidDropZone={isValidDropZone}
-                        mapStyleDefs={props.mapStyleDefs}
-                    />
-
-                    {/* User Feedback Notification */}
-                    {userFeedback.visible && (
-                        <div
-                            style={{
-                                position: 'fixed',
-                                top: '16px',
-                                right: '16px',
-                                zIndex: 10001,
-                                maxWidth: '280px',
-                                padding: '8px 12px',
-                                borderRadius: '6px',
-                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                                border: '1px solid',
-                                fontSize: '12px',
-                                fontWeight: '400',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                animation: 'slideInFromRight 0.2s ease-out',
-                                backgroundColor:
-                                    userFeedback.type === 'success'
-                                        ? '#d4edda'
-                                        : userFeedback.type === 'error'
-                                          ? '#f8d7da'
-                                          : userFeedback.type === 'warning'
-                                            ? '#fff3cd'
-                                            : '#d1ecf1',
-                                borderColor:
-                                    userFeedback.type === 'success'
-                                        ? '#c3e6cb'
-                                        : userFeedback.type === 'error'
-                                          ? '#f5c6cb'
-                                          : userFeedback.type === 'warning'
-                                            ? '#ffeaa7'
-                                            : '#bee5eb',
-                                color:
-                                    userFeedback.type === 'success'
-                                        ? '#155724'
-                                        : userFeedback.type === 'error'
-                                          ? '#721c24'
-                                          : userFeedback.type === 'warning'
-                                            ? '#856404'
-                                            : '#0c5460',
-                            }}
-                            role="alert"
-                            aria-live="polite">
-                            <span
-                                style={{
-                                    fontSize: '16px',
-                                    marginRight: '4px',
-                                }}>
-                                {userFeedback.type === 'success'
-                                    ? '✅'
-                                    : userFeedback.type === 'error'
-                                      ? '❌'
-                                      : userFeedback.type === 'warning'
-                                        ? '⚠️'
-                                        : 'ℹ️'}
-                            </span>
-                            <span>{userFeedback.message}</span>
-                            <button
-                                onClick={() => setUserFeedback(prev => ({...prev, visible: false}))}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    fontSize: '18px',
-                                    cursor: 'pointer',
-                                    marginLeft: 'auto',
-                                    padding: '0 4px',
-                                    color: 'inherit',
-                                    opacity: 0.7,
-                                }}
-                                aria-label="Close notification">
-                                ×
-                            </button>
-                        </div>
-                    )}
-
-                    <div id="map" style={mapStyle}>
-                        <UnifiedMapCanvas
-                            wardleyMap={props.wardleyMap}
-                            mapDimensions={props.mapDimensions}
-                            mapCanvasDimensions={props.mapCanvasDimensions}
-                            mapStyleDefs={props.mapStyleDefs}
-                            mapEvolutionStates={props.mapEvolutionStates}
-                            evolutionOffsets={props.evolutionOffsets}
-                            mapText={props.mapText}
-                            mutateMapText={enhancedMutateMapText}
-                            setHighlightLine={props.setHighlightLine}
-                            setNewComponentContext={props.setNewComponentContext}
-                            launchUrl={props.launchUrl}
-                            showLinkedEvolved={props.showLinkedEvolved}
-                            shouldHideNav={props.shouldHideNav}
-                            hideNav={props.hideNav}
-                            mapAnnotationsPresentation={props.mapAnnotationsPresentation}
-                            handleMapCanvasClick={handleMapCanvasClick}
-                            selectedToolbarItem={selectedToolbarItem}
-                            onToolbarItemDrop={handleToolbarItemDrop}
-                            onMouseMove={handleMouseMove}
-                            onComponentClick={handleComponentClick}
-                            linkingState={linkingState}
-                            sourceComponent={sourceComponent}
-                            highlightedComponent={highlightedComponent}
-                            isDuplicateLink={isDuplicateLink}
-                            isInvalidTarget={isInvalidTarget}
-                            showCancellationHint={showCancellationHint}
-                            isSourceDeleted={isSourceDeleted}
-                            isTargetDeleted={isTargetDeleted}
-                            onMouseDown={handleMouseDown}
-                            onMouseUp={handleMouseUp}
-                            isDrawing={isDrawing}
-                            drawingStartPosition={drawingStartPosition}
-                            drawingCurrentPosition={drawingCurrentPosition}
-                            onMethodApplication={handleMethodApplication}
-                            methodHighlightedComponent={methodHighlightedComponent}
-                        />
-                    </div>
-
-                    {/* CSS Animation for notification */}
-                    <style>{`
+                {/* CSS Animation for notification */}
+                <style>{`
                 @keyframes slideInFromRight {
                     from {
                         transform: translateX(100%);
@@ -1227,8 +1444,7 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     }
                 }
             `}</style>
-                </div>
-            </EditingProvider>
+            </div>
         </ContextMenuProvider>
     );
 };

@@ -73,6 +73,20 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         setForceMultiLine(actualComponent.name.includes('\n'));
     }, [actualComponent.name]);
 
+    // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
+    useEffect(() => {
+        const shouldBeEditing = isElementEditing(component.id);
+        console.log(`ComponentText ${component.id}: EditingContext says should be editing:`, shouldBeEditing, 'current editMode:', editMode);
+        
+        if (shouldBeEditing && !editMode) {
+            console.log(`ComponentText ${component.id}: Starting edit mode from external trigger`);
+            setEditMode(true);
+        } else if (!shouldBeEditing && editMode) {
+            console.log(`ComponentText ${component.id}: Stopping edit mode from external trigger`);
+            setEditMode(false);
+        }
+    }, [isElementEditing, component.id, editMode]);
+
     // Cleanup effect to handle component unmounting during editing
     useEffect(() => {
         return () => {
