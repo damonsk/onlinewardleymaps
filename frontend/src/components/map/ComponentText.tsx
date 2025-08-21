@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { rename } from '../../constants/rename';
-import { UnifiedComponent } from '../../types/unified';
-import { useEditing } from '../EditingContext';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import React, {useEffect, useState} from 'react';
+import {rename} from '../../constants/rename';
+import {UnifiedComponent} from '../../types/unified';
+import {useEditing} from '../EditingContext';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';
+import {normalizeComponentName} from '../../utils/componentNameMatching';
 
 interface MovedPosition {
     x: number;
@@ -56,10 +57,10 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     const [text, setText] = useState(actualComponent.name);
 
-    // Enhanced setText that detects multi-line content
+    // Enhanced setText that handles multi-line content
     const handleTextChange = (newText: string) => {
         setText(newText);
-        // If the user types line breaks, switch to multi-line mode
+        // Keep forceMultiLine state for potential future use
         if (newText.includes('\n') && !forceMultiLine) {
             setForceMultiLine(true);
         }
@@ -138,9 +139,10 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     const renderEditMode = () => {
         // Always use the InlineEditor for consistent behavior across browsers
-        // Detect multi-line content dynamically
-        const isMultiLine = forceMultiLine || text.includes('\n') || component.name.includes('\n');
-        const editorHeight = isMultiLine ? 120 : 80;
+        // Default to multi-line (textarea) to encourage multi-line component names
+        // Users can still create single-line names in textarea
+        const isMultiLine = true; // Always use textarea for better multi-line support
+        const editorHeight = 120; // Use consistent height for textarea
 
         return (
             <foreignObject
@@ -170,7 +172,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                         autoFocus={true}
                         selectAllOnFocus={true}
                         isMultiLine={isMultiLine}
-                        placeholder={isMultiLine ? 'Enter component name...\n(Ctrl+Enter to save)' : 'Enter component name...'}
+                        placeholder={'Enter component name...\n(Ctrl+Enter to save)'}
                         validation={{
                             required: true,
                             maxLength: 500, // Increased for multi-line content
@@ -200,37 +202,85 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
         const getLabelText = (x: number, y: number): string => ` label [${x.toFixed(2)}, ${y.toFixed(2)}]`;
 
-        const processEvolvedLine = (line: string, normalizedLine: string): string => {
-            const evolveBase = 'evolve' + component.name.replace(/\s/g, '');
-            const evolveOverride =
-                component.override?.length && component.override.length > 0 ? '->' + component.override.replace(/\s/g, '') : '';
-            const evolveText = evolveBase + evolveOverride + (component.maturity || '');
+        const processEvolvedLine = (line: string): string => {
+            const trimmedLine = line.trim();
 
-            if (normalizedLine.indexOf(evolveText) === 0) {
-                if (normalizedLine.indexOf('label[') > -1) {
+            if (!trimmedLine.startsWith('evolve ')) {
+                return line;
+            }
+
+            const evolveContent = trimmedLine.substring(7).trim(); // Remove 'evolve '
+
+            // Extract component name from the evolve statement
+            let componentNameInLine = '';
+            if (evolveContent.startsWith('"')) {
+                // Extract quoted component name
+                const quotedMatch = evolveContent.match(/^"((?:[^"\\]|\\.)*)"/);
+                if (quotedMatch) {
+                    componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                }
+            } else {
+                // Extract unquoted component name (up to first space or number)
+                const unquotedMatch = evolveContent.match(/^([^\s\d]+(?:\s+[^\s\d]+)*)/);
+                if (unquotedMatch) {
+                    componentNameInLine = unquotedMatch[1].trim();
+                }
+            }
+
+            // Use normalized matching to check if this is our component
+            if (normalizeComponentName(componentNameInLine) === normalizeComponentName(component.name)) {
+                if (line.indexOf('label') > -1) {
                     return line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
                 }
                 return line.trim() + getLabelText(moved.x, moved.y);
             }
+
             return line;
         };
 
-        const processNormalLine = (line: string, normalizedLine: string): string => {
-            const baseText = (component.type || '') + component.name.replace(/\s/g, '');
-            const searchText = baseText + '[';
+        const processNormalLine = (line: string): string => {
+            const trimmedLine = line.trim();
+            const componentType = component.type || 'component';
 
-            if (normalizedLine.indexOf(searchText) === 0) {
-                if (normalizedLine.indexOf('label[') > -1) {
+            if (!trimmedLine.startsWith(componentType + ' ')) {
+                return line;
+            }
+
+            const componentContent = trimmedLine.substring(componentType.length + 1).trim(); // Remove type + space
+
+            // Extract component name from the line
+            let componentNameInLine = '';
+            if (componentContent.startsWith('"')) {
+                // Extract quoted component name
+                const quotedMatch = componentContent.match(/^"((?:[^"\\]|\\.)*)"/);
+                if (quotedMatch) {
+                    componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                }
+            } else {
+                // Extract unquoted component name (up to first bracket or label)
+                const unquotedMatch = componentContent.match(/^([^\[\]]+?)(?:\s*\[|\s*label|\s*$)/);
+                if (unquotedMatch) {
+                    componentNameInLine = unquotedMatch[1].trim();
+                }
+            }
+
+            // Use normalized matching to check if this is our component and has coordinates
+            if (
+                normalizeComponentName(componentNameInLine) === normalizeComponentName(component.name) &&
+                line.includes('[') &&
+                line.includes(']')
+            ) {
+                if (line.indexOf('label') > -1) {
                     return line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
                 }
                 return line.trim() + getLabelText(moved.x, moved.y);
             }
+
             return line;
         };
 
         const processLine = (line: string): string => {
-            const normalizedLine = line.replace(/\s/g, '');
-            return component.evolved ? processEvolvedLine(line, normalizedLine) : processNormalLine(line, normalizedLine);
+            return component.evolved ? processEvolvedLine(line) : processNormalLine(line);
         };
 
         mutateMapText(mapText.split('\n').map(processLine).join('\n'));

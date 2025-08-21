@@ -1,4 +1,4 @@
-import {setText, setName} from '../../constants/extractionFunctions';
+import {setText, setName, setNameWithMaturity} from '../../constants/extractionFunctions';
 import {IProvideBaseElement, IProvideDecoratorsConfig} from '../../types/base';
 
 describe('setText function', () => {
@@ -392,6 +392,207 @@ describe('setName function', () => {
             const element = `component "${complexName}" [0.5, 0.5]`;
             setName(baseElement, element, config);
             expect(baseElement.name).toBe('Start\n"Quote 1"\n\\Backslash\\\n"Quote 2"\nEnd');
+        });
+    });
+});
+
+describe('setNameWithMaturity function - evolution parsing', () => {
+    let baseElement: IProvideBaseElement & {name?: string; override?: string; maturity?: number};
+
+    beforeEach(() => {
+        baseElement = {};
+    });
+
+    describe('backward compatibility - single-line evolution syntax', () => {
+        it('should parse simple evolve statements', () => {
+            const element = 'evolve Simple Component 0.8';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Simple Component');
+            expect(baseElement.maturity).toBe(0.8);
+            expect(baseElement.override).toBe('');
+        });
+
+        it('should parse evolve statements with overrides', () => {
+            const element = 'evolve Original Name -> New Name 0.7';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Original Name ');
+            expect(baseElement.override).toBe('New Name');
+            expect(baseElement.maturity).toBe(0.7);
+        });
+
+        it('should parse evolve statements with decimal maturity values', () => {
+            const element = 'evolve Component Name 0.85';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Component Name');
+            expect(baseElement.maturity).toBe(0.85);
+        });
+
+        it('should parse evolve statements with very specific decimal values', () => {
+            const element = 'evolve Test Component 0.123';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Test Component');
+            expect(baseElement.maturity).toBe(0.123);
+        });
+
+        it('should handle evolve statements without maturity values', () => {
+            const element = 'evolve Component Without Maturity';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Component Without Maturity');
+            expect(baseElement.maturity).toBe(0.85); // Default value
+        });
+    });
+
+    describe('new multi-line evolution syntax', () => {
+        it('should parse quoted single-line component names in evolve statements', () => {
+            const element = 'evolve "Simple Quoted Component" 0.8';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Simple Quoted Component');
+            expect(baseElement.maturity).toBe(0.8);
+            expect(baseElement.override).toBe('');
+        });
+
+        it('should parse quoted multi-line component names in evolve statements', () => {
+            const element = 'evolve "Multi-line\\nComponent\\nName" 0.7';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Multi-line\nComponent\nName');
+            expect(baseElement.maturity).toBe(0.7);
+            expect(baseElement.override).toBe('');
+        });
+
+        it('should parse multi-line component names with escaped quotes', () => {
+            const element = 'evolve "Component with \\"quotes\\" and\\nline breaks" 0.9';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Component with "quotes" and\nline breaks');
+            expect(baseElement.maturity).toBe(0.9);
+        });
+
+        it('should parse multi-line component names with escaped backslashes', () => {
+            const element = 'evolve "Component with \\\\ backslash\\nand multiple lines" 0.6';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Component with \\ backslash\nand multiple lines');
+            expect(baseElement.maturity).toBe(0.6);
+        });
+
+        it('should parse multi-line component names with complex escaping', () => {
+            const element = 'evolve "Complex \\"quote\\" and \\n newline and \\\\\\\\ backslash" 0.75';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Complex "quote" and \n newline and \\\\ backslash');
+            expect(baseElement.maturity).toBe(0.75);
+        });
+
+        it('should parse multi-line component names with overrides', () => {
+            const element = 'evolve "Multi-line\\nOriginal Name" -> "New\\nEvolved Name" 0.8';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Multi-line\nOriginal Name');
+            expect(baseElement.override).toBe('"New\\nEvolved Name"');
+            expect(baseElement.maturity).toBe(0.8);
+        });
+
+        it('should parse empty quoted component names', () => {
+            const element = 'evolve "" 0.5';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('');
+            expect(baseElement.maturity).toBe(0.5);
+        });
+
+        it('should parse multi-line component names without maturity values', () => {
+            const element = 'evolve "Multi-line\\nComponent\\nWithout Maturity"';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Multi-line\nComponent\nWithout Maturity');
+            expect(baseElement.maturity).toBe(0.85); // Default value
+        });
+    });
+
+    describe('edge cases and malformed input', () => {
+        it('should handle unclosed quoted strings gracefully', () => {
+            const element = 'evolve "Unclosed quote 0.8';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Unclosed quote 0.8');
+            expect(baseElement.maturity).toBe(0.85); // Default when no maturity found
+        });
+
+        it('should handle partial quotes', () => {
+            const element = 'evolve "Partial quote content 0.7';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Partial quote content 0.7');
+            expect(baseElement.maturity).toBe(0.85); // Default when no maturity found
+        });
+
+        it('should handle quotes without maturity', () => {
+            const element = 'evolve "Quoted Name Without Maturity"';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Quoted Name Without Maturity');
+            expect(baseElement.maturity).toBe(0.85); // Default value
+        });
+
+        it('should handle only escaped quotes', () => {
+            const element = 'evolve "\\"" 0.4';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('"');
+            expect(baseElement.maturity).toBe(0.4);
+        });
+
+        it('should handle only line breaks', () => {
+            const element = 'evolve "\\n\\n\\n" 0.3';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('\n\n\n');
+            expect(baseElement.maturity).toBe(0.3);
+        });
+    });
+
+    describe('real-world examples', () => {
+        it('should handle evolution of documentation-style multi-line component names', () => {
+            const element = 'evolve "User Authentication\\nService\\n(OAuth 2.0)" 0.9';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('User Authentication\nService\n(OAuth 2.0)');
+            expect(baseElement.maturity).toBe(0.9);
+        });
+
+        it('should handle evolution of technical component names with details', () => {
+            const element = 'evolve "Database\\nPostgreSQL 13\\n(Primary)" 0.7';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Database\nPostgreSQL 13\n(Primary)');
+            expect(baseElement.maturity).toBe(0.7);
+        });
+
+        it('should handle evolution with version information', () => {
+            const element = 'evolve "API Gateway\\nv2.1.0\\n(Load Balanced)" 0.85';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('API Gateway\nv2.1.0\n(Load Balanced)');
+            expect(baseElement.maturity).toBe(0.85);
+        });
+
+        it('should handle evolution of complex formatted component names', () => {
+            const element = 'evolve "Frontend App\\n- React 18\\n- TypeScript\\n- PWA" 0.95';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('Frontend App\n- React 18\n- TypeScript\n- PWA');
+            expect(baseElement.maturity).toBe(0.95);
+        });
+    });
+
+    describe('performance and stress tests', () => {
+        it('should handle very long quoted component names in evolution', () => {
+            const longName = 'A'.repeat(500);
+            const element = `evolve "${longName}" 0.5`;
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe(longName);
+            expect(baseElement.maturity).toBe(0.5);
+        });
+
+        it('should handle many line breaks in evolution', () => {
+            const nameWithManyBreaks = Array(20).fill('line').join('\\n');
+            const element = `evolve "${nameWithManyBreaks}" 0.6`;
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe(Array(20).fill('line').join('\n'));
+            expect(baseElement.maturity).toBe(0.6);
+        });
+
+        it('should handle many escaped quotes in evolution', () => {
+            const nameWithManyQuotes = Array(10).fill('\\"quote\\"').join(' ');
+            const element = `evolve "${nameWithManyQuotes}" 0.8`;
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe(Array(10).fill('"quote"').join(' '));
+            expect(baseElement.maturity).toBe(0.8);
         });
     });
 });

@@ -8,6 +8,7 @@ import {useContextMenu} from './ContextMenuProvider';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
+import {normalizeComponentName, escapeComponentNameForMapText} from '../../utils/componentNameMatching';
 
 interface MovedPosition {
     x: number;
@@ -97,11 +98,32 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
         const lines = mapText.split('\n');
 
         if (component.evolved) {
+            // Handle evolved components - match evolve statements with proper multi-line name handling
             const updatedLines = lines.map(line => {
-                const normalizedLine = line.replace(/\s/g, '');
-                const componentNameNormalized = component.name.replace(/\s/g, '');
-                if (normalizedLine.indexOf(`evolve${componentNameNormalized}`) === 0) {
-                    return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
+                // Check for evolve statements with simple name matching
+                if (line.trim().startsWith('evolve ')) {
+                    const evolveContent = line.trim().substring(7).trim(); // Remove 'evolve '
+
+                    // Check if this evolve statement matches our component
+                    let componentNameInLine = '';
+                    if (evolveContent.startsWith('"')) {
+                        // Extract quoted component name
+                        const quotedMatch = evolveContent.match(/^"((?:[^"\\]|\\.)*)"/);
+                        if (quotedMatch) {
+                            componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        }
+                    } else {
+                        // Extract unquoted component name (up to first space or number)
+                        const unquotedMatch = evolveContent.match(/^([^\s\d]+(?:\s+[^\s\d]+)*)/);
+                        if (unquotedMatch) {
+                            componentNameInLine = unquotedMatch[1].trim();
+                        }
+                    }
+
+                    // Use normalized matching to check if this is our component
+                    if (normalizeComponentName(componentNameInLine) === normalizeComponentName(component.name)) {
+                        return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
+                    }
                 }
                 return line;
             });
@@ -111,19 +133,41 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
             return;
         }
 
+        // Handle regular components - match component statements with proper multi-line name handling
         const updatedLines = lines.map((line, index) => {
             if (index + 1 === component.line) {
-                const regex = new RegExp(`component\\s+${component.name}\\b`, 'i');
-                if (regex.test(line)) {
-                    if (line.includes('label')) {
-                        const parts = line.split(/\blabel\b/);
-                        const updatedFirstPart = parts[0].replace(
-                            /\[([^[\]]+)\]/,
-                            `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
-                        );
-                        return updatedFirstPart + 'label' + parts[1];
+                // Check if this line contains a component statement
+                if (line.trim().startsWith('component ')) {
+                    const componentContent = line.trim().substring(10).trim(); // Remove 'component '
+
+                    // Extract component name from the line
+                    let componentNameInLine = '';
+                    if (componentContent.startsWith('"')) {
+                        // Extract quoted component name
+                        const quotedMatch = componentContent.match(/^"((?:[^"\\]|\\.)*)"/);
+                        if (quotedMatch) {
+                            componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        }
                     } else {
-                        return line.replace(/\[([^[\]]+)\]/, `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`);
+                        // Extract unquoted component name (up to first bracket or label)
+                        const unquotedMatch = componentContent.match(/^([^\[\]]+?)(?:\s*\[|\s*label|\s*$)/);
+                        if (unquotedMatch) {
+                            componentNameInLine = unquotedMatch[1].trim();
+                        }
+                    }
+
+                    // Use normalized matching to check if this is our component
+                    if (normalizeComponentName(componentNameInLine) === normalizeComponentName(component.name)) {
+                        if (line.includes('label')) {
+                            const parts = line.split(/\blabel\b/);
+                            const updatedFirstPart = parts[0].replace(
+                                /\[([^[\]]+)\]/,
+                                `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`,
+                            );
+                            return updatedFirstPart + 'label' + parts[1];
+                        } else {
+                            return line.replace(/\[([^[\]]+)\]/, `[${newVisibility.toFixed(2)}, ${newMaturity.toFixed(2)}]`);
+                        }
                     }
                 }
             }

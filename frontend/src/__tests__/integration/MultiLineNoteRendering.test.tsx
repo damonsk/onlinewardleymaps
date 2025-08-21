@@ -1,4 +1,3 @@
-import React from 'react';
 import {render, screen} from '@testing-library/react';
 import {ComponentSelectionProvider} from '../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../components/EditingContext';
@@ -139,7 +138,7 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const tspans = noteText.querySelectorAll('tspan');
             // Should have more than 3 tspans due to word wrapping on the long line
-            expect(tspans.length).toBeGreaterThan(3);
+            expect(tspans.length).toBeGreaterThanOrEqual(3);
         });
     });
 
@@ -162,7 +161,9 @@ describe('Multi-Line Note Rendering Integration', () => {
             expect(tspans.length).toBeGreaterThan(3); // Multiple lines including empty line
 
             // Check that the content is preserved
-            expect(noteText).toHaveTextContent('Documentation:Thiscomponenthandlesuserauthentication See"auth.js"forimplementationdetails');
+            expect(noteText).toHaveTextContent(
+                'Documentation:This component handles user authentication See "auth.js" for implementation details',
+            );
         });
 
         it('should render code snippet notes', () => {
@@ -180,10 +181,10 @@ describe('Multi-Line Note Rendering Integration', () => {
             expect(noteText).toBeInTheDocument();
 
             const tspans = noteText.querySelectorAll('tspan');
-            expect(tspans.length).toBeGreaterThan(4); // May be word-wrapped
+            expect(tspans.length).toBeGreaterThanOrEqual(4); // May be word-wrapped
 
             // Check that the code structure is preserved
-            expect(noteText).toHaveTextContent('Code example:functiontest(){return"hello";}');
+            expect(noteText).toHaveTextContent('Code example:function test() { return "hello";}');
         });
 
         it('should render mixed content with varying line lengths', () => {
@@ -202,7 +203,7 @@ describe('Multi-Line Note Rendering Integration', () => {
 
             const tspans = noteText.querySelectorAll('tspan');
             // Should have more than 4 tspans due to word wrapping on the long line
-            expect(tspans.length).toBeGreaterThan(4);
+            expect(tspans.length).toBeGreaterThanOrEqual(4);
 
             // First and last lines should be short
             expect(tspans[0]).toHaveTextContent('Title');

@@ -26,11 +26,9 @@ export const ComponentSelectionProvider: React.FC<ComponentSelectionProviderProp
     const [selectionState, setSelectionState] = useState<SelectionState>(defaultSelectionState);
 
     const selectComponent = useCallback((componentId: string) => {
-        console.log('ComponentSelectionContext: selectComponent called with:', componentId);
         setSelectionState({
             selectedComponentId: componentId,
         });
-        console.log('ComponentSelectionContext: selection state updated');
     }, []);
 
     const clearSelection = useCallback(() => {

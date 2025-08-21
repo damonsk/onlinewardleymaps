@@ -225,19 +225,81 @@ export const setNameWithMaturity = (
     },
     element: string,
 ): void => {
-    let name = element.split('evolve ')[1].trim();
+    let nameSection = element.split('evolve ')[1].trim();
+    let name: string;
     let override = '';
-    const evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
     let newPoint = 0.85;
-    if (evolveMaturity && evolveMaturity.length > 0) {
-        newPoint = parseFloat(evolveMaturity[0]);
-        const unprocessedName = name.split(String(newPoint))[0].trim();
-        name = unprocessedName;
-        if (name.indexOf('->') > -1) {
-            override = unprocessedName.split('->')[1].trim();
-            name = unprocessedName.split('->')[0].trim();
+
+    // Handle quoted multi-line names in evolution
+    if (nameSection.startsWith('"')) {
+        // Look for the pattern: quoted string followed by optional maturity
+        const quotedMatch = nameSection.match(/^"((?:[^"\\]|\\.)*)"/);
+        if (quotedMatch) {
+            // Successfully matched quoted string
+            name = quotedMatch[1]
+                .replace(/\\"/g, '"') // Unescape quotes
+                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
+                .replace(/\\\\/g, '\\'); // Unescape backslashes
+
+            // Remove the quoted part to continue with maturity parsing
+            nameSection = nameSection.substring(quotedMatch[0].length).trim();
+
+            // Check for override after the quoted name: -> "override name" or -> override name
+            if (nameSection.startsWith('->')) {
+                const afterArrow = nameSection.substring(2).trim();
+                // Find the maturity value to separate it from the override
+                const maturityMatch = afterArrow.match(/\s([0-9]?\.[0-9]+[0-9]?)$/);
+                if (maturityMatch) {
+                    newPoint = parseFloat(maturityMatch[1]);
+                    override = afterArrow.substring(0, afterArrow.lastIndexOf(maturityMatch[1])).trim();
+                } else {
+                    // No maturity found, everything after -> is override
+                    override = afterArrow;
+                }
+            } else {
+                // Check for maturity value directly after quoted name
+                const maturityMatch = nameSection.match(/^([0-9]?\.[0-9]+[0-9]?)$/);
+                if (maturityMatch) {
+                    newPoint = parseFloat(maturityMatch[1]);
+                }
+            }
+        } else {
+            // Malformed quoted string - try to extract what we can using fallback
+            const quoteEnd = findClosingQuote(nameSection, 1);
+            if (quoteEnd !== -1) {
+                name = nameSection.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                // Continue parsing after the closing quote
+                nameSection = nameSection.substring(quoteEnd + 1).trim();
+                const maturityMatch = nameSection.match(/^([0-9]?\.[0-9]+[0-9]?)$/);
+                if (maturityMatch) {
+                    newPoint = parseFloat(maturityMatch[1]);
+                }
+            } else {
+                // No closing quote found - fallback to legacy parsing
+                // For malformed quoted strings, treat everything after the quote as the name
+                name = nameSection.substring(1); // Remove leading quote but keep everything else
+                // Don't try to extract maturity from malformed quoted strings
+                // Keep default maturity value (0.85)
+            }
+        }
+    } else {
+        // Legacy single-line parsing (backward compatibility)
+        name = nameSection;
+        const evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
+        if (evolveMaturity && evolveMaturity.length > 0) {
+            newPoint = parseFloat(evolveMaturity[0]);
+            const unprocessedName = name.split(String(newPoint))[0];
+            name = unprocessedName;
+            if (name.indexOf('->') > -1) {
+                override = unprocessedName.split('->')[1].trim();
+                name = unprocessedName.split('->')[0];
+            } else {
+                // Only trim when there's no override to maintain exact legacy behavior
+                name = name.trim();
+            }
         }
     }
+
     Object.assign(baseElement, {name, override, maturity: newPoint});
 };
 

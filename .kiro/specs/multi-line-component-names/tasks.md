@@ -16,7 +16,7 @@
   - Write unit tests for multi-line component name rendering and positioning
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 9.1, 9.2, 9.3, 9.4_
 
-- [-] 3. Enhance inline editing to support multi-line component names
+- [x] 3. Enhance inline editing to support multi-line component names
   - Update ComponentText component to detect multi-line names and enable multi-line editing mode
   - Implement proper save logic with escape sequence handling for DSL generation
   - Add support for Enter (new line) vs Ctrl+Enter (save) keyboard shortcuts in multi-line mode
@@ -24,7 +24,7 @@
   - Write unit tests for multi-line component name editing workflows
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 4. Update evolution parsing to handle multi-line component names
+- [x] 4. Update evolution parsing to handle multi-line component names - [IMPLEMENTED]
   - Modify setNameWithMaturity function to parse quoted multi-line names in evolve statements
   - Add support for evolution syntax like `evolve "Multi-line\nComponent" 0.8`
   - Ensure proper name extraction and maturity parsing for quoted component names
@@ -32,7 +32,7 @@
   - Write unit tests for evolution parsing with multi-line component names
   - _Requirements: 4.2, 7.2, 7.3_
 
-- [ ] 5. Enhance component linking and referencing for multi-line names
+- [x] 5. Enhance component linking and referencing for multi-line names - [IMPLEMENTED]
   - Implement normalized component name matching for linking and evolution
   - Add support for finding components with multi-line names in link resolution
   - Update component search and reference logic to handle line breaks properly

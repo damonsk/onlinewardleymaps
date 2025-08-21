@@ -1,8 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { EditingProvider } from '../../../components/EditingContext';
-import { FeatureSwitchesProvider } from '../../../components/FeatureSwitchesContext';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {EditingProvider} from '../../../components/EditingContext';
+import {FeatureSwitchesProvider} from '../../../components/FeatureSwitchesContext';
 import ComponentText from '../../../components/map/ComponentText';
-import { UnifiedComponent } from '../../../types/unified';
+import {UnifiedComponent} from '../../../types/unified';
 
 // Mock the rename function
 jest.mock('../../../constants/rename', () => ({
@@ -83,7 +83,7 @@ describe('ComponentText Multi-line Editing', () => {
     });
 
     describe('multi-line component name detection', () => {
-        it('should detect single-line component names and use single-line editor', async () => {
+        it('should detect single-line component names and use multi-line editor', async () => {
             const component = createMockComponent('Single Line Component');
             renderComponentText(component);
 
@@ -92,7 +92,7 @@ describe('ComponentText Multi-line Editing', () => {
 
             await waitFor(() => {
                 const input = screen.getByTestId('inline-editor-input');
-                expect(input.tagName).toBe('INPUT');
+                expect(input.tagName).toBe('TEXTAREA');
                 expect(input).toHaveValue('Single Line Component');
             });
         });
@@ -149,7 +149,7 @@ describe('ComponentText Multi-line Editing', () => {
             await waitFor(() => {
                 const input = screen.getByTestId('inline-editor-input');
                 fireEvent.change(input, {target: {value: 'NewSimpleName'}});
-                fireEvent.keyDown(input, {key: 'Enter'});
+                fireEvent.keyDown(input, {key: 'Enter', ctrlKey: true});
             });
 
             await waitFor(() => {
