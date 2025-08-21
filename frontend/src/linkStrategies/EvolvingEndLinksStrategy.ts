@@ -1,3 +1,4 @@
+import {findComponentByName} from '../utils/componentNameMatching';
 import {Link, LinkExtractionStrategy, LinkResult, MapElement} from './LinkStrategiesInterfaces';
 
 export default class EvolvingEndLinksStrategy implements LinkExtractionStrategy {
@@ -22,8 +23,8 @@ export default class EvolvingEndLinksStrategy implements LinkExtractionStrategy 
 
         const links = this.links.filter(
             (li: Link) =>
-                this.mapElements.getEvolvedElements()?.find((i: MapElement) => i.name === li.end) &&
-                this.mapElements.getNoneEvolvingElements()?.find((i: MapElement) => i.name === li.start),
+                findComponentByName(this.mapElements.getEvolvedElements() || [], li.end) &&
+                findComponentByName(this.mapElements.getNoneEvolvingElements() || [], li.start),
         );
         return {
             name: 'evolvingEndLinks',

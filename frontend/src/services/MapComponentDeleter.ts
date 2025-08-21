@@ -16,6 +16,7 @@ export interface ComponentDeletionResult {
         type: string;
         line: number;
         originalText: string;
+        name: string;
     };
 }
 
@@ -59,6 +60,7 @@ export class MapComponentDeleter {
                 type: identification.type,
                 line: identification.line,
                 originalText: identification.originalText,
+                name: identification.name,
             },
         };
     }
@@ -152,15 +154,25 @@ export class MapComponentDeleter {
     } | null {
         const trimmedLine = line.trim();
 
-        const componentPattern = /^(component|anchor|market|ecosystem|note|pipeline)\s+([^[]+)\s*\[([0-9.]+)\s*,\s*([0-9.]+)\]/i;
+        // Updated pattern to handle quoted multi-line component names
+        const componentPattern = /^(component|anchor|market|ecosystem|note|pipeline)\s+(.+?)\s*\[([0-9.]+)\s*,\s*([0-9.]+)\]/i;
         const match = trimmedLine.match(componentPattern);
 
         if (match) {
-            const [, type, name, visibility, maturity] = match;
+            const [, type, nameRaw, visibility, maturity] = match;
+            let name = nameRaw.trim();
+
+            // Handle quoted multi-line component names
+            if (name.startsWith('"') && name.endsWith('"')) {
+                // Extract content from quotes and unescape
+                const innerContent = name.slice(1, -1);
+                name = innerContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            }
+
             return {
                 type: type.toLowerCase(),
-                name: name.trim(),
-                id: this.generateComponentId(type.toLowerCase(), name.trim(), lineIndex),
+                name: name,
+                id: this.generateComponentId(type.toLowerCase(), name, lineIndex),
                 coordinates: {
                     visibility: parseFloat(visibility),
                     maturity: parseFloat(maturity),
@@ -187,28 +199,76 @@ export class MapComponentDeleter {
 
     private removeComponentLinks(mapText: string, removedComponent: string): string {
         const trimmedComponent = removedComponent.trim();
-        const linkStart = `${trimmedComponent}->`;
-        const linkEnd = `->${trimmedComponent}`;
 
         return mapText
             .split('\n')
             .filter(line => {
                 const trimmedLine = line.trim();
-                return !trimmedLine.startsWith(linkStart) && !trimmedLine.endsWith(linkEnd);
+
+                // Check if this line is a link
+                const arrowIndex = trimmedLine.indexOf('->');
+                if (arrowIndex === -1) return true; // Not a link, keep the line
+
+                const sourceComponent = trimmedLine.substring(0, arrowIndex).trim();
+                const targetComponent = trimmedLine.substring(arrowIndex + 2).trim();
+
+                // Extract component names from potential quotes
+                const extractComponentName = (component: string): string => {
+                    if (component.startsWith('"') && component.endsWith('"')) {
+                        // Unescape quoted component name for comparison
+                        const innerContent = component.slice(1, -1);
+                        return innerContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                    }
+                    return component;
+                };
+
+                const sourceNameUnescaped = extractComponentName(sourceComponent);
+                const targetNameUnescaped = extractComponentName(targetComponent);
+
+                // Use exact matching to check if this link references the removed component
+                const isSourceMatch = sourceNameUnescaped === trimmedComponent;
+                const isTargetMatch = targetNameUnescaped === trimmedComponent;
+
+                // Filter out (return false) if either source or target matches the removed component
+                return !isSourceMatch && !isTargetMatch;
             })
             .join('\n');
     }
 
     private removeComponentEvolve(mapText: string, removedComponent: string): string {
         const trimmedComponent = removedComponent.trim();
-        const evolveArrow = `evolve ${trimmedComponent}->`;
-        const evolveSpace = `evolve ${trimmedComponent} `;
 
         return mapText
             .split('\n')
             .filter(line => {
                 const trimmedLine = line.trim();
-                return !trimmedLine.startsWith(evolveArrow) && !trimmedLine.startsWith(evolveSpace);
+
+                // Check if this line is an evolve statement
+                if (!trimmedLine.startsWith('evolve ')) return true; // Not an evolve statement, keep the line
+
+                const evolveContent = trimmedLine.substring(7).trim(); // Remove 'evolve '
+
+                // Extract component name from evolve statement
+                let componentNameInEvolve = '';
+                if (evolveContent.startsWith('"')) {
+                    // Extract quoted component name
+                    const quotedMatch = evolveContent.match(/^"((?:[^"\\]|\\.)*)"/);
+                    if (quotedMatch) {
+                        componentNameInEvolve = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                    }
+                } else {
+                    // Extract unquoted component name (up to first space, arrow, or number)
+                    const unquotedMatch = evolveContent.match(/^([^->\s\d]+(?:\s+[^->\s\d]+)*)/);
+                    if (unquotedMatch) {
+                        componentNameInEvolve = unquotedMatch[1].trim();
+                    }
+                }
+
+                // Use exact matching to check if this evolve statement references the removed component
+                const isMatch = componentNameInEvolve === trimmedComponent;
+
+                // Filter out (return false) if this evolve statement matches the removed component
+                return !isMatch;
             })
             .join('\n');
     }

@@ -1,4 +1,5 @@
 import {MapAnchors} from '../types/base';
+import {findComponentByName} from '../utils/componentNameMatching';
 import AllLinksStrategy from './AllLinksStrategy';
 import AnchorEvolvedLinksStrategy from './AnchorEvolvedLinksStrategy';
 import AnchorLinksStrategy from './AnchorLinksStrategy';
@@ -46,7 +47,7 @@ export default class LinksBuilder {
     }
 
     private getElementByName(elements: MapElement[], name: string): MapElement | undefined {
-        return elements?.find(element => element.name === name);
+        return findComponentByName(elements, name);
     }
 
     private canSatisfyLink(link: Link, startElements: MapElement[], endElements: MapElement[]): boolean {

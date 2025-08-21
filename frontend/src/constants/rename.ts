@@ -1,3 +1,5 @@
+import {componentNamesMatch} from '../utils/componentNameMatching';
+
 export const rename = (
     currentLine: number,
     toFind: string,
@@ -74,16 +76,32 @@ export const rename = (
                 };
             }
         } else {
-            // For unquoted names, apply traditional sanitization
-            sanitizedName = replaceWith.replace(/[\[\]\->]/g, ''); // Remove characters that could break syntax
+            // For unquoted names, check if this is a single-to-multi-line transition that needs automatic quoting
+            const isOriginalSingleLine = !toFind.includes('\n');
+            const isNewMultiLine = replaceWith.includes('\n');
+            const needsAutoQuoting = isOriginalSingleLine && isNewMultiLine;
 
-            // Validate the new name doesn't contain reserved keywords or patterns
-            const reservedKeywords = ['note', 'pipeline', 'build', 'buy', 'outsource', 'evolve', 'anchor'];
-            if (reservedKeywords.some(keyword => sanitizedName.toLowerCase() === keyword)) {
-                return {
-                    success: false,
-                    error: `"${sanitizedName}" is a reserved keyword and cannot be used as a component name`,
-                };
+            if (needsAutoQuoting) {
+                // Automatically quote and escape for single-to-multi-line transitions
+                const escapedContent = replaceWith
+                    .replace(/\\/g, '\\\\') // Escape backslashes first
+                    .replace(/"/g, '\\"') // Escape quotes
+                    .replace(/\n/g, '\\n'); // Escape line breaks
+                sanitizedName = `"${escapedContent}"`;
+            } else {
+                // For single-line names or multi-line to multi-line renames, apply traditional sanitization
+                sanitizedName = replaceWith.replace(/[\[\]\->]/g, ''); // Remove characters that could break syntax
+
+                // Validate the new name doesn't contain reserved keywords or patterns (only for single-line)
+                if (!replaceWith.includes('\n')) {
+                    const reservedKeywords = ['note', 'pipeline', 'build', 'buy', 'outsource', 'evolve', 'anchor'];
+                    if (reservedKeywords.some(keyword => sanitizedName.toLowerCase() === keyword)) {
+                        return {
+                            success: false,
+                            error: `"${sanitizedName}" is a reserved keyword and cannot be used as a component name`,
+                        };
+                    }
+                }
             }
         }
 
@@ -127,14 +145,61 @@ export const rename = (
         let updatedMapText = mapTextContent;
 
         // Replace all occurrences of the component name in references
-        // This handles multi-line names that appear in links, evolution, and pipeline references
-        const nameRegex = new RegExp(nameForMatching.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-        updatedMapText = updatedMapText.replace(nameRegex, replacementForMatching);
+        // This handles both single-line to multi-line transitions and multi-line to multi-line updates
+
+        // Determine if we need to use quoted format for the replacement
+        const needsQuoting = replaceWith.startsWith('"') && replaceWith.endsWith('"');
+        const isTransitioningToMultiLine = !nameForMatching.includes('\n') && replacementForMatching.includes('\n');
+
+        // Always use the enhanced approach that handles both quoted and unquoted references
+        const mapLines = updatedMapText.split('\n');
+        const updatedLines = mapLines.map(line => {
+            // Handle different types of references in the line
+
+            // 1. Check for quoted references in links like "Component Name"->"Target"
+            const quotedPattern = /"((?:[^"\\]|\\.)*)"/g;
+            let updatedLine = line.replace(quotedPattern, (match, content) => {
+                // Unescape the content to compare with the original name
+                const unescapedContent = content.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+
+                // Use normalized matching to check if this is our component
+                if (componentNamesMatch(unescapedContent, nameForMatching)) {
+                    // Replace with the new name, properly escaped for DSL format
+                    const newEscapedContent = replacementForMatching.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+                    return `"${newEscapedContent}"`;
+                }
+                return match;
+            });
+
+            // 2. Check for unquoted references (for single-line names or transitions to multi-line)
+            // This handles cases like: ComponentName->Target or evolve ComponentName 0.5
+            if (!nameForMatching.includes('\n') || isTransitioningToMultiLine) {
+                // Build pattern to match whole component names, not partial words
+                // Use word boundaries and context-aware matching
+                const componentNamePattern = new RegExp(
+                    `\\b${nameForMatching.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?=\\s*(?:->|\\s+\\d+\\.\\d+|$))`,
+                    'g',
+                );
+
+                updatedLine = updatedLine.replace(componentNamePattern, match => {
+                    // If the replacement needs quoting (multi-line), use quoted format
+                    if (needsQuoting || isTransitioningToMultiLine) {
+                        const escapedReplacement = replacementForMatching.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+                        return `"${escapedReplacement}"`;
+                    }
+                    return replacementForMatching;
+                });
+            }
+
+            return updatedLine;
+        });
+
+        updatedMapText = updatedLines.join('\n');
 
         // Update the lines array with the modified content
-        const updatedLines = updatedMapText.split('\n');
+        const finalLines = updatedMapText.split('\n');
         lines.length = 0; // Clear the array
-        lines.push(...updatedLines); // Add all updated lines
+        lines.push(...finalLines); // Add all updated lines
 
         mutateMapMethod(lines.join('\n'));
         return {success: true};

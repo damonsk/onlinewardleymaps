@@ -1,4 +1,5 @@
 import {UnifiedComponent} from '../types/unified/components';
+import {componentNamesMatch, escapeComponentNameForMapText} from './componentNameMatching';
 
 /**
  * Calculate the distance between two points
@@ -86,8 +87,8 @@ export const linkExists = (
 ): boolean => {
     return existingLinks.some(
         link =>
-            (link.start === sourceComponent.name && link.end === targetComponent.name) ||
-            (link.start === targetComponent.name && link.end === sourceComponent.name),
+            (componentNamesMatch(link.start, sourceComponent.name) && componentNamesMatch(link.end, targetComponent.name)) ||
+            (componentNamesMatch(link.start, targetComponent.name) && componentNamesMatch(link.end, sourceComponent.name)),
     );
 };
 
@@ -95,7 +96,9 @@ export const linkExists = (
  * Generate link syntax for map text
  */
 export const generateLinkSyntax = (sourceComponent: UnifiedComponent, targetComponent: UnifiedComponent): string => {
-    return `${sourceComponent.name}->${targetComponent.name}`;
+    const escapedSource = escapeComponentNameForMapText(sourceComponent.name);
+    const escapedTarget = escapeComponentNameForMapText(targetComponent.name);
+    return `${escapedSource}->${escapedTarget}`;
 };
 
 /**
