@@ -11,6 +11,7 @@ import {UnifiedComponent} from '../../types/unified/components';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 import {addLinkToMapText, linkExists, generateLinkSyntax} from '../../utils/componentDetection';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
+import {findComponentLineInMapText, parseComponentLine, buildComponentLine} from '../../utils/componentNameMatching';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {EditingProvider} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
@@ -792,63 +793,48 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
                     return;
                 }
 
-                // Parse the current map text to find the component line
-                const lines = props.mapText.split('\n');
-                let componentLineIndex = -1;
-                let componentLine = '';
-
-                // Find the component line by matching the component name
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    // Match component lines with the exact component name
-                    const componentMatch = line.match(/^component\s+(.+?)\s*\[/);
-                    if (componentMatch && componentMatch[1] === component.name) {
-                        componentLineIndex = i;
-                        componentLine = line;
-                        break;
-                    }
-                }
-
-                if (componentLineIndex === -1) {
+                // Find the component line using improved multi-line component name matching
+                const componentLineInfo = findComponentLineInMapText(props.mapText, component.name);
+                if (!componentLineInfo) {
                     console.error('Component line not found in map text:', component.name);
                     showUserFeedback('Could not find component in map text. Please try again.', 'error');
                     return;
                 }
 
-                // Parse the existing component line to extract parts
-                // Updated regex to capture method and inertia separately
-                const componentRegex = /^component\s+(.+?)\s*(\[.+?\])(\s*\([^)]+\))?(\s+inertia)?(.*)$/;
-                const match = componentLine.match(componentRegex);
+                const {lineIndex: componentLineIndex, line: componentLine} = componentLineInfo;
+                const lines = props.mapText.split('\n');
 
-                if (!match) {
+                // Parse the existing component line to extract parts
+                const parsedLine = parseComponentLine(componentLine);
+                if (!parsedLine) {
                     console.error('Could not parse component line:', componentLine);
                     showUserFeedback('Could not parse component syntax. Please check the map text.', 'error');
                     return;
                 }
 
-                const [, name, coordinates, existingMethod, existingInertia, rest] = match;
+                const {name, coordinates, method: existingMethod, inertia: existingInertia, rest} = parsedLine;
 
                 let newComponentLine;
 
                 if (methodName === 'component') {
                     // Convert back to regular component - remove method but keep inertia if it exists
-                    newComponentLine = `component ${name} ${coordinates}${existingInertia || ''}${rest || ''}`;
+                    newComponentLine = buildComponentLine(name, coordinates, undefined, existingInertia, rest);
                     showUserFeedback(`Converted "${component.name}" back to regular component`, 'success');
                 } else if (methodName === 'inertia') {
                     // Add or remove inertia - preserve existing method
                     if (existingInertia) {
                         // Remove inertia
-                        newComponentLine = `component ${name} ${coordinates}${existingMethod || ''}${rest || ''}`;
+                        newComponentLine = buildComponentLine(name, coordinates, existingMethod, undefined, rest);
                         showUserFeedback(`Removed inertia from "${component.name}"`, 'success');
                     } else {
                         // Add inertia
-                        newComponentLine = `component ${name} ${coordinates}${existingMethod || ''} inertia${rest || ''}`;
+                        newComponentLine = buildComponentLine(name, coordinates, existingMethod, 'inertia', rest);
                         showUserFeedback(`Added inertia to "${component.name}"`, 'success');
                     }
                 } else {
                     // Apply other methods (market, ecosystem, buy, build, outsource) - preserve inertia
                     const newMethod = `(${methodName})`;
-                    newComponentLine = `component ${name} ${coordinates} ${newMethod}${existingInertia || ''}${rest || ''}`;
+                    newComponentLine = buildComponentLine(name, coordinates, newMethod, existingInertia, rest);
                     const actionText = existingMethod ? 'updated' : 'applied';
                     showUserFeedback(`${methodName} method ${actionText} to "${component.name}"`, 'success');
                 }

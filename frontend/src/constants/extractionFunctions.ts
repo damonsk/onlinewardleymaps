@@ -198,11 +198,41 @@ export const setMethod = (
     element: string,
     config: IProvideDecoratorsConfig,
 ): void => {
-    const name = element.split(`${config.keyword} `)[1].trim();
+    const afterKeyword = element.substr(`${config.keyword} `.length).trim();
+    let name: string;
+
+    // Check for quoted string (multi-line support)
+    if (afterKeyword.startsWith('"')) {
+        // Extract quoted content - handle escaped quotes and line breaks
+        const quotedMatch = afterKeyword.match(/^"((?:[^"\\]|\\.)*)"/);
+        if (quotedMatch) {
+            // Successfully matched quoted string
+            name = quotedMatch[1]
+                .replace(/\\"/g, '"') // Unescape quotes
+                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
+                .replace(/\\\\/g, '\\'); // Unescape backslashes
+        } else {
+            // Malformed quoted string - try to extract what we can
+            const quoteEnd = findClosingQuote(afterKeyword, 1);
+            if (quoteEnd !== -1) {
+                name = afterKeyword.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            } else {
+                // No closing quote found - fallback to simple parsing
+                name = afterKeyword.startsWith('"') ? afterKeyword.substring(1) : afterKeyword;
+            }
+        }
+    } else {
+        // Legacy single-line parsing (backward compatibility)
+        name = afterKeyword;
+    }
+
+    // Validate and recover component name if needed (same as setName function)
+    const recovery = validateAndRecoverComponentName(name);
+
     // We set the appropriate boolean flag and name, but NOT increaseLabelSpacing here
     // The increaseLabelSpacing will be applied to the referenced component in methodExtractor.ts
     Object.assign(baseElement, {
-        name,
+        name: recovery.processedName,
         // Initialize all decorator flags to false
         buy: false,
         build: false,
@@ -212,6 +242,14 @@ export const setMethod = (
         // Set the specific flag based on the keyword
         [config.keyword]: true,
     });
+
+    // Log recovery information if needed (for debugging or user feedback)
+    if (recovery.wasRecovered && recovery.recoveryMessage) {
+        console.warn(`Method decorator component name recovery: ${recovery.recoveryMessage}`, {
+            original: recovery.originalName,
+            recovered: recovery.processedName,
+        });
+    }
 };
 
 export const setAttitude = (

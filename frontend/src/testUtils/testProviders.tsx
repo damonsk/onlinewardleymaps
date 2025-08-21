@@ -7,6 +7,8 @@ import React from 'react';
 import {ComponentSelectionProvider} from '../components/ComponentSelectionContext';
 import {ContextMenuProvider} from '../components/map/ContextMenuProvider';
 import {UndoRedoProvider} from '../components/UndoRedoProvider';
+import {FeatureSwitchesProvider} from '../components/FeatureSwitchesContext';
+import {EditingProvider} from '../components/EditingContext';
 
 interface TestProviderWrapperProps {
     children: React.ReactNode;
@@ -14,9 +16,23 @@ interface TestProviderWrapperProps {
     mapText?: string;
 }
 
+const mockFeatureSwitches = {
+    enableDashboard: false,
+    enableNewPipelines: false,
+    enableLinkContext: false,
+    enableAccelerators: false,
+    enableDoubleClickRename: true,
+    enableNoteInlineEditing: false,
+    showToggleFullscreen: false,
+    showMapToolbar: false,
+    showMiniMap: false,
+    allowMapZoomMouseWheel: false,
+    enableModernComponents: false,
+};
+
 /**
  * Wrapper component that provides all necessary contexts for testing components
- * that require ComponentSelection, ContextMenu, and UndoRedo providers
+ * that require ComponentSelection, ContextMenu, UndoRedo, FeatureSwitches, and Editing providers
  */
 export const TestProviderWrapper: React.FC<TestProviderWrapperProps> = ({
     children,
@@ -24,11 +40,15 @@ export const TestProviderWrapper: React.FC<TestProviderWrapperProps> = ({
     mapText = 'test map text',
 }) => {
     return (
-        <UndoRedoProvider mutateMapText={mutateMapText} mapText={mapText}>
-            <ComponentSelectionProvider>
-                <ContextMenuProvider mapText={mapText}>{children}</ContextMenuProvider>
-            </ComponentSelectionProvider>
-        </UndoRedoProvider>
+        <FeatureSwitchesProvider value={mockFeatureSwitches}>
+            <EditingProvider>
+                <UndoRedoProvider mutateMapText={mutateMapText} mapText={mapText}>
+                    <ComponentSelectionProvider>
+                        <ContextMenuProvider mapText={mapText}>{children}</ContextMenuProvider>
+                    </ComponentSelectionProvider>
+                </UndoRedoProvider>
+            </EditingProvider>
+        </FeatureSwitchesProvider>
     );
 };
 

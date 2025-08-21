@@ -136,7 +136,9 @@ export const escapeComponentNameForMapText = (name: string): string => {
         .replace(/"/g, '\\"') // Escape quotes
         .replace(/\n/g, '\\n') // Escape line breaks
         .replace(/\r/g, '\\r') // Escape carriage returns
-        .replace(/\t/g, '\\t'); // Escape tabs
+        .replace(/\t/g, '\\t') // Escape tabs
+        .replace(/\[/g, '\\[') // Escape left brackets
+        .replace(/\]/g, '\\]'); // Escape right brackets
 
     return `"${escaped}"`;
 };
@@ -164,7 +166,136 @@ export const unescapeComponentNameFromMapText = (name: string): string => {
         .replace(/\\r/g, '\r') // Unescape carriage returns
         .replace(/\\t/g, '\t') // Unescape tabs
         .replace(/\\"/g, '"') // Unescape quotes
+        .replace(/\\]/g, ']') // Unescape right brackets
+        .replace(/\\\[/g, '[') // Unescape left brackets
         .replace(/\\\\/g, '\\'); // Unescape backslashes (must be last)
 
     return result;
+};
+
+/**
+ * Find a component line in map text by matching component name
+ * This handles both single-line and multi-line component names properly
+ * Returns the line index and the matched line content
+ */
+export const findComponentLineInMapText = (
+    mapText: string,
+    targetComponentName: string,
+): {lineIndex: number; line: string; parsedName: string} | null => {
+    if (!mapText || !targetComponentName) {
+        return null;
+    }
+
+    const lines = mapText.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+
+        // Skip non-component lines
+        if (!line.startsWith('component ')) {
+            continue;
+        }
+
+        // Extract component name from the line
+        // Handle both quoted and unquoted component names
+        const componentMatch = line.match(/^component\s+(.+?)\s*\[/);
+        if (!componentMatch) {
+            continue;
+        }
+
+        const rawName = componentMatch[1];
+        let parsedName: string;
+
+        // Check if the name is quoted (multi-line format)
+        if (rawName.startsWith('"') && rawName.endsWith('"')) {
+            // Parse quoted multi-line component name
+            parsedName = unescapeComponentNameFromMapText(rawName);
+        } else {
+            // Single-line component name
+            parsedName = rawName;
+        }
+
+        // Use normalized component name matching
+        if (componentNamesMatch(parsedName, targetComponentName)) {
+            return {
+                lineIndex: i,
+                line: line,
+                parsedName: parsedName,
+            };
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Parse a component line to extract its parts for modification
+ * This handles both single-line and multi-line component syntax
+ */
+export const parseComponentLine = (
+    line: string,
+): {
+    name: string;
+    coordinates: string;
+    method?: string;
+    inertia?: string;
+    rest?: string;
+} | null => {
+    if (!line || !line.trim().startsWith('component ')) {
+        return null;
+    }
+
+    // Updated regex to handle quoted multi-line component names
+    // This matches: component "Name" [coords] (method) inertia rest
+    // OR: component Name [coords] (method) inertia rest
+    const componentRegex = /^component\s+(.+?)\s*(\[.+?\])(\s*\([^)]+\))?(\s+inertia)?(.*)$/;
+    const match = line.match(componentRegex);
+
+    if (!match) {
+        return null;
+    }
+
+    const [, rawName, coordinates, method, inertia, rest] = match;
+
+    // Parse the component name (handle quotes)
+    let name: string;
+    if (rawName.startsWith('"') && rawName.endsWith('"')) {
+        name = unescapeComponentNameFromMapText(rawName);
+    } else {
+        name = rawName;
+    }
+
+    return {
+        name,
+        coordinates,
+        method: method?.trim(),
+        inertia: inertia?.trim(),
+        rest: rest?.trim(),
+    };
+};
+
+/**
+ * Rebuild a component line with the same format as the original
+ * This maintains the proper quoting for multi-line component names
+ */
+export const buildComponentLine = (originalName: string, coordinates: string, method?: string, inertia?: string, rest?: string): string => {
+    // Determine if we need to quote the name
+    const nameForMapText = escapeComponentNameForMapText(originalName);
+
+    // Build the line components
+    const parts = ['component', nameForMapText, coordinates];
+
+    if (method) {
+        parts.push(method);
+    }
+
+    if (inertia) {
+        parts.push(inertia);
+    }
+
+    if (rest && rest.trim()) {
+        parts.push(rest);
+    }
+
+    return parts.join(' ');
 };
