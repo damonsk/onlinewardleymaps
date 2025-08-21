@@ -97,31 +97,21 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     // Enhanced component detection from map data
     const detectElementFromComponent = useCallback(
         (componentId: string): MapElement | null => {
-            console.log('detectElementFromComponent called with:', componentId);
-            console.log('wardleyMap:', wardleyMap);
-            
             if (!wardleyMap) {
-                console.warn('No wardleyMap provided to ContextMenuProvider');
                 return null;
             }
 
             // Search in all components (regular and evolved)
             const allComponents = [...(wardleyMap.components || []), ...(wardleyMap.anchors || [])];
-            console.log('All components:', allComponents.map(c => ({id: c.id, name: c.name, idType: typeof c.id})));
-            console.log('Looking for componentId:', componentId, 'type:', typeof componentId);
             
             let component = allComponents.find(c => c.id === componentId);
-            console.log('Found component:', component);
             
             // Try with string/number conversion if not found
             if (!component) {
-                console.log('Trying with type conversion...');
                 component = allComponents.find(c => String(c.id) === String(componentId));
-                console.log('Found with string conversion:', component);
             }
 
             if (!component) {
-                console.warn(`Component with id "${componentId}" not found in wardleyMap`);
                 return null;
             }
 
@@ -148,23 +138,16 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
     const showContextMenu = useCallback(
         (position: {x: number; y: number}, element: MapElement | string | number) => {
-            console.log('showContextMenu called with:', {position, element});
-            
             // Handle backward compatibility with componentId string/number or direct MapElement
             let mapElement: MapElement | null = null;
             
             if (typeof element === 'string' || typeof element === 'number') {
-                console.log('Element is string/number, detecting component...');
                 mapElement = detectElementFromComponent(String(element));
             } else {
-                console.log('Element is MapElement object');
                 mapElement = element;
             }
 
-            console.log('Final mapElement:', mapElement);
-
             if (!mapElement) {
-                console.warn('Failed to detect mapElement, using fallback mode');
                 // Fallback: store the original element (string/number) for backward compatibility
                 setContextMenuState({
                     isOpen: true,

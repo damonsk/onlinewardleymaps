@@ -1255,15 +1255,12 @@ const MapViewWithEditing: React.FC<MapViewWithEditingProps> = props => {
         (componentId: string) => {
             // Find the component in the map data
             const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
-            console.log('handleEditComponent: Looking for component:', componentId);
-            console.log('handleEditComponent: Available components:', allComponents.map(c => ({id: c.id, name: c.name, idType: typeof c.id})));
             
             let component = allComponents.find(c => c.id === componentId);
             
             // Try with type conversion if not found
             if (!component) {
                 component = allComponents.find(c => String(c.id) === String(componentId));
-                console.log('handleEditComponent: Found with type conversion:', component);
             }
 
             if (!component) {
@@ -1272,8 +1269,6 @@ const MapViewWithEditing: React.FC<MapViewWithEditingProps> = props => {
             }
 
             // Trigger inline editing using the EditingContext
-            console.log('Starting inline edit for component:', componentId, 'component:', component);
-            console.log('Calling startEditing with:', componentId, 'component');
             startEditing(componentId, 'component');
         },
         [props.wardleyMap, props.showUserFeedback, startEditing],

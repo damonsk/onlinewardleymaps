@@ -30,14 +30,11 @@ export const EditingProvider: React.FC<EditingProviderProps> = ({children}) => {
     const [editingState, setEditingState] = useState<EditingState>(defaultEditingState);
 
     const startEditing = useCallback((elementId: string, elementType: 'component' | 'note') => {
-        console.log('EditingContext: startEditing called with:', {elementId, elementType});
-        const newState = {
+        setEditingState({
             isEditing: true,
             editingElementId: elementId,
             editingElementType: elementType,
-        };
-        console.log('EditingContext: Setting editing state to:', newState);
-        setEditingState(newState);
+        });
     }, []);
 
     const stopEditing = useCallback(() => {
