@@ -1,6 +1,7 @@
 import merge from 'lodash.merge';
 import {ComponentLabel, IProvideBaseElement, IProvideDecoratorsConfig} from '../types/base';
 import * as Defaults from './defaults';
+import {validateAndRecoverComponentName} from '../utils/componentNameValidation';
 
 export const setName = (baseElement: IProvideBaseElement & {name?: string}, element: string, config: IProvideDecoratorsConfig): void => {
     const start = element.indexOf(config.keyword);
@@ -43,7 +44,19 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         }
     }
 
-    Object.assign(baseElement, {name});
+    // Validate and recover component name if needed
+    const recovery = validateAndRecoverComponentName(name);
+
+    // Use the processed name (might be sanitized or recovered)
+    Object.assign(baseElement, {name: recovery.processedName});
+
+    // Log recovery information if needed (for debugging or user feedback)
+    if (recovery.wasRecovered && recovery.recoveryMessage) {
+        console.warn(`Component name recovery: ${recovery.recoveryMessage}`, {
+            original: recovery.originalName,
+            recovered: recovery.processedName,
+        });
+    }
 };
 
 export const setRef = (baseElement: IProvideBaseElement & {url?: string}, element: string): void => {
@@ -300,7 +313,19 @@ export const setNameWithMaturity = (
         }
     }
 
-    Object.assign(baseElement, {name, override, maturity: newPoint});
+    // Validate and recover component name if needed
+    const recovery = validateAndRecoverComponentName(name);
+
+    // Use the processed name (might be sanitized or recovered)
+    Object.assign(baseElement, {name: recovery.processedName, override, maturity: newPoint});
+
+    // Log recovery information if needed (for debugging or user feedback)
+    if (recovery.wasRecovered && recovery.recoveryMessage) {
+        console.warn(`Evolution component name recovery: ${recovery.recoveryMessage}`, {
+            original: recovery.originalName,
+            recovered: recovery.processedName,
+        });
+    }
 };
 
 export const setCoords = (

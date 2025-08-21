@@ -7,6 +7,7 @@ import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';
 import {normalizeComponentName} from '../../utils/componentNameMatching';
+import {createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS} from '../../utils/componentNameValidation';
 
 interface MovedPosition {
     x: number;
@@ -175,7 +176,15 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                         placeholder={'Enter component name...\n(Ctrl+Enter to save)'}
                         validation={{
                             required: true,
-                            maxLength: 500, // Increased for multi-line content
+                            maxLength: DEFAULT_VALIDATION_OPTIONS.maxLength,
+                            customValidator: createComponentNameValidator({
+                                maxLength: 500,
+                                maxLines: 5,
+                                maxLineLength: 100,
+                                allowEmptyLines: false,
+                                sanitizeInput: true,
+                                strictEscapeValidation: false,
+                            }),
                         }}
                     />
                 </div>

@@ -40,7 +40,7 @@
   - Write unit tests for component linking and referencing with multi-line names
   - _Requirements: 7.1, 7.2, 7.4, 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 6. Update map text generation for multi-line component export
+- [x] 6. Update map text generation for multi-line component export - [IMPLEMENTED]
   - Modify mapTextGeneration.ts to properly escape multi-line component names for export
   - Add logic to determine when quoted format is needed (line breaks, quotes, backslashes)
   - Ensure proper escape sequence generation (\n, \", \\) for DSL compatibility
@@ -48,7 +48,7 @@
   - Write unit tests for map text generation with multi-line component names
   - _Requirements: 1.4, 6.3, 6.4_
 
-- [ ] 7. Add component name validation for multi-line content
+- [x] 7. Add component name validation for multi-line content - [IMPLEMENTED]
   - Implement validation rules for multi-line component names (length, character limits)
   - Add validation for line count limits and memory usage prevention
   - Create user-friendly error messages for validation failures
