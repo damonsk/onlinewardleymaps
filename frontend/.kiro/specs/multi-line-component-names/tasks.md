@@ -56,7 +56,7 @@
   - Write unit tests for validation logic and error handling
   - _Requirements: 10.1, 10.2, 10.3, 10.4_
 
-- [ ] 8. Update component decorator support for multi-line names
+- [x] 8. Update component decorator support for multi-line names - [IMPLEMENTED]
   - Ensure all existing decorators (buy, build, outsource, market, ecosystem) work with multi-line names
   - Verify decorator parsing and rendering with quoted multi-line component names
   - Test decorator positioning and styling with multi-line component text
