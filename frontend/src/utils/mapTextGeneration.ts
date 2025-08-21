@@ -5,6 +5,7 @@
 
 import {ToolbarItem} from '../types/toolbar';
 import {UnifiedComponent} from '../types/unified/components';
+import {escapeComponentNameForMapText} from './componentNameMatching';
 
 /**
  * Helper functions for multi-line note support
@@ -191,17 +192,15 @@ export function validateTemplate(
  */
 export function createFallbackTemplate(itemId: string, category: string): (name: string, y: string, x: string) => string {
     return (name: string, y: string, x: string) => {
-        // Sanitize inputs - preserve line breaks for notes
+        // Sanitize inputs and handle escaping for components
         let safeName: string;
         if (category === 'note') {
             // For notes, preserve line breaks and only trim whitespace
             safeName = (name || 'New Note').trim();
         } else {
-            // For other components, replace line breaks with spaces
-            safeName = (name || 'New Component')
-                .trim()
-                .replace(/[\r\n]+/g, ' ')
-                .replace(/\s+/g, ' ');
+            // For other components, escape if needed for map text syntax
+            const trimmedName = (name || 'New Component').trim();
+            safeName = escapeComponentNameForMapText(trimmedName);
         }
 
         const safeY = formatCoordinate(parseFloat(y) || 0.5);
@@ -271,17 +270,21 @@ export function generateComponentMapText(item: ToolbarItem, componentName: strin
         throw new Error('Position must contain valid x and y coordinates');
     }
 
-    // Sanitize component name - preserve line breaks for notes
+    // Sanitize component name - preserve line breaks for notes, use proper escaping for components
     let safeName: string;
     if (item.category === 'note') {
         // For notes, preserve line breaks and only trim whitespace
         safeName = componentName.trim();
     } else {
-        // For other components, replace line breaks with spaces
-        safeName = componentName
-            .trim()
-            .replace(/[\r\n]+/g, ' ')
-            .replace(/\s+/g, ' ');
+        // For other components, use proper escaping if name contains special characters
+        const trimmedName = componentName.trim();
+        if (trimmedName.includes('\n') || trimmedName.includes('"') || trimmedName.includes('\\')) {
+            // Use escaped format for multi-line or special character names
+            safeName = escapeComponentNameForMapText(trimmedName);
+        } else {
+            // Simple name, use as-is
+            safeName = trimmedName;
+        }
     }
 
     if (!safeName) {

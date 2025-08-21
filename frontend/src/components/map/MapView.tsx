@@ -9,7 +9,7 @@ import {ToolbarItem} from '../../types/toolbar';
 import {ActionType} from '../../types/undo-redo';
 import {UnifiedComponent} from '../../types/unified/components';
 import {UnifiedWardleyMap} from '../../types/unified/map';
-import {addLinkToMapText, linkExists} from '../../utils/componentDetection';
+import {addLinkToMapText, linkExists, generateLinkSyntax} from '../../utils/componentDetection';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {EditingProvider} from '../EditingContext';
@@ -528,7 +528,33 @@ export const MapView: React.FunctionComponent<ModernMapViewProps> = props => {
 
                         // Create the component text
                         const componentText = `component ${componentName} [${position.y.toFixed(2)}, ${position.x.toFixed(2)}]`;
-                        const linkText = `${sourceComponent.name}->${componentName}`;
+
+                        // Create a temporary UnifiedComponent object for the new component to use generateLinkSyntax
+                        const newComponent: UnifiedComponent = {
+                            id: `temp-${componentName}`,
+                            name: componentName,
+                            type: 'component',
+                            maturity: position.x,
+                            visibility: position.y,
+                            line: 0,
+                            label: {x: 0, y: 0},
+                            evolved: false,
+                            inertia: false,
+                            increaseLabelSpacing: 0,
+                            pseudoComponent: false,
+                            offsetY: 0,
+                            evolving: false,
+                            decorators: {
+                                buy: false,
+                                build: false,
+                                outsource: false,
+                                ecosystem: false,
+                                market: false,
+                            },
+                        };
+
+                        // Use the proper link syntax generation to handle multi-line source names
+                        const linkText = generateLinkSyntax(sourceComponent, newComponent);
 
                         // Add both component and link to map text
                         const updatedMapText = props.mapText + '\r\n' + componentText + '\r\n' + linkText;

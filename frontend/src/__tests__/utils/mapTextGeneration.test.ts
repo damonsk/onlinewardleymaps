@@ -525,7 +525,7 @@ describe('Map Text Generation Utilities', () => {
             const template = createFallbackTemplate('component', 'component');
             const result = template('Test\nComponent\r\nName', '0.70', '0.50');
 
-            expect(result).toBe('component Test Component Name [0.70, 0.50]');
+            expect(result).toBe('component "Test\\nComponent\\r\\nName" [0.70, 0.50]');
         });
 
         it('should handle invalid coordinates with fallback', () => {
@@ -577,7 +577,7 @@ describe('Map Text Generation Utilities', () => {
 
         it('should sanitize component name with newlines', () => {
             const result = generateComponentMapText(mockToolbarItem, 'Test\nComponent\r\nName', {x: 0.6, y: 0.8});
-            expect(result).toBe('component Test Component Name [0.80, 0.60]');
+            expect(result).toBe('component "Test\\nComponent\\r\\nName" [0.80, 0.60]');
         });
 
         it('should throw error for empty component name after sanitization', () => {
