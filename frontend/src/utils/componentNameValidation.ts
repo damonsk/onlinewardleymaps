@@ -388,8 +388,8 @@ export const validateAndRecoverComponentName = (
             // Check if sanitization made it valid
             const secondValidation = validateComponentName(recovered);
             if (!secondValidation.isValid) {
-                // Last resort: create a safe name
-                recovered = 'Component';
+                // Last resort: create a safe name but be more specific about the recovery
+                recovered = 'Recovered Component Name';
                 result.wasRecovered = true;
                 result.recoveryMessage = 'Component name contained invalid syntax and has been simplified';
             }
@@ -399,7 +399,7 @@ export const validateAndRecoverComponentName = (
         return result;
     } catch (error) {
         // Complete failure - use safe fallback
-        result.processedName = 'Component';
+        result.processedName = 'Recovered Component Name';
         result.wasRecovered = true;
         result.recoveryMessage = `Component name validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
         return result;

@@ -2,40 +2,47 @@ import merge from 'lodash.merge';
 import {ComponentLabel, IProvideBaseElement, IProvideDecoratorsConfig} from '../types/base';
 import * as Defaults from './defaults';
 import {validateAndRecoverComponentName} from '../utils/componentNameValidation';
+import {safeParseComponentName, ParsingContext} from '../utils/errorHandling';
 
 export const setName = (baseElement: IProvideBaseElement & {name?: string}, element: string, config: IProvideDecoratorsConfig): void => {
+    // Handle null/undefined element input
+    if (!element || typeof element !== 'string') {
+        console.warn('Invalid element input for setName, using fallback');
+        Object.assign(baseElement, {name: 'Component'});
+        return;
+    }
+    
     const start = element.indexOf(config.keyword);
     const afterKeyword = element.substr(`${config.keyword} `.length + start, element.length - `${config.keyword} `.length + start).trim();
 
+    const context: ParsingContext = {
+        line: (baseElement as any).line || 0,
+        keyword: config.keyword,
+        elementType: 'component',
+        fullLine: element,
+        position: start
+    };
+
     let name: string;
 
-    // Check for quoted string (multi-line support)
+    // Try enhanced parsing for quoted strings, fallback to legacy for simple cases
     if (afterKeyword.startsWith('"')) {
-        // Extract quoted content - handle escaped quotes and find the closing quote before coordinates
-        const quotedMatch = afterKeyword.match(/^"((?:[^"\\]|\\.)*)"\s*\[/);
-        if (quotedMatch) {
-            // Successfully matched quoted string with coordinates
-            name = quotedMatch[1]
-                .replace(/\\"/g, '"') // Unescape quotes
-                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
-                .replace(/\\\\/g, '\\'); // Unescape backslashes
-        } else {
-            // Malformed quoted string - try to extract what we can
-            const quoteEnd = findClosingQuote(afterKeyword, 1);
-            if (quoteEnd !== -1) {
-                name = afterKeyword.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-            } else {
-                // No closing quote found - fallback to legacy parsing
-                name = afterKeyword.split(' [')[0].trim();
-                // Remove leading quote if present
-                if (name.startsWith('"')) {
-                    name = name.substring(1);
-                }
-            }
+        const parseResult = safeParseComponentName(afterKeyword, context, 'Component');
+        
+        name = parseResult.result || 'Component';
+        
+        // Log parsing issues for debugging
+        if (parseResult.errors.length > 0) {
+            console.warn(`Component name parsing errors on line ${context.line}:`, parseResult.errors);
+        }
+        if (parseResult.warnings.length > 0) {
+            console.info(`Component name parsing warnings on line ${context.line}:`, parseResult.warnings);
+        }
+        if (parseResult.wasRecovered && parseResult.recoveryStrategy) {
+            console.warn(`Component name recovered using strategy: ${parseResult.recoveryStrategy}`);
         }
     } else {
-        // Legacy single-line parsing (backward compatibility)
-        // Check if afterKeyword starts directly with coordinates (no name)
+        // Legacy single-line parsing (backward compatibility) - keep original behavior
         if (afterKeyword.trim().startsWith('[')) {
             name = '';
         } else {
@@ -44,9 +51,9 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         }
     }
 
-    // Validate and recover component name if needed
+    // Additional validation and recovery
     const recovery = validateAndRecoverComponentName(name);
-
+    
     // Use the processed name (might be sanitized or recovered)
     Object.assign(baseElement, {name: recovery.processedName});
 
@@ -199,34 +206,39 @@ export const setMethod = (
     config: IProvideDecoratorsConfig,
 ): void => {
     const afterKeyword = element.substr(`${config.keyword} `.length).trim();
+    
+    const context: ParsingContext = {
+        line: (baseElement as any).line || 0,
+        keyword: config.keyword,
+        elementType: 'method',
+        fullLine: element,
+        position: element.indexOf(config.keyword)
+    };
+
     let name: string;
 
-    // Check for quoted string (multi-line support)
+    // Try enhanced parsing for quoted strings, fallback to legacy for simple cases
     if (afterKeyword.startsWith('"')) {
-        // Extract quoted content - handle escaped quotes and line breaks
-        const quotedMatch = afterKeyword.match(/^"((?:[^"\\]|\\.)*)"/);
-        if (quotedMatch) {
-            // Successfully matched quoted string
-            name = quotedMatch[1]
-                .replace(/\\"/g, '"') // Unescape quotes
-                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
-                .replace(/\\\\/g, '\\'); // Unescape backslashes
-        } else {
-            // Malformed quoted string - try to extract what we can
-            const quoteEnd = findClosingQuote(afterKeyword, 1);
-            if (quoteEnd !== -1) {
-                name = afterKeyword.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-            } else {
-                // No closing quote found - fallback to simple parsing
-                name = afterKeyword.startsWith('"') ? afterKeyword.substring(1) : afterKeyword;
-            }
+        const parseResult = safeParseComponentName(afterKeyword, context, 'Component');
+        
+        name = parseResult.result || 'Component';
+        
+        // Log parsing issues for debugging
+        if (parseResult.errors.length > 0) {
+            console.warn(`Method decorator parsing errors on line ${context.line}:`, parseResult.errors);
+        }
+        if (parseResult.warnings.length > 0) {
+            console.info(`Method decorator parsing warnings on line ${context.line}:`, parseResult.warnings);
+        }
+        if (parseResult.wasRecovered && parseResult.recoveryStrategy) {
+            console.warn(`Method decorator name recovered using strategy: ${parseResult.recoveryStrategy}`);
         }
     } else {
-        // Legacy single-line parsing (backward compatibility)
+        // Legacy single-line parsing (backward compatibility) - keep original behavior
         name = afterKeyword;
     }
 
-    // Validate and recover component name if needed (same as setName function)
+    // Additional validation and recovery
     const recovery = validateAndRecoverComponentName(name);
 
     // We set the appropriate boolean flag and name, but NOT increaseLabelSpacing here
@@ -276,78 +288,107 @@ export const setNameWithMaturity = (
     },
     element: string,
 ): void => {
-    let nameSection = element.split('evolve ')[1].trim();
+    let nameSection = element.split('evolve ')[1]?.trim();
+    if (!nameSection) {
+        // Handle malformed evolve statement
+        console.warn(`Malformed evolve statement: ${element}`);
+        Object.assign(baseElement, {name: 'Component', override: '', maturity: 0.85});
+        return;
+    }
+    
+    const context: ParsingContext = {
+        line: (baseElement as any).line || 0,
+        keyword: 'evolve',
+        elementType: 'evolution',
+        fullLine: element,
+        position: element.indexOf('evolve')
+    };
+    
     let name: string;
     let override = '';
     let newPoint = 0.85;
 
-    // Handle quoted multi-line names in evolution
+    // Handle quoted multi-line names in evolution with enhanced error handling
     if (nameSection.startsWith('"')) {
-        // Look for the pattern: quoted string followed by optional maturity
-        const quotedMatch = nameSection.match(/^"((?:[^"\\]|\\.)*)"/);
-        if (quotedMatch) {
-            // Successfully matched quoted string
-            name = quotedMatch[1]
-                .replace(/\\"/g, '"') // Unescape quotes
-                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
-                .replace(/\\\\/g, '\\'); // Unescape backslashes
+        // Use enhanced parsing for quoted evolution names
+        const parseResult = safeParseComponentName(nameSection, context, 'Component');
+        
+        if (parseResult.success && parseResult.result) {
+            name = parseResult.result;
+            
+            // Look for additional evolution syntax after the quoted name
+            // This is more complex because we need to handle the original nameSection parsing
+            const quotedMatch = nameSection.match(/^"(?:[^"\\]|\\.)*"/);
+            if (quotedMatch) {
+                // Remove the quoted part to continue with maturity parsing
+                nameSection = nameSection.substring(quotedMatch[0].length).trim();
 
-            // Remove the quoted part to continue with maturity parsing
-            nameSection = nameSection.substring(quotedMatch[0].length).trim();
-
-            // Check for override after the quoted name: -> "override name" or -> override name
-            if (nameSection.startsWith('->')) {
-                const afterArrow = nameSection.substring(2).trim();
-                // Find the maturity value to separate it from the override
-                const maturityMatch = afterArrow.match(/\s([0-9]?\.[0-9]+[0-9]?)$/);
-                if (maturityMatch) {
-                    newPoint = parseFloat(maturityMatch[1]);
-                    override = afterArrow.substring(0, afterArrow.lastIndexOf(maturityMatch[1])).trim();
+                // Check for override after the quoted name: -> "override name" or -> override name
+                if (nameSection.startsWith('->')) {
+                    const afterArrow = nameSection.substring(2).trim();
+                    // Find the maturity value to separate it from the override
+                    const maturityMatch = afterArrow.match(/\s([0-9]?\.[0-9]+[0-9]?)$/);
+                    if (maturityMatch) {
+                        try {
+                            newPoint = parseFloat(maturityMatch[1]);
+                            override = afterArrow.substring(0, afterArrow.lastIndexOf(maturityMatch[1])).trim();
+                        } catch (e) {
+                            console.warn(`Failed to parse evolution maturity: ${maturityMatch[1]}`);
+                        }
+                    } else {
+                        // No maturity found, everything after -> is override
+                        override = afterArrow;
+                    }
                 } else {
-                    // No maturity found, everything after -> is override
-                    override = afterArrow;
-                }
-            } else {
-                // Check for maturity value directly after quoted name
-                const maturityMatch = nameSection.match(/^([0-9]?\.[0-9]+[0-9]?)$/);
-                if (maturityMatch) {
-                    newPoint = parseFloat(maturityMatch[1]);
+                    // Check for maturity value directly after quoted name
+                    const maturityMatch = nameSection.match(/^([0-9]?\.[0-9]+[0-9]?)$/);
+                    if (maturityMatch) {
+                        try {
+                            newPoint = parseFloat(maturityMatch[1]);
+                        } catch (e) {
+                            console.warn(`Failed to parse evolution maturity: ${maturityMatch[1]}`);
+                        }
+                    }
                 }
             }
         } else {
-            // Malformed quoted string - try to extract what we can using fallback
-            const quoteEnd = findClosingQuote(nameSection, 1);
-            if (quoteEnd !== -1) {
-                name = nameSection.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-                // Continue parsing after the closing quote
-                nameSection = nameSection.substring(quoteEnd + 1).trim();
-                const maturityMatch = nameSection.match(/^([0-9]?\.[0-9]+[0-9]?)$/);
-                if (maturityMatch) {
-                    newPoint = parseFloat(maturityMatch[1]);
-                }
-            } else {
-                // No closing quote found - fallback to legacy parsing
-                // For malformed quoted strings, treat everything after the quote as the name
-                name = nameSection.substring(1); // Remove leading quote but keep everything else
-                // Don't try to extract maturity from malformed quoted strings
-                // Keep default maturity value (0.85)
-            }
+            // Parsing failed, use fallback
+            name = parseResult.result || 'Component';
+        }
+        
+        // Log parsing issues
+        if (parseResult.errors.length > 0) {
+            console.warn(`Evolution parsing errors on line ${context.line}:`, parseResult.errors);
+        }
+        if (parseResult.warnings.length > 0) {
+            console.info(`Evolution parsing warnings on line ${context.line}:`, parseResult.warnings);
+        }
+        if (parseResult.wasRecovered && parseResult.recoveryStrategy) {
+            console.warn(`Evolution name recovered using strategy: ${parseResult.recoveryStrategy}`);
         }
     } else {
-        // Legacy single-line parsing (backward compatibility)
-        name = nameSection;
-        const evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
-        if (evolveMaturity && evolveMaturity.length > 0) {
-            newPoint = parseFloat(evolveMaturity[0]);
-            const unprocessedName = name.split(String(newPoint))[0];
-            name = unprocessedName;
-            if (name.indexOf('->') > -1) {
-                override = unprocessedName.split('->')[1].trim();
-                name = unprocessedName.split('->')[0];
-            } else {
-                // Only trim when there's no override to maintain exact legacy behavior
-                name = name.trim();
+        // Legacy single-line parsing (backward compatibility) with enhanced error handling
+        try {
+            name = nameSection;
+            const evolveMaturity = element.match(/\s[0-9]?\.[0-9]+[0-9]?/);
+            if (evolveMaturity && evolveMaturity.length > 0) {
+                newPoint = parseFloat(evolveMaturity[0]);
+                const unprocessedName = name.split(String(newPoint))[0];
+                name = unprocessedName;
+                if (name.indexOf('->') > -1) {
+                    const parts = name.split('->');
+                    if (parts.length >= 2) {
+                        override = parts[1].trim();
+                        name = parts[0];
+                    }
+                } else {
+                    // Only trim when there's no override to maintain exact legacy behavior
+                    name = name.trim();
+                }
             }
+        } catch (error) {
+            console.warn(`Evolution parsing failed, using fallback:`, error);
+            name = 'Component';
         }
     }
 
