@@ -14,7 +14,7 @@ The Map Component Delete feature enables map editors to delete map components di
 
 1. WHEN the user selects a map component and presses the Delete key THEN the system SHALL remove the selected component from the map and update the mapText
 2. WHEN the user selects a map component and presses the Backspace key THEN the system SHALL remove the selected component from the map and update the mapText
-4. WHEN no map component is selected and the user presses Delete or Backspace THEN the system SHALL take no action
+3. WHEN no map component is selected and the user presses Delete or Backspace THEN the system SHALL take no action
 
 ### Requirement 2
 
@@ -24,7 +24,7 @@ The Map Component Delete feature enables map editors to delete map components di
 
 1. WHEN the user right-clicks on a selected map component THEN the system SHALL display a context menu with a delete option
 2. WHEN the user clicks the delete option in the context menu THEN the system SHALL remove the selected component and update the mapText
-4. WHEN the user right-clicks on a non-deletable component THEN the system SHALL either hide the delete option or show it as disabled
+3. WHEN the user right-clicks on a non-deletable component THEN the system SHALL either hide the delete option or show it as disabled
 
 ### Requirement 3
 

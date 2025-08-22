@@ -54,7 +54,7 @@ The `setName` function in `extractionFunctions.ts` will be enhanced to handle qu
 export const setName = (baseElement: IProvideBaseElement & {name?: string}, element: string, config: IProvideDecoratorsConfig): void => {
     const afterKeyword = element.split(`${config.keyword} `)[1].trim();
     let name: string;
-    
+
     // Check for quoted string (multi-line support)
     if (afterKeyword.startsWith('"')) {
         // Extract quoted content - handle escaped quotes and find the closing quote before coordinates
@@ -62,17 +62,14 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         if (quotedMatch) {
             // Successfully matched quoted string with coordinates
             name = quotedMatch[1]
-                .replace(/\\"/g, '"')     // Unescape quotes
-                .replace(/\\n/g, '\n')   // Convert explicit \n to actual line breaks
+                .replace(/\\"/g, '"') // Unescape quotes
+                .replace(/\\n/g, '\n') // Convert explicit \n to actual line breaks
                 .replace(/\\\\/g, '\\'); // Unescape backslashes
         } else {
             // Malformed quoted string - try to extract what we can
             const quoteEnd = findClosingQuote(afterKeyword, 1);
             if (quoteEnd !== -1) {
-                name = afterKeyword.substring(1, quoteEnd)
-                    .replace(/\\"/g, '"')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\\\/g, '\\');
+                name = afterKeyword.substring(1, quoteEnd).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
             } else {
                 // No closing quote found - fallback to legacy parsing
                 name = afterKeyword.split(' [')[0].trim();
@@ -86,7 +83,7 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         // Legacy single-line parsing (backward compatibility)
         name = afterKeyword.split(' [')[0].trim();
     }
-    
+
     Object.assign(baseElement, {name});
 };
 ```
@@ -131,10 +128,10 @@ const renderMultiLineText = (id: string, textContent: string) => {
         if (line === '') {
             // Handle empty lines by adding a space to maintain line spacing
             tspans.push(
-                <tspan 
-                    key={`${id}_line_${lineIndex}_empty`} 
-                    x={0} 
-                    dy={lineIndex === 0 ? 0 : 15} 
+                <tspan
+                    key={`${id}_line_${lineIndex}_empty`}
+                    x={0}
+                    dy={lineIndex === 0 ? 0 : 15}
                     textAnchor="middle"
                 >
                     {' '}
@@ -143,10 +140,10 @@ const renderMultiLineText = (id: string, textContent: string) => {
         } else {
             // Render each line as a single tspan
             tspans.push(
-                <tspan 
-                    key={`${id}_line_${lineIndex}`} 
-                    x={0} 
-                    dy={lineIndex === 0 ? 0 : 15} 
+                <tspan
+                    key={`${id}_line_${lineIndex}`}
+                    x={0}
+                    dy={lineIndex === 0 ? 0 : 15}
                     textAnchor="middle"
                 >
                     {line}
@@ -191,16 +188,17 @@ const handleSave = (newName: string) => {
     if (mutateMapText && mapText && newName !== component.name && component.line) {
         // Determine if we need quoted format
         const needsQuotes = newName.includes('\n') || newName.includes('"') || newName.includes('\\');
-        
+
         let escapedName = newName;
         if (needsQuotes) {
-            escapedName = `"${newName
-                .replace(/\\/g, '\\\\')  // Escape backslashes
-                .replace(/"/g, '\\"')   // Escape quotes
-                .replace(/\n/g, '\\n')  // Escape line breaks
+            escapedName = `"${
+                newName
+                    .replace(/\\/g, '\\\\') // Escape backslashes
+                    .replace(/"/g, '\\"') // Escape quotes
+                    .replace(/\n/g, '\\n') // Escape line breaks
             }"`;
         }
-        
+
         const result = rename(component.line, component.name, escapedName, mapText, mutateMapText);
         // Handle result...
     }
@@ -226,15 +224,12 @@ export const setNameWithMaturity = (
     let nameSection = element.split('evolve ')[1].trim();
     let name: string;
     let override = '';
-    
+
     // Handle quoted multi-line names in evolution
     if (nameSection.startsWith('"')) {
         const quotedMatch = nameSection.match(/^"((?:[^"\\]|\\.)*)"/);
         if (quotedMatch) {
-            name = quotedMatch[1]
-                .replace(/\\"/g, '"')
-                .replace(/\\n/g, '\n')
-                .replace(/\\\\/g, '\\');
+            name = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
             nameSection = nameSection.substring(quotedMatch[0].length).trim();
         }
     } else {
@@ -252,7 +247,7 @@ export const setNameWithMaturity = (
             name = nameSection;
         }
     }
-    
+
     // Continue with existing maturity parsing logic...
 };
 ```
@@ -274,9 +269,7 @@ const normalizeComponentName = (name: string): string => {
 // Updated linking logic
 const findComponentByName = (components: Component[], targetName: string): Component | undefined => {
     const normalizedTarget = normalizeComponentName(targetName);
-    return components.find(component => 
-        normalizeComponentName(component.name) === normalizedTarget
-    );
+    return components.find(component => normalizeComponentName(component.name) === normalizedTarget);
 };
 ```
 
@@ -290,18 +283,14 @@ When generating map text for export, multi-line component names will be properly
 // In mapTextGeneration.ts
 const generateComponentText = (component: Component): string => {
     let nameText = component.name;
-    
+
     // Check if we need quoted format
     if (nameText.includes('\n') || nameText.includes('"') || nameText.includes('\\')) {
-        nameText = `"${nameText
-            .replace(/\\/g, '\\\\')
-            .replace(/"/g, '\\"')
-            .replace(/\n/g, '\\n')
-        }"`;
+        nameText = `"${nameText.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')}"`;
     }
-    
+
     let result = `component ${nameText}`;
-    
+
     // Add decorators
     if (component.decorators) {
         const decoratorList = [];
@@ -312,10 +301,10 @@ const generateComponentText = (component: Component): string => {
             result += ` (${decoratorList.join(', ')})`;
         }
     }
-    
+
     // Add coordinates
     result += ` [${component.visibility}, ${component.maturity}]`;
-    
+
     return result;
 };
 ```
@@ -349,19 +338,19 @@ describe('setName with multi-line support', () => {
         const element = 'component "Multi-line\\nComponent\\nName" [0.5, 0.7]';
         const baseElement = {};
         const config = { keyword: 'component' };
-        
+
         setName(baseElement, element, config);
-        
+
         expect(baseElement.name).toBe('Multi-line\nComponent\nName');
     });
-    
+
     it('should handle escaped quotes in multi-line names', () => {
         const element = 'component "Component with \\"quotes\\" and\\nline breaks" [0.5, 0.7]';
         const baseElement = {};
         const config = { keyword: 'component' };
-        
+
         setName(baseElement, element, config);
-        
+
         expect(baseElement.name).toBe('Component with "quotes" and\nline breaks');
     });
 });
@@ -374,9 +363,9 @@ describe('ComponentTextSymbol multi-line rendering', () => {
             text: 'Line 1\nLine 2\nLine 3',
             textTheme: { fontSize: '14px', textColor: 'black' }
         };
-        
+
         const { container } = render(<ComponentTextSymbol {...props} />);
-        
+
         const tspans = container.querySelectorAll('tspan');
         expect(tspans).toHaveLength(3);
         expect(tspans[0]).toHaveTextContent('Line 1');
@@ -439,27 +428,27 @@ Multi-line component names require careful input validation:
 ```typescript
 const validateComponentName = (name: string): ValidationResult => {
     const errors: string[] = [];
-    
+
     // Length validation
     if (name.length > 500) {
         errors.push('Component name too long (max 500 characters)');
     }
-    
+
     // Character validation
     const invalidChars = /[<>{}]/g;
     if (invalidChars.test(name)) {
         errors.push('Component name contains invalid characters');
     }
-    
+
     // Line count validation
     const lineCount = name.split('\n').length;
     if (lineCount > 10) {
         errors.push('Component name has too many lines (max 10)');
     }
-    
+
     return {
         isValid: errors.length === 0,
-        errors
+        errors,
     };
 };
 ```

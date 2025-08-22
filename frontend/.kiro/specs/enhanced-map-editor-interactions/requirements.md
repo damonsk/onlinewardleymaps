@@ -26,7 +26,7 @@ The enhanced map editor interactions feature will add comprehensive right-click 
 #### Acceptance Criteria
 
 1. WHEN right-clicking on a component without inertia THEN the context menu SHALL show "Add Inertia" option
-2. WHEN right-clicking on a component with inertia THEN the context menu SHALL show "Remove Inertia" option  
+2. WHEN right-clicking on a component with inertia THEN the context menu SHALL show "Remove Inertia" option
 3. WHEN selecting an inertia toggle option THEN the component's inertia state SHALL change immediately and update the map text
 4. WHEN toggling inertia THEN the visual representation SHALL update to reflect the new state
 
@@ -50,7 +50,7 @@ The enhanced map editor interactions feature will add comprehensive right-click 
 #### Acceptance Criteria
 
 1. WHEN double-clicking on an evolved component THEN it SHALL enter inline editing mode for the name
-2. WHEN editing an evolved component name THEN the changes SHALL update the map text with proper "evolve source->newname position" syntax  
+2. WHEN editing an evolved component name THEN the changes SHALL update the map text with proper "evolve source->newname position" syntax
 3. WHEN saving evolved component name changes THEN the evolution relationship SHALL be preserved
 4. WHEN canceling evolved component name editing THEN the original name SHALL be restored
 
