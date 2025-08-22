@@ -136,15 +136,15 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     }
 
                     let evolvedNameInLine = '';
-                    
+
                     if (arrowPos !== -1) {
                         // New format: "evolve Source->Evolved maturity"
                         const remainder = evolveContent.substring(arrowPos + 2).trim();
-                        
+
                         // Parse to separate evolved name from maturity and label
                         const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
                         const maturityMatch = remainder.match(maturityPattern);
-                        
+
                         let evolvedPart = '';
                         if (maturityMatch) {
                             const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
@@ -157,10 +157,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
                             // Extract quoted evolved name
                             const quotedContent = evolvedPart.slice(1, -1);
-                            evolvedNameInLine = quotedContent
-                                .replace(/\\"/g, '"')
-                                .replace(/\\n/g, '\n')
-                                .replace(/\\\\/g, '\\');
+                            evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                         } else {
                             // Unquoted evolved name
                             evolvedNameInLine = evolvedPart;
@@ -169,7 +166,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         // Old format: "evolve EvolvedName maturity" (for backwards compatibility)
                         const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
                         const maturityMatch = evolveContent.match(maturityPattern);
-                        
+
                         let evolvedPart = '';
                         if (maturityMatch) {
                             const maturityStartIndex = evolveContent.lastIndexOf(maturityMatch[0]);
@@ -181,10 +178,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         // Extract evolved component name (same logic as above)
                         if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
                             const quotedContent = evolvedPart.slice(1, -1);
-                            evolvedNameInLine = quotedContent
-                                .replace(/\\"/g, '"')
-                                .replace(/\\n/g, '\n')
-                                .replace(/\\\\/g, '\\');
+                            evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                         } else {
                             evolvedNameInLine = evolvedPart;
                         }
@@ -196,7 +190,11 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         // Use override if available, otherwise fall back to component name
                         componentNameToMatch = component.override || component.name;
                         if (componentNameToMatch.startsWith('"') && componentNameToMatch.endsWith('"')) {
-                            componentNameToMatch = componentNameToMatch.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                            componentNameToMatch = componentNameToMatch
+                                .slice(1, -1)
+                                .replace(/\\"/g, '"')
+                                .replace(/\\n/g, '\n')
+                                .replace(/\\\\/g, '\\');
                         }
                     }
 

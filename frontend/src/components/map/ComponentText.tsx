@@ -57,7 +57,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         : component;
 
     // For evolved components, use the override name (evolved component name) for display
-    const displayName = component.evolved ? (component.override || component.name) : actualComponent.name;
+    const displayName = component.evolved ? component.override || component.name : actualComponent.name;
     const [text, setText] = useState(displayName);
 
     // Enhanced setText that handles multi-line content
@@ -190,12 +190,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 // - "Component B" 0.75 label [1.00, 2.00]
                 // - ComponentB 0.75
                 // - ComponentB 0.75 label [1.00, 2.00]
-                
+
                 // Strategy: Find the last occurrence of a number pattern (maturity) and everything after it
                 // This handles both quoted and unquoted names, with or without labels
                 const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
                 const maturityMatch = remainder.match(maturityPattern);
-                
+
                 if (maturityMatch) {
                     // Found maturity (and possibly label), so split there
                     const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
@@ -213,10 +213,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     // Extract quoted evolved name
                     try {
                         const quotedContent = evolvedPart.slice(1, -1); // Remove outer quotes
-                        evolvedNameInLine = quotedContent
-                            .replace(/\\"/g, '"')
-                            .replace(/\\n/g, '\n')
-                            .replace(/\\\\/g, '\\');
+                        evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                     } catch (error) {
                         return line;
                     }
@@ -225,25 +222,26 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     evolvedNameInLine = evolvedPart;
                 }
 
-
                 // Check if this is the evolved component we're renaming
                 // We need to match the EVOLVED component name (after arrow), not the source name
                 if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(oldName)) {
                     // Format the new name appropriately
                     let formattedNewName = newName;
-                    const needsQuotes = newName.includes('\n') || newName.includes('"') || newName.includes("'") || newName.includes('\\') || newName.includes(' ');
-                    
+                    const needsQuotes =
+                        newName.includes('\n') ||
+                        newName.includes('"') ||
+                        newName.includes("'") ||
+                        newName.includes('\\') ||
+                        newName.includes(' ');
+
                     if (needsQuotes) {
-                        const escapedName = newName
-                            .replace(/\\/g, '\\\\')
-                            .replace(/"/g, '\\"')
-                            .replace(/\n/g, '\\n');
+                        const escapedName = newName.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
                         formattedNewName = `"${escapedName}"`;
                     }
 
                     // Reconstruct the evolve line with the new evolved name
                     const newEvolveLine = `evolve ${sourcePart}->${formattedNewName}${maturityPart}`;
-                    
+
                     updated = true;
                     return line.replace(trimmedLine, newEvolveLine);
                 }
@@ -254,7 +252,10 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             if (!updated) {
                 return {
                     success: false,
-                    error: `Could not find evolved component "${oldName}" in the map text. Available evolve lines: ${lines.filter(line => line.trim().startsWith('evolve ')).map(line => line.trim()).join(', ')}`,
+                    error: `Could not find evolved component "${oldName}" in the map text. Available evolve lines: ${lines
+                        .filter(line => line.trim().startsWith('evolve '))
+                        .map(line => line.trim())
+                        .join(', ')}`,
                 };
             }
             mutateMapText(updatedLines.join('\n'));
@@ -270,8 +271,8 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     const handleSave = () => {
         // For evolved components, we need to check if the text has changed from the displayed name (override), not the source name
-        let currentDisplayName = component.evolved ? (component.override || component.name) : component.name;
-        
+        let currentDisplayName = component.evolved ? component.override || component.name : component.name;
+
         // Handle quoted override names for evolved components
         if (component.evolved && component.override) {
             if (component.override.startsWith('"') && component.override.endsWith('"')) {
@@ -280,7 +281,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 currentDisplayName = component.override;
             }
         }
-        
+
         if (mutateMapText && mapText && text !== currentDisplayName && component.line) {
             // Determine if we need quoted format for multi-line or special characters
             const needsQuotes = text.includes('\n') || text.includes('"') || text.includes("'") || text.includes('\\');
@@ -437,7 +438,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             // Support both evolve formats:
             // 1. "evolve ComponentName maturity [label]" (simple format)
             // 2. "evolve Source->Evolved maturity [label]" (arrow format)
-            
+
             // Find the arrow position
             let arrowPos = -1;
             let inQuotes = false;
@@ -469,15 +470,15 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             }
 
             let evolvedNameInLine = '';
-            
+
             if (arrowPos !== -1) {
                 // Arrow format: "evolve Source->Evolved maturity [label]"
                 const remainder = evolveContent.substring(arrowPos + 2).trim();
-                
+
                 // Parse the remainder to get evolved name (before maturity)
                 const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
                 const maturityMatch = remainder.match(maturityPattern);
-                
+
                 let evolvedPart = '';
                 if (maturityMatch) {
                     const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
@@ -490,10 +491,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
                     // Extract quoted evolved name
                     const quotedContent = evolvedPart.slice(1, -1);
-                    evolvedNameInLine = quotedContent
-                        .replace(/\\"/g, '"')
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\\\/g, '\\');
+                    evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 } else {
                     // Unquoted evolved name
                     evolvedNameInLine = evolvedPart;
@@ -502,7 +500,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 // Simple format: "evolve ComponentName maturity [label]"
                 const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
                 const maturityMatch = evolveContent.match(maturityPattern);
-                
+
                 let evolvedPart = '';
                 if (maturityMatch) {
                     const maturityStartIndex = evolveContent.lastIndexOf(maturityMatch[0]);
@@ -514,10 +512,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 // Extract evolved component name (same logic as above)
                 if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
                     const quotedContent = evolvedPart.slice(1, -1);
-                    evolvedNameInLine = quotedContent
-                        .replace(/\\"/g, '"')
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\\\/g, '\\');
+                    evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 } else {
                     evolvedNameInLine = evolvedPart;
                 }
@@ -529,7 +524,11 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 // Use override if available, otherwise fall back to component name
                 componentNameToMatch = component.override || component.name;
                 if (componentNameToMatch.startsWith('"') && componentNameToMatch.endsWith('"')) {
-                    componentNameToMatch = componentNameToMatch.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                    componentNameToMatch = componentNameToMatch
+                        .slice(1, -1)
+                        .replace(/\\"/g, '"')
+                        .replace(/\\n/g, '\n')
+                        .replace(/\\\\/g, '\\');
                 }
             }
 
@@ -600,11 +599,11 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             }
             return component.override;
         }
-        
+
         if (element?.name) {
             return element.name;
         }
-        
+
         return component.name;
     };
 
