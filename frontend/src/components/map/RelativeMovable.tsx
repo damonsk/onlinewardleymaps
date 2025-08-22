@@ -28,6 +28,8 @@ interface ModernRelativeMovableProps {
 
 const RelativeMovable: React.FC<ModernRelativeMovableProps> = props => {
     const [moving, setMoving] = React.useState(false);
+    const [lastClickTime, setLastClickTime] = React.useState(0);
+    const [ignoreNextMouseUp, setIgnoreNextMouseUp] = React.useState(false);
     const x = useCallback(() => props.x, [props.x]);
     const y = useCallback(() => props.y, [props.y]);
     const [position, setPosition] = React.useState<Position>({
@@ -66,6 +68,19 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = props => {
     };
 
     const handleMouseDown = (e: MouseEvent<SVGGElement>) => {
+        const currentTime = Date.now();
+        const timeSinceLastClick = currentTime - lastClickTime;
+        
+        // Detect double-click (within 500ms)
+        if (timeSinceLastClick < 500) {
+            // This is a double-click, don't treat it as a drag
+            setIgnoreNextMouseUp(true);
+            setLastClickTime(0); // Reset to prevent triple-clicks from being treated as double-clicks
+            return;
+        }
+        
+        setLastClickTime(currentTime);
+        
         const pageX = e.pageX;
         const pageY = e.pageY;
         setMoving(true);
@@ -83,6 +98,15 @@ const RelativeMovable: React.FC<ModernRelativeMovableProps> = props => {
 
     const handleMouseUp = () => {
         document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('keyup', handleEscape);
+        
+        // If this mouseUp is from a double-click, don't treat it as end of drag
+        if (ignoreNextMouseUp) {
+            setIgnoreNextMouseUp(false);
+            setMoving(false);
+            return;
+        }
+        
         setPosition(position =>
             Object.assign({}, position, {
                 coords: {},

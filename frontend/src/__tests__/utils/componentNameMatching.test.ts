@@ -221,7 +221,7 @@ describe('Component Name Matching Utilities', () => {
         });
 
         it('should handle brackets', () => {
-            expect(escapeComponentNameForMapText('Component[bracket]')).toBe('"Component[bracket]"');
+            expect(escapeComponentNameForMapText('Component[bracket]')).toBe('"Component\\[bracket\\]"');
         });
 
         it('should handle carriage returns and tabs', () => {

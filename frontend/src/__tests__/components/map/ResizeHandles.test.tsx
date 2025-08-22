@@ -116,17 +116,24 @@ describe('ResizeHandles Component - Core Functionality', () => {
     });
 
     it('positions handles correctly', () => {
+        // Mock non-touch device for consistent positioning calculations
+        Object.defineProperty(navigator, 'maxTouchPoints', {
+            writable: true,
+            value: 0,
+        });
+        delete (window as any).ontouchstart;
+
         renderResizeHandles();
 
         // Top-left should be at bounds origin minus offset (4px for 8px handle)
         const topLeft = screen.getByTestId('resize-handle-top-left');
-        expect(topLeft).toHaveAttribute('x', '96'); // 100 - 8 (handle size 8, offset 8)
-        expect(topLeft).toHaveAttribute('y', '46'); // 50 - 8
+        expect(topLeft).toHaveAttribute('x', '96'); // 100 - 4 (handle size 8, offset 4)
+        expect(topLeft).toHaveAttribute('y', '46'); // 50 - 4 (handle size 8, offset 4)
 
         // Bottom-right should be at bounds end minus offset
         const bottomRight = screen.getByTestId('resize-handle-bottom-right');
-        expect(bottomRight).toHaveAttribute('x', '296'); // 100 + 200 - 8
-        expect(bottomRight).toHaveAttribute('y', '146'); // 50 + 100 - 8
+        expect(bottomRight).toHaveAttribute('x', '296'); // 100 + 200 - 4 (handle size 8, offset 4)
+        expect(bottomRight).toHaveAttribute('y', '146'); // 50 + 100 - 4 (handle size 8, offset 4)
     });
 
     it('scales handle size based on scale factor', () => {

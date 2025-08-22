@@ -163,19 +163,14 @@ ecosystem "Developer Tools\\nSDK and APIs\\nThird-party Integration" [0.3, 0.7]`
             consoleSpy.mockRestore();
         });
 
-        it('should apply validation recovery to decorator component names', () => {
-            const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
+        it('should handle empty decorator component names with simple fallback', () => {
             const mapText = 'outsource ""'; // Empty component name
             const strategy = new MethodExtractionStrategy(mapText);
             const result = strategy.apply();
 
             expect(result.methods).toHaveLength(1);
-            expect(result.methods[0].name).toBe('Recovered Component Name');
+            expect(result.methods[0].name).toBe('Component'); // Simple fallback, no recovery
             expect(result.methods[0].outsource).toBe(true);
-            expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Method decorator component name recovery'), expect.anything());
-
-            consoleSpy.mockRestore();
         });
 
         it('should handle syntax-breaking characters in decorator names', () => {
@@ -184,8 +179,8 @@ ecosystem "Developer Tools\\nSDK and APIs\\nThird-party Integration" [0.3, 0.7]`
             const result = strategy.apply();
 
             expect(result.methods).toHaveLength(1);
-            // Name should be recovered due to brackets being syntax-breaking
-            expect(result.methods[0].name).toBe('Component');
+            // Simple parsing - keeps the name as-is, validation should happen at input time
+            expect(result.methods[0].name).toBe('Component [with] brackets');
             expect(result.methods[0].build).toBe(true);
         });
     });

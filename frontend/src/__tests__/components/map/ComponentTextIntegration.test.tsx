@@ -24,9 +24,9 @@ jest.mock('../../../components/map/InlineEditor', () => {
 
 // Mock ComponentTextSymbol
 jest.mock('../../../components/symbols/ComponentTextSymbol', () => {
-    return function MockComponentTextSymbol({text, onClick}: any) {
+    return function MockComponentTextSymbol({text, onClick, onDoubleClick}: any) {
         return (
-            <text data-testid="component-text-symbol" onClick={onClick}>
+            <text data-testid="component-text-symbol" onClick={onClick} onDoubleClick={onDoubleClick}>
                 {text}
             </text>
         );
@@ -131,7 +131,7 @@ describe('ComponentText Integration with InlineEditor', () => {
         renderWithFeatureSwitches(defaultProps);
 
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         await waitFor(() => {
             expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
@@ -143,7 +143,7 @@ describe('ComponentText Integration with InlineEditor', () => {
         renderWithFeatureSwitches(defaultProps, false);
 
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         expect(screen.queryByTestId('inline-editor')).not.toBeInTheDocument();
     });
@@ -156,7 +156,7 @@ describe('ComponentText Integration with InlineEditor', () => {
 
         // Enter edit mode
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         await waitFor(() => {
             expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
@@ -178,7 +178,7 @@ describe('ComponentText Integration with InlineEditor', () => {
 
         // Enter edit mode
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         await waitFor(() => {
             expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
@@ -205,7 +205,7 @@ describe('ComponentText Integration with InlineEditor', () => {
 
         // Enter edit mode
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         await waitFor(() => {
             const inlineEditor = screen.getByTestId('inline-editor');
@@ -222,7 +222,7 @@ describe('ComponentText Integration with InlineEditor', () => {
 
         // Enter edit mode
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         await waitFor(() => {
             // In test environment (not Safari), should use InlineEditor
@@ -247,7 +247,7 @@ describe('ComponentText Integration with InlineEditor', () => {
 
         // Enter edit mode
         const textSymbol = screen.getByTestId('component-text-symbol');
-        fireEvent.click(textSymbol);
+        fireEvent.doubleClick(textSymbol);
 
         await waitFor(() => {
             // Should use InlineEditor for consistent behavior across all browsers

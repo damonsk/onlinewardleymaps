@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {rename} from '../../constants/rename';
 import {UnifiedComponent} from '../../types/unified';
+import {normalizeComponentName} from '../../utils/componentNameMatching';
+import {createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS} from '../../utils/componentNameValidation';
 import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';
-import {normalizeComponentName} from '../../utils/componentNameMatching';
-import {createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS} from '../../utils/componentNameValidation';
 
 interface MovedPosition {
     x: number;
@@ -76,7 +76,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
     useEffect(() => {
         const shouldBeEditing = isElementEditing(component.id);
-        
+
         if (shouldBeEditing && !editMode) {
             setEditMode(true);
         } else if (!shouldBeEditing && editMode) {
@@ -93,10 +93,20 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         };
     }, [editMode, stopEditing]);
 
-    const handleDoubleClick = () => {
+    const handleDoubleClick = (event?: React.MouseEvent) => {
+        // Prevent event propagation to avoid conflicts with drag handlers and map clicks
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        // Execute onClick if provided (e.g., to select the component)
         if (onClick) {
             onClick();
-        } else if (enableDoubleClickRename && mapText) {
+        }
+        
+        // Always attempt to start edit mode on double-click if feature is enabled
+        if (enableDoubleClickRename && mapText) {
             setEditMode(true);
             startEditing(component.id, 'component');
         }
@@ -105,7 +115,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const handleSave = () => {
         if (mutateMapText && mapText && text !== component.name && component.line) {
             // Determine if we need quoted format for multi-line or special characters
-            const needsQuotes = text.includes('\n') || text.includes('"') || text.includes('\\');
+            const needsQuotes = text.includes('\n') || text.includes('"') || text.includes("'") || text.includes('\\');
 
             let processedText = text;
             if (needsQuotes) {
@@ -113,7 +123,8 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 processedText = `"${
                     text
                         .replace(/\\/g, '\\\\') // Escape backslashes first
-                        .replace(/"/g, '\\"') // Escape quotes
+                        .replace(/"/g, '\\"') // Escape double quotes
+                        .replace(/'/g, "\\'") // Escape single quotes
                         .replace(/\n/g, '\\n') // Escape line breaks
                 }"`;
             }
@@ -322,8 +333,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     evolvedTextColor: textFill,
                     textColor: textFill,
                 }}
-                onClick={handleDoubleClick}
-                setShowTextField={enableDoubleClickRename && mapText ? setEditMode : undefined}
+                onDoubleClick={handleDoubleClick}
             />
         </RelativeMovable>
     );

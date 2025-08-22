@@ -93,16 +93,20 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     const [contextMenuState, setContextMenuState] = useState<ContextMenuState>(defaultContextMenuState);
     const {getSelectedComponentId, isSelected, clearSelection, selectComponent} = useComponentSelection();
     const {deleteComponent} = useMapComponentDeletion();
+    
+    // Use provided wardleyMap or default to null if not provided
+    const computedWardleyMap = wardleyMap;
 
     // Enhanced component detection from map data
     const detectElementFromComponent = useCallback(
         (componentId: string): MapElement | null => {
-            if (!wardleyMap) {
+            if (!computedWardleyMap) {
                 return null;
             }
 
             // Search in all components (regular and evolved)
-            const allComponents = [...(wardleyMap.components || []), ...(wardleyMap.anchors || [])];
+            const allComponents = [...(computedWardleyMap.components || []), ...(computedWardleyMap.anchors || [])];
+            
             
             let component = allComponents.find(c => c.id === componentId);
             
@@ -133,7 +137,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
             return mapElement;
         },
-        [wardleyMap],
+        [computedWardleyMap],
     );
 
     const showContextMenu = useCallback(
@@ -148,11 +152,24 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
             }
 
             if (!mapElement) {
-                // Fallback: store the original element (string/number) for backward compatibility
+                // Fallback: create a minimal MapElement from the component ID
+                const fallbackElement: MapElement = {
+                    type: 'component',
+                    id: String(element),
+                    name: String(element),
+                    properties: {
+                        name: String(element),
+                        inertia: false,
+                        evolved: false,
+                        maturity: 0,
+                        visibility: 0,
+                        method: undefined,
+                    },
+                };
                 setContextMenuState({
                     isOpen: true,
                     position,
-                    element: element as any, // Store the original ID for fallback mode
+                    element: fallbackElement,
                 });
                 return;
             }

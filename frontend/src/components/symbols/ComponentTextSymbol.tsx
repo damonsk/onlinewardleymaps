@@ -100,9 +100,10 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     }
     const handleDblClick = (e: React.MouseEvent<SVGTextElement, MouseEvent>): void => {
         e.stopPropagation();
-
+        console.log('DBLClick');
         // Call external double-click handler if provided (for Notes)
         if (onDoubleClick) {
+            console.log('DBLClick', onDoubleClick);
             onDoubleClick(e);
         }
 

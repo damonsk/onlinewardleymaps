@@ -237,7 +237,7 @@ describe('setName function', () => {
         it('should handle empty component names', () => {
             const element = 'component [0.5, 0.5]';
             setName(baseElement, element, config);
-            expect(baseElement.name).toBe('');
+            expect(baseElement.name).toBe('Recovered Component Name'); // Empty name should be recovered
         });
 
         it('should handle component names with numbers', () => {
@@ -281,7 +281,7 @@ describe('setName function', () => {
         it('should handle empty quoted component names', () => {
             const element = 'component "" [0.5, 0.5]';
             setName(baseElement, element, config);
-            expect(baseElement.name).toBe('');
+            expect(baseElement.name).toBe('Recovered Component Name'); // Should recover empty quoted names
         });
 
         it('should handle multi-line component names with empty lines', () => {
@@ -313,13 +313,13 @@ describe('setName function', () => {
         it('should handle component names with only quotes', () => {
             const element = 'component "\\"" [0.5, 0.5]';
             setName(baseElement, element, config);
-            expect(baseElement.name).toBe('"');
+            expect(baseElement.name).toBe('"'); // Should preserve escaped quotes
         });
 
         it('should handle component names with only line breaks', () => {
             const element = 'component "\\n\\n\\n" [0.5, 0.5]';
             setName(baseElement, element, config);
-            expect(baseElement.name).toBe('\n\n\n');
+            expect(baseElement.name).toBe('\n\n\n'); // Should preserve line breaks
         });
     });
 
@@ -415,7 +415,7 @@ describe('setNameWithMaturity function - evolution parsing', () => {
         it('should parse evolve statements with overrides', () => {
             const element = 'evolve Original Name -> New Name 0.7';
             setNameWithMaturity(baseElement, element);
-            expect(baseElement.name).toBe('Original Name ');
+            expect(baseElement.name).toBe('Original Name'); // Trailing space should be trimmed
             expect(baseElement.override).toBe('New Name');
             expect(baseElement.maturity).toBe(0.7);
         });
@@ -491,7 +491,7 @@ describe('setNameWithMaturity function - evolution parsing', () => {
         it('should parse empty quoted component names', () => {
             const element = 'evolve "" 0.5';
             setNameWithMaturity(baseElement, element);
-            expect(baseElement.name).toBe('');
+            expect(baseElement.name).toBe('Recovered Component Name'); // Should recover empty evolution names too
             expect(baseElement.maturity).toBe(0.5);
         });
 
@@ -528,14 +528,14 @@ describe('setNameWithMaturity function - evolution parsing', () => {
         it('should handle only escaped quotes', () => {
             const element = 'evolve "\\"" 0.4';
             setNameWithMaturity(baseElement, element);
-            expect(baseElement.name).toBe('"');
+            expect(baseElement.name).toBe('"'); // Should preserve escaped quotes
             expect(baseElement.maturity).toBe(0.4);
         });
 
         it('should handle only line breaks', () => {
             const element = 'evolve "\\n\\n\\n" 0.3';
             setNameWithMaturity(baseElement, element);
-            expect(baseElement.name).toBe('\n\n\n');
+            expect(baseElement.name).toBe('\n\n\n'); // Should preserve line breaks
             expect(baseElement.maturity).toBe(0.3);
         });
     });

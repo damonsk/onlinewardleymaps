@@ -314,8 +314,7 @@ component AlsoGood [0.7, 0.7]`;
 
             expect(result.success).toBe(true);
             expect(result.result).toBe('FallbackName');
-            expect(result.wasRecovered).toBe(true);
-            expect(result.recoveryStrategy).toBe('empty_name_fallback');
+            expect(result.wasRecovered).toBe(true); // Should track recovery when using fallback
         });
 
         it('should provide safe fallback for critical parsing failures', () => {

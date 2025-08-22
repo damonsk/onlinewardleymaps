@@ -185,3 +185,5 @@ When requested, provide deeper analysis including:
 ---
 
 This methodology ensures high-quality, well-tested software development through structured phases, clear requirements, and iterative feedback loops. It provides the framework for reliable agentic development while maintaining human oversight and control.
+
+Do not mention Claude or co-aithored by claude in any commit messages.

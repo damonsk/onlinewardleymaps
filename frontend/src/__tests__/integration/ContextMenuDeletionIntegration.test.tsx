@@ -74,7 +74,7 @@ pioneers PST Box [0.8, 0.2] [0.6, 0.4]`;
         });
 
         // Check if delete option is available
-        const deleteOption = screen.getByText('Delete');
+        const deleteOption = screen.getByText('Delete Component');
         expect(deleteOption).toBeInTheDocument();
 
         // Click delete option
@@ -103,7 +103,7 @@ pioneers PST Box [0.8, 0.2] [0.6, 0.4]`;
         });
 
         // Check if delete option is available
-        const deleteOption = screen.getByText('Delete');
+        const deleteOption = screen.getByText('Delete Component');
         expect(deleteOption).toBeInTheDocument();
 
         // Click delete option

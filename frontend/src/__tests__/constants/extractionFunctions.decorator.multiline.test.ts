@@ -28,21 +28,16 @@ describe('Method Decorator Multi-line Component Name Support', () => {
             expect(baseElement.outsource).toBe(false);
         });
 
-        it('should handle escaped quotes in multi-line component names for buy decorator with validation recovery', () => {
-            const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
+        it('should handle escaped quotes in multi-line component names for buy decorator', () => {
             const baseElement: any = {};
             const element = 'buy "Component with \\"quotes\\" and\\nline breaks"';
             const config = {keyword: 'buy'};
 
             setMethod(baseElement, element, config);
 
-            // Name gets recovered due to quotes being syntax-breaking characters
-            expect(baseElement.name).toBe('Component');
+            // Simple parsing - handles basic escaping
+            expect(baseElement.name).toBe('Component with "quotes" and\nline breaks');
             expect(baseElement.buy).toBe(true);
-            expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Method decorator component name recovery'), expect.anything());
-
-            consoleSpy.mockRestore();
         });
 
         it('should handle complex escaping for buy decorator', () => {
@@ -152,21 +147,16 @@ describe('Method Decorator Multi-line Component Name Support', () => {
             consoleSpy.mockRestore();
         });
 
-        it('should recover from empty component names in decorators', () => {
-            const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
+        it('should handle empty component names in decorators', () => {
             const baseElement: any = {};
             const element = 'build ""';
             const config = {keyword: 'build'};
 
             setMethod(baseElement, element, config);
 
-            // Should recover to a default name
-            expect(baseElement.name).toBe('Recovered Component Name');
+            // Simple fallback - no complex recovery needed
+            expect(baseElement.name).toBe('Component');
             expect(baseElement.build).toBe(true);
-            expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Method decorator component name recovery'), expect.anything());
-
-            consoleSpy.mockRestore();
         });
 
         it('should sanitize problematic characters in decorator component names', () => {
@@ -228,22 +218,17 @@ describe('Method Decorator Multi-line Component Name Support', () => {
     });
 
     describe('validation integration', () => {
-        it('should apply validation rules to decorator component names', () => {
-            const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
+        it('should handle very long component names', () => {
             const baseElement: any = {};
-            const longName = 'A'.repeat(600); // Exceeds validation limits
+            const longName = 'A'.repeat(600); // Very long name
             const element = `buy "${longName}"`;
             const config = {keyword: 'buy'};
 
             setMethod(baseElement, element, config);
 
-            // Should recover from invalid name
-            expect(baseElement.name).toBe('Recovered Component Name');
+            // Simple parsing - just uses the name as provided (validation should happen at input time)
+            expect(baseElement.name).toBe(longName);
             expect(baseElement.buy).toBe(true);
-            expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Method decorator component name recovery'), expect.anything());
-
-            consoleSpy.mockRestore();
         });
 
         it('should handle syntax-breaking characters in decorator names', () => {
@@ -253,8 +238,8 @@ describe('Method Decorator Multi-line Component Name Support', () => {
 
             setMethod(baseElement, element, config);
 
-            // Should be recovered due to syntax-breaking characters
-            expect(baseElement.name).toBe('Component');
+            // Simple parsing - keeps the name as-is (validation should happen at input time)
+            expect(baseElement.name).toBe('Component [with] brackets');
             expect(baseElement.build).toBe(true);
         });
     });

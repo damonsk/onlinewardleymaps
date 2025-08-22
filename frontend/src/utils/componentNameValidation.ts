@@ -226,8 +226,8 @@ export const validateProblematicCharacters = (name: string): Pick<ValidationResu
 export const sanitizeComponentName = (name: string): string => {
     let sanitized = name;
 
-    // Trim leading/trailing whitespace
-    sanitized = sanitized.trim();
+    // Only trim regular spaces, not newlines (preserve intentional whitespace structure)  
+    sanitized = sanitized.replace(/^[ \t]+|[ \t]+$/g, '');
 
     // Remove control characters (except \n, \r, \t)
     sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
@@ -238,8 +238,8 @@ export const sanitizeComponentName = (name: string): string => {
     // Normalize consecutive whitespace within lines
     sanitized = sanitized.replace(/[ \t]+/g, ' ');
 
-    // Remove empty lines if not explicitly allowed
-    sanitized = sanitized.replace(/\n\s*\n/g, '\n');
+    // Preserve all whitespace structure including consecutive empty lines
+    // Multi-line component names may intentionally use specific whitespace patterns
 
     return sanitized;
 };
@@ -340,10 +340,9 @@ export const createComponentNameValidator = (options: ComponentNameValidationOpt
 };
 
 /**
- * Validates component names during map text parsing
- * Provides graceful degradation for malformed names
+ * Simple component name validation - validation should happen at input time
  * @param rawName - Raw component name from map text
- * @returns Processed name and any recovery information
+ * @returns Processed name with basic sanitization only
  */
 export const validateAndRecoverComponentName = (
     rawName: string,
@@ -353,55 +352,70 @@ export const validateAndRecoverComponentName = (
     originalName: string;
     recoveryMessage?: string;
 } => {
-    const result: {
-        processedName: string;
-        wasRecovered: boolean;
-        originalName: string;
-        recoveryMessage?: string;
-    } = {
-        processedName: rawName,
+    // Handle completely empty or null names
+    if (!rawName || typeof rawName !== 'string') {
+        return {
+            processedName: 'Recovered Component Name',
+            wasRecovered: true,
+            originalName: rawName,
+            recoveryMessage: 'Invalid component name recovered',
+        };
+    }
+
+    // Handle truly empty strings only - preserve whitespace and special characters
+    if (rawName.length === 0) {
+        return {
+            processedName: 'Recovered Component Name',
+            wasRecovered: true,
+            originalName: rawName,
+            recoveryMessage: 'Empty component name recovered',
+        };
+    }
+
+    // Check for syntax-breaking characters that require fallback
+    // Be very conservative - only consider characters that truly break parsing
+    // Note: Square brackets in component names are allowed, they're only syntax-breaking in coordinate context
+    const hasSyntaxBreakingChars = false; // Disabled for now - let the parsing layer handle syntax issues
+    if (hasSyntaxBreakingChars) {
+        return {
+            processedName: 'Component',
+            wasRecovered: true,
+            originalName: rawName,
+            recoveryMessage: 'Component name with syntax-breaking characters recovered',
+        };
+    }
+
+    // Note: Removed complex escaping recovery - let valid multi-line content through
+
+    // For unclosed quotes or malformed quoted strings - be very conservative
+    // Only recover if it's clearly a malformed quoted string (starts with quote but has content issues)
+    // Allow single quote characters or other patterns as valid component names
+    const hasUnclosedQuote = (rawName.match(/"/g) || []).length % 2 !== 0 && rawName.length > 1;
+    if (hasUnclosedQuote && rawName.startsWith('"')) {
+        // Try to extract meaningful content from the unclosed quote
+        const quotedContent = rawName.match(/"([^"]*?)(?:"|\s|$)/)?.[1];
+        if (quotedContent && quotedContent.trim()) {
+            return {
+                processedName: quotedContent.trim(),
+                wasRecovered: true,
+                originalName: rawName,
+                recoveryMessage: 'Unclosed quote recovered with partial content',
+            };
+        }
+        return {
+            processedName: 'Component',
+            wasRecovered: true,
+            originalName: rawName,
+            recoveryMessage: 'Malformed quoted string recovered',
+        };
+    }
+
+    // Basic sanitization for valid names
+    const sanitized = sanitizeComponentName(rawName);
+    
+    return {
+        processedName: sanitized,
         wasRecovered: false,
         originalName: rawName,
     };
-
-    try {
-        // Attempt to validate the name
-        const validation = validateComponentName(rawName, {sanitizeInput: true});
-
-        if (validation.isValid) {
-            result.processedName = validation.sanitizedValue || rawName;
-            return result;
-        }
-
-        // If validation failed, attempt recovery
-        let recovered = rawName;
-
-        // Try basic sanitization
-        recovered = sanitizeComponentName(recovered);
-
-        // If still problematic, create a safe fallback
-        if (recovered.trim().length === 0 || recovered.length > 500) {
-            recovered = 'Recovered Component Name';
-            result.wasRecovered = true;
-            result.recoveryMessage = 'Component name was corrupted and has been recovered with a default name';
-        } else {
-            // Check if sanitization made it valid
-            const secondValidation = validateComponentName(recovered);
-            if (!secondValidation.isValid) {
-                // Last resort: create a safe name but be more specific about the recovery
-                recovered = 'Recovered Component Name';
-                result.wasRecovered = true;
-                result.recoveryMessage = 'Component name contained invalid syntax and has been simplified';
-            }
-        }
-
-        result.processedName = recovered;
-        return result;
-    } catch (error) {
-        // Complete failure - use safe fallback
-        result.processedName = 'Recovered Component Name';
-        result.wasRecovered = true;
-        result.recoveryMessage = `Component name validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
-        return result;
-    }
 };

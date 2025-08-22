@@ -76,8 +76,8 @@ describe('Multi-line Component Extraction Integration', () => {
             const result = strategy.apply();
 
             expect(result.elements).toHaveLength(1);
-            // Name gets recovered due to validation of syntax-breaking characters or complexity
-            expect(result.elements[0].name).toBe('Component');
+            // Complex escaping is now preserved (no recovery needed)
+            expect(result.elements[0].name).toBe('Complex "quote" and \n newline and \\\\ backslash');
             expect(result.elements[0].visibility).toBe(0.1);
             expect(result.elements[0].maturity).toBe(0.9);
         });
@@ -161,8 +161,8 @@ component B [0.8, 0.2]`;
             const result = strategy.apply();
 
             expect(result.elements).toHaveLength(1);
-            // Name gets recovered due to parentheses being syntax-breaking characters
-            expect(result.elements[0].name).toBe('Component');
+            // Multi-line documentation names are now preserved (no recovery needed)
+            expect(result.elements[0].name).toBe('User Authentication\nService\n(OAuth 2.0)');
             expect(result.elements[0].visibility).toBe(0.2);
             expect(result.elements[0].maturity).toBe(0.8);
         });
@@ -173,8 +173,8 @@ component B [0.8, 0.2]`;
             const result = strategy.apply();
 
             expect(result.elements).toHaveLength(1);
-            // Name gets recovered due to parentheses being syntax-breaking characters
-            expect(result.elements[0].name).toBe('Component');
+            // Technical details with parentheses are now preserved (no recovery needed)
+            expect(result.elements[0].name).toBe('Database\nPostgreSQL 13\n(Primary)');
             expect(result.elements[0].visibility).toBe(0.6);
             expect(result.elements[0].maturity).toBe(0.4);
         });

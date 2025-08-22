@@ -24,12 +24,13 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
     };
 
     let name: string;
+    let parseResult: any = null;
 
     // Try enhanced parsing for quoted strings, fallback to legacy for simple cases
     if (afterKeyword.startsWith('"')) {
-        const parseResult = safeParseComponentName(afterKeyword, context, 'Component');
+        parseResult = safeParseComponentName(afterKeyword, context, 'Component');
 
-        name = parseResult.result || 'Component';
+        name = parseResult.result !== undefined ? parseResult.result : 'Component';
 
         // Log parsing issues for debugging
         if (parseResult.errors.length > 0) {
@@ -51,19 +52,23 @@ export const setName = (baseElement: IProvideBaseElement & {name?: string}, elem
         }
     }
 
-    // Additional validation and recovery
-    const recovery = validateAndRecoverComponentName(name);
+    // Additional validation and recovery - only if parsing didn't already do recovery
+    let finalName = name;
+    if (!parseResult || !parseResult.wasRecovered) {
+        const recovery = validateAndRecoverComponentName(name);
+        finalName = recovery.processedName;
 
-    // Use the processed name (might be sanitized or recovered)
-    Object.assign(baseElement, {name: recovery.processedName});
-
-    // Log recovery information if needed (for debugging or user feedback)
-    if (recovery.wasRecovered && recovery.recoveryMessage) {
-        console.warn(`Component name recovery: ${recovery.recoveryMessage}`, {
-            original: recovery.originalName,
-            recovered: recovery.processedName,
-        });
+        // Log recovery information if needed (for debugging or user feedback)
+        if (recovery.wasRecovered && recovery.recoveryMessage) {
+            console.warn(`Component name recovery: ${recovery.recoveryMessage}`, {
+                original: recovery.originalName,
+                recovered: recovery.processedName,
+            });
+        }
     }
+
+    // Use the final name
+    Object.assign(baseElement, {name: finalName});
 };
 
 export const setRef = (baseElement: IProvideBaseElement & {url?: string}, element: string): void => {
@@ -217,28 +222,16 @@ export const setMethod = (
 
     let name: string;
 
-    // Try enhanced parsing for quoted strings, fallback to legacy for simple cases
+    // Simple parsing - validation should happen at input time
     if (afterKeyword.startsWith('"')) {
         const parseResult = safeParseComponentName(afterKeyword, context, 'Component');
-
         name = parseResult.result || 'Component';
-
-        // Log parsing issues for debugging
-        if (parseResult.errors.length > 0) {
-            console.warn(`Method decorator parsing errors on line ${context.line}:`, parseResult.errors);
-        }
-        if (parseResult.warnings.length > 0) {
-            console.info(`Method decorator parsing warnings on line ${context.line}:`, parseResult.warnings);
-        }
-        if (parseResult.wasRecovered && parseResult.recoveryStrategy) {
-            console.warn(`Method decorator name recovered using strategy: ${parseResult.recoveryStrategy}`);
-        }
     } else {
-        // Legacy single-line parsing (backward compatibility) - keep original behavior
-        name = afterKeyword;
+        // Legacy single-line parsing (backward compatibility)
+        name = afterKeyword || 'Component';
     }
 
-    // Additional validation and recovery
+    // Basic sanitization only
     const recovery = validateAndRecoverComponentName(name);
 
     // We set the appropriate boolean flag and name, but NOT increaseLabelSpacing here
@@ -255,13 +248,7 @@ export const setMethod = (
         [config.keyword]: true,
     });
 
-    // Log recovery information if needed (for debugging or user feedback)
-    if (recovery.wasRecovered && recovery.recoveryMessage) {
-        console.warn(`Method decorator component name recovery: ${recovery.recoveryMessage}`, {
-            original: recovery.originalName,
-            recovered: recovery.processedName,
-        });
-    }
+    // No recovery logging needed - validation should happen at input time
 };
 
 export const setAttitude = (
@@ -313,7 +300,7 @@ export const setNameWithMaturity = (
         // Use enhanced parsing for quoted evolution names
         const parseResult = safeParseComponentName(nameSection, context, 'Component');
 
-        if (parseResult.success && parseResult.result) {
+        if (parseResult.success && parseResult.result !== undefined) {
             name = parseResult.result;
 
             // Look for additional evolution syntax after the quoted name
@@ -353,7 +340,7 @@ export const setNameWithMaturity = (
             }
         } else {
             // Parsing failed, use fallback
-            name = parseResult.result || 'Component';
+            name = parseResult.result !== undefined ? parseResult.result : 'Component';
         }
 
         // Log parsing issues
