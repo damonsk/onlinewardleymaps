@@ -54,7 +54,7 @@ describe('Context Menu Deletion Integration', () => {
 
     const testMapText = `title Test Map
 component Test Component [0.9, 0.1]
-pioneers PST Box [0.8, 0.2] [0.6, 0.4]`;
+pioneers [0.8, 0.2, 0.6, 0.4]`;
 
     beforeEach(() => {
         jest.clearAllMocks();

@@ -74,7 +74,9 @@ export default class BaseStrategyRunner implements IParseStrategy {
 
                     if (elementValid) {
                         // Validate that the element has required properties
-                        if (!baseElement.name && this.keyword !== 'title' && this.keyword !== 'presentation') {
+                        // PST elements (pioneers, settlers, townplanners) don't require names
+                        const isPSTElement = ['pioneers', 'settlers', 'townplanners'].includes(this.keyword);
+                        if (!baseElement.name && this.keyword !== 'title' && this.keyword !== 'presentation' && !isPSTElement) {
                             console.warn(`Element on line ${i + 1} missing name, using fallback`);
                             baseElement.name = `${this.keyword.charAt(0).toUpperCase() + this.keyword.slice(1)} ${i + 1}`;
                         }

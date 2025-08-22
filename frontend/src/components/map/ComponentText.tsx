@@ -72,8 +72,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     useEffect(() => {
         let nameToDisplay = displayName;
         // Handle quoted override names for evolved components
-        if (component.evolved && component.override && component.override.startsWith('"') && component.override.endsWith('"')) {
-            nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        if (component.evolved && component.override) {
+            if (component.override.startsWith('"') && component.override.endsWith('"')) {
+                nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            } else {
+                nameToDisplay = component.override;
+            }
         }
         setText(nameToDisplay);
         // Reset multi-line mode when component name changes
@@ -269,8 +273,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         let currentDisplayName = component.evolved ? (component.override || component.name) : component.name;
         
         // Handle quoted override names for evolved components
-        if (component.evolved && component.override && component.override.startsWith('"') && component.override.endsWith('"')) {
-            currentDisplayName = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        if (component.evolved && component.override) {
+            if (component.override.startsWith('"') && component.override.endsWith('"')) {
+                currentDisplayName = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            } else {
+                currentDisplayName = component.override;
+            }
         }
         
         if (mutateMapText && mapText && text !== currentDisplayName && component.line) {
@@ -321,8 +329,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const handleCancel = () => {
         let nameToDisplay = displayName;
         // Handle quoted override names for evolved components
-        if (component.evolved && component.override && component.override.startsWith('"') && component.override.endsWith('"')) {
-            nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        if (component.evolved && component.override) {
+            if (component.override.startsWith('"') && component.override.endsWith('"')) {
+                nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            } else {
+                nameToDisplay = component.override;
+            }
         }
         setText(nameToDisplay);
         setEditMode(false);
@@ -422,8 +434,9 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
             const evolveContent = trimmedLine.substring(7).trim(); // Remove 'evolve '
 
-            // For evolved components, we need to match against the evolved component name (after the arrow)
-            // Parse: "source->evolved maturity [optional label]"
+            // Support both evolve formats:
+            // 1. "evolve ComponentName maturity [label]" (simple format)
+            // 2. "evolve Source->Evolved maturity [label]" (arrow format)
             
             // Find the arrow position
             let arrowPos = -1;
@@ -455,74 +468,77 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 }
             }
 
-            if (arrowPos === -1) {
-                return line; // No arrow found
-            }
-
-            const remainder = evolveContent.substring(arrowPos + 2).trim();
-            console.log('Drag debug - remainder after arrow:', remainder);
-            
-            // Parse the remainder to get evolved name (before maturity)
-            const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
-            const maturityMatch = remainder.match(maturityPattern);
-            console.log('Drag debug - maturity match:', maturityMatch);
-            
-            let evolvedPart = '';
-            if (maturityMatch) {
-                const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
-                evolvedPart = remainder.substring(0, maturityStartIndex).trim();
-                console.log('Drag debug - evolved part extracted:', evolvedPart);
-            } else {
-                evolvedPart = remainder;
-                console.log('Drag debug - no maturity found, using whole remainder as evolved part:', evolvedPart);
-            }
-
-            // Extract evolved component name
             let evolvedNameInLine = '';
-            if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
-                // Extract quoted evolved name
-                const quotedContent = evolvedPart.slice(1, -1);
-                evolvedNameInLine = quotedContent
-                    .replace(/\\"/g, '"')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\\\/g, '\\');
+            
+            if (arrowPos !== -1) {
+                // Arrow format: "evolve Source->Evolved maturity [label]"
+                const remainder = evolveContent.substring(arrowPos + 2).trim();
+                
+                // Parse the remainder to get evolved name (before maturity)
+                const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+                const maturityMatch = remainder.match(maturityPattern);
+                
+                let evolvedPart = '';
+                if (maturityMatch) {
+                    const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
+                    evolvedPart = remainder.substring(0, maturityStartIndex).trim();
+                } else {
+                    evolvedPart = remainder;
+                }
+
+                // Extract evolved component name
+                if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
+                    // Extract quoted evolved name
+                    const quotedContent = evolvedPart.slice(1, -1);
+                    evolvedNameInLine = quotedContent
+                        .replace(/\\"/g, '"')
+                        .replace(/\\n/g, '\n')
+                        .replace(/\\\\/g, '\\');
+                } else {
+                    // Unquoted evolved name
+                    evolvedNameInLine = evolvedPart;
+                }
             } else {
-                // Unquoted evolved name
-                evolvedNameInLine = evolvedPart;
+                // Simple format: "evolve ComponentName maturity [label]"
+                const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+                const maturityMatch = evolveContent.match(maturityPattern);
+                
+                let evolvedPart = '';
+                if (maturityMatch) {
+                    const maturityStartIndex = evolveContent.lastIndexOf(maturityMatch[0]);
+                    evolvedPart = evolveContent.substring(0, maturityStartIndex).trim();
+                } else {
+                    evolvedPart = evolveContent;
+                }
+
+                // Extract evolved component name (same logic as above)
+                if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
+                    const quotedContent = evolvedPart.slice(1, -1);
+                    evolvedNameInLine = quotedContent
+                        .replace(/\\"/g, '"')
+                        .replace(/\\n/g, '\n')
+                        .replace(/\\\\/g, '\\');
+                } else {
+                    evolvedNameInLine = evolvedPart;
+                }
             }
 
-            // For evolved components, match against the evolved name (from override)
+            // For evolved components, match against the evolved name (from override or name)
             let componentNameToMatch = component.name;
-            if (component.evolved && component.override) {
-                componentNameToMatch = component.override;
+            if (component.evolved) {
+                // Use override if available, otherwise fall back to component name
+                componentNameToMatch = component.override || component.name;
                 if (componentNameToMatch.startsWith('"') && componentNameToMatch.endsWith('"')) {
                     componentNameToMatch = componentNameToMatch.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 }
             }
 
-            console.log('processEvolvedLine matching:', {
-                line: trimmedLine,
-                evolvedNameInLine,
-                componentNameToMatch,
-                evolved: component.evolved,
-                override: component.override,
-                normalizedEvolved: normalizeComponentName(evolvedNameInLine),
-                normalizedMatch: normalizeComponentName(componentNameToMatch)
-            });
-
             // Use normalized matching to check if this is our evolved component
             if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(componentNameToMatch)) {
-                console.log('Found matching evolved component for drag update!');
                 if (line.indexOf('label') > -1) {
-                    const updated = line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
-                    console.log('Updated line with existing label:', updated);
-                    return updated;
+                    return line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
                 }
-                const updated = line.trim() + getLabelText(moved.x, moved.y);
-                console.log('Updated line with new label:', updated);
-                return updated;
-            } else {
-                console.log('No match found for evolved component');
+                return line.trim() + getLabelText(moved.x, moved.y);
             }
 
             return line;

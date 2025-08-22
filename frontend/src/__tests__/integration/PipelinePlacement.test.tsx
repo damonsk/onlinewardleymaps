@@ -1,6 +1,7 @@
 import React, {act} from 'react';
 import {createRoot} from 'react-dom/client';
 import {ComponentSelectionProvider} from '../../components/ComponentSelectionContext';
+import {EditingProvider} from '../../components/EditingContext';
 import {MapView} from '../../components/map/MapView';
 import UndoRedoProvider from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
@@ -83,7 +84,7 @@ jest.mock('../../components/map/MapCanvasToolbar', () => {
 });
 
 /**
- * Integration tests for pipeline placement with corresponding component
+ * Integration tests for pipeline placement as standalone entities
  */
 describe('Pipeline Placement Integration Tests', () => {
     let container: HTMLDivElement;
@@ -233,15 +234,17 @@ describe('Pipeline Placement Integration Tests', () => {
         act(() => {
             root.render(
                 <ComponentSelectionProvider>
-                    <UndoRedoProvider {...defaultProps} {...props}>
-                        <MapView {...defaultProps} {...props} />
-                    </UndoRedoProvider>
+                    <EditingProvider>
+                        <UndoRedoProvider {...defaultProps} {...props}>
+                            <MapView {...defaultProps} {...props} />
+                        </UndoRedoProvider>
+                    </EditingProvider>
                 </ComponentSelectionProvider>,
             );
         });
     };
 
-    it('should add both component and pipeline when placing a pipeline', () => {
+    it('should add only pipeline when placing a pipeline', () => {
         const mockMutateMapText = jest.fn();
         renderComponent({mutateMapText: mockMutateMapText});
 
@@ -273,66 +276,36 @@ describe('Pipeline Placement Integration Tests', () => {
             svgPanZoom?.dispatchEvent(event);
         });
 
-        // Verify map text was updated with both component and pipeline
+        // Verify map text was updated with pipeline
         expect(mockMutateMapText).toHaveBeenCalled();
         const updatedText = mockMutateMapText.mock.calls[0][0];
 
-        // Should contain both component and pipeline with the same name and coordinates
-        expect(updatedText).toContain('component New Pipeline');
+        // Should contain pipeline but not a separate component entry
         expect(updatedText).toContain('pipeline New Pipeline');
+        expect(updatedText).not.toContain('component New Pipeline');
 
-        // Extract the coordinates from both entries
-        const componentMatch = updatedText.match(/component New Pipeline \[([0-9.]+), ([0-9.]+)\]/);
+        // Extract the coordinates from pipeline entry
         const pipelineMatch = updatedText.match(/pipeline New Pipeline \[([0-9.]+), ([0-9.]+)\]/);
-
-        expect(componentMatch).toBeTruthy();
         expect(pipelineMatch).toBeTruthy();
-
-        if (componentMatch && pipelineMatch) {
-            // Component and pipeline should have the same coordinates
-            expect(componentMatch[1]).toBe(pipelineMatch[1]); // y coordinate
-            expect(componentMatch[2]).toBe(pipelineMatch[2]); // x coordinate
-        }
     });
 
-    it('should generate unique names for pipelines when existing components exist', () => {
+    it('should place pipeline without unique name generation', () => {
         const mockMutateMapText = jest.fn();
 
-        // Start with a map that already has a pipeline component
-        const initialMapText = 'title Test Map\ncomponent New Pipeline [0.5, 0.5]\npipeline New Pipeline [0.5, 0.5]';
+        // Start with a map that already has a pipeline
+        const initialMapText = 'title Test Map\npipeline New Pipeline [0.5, 0.5]';
 
         renderComponent({
             mapText: initialMapText,
             mutateMapText: mockMutateMapText,
             wardleyMap: {
                 ...mockWardleyMap,
-                components: [
-                    {
-                        name: 'New Pipeline',
-                        maturity: 0.5,
-                        visibility: 0.5,
-                        line: 2,
-                        evolved: false,
-                        inertia: false,
-                        increaseLabelSpacing: 0,
-                        pseudoComponent: false,
-                        offsetY: 0,
-                        evolving: false,
-                        decorators: {
-                            buy: false,
-                            build: false,
-                            outsource: false,
-                            ecosystem: false,
-                            market: false,
-                        },
-                    },
-                ],
                 pipelines: [
                     {
                         name: 'New Pipeline',
                         maturity: 0.5,
                         visibility: 0.5,
-                        line: 3,
+                        line: 2,
                     },
                 ],
             },
@@ -355,16 +328,15 @@ describe('Pipeline Placement Integration Tests', () => {
             svgPanZoom?.dispatchEvent(event);
         });
 
-        // Verify map text was updated with both component and pipeline with unique names
+        // Verify map text was updated with pipeline - no unique naming in mapText
         expect(mockMutateMapText).toHaveBeenCalled();
         const updatedText = mockMutateMapText.mock.calls[0][0];
 
-        // Should contain both component and pipeline with the same name and coordinates
-        expect(updatedText).toContain('component New Pipeline 1');
-        expect(updatedText).toContain('pipeline New Pipeline 1');
+        // Should contain new pipeline with base name, no unique suffix in mapText
+        expect(updatedText).toContain('pipeline New Pipeline');
+        expect(updatedText).not.toContain('component New Pipeline');
 
-        // Should also preserve the existing pipeline and component
-        expect(updatedText).toContain('component New Pipeline [0.5, 0.5]');
+        // Should also preserve the existing pipeline
         expect(updatedText).toContain('pipeline New Pipeline [0.5, 0.5]');
     });
 });

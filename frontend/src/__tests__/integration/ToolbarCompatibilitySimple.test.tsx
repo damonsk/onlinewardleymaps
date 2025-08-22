@@ -7,6 +7,7 @@ jest.mock('react-dom/server', () => ({
 }));
 
 import {ComponentSelectionProvider} from '../../components/ComponentSelectionContext';
+import {EditingProvider} from '../../components/EditingContext';
 import {MapView} from '../../components/map/MapView';
 import {UndoRedoProvider} from '../../components/UndoRedoProvider';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
@@ -264,9 +265,11 @@ describe('Toolbar Compatibility Integration Tests', () => {
         act(() => {
             root.render(
                 <ComponentSelectionProvider>
-                    <UndoRedoProvider {...defaultProps} {...props}>
-                        <MapView {...defaultProps} {...props} />
-                    </UndoRedoProvider>
+                    <EditingProvider>
+                        <UndoRedoProvider {...defaultProps} {...props}>
+                            <MapView {...defaultProps} {...props} />
+                        </UndoRedoProvider>
+                    </EditingProvider>
                 </ComponentSelectionProvider>,
             );
         });

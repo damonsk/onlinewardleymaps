@@ -53,7 +53,7 @@ describe('PST Element User Behavior', () => {
         onResizeEnd: mockOnResizeEnd,
         onHover: mockOnHover,
         mutateMapText: mockMutateMapText,
-        mapText: 'title Test Map\npioneers Test PST [0.8, 0.2] [0.6, 0.4]',
+        mapText: 'title Test Map\npioneers [0.8, 0.2, 0.6, 0.4]',
     };
 
     beforeEach(() => {
