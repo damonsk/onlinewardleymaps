@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
-import { PST_SUB_ITEMS } from '../../../constants/toolbarItems';
-import { ToolbarItem } from '../../../types/toolbar';
+import {useCallback, useState} from 'react';
+import {PST_SUB_ITEMS} from '../../../constants/toolbarItems';
+import {ToolbarItem} from '../../../types/toolbar';
 
 export interface ToolbarState {
     selectedToolbarItem: ToolbarItem | null;

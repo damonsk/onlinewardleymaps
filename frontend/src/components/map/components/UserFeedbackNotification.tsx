@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserFeedback } from '../hooks/useUserFeedback';
+import {UserFeedback} from '../hooks/useUserFeedback';
 
 interface UserFeedbackNotificationProps {
     userFeedback: UserFeedback;

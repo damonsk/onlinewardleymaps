@@ -124,13 +124,15 @@ export const useMapHandlers = ({
                 showUserFeedback(`Created \"${componentName}\" and linked from \"${linkingState.sourceComponent!.name}\"`, 'success');
 
                 linkingState.resetLinkingState();
+                toolbarState.setSelectedToolbarItem(null);
             } catch (error) {
                 console.error('Failed to create component and link:', error);
                 showUserFeedback('Failed to create component and link. Please try again.', 'error');
                 linkingState.resetLinkingState();
+                toolbarState.setSelectedToolbarItem(null);
             }
         },
-        [props, linkingState, showUserFeedback],
+        [props, linkingState, toolbarState, showUserFeedback],
     );
 
     const handleCreateLink = useCallback(
@@ -142,6 +144,8 @@ export const useMapHandlers = ({
 
             if (component.id === linkingState.sourceComponent.id) {
                 showUserFeedback('Cannot link a component to itself. Select a different component.', 'warning');
+                linkingState.resetLinkingState();
+                toolbarState.setSelectedToolbarItem(null);
                 return;
             }
 
@@ -151,6 +155,8 @@ export const useMapHandlers = ({
                     `Link between \"${linkingState.sourceComponent.name}\" and \"${component.name}\" already exists.`,
                     'warning',
                 );
+                linkingState.resetLinkingState();
+                toolbarState.setSelectedToolbarItem(null);
                 return;
             }
 
@@ -163,13 +169,15 @@ export const useMapHandlers = ({
                 );
                 showUserFeedback(`Link created: \"${linkingState.sourceComponent.name}\" → \"${component.name}\"`, 'success');
                 linkingState.resetLinkingState();
+                toolbarState.setSelectedToolbarItem(null);
             } catch (error) {
                 console.error('Failed to create link:', error);
                 showUserFeedback('Failed to create link. Please try again.', 'error');
                 linkingState.resetLinkingState();
+                toolbarState.setSelectedToolbarItem(null);
             }
         },
-        [linkingState, props, showUserFeedback],
+        [linkingState, toolbarState, props, showUserFeedback],
     );
 
     const handleMouseMove = useCallback(

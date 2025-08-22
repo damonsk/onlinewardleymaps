@@ -317,8 +317,9 @@ export const setNameWithMaturity = (
                     // Allow optional space between quoted name and maturity value
                     // Handle optional label positioning after maturity: evolved name + maturity + optional label
                     // Maturity could appear at end of line or before optional label
-                    const maturityMatch = afterArrow.match(/\s*([0-9]?\.[0-9]+[0-9]?)(?:\s+label\s*\[[^\]]+\])?$/) || 
-                                         afterArrow.match(/\s*([0-9]?\.[0-9]+[0-9]?)$/);
+                    const maturityMatch =
+                        afterArrow.match(/\s*([0-9]?\.[0-9]+[0-9]?)(?:\s+label\s*\[[^\]]+\])?$/) ||
+                        afterArrow.match(/\s*([0-9]?\.[0-9]+[0-9]?)$/);
                     let evolvedName = afterArrow;
                     if (maturityMatch) {
                         try {

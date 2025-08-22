@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { MapDimensions } from '../../../constants/defaults';
+import {useCallback, useState} from 'react';
+import {MapDimensions} from '../../../constants/defaults';
 
 export interface DrawingState {
     isDrawing: boolean;
