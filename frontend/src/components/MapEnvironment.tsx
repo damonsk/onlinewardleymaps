@@ -22,7 +22,7 @@ import {ComponentSelectionProvider} from './ComponentSelectionContext';
 import {Breadcrumb} from './editor/Breadcrumb';
 import Editor from './editor/Editor';
 import {NewMapIterations} from './editor/MapIterations';
-import {MapView} from './map/MapView.refactored';
+import {MapView} from './map/MapView';
 import {LeftNavigation} from './page/LeftNavigation';
 import NewHeader from './page/NewHeader';
 import {UsageInfo} from './page/UseageInfo';
