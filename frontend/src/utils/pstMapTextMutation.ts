@@ -3,7 +3,7 @@
  * Handles updating map text when PST elements are resized
  */
 
-import {PSTElement, PSTCoordinates, PSTType} from '../types/map/pst';
+import {PSTCoordinates, PSTElement, PSTType} from '../types/map/pst';
 import {formatCoordinate} from './mapTextGeneration';
 
 /**
