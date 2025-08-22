@@ -484,8 +484,16 @@ describe('setNameWithMaturity function - evolution parsing', () => {
             const element = 'evolve "Multi-line\\nOriginal Name" -> "New\\nEvolved Name" 0.8';
             setNameWithMaturity(baseElement, element);
             expect(baseElement.name).toBe('Multi-line\nOriginal Name');
-            expect(baseElement.override).toBe('"New\\nEvolved Name"');
+            expect(baseElement.override).toBe('New\nEvolved Name');
             expect(baseElement.maturity).toBe(0.8);
+        });
+
+        it('should parse evolved component names without space before maturity', () => {
+            const element = 'evolve "New Component"->"New Component Evolved"0.78';
+            setNameWithMaturity(baseElement, element);
+            expect(baseElement.name).toBe('New Component');
+            expect(baseElement.override).toBe('New Component Evolved');
+            expect(baseElement.maturity).toBe(0.78);
         });
 
         it('should parse empty quoted component names', () => {

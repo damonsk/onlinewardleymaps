@@ -104,7 +104,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         if (onClick) {
             onClick();
         }
-        
+
         // Always attempt to start edit mode on double-click if feature is enabled
         if (enableDoubleClickRename && mapText) {
             setEditMode(true);
@@ -326,7 +326,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             onMove={endDrag}>
             <ComponentTextSymbol
                 id={`${component.id}-text`}
-                text={component.name}
+                text={element?.name || component.name}
                 textTheme={{
                     fontSize: fontSize,
                     fontWeight: 'normal',

@@ -390,7 +390,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(evolve)(\\s+[a-zA-Z0-9\\s]+)(->)([a-zA-Z0-9\\s]+)(\\s+\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                        regex: '(evolve)(\\s+[a-zA-Z0-9\\s]+)(->)([a-zA-Z0-9\\s]+)(\\s*\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
                         token: ['keyword', 'variable.parameter.function.asp', 'constant.numeric'],
@@ -404,7 +404,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation.definition.string.end.asp',
                             'constant.numeric',
                         ],
-                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.)*)(")(\\s+\\d+(?:\\.\\d+)?)',
+                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.)*)(")(\\s*\\d+(?:\\.\\d+)?)',
                     },
                     {
                         token: [
@@ -418,19 +418,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation.definition.string.end.asp',
                             'constant.numeric',
                         ],
-                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)(\\s*")((?:[^"\\\\]|\\\\.)*)(")\\s+(\\d+(?:\\.\\d+)?)',
-                    },
-                    {
-                        token: [
-                            'keyword',
-                            'punctuation.definition.string.begin.asp',
-                            'string.quoted.double.asp',
-                            'punctuation.definition.string.end.asp',
-                            'punctuation',
-                            'variable.parameter.function.asp',
-                            'constant.numeric',
-                        ],
-                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([a-zA-Z0-9\\s]+)\\s+(\\d+(?:\\.\\d+)?)',
+                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)(\\s*")((?:[^"\\\\]|\\\\.)*)(")\\s*(\\d+(?:\\.\\d+)?)',
                     },
                     {
                         token: [
@@ -448,7 +436,19 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(evolve)(\\s*")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([a-zA-Z0-9\\s]+)(\\s+\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                        regex: '(evolve)(\\s*")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([a-zA-Z0-9\\s]+)(\\s*\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                    },
+                    {
+                        token: [
+                            'keyword',
+                            'punctuation.definition.string.begin.asp',
+                            'string.quoted.double.asp',
+                            'punctuation.definition.string.end.asp',
+                            'punctuation',
+                            'variable.parameter.function.asp',
+                            'constant.numeric',
+                        ],
+                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([a-zA-Z0-9\\s]+)\\s*(\\d+(?:\\.\\d+)?)',
                     },
                     {
                         token: ['punctuation', 'constant.numeric', 'punctuation'],

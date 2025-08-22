@@ -3,16 +3,16 @@ import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../.
 
 import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
-import {componentEvolutionManager} from '../../services/ComponentEvolutionManager';
 import {MapAnnotationsPosition} from '../../types/base';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
 import {ActionType} from '../../types/undo-redo';
 import {UnifiedComponent} from '../../types/unified/components';
 import {UnifiedWardleyMap} from '../../types/unified/map';
-import {addLinkToMapText, generateLinkSyntax, linkExists} from '../../utils/componentDetection';
-import {buildComponentLine, findComponentLineInMapText, parseComponentLine} from '../../utils/componentNameMatching';
+import {addLinkToMapText, linkExists, generateLinkSyntax} from '../../utils/componentDetection';
 import {placeComponent, validateComponentPlacement} from '../../utils/mapTextGeneration';
+import {findComponentLineInMapText, parseComponentLine, buildComponentLine} from '../../utils/componentNameMatching';
+import {componentEvolutionManager} from '../../services/ComponentEvolutionManager';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {EditingProvider, useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';

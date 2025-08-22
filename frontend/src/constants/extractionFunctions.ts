@@ -313,19 +313,32 @@ export const setNameWithMaturity = (
                 // Check for override after the quoted name: -> "override name" or -> override name
                 if (nameSection.startsWith('->')) {
                     const afterArrow = nameSection.substring(2).trim();
-                    // Find the maturity value to separate it from the override
-                    const maturityMatch = afterArrow.match(/\s([0-9]?\.[0-9]+[0-9]?)$/);
+                    // Find the maturity value to separate it from the evolved name
+                    // Allow optional space between quoted name and maturity value
+                    // Handle optional label positioning after maturity: evolved name + maturity + optional label
+                    // Maturity could appear at end of line or before optional label
+                    const maturityMatch = afterArrow.match(/\s*([0-9]?\.[0-9]+[0-9]?)(?:\s+label\s*\[[^\]]+\])?$/) || 
+                                         afterArrow.match(/\s*([0-9]?\.[0-9]+[0-9]?)$/);
+                    let evolvedName = afterArrow;
                     if (maturityMatch) {
                         try {
                             newPoint = parseFloat(maturityMatch[1]);
-                            override = afterArrow.substring(0, afterArrow.lastIndexOf(maturityMatch[1])).trim();
+                            evolvedName = afterArrow.substring(0, afterArrow.lastIndexOf(maturityMatch[1])).trim();
                         } catch (e) {
                             console.warn(`Failed to parse evolution maturity: ${maturityMatch[1]}`);
                         }
-                    } else {
-                        // No maturity found, everything after -> is override
-                        override = afterArrow;
                     }
+                    // For evolved components, keep the source name for matching
+                    // but store the evolved name in override field for display purposes
+                    if (evolvedName.startsWith('"')) {
+                        // Parse quoted evolved name properly to handle escape sequences
+                        const evolvedParseResult = safeParseComponentName(evolvedName, context, 'EvolvedComponent');
+                        override = evolvedParseResult.result || evolvedName.replace(/^"(.*)"$/, '$1');
+                    } else {
+                        // Unquoted evolved name
+                        override = evolvedName;
+                    }
+                    // name stays as the source component name (for matching with original component)
                 } else {
                     // Check for maturity value directly after quoted name
                     const maturityMatch = nameSection.match(/^([0-9]?\.[0-9]+[0-9]?)$/);
@@ -365,8 +378,10 @@ export const setNameWithMaturity = (
                 if (name.indexOf('->') > -1) {
                     const parts = name.split('->');
                     if (parts.length >= 2) {
-                        override = parts[1].trim();
-                        name = parts[0];
+                        // For evolved components, keep the source name as the component name for matching
+                        // but store the evolved name in override field for display purposes
+                        override = parts[1].trim(); // Evolved component name (for display)
+                        name = parts[0].trim(); // Source component name (for matching with original component)
                     }
                 } else {
                     // Only trim when there's no override to maintain exact legacy behavior

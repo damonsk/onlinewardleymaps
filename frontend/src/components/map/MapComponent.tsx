@@ -9,6 +9,7 @@ import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
 import {normalizeComponentName, escapeComponentNameForMapText} from '../../utils/componentNameMatching';
+import {safeParseComponentName} from '../../utils/errorHandling';
 
 interface MovedPosition {
     x: number;
@@ -107,11 +108,9 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     // Check if this evolve statement matches our component
                     let componentNameInLine = '';
                     if (evolveContent.startsWith('"')) {
-                        // Extract quoted component name
-                        const quotedMatch = evolveContent.match(/^"((?:[^"\\]|\\.)*)"/);
-                        if (quotedMatch) {
-                            componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-                        }
+                        // Use the same robust parsing as component creation
+                        const parseResult = safeParseComponentName(evolveContent, {line: component.line || 0}, 'Component');
+                        componentNameInLine = parseResult.result || '';
                     } else {
                         // Extract unquoted component name (up to first space or number)
                         const unquotedMatch = evolveContent.match(/^([^\s\d]+(?:\s+[^\s\d]+)*)/);
@@ -247,7 +246,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     id={`component_text_${component.id}`}
                     element={{
                         id: component.id,
-                        name: component.name,
+                        name: component.evolved && component.override ? component.override : component.name,
                         type: component.type,
                         line: component.line,
                         evolved: component.evolved,

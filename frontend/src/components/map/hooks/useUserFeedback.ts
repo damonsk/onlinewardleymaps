@@ -6,11 +6,15 @@ export interface UserFeedback {
     visible: boolean;
 }
 
-/**
- * Custom hook to manage user feedback notifications
- * Extracted from MapView to reduce complexity
- */
-export const useUserFeedback = () => {
+export interface UserFeedbackActions {
+    showUserFeedback: (message: string, type?: 'success' | 'error' | 'warning' | 'info') => void;
+    hideUserFeedback: () => void;
+    setUserFeedback: React.Dispatch<React.SetStateAction<UserFeedback>>;
+}
+
+export const useUserFeedback = (): {
+    userFeedback: UserFeedback;
+} & UserFeedbackActions => {
     const [userFeedback, setUserFeedback] = useState<UserFeedback>({
         message: '',
         type: 'info',
@@ -24,7 +28,7 @@ export const useUserFeedback = () => {
             visible: true,
         });
 
-        // Auto-hide after 5 seconds for success/info, 8 seconds for warnings/errors
+        // Auto-hide after appropriate delay
         const hideDelay = type === 'error' || type === 'warning' ? 8000 : 5000;
         setTimeout(() => {
             setUserFeedback(prev => ({...prev, visible: false}));
@@ -39,5 +43,6 @@ export const useUserFeedback = () => {
         userFeedback,
         showUserFeedback,
         hideUserFeedback,
+        setUserFeedback,
     };
 };

@@ -5,3 +5,6 @@
 
 export {MapComponentDeleter, mapComponentDeleter} from './MapComponentDeleter';
 export type {ComponentDeletionParams, ComponentDeletionResult, ComponentIdentification} from './MapComponentDeleter';
+
+export {DefaultComponentEvolutionManager, componentEvolutionManager} from './ComponentEvolutionManager';
+export type {ComponentEvolutionManager, EvolutionResult, EvolutionStage} from './ComponentEvolutionManager';

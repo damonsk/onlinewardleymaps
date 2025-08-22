@@ -93,7 +93,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     const [contextMenuState, setContextMenuState] = useState<ContextMenuState>(defaultContextMenuState);
     const {getSelectedComponentId, isSelected, clearSelection, selectComponent} = useComponentSelection();
     const {deleteComponent} = useMapComponentDeletion();
-    
+
     // Use provided wardleyMap or default to null if not provided
     const computedWardleyMap = wardleyMap;
 
@@ -106,10 +106,9 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
             // Search in all components (regular and evolved)
             const allComponents = [...(computedWardleyMap.components || []), ...(computedWardleyMap.anchors || [])];
-            
-            
+
             let component = allComponents.find(c => c.id === componentId);
-            
+
             // Try with string/number conversion if not found
             if (!component) {
                 component = allComponents.find(c => String(c.id) === String(componentId));
@@ -128,7 +127,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                 method: component.method,
             };
 
-            const mapElement = {
+            const mapElement: MapElement = {
                 type: component.evolved ? 'evolved-component' : 'component',
                 id: component.id,
                 name: component.name,
@@ -144,7 +143,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         (position: {x: number; y: number}, element: MapElement | string | number) => {
             // Handle backward compatibility with componentId string/number or direct MapElement
             let mapElement: MapElement | null = null;
-            
+
             if (typeof element === 'string' || typeof element === 'number') {
                 mapElement = detectElementFromComponent(String(element));
             } else {
@@ -196,7 +195,11 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
     const handleDeleteComponent = useCallback(() => {
         const currentElement = contextMenuState.element;
-        if (!currentElement || !mapText || (currentElement.type !== 'component' && currentElement.type !== 'evolved-component')) {
+        if (
+            !currentElement ||
+            !mapText ||
+            (typeof currentElement === 'object' && currentElement.type !== 'component' && currentElement.type !== 'evolved-component')
+        ) {
             console.warn('Cannot delete component: missing element or mapText');
             hideContextMenu();
             return;
@@ -204,12 +207,15 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
         try {
             if (onDeleteComponent) {
-                onDeleteComponent(currentElement.id);
+                const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+                onDeleteComponent(String(componentId));
             } else {
+                const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+                const componentName = typeof currentElement === 'object' ? currentElement.name : String(currentElement);
                 deleteComponent({
                     mapText,
-                    componentId: currentElement.id,
-                    componentName: currentElement.name,
+                    componentId: String(componentId),
+                    componentName,
                 });
             }
 
@@ -223,7 +229,15 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
     const handleEditComponent = useCallback(() => {
         const currentElement = contextMenuState.element;
-        if (!currentElement || (currentElement.type !== 'component' && currentElement.type !== 'evolved-component')) {
+        if (!currentElement) {
+            console.warn('Cannot edit: no element selected');
+            hideContextMenu();
+            return;
+        }
+
+        // For backward compatibility, allow string/number IDs
+        // Only check type restriction if we have a MapElement object
+        if (typeof currentElement === 'object' && currentElement.type !== 'component' && currentElement.type !== 'evolved-component') {
             console.warn('Cannot edit: invalid element type');
             hideContextMenu();
             return;
@@ -231,7 +245,8 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
         try {
             if (onEditComponent) {
-                onEditComponent(currentElement.id);
+                const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+                onEditComponent(String(componentId));
             }
         } catch (error) {
             console.error('Failed to start editing component:', error);
@@ -242,7 +257,15 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
     const handleToggleInertia = useCallback(() => {
         const currentElement = contextMenuState.element;
-        if (!currentElement || (currentElement.type !== 'component' && currentElement.type !== 'evolved-component')) {
+        if (!currentElement) {
+            console.warn('Cannot toggle inertia: no element selected');
+            hideContextMenu();
+            return;
+        }
+
+        // For backward compatibility, allow string/number IDs
+        // Only check type restriction if we have a MapElement object
+        if (typeof currentElement === 'object' && currentElement.type !== 'component' && currentElement.type !== 'evolved-component') {
             console.warn('Cannot toggle inertia: invalid element type');
             hideContextMenu();
             return;
@@ -250,7 +273,8 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
         try {
             if (onToggleInertia) {
-                onToggleInertia(currentElement.id);
+                const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+                onToggleInertia(String(componentId));
             }
         } catch (error) {
             console.error('Failed to toggle component inertia:', error);
@@ -261,7 +285,15 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
     const handleEvolveComponent = useCallback(() => {
         const currentElement = contextMenuState.element;
-        if (!currentElement || currentElement.type !== 'component') {
+        if (!currentElement) {
+            console.warn('Cannot evolve: no element selected');
+            hideContextMenu();
+            return;
+        }
+
+        // For backward compatibility, allow string/number IDs (they get converted to MapElement later)
+        // Only check type restriction if we have a MapElement object
+        if (typeof currentElement === 'object' && currentElement.type !== 'component') {
             console.warn('Cannot evolve: invalid element type or already evolved');
             hideContextMenu();
             return;
@@ -269,7 +301,8 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
         try {
             if (onEvolveComponent) {
-                onEvolveComponent(currentElement.id);
+                const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+                onEvolveComponent(String(componentId));
             }
         } catch (error) {
             console.error('Failed to evolve component:', error);
@@ -283,7 +316,6 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         if (!currentElement) return [];
 
         const items: ContextMenuItem[] = [];
-
 
         // Check if we have enhanced element data (MapElement object) or just an ID (string/number)
         if (typeof currentElement === 'object' && currentElement.type) {
