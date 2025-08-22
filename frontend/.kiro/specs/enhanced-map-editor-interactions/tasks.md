@@ -32,14 +32,14 @@
     - Add proper cleanup and state management for menu lifecycle
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2_
 
-- [ ]   2. Implement component evolution functionality through context menu
+- [x]   2. Implement component evolution functionality through context menu - [COMPLETED]
 
     - Create ComponentEvolutionManager service for automated evolution workflows
     - Add evolution positioning logic based on current maturity stage
     - Generate proper evolve syntax and update map text accordingly
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 2.1 Create ComponentEvolutionManager service
+- [x] 2.1 Create ComponentEvolutionManager service - [COMPLETED]
 
     - Implement service class with methods for evolution position calculation
     - Add logic to determine next evolution stage (Genesis→Custom→Product→Commodity)
@@ -48,7 +48,7 @@
     - Add evolved component name generation (default to source name + " Evolved")
     - _Requirements: 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 2.2 Implement map text generation for evolution
+- [x] 2.2 Implement map text generation for evolution - [COMPLETED]
 
     - Create function to generate "evolve SourceName->EvolvedName maturity" syntax
     - Integrate with existing map text update mechanisms
@@ -56,7 +56,7 @@
     - Implement proper line insertion in map text for new evolve statements
     - _Requirements: 3.4, 3.5, 3.6_
 
-- [ ] 2.3 Add evolution positioning and visual feedback
+- [x] 2.3 Add evolution positioning and visual feedback - [COMPLETED]
 
     - Calculate target position based on source component maturity and evolution stage
     - Add visual preview of where evolved component will be positioned
@@ -64,14 +64,14 @@
     - Add error handling for invalid evolution attempts (evolved components cannot be evolved)
     - _Requirements: 3.2, 3.3, 3.4, 3.6_
 
-- [ ]   3. Enable inline editing for evolved components
+- [x]   3. Enable inline editing for evolved components - [COMPLETED]
 
     - Extend existing InlineEditor to support evolved component name editing
     - Handle double-click detection on evolved components
     - Update evolve syntax in map text when evolved component names change
     - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 3.1 Extend InlineEditor for evolved components
+- [x] 3.1 Extend InlineEditor for evolved components - [COMPLETED]
 
     - Add detection for evolved components in double-click handler
     - Extract current evolved component name from map text for editing
@@ -79,7 +79,7 @@
     - Add special handling for evolved component display during editing
     - _Requirements: 4.1, 4.2_
 
-- [ ] 3.2 Implement evolved component syntax updates
+- [x] 3.2 Implement evolved component syntax updates - [COMPLETED]
 
     - Create function to find and update "evolve source->oldname position" lines in map text
     - Replace evolved component name while preserving source name and position

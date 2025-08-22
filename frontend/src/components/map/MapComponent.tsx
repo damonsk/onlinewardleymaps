@@ -99,28 +99,95 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
         const lines = mapText.split('\n');
 
         if (component.evolved) {
-            // Handle evolved components - match evolve statements with proper multi-line name handling
+            // Handle evolved components - need to match the evolved component name (after arrow)
             const updatedLines = lines.map(line => {
-                // Check for evolve statements with simple name matching
+                // Check for evolve statements
                 if (line.trim().startsWith('evolve ')) {
                     const evolveContent = line.trim().substring(7).trim(); // Remove 'evolve '
 
-                    // Check if this evolve statement matches our component
-                    let componentNameInLine = '';
-                    if (evolveContent.startsWith('"')) {
-                        // Use the same robust parsing as component creation
-                        const parseResult = safeParseComponentName(evolveContent, {line: component.line || 0}, 'Component');
-                        componentNameInLine = parseResult.result || '';
-                    } else {
-                        // Extract unquoted component name (up to first space or number)
-                        const unquotedMatch = evolveContent.match(/^([^\s\d]+(?:\s+[^\s\d]+)*)/);
-                        if (unquotedMatch) {
-                            componentNameInLine = unquotedMatch[1].trim();
+                    // Find the arrow position to split source and evolved names
+                    let arrowPos = -1;
+                    let inQuotes = false;
+                    let escapeNext = false;
+
+                    for (let i = 0; i < evolveContent.length - 1; i++) {
+                        const char = evolveContent[i];
+                        const nextChar = evolveContent[i + 1];
+
+                        if (escapeNext) {
+                            escapeNext = false;
+                            continue;
+                        }
+
+                        if (char === '\\') {
+                            escapeNext = true;
+                            continue;
+                        }
+
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                            continue;
+                        }
+
+                        if (!inQuotes && char === '-' && nextChar === '>') {
+                            arrowPos = i;
+                            break;
                         }
                     }
 
-                    // Use normalized matching to check if this is our component
-                    if (normalizeComponentName(componentNameInLine) === normalizeComponentName(component.name)) {
+                    if (arrowPos === -1) {
+                        return line; // No arrow found
+                    }
+
+                    // Get the evolved part (after arrow)
+                    const remainder = evolveContent.substring(arrowPos + 2).trim();
+                    
+                    // Parse to separate evolved name from maturity and label
+                    const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+                    const maturityMatch = remainder.match(maturityPattern);
+                    
+                    let evolvedPart = '';
+                    if (maturityMatch) {
+                        const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
+                        evolvedPart = remainder.substring(0, maturityStartIndex).trim();
+                    } else {
+                        evolvedPart = remainder;
+                    }
+
+                    // Extract evolved component name
+                    let evolvedNameInLine = '';
+                    if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
+                        // Extract quoted evolved name
+                        const quotedContent = evolvedPart.slice(1, -1);
+                        evolvedNameInLine = quotedContent
+                            .replace(/\\"/g, '"')
+                            .replace(/\\n/g, '\n')
+                            .replace(/\\\\/g, '\\');
+                    } else {
+                        // Unquoted evolved name
+                        evolvedNameInLine = evolvedPart;
+                    }
+
+                    // For evolved components, match against the evolved name (from override)
+                    let componentNameToMatch = component.name;
+                    if (component.evolved && component.override) {
+                        componentNameToMatch = component.override;
+                        if (componentNameToMatch.startsWith('"') && componentNameToMatch.endsWith('"')) {
+                            componentNameToMatch = componentNameToMatch.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        }
+                    }
+
+                    console.log('MapComponent drag - evolved matching:', {
+                        line: line.trim(),
+                        evolvedNameInLine,
+                        componentNameToMatch,
+                        normalizedEvolved: normalizeComponentName(evolvedNameInLine),
+                        normalizedMatch: normalizeComponentName(componentNameToMatch)
+                    });
+
+                    // Use normalized matching to check if this is our evolved component
+                    if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(componentNameToMatch)) {
+                        console.log('Found matching evolved component, updating maturity to:', newMaturity.toFixed(2));
                         return line.replace(/\s([0-9]?\.[0-9]+[0-9]?)+/g, ` ${newMaturity.toFixed(2)}`);
                     }
                 }

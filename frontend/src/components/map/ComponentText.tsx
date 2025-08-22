@@ -56,7 +56,9 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
           }
         : component;
 
-    const [text, setText] = useState(actualComponent.name);
+    // For evolved components, use the override name (evolved component name) for display
+    const displayName = component.evolved ? (component.override || component.name) : actualComponent.name;
+    const [text, setText] = useState(displayName);
 
     // Enhanced setText that handles multi-line content
     const handleTextChange = (newText: string) => {
@@ -68,10 +70,15 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     };
 
     useEffect(() => {
-        setText(actualComponent.name);
+        let nameToDisplay = displayName;
+        // Handle quoted override names for evolved components
+        if (component.evolved && component.override && component.override.startsWith('"') && component.override.endsWith('"')) {
+            nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        }
+        setText(nameToDisplay);
         // Reset multi-line mode when component name changes
-        setForceMultiLine(actualComponent.name.includes('\n'));
-    }, [actualComponent.name]);
+        setForceMultiLine(nameToDisplay.includes('\n'));
+    }, [displayName, component.override, component.evolved]);
 
     // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
     useEffect(() => {
@@ -112,8 +119,161 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         }
     };
 
+    const renameEvolvedComponent = (
+        oldName: string,
+        newName: string,
+        mapText: string,
+        mutateMapText: (newText: string) => void,
+    ): {success: boolean; error?: string} => {
+        try {
+            const lines = mapText.split('\n');
+            let updated = false;
+
+            const updatedLines = lines.map((line, index) => {
+                const trimmedLine = line.trim();
+                if (!trimmedLine.startsWith('evolve ')) {
+                    return line;
+                }
+
+                const evolveContent = trimmedLine.substring(7).trim(); // Remove 'evolve '
+
+                // More robust parsing for evolve statements
+                // Handle cases like: ComponentA->ComponentB 0.75 or "Component A"->"Component B" 0.75
+                let sourcePart = '';
+                let evolvedPart = '';
+                let maturityPart = '';
+
+                // Find the arrow position by looking for -> that's not inside quotes
+                let arrowPos = -1;
+                let inQuotes = false;
+                let escapeNext = false;
+
+                for (let i = 0; i < evolveContent.length - 1; i++) {
+                    const char = evolveContent[i];
+                    const nextChar = evolveContent[i + 1];
+
+                    if (escapeNext) {
+                        escapeNext = false;
+                        continue;
+                    }
+
+                    if (char === '\\') {
+                        escapeNext = true;
+                        continue;
+                    }
+
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                        continue;
+                    }
+
+                    if (!inQuotes && char === '-' && nextChar === '>') {
+                        arrowPos = i;
+                        break;
+                    }
+                }
+
+                if (arrowPos === -1) {
+                    return line;
+                }
+
+                sourcePart = evolveContent.substring(0, arrowPos).trim();
+                const remainder = evolveContent.substring(arrowPos + 2).trim();
+
+                // Parse the remainder to separate evolved name from maturity and optional label
+                // We need to handle these patterns:
+                // - "Component B" 0.75
+                // - "Component B" 0.75 label [1.00, 2.00]
+                // - ComponentB 0.75
+                // - ComponentB 0.75 label [1.00, 2.00]
+                
+                // Strategy: Find the last occurrence of a number pattern (maturity) and everything after it
+                // This handles both quoted and unquoted names, with or without labels
+                const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+                const maturityMatch = remainder.match(maturityPattern);
+                
+                if (maturityMatch) {
+                    // Found maturity (and possibly label), so split there
+                    const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
+                    evolvedPart = remainder.substring(0, maturityStartIndex).trim();
+                    maturityPart = maturityMatch[0]; // This includes maturity and optional label
+                } else {
+                    // No maturity found, treat everything as evolved name
+                    evolvedPart = remainder;
+                    maturityPart = '';
+                }
+
+                // Extract evolved component name from the evolve statement
+                let evolvedNameInLine = '';
+                if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
+                    // Extract quoted evolved name
+                    try {
+                        const quotedContent = evolvedPart.slice(1, -1); // Remove outer quotes
+                        evolvedNameInLine = quotedContent
+                            .replace(/\\"/g, '"')
+                            .replace(/\\n/g, '\n')
+                            .replace(/\\\\/g, '\\');
+                    } catch (error) {
+                        return line;
+                    }
+                } else {
+                    // Unquoted evolved name
+                    evolvedNameInLine = evolvedPart;
+                }
+
+
+                // Check if this is the evolved component we're renaming
+                // We need to match the EVOLVED component name (after arrow), not the source name
+                if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(oldName)) {
+                    // Format the new name appropriately
+                    let formattedNewName = newName;
+                    const needsQuotes = newName.includes('\n') || newName.includes('"') || newName.includes("'") || newName.includes('\\') || newName.includes(' ');
+                    
+                    if (needsQuotes) {
+                        const escapedName = newName
+                            .replace(/\\/g, '\\\\')
+                            .replace(/"/g, '\\"')
+                            .replace(/\n/g, '\\n');
+                        formattedNewName = `"${escapedName}"`;
+                    }
+
+                    // Reconstruct the evolve line with the new evolved name
+                    const newEvolveLine = `evolve ${sourcePart}->${formattedNewName}${maturityPart}`;
+                    
+                    updated = true;
+                    return line.replace(trimmedLine, newEvolveLine);
+                }
+
+                return line;
+            });
+
+            if (!updated) {
+                return {
+                    success: false,
+                    error: `Could not find evolved component "${oldName}" in the map text. Available evolve lines: ${lines.filter(line => line.trim().startsWith('evolve ')).map(line => line.trim()).join(', ')}`,
+                };
+            }
+            mutateMapText(updatedLines.join('\n'));
+            return {success: true};
+        } catch (error) {
+            console.error('Error renaming evolved component:', error);
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error occurred while renaming evolved component',
+            };
+        }
+    };
+
     const handleSave = () => {
-        if (mutateMapText && mapText && text !== component.name && component.line) {
+        // For evolved components, we need to check if the text has changed from the displayed name (override), not the source name
+        let currentDisplayName = component.evolved ? (component.override || component.name) : component.name;
+        
+        // Handle quoted override names for evolved components
+        if (component.evolved && component.override && component.override.startsWith('"') && component.override.endsWith('"')) {
+            currentDisplayName = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        }
+        
+        if (mutateMapText && mapText && text !== currentDisplayName && component.line) {
             // Determine if we need quoted format for multi-line or special characters
             const needsQuotes = text.includes('\n') || text.includes('"') || text.includes("'") || text.includes('\\');
 
@@ -129,7 +289,22 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 }"`;
             }
 
-            const result = rename(component.line, component.name, processedText, mapText, mutateMapText);
+            let result: {success: boolean; error?: string};
+
+            // Use different renaming logic for evolved components
+            if (component.evolved) {
+                // For evolved components, pass the evolved component's current displayed name (override)
+                // Handle the case where override might contain quotes
+                let evolvedCurrentName = component.override || component.name;
+                if (evolvedCurrentName.startsWith('"') && evolvedCurrentName.endsWith('"')) {
+                    // Remove outer quotes and unescape for matching
+                    evolvedCurrentName = evolvedCurrentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                }
+                result = renameEvolvedComponent(evolvedCurrentName, processedText, mapText, mutateMapText);
+            } else {
+                result = rename(component.line, component.name, processedText, mapText, mutateMapText);
+            }
+
             if (!result.success) {
                 console.error('Failed to save component:', result.error);
                 // For now, just log the error. In a production app, you might show a toast notification
@@ -144,7 +319,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     };
 
     const handleCancel = () => {
-        setText(actualComponent.name);
+        let nameToDisplay = displayName;
+        // Handle quoted override names for evolved components
+        if (component.evolved && component.override && component.override.startsWith('"') && component.override.endsWith('"')) {
+            nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+        }
+        setText(nameToDisplay);
         setEditMode(false);
         setForceMultiLine(false); // Reset multi-line mode
         stopEditing();
@@ -242,28 +422,107 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
             const evolveContent = trimmedLine.substring(7).trim(); // Remove 'evolve '
 
-            // Extract component name from the evolve statement
-            let componentNameInLine = '';
-            if (evolveContent.startsWith('"')) {
-                // Extract quoted component name
-                const quotedMatch = evolveContent.match(/^"((?:[^"\\]|\\.)*)"/);
-                if (quotedMatch) {
-                    componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            // For evolved components, we need to match against the evolved component name (after the arrow)
+            // Parse: "source->evolved maturity [optional label]"
+            
+            // Find the arrow position
+            let arrowPos = -1;
+            let inQuotes = false;
+            let escapeNext = false;
+
+            for (let i = 0; i < evolveContent.length - 1; i++) {
+                const char = evolveContent[i];
+                const nextChar = evolveContent[i + 1];
+
+                if (escapeNext) {
+                    escapeNext = false;
+                    continue;
                 }
-            } else {
-                // Extract unquoted component name (up to first space or number)
-                const unquotedMatch = evolveContent.match(/^([^\s\d]+(?:\s+[^\s\d]+)*)/);
-                if (unquotedMatch) {
-                    componentNameInLine = unquotedMatch[1].trim();
+
+                if (char === '\\') {
+                    escapeNext = true;
+                    continue;
+                }
+
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                    continue;
+                }
+
+                if (!inQuotes && char === '-' && nextChar === '>') {
+                    arrowPos = i;
+                    break;
                 }
             }
 
-            // Use normalized matching to check if this is our component
-            if (normalizeComponentName(componentNameInLine) === normalizeComponentName(component.name)) {
-                if (line.indexOf('label') > -1) {
-                    return line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
+            if (arrowPos === -1) {
+                return line; // No arrow found
+            }
+
+            const remainder = evolveContent.substring(arrowPos + 2).trim();
+            console.log('Drag debug - remainder after arrow:', remainder);
+            
+            // Parse the remainder to get evolved name (before maturity)
+            const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+            const maturityMatch = remainder.match(maturityPattern);
+            console.log('Drag debug - maturity match:', maturityMatch);
+            
+            let evolvedPart = '';
+            if (maturityMatch) {
+                const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
+                evolvedPart = remainder.substring(0, maturityStartIndex).trim();
+                console.log('Drag debug - evolved part extracted:', evolvedPart);
+            } else {
+                evolvedPart = remainder;
+                console.log('Drag debug - no maturity found, using whole remainder as evolved part:', evolvedPart);
+            }
+
+            // Extract evolved component name
+            let evolvedNameInLine = '';
+            if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
+                // Extract quoted evolved name
+                const quotedContent = evolvedPart.slice(1, -1);
+                evolvedNameInLine = quotedContent
+                    .replace(/\\"/g, '"')
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\\\/g, '\\');
+            } else {
+                // Unquoted evolved name
+                evolvedNameInLine = evolvedPart;
+            }
+
+            // For evolved components, match against the evolved name (from override)
+            let componentNameToMatch = component.name;
+            if (component.evolved && component.override) {
+                componentNameToMatch = component.override;
+                if (componentNameToMatch.startsWith('"') && componentNameToMatch.endsWith('"')) {
+                    componentNameToMatch = componentNameToMatch.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 }
-                return line.trim() + getLabelText(moved.x, moved.y);
+            }
+
+            console.log('processEvolvedLine matching:', {
+                line: trimmedLine,
+                evolvedNameInLine,
+                componentNameToMatch,
+                evolved: component.evolved,
+                override: component.override,
+                normalizedEvolved: normalizeComponentName(evolvedNameInLine),
+                normalizedMatch: normalizeComponentName(componentNameToMatch)
+            });
+
+            // Use normalized matching to check if this is our evolved component
+            if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(componentNameToMatch)) {
+                console.log('Found matching evolved component for drag update!');
+                if (line.indexOf('label') > -1) {
+                    const updated = line.replace(/\slabel\s\[([^[\]]+)\]/g, getLabelText(moved.x, moved.y));
+                    console.log('Updated line with existing label:', updated);
+                    return updated;
+                }
+                const updated = line.trim() + getLabelText(moved.x, moved.y);
+                console.log('Updated line with new label:', updated);
+                return updated;
+            } else {
+                console.log('No match found for evolved component');
             }
 
             return line;
@@ -317,6 +576,22 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         mutateMapText(mapText.split('\n').map(processLine).join('\n'));
     }
 
+    const getDisplayText = () => {
+        // For evolved components, always prioritize the unquoted override name
+        if (component.evolved && component.override) {
+            if (component.override.startsWith('"') && component.override.endsWith('"')) {
+                return component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+            }
+            return component.override;
+        }
+        
+        if (element?.name) {
+            return element.name;
+        }
+        
+        return component.name;
+    };
+
     const renderText = () => (
         <RelativeMovable
             id={`${component.id}-text-movable`}
@@ -326,7 +601,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             onMove={endDrag}>
             <ComponentTextSymbol
                 id={`${component.id}-text`}
-                text={element?.name || component.name}
+                text={getDisplayText()}
                 textTheme={{
                     fontSize: fontSize,
                     fontWeight: 'normal',
