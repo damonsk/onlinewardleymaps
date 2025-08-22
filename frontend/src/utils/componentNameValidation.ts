@@ -226,7 +226,7 @@ export const validateProblematicCharacters = (name: string): Pick<ValidationResu
 export const sanitizeComponentName = (name: string): string => {
     let sanitized = name;
 
-    // Only trim regular spaces, not newlines (preserve intentional whitespace structure)  
+    // Only trim regular spaces, not newlines (preserve intentional whitespace structure)
     sanitized = sanitized.replace(/^[ \t]+|[ \t]+$/g, '');
 
     // Remove control characters (except \n, \r, \t)
@@ -412,7 +412,7 @@ export const validateAndRecoverComponentName = (
 
     // Basic sanitization for valid names
     const sanitized = sanitizeComponentName(rawName);
-    
+
     return {
         processedName: sanitized,
         wasRecovered: false,

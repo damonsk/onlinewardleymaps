@@ -649,7 +649,7 @@ export const safeParseComponentName = (
                 wasRecovered: false,
             };
         }
-        
+
         // Extract quoted content - properly handle escaped quotes
         const match = trimmed.match(/^"((?:[^"\\]|\\.)*)"/);
         if (match) {
@@ -689,7 +689,7 @@ export const safeParseComponentName = (
 
             // Preserve whitespace-only content including newlines - don't treat as empty
             // This allows tests like "only line breaks" to work correctly
-                
+
             return {
                 success: true,
                 result: unescaped,
@@ -698,7 +698,7 @@ export const safeParseComponentName = (
                 wasRecovered: false,
             };
         }
-        
+
         // Handle partial quotes (unclosed quotes)
         // Match everything after the opening quote until we hit a bracket or end
         const partialMatch = trimmed.match(/^"([^"]*?)(?:\s*\[|$)/);
@@ -712,7 +712,7 @@ export const safeParseComponentName = (
                 recoveryStrategy: 'partial_quotes',
             };
         }
-        
+
         // Fallback for malformed quotes
         return {
             success: true,
