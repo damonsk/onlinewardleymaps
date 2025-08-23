@@ -1,5 +1,6 @@
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
+import { MapPropertiesManager } from '../../services/MapPropertiesManager';
 import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
 import { useComponentSelection } from '../ComponentSelectionContext';
 import { ContextMenu, ContextMenuItem } from './ContextMenu';

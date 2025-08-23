@@ -850,7 +850,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 onDoubleClick={handleMapDoubleClick}
                 onMouseMove={handleMapMouseMove}
                 onMouseUp={handleMapMouseUp}
-                onContextMenu={props.onCanvasContextMenu}
                 onZoom={handleZoomChange}
                 scaleFactorOnWheel={allowMapZoomMouseWheel ? 1.1 : 1}
                 style={{
@@ -871,7 +870,32 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     id="svgMap"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
-                    xmlnsXlink="http://www.w3.org/1999/xlink">
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    onContextMenu={e => {
+                        // Only handle canvas context menu if clicking on the SVG background (not on components)
+                        if (e.target === e.currentTarget && props.onCanvasContextMenu) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            props.onCanvasContextMenu(e);
+                        }
+                    }}>
+                    {/* Canvas background for context menu - must be first so it's behind everything */}
+                    <rect
+                        x="-35"
+                        y="-45"
+                        width={mapDimensions.width + 105}
+                        height={mapDimensions.height + 137}
+                        fill="transparent"
+                        onContextMenu={e => {
+                            if (props.onCanvasContextMenu) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                props.onCanvasContextMenu(e);
+                            }
+                        }}
+                        style={{pointerEvents: 'all'}}
+                    />
+
                     <MapGridGroup
                         mapDimensions={mapDimensions}
                         mapStyleDefs={mapStyleDefs}

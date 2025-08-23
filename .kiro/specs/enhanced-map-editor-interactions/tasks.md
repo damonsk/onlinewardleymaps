@@ -224,7 +224,7 @@
   - Add event handling to prevent canvas menu when clicking on map elements
   - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [-] 8.2 Create MapPropertiesManager service
+- [x] 8.2 Create MapPropertiesManager service
   - Implement parsing of existing map properties from map text (style, size, evolution)
   - Create DSL generation functions for style, size, and evolution syntax
   - Add map text update integration with proper line insertion and replacement

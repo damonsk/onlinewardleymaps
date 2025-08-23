@@ -1,6 +1,6 @@
 import React from 'react';
-import {MapDimensions} from '../../../constants/defaults';
-import {DefaultThemes} from './Fill';
+import { MapDimensions } from '../../../constants/defaults';
+import { DefaultThemes } from './Fill';
 
 const fill: DefaultThemes = {
     wardley: 'url(#wardleyGradient)',
@@ -24,6 +24,7 @@ const MapBackground: React.FunctionComponent<MapBackgroundProps> = ({mapStyleCla
             height={mapDimensions.height}
             id="fillArea"
             fill={fill[mapStyleClass as keyof DefaultThemes]}
+            style={{pointerEvents: 'none'}}
         />
     );
 };

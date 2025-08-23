@@ -1,6 +1,7 @@
 import React, {LegacyRef, useCallback, useMemo} from 'react';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
+import {MapPropertiesManager} from '../../services/MapPropertiesManager';
 import {MapAnnotationsPosition} from '../../types/base';
 import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
