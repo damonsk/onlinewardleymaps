@@ -2,7 +2,7 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import {Backdrop, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import html2canvas from 'html2canvas';
 import Router from 'next/router';
-import React, {FunctionComponent, useEffect, useRef, useState} from 'react';
+import React, {FunctionComponent, useEffect, useRef, useState, useMemo, useCallback} from 'react';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import Converter from '../conversion/Converter';
@@ -177,16 +177,19 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         }
     };
 
-    const launchUrl = (urlId: string) => {
-        const mapUrl = legacyState.mapUrls.find(u => u.name === urlId);
-        if (mapUrl) {
-            window.open(mapUrl.url);
-        }
-    };
+    const launchUrl = useCallback(
+        (urlId: string) => {
+            const mapUrl = legacyState.mapUrls.find(u => u.name === urlId);
+            if (mapUrl) {
+                window.open(mapUrl.url);
+            }
+        },
+        [legacyState.mapUrls],
+    );
 
-    const toggleUsage = () => {
+    const toggleUsage = useCallback(() => {
         mapActions.setShowUsage(!mapState.showUsage);
-    };
+    }, [mapActions, mapState.showUsage]);
 
     const saveToRemoteStorage = async function (hash: string) {
         setActionInProgress(true);
@@ -341,12 +344,37 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         });
     });
 
-    useEffect(() => {
+    // Memoized parsing to prevent unnecessary re-computation
+    const parsedMapData = useMemo(() => {
         try {
+            const converter = new Converter(featureSwitches);
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+
+            const legacyResult = converter.parse(legacyState.mapText);
+            const unifiedResult = unifiedConverter.parse(legacyState.mapText);
+
+            return {
+                isValid: true,
+                legacy: legacyResult,
+                unified: unifiedResult,
+                errors: legacyResult.errors,
+            };
+        } catch (err) {
+            console.log('Error parsing map:', err);
+            return {
+                isValid: false,
+                legacy: null,
+                unified: null,
+                errors: [],
+            };
+        }
+    }, [legacyState.mapText, featureSwitches]);
+
+    useEffect(() => {
+        if (parsedMapData.isValid && parsedMapData.legacy) {
+            const r = parsedMapData.legacy;
             setErrorLine([]);
             setInvalid(false);
-            const r = new Converter(featureSwitches).parse(legacyState.mapText);
-            console.log('MapEnvironment', r);
             setRawMapTitle(r.title);
             setMapAnnotationsPresentation(r.presentation.annotations);
             setMapStyle(r.presentation.style);
@@ -360,18 +388,14 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                     l2: r.evolution[3].line2,
                 },
             });
-            if (r.errors.length > 0) {
-                setErrorLine(r.errors.map(e => e.line));
+            if (parsedMapData.errors.length > 0) {
+                setErrorLine(parsedMapData.errors.map(e => e.line));
             }
-
-            // CRITICAL FIX: Also update the unified map state
-            const unifiedConverter = new UnifiedConverter(featureSwitches);
-            const unifiedMap = unifiedConverter.parse(legacyState.mapText);
-            mapActions.setMap(unifiedMap);
-        } catch (err) {
-            console.log('Error:', err);
+            if (parsedMapData.unified) {
+                mapActions.setMap(parsedMapData.unified);
+            }
         }
-    }, [legacyState.mapText, featureSwitches, mapActions]);
+    }, [parsedMapData, mapActions]);
 
     useEffect(() => {
         document.title = mapTitle + ' - ' + Defaults.PageTitle;
@@ -518,9 +542,9 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         },
     ];
 
-    const shouldHideNav = () => {
+    const shouldHideNav = useCallback(() => {
         setHideNav(!hideNav);
-    };
+    }, [hideNav]);
 
     return (
         <Box

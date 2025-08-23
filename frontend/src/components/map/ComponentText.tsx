@@ -50,9 +50,6 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     const [editMode, setEditMode] = useState(false);
     const [forceMultiLine, setForceMultiLine] = useState(false);
 
-
-
-
     const actualComponent = element
         ? {
               name: element.name,

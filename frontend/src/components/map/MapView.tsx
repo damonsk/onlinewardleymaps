@@ -1,4 +1,4 @@
-import React, {LegacyRef, useCallback} from 'react';
+import React, {LegacyRef, useCallback, useMemo} from 'react';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {MapAnnotationsPosition} from '../../types/base';
@@ -47,7 +47,7 @@ export interface ModernMapViewRefactoredProps {
     showLinkedEvolved: boolean;
 }
 
-export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = props => {
+const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = props => {
     const featureSwitches = useFeatureSwitches();
     const {clearSelection} = useComponentSelection();
 
@@ -122,11 +122,12 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
         clearSelection,
         componentOps,
         selectionManager,
+        contextMenuActions,
     });
 
-    // Simplified styling
-    const containerStyle = getContainerStyle(props.mapStyleDefs);
-    const mapStyle = getMapStyle();
+    // Memoized styling to prevent recreation on every render
+    const containerStyle = useMemo(() => getContainerStyle(props.mapStyleDefs), [props.mapStyleDefs]);
+    const mapStyle = useMemo(() => getMapStyle(), []);
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as LegacyRef<HTMLDivElement> | undefined;
 
     // Unified toolbar selection handler that coordinates between different state hooks
@@ -189,104 +190,87 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
 
     return (
         <ContextMenuProvider
-                mapText={props.mapText}
-                onDeleteComponent={componentOps.handleDeleteComponent}
-                onDeleteLink={componentOps.handleDeleteLink}
-                onEditComponent={componentOps.handleEditComponent}
-                onToggleInertia={componentOps.handleToggleInertia}
-                onEvolveComponent={componentOps.handleEvolveComponent}
-                wardleyMap={props.wardleyMap}
-                selectionManager={selectionManager}
-                onContextMenuReady={setContextMenuActions}>
-                <div
-                    ref={legacyRef}
-                    className={props.mapStyleDefs.className}
-                    style={containerStyle}
-                    onClick={handlers.handleContainerClick}>
-                    <WysiwygToolbar
+            mapText={props.mapText}
+            onDeleteComponent={componentOps.handleDeleteComponent}
+            onDeleteLink={componentOps.handleDeleteLink}
+            onEditComponent={componentOps.handleEditComponent}
+            onToggleInertia={componentOps.handleToggleInertia}
+            onEvolveComponent={componentOps.handleEvolveComponent}
+            wardleyMap={props.wardleyMap}
+            selectionManager={selectionManager}
+            onContextMenuReady={setContextMenuActions}>
+            <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handlers.handleContainerClick}>
+                <WysiwygToolbar
+                    mapStyleDefs={props.mapStyleDefs}
+                    mapDimensions={props.mapDimensions}
+                    mapText={props.mapText}
+                    mutateMapText={props.mutateMapText}
+                    selectedItem={toolbarState.selectedToolbarItem}
+                    onItemSelect={handleUnifiedToolbarSelection}
+                    keyboardShortcutsEnabled={true}
+                    getSelectedLink={selectionManager.getSelectedLink}
+                    onDeleteLink={componentOps.handleDeleteLink}
+                    clearSelection={selectionManager.clearSelection}
+                />
+
+                <DragPreview
+                    selectedItem={toolbarState.selectedToolbarItem}
+                    mousePosition={{x: 0, y: 0}}
+                    isValidDropZone={toolbarState.isValidDropZone}
+                    mapStyleDefs={props.mapStyleDefs}
+                />
+
+                <UserFeedbackNotification userFeedback={userFeedback} setUserFeedback={setUserFeedback} />
+
+                <div id="map" style={mapStyle}>
+                    <UnifiedMapCanvas
                         mapStyleDefs={props.mapStyleDefs}
                         mapDimensions={props.mapDimensions}
+                        mapCanvasDimensions={props.mapCanvasDimensions}
+                        mapEvolutionStates={props.mapEvolutionStates}
+                        evolutionOffsets={props.evolutionOffsets}
+                        wardleyMap={props.wardleyMap}
                         mapText={props.mapText}
                         mutateMapText={props.mutateMapText}
-                        selectedItem={toolbarState.selectedToolbarItem}
-                        onItemSelect={handleUnifiedToolbarSelection}
-                        keyboardShortcutsEnabled={true}
-                        getSelectedLink={selectionManager.getSelectedLink}
-                        onDeleteLink={componentOps.handleDeleteLink}
-                        clearSelection={selectionManager.clearSelection}
+                        setHighlightLine={props.setHighlightLine}
+                        setNewComponentContext={props.setNewComponentContext}
+                        launchUrl={props.launchUrl}
+                        showLinkedEvolved={props.showLinkedEvolved}
+                        shouldHideNav={props.shouldHideNav}
+                        hideNav={props.hideNav}
+                        mapAnnotationsPresentation={props.mapAnnotationsPresentation}
+                        handleMapCanvasClick={handlers.handleMapCanvasClick}
+                        selectedToolbarItem={toolbarState.selectedToolbarItem}
+                        onToolbarItemDrop={handlers.handleToolbarItemDrop}
+                        onMouseMove={handlers.handleMouseMove}
+                        onComponentClick={handlers.handleComponentClick}
+                        linkingState={linkingState.linkingState}
+                        sourceComponent={linkingState.sourceComponent}
+                        highlightedComponent={linkingState.highlightedComponent}
+                        isDuplicateLink={linkingState.isDuplicateLink}
+                        isInvalidTarget={linkingState.isInvalidTarget}
+                        showCancellationHint={linkingState.showCancellationHint}
+                        isSourceDeleted={linkingState.isSourceDeleted}
+                        isTargetDeleted={linkingState.isTargetDeleted}
+                        onMouseDown={handlers.handleMouseDown}
+                        onMouseUp={handlers.handleMouseUp}
+                        isDrawing={drawingState.isDrawing}
+                        drawingStartPosition={drawingState.drawingStartPosition}
+                        drawingCurrentPosition={drawingState.drawingCurrentPosition}
+                        onMethodApplication={componentOps.handleMethodApplication}
+                        methodHighlightedComponent={toolbarState.methodHighlightedComponent}
+                        onLinkClick={handlers.handleLinkClick}
+                        onLinkContextMenu={handlers.handleLinkContextMenu}
+                        isLinkSelected={linkId => selectionManager.isSelected(linkId, 'link')}
                     />
-
-                    <DragPreview
-                        selectedItem={toolbarState.selectedToolbarItem}
-                        mousePosition={{x: 0, y: 0}}
-                        isValidDropZone={toolbarState.isValidDropZone}
-                        mapStyleDefs={props.mapStyleDefs}
-                    />
-
-                    <UserFeedbackNotification userFeedback={userFeedback} setUserFeedback={setUserFeedback} />
-
-                    <div id="map" style={mapStyle}>
-                        <UnifiedMapCanvas
-                            mapStyleDefs={props.mapStyleDefs}
-                            mapDimensions={props.mapDimensions}
-                            mapCanvasDimensions={props.mapCanvasDimensions}
-                            mapEvolutionStates={props.mapEvolutionStates}
-                            evolutionOffsets={props.evolutionOffsets}
-                            wardleyMap={props.wardleyMap}
-                            mapText={props.mapText}
-                            mutateMapText={props.mutateMapText}
-                            setHighlightLine={props.setHighlightLine}
-                            setNewComponentContext={props.setNewComponentContext}
-                            launchUrl={props.launchUrl}
-                            showLinkedEvolved={props.showLinkedEvolved}
-                            shouldHideNav={props.shouldHideNav}
-                            hideNav={props.hideNav}
-                            mapAnnotationsPresentation={props.mapAnnotationsPresentation}
-                            handleMapCanvasClick={handlers.handleMapCanvasClick}
-                            selectedToolbarItem={toolbarState.selectedToolbarItem}
-                            onToolbarItemDrop={handlers.handleToolbarItemDrop}
-                            onMouseMove={handlers.handleMouseMove}
-                            onComponentClick={handlers.handleComponentClick}
-                            linkingState={linkingState.linkingState}
-                            sourceComponent={linkingState.sourceComponent}
-                            highlightedComponent={linkingState.highlightedComponent}
-                            isDuplicateLink={linkingState.isDuplicateLink}
-                            isInvalidTarget={linkingState.isInvalidTarget}
-                            showCancellationHint={linkingState.showCancellationHint}
-                            isSourceDeleted={linkingState.isSourceDeleted}
-                            isTargetDeleted={linkingState.isTargetDeleted}
-                            onMouseDown={handlers.handleMouseDown}
-                            onMouseUp={handlers.handleMouseUp}
-                            isDrawing={drawingState.isDrawing}
-                            drawingStartPosition={drawingState.drawingStartPosition}
-                            drawingCurrentPosition={drawingState.drawingCurrentPosition}
-                            onMethodApplication={componentOps.handleMethodApplication}
-                            methodHighlightedComponent={toolbarState.methodHighlightedComponent}
-                            onLinkClick={linkInfo => {
-                                // Clear component selection when selecting a link
-                                clearSelection();
-                                selectionManager.selectLink(linkInfo);
-                            }}
-                            onLinkContextMenu={(linkInfo, event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                // Clear component selection when selecting a link via context menu
-                                clearSelection();
-                                selectionManager.selectLink(linkInfo);
-                                // Show context menu for the link using the callback
-                                if (contextMenuActions.showLinkContextMenu) {
-                                    contextMenuActions.showLinkContextMenu({x: event.clientX, y: event.clientY}, linkInfo);
-                                } else {
-                                    console.warn('Link context menu not available - contextMenuActions.showLinkContextMenu is not set');
-                                }
-                            }}
-                            isLinkSelected={linkId => selectionManager.isSelected(linkId, 'link')}
-                        />
-                    </div>
                 </div>
-            </ContextMenuProvider>
+            </div>
+        </ContextMenuProvider>
     );
 };
+
+// Memoized component to prevent unnecessary re-renders
+export const MapView = React.memo(MapViewComponent);
 
 // Extracted style helpers
 const getContainerStyle = (mapStyleDefs: MapTheme): React.CSSProperties => {

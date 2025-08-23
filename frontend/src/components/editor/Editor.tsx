@@ -27,7 +27,7 @@ export interface ModernEditorProps {
     mutateMapText: any;
 }
 
-export const Editor: React.FunctionComponent<ModernEditorProps> = ({
+const EditorComponent: React.FunctionComponent<ModernEditorProps> = ({
     wardleyMap,
     hideNav,
     highlightLine,
@@ -193,4 +193,6 @@ export const Editor: React.FunctionComponent<ModernEditorProps> = ({
     );
 };
 
+// Memoized component to prevent unnecessary re-renders
+export const Editor = React.memo(EditorComponent);
 export default Editor;

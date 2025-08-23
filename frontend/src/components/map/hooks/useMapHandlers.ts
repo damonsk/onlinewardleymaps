@@ -20,6 +20,12 @@ interface UseMapHandlersProps {
     clearSelection: () => void;
     componentOps: ComponentOperations;
     selectionManager: ReturnType<typeof useSelectionManager>;
+    contextMenuActions: {
+        showLinkContextMenu?: (
+            position: {x: number; y: number},
+            linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+        ) => void;
+    };
 }
 
 export interface MapHandlers {
@@ -30,6 +36,8 @@ export interface MapHandlers {
     handleMouseUp: (position: {x: number; y: number}) => void;
     handleMapCanvasClick: (pos: {x: number; y: number}) => void;
     handleToolbarItemDrop: (item: ToolbarItem, position: {x: number; y: number}) => void;
+    handleLinkClick: (linkInfo: any) => void;
+    handleLinkContextMenu: (linkInfo: any, event: React.MouseEvent) => void;
 }
 
 export const useMapHandlers = ({
@@ -41,6 +49,7 @@ export const useMapHandlers = ({
     clearSelection,
     componentOps,
     selectionManager,
+    contextMenuActions,
 }: UseMapHandlersProps): MapHandlers => {
     const handleContainerClick = useCallback(
         (event: React.MouseEvent) => {
@@ -340,6 +349,32 @@ export const useMapHandlers = ({
         [props, toolbarState, showUserFeedback],
     );
 
+    const handleLinkClick = useCallback(
+        (linkInfo: any) => {
+            // Clear component selection when selecting a link
+            clearSelection();
+            selectionManager.selectLink(linkInfo);
+        },
+        [clearSelection, selectionManager],
+    );
+
+    const handleLinkContextMenu = useCallback(
+        (linkInfo: any, event: React.MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+            // Clear component selection when selecting a link via context menu
+            clearSelection();
+            selectionManager.selectLink(linkInfo);
+            // Show context menu for the link using the callback
+            if (contextMenuActions.showLinkContextMenu) {
+                contextMenuActions.showLinkContextMenu({x: event.clientX, y: event.clientY}, linkInfo);
+            } else {
+                console.warn('Link context menu not available - contextMenuActions.showLinkContextMenu is not set');
+            }
+        },
+        [clearSelection, selectionManager, contextMenuActions],
+    );
+
     return {
         handleContainerClick,
         handleComponentClick,
@@ -348,5 +383,7 @@ export const useMapHandlers = ({
         handleMouseUp,
         handleMapCanvasClick,
         handleToolbarItemDrop,
+        handleLinkClick,
+        handleLinkContextMenu,
     };
 };
