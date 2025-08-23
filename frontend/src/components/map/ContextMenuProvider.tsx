@@ -121,6 +121,9 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     onEditComponent,
     onToggleInertia,
     onEvolveComponent,
+    onChangeMapStyle,
+    onSetMapSize,
+    onEditEvolutionStages,
     wardleyMap,
     selectionManager,
     onContextMenuReady,
@@ -531,6 +534,66 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         hideContextMenu();
     }, [contextMenuState.element, onDeleteLink, hideContextMenu]);
 
+    const handleChangeMapStyle = useCallback(
+        (style: 'plain' | 'wardley' | 'colour') => {
+            if (!onChangeMapStyle) {
+                console.warn('onChangeMapStyle handler not provided');
+                hideContextMenu();
+                return;
+            }
+
+            try {
+                onChangeMapStyle(style);
+            } catch (error) {
+                console.error('Failed to change map style:', error);
+            }
+
+            hideContextMenu();
+        },
+        [onChangeMapStyle, hideContextMenu],
+    );
+
+    const handleSetMapSize = useCallback(() => {
+        if (!onSetMapSize) {
+            console.warn('onSetMapSize handler not provided');
+            hideContextMenu();
+            return;
+        }
+
+        // For now, use placeholder values - this will be replaced with dialog in task 8.3
+        const currentSize = MapPropertiesManager.getCurrentSize(mapText);
+        const width = currentSize?.width || 800;
+        const height = currentSize?.height || 600;
+
+        try {
+            onSetMapSize(width, height);
+        } catch (error) {
+            console.error('Failed to set map size:', error);
+        }
+
+        hideContextMenu();
+    }, [onSetMapSize, mapText, hideContextMenu]);
+
+    const handleEditEvolutionStages = useCallback(() => {
+        if (!onEditEvolutionStages) {
+            console.warn('onEditEvolutionStages handler not provided');
+            hideContextMenu();
+            return;
+        }
+
+        // For now, use default values - this will be replaced with dialog in task 8.3
+        const currentStages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
+        const stages = currentStages || MapPropertiesManager.getDefaultEvolutionStages();
+
+        try {
+            onEditEvolutionStages(stages);
+        } catch (error) {
+            console.error('Failed to edit evolution stages:', error);
+        }
+
+        hideContextMenu();
+    }, [onEditEvolutionStages, mapText, hideContextMenu]);
+
     const getContextMenuItems = useCallback((): ContextMenuItem[] => {
         const currentElement = contextMenuState.element;
         if (!currentElement) return [];
@@ -610,33 +673,49 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                 }
             } else if (currentElement.type === 'canvas') {
                 // Canvas context menu items
+                const currentStyle = MapPropertiesManager.getCurrentStyle(mapText);
+
+                // Style submenu items
                 items.push({
-                    id: 'change-style',
-                    label: 'Change Map Style',
-                    action: () => {
-                        // This will be handled by submenu - placeholder for now
-                        console.log('Change map style clicked');
-                    },
+                    id: 'style-plain',
+                    label: `${currentStyle === 'plain' ? '✓ ' : ''}Plain`,
+                    action: () => handleChangeMapStyle('plain'),
                     disabled: false,
+                });
+
+                items.push({
+                    id: 'style-wardley',
+                    label: `${currentStyle === 'wardley' ? '✓ ' : ''}Wardley`,
+                    action: () => handleChangeMapStyle('wardley'),
+                    disabled: false,
+                });
+
+                items.push({
+                    id: 'style-colour',
+                    label: `${currentStyle === 'colour' ? '✓ ' : ''}Colour`,
+                    action: () => handleChangeMapStyle('colour'),
+                    disabled: false,
+                });
+
+                // Separator (visual only)
+                items.push({
+                    id: 'separator-1',
+                    label: '─────────────',
+                    action: () => {},
+                    disabled: true,
                 });
 
                 items.push({
                     id: 'set-size',
                     label: 'Set Map Size',
-                    action: () => {
-                        console.log('Set map size clicked');
-                        // TODO: Open size dialog
-                    },
+                    action: handleSetMapSize,
                     disabled: false,
                 });
 
                 items.push({
                     id: 'edit-evolution',
                     label: 'Edit Evolution Stages',
-                    action: () => {
-                        console.log('Edit evolution stages clicked');
-                        // TODO: Open evolution dialog
-                    },
+                    action: handleEditEvolutionStages,
                     disabled: false,
                 });
             }
@@ -662,11 +741,15 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         handleEditComponent,
         handleToggleInertia,
         handleEvolveComponent,
+        handleChangeMapStyle,
+        handleSetMapSize,
+        handleEditEvolutionStages,
         onEditComponent,
         onToggleInertia,
         onEvolveComponent,
         onDeleteLink,
         getSelectedComponentId,
+        mapText,
     ]);
 
     const contextValue: ContextMenuContextType = {

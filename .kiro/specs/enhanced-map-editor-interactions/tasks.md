@@ -217,14 +217,14 @@
   - Add map style selection submenu with plain, wardley, and colour options
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [-] 8.1 Extend ContextMenuProvider for canvas detection
+- [x] 8.1 Extend ContextMenuProvider for canvas detection
   - Add canvas click detection to differentiate between element and canvas right-clicks
   - Implement canvas context menu positioning and lifecycle management
   - Create canvas-specific menu item generation with map-level actions
   - Add event handling to prevent canvas menu when clicking on map elements
   - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 8.2 Create MapPropertiesManager service
+- [-] 8.2 Create MapPropertiesManager service
   - Implement parsing of existing map properties from map text (style, size, evolution)
   - Create DSL generation functions for style, size, and evolution syntax
   - Add map text update integration with proper line insertion and replacement

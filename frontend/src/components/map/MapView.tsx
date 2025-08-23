@@ -110,29 +110,44 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
     // Canvas context menu handlers
     const handleChangeMapStyle = useCallback(
         (style: 'plain' | 'wardley' | 'colour') => {
-            console.log('Change map style to:', style);
-            // TODO: Implement map style change
-            showUserFeedback(`Map style changed to ${style}`, 'success');
+            try {
+                const result = MapPropertiesManager.updateMapStyle(props.mapText, style);
+                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', `Changed map style to ${style}`);
+                showUserFeedback(`Map style changed to ${style}`, 'success');
+            } catch (error) {
+                console.error('Failed to change map style:', error);
+                showUserFeedback('Failed to change map style', 'error');
+            }
         },
-        [showUserFeedback],
+        [props.mapText, props.mutateMapText, showUserFeedback],
     );
 
     const handleSetMapSize = useCallback(
         (width: number, height: number) => {
-            console.log('Set map size to:', width, height);
-            // TODO: Implement map size setting
-            showUserFeedback(`Map size set to ${width}x${height}`, 'success');
+            try {
+                const result = MapPropertiesManager.updateMapSize(props.mapText, width, height);
+                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', `Set map size to ${width}x${height}`);
+                showUserFeedback(`Map size set to ${width}x${height}`, 'success');
+            } catch (error) {
+                console.error('Failed to set map size:', error);
+                showUserFeedback('Failed to set map size', 'error');
+            }
         },
-        [showUserFeedback],
+        [props.mapText, props.mutateMapText, showUserFeedback],
     );
 
     const handleEditEvolutionStages = useCallback(
         (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => {
-            console.log('Edit evolution stages:', stages);
-            // TODO: Implement evolution stages editing
-            showUserFeedback('Evolution stages updated', 'success');
+            try {
+                const result = MapPropertiesManager.updateEvolutionStages(props.mapText, stages);
+                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', 'Updated evolution stages');
+                showUserFeedback('Evolution stages updated', 'success');
+            } catch (error) {
+                console.error('Failed to update evolution stages:', error);
+                showUserFeedback('Failed to update evolution stages', 'error');
+            }
         },
-        [showUserFeedback],
+        [props.mapText, props.mutateMapText, showUserFeedback],
     );
 
     // Selection manager for keyboard deletion support
