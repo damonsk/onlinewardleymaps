@@ -35,13 +35,32 @@ const TestApp: React.FC<{
     mapText: string;
     onDeleteComponent?: (componentId: string) => void;
 }> = ({mapText, onDeleteComponent}) => {
+    // Mock wardleyMap with attitudes for PST detection
+    const mockWardleyMap = {
+        attitudes: [
+            {
+                attitude: 'pioneers',
+                line: 2,
+                name: undefined,
+                maturity: 0.6,
+                visibility: 0.8,
+                maturity2: 0.4,
+                visibility2: 0.2,
+            }
+        ]
+    };
+
     return (
         <UndoRedoProvider mutateMapText={jest.fn()} mapText={mapText}>
             <ComponentSelectionProvider>
-                <ContextMenuProvider mapText={mapText} onDeleteComponent={onDeleteComponent}>
+                <ContextMenuProvider 
+                    mapText={mapText} 
+                    onDeleteComponent={onDeleteComponent}
+                    wardleyMap={mockWardleyMap}
+                >
                     <div>
                         <TestMapComponent componentId="component-test-1" mapText={mapText} />
-                        <TestMapComponent componentId="pst-pioneers-2" mapText={mapText} />
+                        <TestMapComponent componentId="2" mapText={mapText} />
                     </div>
                 </ContextMenuProvider>
             </ComponentSelectionProvider>
@@ -92,7 +111,7 @@ pioneers [0.8, 0.2, 0.6, 0.4]`;
     it('should show context menu for PST components', async () => {
         render(<TestApp mapText={testMapText} onDeleteComponent={mockOnDeleteComponent} />);
 
-        const pstComponent = screen.getByTestId('component-pst-pioneers-2');
+        const pstComponent = screen.getByTestId('component-2');
 
         // Right-click to show context menu
         fireEvent.contextMenu(pstComponent);
@@ -102,15 +121,15 @@ pioneers [0.8, 0.2, 0.6, 0.4]`;
             expect(screen.getByRole('menu')).toBeInTheDocument();
         });
 
-        // Check if delete option is available
-        const deleteOption = screen.getByText('Delete Component');
+        // Check if delete option is available (PST elements show just "Delete")
+        const deleteOption = screen.getByText('Delete');
         expect(deleteOption).toBeInTheDocument();
 
         // Click delete option
         fireEvent.click(deleteOption);
 
-        // Verify deletion callback was called
-        expect(mockOnDeleteComponent).toHaveBeenCalledWith('pst-pioneers-2', 'component', undefined);
+        // Verify deletion callback was called with PST type
+        expect(mockOnDeleteComponent).toHaveBeenCalledWith('2', 'pst', undefined);
     });
 
     it.skip('should close context menu when clicking outside', async () => {

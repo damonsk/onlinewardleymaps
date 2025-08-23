@@ -5,12 +5,13 @@ import {useComponentSelection} from '../ComponentSelectionContext';
 import {ContextMenu, ContextMenuItem} from './ContextMenu';
 
 interface MapElement {
-    type: 'component' | 'evolved-component' | 'link';
+    type: 'component' | 'evolved-component' | 'link' | 'pst-element';
     id: string;
     name: string;
-    properties: ComponentProperties | LinkProperties;
+    properties: ComponentProperties | LinkProperties | PSTProperties;
     componentData?: any; // Store the original component data for evolved components
     linkData?: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}; // Store link data for deletion
+    pstData?: {type: string; id: string}; // Store PST element data for deletion
 }
 
 interface ComponentProperties {
@@ -26,6 +27,11 @@ interface LinkProperties {
     source: string;
     target: string;
     type: string;
+}
+
+interface PSTProperties {
+    type: 'pioneers' | 'settlers' | 'townplanners';
+    name?: string;
 }
 
 interface ContextMenuState {
@@ -47,7 +53,11 @@ interface ContextMenuContextType {
 export interface ContextMenuProviderProps {
     children: ReactNode;
     mapText: string;
-    onDeleteComponent?: (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => void;
+    onDeleteComponent?: (
+        componentId: string,
+        componentType?: 'component' | 'evolved-component' | 'pst-element',
+        componentData?: any,
+    ) => void;
     onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     onEditComponent?: (componentId: string) => void;
     onToggleInertia?: (componentId: string) => void;
@@ -116,6 +126,59 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     // Enhanced component detection from map data
     const detectElementFromComponent = useCallback(
         (componentId: string): MapElement | null => {
+            // For PST elements (starting with pst-), create PST element
+            if (componentId.startsWith('pst-')) {
+                const pstTypeMatch = componentId.match(/^pst-(pioneers|settlers|townplanners)-/);
+                const pstType = pstTypeMatch ? (pstTypeMatch[1] as 'pioneers' | 'settlers' | 'townplanners') : 'pioneers';
+
+                const mapElement: MapElement = {
+                    type: 'pst-element',
+                    id: componentId,
+                    name: pstType.charAt(0).toUpperCase() + pstType.slice(1),
+                    properties: {
+                        type: pstType,
+                        name: pstType,
+                    } as PSTProperties,
+                    pstData: {
+                        type: pstType,
+                        id: componentId,
+                    },
+                };
+
+                return mapElement;
+            }
+
+            // Check if numeric ID corresponds to a PST element
+
+            if (computedWardleyMap && Array.isArray(computedWardleyMap.attitudes)) {
+                // Find PST attitude that matches the componentId
+                const pstAttitude = computedWardleyMap.attitudes.find((attitude: any) => {
+                    // PST attitudes have specific attitude types
+                    const isPSTType = ['pioneers', 'settlers', 'townplanners'].includes(attitude.attitude);
+                    // Check if the line number matches the componentId (PST IDs are line numbers)
+                    const lineMatches = String(attitude.line) === String(componentId);
+                    return isPSTType && lineMatches;
+                });
+
+                if (pstAttitude) {
+                    const mapElement: MapElement = {
+                        type: 'pst-element',
+                        id: componentId,
+                        name: pstAttitude.name || pstAttitude.attitude.charAt(0).toUpperCase() + pstAttitude.attitude.slice(1),
+                        properties: {
+                            type: pstAttitude.attitude,
+                            name: pstAttitude.name || pstAttitude.attitude,
+                        } as PSTProperties,
+                        pstData: {
+                            type: pstAttitude.attitude,
+                            id: componentId,
+                        },
+                    };
+
+                    return mapElement;
+                }
+            }
+
             // For evolved components (ending with _evolved), parse from map text
             if (componentId.endsWith('_evolved')) {
                 const evolvedInfo = findEvolvedComponentInfo(mapText, componentId);
@@ -219,7 +282,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
             }
 
             // Auto-select the component if not already selected
-            if (mapElement.type === 'component' || mapElement.type === 'evolved-component') {
+            if (mapElement.type === 'component' || mapElement.type === 'evolved-component' || mapElement.type === 'pst-element') {
                 if (!isSelected(mapElement.id)) {
                     selectComponent(mapElement.id);
                 }
@@ -276,7 +339,10 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         if (
             !currentElement ||
             !mapText ||
-            (typeof currentElement === 'object' && currentElement.type !== 'component' && currentElement.type !== 'evolved-component')
+            (typeof currentElement === 'object' &&
+                currentElement.type !== 'component' &&
+                currentElement.type !== 'evolved-component' &&
+                currentElement.type !== 'pst-element')
         ) {
             console.warn('Cannot delete component: missing element or mapText');
             hideContextMenu();
@@ -288,8 +354,12 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                 const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
                 const componentType =
                     typeof currentElement === 'object' &&
-                    (currentElement.type === 'component' || currentElement.type === 'evolved-component')
-                        ? currentElement.type
+                    (currentElement.type === 'component' ||
+                        currentElement.type === 'evolved-component' ||
+                        currentElement.type === 'pst-element')
+                        ? currentElement.type === 'pst-element'
+                            ? 'pst'
+                            : currentElement.type
                         : undefined;
                 const componentData = typeof currentElement === 'object' ? currentElement.componentData : undefined;
                 onDeleteComponent(String(componentId), componentType, componentData);
@@ -301,7 +371,8 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                     mapText,
                     componentId: String(componentId),
                     componentName,
-                    componentType: componentType === 'evolved-component' ? 'evolved-component' : 'component',
+                    componentType:
+                        componentType === 'evolved-component' ? 'evolved-component' : componentType === 'pst-element' ? 'pst' : 'component',
                 });
             }
 
@@ -445,7 +516,17 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         // Check if we have enhanced element data (MapElement object) or just an ID (string/number)
         if (typeof currentElement === 'object' && currentElement.type) {
             // Enhanced mode with full MapElement data
-            if (currentElement.type === 'component' || currentElement.type === 'evolved-component') {
+            if (currentElement.type === 'pst-element') {
+                // PST elements only show Delete option
+                items.push({
+                    id: 'delete',
+                    label: 'Delete',
+                    action: handleDeleteComponent,
+                    disabled: false,
+                    icon: DeleteIcon,
+                    destructive: true,
+                });
+            } else if (currentElement.type === 'component' || currentElement.type === 'evolved-component') {
                 const properties = currentElement.properties as ComponentProperties;
 
                 // Edit Component - available for all components
