@@ -1,5 +1,5 @@
-import { useMapInteractionService } from '../../../hooks/useMapInteractionService';
-import { ComponentOperations } from './useComponentOperations';
+import {useMapInteractionService} from '../../../hooks/useMapInteractionService';
+import {ComponentOperations} from './useComponentOperations';
 
 interface UseSelectionManagerProps {
     componentOps: ComponentOperations;

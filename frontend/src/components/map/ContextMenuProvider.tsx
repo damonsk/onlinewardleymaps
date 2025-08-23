@@ -1,8 +1,8 @@
-import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
-import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
-import { useComponentSelection } from '../ComponentSelectionContext';
-import { ContextMenu, ContextMenuItem } from './ContextMenu';
+import React, {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
+import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
+import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
+import {useComponentSelection} from '../ComponentSelectionContext';
+import {ContextMenu, ContextMenuItem} from './ContextMenu';
 
 interface MapElement {
     type: 'component' | 'evolved-component' | 'link';
@@ -333,21 +333,9 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
             if (onEditComponent) {
                 let componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
 
-                // For evolved components, use the source component name instead of the synthetic _evolved ID
-                if (typeof currentElement === 'object' && currentElement.type === 'evolved-component') {
-                    // Get the source component name from the componentData
-                    if (currentElement.componentData && currentElement.componentData.name) {
-                        componentId = currentElement.componentData.name;
-                    } else {
-                        // Fallback: try to find the evolved component info from map text
-                        if (String(componentId).endsWith('_evolved')) {
-                            const evolvedInfo = findEvolvedComponentInfo(mapText, String(componentId));
-                            if (evolvedInfo.found && evolvedInfo.sourceName) {
-                                componentId = evolvedInfo.sourceName;
-                            }
-                        }
-                    }
-                }
+                // For evolved components, use the evolved component ID directly
+                // The useComponentOperations.handleEditComponent now handles evolved components properly
+                // by detecting the _evolved suffix and calling startEditing with the full evolved ID
 
                 onEditComponent(String(componentId));
             }

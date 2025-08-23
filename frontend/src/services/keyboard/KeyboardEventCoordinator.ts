@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import {useCallback} from 'react';
 
 /**
  * Interface for keyboard action handlers

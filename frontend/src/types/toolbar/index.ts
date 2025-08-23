@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapTheme } from '../../constants/mapstyles';
+import {MapTheme} from '../../constants/mapstyles';
 
 /**
  * Interface for toolbar sub-items (used in dropdowns like PST)

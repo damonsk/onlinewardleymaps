@@ -65,7 +65,7 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
         if (isHovered && onClick) return '#87ceeb'; // Light blue on hover
         return stroke;
     };
-    
+
     const getStrokeWidth = () => {
         if (isSelected) return strokeWidth + 2;
         if (isHovered && onClick) return strokeWidth + 1;

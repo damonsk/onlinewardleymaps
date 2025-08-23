@@ -1,5 +1,5 @@
-import { IObservable, ISelectionObserver, ISelectionService } from './ISelectionService';
-import { SelectableElement } from './SelectionTypes';
+import {IObservable, ISelectionObserver, ISelectionService} from './ISelectionService';
+import {SelectableElement} from './SelectionTypes';
 
 /**
  * Core selection service implementation

@@ -1,5 +1,5 @@
-import { UnifiedComponent } from '../../types/unified/components';
-import { IComponentElement, ILinkElement, SelectableElement } from './SelectionTypes';
+import {UnifiedComponent} from '../../types/unified/components';
+import {IComponentElement, ILinkElement, SelectableElement} from './SelectionTypes';
 
 /**
  * Factory for creating selectable elements

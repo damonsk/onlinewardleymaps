@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { SelectableElement, SelectionManager } from '../../../services/SelectionManager';
-import { UnifiedComponent } from '../../../types/unified/components';
-import { ComponentOperations } from './useComponentOperations';
+import {useEffect, useRef, useState} from 'react';
+import {SelectableElement, SelectionManager} from '../../../services/SelectionManager';
+import {UnifiedComponent} from '../../../types/unified/components';
+import {ComponentOperations} from './useComponentOperations';
 
 interface UseSelectionManagerProps {
     componentOps: ComponentOperations;

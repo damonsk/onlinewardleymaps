@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { useSelectionService } from '../hooks/useSelectionService';
-import { DeletionService } from '../services/deletion/DeletionService';
-import { DeletionContext, IDeletionObserver, IDeletionService } from '../services/deletion/IDeletionService';
-import { IKeyboardActionHandlers, KeyboardEventCoordinator } from '../services/keyboard/KeyboardEventCoordinator';
-import { SelectableElement } from '../services/selection/SelectionTypes';
+import {useCallback, useEffect, useRef} from 'react';
+import {useSelectionService} from '../hooks/useSelectionService';
+import {DeletionService} from '../services/deletion/DeletionService';
+import {DeletionContext, IDeletionObserver, IDeletionService} from '../services/deletion/IDeletionService';
+import {IKeyboardActionHandlers, KeyboardEventCoordinator} from '../services/keyboard/KeyboardEventCoordinator';
+import {SelectableElement} from '../services/selection/SelectionTypes';
 
 interface UseMapInteractionServiceProps {
     mapText: string;

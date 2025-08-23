@@ -1,6 +1,6 @@
-import { SelectableElement, isComponentElement, isLinkElement } from '../selection/SelectionTypes';
-import { DeletionContext, DeletionResult, IDeletionObserver, IDeletionService } from './IDeletionService';
-import { LinkDeletionStrategy } from './LinkDeletionStrategy';
+import {SelectableElement, isComponentElement, isLinkElement} from '../selection/SelectionTypes';
+import {DeletionContext, DeletionResult, IDeletionObserver, IDeletionService} from './IDeletionService';
+import {LinkDeletionStrategy} from './LinkDeletionStrategy';
 
 /**
  * Unified deletion service using Strategy pattern

@@ -54,7 +54,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapAnnotationsPresentation,
     } = props;
 
-    const {isAnyElementEditing} = useEditing();
+    const {isAnyElementEditing, editingState} = useEditing();
     const Viewer = useRef<ReactSVGPanZoom>(null);
 
     const mapElements = useMemo(() => {
@@ -146,10 +146,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
 
     // Disable pan/zoom when editing is active
     useEffect(() => {
-        if (isAnyElementEditing()) {
+        if (editingState.isEditing) {
             setTool(TOOL_NONE);
         }
-    }, [isAnyElementEditing]);
+    }, [editingState.isEditing]);
 
     const handleZoomChange = (newValue: any) => {
         setValue(newValue);
@@ -835,7 +835,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 width={mapCanvasDimensions.width || window.innerWidth - 100} // Use larger fallback width
                 height={mapCanvasDimensions.height || window.innerHeight - 200} // Use larger fallback height
                 detectAutoPan={false}
-                detectWheel={allowMapZoomMouseWheel && !isAnyElementEditing()}
+                detectWheel={allowMapZoomMouseWheel && !editingState.isEditing}
                 miniatureProps={{
                     position: 'none',
                     background: '#eee',

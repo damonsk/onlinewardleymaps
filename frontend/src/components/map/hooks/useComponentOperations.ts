@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
-import { useMapComponentDeletion } from '../../../hooks/useMapComponentDeletion';
-import { componentEvolutionManager } from '../../../services/ComponentEvolutionManager';
-import { LinkDeleter } from '../../../services/LinkDeleter';
-import { ActionType } from '../../../types/undo-redo';
-import { UnifiedComponent } from '../../../types/unified/components';
-import { UnifiedWardleyMap } from '../../../types/unified/map';
-import { buildComponentLine, findComponentLineInMapText, parseComponentLine } from '../../../utils/componentNameMatching';
-import { useEditing } from '../../EditingContext';
+import {useCallback} from 'react';
+import {useMapComponentDeletion} from '../../../hooks/useMapComponentDeletion';
+import {componentEvolutionManager} from '../../../services/ComponentEvolutionManager';
+import {LinkDeleter} from '../../../services/LinkDeleter';
+import {ActionType} from '../../../types/undo-redo';
+import {UnifiedComponent} from '../../../types/unified/components';
+import {UnifiedWardleyMap} from '../../../types/unified/map';
+import {buildComponentLine, findComponentLineInMapText, parseComponentLine} from '../../../utils/componentNameMatching';
+import {useEditing} from '../../EditingContext';
 
 interface UseComponentOperationsProps {
     mapText: string;
@@ -117,6 +117,15 @@ export const useComponentOperations = ({
 
     const handleEditComponent = useCallback(
         (componentId: string) => {
+            // For evolved components (ending with _evolved), skip the component lookup
+            // and directly start editing, since evolved components don't exist as separate
+            // entries in the wardley map components array but are dynamically generated
+            if (componentId.endsWith('_evolved')) {
+                startEditing(componentId, 'component');
+                return;
+            }
+
+            // For regular components, verify the component exists in the map
             const component = findComponent(componentId);
             if (!component) {
                 showUserFeedback(`Component "${componentId}" not found`, 'error');

@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { ComponentSelectionProvider } from '../../../components/ComponentSelectionContext';
-import { EditingProvider } from '../../../components/EditingContext';
+import {fireEvent, render, screen} from '@testing-library/react';
+import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
+import {EditingProvider} from '../../../components/EditingContext';
 import Note from '../../../components/map/Note';
 
 // Mock the InlineEditor component

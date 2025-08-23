@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { rename } from '../../constants/rename';
-import { UnifiedComponent } from '../../types/unified';
-import { normalizeComponentName } from '../../utils/componentNameMatching';
-import { createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS } from '../../utils/componentNameValidation';
-import { useEditing } from '../EditingContext';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import React, {useEffect, useState} from 'react';
+import {rename} from '../../constants/rename';
+import {UnifiedComponent} from '../../types/unified';
+import {normalizeComponentName} from '../../utils/componentNameMatching';
+import {createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS} from '../../utils/componentNameValidation';
+import {useEditing} from '../EditingContext';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';
@@ -46,9 +46,12 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     mapDimensions,
 }) => {
     const {enableDoubleClickRename} = useFeatureSwitches();
-    const {startEditing, stopEditing, isElementEditing} = useEditing();
+    const {startEditing, stopEditing, isElementEditing, editingState} = useEditing();
     const [editMode, setEditMode] = useState(false);
     const [forceMultiLine, setForceMultiLine] = useState(false);
+
+
+
 
     const actualComponent = element
         ? {
@@ -86,14 +89,15 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
     useEffect(() => {
-        const shouldBeEditing = isElementEditing(component.id);
+        // Use string comparison to handle type mismatch between string and number IDs
+        const shouldBeEditing = editingState.isEditing && String(editingState.editingElementId) === String(component.id);
 
         if (shouldBeEditing && !editMode) {
             setEditMode(true);
         } else if (!shouldBeEditing && editMode) {
             setEditMode(false);
         }
-    }, [isElementEditing, component.id, editMode]);
+    }, [editingState.isEditing, editingState.editingElementId, component.id, editMode]);
 
     // Cleanup effect to handle component unmounting during editing
     useEffect(() => {

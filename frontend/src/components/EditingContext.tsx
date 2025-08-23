@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState, ReactNode, useCallback} from 'react';
+import React, {createContext, useContext, useState, ReactNode, useCallback, useEffect} from 'react';
 
 interface EditingState {
     isEditing: boolean;
@@ -28,7 +28,7 @@ export interface EditingProviderProps {
 
 export const EditingProvider: React.FC<EditingProviderProps> = ({children}) => {
     const [editingState, setEditingState] = useState<EditingState>(defaultEditingState);
-
+    
     const startEditing = useCallback((elementId: string, elementType: 'component' | 'note') => {
         setEditingState({
             isEditing: true,
