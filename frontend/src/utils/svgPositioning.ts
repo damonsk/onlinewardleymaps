@@ -106,41 +106,14 @@ export function calculateForeignObjectPosition(
         y -= editorDimensions.height / 2;
     }
 
-    // Apply Safari-specific adjustments
+    // Apply Safari-specific adjustments - simplified approach
     if (hasSafariSVGQuirks()) {
         if (process.env.NODE_ENV === 'development') {
-            console.log('[Safari Positioning] Before adjustments:', {x, y});
+            console.log('[Safari Positioning] Using original coordinates without adjustments');
+            console.log('[Safari Positioning] Position:', {x, y});
         }
-
-        // Try using screen coordinate conversion for Safari
-        const originalPosition = {x: svgPosition.x, y: svgPosition.y};
-        const screenCoords = convertSVGToScreenCoordinates(originalPosition);
-
-        if (process.env.NODE_ENV === 'development') {
-            console.log('[Safari Positioning] Original SVG coords:', originalPosition);
-            console.log('[Safari Positioning] Screen coords:', screenCoords);
-        }
-
-        // Use screen coordinates as base and apply offsets
-        x = screenCoords.x + offsetX;
-        y = screenCoords.y + offsetY;
-
-        // Apply centering adjustments again since we reset x,y
-        if (centerHorizontally) {
-            x -= editorDimensions.width / 2;
-        }
-        if (centerVertically) {
-            y -= editorDimensions.height / 2;
-        }
-
-        // Apply additional Safari-specific adjustments
-        const safariAdjustments = getSafariPositionAdjustments();
-        x += safariAdjustments.x;
-        y += safariAdjustments.y;
-
-        if (process.env.NODE_ENV === 'development') {
-            console.log('[Safari Positioning] Final position:', {x, y});
-        }
+        // For now, just use the calculated position without Safari-specific adjustments
+        // This will help us understand if the issue is with our adjustments or fundamental positioning
     }
 
     return {
@@ -170,19 +143,9 @@ export function calculateTitleEditorPosition(
     titlePosition: SVGPosition,
     editorDimensions: EditorDimensions = {width: 300, height: 40},
 ): ForeignObjectPosition {
-    // For Safari, we need different positioning logic
-    if (hasSafariSVGQuirks()) {
-        return calculateForeignObjectPosition(titlePosition, editorDimensions, {
-            offsetX: 0,
-            offsetY: -25, // Adjusted for Safari - less offset above title
-            centerHorizontally: false,
-            centerVertically: false,
-        });
-    }
-
     return calculateForeignObjectPosition(titlePosition, editorDimensions, {
         offsetX: 0,
-        offsetY: -35, // Original offset for other browsers
+        offsetY: -35, // Position above the title text
         centerHorizontally: false,
         centerVertically: false,
     });
@@ -200,16 +163,6 @@ export function calculateComponentEditorPosition(
         x: componentPosition.x + labelOffset.x,
         y: componentPosition.y + labelOffset.y,
     };
-
-    // For Safari, we need different positioning logic
-    if (hasSafariSVGQuirks()) {
-        return calculateForeignObjectPosition(adjustedPosition, editorDimensions, {
-            offsetX: -70, // Adjusted horizontal centering for Safari
-            offsetY: -60, // Adjusted vertical positioning for Safari
-            centerHorizontally: false,
-            centerVertically: false,
-        });
-    }
 
     return calculateForeignObjectPosition(adjustedPosition, editorDimensions, {
         offsetX: -60, // Center horizontally around the component
