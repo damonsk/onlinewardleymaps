@@ -10,7 +10,9 @@ import {UnifiedWardleyMap} from '../../types/unified/map';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
+import EvolutionStagesDialog from './EvolutionStagesDialog';
 import {DefaultThemes} from './foundation/Fill';
+import MapSizeDialog from './MapSizeDialog';
 
 // New custom hooks for separated concerns
 import {useComponentOperations} from './hooks/useComponentOperations';

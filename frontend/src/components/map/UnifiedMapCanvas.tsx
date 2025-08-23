@@ -1,24 +1,24 @@
-import {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
-import {DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
-import {MapElements} from '../../processing/MapElements';
-import {PSTCoordinates, PSTElement, ResizeHandle} from '../../types/map/pst';
-import {processLinks} from '../../utils/mapProcessing';
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
+import { DEFAULT_RESIZE_CONSTRAINTS } from '../../constants/pstConfig';
+import { MapElements } from '../../processing/MapElements';
+import { PSTCoordinates, PSTElement, ResizeHandle } from '../../types/map/pst';
+import { processLinks } from '../../utils/mapProcessing';
 import {
     calculateResizedBounds,
     constrainPSTBounds,
     convertBoundsToPSTCoordinates,
     convertPSTCoordinatesToBounds,
 } from '../../utils/pstCoordinateUtils';
-import {updatePSTInMapText} from '../../utils/pstElementUtils';
-import {useEditing} from '../EditingContext';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import { updatePSTInMapText } from '../../utils/pstElementUtils';
+import { useEditing } from '../EditingContext';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
-import {DebugOverlay} from './debug/DebugOverlay';
-import {useMapEventHandlers} from './hooks/useMapEventHandlers';
-import {UnifiedMapCanvasProps} from './types/MapCanvasProps';
+import { DebugOverlay } from './debug/DebugOverlay';
+import { useMapEventHandlers } from './hooks/useMapEventHandlers';
+import { UnifiedMapCanvasProps } from './types/MapCanvasProps';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
@@ -217,6 +217,19 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             props.onMethodApplication,
             props.onComponentClick,
         ],
+    );
+
+    // Title update handler
+    const handleTitleUpdate = useCallback(
+        (newTitle: string) => {
+            try {
+                const result = MapTitleManager.updateMapTitle(mapText, newTitle);
+                mutateMapText(result.updatedMapText);
+            } catch (error) {
+                console.error('Failed to update map title:', error);
+            }
+        },
+        [mapText, mutateMapText],
     );
 
     // PST resize event handlers with enhanced state management
@@ -902,6 +915,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         mapEvolutionStates={mapEvolutionStates}
                         evolutionOffsets={evolutionOffsets}
                         mapTitle={wardleyMap.title}
+                        mapText={mapText}
+                        onTitleUpdate={handleTitleUpdate}
                     />
 
                     <DebugOverlay enabled={DEBUG_COORDINATES} lastClickPosition={lastClickPosition} />

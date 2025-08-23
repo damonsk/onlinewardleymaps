@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {MapTheme} from '../../types/map/styles';
+import { MapTheme } from '../../types/map/styles';
 
 interface ValidationConfig {
     required?: boolean;
@@ -324,7 +324,7 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
             const timeoutId = setTimeout(() => {
                 if (inputRef.current) {
                     inputRef.current.focus();
-                    if (selectAllOnFocus) {
+                    if (selectAllOnFocus && typeof inputRef.current.select === 'function') {
                         inputRef.current.select();
                     }
                     // Calculate height after focus for multi-line
@@ -517,7 +517,7 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
             } catch (err) {
                 console.error('Error during auto-save on blur:', err);
                 // Keep the editor open if save fails
-                if (inputRef.current) {
+                if (inputRef.current && typeof inputRef.current.focus === 'function') {
                     inputRef.current.focus();
                 }
             }
