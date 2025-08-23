@@ -1,6 +1,7 @@
 import {useCallback} from 'react';
 import {useMapComponentDeletion} from '../../../hooks/useMapComponentDeletion';
 import {componentEvolutionManager} from '../../../services/ComponentEvolutionManager';
+import {LinkDeleter} from '../../../services/LinkDeleter';
 import {ActionType} from '../../../types/undo-redo';
 import {UnifiedComponent} from '../../../types/unified/components';
 import {UnifiedWardleyMap} from '../../../types/unified/map';
@@ -16,6 +17,7 @@ interface UseComponentOperationsProps {
 
 export interface ComponentOperations {
     handleDeleteComponent: (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => void;
+    handleDeleteLink: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     handleEditComponent: (componentId: string) => void;
     handleToggleInertia: (componentId: string) => void;
     handleEvolveComponent: (componentId: string) => void;
@@ -30,6 +32,7 @@ export const useComponentOperations = ({
 }: UseComponentOperationsProps): ComponentOperations => {
     const {deleteComponent} = useMapComponentDeletion();
     const {startEditing} = useEditing();
+    const linkDeleter = new LinkDeleter();
 
     const findComponent = useCallback(
         (componentId: string): UnifiedComponent | null => {
@@ -71,6 +74,45 @@ export const useComponentOperations = ({
             }
         },
         [deleteComponent, mapText, showUserFeedback],
+    );
+
+    const handleDeleteLink = useCallback(
+        (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => {
+            console.log('useComponentOperations: handleDeleteLink called', {
+                linkInfo,
+                hasMapText: !!mapText,
+                mapTextLength: mapText?.length,
+            });
+
+            if (!mapText) {
+                console.warn('Cannot delete link: missing mapText');
+                return;
+            }
+
+            try {
+                console.log('useComponentOperations: calling linkDeleter.deleteLink');
+                const updatedMapText = linkDeleter.deleteLink(mapText, linkInfo);
+                console.log('useComponentOperations: linkDeleter returned:', {
+                    originalLength: mapText.length,
+                    updatedLength: updatedMapText.length,
+                    textChanged: updatedMapText !== mapText,
+                });
+
+                const linkDescription = linkInfo.flow
+                    ? `Flow link ${linkInfo.start}->${linkInfo.end}`
+                    : `Link ${linkInfo.start}->${linkInfo.end}`;
+
+                console.log('useComponentOperations: calling mutateMapText');
+                mutateMapText(updatedMapText, 'canvas-delete', `Deleted ${linkDescription}`);
+                console.log('useComponentOperations: mutateMapText completed');
+
+                showUserFeedback(`${linkDescription} deleted successfully`, 'success');
+            } catch (error) {
+                console.error('Failed to delete link:', error);
+                showUserFeedback('Failed to delete link', 'error');
+            }
+        },
+        [linkDeleter, mapText, mutateMapText, showUserFeedback],
     );
 
     const handleEditComponent = useCallback(
@@ -203,6 +245,7 @@ export const useComponentOperations = ({
 
     return {
         handleDeleteComponent,
+        handleDeleteLink,
         handleEditComponent,
         handleToggleInertia,
         handleEvolveComponent,

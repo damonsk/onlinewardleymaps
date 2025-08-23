@@ -11,3 +11,6 @@ export type {ComponentEvolutionManager, EvolutionResult, EvolutionStage} from '.
 
 export {SelectionManager} from './SelectionManager';
 export type {SelectableElement, SelectableElementType, SelectionManagerOptions} from './SelectionManager';
+
+export {LinkDeleter} from './LinkDeleter';
+export type {LinkDeletionInfo} from './LinkDeleter';

@@ -54,9 +54,19 @@ export interface MethodInteractionProps {
     methodHighlightedComponent?: UnifiedComponent | null;
 }
 
+export interface LinkSelectionProps {
+    onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
+    onLinkContextMenu?: (
+        linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+        event: React.MouseEvent,
+    ) => void;
+    isLinkSelected?: (linkId: string) => boolean;
+}
+
 export interface UnifiedMapCanvasProps
     extends MapCanvasProps,
         ToolbarInteractionProps,
         LinkingInteractionProps,
         DrawingInteractionProps,
-        MethodInteractionProps {}
+        MethodInteractionProps,
+        LinkSelectionProps {}

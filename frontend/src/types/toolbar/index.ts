@@ -66,6 +66,9 @@ export interface WysiwygToolbarProps {
     onItemSelect: (item: ToolbarItem | null) => void;
     selectedItem: ToolbarItem | null;
     keyboardShortcutsEnabled?: boolean;
+    getSelectedLink?: () => {id: string; linkData: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}} | null;
+    onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
+    clearSelection?: () => void; // Callback to clear current selection
 }
 
 /**
@@ -116,6 +119,9 @@ export interface KeyboardShortcutHandlerProps {
     undoRedoEnabled?: boolean; // Default: true
     selectedComponentId?: string | null; // Currently selected component for deletion
     onDeleteComponent?: (componentId: string) => void; // Callback for component deletion
+    getSelectedLink?: () => {id: string; linkData: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}} | null; // Get selected link data
+    onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void; // Callback for link deletion
+    clearSelection?: () => void; // Callback to clear current selection after successful deletion
 }
 
 /**

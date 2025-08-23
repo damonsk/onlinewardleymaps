@@ -1,10 +1,8 @@
-import React, {createContext, ReactNode, useCallback, useContext, useState} from 'react';
+import React, {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
 import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
+import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {ContextMenu, ContextMenuItem} from './ContextMenu';
-import {UnifiedComponent} from '../../types/unified';
-import {useUnifiedMapState} from '../../hooks/useUnifiedMapState';
-import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
 
 interface MapElement {
     type: 'component' | 'evolved-component' | 'link';
@@ -12,6 +10,7 @@ interface MapElement {
     name: string;
     properties: ComponentProperties | LinkProperties;
     componentData?: any; // Store the original component data for evolved components
+    linkData?: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}; // Store link data for deletion
 }
 
 interface ComponentProperties {
@@ -37,6 +36,10 @@ interface ContextMenuState {
 
 interface ContextMenuContextType {
     showContextMenu: (position: {x: number; y: number}, element: MapElement | string | number) => void;
+    showLinkContextMenu: (
+        position: {x: number; y: number},
+        linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+    ) => void;
     hideContextMenu: () => void;
     isContextMenuOpen: boolean;
 }
@@ -45,10 +48,18 @@ export interface ContextMenuProviderProps {
     children: ReactNode;
     mapText: string;
     onDeleteComponent?: (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => void;
+    onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     onEditComponent?: (componentId: string) => void;
     onToggleInertia?: (componentId: string) => void;
     onEvolveComponent?: (componentId: string) => void;
     wardleyMap?: any; // For accessing component data
+    selectionManager?: {getSelectedElement: () => any; getSelectedLink: () => any}; // For accessing link selections
+    onContextMenuReady?: (contextMenuActions: {
+        showLinkContextMenu: (
+            position: {x: number; y: number},
+            linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+        ) => void;
+    }) => void;
 }
 
 const defaultContextMenuState: ContextMenuState = {
@@ -87,10 +98,13 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     children,
     mapText,
     onDeleteComponent,
+    onDeleteLink,
     onEditComponent,
     onToggleInertia,
     onEvolveComponent,
     wardleyMap,
+    selectionManager,
+    onContextMenuReady,
 }) => {
     const [contextMenuState, setContextMenuState] = useState<ContextMenuState>(defaultContextMenuState);
     const {getSelectedComponentId, isSelected, clearSelection, selectComponent} = useComponentSelection();
@@ -105,9 +119,9 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
             // For evolved components (ending with _evolved), parse from map text
             if (componentId.endsWith('_evolved')) {
                 const evolvedInfo = findEvolvedComponentInfo(mapText, componentId);
-                
+
                 if (!evolvedInfo.found) return null;
-                
+
                 // Create a MapElement for the evolved component
                 const mapElement: MapElement = {
                     type: 'evolved-component',
@@ -127,7 +141,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                         override: evolvedInfo.evolvedName, // This is what gets deleted
                     },
                 };
-                
+
                 return mapElement;
             }
 
@@ -220,9 +234,42 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         [detectElementFromComponent, isSelected, selectComponent],
     );
 
+    const showLinkContextMenu = useCallback(
+        (position: {x: number; y: number}, linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => {
+            // Create a MapElement for the link
+            const linkElement: MapElement = {
+                type: 'link',
+                id: `${linkInfo.start}->${linkInfo.end}`,
+                name: `${linkInfo.start} → ${linkInfo.end}`,
+                properties: {
+                    source: linkInfo.start,
+                    target: linkInfo.end,
+                    type: linkInfo.flow ? 'flow' : 'link',
+                },
+                linkData: linkInfo,
+            };
+
+            setContextMenuState({
+                isOpen: true,
+                position,
+                element: linkElement,
+            });
+        },
+        [],
+    );
+
     const hideContextMenu = useCallback(() => {
         setContextMenuState(defaultContextMenuState);
     }, []);
+
+    // Expose context menu functions to parent component
+    useEffect(() => {
+        if (onContextMenuReady) {
+            onContextMenuReady({
+                showLinkContextMenu,
+            });
+        }
+    }, [onContextMenuReady, showLinkContextMenu]);
 
     const handleDeleteComponent = useCallback(() => {
         const currentElement = contextMenuState.element;
@@ -239,7 +286,11 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         try {
             if (onDeleteComponent) {
                 const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
-                const componentType = typeof currentElement === 'object' ? currentElement.type : undefined;
+                const componentType =
+                    typeof currentElement === 'object' &&
+                    (currentElement.type === 'component' || currentElement.type === 'evolved-component')
+                        ? currentElement.type
+                        : undefined;
                 const componentData = typeof currentElement === 'object' ? currentElement.componentData : undefined;
                 onDeleteComponent(String(componentId), componentType, componentData);
             } else {
@@ -250,7 +301,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                     mapText,
                     componentId: String(componentId),
                     componentName,
-                    componentType,
+                    componentType: componentType === 'evolved-component' ? 'evolved-component' : 'component',
                 });
             }
 
@@ -346,6 +397,40 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         hideContextMenu();
     }, [contextMenuState.element, onEvolveComponent, hideContextMenu]);
 
+    const handleDeleteLink = useCallback(() => {
+        const currentElement = contextMenuState.element;
+        console.log('ContextMenuProvider: handleDeleteLink called', {
+            currentElement,
+            elementType: typeof currentElement,
+            isValidElement: currentElement && typeof currentElement === 'object' && currentElement.type === 'link',
+            hasOnDeleteLink: !!onDeleteLink,
+            linkData: currentElement && typeof currentElement === 'object' ? currentElement.linkData : null,
+        });
+
+        if (!currentElement || typeof currentElement !== 'object' || currentElement.type !== 'link') {
+            console.warn('Cannot delete link: invalid element type');
+            hideContextMenu();
+            return;
+        }
+
+        try {
+            if (onDeleteLink && currentElement.linkData) {
+                console.log('ContextMenuProvider: calling onDeleteLink with:', currentElement.linkData);
+                onDeleteLink(currentElement.linkData);
+                console.log('ContextMenuProvider: onDeleteLink completed');
+            } else {
+                console.warn('ContextMenuProvider: onDeleteLink or linkData missing', {
+                    hasOnDeleteLink: !!onDeleteLink,
+                    hasLinkData: !!currentElement.linkData,
+                });
+            }
+        } catch (error) {
+            console.error('Failed to delete link:', error);
+        }
+
+        hideContextMenu();
+    }, [contextMenuState.element, onDeleteLink, hideContextMenu]);
+
     const getContextMenuItems = useCallback((): ContextMenuItem[] => {
         const currentElement = contextMenuState.element;
         if (!currentElement) return [];
@@ -401,6 +486,18 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                     icon: DeleteIcon,
                     destructive: true,
                 });
+            } else if (currentElement.type === 'link') {
+                // Delete Link - available for all links
+                if (onDeleteLink) {
+                    items.push({
+                        id: 'delete-link',
+                        label: 'Delete Link',
+                        action: handleDeleteLink,
+                        disabled: false,
+                        icon: DeleteIcon,
+                        destructive: true,
+                    });
+                }
             }
         } else {
             // Fallback mode - basic delete functionality only (for backward compatibility)
@@ -420,17 +517,20 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     }, [
         contextMenuState.element,
         handleDeleteComponent,
+        handleDeleteLink,
         handleEditComponent,
         handleToggleInertia,
         handleEvolveComponent,
         onEditComponent,
         onToggleInertia,
         onEvolveComponent,
+        onDeleteLink,
         getSelectedComponentId,
     ]);
 
     const contextValue: ContextMenuContextType = {
         showContextMenu,
+        showLinkContextMenu,
         hideContextMenu,
         isContextMenuOpen: contextMenuState.isOpen,
     };

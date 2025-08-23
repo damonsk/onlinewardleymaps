@@ -91,6 +91,13 @@ interface ModernUnifiedMapContentProps {
     onPSTDragStart?: (element: PSTElement, startPosition: {x: number; y: number}) => void;
     onPSTDragMove?: (element: PSTElement, currentPosition: {x: number; y: number}) => void;
     onPSTDragEnd?: (element: PSTElement) => void;
+    // New props for link selection functionality
+    onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
+    onLinkContextMenu?: (
+        linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+        event: React.MouseEvent,
+    ) => void;
+    isLinkSelected?: (linkId: string) => boolean;
 }
 
 const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
@@ -278,6 +285,9 @@ const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
                                 endElement={l.endElement}
                                 link={l.link}
                                 scaleFactor={scaleFactor}
+                                onLinkClick={props.onLinkClick}
+                                onLinkContextMenu={props.onLinkContextMenu}
+                                isLinkSelected={props.isLinkSelected}
                             />
                         ))}
                     </g>

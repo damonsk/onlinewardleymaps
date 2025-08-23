@@ -51,6 +51,18 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
     const featureSwitches = useFeatureSwitches();
     const {clearSelection} = useComponentSelection();
 
+    // State to store context menu actions
+    const [contextMenuActions, setContextMenuActions] = React.useState<{
+        showLinkContextMenu?: (
+            position: {x: number; y: number},
+            linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+        ) => void;
+    }>({});
+
+    React.useEffect(() => {
+        console.log('MapView: contextMenuActions updated:', contextMenuActions);
+    }, [contextMenuActions]);
+
     // User feedback hook must be initialized first since other hooks depend on it
     const {showUserFeedback, userFeedback, setUserFeedback} = useUserFeedback();
 
@@ -180,10 +192,13 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
             <ContextMenuProvider
                 mapText={props.mapText}
                 onDeleteComponent={componentOps.handleDeleteComponent}
+                onDeleteLink={componentOps.handleDeleteLink}
                 onEditComponent={componentOps.handleEditComponent}
                 onToggleInertia={componentOps.handleToggleInertia}
                 onEvolveComponent={componentOps.handleEvolveComponent}
-                wardleyMap={props.wardleyMap}>
+                wardleyMap={props.wardleyMap}
+                selectionManager={selectionManager}
+                onContextMenuReady={setContextMenuActions}>
                 <div
                     ref={legacyRef}
                     className={props.mapStyleDefs.className}
@@ -197,6 +212,9 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
                         selectedItem={toolbarState.selectedToolbarItem}
                         onItemSelect={handleUnifiedToolbarSelection}
                         keyboardShortcutsEnabled={true}
+                        getSelectedLink={selectionManager.getSelectedLink}
+                        onDeleteLink={componentOps.handleDeleteLink}
+                        clearSelection={selectionManager.clearSelection}
                     />
 
                     <DragPreview
@@ -245,6 +263,25 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
                             drawingCurrentPosition={drawingState.drawingCurrentPosition}
                             onMethodApplication={componentOps.handleMethodApplication}
                             methodHighlightedComponent={toolbarState.methodHighlightedComponent}
+                            onLinkClick={linkInfo => {
+                                // Clear component selection when selecting a link
+                                clearSelection();
+                                selectionManager.selectLink(linkInfo);
+                            }}
+                            onLinkContextMenu={(linkInfo, event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                // Clear component selection when selecting a link via context menu
+                                clearSelection();
+                                selectionManager.selectLink(linkInfo);
+                                // Show context menu for the link using the callback
+                                if (contextMenuActions.showLinkContextMenu) {
+                                    contextMenuActions.showLinkContextMenu({x: event.clientX, y: event.clientY}, linkInfo);
+                                } else {
+                                    console.warn('Link context menu not available - contextMenuActions.showLinkContextMenu is not set');
+                                }
+                            }}
+                            isLinkSelected={linkId => selectionManager.isSelected(linkId, 'link')}
                         />
                     </div>
                 </div>

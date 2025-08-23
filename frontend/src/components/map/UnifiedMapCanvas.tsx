@@ -933,6 +933,9 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         onPSTDragStart={handlePSTDragStart}
                         onPSTDragMove={handlePSTDragMove}
                         onPSTDragEnd={handlePSTDragEnd}
+                        onLinkClick={props.onLinkClick}
+                        onLinkContextMenu={props.onLinkContextMenu}
+                        isLinkSelected={props.isLinkSelected}
                     />
                 </svg>
             </UncontrolledReactSVGPanZoom>

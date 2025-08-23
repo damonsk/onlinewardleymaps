@@ -15,9 +15,25 @@ interface ModernComponentLinkProps {
     endElement: UnifiedComponent;
     link: FlowLink;
     scaleFactor: number;
+    onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
+    onLinkContextMenu?: (
+        linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+        event: React.MouseEvent,
+    ) => void;
+    isLinkSelected?: (linkId: string) => boolean;
 }
 
-const ComponentLink: React.FC<ModernComponentLinkProps> = ({mapStyleDefs, mapDimensions, startElement, endElement, link, scaleFactor}) => {
+const ComponentLink: React.FC<ModernComponentLinkProps> = ({
+    mapStyleDefs,
+    mapDimensions,
+    startElement,
+    endElement,
+    link,
+    scaleFactor,
+    onLinkClick,
+    onLinkContextMenu,
+    isLinkSelected,
+}) => {
     const {enableLinkContext} = useFeatureSwitches();
     const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
@@ -51,6 +67,39 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({mapStyleDefs, mapDim
     const isUpsideDown = angle > 90 || angle < -90;
     const adjustedAngle = isUpsideDown ? angle + 180 : angle;
 
+    // Link selection state and handlers
+    const linkId = `${startElement.name}->${endElement.name}`;
+    const linkSelected = isLinkSelected?.(linkId) || false;
+
+    const handleLinkClick = (event: React.MouseEvent) => {
+        if (onLinkClick) {
+            event.stopPropagation();
+            onLinkClick({
+                start: startElement.name,
+                end: endElement.name,
+                flow: isFlow,
+                flowValue: link.flowValue,
+                line: link.line || 0,
+            });
+        }
+    };
+
+    const handleLinkContextMenu = (event: React.MouseEvent) => {
+        if (onLinkContextMenu) {
+            event.stopPropagation();
+            onLinkContextMenu(
+                {
+                    start: startElement.name,
+                    end: endElement.name,
+                    flow: isFlow,
+                    flowValue: link.flowValue,
+                    line: link.line || 0,
+                },
+                event,
+            );
+        }
+    };
+
     return (
         <>
             <LinkSymbol
@@ -62,6 +111,9 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({mapStyleDefs, mapDim
                 flow={isFlow}
                 evolved={isEvolved}
                 styles={mapStyleDefs.link}
+                onClick={handleLinkClick}
+                onContextMenu={handleLinkContextMenu}
+                isSelected={linkSelected}
             />
             {link.flowValue && (
                 <FlowText

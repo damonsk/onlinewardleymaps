@@ -23,6 +23,9 @@ interface ModernLinkSymbolProps {
     isMarkerStart?: boolean;
     styles?: Partial<LinkStyles>;
     filter?: string;
+    onClick?: (event: React.MouseEvent) => void;
+    onContextMenu?: (event: React.MouseEvent) => void;
+    isSelected?: boolean;
 }
 
 const defaultStyles: LinkStyles = {
@@ -47,26 +50,62 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     marker,
     styles = {},
     filter,
+    onClick,
+    onContextMenu,
+    isSelected,
 }) => {
     const finalStyles = {...defaultStyles, ...styles};
     const stroke = evolved ? finalStyles.evolvedStroke : finalStyles.stroke;
     const strokeWidth = evolved ? finalStyles.evolvedStrokeWidth : finalStyles.strokeWidth;
 
+    // Apply selection styling
+    const selectionStroke = isSelected ? '#007acc' : stroke;
+    const selectionStrokeWidth = isSelected ? strokeWidth + 2 : strokeWidth;
+    const cursor = onClick ? 'pointer' : 'default';
+
     return (
-        <g id={id}>
+        <g id={id} style={{cursor}}>
+            {/* Invisible thicker line for easier clicking */}
+            <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="transparent"
+                strokeWidth={Math.max(10, strokeWidth + 6)}
+                onClick={onClick}
+                onContextMenu={onContextMenu}
+                style={{cursor}}
+            />
+            {/* Visible line */}
             <line
                 x1={x1}
                 y1={y1}
                 x2={x2}
                 y2={y2}
                 strokeDasharray={strokeDasharray}
-                stroke={stroke}
-                strokeWidth={strokeWidth}
+                stroke={selectionStroke}
+                strokeWidth={selectionStrokeWidth}
                 markerStart={isMarkerStart ? marker : undefined}
                 markerEnd={isMarkerStart ? undefined : marker}
                 filter={filter}
+                onClick={onClick}
+                onContextMenu={onContextMenu}
+                style={{cursor}}
             />
-            {flow && <line x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth={finalStyles.flowStrokeWidth} stroke={finalStyles.flow} />}
+            {flow && (
+                <line
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    strokeWidth={finalStyles.flowStrokeWidth}
+                    stroke={finalStyles.flow}
+                    onClick={onClick}
+                    onContextMenu={onContextMenu}
+                    style={{cursor}}
+                />
+            )}
         </g>
     );
 };

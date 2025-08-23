@@ -48,7 +48,18 @@ const detectPlatform = (): 'mac' | 'windows' => {
  * - Ctrl+Y/Cmd+Shift+Z for redo
  */
 export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = memo(
-    ({toolbarItems, onToolSelect, isEnabled, currentSelectedTool, undoRedoEnabled = true, selectedComponentId, onDeleteComponent}) => {
+    ({
+        toolbarItems,
+        onToolSelect,
+        isEnabled,
+        currentSelectedTool,
+        undoRedoEnabled = true,
+        selectedComponentId,
+        onDeleteComponent,
+        getSelectedLink,
+        onDeleteLink,
+        clearSelection,
+    }) => {
         const [announceText, setAnnounceText] = useState('');
         const [platform] = useState(() => detectPlatform());
 
@@ -95,14 +106,24 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
          */
         const handleDeletionShortcuts = useCallback(
             (event: KeyboardEvent): boolean => {
+                const selectedLink = getSelectedLink?.();
+
                 console.log('KeyboardShortcutHandler deletion check:', {
                     key: event.key,
                     selectedComponentId,
+                    selectedLink: selectedLink?.id,
                     hasDeleteHandler: !!onDeleteComponent,
+                    hasLinkDeleteHandler: !!onDeleteLink,
+                    getSelectedLinkFunction: !!getSelectedLink,
+                    selectedLinkFull: selectedLink,
                 });
 
-                if (!selectedComponentId || !onDeleteComponent) {
-                    console.log('Deletion blocked - no selected component or delete handler');
+                // Check if we have either a component or link selected
+                const hasComponentSelection = selectedComponentId && onDeleteComponent;
+                const hasLinkSelection = selectedLink && onDeleteLink;
+
+                if (!hasComponentSelection && !hasLinkSelection) {
+                    console.log('Deletion blocked - no selected component/link or delete handler');
                     return false;
                 }
 
@@ -110,15 +131,28 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
                 // Handle Delete and Backspace keys (no modifiers)
                 if ((key === 'Delete' || key === 'Backspace') && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
-                    console.log('Processing deletion for component:', selectedComponentId);
                     event.preventDefault();
+
                     try {
-                        onDeleteComponent(selectedComponentId);
-                        setAnnounceText(`Component deleted`);
-                        console.log('Component deletion successful');
+                        if (hasLinkSelection) {
+                            // Delete selected link
+                            console.log('Processing deletion for link:', selectedLink.id);
+                            onDeleteLink(selectedLink.linkData);
+                            clearSelection?.(); // Clear selection after successful link deletion
+                            setAnnounceText(`Link deleted`);
+                            console.log('Link deletion successful');
+                        } else if (hasComponentSelection) {
+                            // Delete selected component
+                            const componentIdStr = String(selectedComponentId);
+                            console.log('Processing deletion for component:', componentIdStr);
+                            onDeleteComponent(componentIdStr);
+                            clearSelection?.(); // Clear selection after successful component deletion
+                            setAnnounceText(`Component deleted`);
+                            console.log('Component deletion successful');
+                        }
                     } catch (error) {
-                        console.error('Error deleting component:', error);
-                        setAnnounceText(`Error deleting component`);
+                        console.error('Error deleting element:', error);
+                        setAnnounceText(`Error deleting element`);
                     }
                     setTimeout(() => setAnnounceText(''), 1000);
                     return true;
@@ -126,7 +160,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
                 return false;
             },
-            [selectedComponentId, onDeleteComponent],
+            [selectedComponentId, onDeleteComponent, getSelectedLink, onDeleteLink, clearSelection],
         );
 
         /**

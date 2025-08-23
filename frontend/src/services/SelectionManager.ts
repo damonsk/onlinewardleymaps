@@ -1,10 +1,17 @@
-export type SelectableElementType = 'component' | 'evolved-component';
+export type SelectableElementType = 'component' | 'evolved-component' | 'link';
 
 export interface SelectableElement {
     id: string;
     type: SelectableElementType;
     name: string;
     componentData?: any; // Store the full component object for deletion logic
+    linkData?: {
+        start: string;
+        end: string;
+        flow?: boolean;
+        flowValue?: string;
+        line: number;
+    }; // Store link data for deletion logic
 }
 
 export interface SelectionManagerOptions {

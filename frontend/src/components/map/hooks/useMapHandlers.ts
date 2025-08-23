@@ -297,9 +297,11 @@ export const useMapHandlers = ({
 
     const handleMapCanvasClick = useCallback(
         (pos: {x: number; y: number}) => {
-            clearSelection();
+            // Clear both component selection (ComponentSelectionContext) and link selection (SelectionManager)
+            clearSelection(); // Clears component selection
+            selectionManager.clearSelection(); // Clears link selection
         },
-        [clearSelection],
+        [clearSelection, selectionManager],
     );
 
     const handleToolbarItemDrop = useCallback(

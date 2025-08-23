@@ -13,23 +13,23 @@ export interface EvolvedComponentInfo {
  */
 export function findEvolvedComponentInfo(mapText: string, evolvedComponentId: string): EvolvedComponentInfo {
     if (!evolvedComponentId.endsWith('_evolved')) {
-        return { evolvedName: '', sourceName: '', found: false };
+        return {evolvedName: '', sourceName: '', found: false};
     }
 
     const lines = mapText.split('\n');
-    
+
     for (const line of lines) {
         const trimmedLine = line.trim();
         if (!trimmedLine.startsWith('evolve ')) continue;
-        
+
         const evolveContent = trimmedLine.substring(7).trim(); // Remove 'evolve '
         const arrowIndex = evolveContent.indexOf('->');
         if (arrowIndex === -1) continue;
-        
+
         // Extract source component name
         const sourcePart = evolveContent.substring(0, arrowIndex).trim();
         let sourceName = '';
-        
+
         if (sourcePart.startsWith('"')) {
             const quotedMatch = sourcePart.match(/^"((?:[^"\\]|\\.)*)"/);
             if (quotedMatch) {
@@ -38,11 +38,11 @@ export function findEvolvedComponentInfo(mapText: string, evolvedComponentId: st
         } else {
             sourceName = sourcePart;
         }
-        
+
         // Extract evolved component name (target)
         const targetPart = evolveContent.substring(arrowIndex + 2).trim();
         let evolvedName = '';
-        
+
         if (targetPart.startsWith('"')) {
             const quotedMatch = targetPart.match(/^"((?:[^"\\]|\\.)*)"/);
             if (quotedMatch) {
@@ -54,7 +54,7 @@ export function findEvolvedComponentInfo(mapText: string, evolvedComponentId: st
                 evolvedName = unquotedMatch[1].trim();
             }
         }
-        
+
         if (evolvedName) {
             return {
                 evolvedName,
@@ -63,6 +63,6 @@ export function findEvolvedComponentInfo(mapText: string, evolvedComponentId: st
             };
         }
     }
-    
-    return { evolvedName: '', sourceName: '', found: false };
+
+    return {evolvedName: '', sourceName: '', found: false};
 }
