@@ -1,5 +1,5 @@
-import {IParseStrategy, IProvideBaseElement, IProvideBaseStrategyRunnerConfig, IProvideDecoratorsConfig} from '../types/base';
-import {MapLoadingErrorHandler} from '../utils/errorHandling';
+import { IParseStrategy, IProvideBaseElement, IProvideBaseStrategyRunnerConfig, IProvideDecoratorsConfig } from '../types/base';
+import { MapLoadingErrorHandler } from '../utils/errorHandling';
 
 export default class BaseStrategyRunner implements IParseStrategy {
     data: string;
@@ -86,9 +86,9 @@ export default class BaseStrategyRunner implements IParseStrategy {
                             'size',
                             'style',
                         ].includes(this.keyword);
-                        if (!baseElement.name && !isExempt) {
+                        if (!(baseElement as any).name && !isExempt) {
                             console.warn(`Element on line ${i + 1} missing name, using fallback`);
-                            baseElement.name = `${this.keyword.charAt(0).toUpperCase() + this.keyword.slice(1)} ${i + 1}`;
+                            (baseElement as any).name = `${this.keyword.charAt(0).toUpperCase() + this.keyword.slice(1)} ${i + 1}`;
                         }
 
                         elementsToReturn.push(baseElement);

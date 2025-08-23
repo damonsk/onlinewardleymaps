@@ -1,5 +1,5 @@
-import {UnifiedComponent} from '../../types/unified/components';
-import {IComponentElement, ILinkElement, SelectableElement} from './SelectionTypes';
+import { UnifiedComponent } from '../../types/unified/components';
+import { IComponentElement, ILinkElement, SelectableElement } from './SelectionTypes';
 
 /**
  * Factory for creating selectable elements
@@ -26,7 +26,9 @@ export class SelectableElementFactory {
         };
     }
 
-    public static createElement(input: UnifiedComponent | typeof linkInfo): SelectableElement {
+    public static createElement(
+        input: UnifiedComponent | {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
+    ): SelectableElement {
         // Type guard to determine the input type
         if ('start' in input && 'end' in input) {
             return this.createLink(input);

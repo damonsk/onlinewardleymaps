@@ -85,8 +85,7 @@ function MapTitle(props: MapTitleProps) {
             onDoubleClick={handleDoubleClick}
             style={{
                 cursor: isEditable && onTitleUpdate ? 'pointer' : 'default',
-            }}
-            title={isEditable && onTitleUpdate ? 'Double-click to edit title' : undefined}>
+            }}>
             {mapTitle}
         </text>
     );

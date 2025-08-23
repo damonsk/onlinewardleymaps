@@ -1,6 +1,6 @@
-import {SelectableElement, isComponentElement, isLinkElement} from '../selection/SelectionTypes';
-import {DeletionContext, DeletionResult, IDeletionObserver, IDeletionService} from './IDeletionService';
-import {LinkDeletionStrategy} from './LinkDeletionStrategy';
+import { SelectableElement, isComponentElement, isLinkElement } from '../selection/SelectionTypes';
+import { DeletionContext, DeletionResult, IDeletionObserver, IDeletionService } from './IDeletionService';
+import { LinkDeletionStrategy } from './LinkDeletionStrategy';
 
 /**
  * Unified deletion service using Strategy pattern
@@ -42,7 +42,7 @@ export class DeletionService implements IDeletionService {
             return {
                 success: false,
                 error,
-                description: `Failed to delete ${element.name}`,
+                description: `Failed to delete ${(element as SelectableElement).name}`,
             };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -50,7 +50,7 @@ export class DeletionService implements IDeletionService {
             return {
                 success: false,
                 error: errorMessage,
-                description: `Failed to delete ${element.name}`,
+                description: `Failed to delete ${(element as SelectableElement).name}`,
             };
         }
     }

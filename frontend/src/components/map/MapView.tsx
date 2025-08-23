@@ -115,7 +115,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         (style: 'plain' | 'wardley' | 'colour') => {
             try {
                 const result = MapPropertiesManager.updateMapStyle(props.mapText, style);
-                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', `Changed map style to ${style}`);
+                props.mutateMapText(result.updatedMapText, 'editor-text', `Changed map style to ${style}`);
                 showUserFeedback(`Map style changed to ${style}`, 'success');
             } catch (error) {
                 console.error('Failed to change map style:', error);
@@ -139,7 +139,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         (size: {width: number; height: number}) => {
             try {
                 const result = MapPropertiesManager.updateMapSize(props.mapText, size.width, size.height);
-                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', `Set map size to ${size.width}x${size.height}`);
+                props.mutateMapText(result.updatedMapText, 'editor-text', `Set map size to ${size.width}x${size.height}`);
                 showUserFeedback(`Map size set to ${size.width}x${size.height}`, 'success');
                 setMapSizeDialogOpen(false);
             } catch (error) {
@@ -154,7 +154,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => {
             try {
                 const result = MapPropertiesManager.updateEvolutionStages(props.mapText, stages);
-                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', 'Updated evolution stages');
+                props.mutateMapText(result.updatedMapText, 'editor-text', 'Updated evolution stages');
                 showUserFeedback('Evolution stages updated', 'success');
                 setEvolutionStagesDialogOpen(false);
             } catch (error) {

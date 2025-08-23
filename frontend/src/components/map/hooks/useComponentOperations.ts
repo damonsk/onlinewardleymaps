@@ -1,12 +1,12 @@
-import {useCallback} from 'react';
-import {useMapComponentDeletion} from '../../../hooks/useMapComponentDeletion';
-import {componentEvolutionManager} from '../../../services/ComponentEvolutionManager';
-import {LinkDeleter} from '../../../services/LinkDeleter';
-import {ActionType} from '../../../types/undo-redo';
-import {UnifiedComponent} from '../../../types/unified/components';
-import {UnifiedWardleyMap} from '../../../types/unified/map';
-import {buildComponentLine, findComponentLineInMapText, parseComponentLine} from '../../../utils/componentNameMatching';
-import {useEditing} from '../../EditingContext';
+import { useCallback } from 'react';
+import { useMapComponentDeletion } from '../../../hooks/useMapComponentDeletion';
+import { componentEvolutionManager } from '../../../services/ComponentEvolutionManager';
+import { LinkDeleter } from '../../../services/LinkDeleter';
+import { ActionType } from '../../../types/undo-redo';
+import { UnifiedComponent } from '../../../types/unified/components';
+import { UnifiedWardleyMap } from '../../../types/unified/map';
+import { buildComponentLine, findComponentLineInMapText, parseComponentLine } from '../../../utils/componentNameMatching';
+import { useEditing } from '../../EditingContext';
 
 interface UseComponentOperationsProps {
     mapText: string;
@@ -16,7 +16,11 @@ interface UseComponentOperationsProps {
 }
 
 export interface ComponentOperations {
-    handleDeleteComponent: (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => void;
+    handleDeleteComponent: (
+        componentId: string,
+        componentType?: 'component' | 'evolved-component' | 'pst-element',
+        componentData?: any,
+    ) => void;
     handleDeleteLink: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     handleEditComponent: (componentId: string) => void;
     handleToggleInertia: (componentId: string) => void;
@@ -43,7 +47,7 @@ export const useComponentOperations = ({
     );
 
     const handleDeleteComponent = useCallback(
-        (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => {
+        (componentId: string, componentType?: 'component' | 'evolved-component' | 'pst-element', componentData?: any) => {
             if (!componentId || !mapText) {
                 console.warn('Cannot delete component: missing componentId or mapText');
                 return;
