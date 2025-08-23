@@ -2,6 +2,7 @@ import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'r
 import { ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
 import { DEFAULT_RESIZE_CONSTRAINTS } from '../../constants/pstConfig';
 import { MapElements } from '../../processing/MapElements';
+import { MapTitleManager } from '../../services/MapTitleManager';
 import { PSTCoordinates, PSTElement, ResizeHandle } from '../../types/map/pst';
 import { processLinks } from '../../utils/mapProcessing';
 import {
