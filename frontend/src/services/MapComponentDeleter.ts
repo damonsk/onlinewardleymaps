@@ -137,12 +137,20 @@ export class MapComponentDeleter {
                     continue; // Malformed quoted name
                 }
             } else {
-                // Extract unquoted evolved name (up to first space or end)
-                const unquotedMatch = targetPart.match(/^([^\s]+)/);
+                // For unquoted evolved names, we need to handle multi-word names properly
+                // The evolved name continues until we hit a numeric value (maturity) or end of line
+                // Pattern: "ComponentName 0.62 label [16, 5]" -> ComponentName ends before the number
+                const unquotedMatch = targetPart.match(/^([^0-9]+?)(?:\s+[0-9]|\s*$)/);
                 if (unquotedMatch) {
-                    evolvedName = unquotedMatch[1];
+                    evolvedName = unquotedMatch[1].trim();
                 } else {
-                    continue; // No name found
+                    // Fallback: just take everything up to first number or end
+                    const fallbackMatch = targetPart.match(/^(.*?)(?:\s+[0-9]|$)/);
+                    if (fallbackMatch) {
+                        evolvedName = fallbackMatch[1].trim();
+                    } else {
+                        continue; // No name found
+                    }
                 }
             }
 

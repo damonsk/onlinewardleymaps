@@ -331,7 +331,24 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
 
         try {
             if (onEditComponent) {
-                const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+                let componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
+
+                // For evolved components, use the source component name instead of the synthetic _evolved ID
+                if (typeof currentElement === 'object' && currentElement.type === 'evolved-component') {
+                    // Get the source component name from the componentData
+                    if (currentElement.componentData && currentElement.componentData.name) {
+                        componentId = currentElement.componentData.name;
+                    } else {
+                        // Fallback: try to find the evolved component info from map text
+                        if (String(componentId).endsWith('_evolved')) {
+                            const evolvedInfo = findEvolvedComponentInfo(mapText, String(componentId));
+                            if (evolvedInfo.found && evolvedInfo.sourceName) {
+                                componentId = evolvedInfo.sourceName;
+                            }
+                        }
+                    }
+                }
+
                 onEditComponent(String(componentId));
             }
         } catch (error) {
@@ -339,7 +356,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         }
 
         hideContextMenu();
-    }, [contextMenuState.element, onEditComponent, hideContextMenu]);
+    }, [contextMenuState.element, onEditComponent, hideContextMenu, mapText]);
 
     const handleToggleInertia = useCallback(() => {
         const currentElement = contextMenuState.element;

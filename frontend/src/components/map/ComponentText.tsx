@@ -309,7 +309,8 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     // Remove outer quotes and unescape for matching
                     evolvedCurrentName = evolvedCurrentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 }
-                result = renameEvolvedComponent(evolvedCurrentName, processedText, mapText, mutateMapText);
+                // Pass the raw text to renameEvolvedComponent - it will handle its own escaping
+                result = renameEvolvedComponent(evolvedCurrentName, text, mapText, mutateMapText);
             } else {
                 result = rename(component.line, component.name, processedText, mapText, mutateMapText);
             }
@@ -600,11 +601,15 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             return component.override;
         }
 
-        if (element?.name) {
-            return element.name;
+        // For regular components, check if the name needs unescaping
+        let displayName = element?.name || component.name;
+
+        // If the component name is quoted (multi-line or escaped), unescape it for display
+        if (displayName && displayName.startsWith('"') && displayName.endsWith('"')) {
+            displayName = displayName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
         }
 
-        return component.name;
+        return displayName;
     };
 
     const renderText = () => (
