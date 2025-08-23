@@ -111,11 +111,11 @@ export function calculateForeignObjectPosition(
  * These values account for Safari's different handling of SVG viewBox and foreignObject positioning
  */
 function getSafariPositionAdjustments(): SVGPosition {
-    // Additional Safari-specific adjustments beyond viewBox compensation
-    // These are fine-tuning adjustments that may be needed
+    // Safari-specific adjustments based on testing
+    // These compensate for Safari's different coordinate interpretation
     return {
-        x: 0, // Additional horizontal adjustment if needed
-        y: 0, // Additional vertical adjustment if needed
+        x: 0, // Horizontal adjustment
+        y: -10, // Vertical adjustment to move editor down slightly
     };
 }
 
@@ -126,9 +126,19 @@ export function calculateTitleEditorPosition(
     titlePosition: SVGPosition,
     editorDimensions: EditorDimensions = {width: 300, height: 40},
 ): ForeignObjectPosition {
+    // For Safari, we need different positioning logic
+    if (hasSafariSVGQuirks()) {
+        return calculateForeignObjectPosition(titlePosition, editorDimensions, {
+            offsetX: 0,
+            offsetY: -25, // Adjusted for Safari - less offset above title
+            centerHorizontally: false,
+            centerVertically: false,
+        });
+    }
+
     return calculateForeignObjectPosition(titlePosition, editorDimensions, {
         offsetX: 0,
-        offsetY: -35, // Position above the title text
+        offsetY: -35, // Original offset for other browsers
         centerHorizontally: false,
         centerVertically: false,
     });
@@ -146,6 +156,16 @@ export function calculateComponentEditorPosition(
         x: componentPosition.x + labelOffset.x,
         y: componentPosition.y + labelOffset.y,
     };
+
+    // For Safari, we need different positioning logic
+    if (hasSafariSVGQuirks()) {
+        return calculateForeignObjectPosition(adjustedPosition, editorDimensions, {
+            offsetX: -70, // Adjusted horizontal centering for Safari
+            offsetY: -60, // Adjusted vertical positioning for Safari
+            centerHorizontally: false,
+            centerVertically: false,
+        });
+    }
 
     return calculateForeignObjectPosition(adjustedPosition, editorDimensions, {
         offsetX: -60, // Center horizontally around the component
