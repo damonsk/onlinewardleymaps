@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
-import { MapTheme } from '../../types/map/styles';
+import {useCallback, useState} from 'react';
+import {MapTheme} from '../../types/map/styles';
+import {calculateTitleEditorPosition, debugPosition} from '../../utils/svgPositioning';
 import InlineEditor from './InlineEditor';
 
 interface MapTitleProps {
@@ -39,8 +40,16 @@ function MapTitle(props: MapTitleProps) {
     }, []);
 
     if (isEditing && mapStyleDefs) {
+        // Calculate cross-browser compatible position for the editor
+        const titlePosition = {x: 0, y: -10}; // Position of the title text
+        const editorDimensions = {width: 300, height: 40};
+        const editorPosition = calculateTitleEditorPosition(titlePosition, editorDimensions);
+
+        // Debug positioning in development
+        debugPosition('MapTitle Editor', titlePosition, editorPosition);
+
         return (
-            <foreignObject x={0} y={-35} width={300} height={40}>
+            <foreignObject x={editorPosition.x} y={editorPosition.y} width={editorPosition.width} height={editorPosition.height}>
                 <InlineEditor
                     value={editValue}
                     onChange={handleChange}

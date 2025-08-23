@@ -3,6 +3,7 @@ import {rename} from '../../constants/rename';
 import {UnifiedComponent} from '../../types/unified';
 import {normalizeComponentName} from '../../utils/componentNameMatching';
 import {createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS} from '../../utils/componentNameValidation';
+import {calculateComponentEditorPosition, debugPosition} from '../../utils/svgPositioning';
 import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
@@ -362,12 +363,25 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         const isMultiLine = true; // Always use textarea for better multi-line support
         const editorHeight = 120; // Use consistent height for textarea
 
+        // Calculate cross-browser compatible position for the editor
+        const componentPosition = {x: Number(cx), y: Number(cy)};
+        const labelOffset = {x: getX(), y: getY()};
+        const editorDimensions = {width: 140, height: editorHeight};
+        const editorPosition = calculateComponentEditorPosition(componentPosition, labelOffset, editorDimensions);
+
+        // Debug positioning in development
+        debugPosition(
+            'ComponentText Editor',
+            {x: componentPosition.x + labelOffset.x, y: componentPosition.y + labelOffset.y},
+            editorPosition,
+        );
+
         return (
             <foreignObject
-                x={Number(cx) + getX() - 60}
-                y={Number(cy) + getY() - 30}
-                width="140"
-                height={editorHeight}
+                x={editorPosition.x}
+                y={editorPosition.y}
+                width={editorPosition.width}
+                height={editorPosition.height}
                 style={{
                     overflow: 'visible',
                 }}>
