@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import EvolutionStagesDialog from '../../../components/map/EvolutionStagesDialog';
 
 // Mock the useI18n hook

@@ -1,4 +1,4 @@
-import { MapTitleManager } from '../../services/MapTitleManager';
+import {MapTitleManager} from '../../services/MapTitleManager';
 
 describe('MapTitleManager', () => {
     describe('getCurrentTitle', () => {

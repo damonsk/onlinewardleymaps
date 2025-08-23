@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
-import { MapTheme } from '../../types/map/styles';
+import {MapTheme} from '../../types/map/styles';
+import {hasSafariSVGQuirks} from '../../utils/browserDetection';
 
 interface ValidationConfig {
     required?: boolean;
@@ -38,6 +39,7 @@ export interface InlineEditorProps {
     autoResize?: boolean;
     ariaLabel?: string;
     ariaDescription?: string;
+    safariFixedPosition?: {x: number; y: number};
 }
 
 interface StyledEditorProps {
@@ -56,7 +58,7 @@ interface StyledEditorProps {
 }
 
 const EditorContainer = styled.div<StyledEditorProps>`
-    position: relative;
+    position: ${() => (hasSafariSVGQuirks() ? 'fixed' : 'relative')};
     display: block;
     min-width: ${props => props.$minWidth || 120}px;
     width: ${props => (props.$width ? `${props.$width}px` : 'auto')};
@@ -68,7 +70,7 @@ const EditorContainer = styled.div<StyledEditorProps>`
     /* Chrome-specific fixes for foreignObject */
     background-color: transparent;
     /* Ensure proper rendering across browsers */
-    z-index: 1;
+    z-index: 1000;
 
     /* Responsive design adjustments */
     @media (max-width: 768px) {

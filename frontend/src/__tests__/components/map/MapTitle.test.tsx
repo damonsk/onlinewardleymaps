@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import MapTitle from '../../../components/map/MapTitle';
-import { MapTheme } from '../../../types/map/styles';
+import {MapTheme} from '../../../types/map/styles';
 
 // Mock the InlineEditor component
 jest.mock('../../../components/map/InlineEditor', () => {

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import MapSizeDialog from '../../../components/map/MapSizeDialog';
 
 // Mock the useI18n hook

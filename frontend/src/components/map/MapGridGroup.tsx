@@ -1,6 +1,6 @@
 import React from 'react';
-import { EvolutionStages, MapDimensions, Offsets } from '../../constants/defaults';
-import { MapTheme } from '../../types/map/styles';
+import {EvolutionStages, MapDimensions, Offsets} from '../../constants/defaults';
+import {MapTheme} from '../../types/map/styles';
 import MapBackground from './foundation/MapBackground';
 import MapEvolution from './foundation/MapEvolution';
 import MapGraphics from './foundation/MapGraphics';
