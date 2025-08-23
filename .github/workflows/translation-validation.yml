@@ -1,0 +1,115 @@
+name: Translation Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'frontend/src/**/*.{js,jsx,ts,tsx}'
+      - 'frontend/public/locales/**/*.json'
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/src/**/*.{js,jsx,ts,tsx}'
+      - 'frontend/public/locales/**/*.json'
+
+jobs:
+  validate-translations:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+          
+      - name: Install dependencies
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile
+          
+      - name: Check translation completeness
+        run: |
+          cd frontend
+          yarn run check-translation-completeness
+          
+      - name: Find untranslated strings
+        run: |
+          cd frontend
+          yarn run find-untranslated:strict
+          
+      - name: Generate translation report
+        if: failure()
+        run: |
+          cd frontend
+          echo "## Translation Validation Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Translation Completeness" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          yarn run check-translation-completeness --verbose || true >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Untranslated Strings" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          yarn run find-untranslated || true >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          
+      - name: Comment PR with translation issues
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+            
+            // Get translation completeness report
+            let completenessReport = '';
+            try {
+              completenessReport = execSync('cd frontend && yarn run check-translation-completeness --json', { encoding: 'utf8' });
+            } catch (error) {
+              completenessReport = error.stdout || 'Error generating completeness report';
+            }
+            
+            // Get untranslated strings report
+            let untranslatedReport = '';
+            try {
+              untranslatedReport = execSync('cd frontend && yarn run find-untranslated --json', { encoding: 'utf8' });
+            } catch (error) {
+              untranslatedReport = error.stdout || 'Error generating untranslated strings report';
+            }
+            
+            const comment = `## 🌐 Translation Validation Failed
+            
+            This PR introduces changes that affect translations. Please review and fix the following issues:
+            
+            ### Translation Completeness Issues
+            \`\`\`json
+            ${completenessReport}
+            \`\`\`
+            
+            ### Untranslated Strings Found
+            \`\`\`json
+            ${untranslatedReport}
+            \`\`\`
+            
+            ### How to Fix
+            
+            1. **For missing translations**: Run \`yarn fix-translations\` to automatically add missing keys
+            2. **For untranslated strings**: Use the \`useI18n\` hook and \`t()\` function:
+               \`\`\`tsx
+               const { t } = useI18n();
+               return <Button>{t('button.save', 'Save')}</Button>;
+               \`\`\`
+            3. **Validate your changes**: Run \`yarn validate-translations\` before committing
+            
+            Please fix these issues and push your changes to continue.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

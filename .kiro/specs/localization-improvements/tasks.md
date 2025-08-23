@@ -47,19 +47,19 @@
   - Add all undo/redo keys to all language files
   - _Requirements: 1.1, 3.1, 3.2, 4.3_
 
-- [-] 1.6 Localize LinkIcon component
+- [x] 1.6 Localize LinkIcon component
 
   - Replace "Link Components" title with t('components.linkComponents', 'Link Components')
   - Add translation key to all language files
   - _Requirements: 1.1, 4.1_
 
-- [ ]   2. Enhance translation validation and build process
+- [-]   2. Enhance translation validation and build process
 
   - Improve existing scripts to catch untranslated strings in build pipeline
   - Create comprehensive validation for all language file completeness
   - _Requirements: 2.2, 2.3, 5.1, 5.2, 5.3_
 
-- [ ] 2.1 Enhance find-untranslated.js script for strict validation
+- [x] 2.1 Enhance find-untranslated.js script for strict validation
 
   - Add command line flag --strict that makes the script exit with error code if untranslated strings found
   - Improve detection accuracy for aria-labels, titles, and text content in JSX
@@ -67,7 +67,7 @@
   - Create detailed JSON output format for integration with other tools
   - _Requirements: 2.2, 5.1_
 
-- [ ] 2.2 Create comprehensive translation completeness validator
+- [x] 2.2 Create comprehensive translation completeness validator
 
   - Write new script check-translation-completeness.js that verifies all keys exist in all language files
   - Implement validation that checks interpolation variables match across languages
@@ -75,7 +75,7 @@
   - Generate detailed reports showing missing keys per language with completion percentages
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 2.3 Integrate validation into build pipeline
+- [-] 2.3 Integrate validation into build pipeline
 
   - Update package.json scripts to include translation validation in build process
   - Modify build configuration to fail on translation validation errors

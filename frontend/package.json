@@ -87,20 +87,30 @@
         "*.{js,jsx,ts,tsx}": [
             "yarn run lint",
             "git add"
+        ],
+        "public/locales/**/*.json": [
+            "yarn run check-translation-completeness"
+        ],
+        "src/**/*.{js,jsx,ts,tsx}": [
+            "yarn run find-untranslated:strict"
         ]
     },
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "npm run validate-translations && next build",
         "start": "next start",
-        "lint": "node scripts/lint-with-progress.js --fix",
+        "lint": "eslint . --fix",
         "lint:check": "node scripts/lint-with-progress.js",
         "lint:simple": "eslint . --fix",
         "lint:watch": "node scripts/lint-watch.js",
         "lint:verbose": "echo '🔧 Running ESLint with detailed output...' && eslint . --fix --format=stylish --debug && echo '✅ ESLint completed!'",
         "find-untranslated": "node scripts/find-untranslated.js",
+        "find-untranslated:strict": "node scripts/find-untranslated.js --strict",
         "check-translations": "node scripts/check-translations.js",
+        "check-translation-completeness": "node scripts/check-translation-completeness.js",
         "fix-translations": "node scripts/check-translations.js --fix",
+        "validate-translations": "npm run check-translation-completeness && npm run find-untranslated:strict",
+        "setup-translation-hooks": "node scripts/setup-translation-hooks.js",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
