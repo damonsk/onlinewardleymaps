@@ -1,9 +1,9 @@
-import {useCallback, useEffect, useRef} from 'react';
-import {useSelectionService} from '../hooks/useSelectionService';
-import {DeletionService} from '../services/deletion/DeletionService';
-import {IDeletionService, DeletionContext, IDeletionObserver} from '../services/deletion/IDeletionService';
-import {KeyboardEventCoordinator, IKeyboardActionHandlers} from '../services/keyboard/KeyboardEventCoordinator';
-import {SelectableElement} from '../services/selection/SelectionTypes';
+import { useCallback, useEffect, useRef } from 'react';
+import { useSelectionService } from '../hooks/useSelectionService';
+import { DeletionService } from '../services/deletion/DeletionService';
+import { DeletionContext, IDeletionObserver, IDeletionService } from '../services/deletion/IDeletionService';
+import { IKeyboardActionHandlers, KeyboardEventCoordinator } from '../services/keyboard/KeyboardEventCoordinator';
+import { SelectableElement } from '../services/selection/SelectionTypes';
 
 interface UseMapInteractionServiceProps {
     mapText: string;
@@ -18,13 +18,7 @@ interface UseMapInteractionServiceProps {
  * Single Responsibility: Only orchestrates services
  * Dependency Inversion: Depends on abstractions, not concrete implementations
  */
-export const useMapInteractionService = ({
-    mapText,
-    mutateMapText,
-    onToolSelect,
-    onUndo,
-    onRedo,
-}: UseMapInteractionServiceProps) => {
+export const useMapInteractionService = ({mapText, mutateMapText, onToolSelect, onUndo, onRedo}: UseMapInteractionServiceProps) => {
     const selectionService = useSelectionService();
     const deletionServiceRef = useRef<IDeletionService>(new DeletionService());
 
@@ -93,9 +87,11 @@ export const useMapInteractionService = ({
         const handleKeyDown = (event: KeyboardEvent) => {
             // Skip if focus is on input elements
             const activeElement = document.activeElement;
-            if (activeElement instanceof HTMLInputElement ||
+            if (
+                activeElement instanceof HTMLInputElement ||
                 activeElement instanceof HTMLTextAreaElement ||
-                (activeElement instanceof HTMLElement && activeElement.contentEditable === 'true')) {
+                (activeElement instanceof HTMLElement && activeElement.contentEditable === 'true')
+            ) {
                 return;
             }
 
@@ -115,7 +111,7 @@ export const useMapInteractionService = ({
         getSelectedElement: selectionService.getSelectedElement,
         getSelectedLink: selectionService.getSelectedLink,
         getSelectedComponent: selectionService.getSelectedComponent,
-        
+
         // Deletion operations
         canDelete: (element: SelectableElement) => deletionServiceRef.current.canDelete(element),
         deleteElement: handleDelete,

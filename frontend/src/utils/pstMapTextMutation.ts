@@ -3,8 +3,8 @@
  * Handles updating map text when PST elements are resized
  */
 
-import {PSTCoordinates, PSTElement, PSTType} from '../types/map/pst';
-import {formatCoordinate} from './mapTextGeneration';
+import { PSTCoordinates, PSTElement, PSTType } from '../types/map/pst';
+import { formatCoordinate } from './mapTextGeneration';
 
 /**
  * Interface for PST map text update parameters
@@ -38,12 +38,12 @@ export function generatePSTSyntax(type: PSTType, coordinates: PSTCoordinates, na
 
     // Generate PST syntax with coordinates
     let syntax = `${type} [${y1}, ${x1}, ${y2}, ${x2}]`;
-    
+
     // Add name if provided
     if (name && name.trim()) {
         syntax += ` ${name.trim()}`;
     }
-    
+
     return syntax;
 }
 

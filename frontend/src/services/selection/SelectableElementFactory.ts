@@ -1,5 +1,5 @@
-import {IComponentElement, ILinkElement, SelectableElement} from './SelectionTypes';
-import {UnifiedComponent} from '../../types/unified/components';
+import { UnifiedComponent } from '../../types/unified/components';
+import { IComponentElement, ILinkElement, SelectableElement } from './SelectionTypes';
 
 /**
  * Factory for creating selectable elements
@@ -16,13 +16,7 @@ export class SelectableElementFactory {
         };
     }
 
-    public static createLink(linkInfo: {
-        start: string;
-        end: string;
-        flow?: boolean;
-        flowValue?: string;
-        line: number;
-    }): ILinkElement {
+    public static createLink(linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}): ILinkElement {
         const linkId = `${linkInfo.start}->${linkInfo.end}`;
         return {
             id: linkId,

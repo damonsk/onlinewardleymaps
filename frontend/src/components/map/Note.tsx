@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
-import {MapDimensions} from '../../constants/defaults';
-import {MapTheme} from '../../constants/mapstyles';
-import {renameNote} from '../../constants/renameNote';
-import {MapNotes} from '../../types/base';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {useEditing} from '../EditingContext';
+import React, { useState } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../constants/mapstyles';
+import { renameNote } from '../../constants/renameNote';
+import { MapNotes } from '../../types/base';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { useEditing } from '../EditingContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
-import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
 import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
-import {NotDefinedCoordsMatcher} from './positionUpdaters/NotDefinedCoordsMatcher';
+import { NotDefinedCoordsMatcher } from './positionUpdaters/NotDefinedCoordsMatcher';
 
 interface MovedPosition {
     x: number;

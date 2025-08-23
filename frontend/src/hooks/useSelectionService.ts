@@ -1,9 +1,9 @@
-import {useEffect, useRef, useState, useCallback} from 'react';
-import {ISelectionService, ISelectionObserver} from './ISelectionService';
-import {SelectableElement, isLinkElement, isComponentElement} from './SelectionTypes';
-import {SelectionService} from './SelectionService';
-import {SelectableElementFactory} from './SelectableElementFactory';
-import {UnifiedComponent} from '../../types/unified/components';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { UnifiedComponent } from '../../types/unified/components';
+import { ISelectionObserver, ISelectionService } from './ISelectionService';
+import { SelectableElementFactory } from './SelectableElementFactory';
+import { SelectionService } from './SelectionService';
+import { SelectableElement, isComponentElement, isLinkElement } from './SelectionTypes';
 
 /**
  * React adapter for the selection service
@@ -35,13 +35,7 @@ export const useSelectionService = () => {
         selectionServiceRef.current.select(element);
     }, []);
 
-    const selectLink = useCallback((linkInfo: {
-        start: string;
-        end: string;
-        flow?: boolean;
-        flowValue?: string;
-        line: number;
-    }) => {
+    const selectLink = useCallback((linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => {
         const element = SelectableElementFactory.createLink(linkInfo);
         selectionServiceRef.current.select(element);
     }, []);
@@ -50,9 +44,12 @@ export const useSelectionService = () => {
         selectionServiceRef.current.deselect();
     }, []);
 
-    const isSelected = useCallback((elementId: string): boolean => {
-        return selectionServiceRef.current.isSelected(elementId);
-    }, [selectionVersion]); // Depend on selectionVersion to trigger re-evaluation
+    const isSelected = useCallback(
+        (elementId: string): boolean => {
+            return selectionServiceRef.current.isSelected(elementId);
+        },
+        [selectionVersion],
+    ); // Depend on selectionVersion to trigger re-evaluation
 
     const getSelectedElement = useCallback((): SelectableElement | null => {
         return selectionServiceRef.current.getSelected();

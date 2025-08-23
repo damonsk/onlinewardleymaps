@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import { useCallback } from 'react';
 
 /**
  * Interface for keyboard action handlers
@@ -66,15 +66,16 @@ export class KeyboardEventCoordinator {
     };
 
     private isDeletionKey(event: KeyboardEvent): boolean {
-        return (event.key === 'Delete' || event.key === 'Backspace') &&
-               !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey;
+        return (
+            (event.key === 'Delete' || event.key === 'Backspace') && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey
+        );
     }
 
     private isUndoKey(event: KeyboardEvent): boolean {
         const key = event.key.toLowerCase();
         const isMac = navigator.platform.toLowerCase().includes('mac');
         const isCtrlOrCmd = isMac ? event.metaKey : event.ctrlKey;
-        
+
         return key === 'z' && isCtrlOrCmd && !event.shiftKey && !event.altKey;
     }
 
@@ -82,33 +83,30 @@ export class KeyboardEventCoordinator {
         const key = event.key.toLowerCase();
         const isMac = navigator.platform.toLowerCase().includes('mac');
         const isCtrlOrCmd = isMac ? event.metaKey : event.ctrlKey;
-        
-        return ((key === 'y' && isCtrlOrCmd && !isMac) ||
-                (key === 'z' && isCtrlOrCmd && isMac && event.shiftKey)) &&
-               !event.altKey;
+
+        return ((key === 'y' && isCtrlOrCmd && !isMac) || (key === 'z' && isCtrlOrCmd && isMac && event.shiftKey)) && !event.altKey;
     }
 
     private isToolSelectionKey(event: KeyboardEvent): boolean {
-        return event.key.length === 1 && 
-               !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey;
+        return event.key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey;
     }
 
     private getToolIdFromKey(key: string): string | null {
         // Map keys to tool IDs - this could be moved to a configuration
         const keyToToolMap: Record<string, string> = {
-            'c': 'component',
-            'l': 'link',
-            'n': 'note',
-            'p': 'pipeline',
-            'a': 'anchor',
-            'm': 'method',
+            c: 'component',
+            l: 'link',
+            n: 'note',
+            p: 'pipeline',
+            a: 'anchor',
+            m: 'method',
         };
-        
+
         return keyToToolMap[key.toLowerCase()] || null;
     }
 
     public updateHandlers(handlers: Partial<IKeyboardActionHandlers>): void {
-        this.handlers = { ...this.handlers, ...handlers };
+        this.handlers = {...this.handlers, ...handlers};
     }
 }
 
@@ -118,6 +116,6 @@ export class KeyboardEventCoordinator {
  */
 export const useKeyboardEventCoordinator = (handlers: IKeyboardActionHandlers) => {
     const coordinator = useCallback(() => new KeyboardEventCoordinator(handlers), []);
-    
+
     return coordinator().handleKeyDown;
 };

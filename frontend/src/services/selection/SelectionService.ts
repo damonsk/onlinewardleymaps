@@ -1,5 +1,5 @@
-import {ISelectionService, ISelectionObserver, IObservable} from './ISelectionService';
-import {SelectableElement} from './SelectionTypes';
+import { IObservable, ISelectionObserver, ISelectionService } from './ISelectionService';
+import { SelectableElement } from './SelectionTypes';
 
 /**
  * Core selection service implementation
@@ -13,7 +13,7 @@ export class SelectionService implements ISelectionService<SelectableElement>, I
     public select(element: SelectableElement): void {
         const previousId = this.selectedElement?.id || null;
         this.selectedElement = element;
-        
+
         // Only notify if selection actually changed
         if (previousId !== element.id) {
             this.notifyObservers(element.id);

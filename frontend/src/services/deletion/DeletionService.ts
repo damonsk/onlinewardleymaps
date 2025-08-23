@@ -1,6 +1,6 @@
-import {IDeletionService, DeletionContext, DeletionResult, IDeletionObserver} from './IDeletionService';
-import {SelectableElement, isLinkElement, isComponentElement} from '../selection/SelectionTypes';
-import {LinkDeletionStrategy} from './LinkDeletionStrategy';
+import { SelectableElement, isComponentElement, isLinkElement } from '../selection/SelectionTypes';
+import { DeletionContext, DeletionResult, IDeletionObserver, IDeletionService } from './IDeletionService';
+import { LinkDeletionStrategy } from './LinkDeletionStrategy';
 
 /**
  * Unified deletion service using Strategy pattern
@@ -57,7 +57,7 @@ export class DeletionService implements IDeletionService {
 
     private async deleteLinkElement(element: SelectableElement & {type: 'link'}, context: DeletionContext): Promise<DeletionResult> {
         const newMapText = this.linkDeletionStrategy.deleteLink(context.mapText, element.linkData);
-        
+
         if (newMapText === context.mapText) {
             const error = 'Link not found in map text';
             this.notifyFailed(element, error);
@@ -81,7 +81,10 @@ export class DeletionService implements IDeletionService {
         return result;
     }
 
-    private async deleteComponentElement(element: SelectableElement & {type: 'component' | 'evolved-component'}, context: DeletionContext): Promise<DeletionResult> {
+    private async deleteComponentElement(
+        element: SelectableElement & {type: 'component' | 'evolved-component'},
+        context: DeletionContext,
+    ): Promise<DeletionResult> {
         // TODO: Implement component deletion strategy
         // For now, return a placeholder implementation
         const error = 'Component deletion not yet implemented';

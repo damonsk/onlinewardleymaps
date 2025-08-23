@@ -75,7 +75,7 @@ export default class BaseStrategyRunner implements IParseStrategy {
                     if (elementValid) {
                         // Validate that the element has required properties
                         // PST elements (pioneers, settlers, townplanners) don't require names
-                        const isPSTElement = [
+                        const isExempt = [
                             'pioneers',
                             'settlers',
                             'townplanners',
@@ -86,7 +86,7 @@ export default class BaseStrategyRunner implements IParseStrategy {
                             'size',
                             'style',
                         ].includes(this.keyword);
-                        if (!baseElement.name && !isPSTElement) {
+                        if (!baseElement.name && !isExempt) {
                             console.warn(`Element on line ${i + 1} missing name, using fallback`);
                             baseElement.name = `${this.keyword.charAt(0).toUpperCase() + this.keyword.slice(1)} ${i + 1}`;
                         }

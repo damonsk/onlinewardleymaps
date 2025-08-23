@@ -1,4 +1,4 @@
-import {SelectableElement} from '../selection/SelectionTypes';
+import { SelectableElement } from '../selection/SelectionTypes';
 
 /**
  * Interface for deletion operations

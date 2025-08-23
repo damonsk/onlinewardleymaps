@@ -1,12 +1,12 @@
-import {useCallback} from 'react';
-import {useMapComponentDeletion} from '../../../hooks/useMapComponentDeletion';
-import {componentEvolutionManager} from '../../../services/ComponentEvolutionManager';
-import {LinkDeleter} from '../../../services/LinkDeleter';
-import {ActionType} from '../../../types/undo-redo';
-import {UnifiedComponent} from '../../../types/unified/components';
-import {UnifiedWardleyMap} from '../../../types/unified/map';
-import {buildComponentLine, findComponentLineInMapText, parseComponentLine} from '../../../utils/componentNameMatching';
-import {useEditing} from '../../EditingContext';
+import { useCallback } from 'react';
+import { useMapComponentDeletion } from '../../../hooks/useMapComponentDeletion';
+import { componentEvolutionManager } from '../../../services/ComponentEvolutionManager';
+import { LinkDeleter } from '../../../services/LinkDeleter';
+import { ActionType } from '../../../types/undo-redo';
+import { UnifiedComponent } from '../../../types/unified/components';
+import { UnifiedWardleyMap } from '../../../types/unified/map';
+import { buildComponentLine, findComponentLineInMapText, parseComponentLine } from '../../../utils/componentNameMatching';
+import { useEditing } from '../../EditingContext';
 
 interface UseComponentOperationsProps {
     mapText: string;

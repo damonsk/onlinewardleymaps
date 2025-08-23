@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {rename} from '../../constants/rename';
-import {UnifiedComponent} from '../../types/unified';
-import {normalizeComponentName} from '../../utils/componentNameMatching';
-import {createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS} from '../../utils/componentNameValidation';
-import {useEditing} from '../EditingContext';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import React, { useEffect, useState } from 'react';
+import { rename } from '../../constants/rename';
+import { UnifiedComponent } from '../../types/unified';
+import { normalizeComponentName } from '../../utils/componentNameMatching';
+import { createComponentNameValidator, DEFAULT_VALIDATION_OPTIONS } from '../../utils/componentNameValidation';
+import { useEditing } from '../EditingContext';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
 import RelativeMovable from './RelativeMovable';

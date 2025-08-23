@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {memo, useState} from 'react';
 
 interface LinkStyles {
     evolvedStroke: string;
@@ -54,13 +54,26 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     onContextMenu,
     isSelected,
 }) => {
+    const [isHovered, setIsHovered] = useState(false);
     const finalStyles = {...defaultStyles, ...styles};
     const stroke = evolved ? finalStyles.evolvedStroke : finalStyles.stroke;
     const strokeWidth = evolved ? finalStyles.evolvedStrokeWidth : finalStyles.strokeWidth;
 
-    // Apply selection styling
-    const selectionStroke = isSelected ? '#007acc' : stroke;
-    const selectionStrokeWidth = isSelected ? strokeWidth + 2 : strokeWidth;
+    // Apply selection and hover styling
+    const getStroke = () => {
+        if (isSelected) return '#007acc';
+        if (isHovered && onClick) return '#87ceeb'; // Light blue on hover
+        return stroke;
+    };
+    
+    const getStrokeWidth = () => {
+        if (isSelected) return strokeWidth + 2;
+        if (isHovered && onClick) return strokeWidth + 1;
+        return strokeWidth;
+    };
+
+    const selectionStroke = getStroke();
+    const selectionStrokeWidth = getStrokeWidth();
     const cursor = onClick ? 'pointer' : 'default';
 
     return (
@@ -75,6 +88,8 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                 strokeWidth={Math.max(10, strokeWidth + 6)}
                 onClick={onClick}
                 onContextMenu={onContextMenu}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
                 style={{cursor}}
             />
             {/* Visible line */}
@@ -91,6 +106,8 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                 filter={filter}
                 onClick={onClick}
                 onContextMenu={onContextMenu}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
                 style={{cursor}}
             />
             {flow && (
@@ -103,6 +120,8 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                     stroke={finalStyles.flow}
                     onClick={onClick}
                     onContextMenu={onContextMenu}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
                     style={{cursor}}
                 />
             )}

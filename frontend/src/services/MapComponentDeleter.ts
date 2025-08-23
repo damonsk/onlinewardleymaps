@@ -1,5 +1,5 @@
-import {PSTElement} from '../types/map/pst';
-import {findPSTElementLine, parsePSTSyntax} from '../utils/pstMapTextMutation';
+import { PSTElement } from '../types/map/pst';
+import { findPSTElementLine, parsePSTSyntax } from '../utils/pstMapTextMutation';
 
 const VALID_COMPONENT_TYPES = ['pst', 'component', 'market', 'anchor', 'note', 'pipeline', 'evolved-component'] as const;
 

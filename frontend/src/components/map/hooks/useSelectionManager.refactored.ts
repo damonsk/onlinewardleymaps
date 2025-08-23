@@ -1,5 +1,5 @@
-import {useMapInteractionService} from '../../../hooks/useMapInteractionService';
-import {ComponentOperations} from './useComponentOperations';
+import { useMapInteractionService } from '../../../hooks/useMapInteractionService';
+import { ComponentOperations } from './useComponentOperations';
 
 interface UseSelectionManagerProps {
     componentOps: ComponentOperations;
@@ -8,7 +8,7 @@ interface UseSelectionManagerProps {
 /**
  * Migration adapter for the existing useSelectionManager hook
  * Maintains backward compatibility while using the new SOLID architecture
- * 
+ *
  * This provides the same API as the original useSelectionManager but delegates
  * to the new SOLID services internally.
  */

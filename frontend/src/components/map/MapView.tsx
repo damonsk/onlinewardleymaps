@@ -1,28 +1,28 @@
-import React, {LegacyRef, useCallback} from 'react';
-import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
-import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
-import {MapAnnotationsPosition} from '../../types/base';
-import {MapTheme} from '../../types/map/styles';
-import {ToolbarItem} from '../../types/toolbar';
-import {ActionType} from '../../types/undo-redo';
-import {UnifiedWardleyMap} from '../../types/unified/map';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {EditingProvider} from '../EditingContext';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
-import {ContextMenuProvider} from './ContextMenuProvider';
-import {DefaultThemes} from './foundation/Fill';
+import React, { LegacyRef, useCallback } from 'react';
+import { EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets } from '../../constants/defaults';
+import { PST_SUB_ITEMS } from '../../constants/toolbarItems';
+import { MapAnnotationsPosition } from '../../types/base';
+import { MapTheme } from '../../types/map/styles';
+import { ToolbarItem } from '../../types/toolbar';
+import { ActionType } from '../../types/undo-redo';
+import { UnifiedWardleyMap } from '../../types/unified/map';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { EditingProvider } from '../EditingContext';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import { ContextMenuProvider } from './ContextMenuProvider';
+import { DefaultThemes } from './foundation/Fill';
 
 // New custom hooks for separated concerns
-import {useComponentOperations} from './hooks/useComponentOperations';
-import {useDrawingState} from './hooks/useDrawingState';
-import {useLinkingState} from './hooks/useLinkingState';
-import {useMapHandlers} from './hooks/useMapHandlers';
-import {useSelectionManager} from './hooks/useSelectionManager';
-import {useToolbarState} from './hooks/useToolbarState';
-import {useUserFeedback} from './hooks/useUserFeedback';
+import { useComponentOperations } from './hooks/useComponentOperations';
+import { useDrawingState } from './hooks/useDrawingState';
+import { useLinkingState } from './hooks/useLinkingState';
+import { useMapHandlers } from './hooks/useMapHandlers';
+import { useSelectionManager } from './hooks/useSelectionManager';
+import { useToolbarState } from './hooks/useToolbarState';
+import { useUserFeedback } from './hooks/useUserFeedback';
 
 // New components for separated UI concerns
-import {UserFeedbackNotification} from './components/UserFeedbackNotification';
+import { UserFeedbackNotification } from './components/UserFeedbackNotification';
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
 import WysiwygToolbar from './WysiwygToolbar';

@@ -1,8 +1,8 @@
-import React, {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
-import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
-import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {ContextMenu, ContextMenuItem} from './ContextMenu';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
+import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { ContextMenu, ContextMenuItem } from './ContextMenu';
 
 interface MapElement {
     type: 'component' | 'evolved-component' | 'link';

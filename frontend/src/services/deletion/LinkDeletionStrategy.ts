@@ -4,18 +4,21 @@
  * Open/Closed: Part of a strategy pattern for different deletion types
  */
 export class LinkDeletionStrategy {
-    public deleteLink(mapText: string, linkInfo: {
-        start: string;
-        end: string;
-        flow?: boolean;
-        flowValue?: string;
-        line: number;
-    }): string {
+    public deleteLink(
+        mapText: string,
+        linkInfo: {
+            start: string;
+            end: string;
+            flow?: boolean;
+            flowValue?: string;
+            line: number;
+        },
+    ): string {
         const lines = mapText.split('\n');
-        
+
         // Find the actual link line using pattern matching
         const actualLinkLineIndex = this.findLinkLine(lines, linkInfo);
-        
+
         if (actualLinkLineIndex === -1) {
             // Link not found, return original text
             return mapText;
@@ -26,13 +29,16 @@ export class LinkDeletionStrategy {
         return filteredLines.join('\n');
     }
 
-    private findLinkLine(lines: string[], linkInfo: {
-        start: string;
-        end: string;
-        flow?: boolean;
-        flowValue?: string;
-        line: number;
-    }): number {
+    private findLinkLine(
+        lines: string[],
+        linkInfo: {
+            start: string;
+            end: string;
+            flow?: boolean;
+            flowValue?: string;
+            line: number;
+        },
+    ): number {
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
             if (this.isMatchingLinkLine(line, linkInfo)) {
@@ -42,12 +48,15 @@ export class LinkDeletionStrategy {
         return -1;
     }
 
-    private isMatchingLinkLine(line: string, linkInfo: {
-        start: string;
-        end: string;
-        flow?: boolean;
-        flowValue?: string;
-    }): boolean {
+    private isMatchingLinkLine(
+        line: string,
+        linkInfo: {
+            start: string;
+            end: string;
+            flow?: boolean;
+            flowValue?: string;
+        },
+    ): boolean {
         const {start, end, flow, flowValue} = linkInfo;
 
         if (flow && flowValue) {
@@ -78,11 +87,11 @@ export class LinkDeletionStrategy {
     private matchesRegularLink(line: string, start: string, end: string): boolean {
         const startPattern = this.createComponentPattern(start);
         const endPattern = this.createComponentPattern(end);
-        
+
         const patterns = [
             `${startPattern}\\s*<->\\s*${endPattern}`, // Bidirectional
-            `${startPattern}\\s*->\\s*${endPattern}`,  // Forward
-            `${endPattern}\\s*->\\s*${startPattern}`,  // Reverse
+            `${startPattern}\\s*->\\s*${endPattern}`, // Forward
+            `${endPattern}\\s*->\\s*${startPattern}`, // Reverse
         ];
 
         return patterns.some(pattern => new RegExp(pattern).test(line));

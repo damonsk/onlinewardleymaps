@@ -1,14 +1,14 @@
-import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {TOOLBAR_ITEMS, getToolbarItemById} from '../../constants/toolbarItems';
-import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
-import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
-import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {useUndoRedo} from '../UndoRedoProvider';
-import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
-import {ToolbarRedoIcon, ToolbarUndoIcon} from './ToolbarIconWrappers';
-import {ToolbarItem} from './ToolbarItem';
+import { TOOLBAR_ITEMS, getToolbarItemById } from '../../constants/toolbarItems';
+import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
+import { ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps } from '../../types/toolbar';
+import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { useUndoRedo } from '../UndoRedoProvider';
+import { KeyboardShortcutHandler } from './KeyboardShortcutHandler';
+import { ToolbarRedoIcon, ToolbarUndoIcon } from './ToolbarIconWrappers';
+import { ToolbarItem } from './ToolbarItem';
 
 const ToolbarContainer = styled.div<{$isDragging: boolean}>`
     position: fixed;
@@ -536,7 +536,16 @@ const useOptionalUndoRedo = () => {
  * Provides a moveable vertical toolbar with all available map components
  */
 export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
-    ({mapStyleDefs, selectedItem, onItemSelect, keyboardShortcutsEnabled = true, mapText, getSelectedLink, onDeleteLink, clearSelection}) => {
+    ({
+        mapStyleDefs,
+        selectedItem,
+        onItemSelect,
+        keyboardShortcutsEnabled = true,
+        mapText,
+        getSelectedLink,
+        onDeleteLink,
+        clearSelection,
+    }) => {
         // Access undo/redo context (optional)
         const undoRedoContext = useOptionalUndoRedo();
 

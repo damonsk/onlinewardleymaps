@@ -1,6 +1,6 @@
-import {fireEvent, render, screen} from '@testing-library/react';
-import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
-import {EditingProvider} from '../../../components/EditingContext';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { ComponentSelectionProvider } from '../../../components/ComponentSelectionContext';
+import { EditingProvider } from '../../../components/EditingContext';
 import Note from '../../../components/map/Note';
 
 // Mock the InlineEditor component
@@ -194,7 +194,7 @@ describe('Note Chrome Compatibility', () => {
 
         // Check that the container div has Chrome-specific styling
         const container = screen.getByDisplayValue('Test Note Content').parentElement;
-        
+
         // Check key styling properties individually
         expect(container).toHaveStyle('width: 100%');
         expect(container).toHaveStyle('height: 100%');
