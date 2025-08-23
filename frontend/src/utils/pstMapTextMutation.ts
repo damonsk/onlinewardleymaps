@@ -26,7 +26,6 @@ export interface PSTSyntaxValidation {
 
 /**
  * Generates PST syntax string from coordinates
- * PST elements should always use clean syntax without names
  */
 export function generatePSTSyntax(type: PSTType, coordinates: PSTCoordinates, name?: string): string {
     const {maturity1, visibility1, maturity2, visibility2} = coordinates;
@@ -37,8 +36,15 @@ export function generatePSTSyntax(type: PSTType, coordinates: PSTCoordinates, na
     const y2 = formatCoordinate(visibility2);
     const x2 = formatCoordinate(maturity2);
 
-    // Generate clean PST syntax without names - PST elements should be standalone
-    return `${type} [${y1}, ${x1}, ${y2}, ${x2}]`;
+    // Generate PST syntax with coordinates
+    let syntax = `${type} [${y1}, ${x1}, ${y2}, ${x2}]`;
+    
+    // Add name if provided
+    if (name && name.trim()) {
+        syntax += ` ${name.trim()}`;
+    }
+    
+    return syntax;
 }
 
 /**

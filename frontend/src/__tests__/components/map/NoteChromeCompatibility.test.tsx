@@ -194,18 +194,18 @@ describe('Note Chrome Compatibility', () => {
 
         // Check that the container div has Chrome-specific styling
         const container = screen.getByDisplayValue('Test Note Content').parentElement;
-        expect(container).toHaveStyle({
-            width: '100%',
-            height: '100%',
-            position: 'relative',
-            display: 'block',
-            backgroundColor: 'white',
-            borderRadius: '4px',
-            padding: '4px',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            zIndex: '1000',
-            boxSizing: 'border-box',
-        });
+        
+        // Check key styling properties individually
+        expect(container).toHaveStyle('width: 100%');
+        expect(container).toHaveStyle('height: 100%');
+        expect(container).toHaveStyle('position: relative');
+        expect(container).toHaveStyle('display: block');
+        expect(container).toHaveStyle('background-color: rgb(255, 255, 255)');
+        expect(container).toHaveStyle('border-radius: 4px');
+        expect(container).toHaveStyle('padding: 4px');
+        expect(container).toHaveStyle('box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)');
+        expect(container).toHaveStyle('z-index: 1000');
+        expect(container).toHaveStyle('box-sizing: border-box');
 
         // Check that the textarea has proper Chrome-specific styling
         const textarea = screen.getByDisplayValue('Test Note Content');

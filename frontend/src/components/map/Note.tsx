@@ -153,11 +153,11 @@ const Note: React.FC<ModernNoteProps> = ({
                             borderRadius: '4px',
                             padding: '4px',
                             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                            zIndex: 1000,
+                            zIndex: '1000',
+                            boxSizing: 'border-box',
                             // Additional Chrome-specific fixes
                             transform: 'translateZ(0)',
                             WebkitTransform: 'translateZ(0)',
-                            boxSizing: 'border-box',
                         }}>
                         <textarea
                             value={editText}
