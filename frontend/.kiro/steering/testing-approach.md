@@ -1,9 +1,9 @@
 # Testing Approach
 
-## Core Principles:                                                                                                                                                                 │
+## Core Principles: │
 
 - Outside-In Testing: Focus on testing behavior from the user's perspective rather than internal implementation details
-- Minimal Mocking: Use mocks sparingly, only for external dependencies (databases, APIs, file systems). Prefer real objects and integration-style tests when possible.  If not possible, avoid using mocking frameworks and favour approaches such as test doubles, stubs, self-shunting
+- Minimal Mocking: Use mocks sparingly, only for external dependencies (databases, APIs, file systems). Prefer real objects and integration-style tests when possible. If not possible, avoid using mocking frameworks and favour approaches such as test doubles, stubs, self-shunting
 - Behavior Over Implementation: Tests should verify what the system does, not how it does it
 - Fewer, Stronger Tests: Consolidate multiple weak tests into fewer comprehensive ones that provide better coverage and confidence - outside in
 - Avoid UI testing
@@ -33,10 +33,6 @@ When analyzing broken or problematic tests, you will:
     - Confirm tests are maintainable and won't break with reasonable refactoring
     - Check that test execution time remains reasonable
 
-When you encounter tests that are:
-    - Over-mocked: Replace mocks with real implementations or higher-level integration tests
-    - Implementation-coupled: Rewrite to test behavior through public interfaces
-    - Redundant: Consolidate into comprehensive scenario-based tests
-    - Trivial: Remove tests that don't add meaningful protection against regressions
+When you encounter tests that are: - Over-mocked: Replace mocks with real implementations or higher-level integration tests - Implementation-coupled: Rewrite to test behavior through public interfaces - Redundant: Consolidate into comprehensive scenario-based tests - Trivial: Remove tests that don't add meaningful protection against regressions
 
 If explaining, avoid verbose detail, stick to short concise tldrs.
