@@ -46,18 +46,14 @@ const TestApp: React.FC<{
                 visibility: 0.8,
                 maturity2: 0.4,
                 visibility2: 0.2,
-            }
-        ]
+            },
+        ],
     };
 
     return (
         <UndoRedoProvider mutateMapText={jest.fn()} mapText={mapText}>
             <ComponentSelectionProvider>
-                <ContextMenuProvider 
-                    mapText={mapText} 
-                    onDeleteComponent={onDeleteComponent}
-                    wardleyMap={mockWardleyMap}
-                >
+                <ContextMenuProvider mapText={mapText} onDeleteComponent={onDeleteComponent} wardleyMap={mockWardleyMap}>
                     <div>
                         <TestMapComponent componentId="component-test-1" mapText={mapText} />
                         <TestMapComponent componentId="2" mapText={mapText} />

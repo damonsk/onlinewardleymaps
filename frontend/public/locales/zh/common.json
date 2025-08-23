@@ -23,7 +23,8 @@
         "close": "关闭",
         "confirm": "确认",
         "update": "更新",
-        "rename": "重命名"
+        "rename": "重命名",
+        "closeNotification": "关闭通知"
     },
     "navigation": {
         "home": "首页",
@@ -69,7 +70,11 @@
             "zoomOut": "缩小",
             "fit": "适应",
             "fullscreen": "全屏",
-            "exitFullscreen": "退出全屏"
+            "exitFullscreen": "退出全屏",
+            "pstTypeSelection": "PST类型选择",
+            "wysiwygLabel": "带键盘快捷键的地图组件工具栏",
+            "dragHandle": "拖拽手柄以移动工具栏",
+            "dragTitle": "拖拽以移动工具栏"
         },
         "evolution": {
             "genesis": "创新期",
@@ -83,7 +88,11 @@
         },
         "yourMap": "您的地图",
         "unsaved": "未保存",
-        "saving": "保存中..."
+        "saving": "保存中...",
+        "contextMenu": {
+            "title": "上下文菜单",
+            "ariaLabel": "上下文菜单"
+        }
     },
     "components": {
         "component": "组件",
@@ -95,6 +104,7 @@
         "maturity": "成熟度",
         "visibility": "可见度",
         "inertia": "惯性",
+        "linkComponents": "链接组件",
         "type": "类型",
         "text": "文本"
     },
@@ -133,6 +143,16 @@
         "usage": "用法",
         "example": "示例",
         "usageDescription": "所有可用地图元素的快速参考。您可以通过点击可用链接将示例添加到您的地图中。",
+        "undo": {
+            "title": "撤销",
+            "description": "撤销上一个操作",
+            "tooltip": "点击撤销在地图上执行的最后一个操作"
+        },
+        "redo": {
+            "title": "重做",
+            "description": "重做上一个撤销的操作",
+            "tooltip": "点击重做最后一个被撤销的操作"
+        },
         "validation": {
             "error": "验证错误",
             "lineError": "第 {{line}} 行出错",

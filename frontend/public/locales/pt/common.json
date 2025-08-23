@@ -23,7 +23,8 @@
         "close": "Fechar",
         "confirm": "Confirmar",
         "update": "Actualizar",
-        "rename": "Renomear"
+        "rename": "Renomear",
+        "closeNotification": "Fechar notificação"
     },
     "navigation": {
         "home": "Início",
@@ -69,7 +70,11 @@
             "zoomOut": "Reduzir",
             "fit": "Ajustar",
             "fullscreen": "Ecrã Inteiro",
-            "exitFullscreen": "Sair do Ecrã Inteiro"
+            "exitFullscreen": "Sair do Ecrã Inteiro",
+            "pstTypeSelection": "Seleção de tipo PST",
+            "wysiwygLabel": "Barra de ferramentas de componentes do mapa com atalhos de teclado",
+            "dragHandle": "Alça de arrastar para mover a barra de ferramentas",
+            "dragTitle": "Arrastar para mover a barra de ferramentas"
         },
         "evolution": {
             "genesis": "Génese",
@@ -83,7 +88,11 @@
         },
         "yourMap": "Seu Mapa",
         "unsaved": "não salvo",
-        "saving": "salvando..."
+        "saving": "salvando...",
+        "contextMenu": {
+            "title": "Menu contextual",
+            "ariaLabel": "Menu contextual"
+        }
     },
     "components": {
         "component": "Componente",
@@ -95,6 +104,7 @@
         "maturity": "Maturidade",
         "visibility": "Visibilidade",
         "inertia": "Inércia",
+        "linkComponents": "Ligar Componentes",
         "type": "Tipo",
         "text": "Texto"
     },
@@ -133,6 +143,16 @@
         "usage": "Utilização",
         "example": "Exemplo",
         "usageDescription": "Referência rápida de todos os elementos de mapa disponíveis. Pode adicionar um exemplo ao seu mapa clicando nas ligações disponíveis.",
+        "undo": {
+            "title": "Desfazer",
+            "description": "Desfazer última ação",
+            "tooltip": "Clique para desfazer a última ação realizada no mapa"
+        },
+        "redo": {
+            "title": "Refazer",
+            "description": "Refazer última ação desfeita",
+            "tooltip": "Clique para refazer a última ação que foi desfeita"
+        },
         "validation": {
             "error": "Erro de Validação",
             "lineError": "Erro na linha {{line}}",

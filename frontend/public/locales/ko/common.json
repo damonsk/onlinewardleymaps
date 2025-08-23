@@ -23,7 +23,8 @@
         "close": "닫기",
         "confirm": "확인",
         "update": "업데이트",
-        "rename": "이름 바꾸기"
+        "rename": "이름 바꾸기",
+        "closeNotification": "알림 닫기"
     },
     "navigation": {
         "home": "홈",
@@ -69,7 +70,11 @@
             "zoomOut": "축소",
             "fit": "맞춤",
             "fullscreen": "전체 화면",
-            "exitFullscreen": "전체 화면 나가기"
+            "exitFullscreen": "전체 화면 나가기",
+            "pstTypeSelection": "PST 유형 선택",
+            "wysiwygLabel": "키보드 단축키가 있는 맵 구성 요소 도구 모음",
+            "dragHandle": "도구 모음을 이동하기 위한 드래그 핸들",
+            "dragTitle": "드래그하여 도구 모음 이동"
         },
         "evolution": {
             "genesis": "기원",
@@ -83,7 +88,11 @@
         },
         "yourMap": "귀하의 지도",
         "unsaved": "저장되지 않음",
-        "saving": "저장 중..."
+        "saving": "저장 중...",
+        "contextMenu": {
+            "title": "컨텍스트 메뉴",
+            "ariaLabel": "컨텍스트 메뉴"
+        }
     },
     "components": {
         "component": "구성 요소",
@@ -95,6 +104,7 @@
         "maturity": "성숙도",
         "visibility": "가시성",
         "inertia": "관성",
+        "linkComponents": "구성 요소 연결",
         "type": "유형",
         "text": "텍스트"
     },
@@ -133,6 +143,16 @@
         "usage": "사용법",
         "example": "예제",
         "usageDescription": "사용 가능한 모든 맵 요소에 대한 빠른 참조. 사용 가능한 링크를 클릭하여 예제를 맵에 추가할 수 있습니다.",
+        "undo": {
+            "title": "실행 취소",
+            "description": "마지막 작업 실행 취소",
+            "tooltip": "지도에서 수행된 마지막 작업을 실행 취소하려면 클릭하세요"
+        },
+        "redo": {
+            "title": "다시 실행",
+            "description": "마지막으로 취소된 작업 다시 실행",
+            "tooltip": "취소된 마지막 작업을 다시 실행하려면 클릭하세요"
+        },
         "validation": {
             "error": "유효성 검사 오류",
             "lineError": "{{line}}번 줄에서 오류",

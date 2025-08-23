@@ -23,7 +23,8 @@
         "close": "閉じる",
         "confirm": "確認",
         "update": "更新",
-        "rename": "名前を変更"
+        "rename": "名前を変更",
+        "closeNotification": "通知を閉じる"
     },
     "navigation": {
         "home": "ホーム",
@@ -69,7 +70,11 @@
             "zoomOut": "ズームアウト",
             "fit": "フィット",
             "fullscreen": "全画面",
-            "exitFullscreen": "全画面終了"
+            "exitFullscreen": "全画面終了",
+            "pstTypeSelection": "PSTタイプ選択",
+            "wysiwygLabel": "キーボードショートカット付きマップコンポーネントツールバー",
+            "dragHandle": "ツールバーを移動するためのドラッグハンドル",
+            "dragTitle": "ドラッグしてツールバーを移動"
         },
         "evolution": {
             "genesis": "創生期",
@@ -83,7 +88,11 @@
         },
         "yourMap": "あなたのマップ",
         "unsaved": "未保存",
-        "saving": "保存中..."
+        "saving": "保存中...",
+        "contextMenu": {
+            "title": "コンテキストメニュー",
+            "ariaLabel": "コンテキストメニュー"
+        }
     },
     "components": {
         "component": "コンポーネント",
@@ -95,6 +104,7 @@
         "maturity": "成熟度",
         "visibility": "可視性",
         "inertia": "慣性",
+        "linkComponents": "コンポーネントをリンク",
         "type": "タイプ",
         "text": "テキスト"
     },
@@ -133,6 +143,16 @@
         "usage": "使用法",
         "example": "例",
         "usageDescription": "利用可能なすべてのマップ要素のクイックリファレンス。利用可能なリンクをクリックすることで、例をマップに追加できます。",
+        "undo": {
+            "title": "元に戻す",
+            "description": "最後のアクションを元に戻す",
+            "tooltip": "マップで実行された最後のアクションを元に戻すにはクリックしてください"
+        },
+        "redo": {
+            "title": "やり直し",
+            "description": "最後に元に戻したアクションをやり直す",
+            "tooltip": "元に戻された最後のアクションをやり直すにはクリックしてください"
+        },
         "validation": {
             "error": "検証エラー",
             "lineError": "行 {{line}} でエラー",

@@ -23,7 +23,8 @@
         "confirm": "Bestätigen",
         "update": "Aktualisieren",
         "rename": "Umbenennen",
-        "new": "Neu"
+        "new": "Neu",
+        "closeNotification": "Benachrichtigung schließen"
     },
     "navigation": {
         "home": "Startseite",
@@ -69,7 +70,11 @@
             "zoomOut": "Verkleinern",
             "fit": "Anpassen",
             "fullscreen": "Vollbild",
-            "exitFullscreen": "Vollbild beenden"
+            "exitFullscreen": "Vollbild beenden",
+            "pstTypeSelection": "PST-Typ-Auswahl",
+            "wysiwygLabel": "Kartenkomponenten-Symbolleiste mit Tastaturkürzeln",
+            "dragHandle": "Ziehgriff zum Verschieben der Symbolleiste",
+            "dragTitle": "Ziehen zum Verschieben der Symbolleiste"
         },
         "evolution": {
             "genesis": "Entstehung",
@@ -83,7 +88,11 @@
         },
         "yourMap": "Ihre Karte",
         "unsaved": "nicht gespeichert",
-        "saving": "speichern..."
+        "saving": "speichern...",
+        "contextMenu": {
+            "title": "Kontextmenü",
+            "ariaLabel": "Kontextmenü"
+        }
     },
     "components": {
         "component": "Komponente",
@@ -95,6 +104,7 @@
         "maturity": "Reife",
         "visibility": "Sichtbarkeit",
         "inertia": "Trägheit",
+        "linkComponents": "Komponenten Verbinden",
         "type": "Typ",
         "text": "Textinhalt"
     },
@@ -133,6 +143,16 @@
         "usage": "Verwendung",
         "example": "Beispiel",
         "usageDescription": "Schnellreferenz aller verfügbaren Kartenelemente. Sie können ein Beispiel zu Ihrer Karte hinzufügen, indem Sie auf die verfügbaren Links klicken.",
+        "undo": {
+            "title": "Rückgängig",
+            "description": "Letzte Aktion rückgängig machen",
+            "tooltip": "Klicken Sie, um die letzte auf der Karte durchgeführte Aktion rückgängig zu machen"
+        },
+        "redo": {
+            "title": "Wiederholen",
+            "description": "Letzte rückgängig gemachte Aktion wiederholen",
+            "tooltip": "Klicken Sie, um die letzte rückgängig gemachte Aktion zu wiederholen"
+        },
         "validation": {
             "error": "Validierungsfehler",
             "lineError": "Fehler in Zeile {{line}}",

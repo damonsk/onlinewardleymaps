@@ -1,5 +1,6 @@
 import React, {MouseEventHandler, memo} from 'react';
 import {MapTheme} from '../../constants/mapstyles';
+import {useI18n} from '../../hooks/useI18n';
 import {SVGWrapper} from './icons';
 
 const iconWidth = '50px';
@@ -17,6 +18,7 @@ export interface LinkIconProps {
  * Used in the toolbar for the component linking tool
  */
 export const LinkIcon: React.FC<LinkIconProps> = ({id, mapStyleDefs, onClick, hideLabel = true}) => {
+    const {t} = useI18n();
     const strokeColor = mapStyleDefs.component?.stroke || '#000000';
     const fillColor = mapStyleDefs.component?.fill || '#ffffff';
 
@@ -27,7 +29,7 @@ export const LinkIcon: React.FC<LinkIconProps> = ({id, mapStyleDefs, onClick, hi
             mapStyleDefs={mapStyleDefs}
             onClick={onClick || (() => {})}
             viewBox="0 0 50 40"
-            title="Link Components">
+            title={t('components.linkComponents', 'Link Components')}>
             {/* First circle (source) */}
             <circle cx="12" cy="20" r="6" fill={fillColor} stroke={strokeColor} strokeWidth="2" />
 

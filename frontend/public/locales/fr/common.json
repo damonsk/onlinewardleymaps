@@ -23,7 +23,8 @@
         "close": "Fermer",
         "confirm": "Confirmer",
         "update": "Mettre à jour",
-        "rename": "Renommer"
+        "rename": "Renommer",
+        "closeNotification": "Fermer la notification"
     },
     "navigation": {
         "home": "Accueil",
@@ -64,6 +65,10 @@
         "yourMap": "Votre Carte",
         "unsaved": "non sauvegardé",
         "saving": "sauvegarde...",
+        "contextMenu": {
+            "title": "Menu contextuel",
+            "ariaLabel": "Menu contextuel"
+        },
         "toolbar": {
             "group": "groupe de boutons",
             "select": "Sélectionner",
@@ -72,7 +77,11 @@
             "zoomOut": "Zoom Arrière",
             "fit": "Ajuster",
             "fullscreen": "Plein Écran",
-            "exitFullscreen": "Quitter le Plein Écran"
+            "exitFullscreen": "Quitter le Plein Écran",
+            "pstTypeSelection": "Sélection du type PST",
+            "wysiwygLabel": "Barre d'outils des composants de carte avec raccourcis clavier",
+            "dragHandle": "Poignée de glissement pour déplacer la barre d'outils",
+            "dragTitle": "Glisser pour déplacer la barre d'outils"
         },
         "evolution": {
             "genesis": "Genèse",
@@ -95,6 +104,7 @@
         "maturity": "Maturité",
         "visibility": "Visibilité",
         "inertia": "Inertie",
+        "linkComponents": "Lier les Composants",
         "type": "Catégorie",
         "text": "Texte"
     },
@@ -133,6 +143,16 @@
         "usage": "Utilisation",
         "example": "Exemple",
         "usageDescription": "Référence rapide de tous les éléments de carte disponibles. Vous pouvez ajouter un exemple à votre carte en cliquant sur les liens disponibles.",
+        "undo": {
+            "title": "Annuler",
+            "description": "Annuler la dernière action",
+            "tooltip": "Cliquez pour annuler la dernière action effectuée sur la carte"
+        },
+        "redo": {
+            "title": "Rétablir",
+            "description": "Rétablir la dernière action annulée",
+            "tooltip": "Cliquez pour rétablir la dernière action qui a été annulée"
+        },
         "validation": {
             "error": "Erreur de Validation",
             "lineError": "Erreur à la ligne {{line}}",

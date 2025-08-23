@@ -1,5 +1,6 @@
 import React, {MouseEventHandler, memo} from 'react';
 import {MapTheme} from '../../constants/mapstyles';
+import {useI18n} from '../../hooks/useI18n';
 import {SVGWrapper} from './icons';
 
 const iconWidth = '50px';
@@ -18,6 +19,8 @@ export interface UndoIconProps {
  * Used in the toolbar for the undo functionality
  */
 export const UndoIcon: React.FC<UndoIconProps> = ({id, mapStyleDefs, onClick, hideLabel = true, disabled = false}) => {
+    const {t} = useI18n();
+
     // Helper function to create disabled color
     const createDisabledColor = (color: string | undefined, fallback: string) => {
         if (!color) return fallback;
@@ -42,7 +45,7 @@ export const UndoIcon: React.FC<UndoIconProps> = ({id, mapStyleDefs, onClick, hi
             mapStyleDefs={mapStyleDefs}
             onClick={disabled ? () => {} : onClick || (() => {})}
             viewBox="0 0 50 40"
-            title="Undo"
+            title={t('editor.undo.title', 'Undo')}
             style={{
                 cursor: disabled ? 'not-allowed' : 'pointer',
             }}>
@@ -63,8 +66,8 @@ export const UndoIcon: React.FC<UndoIconProps> = ({id, mapStyleDefs, onClick, hi
             <path d="M 12 34 L 22 34 L 17 23 Z" fill={strokeColor} stroke="none" />
 
             {/* Accessibility attributes */}
-            <title>Undo last action</title>
-            <desc>Click to undo the last action performed on the map</desc>
+            <title>{t('editor.undo.description', 'Undo last action')}</title>
+            <desc>{t('editor.undo.tooltip', 'Click to undo the last action performed on the map')}</desc>
         </SVGWrapper>
     );
 };

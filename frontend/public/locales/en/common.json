@@ -23,7 +23,8 @@
         "close": "Close",
         "confirm": "Confirm",
         "update": "Update",
-        "rename": "Rename"
+        "rename": "Rename",
+        "closeNotification": "Close notification"
     },
     "navigation": {
         "home": "Home",
@@ -64,6 +65,10 @@
         "yourMap": "Your Map",
         "unsaved": "unsaved",
         "saving": "saving...",
+        "contextMenu": {
+            "title": "Context menu",
+            "ariaLabel": "Context menu"
+        },
         "toolbar": {
             "group": "button group",
             "select": "Select",
@@ -72,7 +77,11 @@
             "zoomOut": "Zoom Out",
             "fit": "Fit",
             "fullscreen": "Fullscreen",
-            "exitFullscreen": "Exit Fullscreen"
+            "exitFullscreen": "Exit Fullscreen",
+            "pstTypeSelection": "PST type selection",
+            "wysiwygLabel": "Map component toolbar with keyboard shortcuts",
+            "dragHandle": "Drag handle to move toolbar",
+            "dragTitle": "Drag to move toolbar"
         },
         "evolution": {
             "genesis": "Genesis",
@@ -95,7 +104,7 @@
         "maturity": "Maturity",
         "visibility": "Visibility",
         "inertia": "Inertia",
-
+        "linkComponents": "Link Components",
         "type": "Type",
         "text": "Text"
     },
@@ -134,6 +143,16 @@
         "usage": "Usage",
         "example": "Example",
         "usageDescription": "Quick reference of all available map elements. You can add an example to your map by clicking the available links.",
+        "undo": {
+            "title": "Undo",
+            "description": "Undo last action",
+            "tooltip": "Click to undo the last action performed on the map"
+        },
+        "redo": {
+            "title": "Redo",
+            "description": "Redo last undone action",
+            "tooltip": "Click to redo the last action that was undone"
+        },
         "validation": {
             "error": "Validation Error",
             "lineError": "Error on line {{line}}",

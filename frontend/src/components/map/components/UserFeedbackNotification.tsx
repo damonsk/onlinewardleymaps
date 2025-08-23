@@ -1,4 +1,5 @@
 import React from 'react';
+import {useI18n} from '../../../hooks/useI18n';
 import {UserFeedback} from '../hooks/useUserFeedback';
 
 interface UserFeedbackNotificationProps {
@@ -7,6 +8,8 @@ interface UserFeedbackNotificationProps {
 }
 
 export const UserFeedbackNotification: React.FC<UserFeedbackNotificationProps> = ({userFeedback, setUserFeedback}) => {
+    const {t} = useI18n();
+
     if (!userFeedback.visible) return null;
 
     const getBackgroundColor = () => {
@@ -100,7 +103,7 @@ export const UserFeedbackNotification: React.FC<UserFeedbackNotificationProps> =
                         color: 'inherit',
                         opacity: 0.7,
                     }}
-                    aria-label="Close notification">
+                    aria-label={t('common.closeNotification', 'Close notification')}>
                     ×
                 </button>
             </div>

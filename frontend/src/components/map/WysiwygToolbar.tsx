@@ -546,6 +546,8 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         onDeleteLink,
         clearSelection,
     }) => {
+        const {t} = useI18n();
+
         // Access undo/redo context (optional)
         const undoRedoContext = useOptionalUndoRedo();
 
@@ -703,7 +705,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     key={renderKey}
                     ref={toolbarRef}
                     role="toolbar"
-                    aria-label="Map component toolbar with keyboard shortcuts"
+                    aria-label={t('map.toolbar.wysiwygLabel', 'Map component toolbar with keyboard shortcuts')}
                     aria-describedby="toolbar-instructions"
                     $isDragging={isDragging}
                     suppressHydrationWarning={true}
@@ -724,7 +726,11 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                         Anchor, M for Method, T for PST. Press Escape to deselect.
                     </div>
 
-                    <DragHandle onMouseDown={handleMouseDown} title="Drag to move toolbar" aria-label="Drag handle to move toolbar" />
+                    <DragHandle
+                        onMouseDown={handleMouseDown}
+                        title={t('map.toolbar.dragTitle', 'Drag to move toolbar')}
+                        aria-label={t('map.toolbar.dragHandle', 'Drag handle to move toolbar')}
+                    />
 
                     {componentItems.map(item => (
                         <ToolbarItem

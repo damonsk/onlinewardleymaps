@@ -23,7 +23,8 @@
         "close": "Chiudi",
         "confirm": "Conferma",
         "update": "Aggiorna",
-        "rename": "Rinomina"
+        "rename": "Rinomina",
+        "closeNotification": "Chiudi notifica"
     },
     "navigation": {
         "home": "Pagina iniziale",
@@ -69,7 +70,11 @@
             "zoomOut": "Rimpicciolisci",
             "fit": "Adatta",
             "fullscreen": "Schermo Intero",
-            "exitFullscreen": "Esci da Schermo Intero"
+            "exitFullscreen": "Esci da Schermo Intero",
+            "pstTypeSelection": "Selezione tipo PST",
+            "wysiwygLabel": "Barra degli strumenti dei componenti mappa con scorciatoie da tastiera",
+            "dragHandle": "Maniglia di trascinamento per spostare la barra degli strumenti",
+            "dragTitle": "Trascina per spostare la barra degli strumenti"
         },
         "evolution": {
             "genesis": "Genesi",
@@ -83,7 +88,11 @@
         },
         "yourMap": "La Vostra Mappa",
         "unsaved": "non salvato",
-        "saving": "salvando..."
+        "saving": "salvando...",
+        "contextMenu": {
+            "title": "Menu contestuale",
+            "ariaLabel": "Menu contestuale"
+        }
     },
     "components": {
         "component": "Componente",
@@ -95,6 +104,7 @@
         "maturity": "Maturità",
         "visibility": "Visibilità",
         "inertia": "Inerzia",
+        "linkComponents": "Collega Componenti",
         "type": "Tipo",
         "text": "Testo"
     },
@@ -133,6 +143,16 @@
         "usage": "Utilizzo",
         "example": "Esempio",
         "usageDescription": "Riferimento rapido di tutti gli elementi della mappa disponibili. Puoi aggiungere un esempio alla tua mappa facendo clic sui link disponibili.",
+        "undo": {
+            "title": "Annulla",
+            "description": "Annulla ultima azione",
+            "tooltip": "Clicca per annullare l'ultima azione eseguita sulla mappa"
+        },
+        "redo": {
+            "title": "Ripeti",
+            "description": "Ripeti ultima azione annullata",
+            "tooltip": "Clicca per ripetere l'ultima azione che è stata annullata"
+        },
         "validation": {
             "error": "Errore di Validazione",
             "lineError": "Errore alla riga {{line}}",

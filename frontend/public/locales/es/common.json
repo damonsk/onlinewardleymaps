@@ -23,7 +23,8 @@
         "close": "Cerrar",
         "confirm": "Confirmar",
         "update": "Actualizar",
-        "rename": "Renombrar"
+        "rename": "Renombrar",
+        "closeNotification": "Cerrar notificación"
     },
     "navigation": {
         "home": "Inicio",
@@ -64,6 +65,10 @@
         "yourMap": "Tu Mapa",
         "unsaved": "no guardado",
         "saving": "guardando...",
+        "contextMenu": {
+            "title": "Menú contextual",
+            "ariaLabel": "Menú contextual"
+        },
         "toolbar": {
             "group": "grupo de botones",
             "select": "Seleccionar",
@@ -72,7 +77,11 @@
             "zoomOut": "Alejar",
             "fit": "Ajustar",
             "fullscreen": "Pantalla Completa",
-            "exitFullscreen": "Salir de Pantalla Completa"
+            "exitFullscreen": "Salir de Pantalla Completa",
+            "pstTypeSelection": "Selección de tipo PST",
+            "wysiwygLabel": "Barra de herramientas de componentes del mapa con atajos de teclado",
+            "dragHandle": "Arrastrar para mover la barra de herramientas",
+            "dragTitle": "Arrastrar para mover la barra de herramientas"
         },
         "evolution": {
             "genesis": "Génesis",
@@ -95,6 +104,7 @@
         "maturity": "Madurez",
         "visibility": "Visibilidad",
         "inertia": "Inercia",
+        "linkComponents": "Enlazar Componentes",
         "type": "Tipo",
         "text": "Texto"
     },
@@ -133,6 +143,16 @@
         "usage": "Uso",
         "example": "Ejemplo",
         "usageDescription": "Referencia rápida de todos los elementos disponibles del mapa. Puede añadir un ejemplo a su mapa haciendo clic en los enlaces disponibles.",
+        "undo": {
+            "title": "Deshacer",
+            "description": "Deshacer última acción",
+            "tooltip": "Haga clic para deshacer la última acción realizada en el mapa"
+        },
+        "redo": {
+            "title": "Rehacer",
+            "description": "Rehacer última acción deshecha",
+            "tooltip": "Haga clic para rehacer la última acción que se deshizo"
+        },
         "validation": {
             "error": "Error de Validación",
             "lineError": "Error en la línea {{line}}",

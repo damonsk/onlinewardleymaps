@@ -1,5 +1,6 @@
 import React, {MouseEventHandler, memo} from 'react';
 import {MapTheme} from '../../constants/mapstyles';
+import {useI18n} from '../../hooks/useI18n';
 import {SVGWrapper} from './icons';
 
 const iconWidth = '50px';
@@ -18,6 +19,8 @@ export interface RedoIconProps {
  * Used in the toolbar for the redo functionality
  */
 export const RedoIcon: React.FC<RedoIconProps> = ({id, mapStyleDefs, onClick, hideLabel = true, disabled = false}) => {
+    const {t} = useI18n();
+
     // Helper function to create disabled color
     const createDisabledColor = (color: string | undefined, fallback: string) => {
         if (!color) return fallback;
@@ -42,7 +45,7 @@ export const RedoIcon: React.FC<RedoIconProps> = ({id, mapStyleDefs, onClick, hi
             mapStyleDefs={mapStyleDefs}
             onClick={disabled ? () => {} : onClick || (() => {})}
             viewBox="0 0 50 40"
-            title="Redo"
+            title={t('editor.redo.title', 'Redo')}
             style={{
                 cursor: disabled ? 'not-allowed' : 'pointer',
             }}>
@@ -63,8 +66,8 @@ export const RedoIcon: React.FC<RedoIconProps> = ({id, mapStyleDefs, onClick, hi
             <path d="M 28 34 L 38 34 L 33 23 Z" fill={strokeColor} stroke="none" />
 
             {/* Accessibility attributes */}
-            <title>Redo last undone action</title>
-            <desc>Click to redo the last action that was undone</desc>
+            <title>{t('editor.redo.description', 'Redo last undone action')}</title>
+            <desc>{t('editor.redo.tooltip', 'Click to redo the last action that was undone')}</desc>
         </SVGWrapper>
     );
 };

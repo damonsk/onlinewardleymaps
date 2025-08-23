@@ -91,6 +91,7 @@ const ColorIndicator = styled.div<{$color: string}>`
  */
 export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({items, isOpen, onSelect, onClose, position, mapStyleDefs}) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const {t} = useI18n();
 
     /**
      * Get theme-aware color for PST items
@@ -175,7 +176,12 @@ export const ToolbarDropdown: React.FC<ToolbarDropdownProps> = memo(({items, isO
     }
 
     return (
-        <DropdownContainer ref={dropdownRef} $position={position} role="menu" aria-label="PST type selection" onKeyDown={handleKeyDown}>
+        <DropdownContainer
+            ref={dropdownRef}
+            $position={position}
+            role="menu"
+            aria-label={t('map.toolbar.pstTypeSelection', 'PST type selection')}
+            onKeyDown={handleKeyDown}>
             {items.map((item, index) => {
                 const themeColor = getThemeColor(item.id);
                 return (

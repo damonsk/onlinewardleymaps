@@ -1,5 +1,6 @@
 import React, {memo, useCallback, useEffect, useRef} from 'react';
 import styled from 'styled-components';
+import {useI18n} from '../../hooks/useI18n';
 
 /**
  * Interface for context menu items
@@ -121,6 +122,7 @@ const IconContainer = styled.div`
  */
 export const ContextMenu: React.FC<ContextMenuProps> = memo(({items, isOpen, onClose, position}) => {
     const menuRef = useRef<HTMLDivElement>(null);
+    const {t} = useI18n();
 
     /**
      * Handle item selection
@@ -217,7 +219,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = memo(({items, isOpen, onC
             ref={menuRef}
             $position={getAdjustedPosition()}
             role="menu"
-            aria-label="Context menu"
+            aria-label={t('map.contextMenu.ariaLabel', 'Context menu')}
             onKeyDown={handleKeyDown}>
             {items.map(item => (
                 <ContextMenuItem
