@@ -47,6 +47,40 @@ function getViewBoxOffset(): SVGPosition {
 }
 
 /**
+ * Convert SVG coordinates to screen coordinates for Safari compatibility
+ */
+function convertSVGToScreenCoordinates(svgPosition: SVGPosition): SVGPosition {
+    try {
+        const svgElement = document.getElementById('svgMap');
+        if (svgElement && svgElement instanceof SVGSVGElement) {
+            // Create an SVG point and transform it to screen coordinates
+            const point = svgElement.createSVGPoint();
+            point.x = svgPosition.x;
+            point.y = svgPosition.y;
+
+            // Get the transformation matrix from SVG to screen
+            const screenCTM = svgElement.getScreenCTM();
+            if (screenCTM) {
+                const screenPoint = point.matrixTransform(screenCTM);
+
+                // Get SVG element's bounding rect to convert back to SVG-relative coordinates
+                const svgRect = svgElement.getBoundingClientRect();
+
+                return {
+                    x: screenPoint.x - svgRect.left,
+                    y: screenPoint.y - svgRect.top,
+                };
+            }
+        }
+    } catch (error) {
+        console.warn('Could not convert SVG to screen coordinates:', error);
+    }
+
+    // Fallback to original coordinates
+    return svgPosition;
+}
+
+/**
  * Calculate foreignObject position with browser-specific adjustments
  */
 export function calculateForeignObjectPosition(
@@ -74,27 +108,38 @@ export function calculateForeignObjectPosition(
 
     // Apply Safari-specific adjustments
     if (hasSafariSVGQuirks()) {
-        // Safari interprets foreignObject coordinates differently when there's a viewBox
-        // We need to compensate for the viewBox offset
-        const viewBoxOffset = getViewBoxOffset();
-        const safariAdjustments = getSafariPositionAdjustments();
-
         if (process.env.NODE_ENV === 'development') {
             console.log('[Safari Positioning] Before adjustments:', {x, y});
-            console.log('[Safari Positioning] ViewBox offset:', viewBoxOffset);
-            console.log('[Safari Positioning] Safari adjustments:', safariAdjustments);
         }
 
-        // Compensate for viewBox offset in Safari
-        x -= viewBoxOffset.x;
-        y -= viewBoxOffset.y;
+        // Try using screen coordinate conversion for Safari
+        const originalPosition = {x: svgPosition.x, y: svgPosition.y};
+        const screenCoords = convertSVGToScreenCoordinates(originalPosition);
 
-        // Apply additional Safari-specific adjustments if needed
+        if (process.env.NODE_ENV === 'development') {
+            console.log('[Safari Positioning] Original SVG coords:', originalPosition);
+            console.log('[Safari Positioning] Screen coords:', screenCoords);
+        }
+
+        // Use screen coordinates as base and apply offsets
+        x = screenCoords.x + offsetX;
+        y = screenCoords.y + offsetY;
+
+        // Apply centering adjustments again since we reset x,y
+        if (centerHorizontally) {
+            x -= editorDimensions.width / 2;
+        }
+        if (centerVertically) {
+            y -= editorDimensions.height / 2;
+        }
+
+        // Apply additional Safari-specific adjustments
+        const safariAdjustments = getSafariPositionAdjustments();
         x += safariAdjustments.x;
         y += safariAdjustments.y;
 
         if (process.env.NODE_ENV === 'development') {
-            console.log('[Safari Positioning] After adjustments:', {x, y});
+            console.log('[Safari Positioning] Final position:', {x, y});
         }
     }
 
@@ -111,11 +156,10 @@ export function calculateForeignObjectPosition(
  * These values account for Safari's different handling of SVG viewBox and foreignObject positioning
  */
 function getSafariPositionAdjustments(): SVGPosition {
-    // Safari-specific adjustments based on testing
-    // These compensate for Safari's different coordinate interpretation
+    // Fine-tuning adjustments for Safari after coordinate conversion
     return {
         x: 0, // Horizontal adjustment
-        y: -10, // Vertical adjustment to move editor down slightly
+        y: 0, // Vertical adjustment
     };
 }
 
