@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import {ComponentSelectionProvider, useComponentSelection} from '../../components/ComponentSelectionContext';
-import {ContextMenuProvider, useContextMenu} from '../../components/map/ContextMenuProvider';
-import {UndoRedoProvider} from '../../components/UndoRedoProvider';
+import { ComponentSelectionProvider, useComponentSelection } from '../../components/ComponentSelectionContext';
+import { ContextMenuProvider, useContextMenu } from '../../components/map/ContextMenuProvider';
+import { UndoRedoProvider } from '../../components/UndoRedoProvider';
 
 // Test component that simulates a map component with context menu
 const TestMapComponent: React.FC<{componentId: string; mapText: string}> = ({componentId, mapText}) => {
@@ -125,7 +125,7 @@ pioneers [0.8, 0.2, 0.6, 0.4]`;
         fireEvent.click(deleteOption);
 
         // Verify deletion callback was called with PST type
-        expect(mockOnDeleteComponent).toHaveBeenCalledWith('2', 'pst', undefined);
+        expect(mockOnDeleteComponent).toHaveBeenCalledWith('2', 'pst-element', undefined);
     });
 
     it.skip('should close context menu when clicking outside', async () => {

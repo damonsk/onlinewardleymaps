@@ -1,15 +1,15 @@
-import {useCallback} from 'react';
-import {ToolbarItem} from '../../../types/toolbar';
-import {UnifiedComponent} from '../../../types/unified/components';
-import {addLinkToMapText, generateLinkSyntax, linkExists} from '../../../utils/componentDetection';
-import {placeComponent} from '../../../utils/mapTextGeneration';
-import {ModernMapViewRefactoredProps} from '../MapView';
-import {generateUniqueComponentName, validatePosition, validateRectangle} from '../utils/validation';
-import {ComponentOperations} from './useComponentOperations';
-import {DrawingActions, DrawingState} from './useDrawingState';
-import {LinkingActions, LinkingState} from './useLinkingState';
-import {useSelectionManager} from './useSelectionManager';
-import {ToolbarActions, ToolbarState} from './useToolbarState';
+import { useCallback } from 'react';
+import { ToolbarItem } from '../../../types/toolbar';
+import { UnifiedComponent } from '../../../types/unified/components';
+import { addLinkToMapText, generateLinkSyntax, linkExists } from '../../../utils/componentDetection';
+import { placeComponent } from '../../../utils/mapTextGeneration';
+import { ModernMapViewRefactoredProps } from '../MapView';
+import { generateUniqueComponentName, validatePosition, validateRectangle } from '../utils/validation';
+import { ComponentOperations } from './useComponentOperations';
+import { DrawingActions, DrawingState } from './useDrawingState';
+import { LinkingActions, LinkingState } from './useLinkingState';
+import { useSelectionManager } from './useSelectionManager';
+import { ToolbarActions, ToolbarState } from './useToolbarState';
 
 interface UseMapHandlersProps {
     props: ModernMapViewRefactoredProps;
@@ -25,6 +25,7 @@ interface UseMapHandlersProps {
             position: {x: number; y: number},
             linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
         ) => void;
+        showCanvasContextMenu?: (position: {x: number; y: number}) => void;
     };
 }
 
@@ -38,6 +39,7 @@ export interface MapHandlers {
     handleToolbarItemDrop: (item: ToolbarItem, position: {x: number; y: number}) => void;
     handleLinkClick: (linkInfo: any) => void;
     handleLinkContextMenu: (linkInfo: any, event: React.MouseEvent) => void;
+    handleCanvasContextMenu: (event: React.MouseEvent) => void;
 }
 
 export const useMapHandlers = ({
@@ -375,6 +377,25 @@ export const useMapHandlers = ({
         [clearSelection, selectionManager, contextMenuActions],
     );
 
+    const handleCanvasContextMenu = useCallback(
+        (event: React.MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Clear all selections when right-clicking on canvas
+            clearSelection();
+            selectionManager.clearSelection();
+
+            // Show canvas context menu
+            if (contextMenuActions.showCanvasContextMenu) {
+                contextMenuActions.showCanvasContextMenu({x: event.clientX, y: event.clientY});
+            } else {
+                console.warn('Canvas context menu not available - contextMenuActions.showCanvasContextMenu is not set');
+            }
+        },
+        [clearSelection, selectionManager, contextMenuActions],
+    );
+
     return {
         handleContainerClick,
         handleComponentClick,
@@ -385,5 +406,6 @@ export const useMapHandlers = ({
         handleToolbarItemDrop,
         handleLinkClick,
         handleLinkContextMenu,
+        handleCanvasContextMenu,
     };
 };

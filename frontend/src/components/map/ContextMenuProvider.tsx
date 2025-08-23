@@ -1,17 +1,21 @@
-import React, {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
-import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
-import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {ContextMenu, ContextMenuItem} from './ContextMenu';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
+import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { ContextMenu, ContextMenuItem } from './ContextMenu';
 
 interface MapElement {
-    type: 'component' | 'evolved-component' | 'link' | 'pst-element';
+    type: 'component' | 'evolved-component' | 'link' | 'pst-element' | 'canvas';
     id: string;
     name: string;
-    properties: ComponentProperties | LinkProperties | PSTProperties;
+    properties: ComponentProperties | LinkProperties | PSTProperties | CanvasProperties;
     componentData?: any; // Store the original component data for evolved components
     linkData?: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}; // Store link data for deletion
     pstData?: {type: string; id: string}; // Store PST element data for deletion
+}
+
+interface CanvasProperties {
+    // Canvas-specific properties can be added here if needed
 }
 
 interface ComponentProperties {
@@ -46,6 +50,7 @@ interface ContextMenuContextType {
         position: {x: number; y: number},
         linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
     ) => void;
+    showCanvasContextMenu: (position: {x: number; y: number}) => void;
     hideContextMenu: () => void;
     isContextMenuOpen: boolean;
 }
@@ -62,6 +67,9 @@ export interface ContextMenuProviderProps {
     onEditComponent?: (componentId: string) => void;
     onToggleInertia?: (componentId: string) => void;
     onEvolveComponent?: (componentId: string) => void;
+    onChangeMapStyle?: (style: 'plain' | 'wardley' | 'colour') => void;
+    onSetMapSize?: (width: number, height: number) => void;
+    onEditEvolutionStages?: (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => void;
     wardleyMap?: any; // For accessing component data
     selectionManager?: {getSelectedElement: () => any; getSelectedLink: () => any}; // For accessing link selections
     onContextMenuReady?: (contextMenuActions: {
@@ -69,6 +77,7 @@ export interface ContextMenuProviderProps {
             position: {x: number; y: number},
             linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
         ) => void;
+        showCanvasContextMenu: (position: {x: number; y: number}) => void;
     }) => void;
 }
 
@@ -321,6 +330,22 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         [],
     );
 
+    const showCanvasContextMenu = useCallback((position: {x: number; y: number}) => {
+        // Create a MapElement for the canvas
+        const canvasElement: MapElement = {
+            type: 'canvas',
+            id: 'canvas',
+            name: 'Map Canvas',
+            properties: {} as CanvasProperties,
+        };
+
+        setContextMenuState({
+            isOpen: true,
+            position,
+            element: canvasElement,
+        });
+    }, []);
+
     const hideContextMenu = useCallback(() => {
         setContextMenuState(defaultContextMenuState);
     }, []);
@@ -330,9 +355,10 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         if (onContextMenuReady) {
             onContextMenuReady({
                 showLinkContextMenu,
+                showCanvasContextMenu,
             });
         }
-    }, [onContextMenuReady, showLinkContextMenu]);
+    }, [onContextMenuReady, showLinkContextMenu, showCanvasContextMenu]);
 
     const handleDeleteComponent = useCallback(() => {
         const currentElement = contextMenuState.element;
@@ -582,6 +608,37 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                         destructive: true,
                     });
                 }
+            } else if (currentElement.type === 'canvas') {
+                // Canvas context menu items
+                items.push({
+                    id: 'change-style',
+                    label: 'Change Map Style',
+                    action: () => {
+                        // This will be handled by submenu - placeholder for now
+                        console.log('Change map style clicked');
+                    },
+                    disabled: false,
+                });
+
+                items.push({
+                    id: 'set-size',
+                    label: 'Set Map Size',
+                    action: () => {
+                        console.log('Set map size clicked');
+                        // TODO: Open size dialog
+                    },
+                    disabled: false,
+                });
+
+                items.push({
+                    id: 'edit-evolution',
+                    label: 'Edit Evolution Stages',
+                    action: () => {
+                        console.log('Edit evolution stages clicked');
+                        // TODO: Open evolution dialog
+                    },
+                    disabled: false,
+                });
             }
         } else {
             // Fallback mode - basic delete functionality only (for backward compatibility)
@@ -615,6 +672,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     const contextValue: ContextMenuContextType = {
         showContextMenu,
         showLinkContextMenu,
+        showCanvasContextMenu,
         hideContextMenu,
         isContextMenuOpen: contextMenuState.isOpen,
     };

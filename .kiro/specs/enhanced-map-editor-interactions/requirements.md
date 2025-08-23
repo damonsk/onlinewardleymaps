@@ -102,3 +102,54 @@ The enhanced map editor interactions feature will add comprehensive right-click 
 3. WHEN context menus are available THEN cursor SHALL indicate right-click availability
 4. WHEN operations are in progress THEN appropriate visual feedback SHALL be shown
 5. WHEN invalid operations are attempted THEN clear error states SHALL be displayed
+
+### Requirement 9
+
+**User Story:** As a map editor, I want to right-click on the map canvas to access map-level settings, so that I can quickly modify map properties without navigating to separate controls.
+
+#### Acceptance Criteria
+
+1. WHEN right-clicking on empty map canvas area THEN a context menu SHALL appear with map-level options
+2. WHEN the map canvas context menu appears THEN it SHALL be positioned appropriately near the cursor
+3. WHEN clicking outside the context menu THEN the menu SHALL close without performing any actions
+4. IF right-clicking on a map element THEN the element-specific context menu SHALL take priority over the canvas menu
+
+### Requirement 10
+
+**User Story:** As a map editor, I want to change the map style through the canvas context menu, so that I can quickly switch between visual presentations of my map.
+
+#### Acceptance Criteria
+
+1. WHEN opening the canvas context menu THEN it SHALL show "Change Map Style" option
+2. WHEN selecting "Change Map Style" THEN a submenu SHALL show available style options: "Plain", "Wardley", and "Colour"
+3. WHEN selecting a map style THEN the map text SHALL be updated with the appropriate "style [stylename]" DSL syntax
+4. WHEN changing map style THEN the visual representation SHALL update immediately to reflect the new style
+5. IF no style is currently set THEN the default style SHALL be indicated in the submenu
+
+### Requirement 11
+
+**User Story:** As a map editor, I want to set the map size through the canvas context menu, so that I can adjust the map dimensions without manually editing the DSL.
+
+#### Acceptance Criteria
+
+1. WHEN opening the canvas context menu THEN it SHALL show "Set Map Size" option
+2. WHEN selecting "Set Map Size" THEN a dialog SHALL appear with width and height input fields
+3. WHEN the size dialog opens THEN it SHALL show current map dimensions if already set
+4. WHEN confirming size changes THEN the map text SHALL be updated with "size [width, height]" DSL syntax
+5. WHEN setting map size THEN the input fields SHALL validate for positive integer values
+6. WHEN canceling the size dialog THEN no changes SHALL be made to the map
+7. IF no size is currently set THEN the dialog SHALL show default or calculated dimensions
+
+### Requirement 12
+
+**User Story:** As a map editor, I want to edit evolution stages through the canvas context menu, so that I can customize the evolution axis labels without manually writing DSL syntax.
+
+#### Acceptance Criteria
+
+1. WHEN opening the canvas context menu THEN it SHALL show "Edit Evolution Stages" option
+2. WHEN selecting "Edit Evolution Stages" THEN a dialog SHALL appear with four input fields for stage names
+3. WHEN the evolution dialog opens THEN it SHALL show current stage names if already customized
+4. WHEN confirming evolution stage changes THEN the map text SHALL be updated with "evolution stage1->stage2->stage3->stage4" DSL syntax
+5. WHEN editing evolution stages THEN each input field SHALL validate for non-empty text values
+6. WHEN canceling the evolution dialog THEN no changes SHALL be made to the map
+7. IF no custom evolution stages are set THEN the dialog SHALL show default stage names (Genesis, Custom Built, Product, Commodity)

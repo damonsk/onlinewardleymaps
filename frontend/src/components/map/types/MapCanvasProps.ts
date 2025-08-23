@@ -1,8 +1,8 @@
-import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../../constants/defaults';
-import {MapTheme} from '../../../types/map/styles';
-import {ToolbarItem} from '../../../types/toolbar';
-import {UnifiedWardleyMap} from '../../../types/unified/map';
-import {UnifiedComponent} from '../../../types/unified/components';
+import { EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets } from '../../../constants/defaults';
+import { MapTheme } from '../../../types/map/styles';
+import { ToolbarItem } from '../../../types/toolbar';
+import { UnifiedComponent } from '../../../types/unified/components';
+import { UnifiedWardleyMap } from '../../../types/unified/map';
 
 export interface MapCanvasProps {
     wardleyMap: UnifiedWardleyMap;
@@ -63,10 +63,15 @@ export interface LinkSelectionProps {
     isLinkSelected?: (linkId: string) => boolean;
 }
 
+export interface CanvasInteractionProps {
+    onCanvasContextMenu?: (event: React.MouseEvent) => void;
+}
+
 export interface UnifiedMapCanvasProps
     extends MapCanvasProps,
         ToolbarInteractionProps,
         LinkingInteractionProps,
         DrawingInteractionProps,
         MethodInteractionProps,
-        LinkSelectionProps {}
+        LinkSelectionProps,
+        CanvasInteractionProps {}

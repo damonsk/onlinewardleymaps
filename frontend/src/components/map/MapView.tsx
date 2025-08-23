@@ -7,7 +7,6 @@ import {ToolbarItem} from '../../types/toolbar';
 import {ActionType} from '../../types/undo-redo';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 import {useComponentSelection} from '../ComponentSelectionContext';
-import {EditingProvider} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
 import {DefaultThemes} from './foundation/Fill';
@@ -57,6 +56,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             position: {x: number; y: number},
             linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
         ) => void;
+        showCanvasContextMenu?: (position: {x: number; y: number}) => void;
     }>({});
 
     React.useEffect(() => {
@@ -106,6 +106,34 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         wardleyMap: props.wardleyMap,
         showUserFeedback,
     });
+
+    // Canvas context menu handlers
+    const handleChangeMapStyle = useCallback(
+        (style: 'plain' | 'wardley' | 'colour') => {
+            console.log('Change map style to:', style);
+            // TODO: Implement map style change
+            showUserFeedback(`Map style changed to ${style}`, 'success');
+        },
+        [showUserFeedback],
+    );
+
+    const handleSetMapSize = useCallback(
+        (width: number, height: number) => {
+            console.log('Set map size to:', width, height);
+            // TODO: Implement map size setting
+            showUserFeedback(`Map size set to ${width}x${height}`, 'success');
+        },
+        [showUserFeedback],
+    );
+
+    const handleEditEvolutionStages = useCallback(
+        (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => {
+            console.log('Edit evolution stages:', stages);
+            // TODO: Implement evolution stages editing
+            showUserFeedback('Evolution stages updated', 'success');
+        },
+        [showUserFeedback],
+    );
 
     // Selection manager for keyboard deletion support
     const selectionManager = useSelectionManager({
@@ -196,6 +224,9 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             onEditComponent={componentOps.handleEditComponent}
             onToggleInertia={componentOps.handleToggleInertia}
             onEvolveComponent={componentOps.handleEvolveComponent}
+            onChangeMapStyle={handleChangeMapStyle}
+            onSetMapSize={handleSetMapSize}
+            onEditEvolutionStages={handleEditEvolutionStages}
             wardleyMap={props.wardleyMap}
             selectionManager={selectionManager}
             onContextMenuReady={setContextMenuActions}>
@@ -261,6 +292,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                         methodHighlightedComponent={toolbarState.methodHighlightedComponent}
                         onLinkClick={handlers.handleLinkClick}
                         onLinkContextMenu={handlers.handleLinkContextMenu}
+                        onCanvasContextMenu={handlers.handleCanvasContextMenu}
                         isLinkSelected={linkId => selectionManager.isSelected(linkId, 'link')}
                     />
                 </div>

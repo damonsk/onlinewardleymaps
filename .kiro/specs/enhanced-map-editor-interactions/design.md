@@ -371,14 +371,241 @@ describe('Enhanced Map Editor Interactions', () => {
 - Use requestAnimationFrame for smooth visual transitions during evolution
 - Implement background map text parsing to avoid UI blocking
 
+## Map Canvas Context Menu Extensions
+
+### Canvas Context Menu Provider
+
+**Purpose**: Extend context menu system to handle map canvas right-clicks for map-level operations
+**Interface**: Extension of existing ContextMenuProvider with canvas detection
+**Responsibilities**:
+
+- Detect right-clicks on empty canvas areas vs map elements
+- Generate map-level context menu items (style, size, evolution stages)
+- Handle dialog management for complex inputs (size, evolution stages)
+- Coordinate with existing map text update mechanisms
+
+```typescript
+interface CanvasContextMenuProvider extends EnhancedContextMenuProvider {
+    showCanvasContextMenu(position: {x: number; y: number}): void;
+    generateCanvasMenuItems(): CanvasContextMenuItem[];
+    handleCanvasMenuAction(action: CanvasContextMenuAction): void;
+}
+
+interface CanvasContextMenuAction {
+    type: 'changeStyle' | 'setSize' | 'editEvolution';
+    payload?: {
+        style?: 'plain' | 'wardley' | 'colour';
+        size?: {width: number; height: number};
+        evolution?: {stage1: string; stage2: string; stage3: string; stage4: string};
+    };
+}
+```
+
+### Map Properties Manager
+
+**Purpose**: Handle map-level property updates and DSL generation
+**Interface**: New service for managing map metadata
+**Responsibilities**:
+
+- Parse existing map properties from map text (style, size, evolution)
+- Generate proper DSL syntax for map property updates
+- Validate property values and handle edge cases
+- Integrate with existing map text update workflows
+
+```typescript
+interface MapPropertiesManager {
+    getCurrentStyle(): 'plain' | 'wardley' | 'colour' | null;
+    getCurrentSize(): {width: number; height: number} | null;
+    getCurrentEvolutionStages(): {stage1: string; stage2: string; stage3: string; stage4: string} | null;
+    
+    updateMapStyle(style: 'plain' | 'wardley' | 'colour'): string;
+    updateMapSize(width: number, height: number): string;
+    updateEvolutionStages(stages: {stage1: string; stage2: string; stage3: string; stage4: string}): string;
+    
+    generateStyleDSL(style: string): string;
+    generateSizeDSL(width: number, height: number): string;
+    generateEvolutionDSL(stage1: string, stage2: string, stage3: string, stage4: string): string;
+}
+```
+
+### Dialog Components
+
+**Purpose**: Provide user interfaces for complex map property inputs
+**Interface**: React components for size and evolution stage editing
+**Responsibilities**:
+
+- Size input dialog with width/height validation
+- Evolution stages dialog with four stage name inputs
+- Form validation and error handling
+- Integration with existing UI patterns and styling
+
+```typescript
+interface MapSizeDialog {
+    isOpen: boolean;
+    currentSize: {width: number; height: number} | null;
+    onConfirm: (size: {width: number; height: number}) => void;
+    onCancel: () => void;
+}
+
+interface EvolutionStagesDialog {
+    isOpen: boolean;
+    currentStages: {stage1: string; stage2: string; stage3: string; stage4: string} | null;
+    onConfirm: (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => void;
+    onCancel: () => void;
+}
+```
+
+## Enhanced Architecture Components
+
+### Canvas Click Detection
+
+```mermaid
+graph TD
+    A[Map Canvas Click] --> B[Click Target Detection]
+    B --> C{Click on Element?}
+    C -->|Yes| D[Element Context Menu]
+    C -->|No| E[Canvas Context Menu]
+    E --> F[Map Properties Actions]
+    F --> G[Style Submenu]
+    F --> H[Size Dialog]
+    F --> I[Evolution Dialog]
+    G --> J[Update Map Text]
+    H --> J
+    I --> J
+```
+
+### Map Properties DSL Integration
+
+```typescript
+// DSL syntax patterns for map properties
+const MAP_PROPERTY_PATTERNS = {
+    style: /^style\s+(plain|wardley|colour)\s*$/m,
+    size: /^size\s+\[(\d+),\s*(\d+)\]\s*$/m,
+    evolution: /^evolution\s+(.+?)->(.+?)->(.+?)->(.+?)\s*$/m,
+};
+
+const DSL_GENERATORS = {
+    style: (style: string) => `style ${style}`,
+    size: (width: number, height: number) => `size [${width}, ${height}]`,
+    evolution: (s1: string, s2: string, s3: string, s4: string) => `evolution ${s1}->${s2}->${s3}->${s4}`,
+};
+```
+
+## Data Models
+
+### Canvas Context Menu Configuration
+
+```typescript
+const CANVAS_MENU_ITEMS: CanvasContextMenuItemDefinition[] = [
+    {
+        id: 'changeStyle',
+        label: 'Change Map Style',
+        submenu: [
+            {
+                id: 'style-plain',
+                label: 'Plain',
+                action: () => updateMapStyle('plain'),
+                isSelected: () => getCurrentStyle() === 'plain',
+            },
+            {
+                id: 'style-wardley',
+                label: 'Wardley',
+                action: () => updateMapStyle('wardley'),
+                isSelected: () => getCurrentStyle() === 'wardley',
+            },
+            {
+                id: 'style-colour',
+                label: 'Colour',
+                action: () => updateMapStyle('colour'),
+                isSelected: () => getCurrentStyle() === 'colour',
+            },
+        ],
+    },
+    {
+        id: 'setSize',
+        label: 'Set Map Size',
+        action: () => openSizeDialog(),
+        isEnabled: () => true,
+        isVisible: () => true,
+    },
+    {
+        id: 'editEvolution',
+        label: 'Edit Evolution Stages',
+        action: () => openEvolutionDialog(),
+        isEnabled: () => true,
+        isVisible: () => true,
+    },
+];
+```
+
+### Map Property Validation
+
+```typescript
+const VALIDATION_RULES = {
+    mapSize: {
+        width: {
+            min: 100,
+            max: 5000,
+            validate: (value: number) => Number.isInteger(value) && value >= 100 && value <= 5000,
+            errorMessage: 'Width must be an integer between 100 and 5000',
+        },
+        height: {
+            min: 100,
+            max: 5000,
+            validate: (value: number) => Number.isInteger(value) && value >= 100 && value <= 5000,
+            errorMessage: 'Height must be an integer between 100 and 5000',
+        },
+    },
+    
+    evolutionStages: {
+        validate: (stage: string) => stage.trim().length > 0 && stage.length <= 50,
+        errorMessage: 'Stage names must be 1-50 characters long',
+        defaultStages: ['Genesis', 'Custom Built', 'Product', 'Commodity'],
+    },
+};
+```
+
+## Error Handling
+
+### Canvas Context Menu Edge Cases
+
+1. **Rapid canvas clicks**: Debounce canvas context menu to prevent multiple menus
+2. **Menu positioning**: Use existing positioning logic to handle viewport edges
+3. **Dialog state management**: Ensure only one dialog open at a time
+4. **Map text parsing failures**: Show validation errors and prevent invalid updates
+
+### Map Property Update Failures
+
+```typescript
+const handleMapPropertyErrors = {
+    invalidStyle: (style: string) => {
+        showError(`Invalid map style: ${style}. Valid options are: plain, wardley, colour`);
+    },
+    
+    invalidSize: (width: number, height: number) => {
+        showError(`Invalid map size: ${width}x${height}. Dimensions must be positive integers.`);
+    },
+    
+    invalidEvolution: (stages: string[]) => {
+        showError('Evolution stages cannot be empty. Please provide names for all four stages.');
+    },
+    
+    mapTextUpdateFailed: (error: Error) => {
+        showError(`Failed to update map: ${error.message}`);
+        // Rollback to previous state
+    },
+};
+```
+
 ## Accessibility Enhancements
 
 ### Keyboard Navigation Support
 
-- Tab order management for context menu items
+- Tab order management for context menu items and submenus
 - Arrow key navigation within context menus
 - Screen reader announcements for selection changes and operations
 - High contrast mode support for selection indicators
+- Dialog keyboard navigation (Tab, Enter, Escape)
 
 ### ARIA Implementation
 
@@ -388,6 +615,30 @@ const accessibilityAttributes = {
         role: 'menu',
         'aria-label': 'Component actions',
         'aria-expanded': 'true',
+    },
+
+    canvasContextMenu: {
+        role: 'menu',
+        'aria-label': 'Map settings',
+        'aria-expanded': 'true',
+    },
+
+    styleSubmenu: {
+        role: 'menu',
+        'aria-label': 'Map style options',
+        'aria-expanded': 'true',
+    },
+
+    sizeDialog: {
+        role: 'dialog',
+        'aria-label': 'Set map size',
+        'aria-modal': 'true',
+    },
+
+    evolutionDialog: {
+        role: 'dialog',
+        'aria-label': 'Edit evolution stages',
+        'aria-modal': 'true',
     },
 
     selectedComponent: {
