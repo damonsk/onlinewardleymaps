@@ -8,4 +8,5 @@ module.exports = {
         '^.+\\.(ts|tsx|js|jsx)$': ['babel-jest', {presets: ['next/babel']}],
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    reporters: [['summary', {summaryThreshold: 1}]],
 };

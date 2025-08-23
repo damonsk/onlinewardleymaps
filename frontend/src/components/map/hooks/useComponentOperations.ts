@@ -15,7 +15,7 @@ interface UseComponentOperationsProps {
 }
 
 export interface ComponentOperations {
-    handleDeleteComponent: (componentId: string) => void;
+    handleDeleteComponent: (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => void;
     handleEditComponent: (componentId: string) => void;
     handleToggleInertia: (componentId: string) => void;
     handleEvolveComponent: (componentId: string) => void;
@@ -40,19 +40,31 @@ export const useComponentOperations = ({
     );
 
     const handleDeleteComponent = useCallback(
-        (componentId: string) => {
+        (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => {
             if (!componentId || !mapText) {
                 console.warn('Cannot delete component: missing componentId or mapText');
                 return;
             }
 
             try {
-                deleteComponent({
-                    mapText,
-                    componentId,
-                    componentName: componentId,
-                });
-                showUserFeedback('Component deleted successfully', 'success');
+                // For evolved components, use the component data to get the correct names
+                if (componentType === 'evolved-component' && componentData?.evolved && componentData?.override) {
+                    deleteComponent({
+                        mapText,
+                        componentId: componentData.override, // Use the override name for evolved component deletion
+                        componentName: componentData.override,
+                        componentType: 'evolved-component',
+                    });
+                } else {
+                    deleteComponent({
+                        mapText,
+                        componentId,
+                        componentName: componentId,
+                        componentType: componentType,
+                    });
+                }
+                const typeLabel = componentType === 'evolved-component' ? 'Evolved component' : 'Component';
+                showUserFeedback(`${typeLabel} deleted successfully`, 'success');
             } catch (error) {
                 console.error('Failed to delete component:', error);
                 showUserFeedback('Failed to delete component', 'error');

@@ -1,12 +1,12 @@
 import {PSTElement} from '../types/map/pst';
 import {findPSTElementLine, parsePSTSyntax} from '../utils/pstMapTextMutation';
 
-const VALID_COMPONENT_TYPES = ['pst', 'component', 'market', 'anchor', 'note', 'pipeline'] as const;
+const VALID_COMPONENT_TYPES = ['pst', 'component', 'market', 'anchor', 'note', 'pipeline', 'evolved-component'] as const;
 
 export interface ComponentDeletionParams {
     mapText: string;
     componentId: string | number;
-    componentType?: 'pst' | 'component' | 'market' | 'anchor' | 'note' | 'pipeline';
+    componentType?: 'pst' | 'component' | 'market' | 'anchor' | 'note' | 'pipeline' | 'evolved-component';
 }
 
 export interface ComponentDeletionResult {
@@ -73,6 +73,11 @@ export class MapComponentDeleter {
 
         const {mapText, componentId, componentType} = params;
         const componentIdStr = this.normalizeComponentId(componentId);
+
+        if (componentType === 'evolved-component') {
+            return this.deleteEvolvedComponent(mapText, componentIdStr);
+        }
+
         const identification = this.identifyComponent(mapText, componentIdStr, componentType);
 
         if (!identification.found) {
@@ -82,6 +87,71 @@ export class MapComponentDeleter {
         const updatedMapText = this.applyTransformations(mapText, this.createDeletionTransformations(identification));
 
         return this.createDeletionResult(updatedMapText, componentIdStr, identification);
+    }
+
+    public deleteEvolvedComponent(mapText: string, evolvedComponentName: string): ComponentDeletionResult {
+        const evolveLineIndex = this.findEvolveLineForEvolvedComponent(mapText, evolvedComponentName);
+
+        if (evolveLineIndex === -1) {
+            throw new Error(`Evolved component "${evolvedComponentName}" not found in map text`);
+        }
+
+        const lines = mapText.split('\n');
+        const evolveLine = lines[evolveLineIndex];
+
+        const updatedMapText = this.removeComponentLine(mapText, evolveLineIndex);
+
+        return {
+            updatedMapText,
+            deletedComponent: {
+                id: evolvedComponentName,
+                type: 'evolved-component',
+                line: evolveLineIndex,
+                originalText: evolveLine,
+                name: evolvedComponentName,
+            },
+        };
+    }
+
+    private findEvolveLineForEvolvedComponent(mapText: string, evolvedComponentName: string): number {
+        const lines = mapText.split('\n');
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line.startsWith('evolve ')) continue;
+
+            const evolveContent = line.substring(7).trim();
+            const arrowIndex = evolveContent.indexOf('->');
+
+            if (arrowIndex === -1) continue;
+
+            const targetPart = evolveContent.substring(arrowIndex + 2).trim();
+            let evolvedName: string;
+
+            if (targetPart.startsWith('"')) {
+                // Extract quoted evolved name
+                const quotedMatch = targetPart.match(/^"((?:[^"\\]|\\.)*)"/);
+                if (quotedMatch) {
+                    evolvedName = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                } else {
+                    continue; // Malformed quoted name
+                }
+            } else {
+                // Extract unquoted evolved name (up to first space or end)
+                const unquotedMatch = targetPart.match(/^([^\s]+)/);
+                if (unquotedMatch) {
+                    evolvedName = unquotedMatch[1];
+                } else {
+                    continue; // No name found
+                }
+            }
+
+            if (evolvedName === evolvedComponentName) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private identifyComponent(mapText: string, componentId: string, _expectedType?: string): ComponentIdentification {

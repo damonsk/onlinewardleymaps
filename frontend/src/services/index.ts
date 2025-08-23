@@ -8,3 +8,6 @@ export type {ComponentDeletionParams, ComponentDeletionResult, ComponentIdentifi
 
 export {DefaultComponentEvolutionManager, componentEvolutionManager} from './ComponentEvolutionManager';
 export type {ComponentEvolutionManager, EvolutionResult, EvolutionStage} from './ComponentEvolutionManager';
+
+export {SelectionManager} from './SelectionManager';
+export type {SelectableElement, SelectableElementType, SelectionManagerOptions} from './SelectionManager';

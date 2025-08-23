@@ -8,6 +8,7 @@ import {useUndoRedo} from '../UndoRedoProvider';
 import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
 import {ToolbarRedoIcon, ToolbarUndoIcon} from './ToolbarIconWrappers';
 import {ToolbarItem} from './ToolbarItem';
+import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
 
 const ToolbarContainer = styled.div<{$isDragging: boolean}>`
     position: fixed;
@@ -589,10 +590,28 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                 }
 
                 try {
+                    // Detect if this is an evolved component and get proper deletion parameters
+                    let componentType: 'component' | 'evolved-component' | undefined = undefined;
+                    let componentName = componentId;
+                    
+                    if (componentId.endsWith('_evolved')) {
+                        componentType = 'evolved-component';
+                        
+                        const evolvedInfo = findEvolvedComponentInfo(mapText, componentId);
+                        
+                        if (evolvedInfo.found) {
+                            componentName = evolvedInfo.evolvedName;
+                            console.log('WysiwygToolbar: Found evolved component name:', evolvedInfo.evolvedName);
+                        } else {
+                            console.warn('WysiwygToolbar: Could not find evolved component name, using componentId as fallback');
+                        }
+                    }
+
                     const deletionParams = {
                         mapText,
-                        componentId,
-                        componentName: componentId, // Use componentId as name for now
+                        componentId: componentType === 'evolved-component' ? componentName : componentId,
+                        componentName,
+                        componentType,
                     };
                     console.log('WysiwygToolbar: Attempting to delete component with params:', deletionParams);
 

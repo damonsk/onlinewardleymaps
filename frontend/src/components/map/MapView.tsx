@@ -17,6 +17,7 @@ import {useComponentOperations} from './hooks/useComponentOperations';
 import {useDrawingState} from './hooks/useDrawingState';
 import {useLinkingState} from './hooks/useLinkingState';
 import {useMapHandlers} from './hooks/useMapHandlers';
+import {useSelectionManager} from './hooks/useSelectionManager';
 import {useToolbarState} from './hooks/useToolbarState';
 import {useUserFeedback} from './hooks/useUserFeedback';
 
@@ -94,6 +95,11 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
         showUserFeedback,
     });
 
+    // Selection manager for keyboard deletion support
+    const selectionManager = useSelectionManager({
+        componentOps,
+    });
+
     // Consolidated handlers using custom hook
     const handlers = useMapHandlers({
         props,
@@ -103,6 +109,7 @@ export const MapView: React.FunctionComponent<ModernMapViewRefactoredProps> = pr
         showUserFeedback,
         clearSelection,
         componentOps,
+        selectionManager,
     });
 
     // Simplified styling

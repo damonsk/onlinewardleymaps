@@ -4,12 +4,14 @@ import {useComponentSelection} from '../ComponentSelectionContext';
 import {ContextMenu, ContextMenuItem} from './ContextMenu';
 import {UnifiedComponent} from '../../types/unified';
 import {useUnifiedMapState} from '../../hooks/useUnifiedMapState';
+import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
 
 interface MapElement {
     type: 'component' | 'evolved-component' | 'link';
     id: string;
     name: string;
     properties: ComponentProperties | LinkProperties;
+    componentData?: any; // Store the original component data for evolved components
 }
 
 interface ComponentProperties {
@@ -42,7 +44,7 @@ interface ContextMenuContextType {
 export interface ContextMenuProviderProps {
     children: ReactNode;
     mapText: string;
-    onDeleteComponent?: (componentId: string) => void;
+    onDeleteComponent?: (componentId: string, componentType?: 'component' | 'evolved-component', componentData?: any) => void;
     onEditComponent?: (componentId: string) => void;
     onToggleInertia?: (componentId: string) => void;
     onEvolveComponent?: (componentId: string) => void;
@@ -100,13 +102,41 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     // Enhanced component detection from map data
     const detectElementFromComponent = useCallback(
         (componentId: string): MapElement | null => {
+            // For evolved components (ending with _evolved), parse from map text
+            if (componentId.endsWith('_evolved')) {
+                const evolvedInfo = findEvolvedComponentInfo(mapText, componentId);
+                
+                if (!evolvedInfo.found) return null;
+                
+                // Create a MapElement for the evolved component
+                const mapElement: MapElement = {
+                    type: 'evolved-component',
+                    id: componentId,
+                    name: evolvedInfo.evolvedName,
+                    properties: {
+                        name: evolvedInfo.evolvedName,
+                        inertia: false,
+                        evolved: true,
+                        maturity: 0,
+                        visibility: 0,
+                    },
+                    componentData: {
+                        id: componentId,
+                        name: evolvedInfo.sourceName, // Keep source name
+                        evolved: true,
+                        override: evolvedInfo.evolvedName, // This is what gets deleted
+                    },
+                };
+                
+                return mapElement;
+            }
+
+            // For regular components, search in wardley map
             if (!computedWardleyMap) {
                 return null;
             }
 
-            // Search in all components (regular and evolved)
             const allComponents = [...(computedWardleyMap.components || []), ...(computedWardleyMap.anchors || [])];
-
             let component = allComponents.find(c => c.id === componentId);
 
             // Try with string/number conversion if not found
@@ -132,11 +162,12 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                 id: component.id,
                 name: component.name,
                 properties,
+                componentData: component,
             };
 
             return mapElement;
         },
-        [computedWardleyMap],
+        [computedWardleyMap, mapText],
     );
 
     const showContextMenu = useCallback(
@@ -208,14 +239,18 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
         try {
             if (onDeleteComponent) {
                 const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
-                onDeleteComponent(String(componentId));
+                const componentType = typeof currentElement === 'object' ? currentElement.type : undefined;
+                const componentData = typeof currentElement === 'object' ? currentElement.componentData : undefined;
+                onDeleteComponent(String(componentId), componentType, componentData);
             } else {
                 const componentId = typeof currentElement === 'object' ? currentElement.id : currentElement;
                 const componentName = typeof currentElement === 'object' ? currentElement.name : String(currentElement);
+                const componentType = typeof currentElement === 'object' ? currentElement.type : undefined;
                 deleteComponent({
                     mapText,
                     componentId: String(componentId),
                     componentName,
+                    componentType,
                 });
             }
 

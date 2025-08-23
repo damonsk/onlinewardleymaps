@@ -81,7 +81,7 @@ pioneers [0.8, 0.2, 0.6, 0.4]`;
         fireEvent.click(deleteOption);
 
         // Verify deletion callback was called
-        expect(mockOnDeleteComponent).toHaveBeenCalledWith('component-test-1');
+        expect(mockOnDeleteComponent).toHaveBeenCalledWith('component-test-1', 'component', undefined);
 
         // Context menu should be closed after deletion
         await waitFor(() => {
@@ -110,7 +110,7 @@ pioneers [0.8, 0.2, 0.6, 0.4]`;
         fireEvent.click(deleteOption);
 
         // Verify deletion callback was called
-        expect(mockOnDeleteComponent).toHaveBeenCalledWith('pst-pioneers-2');
+        expect(mockOnDeleteComponent).toHaveBeenCalledWith('pst-pioneers-2', 'component', undefined);
     });
 
     it.skip('should close context menu when clicking outside', async () => {

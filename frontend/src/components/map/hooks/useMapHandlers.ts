@@ -3,11 +3,12 @@ import {ToolbarItem} from '../../../types/toolbar';
 import {UnifiedComponent} from '../../../types/unified/components';
 import {addLinkToMapText, generateLinkSyntax, linkExists} from '../../../utils/componentDetection';
 import {placeComponent} from '../../../utils/mapTextGeneration';
-import {ModernMapViewRefactoredProps} from '../MapView.refactored';
+import {ModernMapViewRefactoredProps} from '../MapView';
 import {generateUniqueComponentName, validatePosition, validateRectangle} from '../utils/validation';
 import {ComponentOperations} from './useComponentOperations';
 import {DrawingActions, DrawingState} from './useDrawingState';
 import {LinkingActions, LinkingState} from './useLinkingState';
+import {useSelectionManager} from './useSelectionManager';
 import {ToolbarActions, ToolbarState} from './useToolbarState';
 
 interface UseMapHandlersProps {
@@ -18,6 +19,7 @@ interface UseMapHandlersProps {
     showUserFeedback: (message: string, type?: 'success' | 'error' | 'warning' | 'info') => void;
     clearSelection: () => void;
     componentOps: ComponentOperations;
+    selectionManager: ReturnType<typeof useSelectionManager>;
 }
 
 export interface MapHandlers {
@@ -38,6 +40,7 @@ export const useMapHandlers = ({
     showUserFeedback,
     clearSelection,
     componentOps,
+    selectionManager,
 }: UseMapHandlersProps): MapHandlers => {
     const handleContainerClick = useCallback(
         (event: React.MouseEvent) => {
@@ -65,6 +68,7 @@ export const useMapHandlers = ({
                     linkingState.resetLinkingState();
                     showUserFeedback('Linking cancelled', 'info');
                 }
+                selectionManager.clearSelection();
                 return;
             }
 
@@ -74,9 +78,11 @@ export const useMapHandlers = ({
                 showUserFeedback(`Selected \"${component.name}\" as source. Click another component to create a link.`, 'info');
             } else if (linkingState.linkingState === 'selecting-target') {
                 handleCreateLink(component);
+            } else if (linkingState.linkingState === 'idle') {
+                selectionManager.selectComponent(component);
             }
         },
-        [linkingState, showUserFeedback],
+        [linkingState, showUserFeedback, selectionManager],
     );
 
     const handleCreateComponentAndLink = useCallback(
