@@ -1,6 +1,7 @@
 import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TOOLBAR_ITEMS, getToolbarItemById} from '../../constants/toolbarItems';
+import {useI18n} from '../../hooks/useI18n';
 import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
 import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
 import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';

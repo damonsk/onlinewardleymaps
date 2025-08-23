@@ -1,5 +1,6 @@
 import React, {memo, useCallback, useEffect, useRef} from 'react';
 import styled from 'styled-components';
+import {useI18n} from '../../hooks/useI18n';
 import {ToolbarDropdownProps, ToolbarSubItem} from '../../types/toolbar';
 
 /**

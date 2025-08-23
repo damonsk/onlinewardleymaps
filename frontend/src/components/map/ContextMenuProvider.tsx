@@ -357,9 +357,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
                     (currentElement.type === 'component' ||
                         currentElement.type === 'evolved-component' ||
                         currentElement.type === 'pst-element')
-                        ? currentElement.type === 'pst-element'
-                            ? 'pst'
-                            : currentElement.type
+                        ? currentElement.type
                         : undefined;
                 const componentData = typeof currentElement === 'object' ? currentElement.componentData : undefined;
                 onDeleteComponent(String(componentId), componentType, componentData);

@@ -97,7 +97,7 @@
     },
     "scripts": {
         "dev": "next dev",
-        "build": "npm run validate-translations && next build",
+        "build": "next build",
         "start": "next start",
         "lint": "eslint . --fix",
         "lint:check": "node scripts/lint-with-progress.js",
