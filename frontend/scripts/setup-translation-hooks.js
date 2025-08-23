@@ -2,7 +2,7 @@
 
 /**
  * Setup Translation Validation Hooks
- * 
+ *
  * This script sets up git hooks for translation validation
  */
 
@@ -59,14 +59,13 @@ function setupPreCommitHook() {
 
         // Write pre-commit hook
         fs.writeFileSync(PRE_COMMIT_HOOK, preCommitScript);
-        
+
         // Make it executable
         fs.chmodSync(PRE_COMMIT_HOOK, '755');
-        
+
         console.log('✅ Pre-commit hook installed successfully');
         console.log('Translation validation will now run automatically before each commit');
         return true;
-        
     } catch (error) {
         console.error('❌ Failed to install pre-commit hook:', error.message);
         return false;
@@ -75,9 +74,9 @@ function setupPreCommitHook() {
 
 function main() {
     console.log('Setting up translation validation hooks...\n');
-    
+
     const success = setupPreCommitHook();
-    
+
     if (success) {
         console.log('\n🎉 Setup complete!');
         console.log('\nAvailable commands:');
@@ -96,4 +95,4 @@ if (require.main === module) {
     main();
 }
 
-module.exports = { setupPreCommitHook };
+module.exports = {setupPreCommitHook};

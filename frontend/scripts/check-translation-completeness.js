@@ -2,14 +2,14 @@
 
 /**
  * Comprehensive Translation Completeness Validator
- * 
+ *
  * This script verifies that all translation keys exist in all language files,
  * validates interpolation variables match across languages, detects orphaned keys,
  * and generates detailed reports with completion percentages.
- * 
+ *
  * Usage:
  *   node check-translation-completeness.js [options]
- * 
+ *
  * Options:
  *   --json                Output results in JSON format
  *   --locale=<code>       Check specific locale only
@@ -92,11 +92,11 @@ const results = {
  */
 function loadTranslationFile(locale) {
     const filePath = path.join(LOCALES_DIR, locale, 'common.json');
-    
+
     if (!fs.existsSync(filePath)) {
         throw new Error(`Translation file not found: ${filePath}`);
     }
-    
+
     try {
         const content = fs.readFileSync(filePath, 'utf8');
         return JSON.parse(content);
@@ -112,21 +112,19 @@ function getAvailableLocales() {
     if (!fs.existsSync(LOCALES_DIR)) {
         throw new Error(`Locales directory not found: ${LOCALES_DIR}`);
     }
-    
-    const locales = fs.readdirSync(LOCALES_DIR)
-        .filter(dir => {
-            const dirPath = path.join(LOCALES_DIR, dir);
-            return fs.statSync(dirPath).isDirectory() && 
-                   fs.existsSync(path.join(dirPath, 'common.json'));
-        });
-    
+
+    const locales = fs.readdirSync(LOCALES_DIR).filter(dir => {
+        const dirPath = path.join(LOCALES_DIR, dir);
+        return fs.statSync(dirPath).isDirectory() && fs.existsSync(path.join(dirPath, 'common.json'));
+    });
+
     if (options.locale) {
         if (!locales.includes(options.locale)) {
             throw new Error(`Locale '${options.locale}' not found`);
         }
         return locales.filter(locale => locale === options.locale || locale === REFERENCE_LOCALE);
     }
-    
+
     return locales;
 }
 
@@ -135,17 +133,17 @@ function getAvailableLocales() {
  */
 function flattenKeys(obj, prefix = '') {
     const keys = [];
-    
+
     for (const [key, value] of Object.entries(obj)) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
-        
+
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
             keys.push(...flattenKeys(value, fullKey));
         } else {
             keys.push(fullKey);
         }
     }
-    
+
     return keys;
 }
 
@@ -161,21 +159,21 @@ function getNestedValue(obj, path) {
  */
 function extractInterpolationVars(text) {
     if (typeof text !== 'string') return [];
-    
+
     const vars = [];
-    
+
     // Match {{variable}} patterns
     const doubleBraceMatches = text.match(/\{\{([^}]+)\}\}/g);
     if (doubleBraceMatches) {
         vars.push(...doubleBraceMatches.map(match => match.slice(2, -2).trim()));
     }
-    
+
     // Match {variable} patterns
     const singleBraceMatches = text.match(/\{([^}]+)\}/g);
     if (singleBraceMatches) {
         vars.push(...singleBraceMatches.map(match => match.slice(1, -1).trim()));
     }
-    
+
     return [...new Set(vars)]; // Remove duplicates
 }
 
@@ -185,9 +183,9 @@ function extractInterpolationVars(text) {
 function validateInterpolationVars(referenceText, translatedText, key) {
     const refVars = extractInterpolationVars(referenceText);
     const transVars = extractInterpolationVars(translatedText);
-    
+
     const issues = [];
-    
+
     // Check for missing variables
     const missingVars = refVars.filter(v => !transVars.includes(v));
     if (missingVars.length > 0) {
@@ -197,7 +195,7 @@ function validateInterpolationVars(referenceText, translatedText, key) {
             key,
         });
     }
-    
+
     // Check for extra variables
     const extraVars = transVars.filter(v => !refVars.includes(v));
     if (extraVars.length > 0) {
@@ -207,7 +205,7 @@ function validateInterpolationVars(referenceText, translatedText, key) {
             key,
         });
     }
-    
+
     return issues;
 }
 
@@ -216,12 +214,12 @@ function validateInterpolationVars(referenceText, translatedText, key) {
  */
 function findUsedKeys() {
     const usedKeys = new Set();
-    const sourceFiles = glob.sync(path.join(SRC_DIR, '**/*.{ts,tsx,js,jsx}'), { nodir: true });
-    
+    const sourceFiles = glob.sync(path.join(SRC_DIR, '**/*.{ts,tsx,js,jsx}'), {nodir: true});
+
     sourceFiles.forEach(filePath => {
         try {
             const content = fs.readFileSync(filePath, 'utf8');
-            
+
             // Match t('key') and t("key") patterns
             const tFunctionMatches = content.match(/t\s*\(\s*['"`]([^'"`]+)['"`]/g);
             if (tFunctionMatches) {
@@ -232,7 +230,7 @@ function findUsedKeys() {
                     }
                 });
             }
-            
+
             // Match useI18n().t('key') patterns
             const hookMatches = content.match(/\.t\s*\(\s*['"`]([^'"`]+)['"`]/g);
             if (hookMatches) {
@@ -243,14 +241,13 @@ function findUsedKeys() {
                     }
                 });
             }
-            
         } catch (error) {
             if (options.verbose) {
                 console.warn(`Warning: Could not read file ${filePath}: ${error.message}`);
             }
         }
     });
-    
+
     return usedKeys;
 }
 
@@ -260,7 +257,7 @@ function findUsedKeys() {
 function analyzeLocale(locale, referenceData, referenceKeys) {
     const localeData = loadTranslationFile(locale);
     const localeKeys = flattenKeys(localeData);
-    
+
     const analysis = {
         locale,
         totalKeys: referenceKeys.length,
@@ -269,17 +266,17 @@ function analyzeLocale(locale, referenceData, referenceKeys) {
         interpolationIssues: [],
         completionRate: 0,
     };
-    
+
     // Check each reference key
     referenceKeys.forEach(key => {
         const referenceValue = getNestedValue(referenceData, key);
         const translatedValue = getNestedValue(localeData, key);
-        
+
         if (translatedValue === undefined) {
             analysis.missingKeys.push(key);
         } else {
             analysis.translatedKeys++;
-            
+
             // Validate interpolation variables
             if (typeof referenceValue === 'string' && typeof translatedValue === 'string') {
                 const interpolationIssues = validateInterpolationVars(referenceValue, translatedValue, key);
@@ -287,9 +284,9 @@ function analyzeLocale(locale, referenceData, referenceKeys) {
             }
         }
     });
-    
+
     analysis.completionRate = Math.round((analysis.translatedKeys / analysis.totalKeys) * 100);
-    
+
     return analysis;
 }
 
@@ -308,17 +305,17 @@ function analyzeTranslations() {
         const locales = getAvailableLocales();
         const referenceData = loadTranslationFile(REFERENCE_LOCALE);
         const referenceKeys = flattenKeys(referenceData);
-        
+
         // Find used keys in source code
         results.usedKeys = findUsedKeys();
-        
+
         // Find orphaned keys
         results.orphanedKeys = findOrphanedKeys(referenceKeys, results.usedKeys);
-        
+
         // Analyze each locale
         locales.forEach(locale => {
             if (locale === REFERENCE_LOCALE) return;
-            
+
             try {
                 results.locales[locale] = analyzeLocale(locale, referenceData, referenceKeys);
             } catch (error) {
@@ -329,7 +326,7 @@ function analyzeTranslations() {
                 };
             }
         });
-        
+
         // Calculate summary statistics
         const localeAnalyses = Object.values(results.locales).filter(l => !l.error);
         results.summary = {
@@ -337,12 +334,12 @@ function analyzeTranslations() {
             totalKeys: referenceKeys.length,
             usedKeysCount: results.usedKeys.size,
             orphanedKeysCount: results.orphanedKeys.length,
-            averageCompletionRate: localeAnalyses.length > 0 
-                ? Math.round(localeAnalyses.reduce((sum, l) => sum + l.completionRate, 0) / localeAnalyses.length)
-                : 0,
+            averageCompletionRate:
+                localeAnalyses.length > 0
+                    ? Math.round(localeAnalyses.reduce((sum, l) => sum + l.completionRate, 0) / localeAnalyses.length)
+                    : 0,
             localesWithIssues: localeAnalyses.filter(l => l.missingKeys.length > 0 || l.interpolationIssues.length > 0).length,
         };
-        
     } catch (error) {
         console.error(colorize.red(`Error: ${error.message}`));
         process.exit(1);
@@ -354,7 +351,7 @@ function analyzeTranslations() {
  */
 function displayResults() {
     console.log(colorize.bold('\n=== TRANSLATION COMPLETENESS REPORT ===\n'));
-    
+
     // Summary
     console.log(colorize.blue('SUMMARY:'));
     console.log(`  Total translation keys: ${results.summary.totalKeys}`);
@@ -363,20 +360,19 @@ function displayResults() {
     console.log(`  Locales analyzed: ${results.summary.totalLocales}`);
     console.log(`  Average completion rate: ${results.summary.averageCompletionRate}%`);
     console.log(`  Locales with issues: ${results.summary.localesWithIssues}`);
-    
+
     // Locale details
     Object.values(results.locales).forEach(locale => {
         if (locale.error) {
             console.log(colorize.red(`\n${locale.locale.toUpperCase()}: ERROR - ${locale.error}`));
             return;
         }
-        
-        const statusColor = locale.completionRate === 100 ? colorize.green : 
-                           locale.completionRate >= 90 ? colorize.yellow : colorize.red;
-        
+
+        const statusColor = locale.completionRate === 100 ? colorize.green : locale.completionRate >= 90 ? colorize.yellow : colorize.red;
+
         console.log(statusColor(`\n${locale.locale.toUpperCase()}: ${locale.completionRate}% complete`));
         console.log(`  Translated: ${locale.translatedKeys}/${locale.totalKeys}`);
-        
+
         if (locale.missingKeys.length > 0) {
             console.log(colorize.red(`  Missing keys: ${locale.missingKeys.length}`));
             if (options.verbose) {
@@ -388,7 +384,7 @@ function displayResults() {
                 }
             }
         }
-        
+
         if (locale.interpolationIssues.length > 0) {
             console.log(colorize.yellow(`  Interpolation issues: ${locale.interpolationIssues.length}`));
             if (options.verbose) {
@@ -398,7 +394,7 @@ function displayResults() {
             }
         }
     });
-    
+
     // Orphaned keys
     if (options.showOrphaned && results.orphanedKeys.length > 0) {
         console.log(colorize.yellow(`\nORPHANED KEYS (${results.orphanedKeys.length}):`));
@@ -409,7 +405,7 @@ function displayResults() {
             console.log(colorize.gray(`  ... and ${results.orphanedKeys.length - 20} more`));
         }
     }
-    
+
     console.log('');
 }
 

@@ -4,10 +4,10 @@
  * Enhanced script to identify potentially untranslated strings in React components
  * Supports strict validation mode, improved detection accuracy, filtering capabilities,
  * and JSON output format for integration with other tools.
- * 
+ *
  * Usage:
  *   node find-untranslated.js [options]
- * 
+ *
  * Options:
  *   --strict              Exit with error code if untranslated strings found
  *   --filter=<pattern>    Filter by component type or directory (e.g., --filter=toolbar)
@@ -180,17 +180,17 @@ function findUntranslatedStrings(filePath) {
         matches.forEach(match => {
             // Handle multiple capture groups (for aria-describedby pattern)
             const text = (match[1] || match[2] || '').trim();
-            
+
             // Skip very short strings, they're unlikely to need translation
             if (text.length < 2) return;
-            
+
             // Skip common non-translatable patterns
             if (isNonTranslatable(text)) return;
 
             // Enhanced context checking for translation usage
             const lineNumber = getLineNumber(content, match.index);
             const lineContext = getLineContext(content, match.index, 100);
-            
+
             if (isAlreadyTranslated(lineContext, text)) return;
 
             // Generate suggested translation key
@@ -225,7 +225,7 @@ function isNonTranslatable(text) {
         /^[{}[\]()]+$/, // Brackets only
         /^[.,;:!?]+$/, // Punctuation only
     ];
-    
+
     return nonTranslatablePatterns.some(pattern => pattern.test(text));
 }
 
@@ -238,15 +238,15 @@ function getLineContext(content, matchIndex, contextLength = 100) {
 function isAlreadyTranslated(lineContext, text) {
     // Enhanced detection for translation usage
     const translationPatterns = [
-        /t\s*\(/,                    // t( function call
-        /useTranslation/,            // useTranslation hook
-        /useI18n/,                   // useI18n hook
-        /\$\{.*t\(/,                // Template literal with t(
-        /i18n\./,                    // i18n object usage
-        /Trans\s+/,                  // Trans component
-        /Translation\s+/,            // Translation component
+        /t\s*\(/, // t( function call
+        /useTranslation/, // useTranslation hook
+        /useI18n/, // useI18n hook
+        /\$\{.*t\(/, // Template literal with t(
+        /i18n\./, // i18n object usage
+        /Trans\s+/, // Trans component
+        /Translation\s+/, // Translation component
     ];
-    
+
     return translationPatterns.some(pattern => pattern.test(lineContext));
 }
 
@@ -254,30 +254,31 @@ function generateTranslationKey(filePath, patternType, text) {
     // Extract component name from file path
     const fileName = path.basename(filePath, path.extname(filePath));
     const componentName = fileName.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
+
     // Generate key based on pattern type and text
     const typeMap = {
         'JSX text content': 'text',
         'Button text': 'button',
         'Dialog titles': 'title',
         'Menu items': 'menu',
-        'Typography': 'text',
+        Typography: 'text',
         'Tooltip content': 'tooltip',
-        'Labels': 'label',
+        Labels: 'label',
         'Aria labels': 'aria',
         'Aria descriptions': 'aria',
-        'Placeholders': 'placeholder',
-        'Titles': 'title',
+        Placeholders: 'placeholder',
+        Titles: 'title',
         'Alt text': 'alt',
         'Error messages': 'error',
     };
-    
+
     const keyType = typeMap[patternType] || 'text';
-    const textKey = text.toLowerCase()
+    const textKey = text
+        .toLowerCase()
         .replace(/[^a-z0-9\s]/g, '')
         .replace(/\s+/g, '_')
         .substring(0, 20);
-    
+
     return `${componentName}.${keyType}.${textKey}`;
 }
 
@@ -294,7 +295,7 @@ function scanDirectory() {
                 totalIssues += issues.length;
 
                 const relativePath = file.replace(path.join(__dirname, '..'), '');
-                
+
                 // Store results for JSON output
                 results.files.push({
                     path: relativePath,
@@ -358,7 +359,7 @@ function displayFileIssues(relativePath, issues) {
 }
 
 function getIssuesByPriority() {
-    const counts = { critical: 0, high: 0, medium: 0 };
+    const counts = {critical: 0, high: 0, medium: 0};
     results.files.forEach(file => {
         file.issues.forEach(issue => {
             counts[issue.priority] = (counts[issue.priority] || 0) + 1;
@@ -372,7 +373,7 @@ function displaySummary() {
     console.log(`\x1b[1mSUMMARY\x1b[0m`);
     console.log(`- Scanned ${totalFilesScanned} files`);
     console.log(`- Found ${totalIssues} potentially untranslated strings in ${totalFilesWithIssues} files`);
-    
+
     if (options.filter) {
         console.log(`- Filter applied: "${options.filter}"`);
     }
@@ -391,7 +392,7 @@ function displaySummary() {
     console.log(`\n\x1b[36mTo translate, use the t() function from the useI18n hook:\x1b[0m`);
     console.log(`  const { t } = useI18n();`);
     console.log(`  return <Button>{t('button.save', 'Save')}</Button>;`);
-    
+
     if (options.strict) {
         console.log(`\n\x1b[33mRunning in strict mode - will exit with error code if issues found\x1b[0m`);
     }

@@ -1,8 +1,8 @@
-import { EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets } from '../../../constants/defaults';
-import { MapTheme } from '../../../types/map/styles';
-import { ToolbarItem } from '../../../types/toolbar';
-import { UnifiedComponent } from '../../../types/unified/components';
-import { UnifiedWardleyMap } from '../../../types/unified/map';
+import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../../constants/defaults';
+import {MapTheme} from '../../../types/map/styles';
+import {ToolbarItem} from '../../../types/toolbar';
+import {UnifiedComponent} from '../../../types/unified/components';
+import {UnifiedWardleyMap} from '../../../types/unified/map';
 
 export interface MapCanvasProps {
     wardleyMap: UnifiedWardleyMap;

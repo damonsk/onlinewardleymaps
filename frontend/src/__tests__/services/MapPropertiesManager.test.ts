@@ -1,4 +1,4 @@
-import { MapPropertiesManager } from '../../services/MapPropertiesManager';
+import {MapPropertiesManager} from '../../services/MapPropertiesManager';
 
 describe('MapPropertiesManager', () => {
     describe('parseMapProperties', () => {

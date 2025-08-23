@@ -1,6 +1,6 @@
 import React from 'react';
-import { MapDimensions } from '../../../constants/defaults';
-import { DefaultThemes } from './Fill';
+import {MapDimensions} from '../../../constants/defaults';
+import {DefaultThemes} from './Fill';
 
 const fill: DefaultThemes = {
     wardley: 'url(#wardleyGradient)',

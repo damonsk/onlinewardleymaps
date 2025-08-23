@@ -238,13 +238,13 @@
   - Add immediate visual update when map style changes
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 9. Create map size and evolution stage dialogs
+- [x] 9. Create map size and evolution stage dialogs
   - Build map size input dialog with width and height validation
   - Create evolution stages dialog with four stage name inputs
   - Add proper form validation and error handling for both dialogs
   - _Requirements: 11.1, 11.2, 11.3, 11.6, 11.7, 12.1, 12.2, 12.3, 12.6, 12.7_
 
-- [ ] 9.1 Create MapSizeDialog component
+- [x] 9.1 Create MapSizeDialog component
   - Build dialog component with width and height input fields
   - Add current size detection and pre-population in dialog
   - Implement positive integer validation for size inputs
@@ -252,7 +252,7 @@
   - Add cancel functionality that preserves existing map size
   - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7_
 
-- [ ] 9.2 Create EvolutionStagesDialog component
+- [x] 9.2 Create EvolutionStagesDialog component
   - Build dialog component with four stage name input fields
   - Add current evolution stages detection and pre-population
   - Implement non-empty text validation for stage names
@@ -260,7 +260,7 @@
   - Add default stage names (Genesis, Custom Built, Product, Commodity) when no custom stages exist
   - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7_
 
-- [ ] 9.3 Integrate dialogs with canvas context menu
+- [x] 9.3 Integrate dialogs with canvas context menu
   - Connect "Set Map Size" menu item to MapSizeDialog opening
   - Connect "Edit Evolution Stages" menu item to EvolutionStagesDialog opening
   - Add dialog state management to prevent multiple dialogs open simultaneously

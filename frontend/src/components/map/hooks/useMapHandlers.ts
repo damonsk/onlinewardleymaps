@@ -1,15 +1,15 @@
-import { useCallback } from 'react';
-import { ToolbarItem } from '../../../types/toolbar';
-import { UnifiedComponent } from '../../../types/unified/components';
-import { addLinkToMapText, generateLinkSyntax, linkExists } from '../../../utils/componentDetection';
-import { placeComponent } from '../../../utils/mapTextGeneration';
-import { ModernMapViewRefactoredProps } from '../MapView';
-import { generateUniqueComponentName, validatePosition, validateRectangle } from '../utils/validation';
-import { ComponentOperations } from './useComponentOperations';
-import { DrawingActions, DrawingState } from './useDrawingState';
-import { LinkingActions, LinkingState } from './useLinkingState';
-import { useSelectionManager } from './useSelectionManager';
-import { ToolbarActions, ToolbarState } from './useToolbarState';
+import {useCallback} from 'react';
+import {ToolbarItem} from '../../../types/toolbar';
+import {UnifiedComponent} from '../../../types/unified/components';
+import {addLinkToMapText, generateLinkSyntax, linkExists} from '../../../utils/componentDetection';
+import {placeComponent} from '../../../utils/mapTextGeneration';
+import {ModernMapViewRefactoredProps} from '../MapView';
+import {generateUniqueComponentName, validatePosition, validateRectangle} from '../utils/validation';
+import {ComponentOperations} from './useComponentOperations';
+import {DrawingActions, DrawingState} from './useDrawingState';
+import {LinkingActions, LinkingState} from './useLinkingState';
+import {useSelectionManager} from './useSelectionManager';
+import {ToolbarActions, ToolbarState} from './useToolbarState';
 
 interface UseMapHandlersProps {
     props: ModernMapViewRefactoredProps;

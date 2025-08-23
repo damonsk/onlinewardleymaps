@@ -1,4 +1,4 @@
-import React, {LegacyRef, useCallback, useMemo} from 'react';
+import React, {LegacyRef, useCallback, useMemo, useState} from 'react';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {MapPropertiesManager} from '../../services/MapPropertiesManager';
@@ -123,12 +123,23 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         [props.mapText, props.mutateMapText, showUserFeedback],
     );
 
-    const handleSetMapSize = useCallback(
-        (width: number, height: number) => {
+    // Dialog opening handlers for context menu
+    const handleOpenMapSizeDialog = useCallback(() => {
+        setMapSizeDialogOpen(true);
+    }, []);
+
+    const handleOpenEvolutionStagesDialog = useCallback(() => {
+        setEvolutionStagesDialogOpen(true);
+    }, []);
+
+    // Dialog confirmation handlers
+    const handleConfirmMapSize = useCallback(
+        (size: {width: number; height: number}) => {
             try {
-                const result = MapPropertiesManager.updateMapSize(props.mapText, width, height);
-                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', `Set map size to ${width}x${height}`);
-                showUserFeedback(`Map size set to ${width}x${height}`, 'success');
+                const result = MapPropertiesManager.updateMapSize(props.mapText, size.width, size.height);
+                props.mutateMapText(result.updatedMapText, 'canvas-context-menu', `Set map size to ${size.width}x${size.height}`);
+                showUserFeedback(`Map size set to ${size.width}x${size.height}`, 'success');
+                setMapSizeDialogOpen(false);
             } catch (error) {
                 console.error('Failed to set map size:', error);
                 showUserFeedback('Failed to set map size', 'error');
@@ -137,12 +148,13 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         [props.mapText, props.mutateMapText, showUserFeedback],
     );
 
-    const handleEditEvolutionStages = useCallback(
+    const handleConfirmEvolutionStages = useCallback(
         (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => {
             try {
                 const result = MapPropertiesManager.updateEvolutionStages(props.mapText, stages);
                 props.mutateMapText(result.updatedMapText, 'canvas-context-menu', 'Updated evolution stages');
                 showUserFeedback('Evolution stages updated', 'success');
+                setEvolutionStagesDialogOpen(false);
             } catch (error) {
                 console.error('Failed to update evolution stages:', error);
                 showUserFeedback('Failed to update evolution stages', 'error');
@@ -150,6 +162,19 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         },
         [props.mapText, props.mutateMapText, showUserFeedback],
     );
+
+    // Dialog cancellation handlers
+    const handleCancelMapSize = useCallback(() => {
+        setMapSizeDialogOpen(false);
+    }, []);
+
+    const handleCancelEvolutionStages = useCallback(() => {
+        setEvolutionStagesDialogOpen(false);
+    }, []);
+
+    // Dialog state management
+    const [mapSizeDialogOpen, setMapSizeDialogOpen] = useState(false);
+    const [evolutionStagesDialogOpen, setEvolutionStagesDialogOpen] = useState(false);
 
     // Selection manager for keyboard deletion support
     const selectionManager = useSelectionManager({
@@ -241,8 +266,8 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             onToggleInertia={componentOps.handleToggleInertia}
             onEvolveComponent={componentOps.handleEvolveComponent}
             onChangeMapStyle={handleChangeMapStyle}
-            onSetMapSize={handleSetMapSize}
-            onEditEvolutionStages={handleEditEvolutionStages}
+            onSetMapSize={handleOpenMapSizeDialog}
+            onEditEvolutionStages={handleOpenEvolutionStagesDialog}
             wardleyMap={props.wardleyMap}
             selectionManager={selectionManager}
             onContextMenuReady={setContextMenuActions}>
@@ -313,6 +338,21 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                     />
                 </div>
             </div>
+
+            {/* Map Property Dialogs */}
+            <MapSizeDialog
+                isOpen={mapSizeDialogOpen}
+                currentSize={MapPropertiesManager.getCurrentSize(props.mapText)}
+                onConfirm={handleConfirmMapSize}
+                onCancel={handleCancelMapSize}
+            />
+
+            <EvolutionStagesDialog
+                isOpen={evolutionStagesDialogOpen}
+                currentStages={MapPropertiesManager.getCurrentEvolutionStages(props.mapText)}
+                onConfirm={handleConfirmEvolutionStages}
+                onCancel={handleCancelEvolutionStages}
+            />
         </ContextMenuProvider>
     );
 };

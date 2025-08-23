@@ -1,9 +1,9 @@
-import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
-import { MapPropertiesManager } from '../../services/MapPropertiesManager';
-import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
-import { useComponentSelection } from '../ComponentSelectionContext';
-import { ContextMenu, ContextMenuItem } from './ContextMenu';
+import React, {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
+import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
+import {MapPropertiesManager} from '../../services/MapPropertiesManager';
+import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
+import {useComponentSelection} from '../ComponentSelectionContext';
+import {ContextMenu, ContextMenuItem} from './ContextMenu';
 
 interface MapElement {
     type: 'component' | 'evolved-component' | 'link' | 'pst-element' | 'canvas';
@@ -69,8 +69,8 @@ export interface ContextMenuProviderProps {
     onToggleInertia?: (componentId: string) => void;
     onEvolveComponent?: (componentId: string) => void;
     onChangeMapStyle?: (style: 'plain' | 'wardley' | 'colour') => void;
-    onSetMapSize?: (width: number, height: number) => void;
-    onEditEvolutionStages?: (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => void;
+    onSetMapSize?: () => void;
+    onEditEvolutionStages?: () => void;
     wardleyMap?: any; // For accessing component data
     selectionManager?: {getSelectedElement: () => any; getSelectedLink: () => any}; // For accessing link selections
     onContextMenuReady?: (contextMenuActions: {
@@ -561,19 +561,14 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
             return;
         }
 
-        // For now, use placeholder values - this will be replaced with dialog in task 8.3
-        const currentSize = MapPropertiesManager.getCurrentSize(mapText);
-        const width = currentSize?.width || 800;
-        const height = currentSize?.height || 600;
-
         try {
-            onSetMapSize(width, height);
+            onSetMapSize();
         } catch (error) {
-            console.error('Failed to set map size:', error);
+            console.error('Failed to open map size dialog:', error);
         }
 
         hideContextMenu();
-    }, [onSetMapSize, mapText, hideContextMenu]);
+    }, [onSetMapSize, hideContextMenu]);
 
     const handleEditEvolutionStages = useCallback(() => {
         if (!onEditEvolutionStages) {
@@ -582,18 +577,14 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
             return;
         }
 
-        // For now, use default values - this will be replaced with dialog in task 8.3
-        const currentStages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
-        const stages = currentStages || MapPropertiesManager.getDefaultEvolutionStages();
-
         try {
-            onEditEvolutionStages(stages);
+            onEditEvolutionStages();
         } catch (error) {
-            console.error('Failed to edit evolution stages:', error);
+            console.error('Failed to open evolution stages dialog:', error);
         }
 
         hideContextMenu();
-    }, [onEditEvolutionStages, mapText, hideContextMenu]);
+    }, [onEditEvolutionStages, hideContextMenu]);
 
     const getContextMenuItems = useCallback((): ContextMenuItem[] => {
         const currentElement = contextMenuState.element;
