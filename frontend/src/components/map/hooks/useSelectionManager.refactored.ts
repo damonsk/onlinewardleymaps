@@ -1,4 +1,3 @@
-import {useMapInteractionService} from '../../../hooks/useMapInteractionService';
 import {ComponentOperations} from './useComponentOperations';
 
 interface UseSelectionManagerProps {
@@ -13,24 +12,25 @@ interface UseSelectionManagerProps {
  * to the new SOLID services internally.
  */
 export const useSelectionManager = ({componentOps}: UseSelectionManagerProps) => {
-    const mapInteractionService = useMapInteractionService({
-        mapText: componentOps.mapText,
-        mutateMapText: componentOps.mutateMapText,
-        // TODO: Wire up undo/redo when available in componentOps
-        // onUndo: componentOps.undo,
-        // onRedo: componentOps.redo,
-    });
+    // TODO: Implement refactored selection manager
+    // const mapInteractionService = useMapInteractionService({
+    //     mapText: componentOps.mapText,
+    //     mutateMapText: componentOps.mutateMapText,
+    //     // TODO: Wire up undo/redo when available in componentOps
+    //     // onUndo: componentOps.undo,
+    //     // onRedo: componentOps.redo,
+    // });
 
     // Return the same interface as the original hook for backward compatibility
     return {
-        selectComponent: mapInteractionService.selectComponent,
-        selectLink: mapInteractionService.selectLink,
-        clearSelection: mapInteractionService.clearSelection,
-        getSelectedElement: mapInteractionService.getSelectedElement,
-        getSelectedLink: mapInteractionService.getSelectedLink,
+        selectComponent: () => {}, // TODO: Implement
+        selectLink: () => {}, // TODO: Implement
+        clearSelection: () => {}, // TODO: Implement
+        getSelectedElement: () => null, // TODO: Implement
+        getSelectedLink: () => null, // TODO: Implement
         isSelected: (elementId: string, elementType: 'component' | 'evolved-component' | 'link') => {
-            // The new service uses a simpler isSelected that doesn't need the type
-            return mapInteractionService.isSelected(elementId);
+            // TODO: Implement
+            return false;
         },
     };
 };

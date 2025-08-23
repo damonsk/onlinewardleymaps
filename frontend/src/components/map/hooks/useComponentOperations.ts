@@ -63,11 +63,13 @@ export const useComponentOperations = ({
                         componentType: 'evolved-component',
                     });
                 } else {
+                    // Map pst-element to pst for the deletion service
+                    const mappedComponentType = componentType === 'pst-element' ? 'pst' : componentType;
                     deleteComponent({
                         mapText,
                         componentId,
                         componentName: componentId,
-                        componentType: componentType,
+                        componentType: mappedComponentType,
                     });
                 }
                 const typeLabel = componentType === 'evolved-component' ? 'Evolved component' : 'Component';
