@@ -3,6 +3,7 @@ import {Backdrop, Box, CircularProgress} from '@mui/material';
 import html2canvas from 'html2canvas';
 import React, {FunctionComponent, useEffect, useRef, useState, useCallback} from 'react';
 import * as Defaults from '../constants/defaults';
+import * as MapStyles from '../constants/mapstyles';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
 import {useI18n} from '../hooks/useI18n';
 import {useLegacyMapState, useUnifiedMapState} from '../hooks/useUnifiedMapState';
@@ -232,120 +233,14 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
     }, [currentIteration, rawMapTitle, mapIterations]);
 
     useEffect(() => {
-        switch (mapStyle) {
-            case 'colour':
-            case 'color':
-                mapActions.setMapStyleDefs(MapStyles.Colour);
-                break;
-            case 'wardley':
-                mapActions.setMapStyleDefs(MapStyles.Wardley);
-                break;
-            case 'dark':
-                mapActions.setMapStyleDefs(MapStyles.Dark);
-                break;
-            case 'handwritten':
-                mapActions.setMapStyleDefs(MapStyles.Handwritten);
-                break;
-            default:
-                mapActions.setMapStyleDefs(MapStyles.Plain);
-        }
-    }, [mapStyle, mapActions]);
+        mapActions.setMapStyleDefs(getMapStyleDefs(mapStyle));
+    }, [mapStyle, mapActions, getMapStyleDefs]);
 
     useEffect(() => {
-        if (shouldLoad) loadFromRemoteStorage();
-    }, [shouldLoad]);
+        if (shouldLoad) mapPersistence.loadFromRemoteStorage();
+    }, [shouldLoad, mapPersistence]);
 
-    useEffect(() => {
-        const debouncedHandleResize = debounce(() => {
-            const dimensions = {
-                width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-                height: mapSize.height > 0 ? mapSize.height : getHeight(),
-            };
-            mapActions.setMapDimensions(dimensions);
-        }, 1);
 
-        // Handle standard window resize events (but not panel resizes)
-        const handleWindowResize = (event: Event) => {
-            // Only handle if it's not a programmatically dispatched event from panel resize
-            if (!event.isTrusted) return;
-            debouncedHandleResize();
-        };
-
-        window.addEventListener('resize', handleWindowResize);
-        debouncedHandleResize();
-
-        return function cleanup() {
-            window.removeEventListener('resize', handleWindowResize);
-        };
-    }, [mapSize, mapActions]);
-
-    useEffect(() => {
-        const newDimensions = {
-            width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-            height: mapSize.height > 0 ? mapSize.height : getHeight(),
-        };
-        mapActions.setMapDimensions(newDimensions);
-        mapActions.setMapCanvasDimensions({
-            width: getWidth(),
-            height: getHeight(),
-        });
-    }, [mapOnlyView, hideNav, mapActions]);
-
-    useEffect(() => {
-        const initialLoad = () => {
-            mapActions.setMapCanvasDimensions({
-                width: getWidth(),
-                height: getHeight(),
-            });
-        };
-
-        const debouncedHandleCanvasResize = debounce(() => {
-            mapActions.setMapCanvasDimensions({
-                width: getWidth(),
-                height: getHeight(),
-            });
-        }, 500);
-
-        // Handle panel resize events specifically
-        const handlePanelResize = (event: CustomEvent) => {
-            // Update both map dimensions and canvas dimensions when panel resizes
-            // This should work exactly like browser window resize
-            setTimeout(() => {
-                const newWidth = getWidth();
-                const newHeight = getHeight();
-
-                // Update map dimensions (like window resize does)
-                const dimensions = {
-                    width: mapSize.width > 0 ? mapSize.width : 100 + newWidth,
-                    height: mapSize.height > 0 ? mapSize.height : newHeight,
-                };
-                mapActions.setMapDimensions(dimensions);
-
-                // Update canvas dimensions
-                mapActions.setMapCanvasDimensions({
-                    width: newWidth,
-                    height: newHeight,
-                });
-            }, 200); // Delay to ensure DOM has fully updated and map container has resized
-        };
-
-        // Handle standard window resize events (but not panel resizes)
-        const handleWindowResize = (event: Event) => {
-            // Only handle if it's not a programmatically dispatched event from panel resize
-            if (!event.isTrusted) return;
-            debouncedHandleCanvasResize();
-        };
-
-        window.addEventListener('load', initialLoad);
-        window.addEventListener('resize', handleWindowResize);
-        window.addEventListener('panelResize', handlePanelResize as EventListener);
-
-        return function cleanup() {
-            window.removeEventListener('resize', handleWindowResize);
-            window.removeEventListener('load', initialLoad);
-            window.removeEventListener('panelResize', handlePanelResize as EventListener);
-        };
-    }, [mapActions]);
 
     const submenu = [
         {
@@ -361,164 +256,137 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         setHideNav(!hideNav);
     }, [hideNav]);
 
-    return (
+    // Download functions that are still needed
+    function downloadMap() {
+        if (mapRef.current === null) return;
+        const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = svgMapText;
+        tempElement.style.position = 'absolute';
+        tempElement.style.left = '-9999px';
+        document.body.appendChild(tempElement);
+        html2canvas(tempElement, {useCORS: true, allowTaint: true})
+            .then(canvas => {
+                const base64image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = mapTitle;
+                link.href = base64image;
+                link.click();
+                tempElement.remove();
+            })
+            .catch(_ => {
+                tempElement.remove();
+            });
+    }
+
+    function downloadMapAsSVG() {
+        if (mapRef.current === null) return;
+        const svgMapText = mapRef.current
+            .getElementsByTagName('svg')[0]
+            .outerHTML.replace(/&nbsp;/g, ' ')
+            .replace(/<svg([^>]*)>/, '<svg xmlns="http://www.w3.org/2000/svg"$1>');
+        saveMapText(
+            `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
+            `${mapTitle}.svg`,
+        );
+    }
+
+    const saveMapText = (data: string, fileName: string) => {
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        const blob = new Blob([data], {type: 'data:attachment/xml'});
+        const url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+
+    const leftPanel = (
+        <Editor
+            wardleyMap={unifiedMapState.getUnifiedMap()}
+            hideNav={hideNav}
+            isLightTheme={isLightTheme}
+            highlightLine={legacyState.highlightedLine}
+            mapText={legacyState.mapText}
+            invalid={invalid}
+            mutateMapText={mutateMapText}
+            errorLine={errorLine}
+            showLineNumbers={showLineNumbers}
+        />
+    );
+
+    const rightPanel = (
         <Box
+            className="map-view"
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100vh',
-                overflow: 'hidden',
+                backgroundColor: legacyState.mapStyleDefs.containerBackground,
+                width: '100%',
+                height: '100%',
             }}>
-            <LeftNavigation
+            <EditingProvider>
+                <ComponentSelectionProvider>
+                    <MapView
+                        wardleyMap={unifiedMapState.getUnifiedMap()}
+                        shouldHideNav={shouldHideNav}
+                        hideNav={hideNav}
+                        mapTitle={mapTitle}
+                        mapAnnotationsPresentation={mapAnnotationsPresentation}
+                        mapStyleDefs={legacyState.mapStyleDefs}
+                        mapCanvasDimensions={legacyState.mapCanvasDimensions}
+                        mapDimensions={legacyState.mapDimensions}
+                        mapEvolutionStates={legacyState.mapEvolutionStates}
+                        mapRef={mapRef}
+                        mapText={legacyState.mapText}
+                        mutateMapText={mutateMapText}
+                        evolutionOffsets={Defaults.EvoOffsets}
+                        launchUrl={launchUrl}
+                        setHighlightLine={legacyState.setHighlightLine}
+                        setNewComponentContext={legacyState.setNewComponentContext}
+                        showLinkedEvolved={legacyState.showLinkedEvolved}
+                    />
+                </ComponentSelectionProvider>
+            </EditingProvider>
+        </Box>
+    );
+
+    return (
+        <>
+            <MapLayout
                 toggleMenu={toggleMenu}
                 menuVisible={menuVisible}
                 submenu={submenu}
                 toggleTheme={toggleTheme}
                 isLightTheme={isLightTheme}
+                hideNav={hideNav}
+                shouldHideNav={shouldHideNav}
+                mapOnlyView={mapOnlyView}
+                setMapOnlyView={setMapOnlyView}
+                currentUrl={currentUrl}
+                saveOutstanding={saveOutstanding}
+                mutateMapText={mutateMapText}
+                newMapClick={mapPersistence.newMap}
+                saveMapClick={mapPersistence.saveMap}
+                downloadMapImage={downloadMap}
+                showLineNumbers={showLineNumbers}
+                setShowLineNumbers={setShowLineNumbers}
+                showLinkedEvolved={legacyState.showLinkedEvolved}
+                setShowLinkedEvolved={legacyState.setShowLinkedEvolved}
+                downloadMapAsSVG={downloadMapAsSVG}
+                mapIterations={mapIterations}
+                currentIteration={currentIteration}
+                setMapIterations={setMapIterations}
+                setMapText={legacyState.mutateMapText}
+                addIteration={mapPersistence.addIteration}
+                setCurrentIteration={setCurrentIteration}
+                leftPanel={leftPanel}
+                rightPanel={rightPanel}
+                showUsage={mapState.showUsage}
+                setShowUsage={mapActions.setShowUsage}
+                mapStyleDefs={legacyState.mapStyleDefs}
+                mapText={legacyState.mapText}
             />
-
-            <Box
-                id="top-nav-wrapper"
-                sx={{
-                    display: hideNav ? 'none' : 'block',
-                    flexShrink: 0,
-                }}>
-                <NewHeader
-                    mapOnlyView={mapOnlyView}
-                    setMapOnlyView={setMapOnlyView}
-                    currentUrl={currentUrl}
-                    saveOutstanding={saveOutstanding}
-                    mutateMapText={mutateMapText}
-                    newMapClick={newMap}
-                    saveMapClick={saveMap}
-                    downloadMapImage={downloadMap}
-                    showLineNumbers={showLineNumbers}
-                    setShowLineNumbers={setShowLineNumbers}
-                    showLinkedEvolved={legacyState.showLinkedEvolved}
-                    setShowLinkedEvolved={legacyState.setShowLinkedEvolved}
-                    downloadMapAsSVG={downloadMapAsSVG}
-                    toggleMenu={toggleMenu}
-                />
-
-                <Breadcrumb currentUrl={currentUrl} />
-
-                <NewMapIterations
-                    mapIterations={mapIterations}
-                    currentIteration={currentIteration}
-                    setMapIterations={setMapIterations}
-                    setMapText={legacyState.mutateMapText}
-                    addIteration={addIteration}
-                    setCurrentIteration={setCurrentIteration}
-                />
-            </Box>
-
-            <Box sx={{flexGrow: 1, height: '100%', overflow: 'hidden'}}>
-                {mapOnlyView === false ? (
-                    <ResizableSplitPane
-                        defaultLeftWidth={33}
-                        minLeftWidth={20}
-                        maxLeftWidth={60}
-                        storageKey="wardleyMapEditor_splitPaneWidth"
-                        isDarkTheme={!isLightTheme}
-                        leftPanel={
-                            <Editor
-                                wardleyMap={unifiedMapState.getUnifiedMap()}
-                                hideNav={hideNav}
-                                isLightTheme={isLightTheme}
-                                highlightLine={legacyState.highlightedLine}
-                                mapText={legacyState.mapText}
-                                invalid={invalid}
-                                mutateMapText={mutateMapText}
-                                errorLine={errorLine}
-                                showLineNumbers={showLineNumbers}
-                            />
-                        }
-                        rightPanel={
-                            <Box
-                                className="map-view"
-                                sx={{
-                                    backgroundColor: legacyState.mapStyleDefs.containerBackground,
-                                    width: '100%',
-                                    height: '100%',
-                                }}>
-                                <EditingProvider>
-                                    <ComponentSelectionProvider>
-                                        <MapView
-                                            wardleyMap={unifiedMapState.getUnifiedMap()}
-                                            shouldHideNav={shouldHideNav}
-                                            hideNav={hideNav}
-                                            mapTitle={mapTitle}
-                                            mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                            mapStyleDefs={legacyState.mapStyleDefs}
-                                            mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                            mapDimensions={legacyState.mapDimensions}
-                                            mapEvolutionStates={legacyState.mapEvolutionStates}
-                                            mapRef={mapRef}
-                                            mapText={legacyState.mapText}
-                                            mutateMapText={mutateMapText}
-                                            evolutionOffsets={Defaults.EvoOffsets}
-                                            launchUrl={launchUrl}
-                                            setHighlightLine={legacyState.setHighlightLine}
-                                            setNewComponentContext={legacyState.setNewComponentContext}
-                                            showLinkedEvolved={legacyState.showLinkedEvolved}
-                                        />
-                                    </ComponentSelectionProvider>
-                                </EditingProvider>
-                            </Box>
-                        }
-                    />
-                ) : (
-                    <Box
-                        className="map-view"
-                        sx={{
-                            backgroundColor: legacyState.mapStyleDefs.containerBackground,
-                            width: '100%',
-                            height: '100%',
-                        }}>
-                        <EditingProvider>
-                            <ComponentSelectionProvider>
-                                <MapView
-                                    wardleyMap={unifiedMapState.getUnifiedMap()}
-                                    shouldHideNav={shouldHideNav}
-                                    hideNav={hideNav}
-                                    mapTitle={mapTitle}
-                                    mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                    mapStyleDefs={legacyState.mapStyleDefs}
-                                    mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                    mapDimensions={legacyState.mapDimensions}
-                                    mapEvolutionStates={legacyState.mapEvolutionStates}
-                                    mapRef={mapRef}
-                                    mapText={legacyState.mapText}
-                                    mutateMapText={mutateMapText}
-                                    evolutionOffsets={Defaults.EvoOffsets}
-                                    launchUrl={launchUrl}
-                                    setHighlightLine={legacyState.setHighlightLine}
-                                    setNewComponentContext={legacyState.setNewComponentContext}
-                                    showLinkedEvolved={legacyState.showLinkedEvolved}
-                                />
-                            </ComponentSelectionProvider>
-                        </EditingProvider>
-                    </Box>
-                )}
-            </Box>
-
-            <Dialog maxWidth={'lg'} open={mapState.showUsage} onClose={() => mapActions.setShowUsage(false)}>
-                <DialogTitle>{t('editor.usage', 'Usage')}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {t(
-                            'editor.usageDescription',
-                            'Quick reference of all available map elements. You can add an example to your map by clicking the available links.',
-                        )}
-                    </DialogContentText>
-                    <Box marginTop={2}>
-                        <UsageInfo mapStyleDefs={legacyState.mapStyleDefs} mutateMapText={mutateMapText} mapText={legacyState.mapText} />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => mapActions.setShowUsage(false)}>{t('common.close', 'Close')}</Button>
-                </DialogActions>
-            </Dialog>
 
             <Backdrop
                 sx={{
@@ -528,7 +396,7 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                 open={actionInProgress}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-        </Box>
+        </>
     );
 };
 
