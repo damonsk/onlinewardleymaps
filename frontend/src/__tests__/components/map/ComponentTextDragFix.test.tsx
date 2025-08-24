@@ -9,25 +9,29 @@ import {UnifiedComponent} from '../../../types/unified';
 
 // Mock the RelativeMovable component to simulate drag operations
 jest.mock('../../../components/map/RelativeMovable', () => {
-    return ({children, onMove, x, y}: any) => (
+    const MockRelativeMovable = ({children, onMove, x, y}: any) => (
         <g data-testid="relative-movable" data-x={x} data-y={y} onClick={() => onMove && onMove({x: 10, y: 20})}>
             {children}
         </g>
     );
+    MockRelativeMovable.displayName = 'RelativeMovable';
+    return MockRelativeMovable;
 });
 
 // Mock the ComponentTextSymbol
 jest.mock('../../../components/symbols/ComponentTextSymbol', () => {
-    return ({text, onClick}: any) => (
+    const MockComponentTextSymbol = ({text, onClick}: any) => (
         <text data-testid="component-text-symbol" onClick={onClick}>
             {text}
         </text>
     );
+    MockComponentTextSymbol.displayName = 'ComponentTextSymbol';
+    return MockComponentTextSymbol;
 });
 
 // Mock the InlineEditor
 jest.mock('../../../components/map/InlineEditor', () => {
-    return ({value, onSave, onCancel}: any) => (
+    const MockInlineEditor = ({value, onSave, onCancel}: any) => (
         <div data-testid="inline-editor">
             <input data-testid="editor-input" value={value} readOnly />
             <button data-testid="save-button" onClick={onSave}>
@@ -38,6 +42,8 @@ jest.mock('../../../components/map/InlineEditor', () => {
             </button>
         </div>
     );
+    MockInlineEditor.displayName = 'InlineEditor';
+    return MockInlineEditor;
 });
 
 describe('ComponentText Drag Fix for Multi-line Components', () => {

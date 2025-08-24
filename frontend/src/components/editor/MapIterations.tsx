@@ -201,8 +201,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                 <DialogTitle id="alert-dialog-title-delete">{t('dialogs.areYouSure', 'Are you sure?')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {originalT('iterations.deleteConfirmation', {name: value}) ||
-                            `Are you sure you want to delete iteration '${value}'? This cannot be undone.`}
+                        {t('iterations.deleteConfirmation', `Are you sure you want to delete iteration '${value}'? This cannot be undone.`)}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

@@ -12,6 +12,8 @@ module.exports = {
     react: {
         useSuspense: false,
     },
+    // Ensure proper server-side rendering
+    serializeConfig: false,
     // Ensure translation keys are loaded on the server
     interpolation: {
         escapeValue: false,

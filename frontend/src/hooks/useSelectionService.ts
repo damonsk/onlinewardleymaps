@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ISelectionObserver, ISelectionService } from '../services/selection/ISelectionService';
-import { SelectableElementFactory } from '../services/selection/SelectableElementFactory';
-import { SelectionService } from '../services/selection/SelectionService';
-import { SelectableElement, isComponentElement, isLinkElement } from '../services/selection/SelectionTypes';
-import { UnifiedComponent } from '../types/unified/components';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {ISelectionObserver, ISelectionService} from '../services/selection/ISelectionService';
+import {SelectableElementFactory} from '../services/selection/SelectableElementFactory';
+import {SelectionService} from '../services/selection/SelectionService';
+import {SelectableElement, isComponentElement, isLinkElement} from '../services/selection/SelectionTypes';
+import {UnifiedComponent} from '../types/unified/components';
 
 /**
  * React adapter for the selection service

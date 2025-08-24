@@ -3,7 +3,7 @@
  * Handles Safari-specific foreignObject positioning issues
  */
 
-import { hasSafariSVGQuirks } from './browserDetection';
+import {hasSafariSVGQuirks} from './browserDetection';
 
 export interface SVGPosition {
     x: number;

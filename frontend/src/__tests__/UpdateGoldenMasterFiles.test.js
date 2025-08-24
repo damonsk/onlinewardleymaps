@@ -8,20 +8,18 @@ import {useContext} from 'react';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
 import {MapElements} from '../processing/MapElements';
 
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useContext: jest.fn(),
-}));
-
-useContext.mockReturnValue({
+const mockContextValue = {
     enableDashboard: false,
     enableNewPipelines: true,
     enableLinkContext: true,
     enableAccelerators: true,
     enableDoubleClickRename: true,
-});
+};
 
-const mockContextValue = useContext();
+jest.mock('react', () => ({
+    ...jest.requireActual('react'),
+    useContext: jest.fn(() => mockContextValue),
+}));
 
 // Function to load the content of a file
 function loadFileContent(fileName) {

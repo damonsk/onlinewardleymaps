@@ -18,19 +18,25 @@ jest.mock('../../../components/map/ModernPositionCalculator', () => {
 });
 
 jest.mock('../../../components/map/Movable', () => {
-    return ({children, onMove, x, y}: any) => (
+    const MockMovable = ({children, onMove, x, y}: any) => (
         <div data-testid="movable" data-x={x} data-y={y} onClick={() => onMove && onMove({x: 150, y: 250})}>
             {children}
         </div>
     );
+    MockMovable.displayName = 'Movable';
+    return MockMovable;
 });
 
 jest.mock('../../../components/map/ComponentText', () => {
-    return ({component}: any) => <text data-testid={`component-text-${component.id}`}>{component.name}</text>;
+    const MockComponentText = ({component}: any) => <text data-testid={`component-text-${component.id}`}>{component.name}</text>;
+    MockComponentText.displayName = 'ComponentText';
+    return MockComponentText;
 });
 
 jest.mock('../../../components/map/Inertia', () => {
-    return () => <g data-testid="inertia" />;
+    const MockInertia = () => <g data-testid="inertia" />;
+    MockInertia.displayName = 'Inertia';
+    return MockInertia;
 });
 
 describe('Multi-line Component Positioning', () => {

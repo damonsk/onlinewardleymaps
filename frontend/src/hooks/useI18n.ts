@@ -7,14 +7,30 @@ import {useTranslation} from 'react-i18next';
  * Provides translation function and current language state
  */
 export const useI18n = () => {
+    // Safely try to get translation, with fallback for SSR/SSG
+    let translationResult;
+    try {
+        translationResult = useTranslation('common', {
+            // This ensures the component using this hook will re-render when the language changes
+            bindI18n: 'languageChanged loaded',
+            // Prevent errors when i18next is not yet initialized
+            useSuspense: false,
+        });
+    } catch (error) {
+        // Fallback for when i18next is not initialized
+        console.warn('i18next not initialized, using fallback');
+        translationResult = {
+            t: (key: string, fallback?: string) => fallback || key,
+            i18n: null,
+            ready: false,
+        };
+    }
+
     const {
         t: originalT,
         i18n,
         ready,
-    } = useTranslation('common', {
-        // This ensures the component using this hook will re-render when the language changes
-        bindI18n: 'languageChanged loaded',
-    });
+    } = translationResult;
     const router = useRouter();
     const [isHydrated, setIsHydrated] = useState(false);
     const [forceRender, setForceRender] = useState(0);
@@ -46,9 +62,9 @@ export const useI18n = () => {
 
         // Once hydrated, check for saved language preference and apply it
         const savedLanguage = getSavedLanguage();
-        const currentLang = i18n.language || router.locale || 'en';
+        const currentLang = i18n?.language || router.locale || 'en';
 
-        if (savedLanguage !== currentLang && i18n && typeof i18n.changeLanguage === 'function') {
+        if (savedLanguage !== currentLang && i18n && typeof i18n.changeLanguage === 'function' && ready) {
             console.log(`Applying saved language preference: ${savedLanguage}`);
             i18n.changeLanguage(savedLanguage)
                 .then(() => {
@@ -60,10 +76,12 @@ export const useI18n = () => {
                     console.error('Error applying saved language:', error);
                 });
         }
-    }, [getSavedLanguage, i18n, router]);
+    }, [getSavedLanguage, i18n, router, ready]);
 
     // Set up listener for i18next language changes
     useEffect(() => {
+        if (!i18n || !ready) return;
+
         const handleLanguageChanged = () => {
             // Force rerender by updating state
             setForceRender(prev => prev + 1);
@@ -71,13 +89,17 @@ export const useI18n = () => {
 
         // Add event listener for both i18next and our custom event
         i18n.on('languageChanged', handleLanguageChanged);
-        window.addEventListener('languageChanged', handleLanguageChanged);
+        if (typeof window !== 'undefined') {
+            window.addEventListener('languageChanged', handleLanguageChanged);
+        }
 
         return () => {
             i18n.off('languageChanged', handleLanguageChanged);
-            window.removeEventListener('languageChanged', handleLanguageChanged);
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('languageChanged', handleLanguageChanged);
+            }
         };
-    }, [i18n]);
+    }, [i18n, ready]);
 
     // Simplified translation function with fallback
     // Will cause re-render when language changes due to forceRender dependency
@@ -92,7 +114,7 @@ export const useI18n = () => {
             // If translation is the same as the key, it means no translation found
             return translation === key && fallback ? fallback : translation;
         },
-        [isHydrated, ready, originalT, forceRender, i18n.language],
+        [isHydrated, ready, originalT, forceRender, i18n?.language],
     );
 
     const changeLanguage = useCallback(
@@ -129,7 +151,7 @@ export const useI18n = () => {
         [i18n, router, LANGUAGE_STORAGE_KEY],
     );
 
-    const currentLanguage = i18n.language || router.locale || 'en';
+    const currentLanguage = i18n?.language || router.locale || 'en';
     const isRTL = ['ar', 'he', 'fa'].includes(currentLanguage);
 
     return {

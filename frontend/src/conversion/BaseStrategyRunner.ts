@@ -1,5 +1,5 @@
-import { IParseStrategy, IProvideBaseElement, IProvideBaseStrategyRunnerConfig, IProvideDecoratorsConfig } from '../types/base';
-import { MapLoadingErrorHandler } from '../utils/errorHandling';
+import {IParseStrategy, IProvideBaseElement, IProvideBaseStrategyRunnerConfig, IProvideDecoratorsConfig} from '../types/base';
+import {MapLoadingErrorHandler} from '../utils/errorHandling';
 
 export default class BaseStrategyRunner implements IParseStrategy {
     data: string;

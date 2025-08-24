@@ -28,7 +28,7 @@ jest.mock('../../components/FeatureSwitchesContext', () => ({
 jest.mock('react-svg-pan-zoom', () => {
     const React = require('react');
     return {
-        UncontrolledReactSVGPanZoom: React.forwardRef<any, any>(({children, onClick, onDoubleClick, onMouseMove, ...props}, ref) => {
+        UncontrolledReactSVGPanZoom: React.forwardRef<any, any>(function MockUncontrolledReactSVGPanZoom({children, onClick, onDoubleClick, onMouseMove, ...props}, ref) {
             const mockRef = {
                 fitSelection: jest.fn(),
                 setState: jest.fn(),

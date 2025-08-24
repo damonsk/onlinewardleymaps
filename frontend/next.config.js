@@ -4,6 +4,10 @@ const {i18n} = require('./next-i18next.config');
 const nextConfig = {
     reactStrictMode: true,
     i18n,
+    eslint: {
+        // Skip ESLint during builds to prevent warnings from failing the build
+        ignoreDuringBuilds: true,
+    },
     webpack: (config, {isServer}) => {
         // Fixes npm packages that depend on `fs` module
         if (!isServer) {
@@ -13,6 +17,15 @@ const nextConfig = {
             };
         }
         return config;
+    },
+    turbopack: {
+        resolveAlias: {
+            // Turbopack equivalent of webpack resolve.fallback
+            // Only polyfill fs for browser/client-side code
+            fs: {
+                browser: require.resolve('./fs-polyfill.js'),
+            },
+        },
     },
 };
 

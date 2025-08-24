@@ -63,14 +63,8 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
         const [announceText, setAnnounceText] = useState('');
         const [platform] = useState(() => detectPlatform());
 
-        // Get undo/redo context (with error handling for when it's not available)
-        let undoRedoContext: ReturnType<typeof useUndoRedo> | null = null;
-        try {
-            undoRedoContext = useUndoRedo();
-        } catch (error) {
-            // UndoRedoProvider not available, undo/redo shortcuts will be disabled
-            console.warn('UndoRedoProvider not available, undo/redo shortcuts disabled');
-        }
+        // Get undo/redo context (hooks must always be called)
+        const undoRedoContext = useUndoRedo();
         /**
          * Check if keyboard shortcuts should be active
          * Prevents interference with text editing contexts
