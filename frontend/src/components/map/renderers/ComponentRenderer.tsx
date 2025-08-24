@@ -23,18 +23,18 @@ interface ComponentRendererProps {
     mapText: string;
     mutateMapText: (text: string) => void;
     scaleFactor: number;
-    
+
     // Event handlers
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     clicked: (data: {el: any; e: MouseEvent<Element> | null}) => void;
     launchUrl?: (url: string) => void;
-    
+
     // Feature flags
     enableAccelerators: boolean;
-    
+
     // Component data
     mapAccelerators: UnifiedComponent[];
-    
+
     // Method application props
     methodHighlightedComponent?: UnifiedComponent | null;
     selectedToolbarItem?: any;

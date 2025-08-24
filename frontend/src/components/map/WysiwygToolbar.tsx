@@ -161,7 +161,7 @@ const DragHandle = styled.div`
             background: repeating-linear-gradient(to right, #ffffff 0px, #ffffff 2px, transparent 2px, transparent 4px);
         }
     }
-`/**
+`; /**
  * Hook to safely access undo/redo context (returns null if not available)
  */
 const useOptionalUndoRedo = () => {
@@ -198,7 +198,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
 
         // Access component deletion functionality
         const {deleteComponent} = useMapComponentDeletion();
-        
+
         // Toolbar state management
         const {position, isDragging, toolbarRef, renderKey, handleMouseDown} = useToolbarState();
 

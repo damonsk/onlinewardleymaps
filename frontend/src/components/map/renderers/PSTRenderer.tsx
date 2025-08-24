@@ -13,7 +13,7 @@ interface PSTRendererProps {
     scaleFactor: number;
     mapText: string;
     mutateMapText: (text: string) => void;
-    
+
     // PST interaction states
     hoveredPSTElement?: PSTElement | null;
     resizingPSTElement?: PSTElement | null;
@@ -22,7 +22,7 @@ interface PSTRendererProps {
     resizePreviewBounds?: PSTBounds | null;
     dragPreviewBounds?: PSTBounds | null;
     keyboardModifiers?: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
-    
+
     // PST interaction handlers
     onPSTHover?: (element: PSTElement | null) => void;
     onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;

@@ -33,10 +33,7 @@ export interface ToolbarActions {
 }
 
 export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarStateReturn => {
-    const {
-        defaultPosition,
-        storageKey = 'wysiwyg-toolbar-position',
-    } = props;
+    const {defaultPosition, storageKey = 'wysiwyg-toolbar-position'} = props;
 
     const [position, setPosition] = useState<Position>(() => {
         return ToolbarPositioning.loadSavedPosition(storageKey);

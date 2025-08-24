@@ -16,20 +16,20 @@ interface AnnotationRendererProps {
     mapText: string;
     mutateMapText: (text: string) => void;
     scaleFactor: number;
-    
+
     // Data
     mapNotes: any[];
     mapAnnotations: any[];
     mapAnnotationsPresentation: any;
     mapElements: MapElements;
-    
+
     // Event handlers
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     clicked: (data: {el: any; e: MouseEvent<Element> | null}) => void;
-    
+
     // Feature flags
     enableNewPipelines: boolean;
-    
+
     // Drawing functionality props
     isDrawing?: boolean;
     drawingStartPosition?: {x: number; y: number} | null;

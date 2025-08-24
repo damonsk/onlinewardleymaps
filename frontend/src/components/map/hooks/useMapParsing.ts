@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useMemo, useCallback} from 'react';
 import * as MapStyles from '../../../constants/mapstyles';
 import Converter from '../../../conversion/Converter';
 import {UnifiedConverter} from '../../../conversion/UnifiedConverter';
@@ -50,7 +50,7 @@ export const useMapParsing = (props: UseMapParsingProps): UseMapParsingReturn =>
         }
     }, [mapText, featureSwitches]);
 
-    const getMapStyleDefs = (style: string) => {
+    const getMapStyleDefs = useCallback((style: string) => {
         switch (style) {
             case 'colour':
             case 'color':
@@ -64,7 +64,7 @@ export const useMapParsing = (props: UseMapParsingProps): UseMapParsingReturn =>
             default:
                 return MapStyles.Plain;
         }
-    };
+    }, []);
 
     return {
         parsedMapData,

@@ -102,7 +102,6 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
             (event: KeyboardEvent): boolean => {
                 const selectedLink = getSelectedLink?.();
 
-
                 // Check if we have either a component or link selected
                 const hasComponentSelection = selectedComponentId && onDeleteComponent;
                 const hasLinkSelection = selectedLink && onDeleteLink;

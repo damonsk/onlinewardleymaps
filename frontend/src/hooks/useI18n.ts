@@ -26,11 +26,7 @@ export const useI18n = () => {
         };
     }
 
-    const {
-        t: originalT,
-        i18n,
-        ready,
-    } = translationResult;
+    const {t: originalT, i18n, ready} = translationResult;
     const router = useRouter();
     const [isHydrated, setIsHydrated] = useState(false);
     const [forceRender, setForceRender] = useState(0);

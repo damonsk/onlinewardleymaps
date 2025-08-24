@@ -221,12 +221,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         [mapText, mutateMapText],
     );
 
-
-
-
-
-
-
     useEffect(() => {
         if (Viewer.current) {
             const element = Viewer.current;

@@ -6,8 +6,6 @@ import {useMenuItems} from './components/MenuItems';
 import {MapElement, useContextMenuState} from './hooks/useContextMenuState';
 import {MenuActions} from './services/MenuActions';
 
-
-
 interface ContextMenuContextType {
     showContextMenu: (position: {x: number; y: number}, element: MapElement | string | number) => void;
     showLinkContextMenu: (
@@ -45,8 +43,6 @@ export interface ContextMenuProviderProps {
     }) => void;
 }
 
-
-
 const ContextMenuContext = createContext<ContextMenuContextType | undefined>(undefined);
 
 export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
@@ -68,13 +64,7 @@ export const ContextMenuProvider: React.FC<ContextMenuProviderProps> = ({
     const {deleteComponent} = useMapComponentDeletion();
 
     // Context menu state management
-    const {
-        contextMenuState,
-        showContextMenu,
-        showLinkContextMenu,
-        showCanvasContextMenu,
-        hideContextMenu,
-    } = useContextMenuState({
+    const {contextMenuState, showContextMenu, showLinkContextMenu, showCanvasContextMenu, hideContextMenu} = useContextMenuState({
         mapText,
         wardleyMap,
         onContextMenuReady,

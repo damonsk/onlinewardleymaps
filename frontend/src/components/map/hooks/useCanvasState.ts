@@ -26,26 +26,26 @@ interface UseCanvasStateReturn {
         miniatureOpen: boolean;
     };
     setValue: (value: any) => void;
-    
+
     // Tool and interaction state
     tool: any;
     setTool: (tool: any) => void;
     enableZoomOnClick: boolean;
     scaleFactor: number;
     setScaleFactor: (factor: number) => void;
-    
+
     // Mouse tracking
     currentMousePosition: {x: number; y: number};
     setCurrentMousePosition: (position: {x: number; y: number}) => void;
     lastClickPosition: {x: number; y: number; correctedX?: number; correctedY?: number} | null;
     setLastClickPosition: (position: {x: number; y: number; correctedX?: number; correctedY?: number} | null) => void;
-    
+
     // Sizing state
     isInitialSizingComplete: boolean;
     setIsInitialSizingComplete: (complete: boolean) => void;
     waitingForPanelRestore: boolean;
     setWaitingForPanelRestore: (waiting: boolean) => void;
-    
+
     // Event handlers
     handleZoomChange: (newValue: any) => void;
 }
@@ -116,26 +116,26 @@ export const useCanvasState = (props: UseCanvasStateProps): UseCanvasStateReturn
         // Pan/zoom state
         value,
         setValue,
-        
+
         // Tool and interaction state
         tool,
         setTool,
         enableZoomOnClick,
         scaleFactor,
         setScaleFactor,
-        
+
         // Mouse tracking
         currentMousePosition,
         setCurrentMousePosition,
         lastClickPosition,
         setLastClickPosition,
-        
+
         // Sizing state
         isInitialSizingComplete,
         setIsInitialSizingComplete,
         waitingForPanelRestore,
         setWaitingForPanelRestore,
-        
+
         // Event handlers
         handleZoomChange,
     };

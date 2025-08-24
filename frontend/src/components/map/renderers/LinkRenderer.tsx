@@ -13,7 +13,7 @@ interface LinkRendererProps {
     mapStyleDefs: MapTheme;
     scaleFactor: number;
     mapElements: MapElements;
-    
+
     // Link data
     links: any[];
     mapElementsClicked: Array<{
@@ -25,7 +25,7 @@ interface LinkRendererProps {
         product: number;
         custom: number;
     };
-    
+
     // Link interaction handlers
     onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     onLinkContextMenu?: (
@@ -33,7 +33,7 @@ interface LinkRendererProps {
         event: React.MouseEvent,
     ) => void;
     isLinkSelected?: (linkId: string) => boolean;
-    
+
     // Linking functionality props
     linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
     sourceComponent?: UnifiedComponent | null;
@@ -68,7 +68,7 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
     isTargetDeleted,
 }) => {
     const getElementByName = (elements: UnifiedComponent[], name: string) => elements.find(e => e.name === name);
-    
+
     const passComponent = (component: UnifiedComponent): UnifiedComponent => {
         return component;
     };
@@ -97,27 +97,25 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
             </g>
 
             <g id="evolvedLinks">
-                {mapElements.getEvolvingComponents().map(
-                    (e: UnifiedComponent, i: number) => {
-                        const startElement = getElementByName(mapElements.getEvolvingComponents(), e.name);
-                        const endElement = getElementByName(mapElements.getEvolvedComponents(), e.name);
-                        
-                        if (!startElement || !endElement) {
-                            return null;
-                        }
-                        
-                        return (
-                            <EvolvingComponentLink
-                                key={i}
-                                mapStyleDefs={mapStyleDefs}
-                                mapDimensions={mapDimensions}
-                                endElement={passComponent(endElement)}
-                                startElement={passComponent(startElement)}
-                                evolutionOffsets={evolutionOffsets}
-                            />
-                        );
+                {mapElements.getEvolvingComponents().map((e: UnifiedComponent, i: number) => {
+                    const startElement = getElementByName(mapElements.getEvolvingComponents(), e.name);
+                    const endElement = getElementByName(mapElements.getEvolvedComponents(), e.name);
+
+                    if (!startElement || !endElement) {
+                        return null;
                     }
-                )}
+
+                    return (
+                        <EvolvingComponentLink
+                            key={i}
+                            mapStyleDefs={mapStyleDefs}
+                            mapDimensions={mapDimensions}
+                            endElement={passComponent(endElement)}
+                            startElement={passComponent(startElement)}
+                            evolutionOffsets={evolutionOffsets}
+                        />
+                    );
+                })}
             </g>
 
             <g id="fluidLinks">

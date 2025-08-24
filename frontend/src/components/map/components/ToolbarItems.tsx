@@ -270,14 +270,9 @@ interface ToolbarItemsProps {
     onSubItemSelect?: (subItem: ToolbarSubItem) => void;
 }
 
-export const ToolbarItems: React.FC<ToolbarItemsProps> = memo(({
-    mapStyleDefs,
-    selectedItem,
-    onItemClick,
-    onSubItemSelect,
-}) => {
+export const ToolbarItems: React.FC<ToolbarItemsProps> = memo(({mapStyleDefs, selectedItem, onItemClick, onSubItemSelect}) => {
     const {t} = useI18n();
-    
+
     // Access undo/redo context (optional)
     const undoRedoContext = useOptionalUndoRedo();
 

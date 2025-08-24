@@ -37,7 +37,7 @@ interface ElementGroupingProps {
     mapAnnotationsPresentation: any;
     launchUrl?: (url: string) => void;
     mapMethods: any[];
-    
+
     // New props for linking functionality
     linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
     sourceComponent?: UnifiedComponent | null;
@@ -48,16 +48,16 @@ interface ElementGroupingProps {
     showCancellationHint?: boolean;
     isSourceDeleted?: boolean;
     isTargetDeleted?: boolean;
-    
+
     // New props for PST drawing functionality
     isDrawing?: boolean;
     drawingStartPosition?: {x: number; y: number} | null;
     drawingCurrentPosition?: {x: number; y: number};
     selectedToolbarItem?: any;
-    
+
     // New props for method application functionality
     methodHighlightedComponent?: UnifiedComponent | null;
-    
+
     // New props for PST resize functionality
     hoveredPSTElement?: PSTElement | null;
     resizingPSTElement?: PSTElement | null;
@@ -68,14 +68,14 @@ interface ElementGroupingProps {
     onPSTResizeStart?: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
     onPSTResizeMove?: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
     onPSTResizeEnd?: (element: PSTElement, newCoordinates: PSTCoordinates) => void;
-    
+
     // New props for PST drag functionality
     draggingPSTElement?: PSTElement | null;
     dragPreviewBounds?: PSTBounds | null;
     onPSTDragStart?: (element: PSTElement, startPosition: {x: number; y: number}) => void;
     onPSTDragMove?: (element: PSTElement, currentPosition: {x: number; y: number}) => void;
     onPSTDragEnd?: (element: PSTElement) => void;
-    
+
     // New props for link selection functionality
     onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     onLinkContextMenu?: (
@@ -85,7 +85,7 @@ interface ElementGroupingProps {
     isLinkSelected?: (linkId: string) => boolean;
 }
 
-export const ElementGrouping: React.FC<ElementGroupingProps> = (props) => {
+export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
     return (
         <g id="mapContent">
             {/* PST Elements - Rendered first as they appear behind other elements */}

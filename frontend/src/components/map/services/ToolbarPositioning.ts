@@ -16,7 +16,7 @@ export class ToolbarPositioning {
         if (typeof window === 'undefined') {
             return {x: 16, y: 300};
         }
-        
+
         return {
             x: 16,
             y: window.innerHeight / 2 - 200,
@@ -92,11 +92,7 @@ export class ToolbarPositioning {
     /**
      * Calculates new position during drag operation
      */
-    static calculateDragPosition(
-        mouseEvent: MouseEvent, 
-        dragOffset: DragOffset, 
-        toolbarElement: HTMLElement | null
-    ): Position {
+    static calculateDragPosition(mouseEvent: MouseEvent, dragOffset: DragOffset, toolbarElement: HTMLElement | null): Position {
         const newPosition = {
             x: mouseEvent.clientX - dragOffset.x,
             y: mouseEvent.clientY - dragOffset.y,
@@ -110,11 +106,11 @@ export class ToolbarPositioning {
      */
     static isValidPosition(position: Position): boolean {
         return (
-            typeof position.x === 'number' && 
+            typeof position.x === 'number' &&
             typeof position.y === 'number' &&
-            !isNaN(position.x) && 
+            !isNaN(position.x) &&
             !isNaN(position.y) &&
-            position.x >= 0 && 
+            position.x >= 0 &&
             position.y >= 0
         );
     }

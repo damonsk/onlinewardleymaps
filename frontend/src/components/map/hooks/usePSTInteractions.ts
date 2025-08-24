@@ -19,17 +19,17 @@ interface UsePSTInteractionsProps {
 interface UsePSTInteractionsReturn {
     // Hover state
     hoveredPSTElement: PSTElement | null;
-    
+
     // Resize state
     resizingPSTElement: PSTElement | null;
     resizeHandle: ResizeHandle | null;
     resizePreviewBounds: PSTBounds | null;
     keyboardModifiers: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
-    
+
     // Drag state
     draggingPSTElement: PSTElement | null;
     dragPreviewBounds: PSTBounds | null;
-    
+
     // Event handlers
     handlePSTHover: (element: PSTElement | null) => void;
     handlePSTResizeStart: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
@@ -323,7 +323,7 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
         keyboardModifiers,
         draggingPSTElement,
         dragPreviewBounds,
-        
+
         // Handlers
         handlePSTHover,
         handlePSTResizeStart,

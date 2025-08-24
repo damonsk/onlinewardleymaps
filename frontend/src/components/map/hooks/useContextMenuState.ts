@@ -72,11 +72,7 @@ const defaultContextMenuState: ContextMenuState = {
     element: null,
 };
 
-export const useContextMenuState = ({
-    mapText,
-    wardleyMap,
-    onContextMenuReady,
-}: UseContextMenuStateProps): UseContextMenuStateReturn => {
+export const useContextMenuState = ({mapText, wardleyMap, onContextMenuReady}: UseContextMenuStateProps): UseContextMenuStateReturn => {
     const [contextMenuState, setContextMenuState] = useState<ContextMenuState>(defaultContextMenuState);
     const {isSelected, selectComponent} = useComponentSelection();
 

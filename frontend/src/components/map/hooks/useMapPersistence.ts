@@ -89,16 +89,7 @@ export const useMapPersistence = (props: UseMapPersistenceProps): UseMapPersiste
 
             await SaveMap(mapPersistenceStrategy, mapToPersist, hash, followOnActions);
         },
-        [
-            currentId,
-            mapPersistenceStrategy,
-            mapText,
-            mapIterations,
-            setActionInProgress,
-            setCurrentId,
-            setCurrentUrl,
-            setSaveOutstanding,
-        ],
+        [currentId, mapPersistenceStrategy, mapText, mapIterations, setActionInProgress, setCurrentId, setCurrentUrl, setSaveOutstanding],
     );
 
     const loadFromRemoteStorage = useCallback(async () => {
@@ -162,7 +153,16 @@ export const useMapPersistence = (props: UseMapPersistenceProps): UseMapPersiste
             setMapPersistenceStrategy(strategy);
             Router.push({pathname: '/'}, undefined, {shallow: true});
         },
-        [mutateMapText, setCurrentId, setCurrentUrl, setSaveOutstanding, setCurrentIteration, setMapIterations, setMapPersistenceStrategy, t],
+        [
+            mutateMapText,
+            setCurrentId,
+            setCurrentUrl,
+            setSaveOutstanding,
+            setCurrentIteration,
+            setMapIterations,
+            setMapPersistenceStrategy,
+            t,
+        ],
     );
 
     const saveMap = useCallback(async () => {

@@ -1,7 +1,7 @@
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import {Backdrop, Box, CircularProgress} from '@mui/material';
 import html2canvas from 'html2canvas';
-import React, {FunctionComponent, useEffect, useRef, useState, useCallback} from 'react';
+import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
@@ -20,8 +20,6 @@ import {useMapDimensions} from './map/hooks/useMapDimensions';
 import {useMapParsing} from './map/hooks/useMapParsing';
 import {useMapPersistence} from './map/hooks/useMapPersistence';
 import {MapView} from './map/MapView';
-
-
 
 interface MapEnvironmentProps {
     toggleMenu: () => void;
@@ -182,10 +180,6 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         setMapCanvasDimensions: mapActions.setMapCanvasDimensions,
     });
 
-
-
-
-
     useEffect(() => {
         if (parsedMapData.isValid && parsedMapData.legacy) {
             const r = parsedMapData.legacy;
@@ -234,13 +228,11 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
 
     useEffect(() => {
         mapActions.setMapStyleDefs(getMapStyleDefs(mapStyle));
-    }, [mapStyle, mapActions, getMapStyleDefs]);
+    }, [mapStyle, getMapStyleDefs]);
 
     useEffect(() => {
         if (shouldLoad) mapPersistence.loadFromRemoteStorage();
     }, [shouldLoad, mapPersistence]);
-
-
 
     const submenu = [
         {
