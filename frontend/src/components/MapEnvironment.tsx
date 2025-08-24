@@ -248,39 +248,204 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         setHideNav(!hideNav);
     }, [hideNav]);
 
+    // Helper function to wait for SVG element to be available
+    const waitForSVGElement = (retries = 5, delay = 200): Promise<SVGSVGElement> => {
+        return new Promise((resolve, reject) => {
+            const checkForSVG = (attemptsLeft: number) => {
+                // First try direct getElementById
+                let svgElement = document.getElementById('svgMap');
+                
+                // If not found, look for ReactSVGPanZoom's SVG structure
+                if (!svgElement) {
+                    // Look for the main SVG that contains the map content
+                    const mapCanvas = document.getElementById('map-canvas');
+                    if (mapCanvas) {
+                        // Find the SVG within the map canvas that has the transform group containing our content
+                        const svgs = mapCanvas.querySelectorAll('svg');
+                        for (const svg of svgs) {
+                            // Look for SVG that contains a transform group with our map content
+                            const transformGroup = svg.querySelector('g[transform*="matrix"] g rect[fill="transparent"]');
+                            if (transformGroup) {
+                                svgElement = svg as unknown as HTMLElement;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                // Fallback: look for any SVG with our expected map content
+                if (!svgElement) {
+                    const allSvgs = document.querySelectorAll('svg');
+                    for (const svg of allSvgs) {
+                        // Look for SVG containing map elements (components, anchors, etc.)
+                        const hasMapContent = svg.querySelector('#mapContent, #grid, [id*="element_"], [id*="anchor_"]');
+                        if (hasMapContent) {
+                            svgElement = svg as unknown as HTMLElement;
+                            break;
+                        }
+                    }
+                }
+                
+                if (svgElement && svgElement.tagName.toLowerCase() === 'svg') {
+                    console.log('Found SVG element for export:', {
+                        id: svgElement.id || 'no-id',
+                        width: svgElement.getAttribute('width'),
+                        height: svgElement.getAttribute('height'),
+                        hasMapContent: !!svgElement.querySelector('#mapContent, #grid')
+                    });
+                    resolve(svgElement as unknown as SVGSVGElement);
+                    return;
+                }
+                
+                if (attemptsLeft <= 0) {
+                    console.error('SVG element search failed. Available SVGs:', {
+                        allSvgs: Array.from(document.querySelectorAll('svg')).map(svg => ({
+                            id: svg.id,
+                            class: svg.className,
+                            width: svg.getAttribute('width'),
+                            height: svg.getAttribute('height'),
+                            hasTransform: !!svg.querySelector('g[transform]'),
+                            hasMapContent: !!svg.querySelector('#mapContent, #grid, [id*="element_"]')
+                        }))
+                    });
+                    reject(new Error('SVG element with map content not found. Make sure the map is fully loaded.'));
+                    return;
+                }
+                
+                console.log(`Searching for SVG element... attempts remaining: ${attemptsLeft}`);
+                setTimeout(() => checkForSVG(attemptsLeft - 1), delay);
+            };
+            
+            checkForSVG(retries);
+        });
+    };
+
     // Download functions that are still needed
     function downloadMap() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = svgMapText;
-        tempElement.style.position = 'absolute';
-        tempElement.style.left = '-9999px';
-        document.body.appendChild(tempElement);
-        html2canvas(tempElement, {useCORS: true, allowTaint: true})
-            .then(canvas => {
+        waitForSVGElement().then(reactSvgElement => {
+            // For ReactSVGPanZoom, we need to extract the actual map content
+            // Find the transformed group that contains our map
+            const transformedGroup = reactSvgElement.querySelector('g[transform*="matrix"]');
+            if (!transformedGroup) {
+                throw new Error('Could not find map content within ReactSVGPanZoom');
+            }
+            
+            // Create a new SVG with just the map content
+            const newSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            
+            // Set dimensions based on the map content (looking for the fill area or grid)
+            const fillArea = transformedGroup.querySelector('#fillArea, rect[fill*="Gradient"], rect[fill="white"]');
+            let width = 800; // fallback
+            let height = 600; // fallback
+            
+            if (fillArea) {
+                width = parseInt(fillArea.getAttribute('width') || '800') + 70; // padding for labels
+                height = parseInt(fillArea.getAttribute('height') || '600') + 90; // padding for labels
+            }
+            
+            // Set up the new SVG
+            newSvg.setAttribute('width', width.toString());
+            newSvg.setAttribute('height', height.toString());
+            newSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            newSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            newSvg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+            
+            // Clone the map content without the transform
+            const mapContent = transformedGroup.cloneNode(true) as SVGGElement;
+            mapContent.removeAttribute('transform'); // Remove the pan/zoom transform
+            
+            // Wrap in a group with proper positioning
+            const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            contentGroup.setAttribute('transform', 'translate(35, 45)'); // Offset for proper positioning
+            contentGroup.appendChild(mapContent);
+            newSvg.appendChild(contentGroup);
+            
+            // Create a container for the SVG with proper sizing
+            const tempElement = document.createElement('div');
+            tempElement.style.position = 'absolute';
+            tempElement.style.left = '-9999px';
+            tempElement.style.top = '-9999px';
+            tempElement.style.width = `${width}px`;
+            tempElement.style.height = `${height}px`;
+            tempElement.style.backgroundColor = 'white';
+            tempElement.style.overflow = 'visible';
+            tempElement.appendChild(newSvg);
+            
+            document.body.appendChild(tempElement);
+            
+            html2canvas(tempElement, {
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: 'white',
+                scale: 2,
+                width: width,
+                height: height,
+            }).then(canvas => {
                 const base64image = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
-                link.download = mapTitle;
+                link.download = `${mapTitle}.png`;
                 link.href = base64image;
                 link.click();
                 tempElement.remove();
-            })
-            .catch(_ => {
+            }).catch(error => {
+                console.error('Error generating PNG export:', error);
+                alert(`Failed to export PNG: ${error instanceof Error ? error.message : 'Unknown error'}`);
                 tempElement.remove();
             });
+        }).catch(error => {
+            console.error('Error finding SVG element:', error);
+            alert(`Failed to export PNG: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        });
     }
 
     function downloadMapAsSVG() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current
-            .getElementsByTagName('svg')[0]
-            .outerHTML.replace(/&nbsp;/g, ' ')
-            .replace(/<svg([^>]*)>/, '<svg xmlns="http://www.w3.org/2000/svg"$1>');
-        saveMapText(
-            `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
-            `${mapTitle}.svg`,
-        );
+        waitForSVGElement().then(reactSvgElement => {
+            // For ReactSVGPanZoom, we need to extract the actual map content
+            // Find the transformed group that contains our map
+            const transformedGroup = reactSvgElement.querySelector('g[transform*="matrix"]');
+            if (!transformedGroup) {
+                throw new Error('Could not find map content within ReactSVGPanZoom');
+            }
+            
+            // Create a new SVG with just the map content
+            const newSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            
+            // Set dimensions based on the map content
+            const fillArea = transformedGroup.querySelector('#fillArea, rect[fill*="Gradient"], rect[fill="white"]');
+            let width = 800; // fallback
+            let height = 600; // fallback
+            
+            if (fillArea) {
+                width = parseInt(fillArea.getAttribute('width') || '800') + 70;
+                height = parseInt(fillArea.getAttribute('height') || '600') + 90;
+            }
+            
+            // Set up the new SVG
+            newSvg.setAttribute('width', width.toString());
+            newSvg.setAttribute('height', height.toString());
+            newSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            newSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            newSvg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+            
+            // Clone the map content without the transform
+            const mapContent = transformedGroup.cloneNode(true) as SVGGElement;
+            mapContent.removeAttribute('transform'); // Remove the pan/zoom transform
+            
+            // Wrap in a group with proper positioning
+            const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            contentGroup.setAttribute('transform', 'translate(35, 45)');
+            contentGroup.appendChild(mapContent);
+            newSvg.appendChild(contentGroup);
+            
+            const svgMapText = newSvg.outerHTML.replace(/&nbsp;/g, ' ');
+            saveMapText(
+                `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
+                `${mapTitle}.svg`,
+            );
+        }).catch(error => {
+            console.error('Error generating SVG export:', error);
+            alert(`Failed to export SVG: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        });
     }
 
     const saveMapText = (data: string, fileName: string) => {
