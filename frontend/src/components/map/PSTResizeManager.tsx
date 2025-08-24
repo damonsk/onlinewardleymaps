@@ -425,7 +425,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
                 });
             }
         },
-        [mapDimensions, mapText, onMapTextUpdate],
+        [resizeState, mapDimensions, mapText, onMapTextUpdate],
     );
 
     // Handle drag start

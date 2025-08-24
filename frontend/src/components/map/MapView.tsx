@@ -97,7 +97,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 showUserFeedback('Failed to change map style', 'error');
             }
         },
-        [props.mapText, props.mutateMapText, showUserFeedback],
+        [props, showUserFeedback],
     );
 
     // Dialog opening handlers for context menu
@@ -122,7 +122,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 showUserFeedback('Failed to set map size', 'error');
             }
         },
-        [props.mapText, props.mutateMapText, showUserFeedback],
+        [props, showUserFeedback],
     );
 
     const handleConfirmEvolutionStages = useCallback(
@@ -137,7 +137,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 showUserFeedback('Failed to update evolution stages', 'error');
             }
         },
-        [props.mapText, props.mutateMapText, showUserFeedback],
+        [props, showUserFeedback],
     );
 
     // Dialog cancellation handlers

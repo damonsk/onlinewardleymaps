@@ -310,7 +310,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                 document.body.style.touchAction = '';
             }
         };
-    }, []);
+    }, [isDragging]);
 
     // Reset state when handles become invisible
     useEffect(() => {

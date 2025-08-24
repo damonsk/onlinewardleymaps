@@ -216,7 +216,7 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
             width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
             height: mapSize.height > 0 ? mapSize.height : getHeight(),
         });
-    }, [mapOnlyView, hideNav, mapSize, mapActions]);
+    }, [mapOnlyView, hideNav, mapSize, mapActions, getWidth, getHeight]);
 
     useEffect(() => {
         if (currentIteration > -1) {
@@ -228,7 +228,7 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
 
     useEffect(() => {
         mapActions.setMapStyleDefs(getMapStyleDefs(mapStyle));
-    }, [mapStyle, getMapStyleDefs]);
+    }, [mapStyle, getMapStyleDefs, mapActions]);
 
     useEffect(() => {
         if (shouldLoad) mapPersistence.loadFromRemoteStorage();

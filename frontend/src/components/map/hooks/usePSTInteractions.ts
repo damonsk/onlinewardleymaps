@@ -1,5 +1,4 @@
 import {useCallback, useState} from 'react';
-import {DEFAULT_RESIZE_CONSTRAINTS} from '../../../constants/pstConfig';
 import {PSTBounds, PSTCoordinates, PSTElement, ResizeHandle} from '../../../types/map/pst';
 import {
     calculateResizedBounds,

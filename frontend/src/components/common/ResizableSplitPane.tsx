@@ -94,7 +94,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                 }
             });
         }
-    }, []);
+    }, [defaultLeftWidth, getInitialWidth, onResize]);
 
     // Dispatch resize events when width changes to notify the map
     const updateWidth = useCallback(

@@ -124,7 +124,7 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
         if (currentIteration > -1) {
             setMapText(mapIterations[currentIteration].mapText);
         }
-    }, [currentIteration]);
+    }, [currentIteration, mapIterations, setMapText]);
 
     // useEffect(() => {
     //     // console.log('mapIterations', mapIterations);

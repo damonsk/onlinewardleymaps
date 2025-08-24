@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {ToolbarItem} from '../../../types/toolbar';
 import {UnifiedComponent} from '../../../types/unified/components';
 import {UnifiedWardleyMap} from '../../../types/unified/map';
@@ -32,92 +32,101 @@ interface MapEventHandlersProps {
     enableZoomOnClick?: boolean;
 }
 
-export function useMapEventHandlers(props: MapEventHandlersProps) {
+export function useMapEventHandlers({
+    mapDimensions,
+    panZoomValue,
+    wardleyMap,
+    selectedToolbarItem,
+    onToolbarItemDrop,
+    onMouseMove,
+    onMouseDown,
+    onMouseUp,
+    onComponentClick,
+    onMethodApplication,
+    handleMapCanvasClick,
+    setNewComponentContext,
+    linkingState,
+    highlightedComponent,
+    enableZoomOnClick,
+}: MapEventHandlersProps) {
     const {convertSvgToMapCoordinates} = useCoordinateConversion({
-        mapDimensions: props.mapDimensions,
-        panZoomValue: props.panZoomValue,
+        mapDimensions,
+        panZoomValue,
     });
 
     const handleDrawingMode = useCallback(
         (event: any) => {
-            if (!props.onMouseDown) return false;
+            if (!onMouseDown) return false;
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
-            props.onMouseDown(coordinates);
+            onMouseDown(coordinates);
             return true;
         },
-        [props.onMouseDown, convertSvgToMapCoordinates],
+        [onMouseDown, convertSvgToMapCoordinates],
     );
 
     const handleMethodApplication = useCallback(
         (event: any) => {
-            if (!props.onMethodApplication || !props.selectedToolbarItem) return false;
+            if (!onMethodApplication || !selectedToolbarItem) return false;
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
-            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
             const methodCompatibleComponents = allComponents.filter(component => {
                 return component.type === 'component' && !component.pipeline;
             });
 
-            if (props.highlightedComponent && methodCompatibleComponents.some(c => c.id === props.highlightedComponent!.id)) {
-                props.onMethodApplication(props.highlightedComponent, props.selectedToolbarItem.methodName || '');
+            if (highlightedComponent && methodCompatibleComponents.some(c => c.id === highlightedComponent!.id)) {
+                onMethodApplication(highlightedComponent, selectedToolbarItem.methodName || '');
             } else {
                 // Use raw SVG coordinates for component detection (matches double-click behavior)
                 const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
                 const clickedComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
 
                 if (clickedComponent) {
-                    props.onMethodApplication(clickedComponent, props.selectedToolbarItem.methodName || '');
-                } else if (props.onToolbarItemDrop) {
+                    onMethodApplication(clickedComponent, selectedToolbarItem.methodName || '');
+                } else if (onToolbarItemDrop) {
                     // Create new component with method using corrected coordinates
                     const offsetCorrection = {x: -30, y: -40};
                     const correctedCoordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
 
-                    const methodName = props.selectedToolbarItem.methodName || '';
+                    const methodName = selectedToolbarItem.methodName || '';
                     const modifiedToolbarItem = {
-                        ...props.selectedToolbarItem,
+                        ...selectedToolbarItem,
                         toolType: 'placement' as const,
                         template: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (${methodName})`,
                         defaultName: `New ${methodName.charAt(0).toUpperCase() + methodName.slice(1)} Component`,
                     };
 
-                    props.onToolbarItemDrop(modifiedToolbarItem, correctedCoordinates);
+                    onToolbarItemDrop(modifiedToolbarItem, correctedCoordinates);
                 }
             }
             return true;
         },
-        [
-            props.onMethodApplication,
-            props.selectedToolbarItem,
-            props.highlightedComponent,
-            props.wardleyMap,
-            props.onToolbarItemDrop,
-            convertSvgToMapCoordinates,
-        ],
+        [onMethodApplication, selectedToolbarItem, highlightedComponent, wardleyMap, onToolbarItemDrop, convertSvgToMapCoordinates],
     );
 
     const handleComponentConversion = useCallback(
         (event: any) => {
-            if (!props.onMethodApplication || !props.selectedToolbarItem || props.selectedToolbarItem.id !== 'component') return false;
+            if (!onMethodApplication || !selectedToolbarItem || selectedToolbarItem.id !== 'component') return false;
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
-            const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
             const methodCompatibleComponents = allComponents.filter(component => {
                 return component.type === 'component' && !component.pipeline;
             });
 
-            if (props.highlightedComponent && methodCompatibleComponents.some(c => c.id === props.highlightedComponent!.id)) {
+            if (highlightedComponent && methodCompatibleComponents.some(c => c.id === highlightedComponent!.id)) {
                 // Convert the highlighted component to a regular component
-                props.onMethodApplication(props.highlightedComponent, 'component');
+                onMethodApplication(highlightedComponent, 'component');
             } else {
                 // Use raw SVG coordinates for component detection (matches double-click behavior)
                 const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
@@ -125,65 +134,51 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
 
                 if (clickedComponent) {
                     // Convert the clicked component to a regular component
-                    props.onMethodApplication(clickedComponent, 'component');
-                } else if (props.onToolbarItemDrop) {
+                    onMethodApplication(clickedComponent, 'component');
+                } else if (onToolbarItemDrop) {
                     // Create new regular component using corrected coordinates
                     const offsetCorrection = {x: -30, y: -40};
                     const correctedCoordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
 
-                    props.onToolbarItemDrop(props.selectedToolbarItem, correctedCoordinates);
+                    onToolbarItemDrop(selectedToolbarItem, correctedCoordinates);
                 }
             }
             return true;
         },
-        [
-            props.onMethodApplication,
-            props.selectedToolbarItem,
-            props.highlightedComponent,
-            props.wardleyMap,
-            props.onToolbarItemDrop,
-            convertSvgToMapCoordinates,
-        ],
+        [onMethodApplication, selectedToolbarItem, highlightedComponent, wardleyMap, onToolbarItemDrop, convertSvgToMapCoordinates],
     );
 
     const handleLinkingMode = useCallback(
         (event: any) => {
-            if (!props.linkingState || props.linkingState === 'idle' || !props.onComponentClick) return false;
+            if (!linkingState || linkingState === 'idle' || !onComponentClick) return false;
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
-            if (props.highlightedComponent) {
-                props.onComponentClick(props.highlightedComponent);
+            if (highlightedComponent) {
+                onComponentClick(highlightedComponent);
             } else {
-                const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const clickedComponent = findNearestComponent(coordinates, allComponents, 0.05);
 
                 if (clickedComponent) {
-                    props.onComponentClick(clickedComponent);
+                    onComponentClick(clickedComponent);
                 } else {
                     // Pass the coordinates when no component is found
                     const offsetCorrection = {x: -30, y: -40};
                     const correctedCoordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
-                    props.onComponentClick(null, correctedCoordinates);
+                    onComponentClick(null, correctedCoordinates);
                 }
             }
             return true;
         },
-        [
-            props.linkingState,
-            props.onComponentClick,
-            props.highlightedComponent,
-            props.wardleyMap,
-            props.onToolbarItemDrop,
-            convertSvgToMapCoordinates,
-        ],
+        [linkingState, onComponentClick, highlightedComponent, wardleyMap, convertSvgToMapCoordinates],
     );
 
     const handleToolbarItemPlacement = useCallback(
         (event: any) => {
-            if (!props.selectedToolbarItem || props.selectedToolbarItem.toolType !== 'placement' || !props.onToolbarItemDrop) {
+            if (!selectedToolbarItem || selectedToolbarItem.toolType !== 'placement' || !onToolbarItemDrop) {
                 return false;
             }
 
@@ -192,31 +187,31 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
             const offsetCorrection = {x: -30, y: -40};
             const coordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
 
-            props.onToolbarItemDrop(props.selectedToolbarItem, coordinates);
+            onToolbarItemDrop(selectedToolbarItem, coordinates);
             return true;
         },
-        [props.selectedToolbarItem, props.onToolbarItemDrop, convertSvgToMapCoordinates],
+        [selectedToolbarItem, onToolbarItemDrop, convertSvgToMapCoordinates],
     );
 
     const handleMapClick = useCallback(
         (event: any) => {
             // Handle different interaction modes in priority order
-            if (props.selectedToolbarItem?.toolType === 'drawing' && handleDrawingMode(event)) return;
-            if (props.selectedToolbarItem?.toolType === 'method-application' && handleMethodApplication(event)) return;
-            if (props.selectedToolbarItem?.id === 'component' && handleComponentConversion(event)) return;
+            if (selectedToolbarItem?.toolType === 'drawing' && handleDrawingMode(event)) return;
+            if (selectedToolbarItem?.toolType === 'method-application' && handleMethodApplication(event)) return;
+            if (selectedToolbarItem?.id === 'component' && handleComponentConversion(event)) return;
             if (handleLinkingMode(event)) return;
             if (handleToolbarItemPlacement(event)) return;
 
             // Default click behavior
-            if (props.enableZoomOnClick && props.handleMapCanvasClick) {
+            if (enableZoomOnClick && handleMapCanvasClick) {
                 const pos = {x: event.x || 0, y: event.y || 0};
-                props.handleMapCanvasClick(pos);
+                handleMapCanvasClick(pos);
             }
         },
         [
-            props.selectedToolbarItem,
-            props.enableZoomOnClick,
-            props.handleMapCanvasClick,
+            selectedToolbarItem,
+            enableZoomOnClick,
+            handleMapCanvasClick,
             handleDrawingMode,
             handleMethodApplication,
             handleComponentConversion,
@@ -227,17 +222,17 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
 
     const handleMapDoubleClick = useCallback(
         (event: any) => {
-            if (!props.enableZoomOnClick || !props.setNewComponentContext) return;
+            if (!enableZoomOnClick || !setNewComponentContext) return;
 
             const svgPos = {x: event.x || 0, y: event.y || 0};
             const coordinates = convertSvgToMapCoordinates(svgPos.x, svgPos.y);
 
-            props.setNewComponentContext({
+            setNewComponentContext({
                 x: coordinates.x.toFixed(2),
                 y: coordinates.y.toFixed(2),
             });
         },
-        [props.enableZoomOnClick, props.setNewComponentContext, convertSvgToMapCoordinates],
+        [enableZoomOnClick, setNewComponentContext, convertSvgToMapCoordinates],
     );
 
     const handleMapMouseMove = useCallback(
@@ -246,52 +241,52 @@ export function useMapEventHandlers(props: MapEventHandlersProps) {
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
-            if (!props.onMouseMove) return;
+            if (!onMouseMove) return;
 
             // Handle different interaction modes
-            if (props.selectedToolbarItem?.toolType === 'placement') {
-                props.onMouseMove(coordinates);
-            } else if (props.selectedToolbarItem?.toolType === 'drawing') {
-                props.onMouseMove(coordinates);
-            } else if (props.selectedToolbarItem?.toolType === 'method-application') {
-                const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+            if (selectedToolbarItem?.toolType === 'placement') {
+                onMouseMove(coordinates);
+            } else if (selectedToolbarItem?.toolType === 'drawing') {
+                onMouseMove(coordinates);
+            } else if (selectedToolbarItem?.toolType === 'method-application') {
+                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const methodCompatibleComponents = allComponents.filter(component => {
                     return component.type === 'component' && !component.pipeline;
                 });
                 // Use raw SVG coordinates for component detection (matches double-click behavior)
                 const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
                 const nearestComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
-                props.onMouseMove({...coordinates, nearestComponent});
-            } else if (props.selectedToolbarItem?.id === 'component') {
+                onMouseMove({...coordinates, nearestComponent});
+            } else if (selectedToolbarItem?.id === 'component') {
                 // Handle component conversion mode - same logic as method application
-                const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const methodCompatibleComponents = allComponents.filter(component => {
                     return component.type === 'component' && !component.pipeline;
                 });
                 // Use raw SVG coordinates for component detection (matches double-click behavior)
                 const rawCoordinates = convertSvgToMapCoordinates(svgX, svgY, {x: -35, y: -45});
                 const nearestComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
-                props.onMouseMove({...coordinates, nearestComponent});
-            } else if (props.linkingState === 'selecting-source' || props.linkingState === 'selecting-target') {
-                const allComponents = [...props.wardleyMap.components, ...props.wardleyMap.anchors];
+                onMouseMove({...coordinates, nearestComponent});
+            } else if (linkingState === 'selecting-source' || linkingState === 'selecting-target') {
+                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const nearestComponent = findNearestComponent(coordinates, allComponents, 0.1);
-                props.onMouseMove({...coordinates, nearestComponent});
+                onMouseMove({...coordinates, nearestComponent});
             }
         },
-        [props.onMouseMove, props.selectedToolbarItem, props.linkingState, props.wardleyMap, convertSvgToMapCoordinates],
+        [onMouseMove, selectedToolbarItem, linkingState, wardleyMap, convertSvgToMapCoordinates],
     );
 
     const handleMapMouseUp = useCallback(
         (event: any) => {
-            if (!props.onMouseUp || props.selectedToolbarItem?.toolType !== 'drawing') return;
+            if (!onMouseUp || selectedToolbarItem?.toolType !== 'drawing') return;
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
-            props.onMouseUp(coordinates);
+            onMouseUp(coordinates);
         },
-        [props.onMouseUp, props.selectedToolbarItem, convertSvgToMapCoordinates],
+        [onMouseUp, selectedToolbarItem, convertSvgToMapCoordinates],
     );
 
     return {

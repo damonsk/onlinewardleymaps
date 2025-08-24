@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import ReactAce from 'react-ace/lib/ace';
 import {EditorPrefixes} from '../../constants/editorPrefixes';
 import {UnifiedWardleyMap} from '../../types/unified/map';
@@ -91,38 +91,41 @@ const EditorComponent: React.FunctionComponent<ModernEditorProps> = ({
         }
     }, [errorLine]);
 
-    const completions = [
-        ...wardleyMap.components.map((c: any) => ({
-            caption: c.name,
-            value: c.name,
-            meta: 'component',
-        })),
-        ...wardleyMap.anchors.map((a: any) => ({
-            caption: a.name,
-            value: a.name,
-            meta: 'anchor',
-        })),
-        ...wardleyMap.markets.map((m: any) => ({
-            caption: m.name,
-            value: m.name,
-            meta: 'market',
-        })),
-        ...wardleyMap.ecosystems.map((e: any) => ({
-            caption: e.name,
-            value: e.name,
-            meta: 'ecosystem',
-        })),
-        ...wardleyMap.submaps.map((s: any) => ({
-            caption: s.name,
-            value: s.name,
-            meta: 'submap',
-        })),
-        ...EditorPrefixes.map((prefix: string) => ({
-            caption: prefix,
-            value: prefix,
-            meta: 'syntax',
-        })),
-    ];
+    const completions = useMemo(
+        () => [
+            ...wardleyMap.components.map((c: any) => ({
+                caption: c.name,
+                value: c.name,
+                meta: 'component',
+            })),
+            ...wardleyMap.anchors.map((a: any) => ({
+                caption: a.name,
+                value: a.name,
+                meta: 'anchor',
+            })),
+            ...wardleyMap.markets.map((m: any) => ({
+                caption: m.name,
+                value: m.name,
+                meta: 'market',
+            })),
+            ...wardleyMap.ecosystems.map((e: any) => ({
+                caption: e.name,
+                value: e.name,
+                meta: 'ecosystem',
+            })),
+            ...wardleyMap.submaps.map((s: any) => ({
+                caption: s.name,
+                value: s.name,
+                meta: 'submap',
+            })),
+            ...EditorPrefixes.map((prefix: string) => ({
+                caption: prefix,
+                value: prefix,
+                meta: 'syntax',
+            })),
+        ],
+        [wardleyMap],
+    );
 
     useEffect(() => {
         const reactAceComponent = aceEditorRef.current;

@@ -197,15 +197,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 return;
             }
         },
-        [
-            mapElementsClicked,
-            setHighlightLine,
-            mutateMapText,
-            mapText,
-            props.selectedToolbarItem,
-            props.onMethodApplication,
-            props.onComponentClick,
-        ],
+        [mapElementsClicked, setHighlightLine, mutateMapText, mapText, props],
     );
 
     // Title update handler
@@ -254,7 +246,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         return () => {
             window.removeEventListener('panelResize', handlePanelResize as EventListener);
         };
-    }, []);
+    }, [setWaitingForPanelRestore]);
 
     useEffect(() => {
         if (mapDimensions.width > 0 && mapDimensions.height > 0 && !waitingForPanelRestore) {
@@ -312,7 +304,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 waitingForPanelRestore,
             });
         }
-    }, [mapDimensions.width, mapDimensions.height, waitingForPanelRestore]);
+    }, [mapDimensions.width, mapDimensions.height, waitingForPanelRestore, setIsInitialSizingComplete, wardleyMap.components.length]);
 
     // Style configuration
     const fill = {

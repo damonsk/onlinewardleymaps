@@ -1,5 +1,5 @@
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useI18n} from '../../hooks/useI18n';
 
 interface EvolutionStagesDialogProps {
@@ -20,13 +20,16 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isO
     const [stage3Error, setStage3Error] = useState<string>('');
     const [stage4Error, setStage4Error] = useState<string>('');
 
-    // Default evolution stages
-    const defaultStages = {
-        stage1: 'Genesis',
-        stage2: 'Custom Built',
-        stage3: 'Product',
-        stage4: 'Commodity',
-    };
+    // Default evolution stages - memoized to prevent recreation on every render
+    const defaultStages = useMemo(
+        () => ({
+            stage1: 'Genesis',
+            stage2: 'Custom Built',
+            stage3: 'Product',
+            stage4: 'Commodity',
+        }),
+        [],
+    );
 
     // Pre-populate dialog with current stages or defaults when opened
     useEffect(() => {
@@ -41,7 +44,7 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isO
             setStage3Error('');
             setStage4Error('');
         }
-    }, [isOpen, currentStages]);
+    }, [isOpen, currentStages, defaultStages]);
 
     const validateStageName = (value: string, stageNumber: number): string => {
         const trimmedValue = value.trim();

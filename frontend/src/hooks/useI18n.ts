@@ -7,24 +7,13 @@ import {useTranslation} from 'react-i18next';
  * Provides translation function and current language state
  */
 export const useI18n = () => {
-    // Safely try to get translation, with fallback for SSR/SSG
-    let translationResult;
-    try {
-        translationResult = useTranslation('common', {
-            // This ensures the component using this hook will re-render when the language changes
-            bindI18n: 'languageChanged loaded',
-            // Prevent errors when i18next is not yet initialized
-            useSuspense: false,
-        });
-    } catch (error) {
-        // Fallback for when i18next is not initialized
-        console.warn('i18next not initialized, using fallback');
-        translationResult = {
-            t: (key: string, fallback?: string) => fallback || key,
-            i18n: null,
-            ready: false,
-        };
-    }
+    // Always call useTranslation unconditionally
+    const translationResult = useTranslation('common', {
+        // This ensures the component using this hook will re-render when the language changes
+        bindI18n: 'languageChanged loaded',
+        // Prevent errors when i18next is not yet initialized
+        useSuspense: false,
+    });
 
     const {t: originalT, i18n, ready} = translationResult;
     const router = useRouter();
@@ -110,7 +99,7 @@ export const useI18n = () => {
             // If translation is the same as the key, it means no translation found
             return translation === key && fallback ? fallback : translation;
         },
-        [isHydrated, ready, originalT, forceRender, i18n?.language],
+        [isHydrated, ready, originalT],
     );
 
     const changeLanguage = useCallback(
