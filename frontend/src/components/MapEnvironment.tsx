@@ -1,70 +1,26 @@
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
-import {Backdrop, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import {Backdrop, Box, CircularProgress} from '@mui/material';
 import html2canvas from 'html2canvas';
-import Router from 'next/router';
-import React, {FunctionComponent, useEffect, useRef, useState, useMemo, useCallback} from 'react';
+import React, {FunctionComponent, useEffect, useRef, useState, useCallback} from 'react';
 import * as Defaults from '../constants/defaults';
-import * as MapStyles from '../constants/mapstyles';
-import Converter from '../conversion/Converter';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
 import {useI18n} from '../hooks/useI18n';
 import {useLegacyMapState, useUnifiedMapState} from '../hooks/useUnifiedMapState';
-import {LoadMap} from '../repository/LoadMap';
-import {MapIteration, OwnApiWardleyMap} from '../repository/OwnApiWardleyMap';
-import {SaveMap} from '../repository/SaveMap';
+import {MapIteration} from '../repository/OwnApiWardleyMap';
 import {MapAnnotationsPosition, MapSize} from '../types/base';
 import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
 import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
 
-import {ResizableSplitPane} from './common/ResizableSplitPane';
 import {ComponentSelectionProvider} from './ComponentSelectionContext';
-import {Breadcrumb} from './editor/Breadcrumb';
 import Editor from './editor/Editor';
-import {NewMapIterations} from './editor/MapIterations';
+import {MapLayout} from './map/components/MapLayout';
+import {useMapDimensions} from './map/hooks/useMapDimensions';
+import {useMapParsing} from './map/hooks/useMapParsing';
+import {useMapPersistence} from './map/hooks/useMapPersistence';
 import {MapView} from './map/MapView';
-import {LeftNavigation} from './page/LeftNavigation';
-import NewHeader from './page/NewHeader';
-import {UsageInfo} from './page/UseageInfo';
 
-function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): (...args: Parameters<T>) => void {
-    let timer: NodeJS.Timeout | null;
 
-    return function (this: any, ...args: Parameters<T>): void {
-        clearTimeout(timer!);
-        timer = setTimeout(() => {
-            timer = null;
-            fn.apply(this, args);
-        }, ms);
-    };
-}
-
-const getHeight = () => {
-    const mapElement = document.getElementById('map');
-    const clientHeight = mapElement?.clientHeight;
-
-    // If map element doesn't exist or has no height, fall back to window calculation
-    if (!clientHeight || clientHeight < 100) {
-        const winHeight = window.innerHeight;
-        const topNavHeight = document.getElementById('top-nav-wrapper')?.clientHeight;
-        const titleHeight = document.getElementById('title')?.clientHeight;
-        return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 65; // Fallback calculation
-    }
-
-    // Use the actual map container height with margin for toolbar area
-    // The toolbar is positioned absolutely at bottom: 20px, so we need some space for it
-    return Math.max(clientHeight - 60, 400); // Increased margin to account for toolbar
-};
-
-const getWidth = () => {
-    const mapElement = document.getElementById('map');
-    const clientWidth = mapElement?.clientWidth;
-    // If map element doesn't exist or has no width, use window width with some margin
-    if (!clientWidth || clientWidth < 100) {
-        return Math.max(window.innerWidth - 100, 800); // Fallback to reasonable minimum
-    }
-    return Math.max(clientWidth - 10, 600); // Minimal margin, ensure reasonable minimum
-};
 
 interface MapEnvironmentProps {
     toggleMenu: () => void;
@@ -191,184 +147,43 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         mapActions.setShowUsage(!mapState.showUsage);
     }, [mapActions, mapState.showUsage]);
 
-    const saveToRemoteStorage = async function (hash: string) {
-        setActionInProgress(true);
-        const mapToPersist: OwnApiWardleyMap = {
-            mapText: legacyState.mapText,
-            imageData: '',
-            mapIterations,
-            readOnly: false,
-        };
-
-        const followOnActions = async function (id: string) {
-            if (currentId === '') {
-                console.log('[followOnActions::switch]', {
-                    mapPersistenceStrategy,
-                    currentId,
-                    id,
-                });
-                switch (mapPersistenceStrategy) {
-                    case Defaults.MapPersistenceStrategy.Legacy:
-                        window.location.hash = '#' + id;
-                        break;
-                }
-            }
-
-            setCurrentId(id);
-            setActionInProgress(false);
-            setCurrentUrl(window.location.href);
-            setSaveOutstanding(false);
-
-            console.log('saveToPrivateDataStore', {
-                mapPersistenceStrategy,
-            });
-        };
-
-        await SaveMap(mapPersistenceStrategy, mapToPersist, hash, followOnActions);
-    };
-
-    const loadFromRemoteStorage = async function () {
-        const followOnActions = (mapPersistenceStrategy: string, map: OwnApiWardleyMap) => {
-            setMapPersistenceStrategy(mapPersistenceStrategy);
-            setShouldLoad(false);
-            legacyState.mutateMapText(map.mapText);
-            if (map.mapIterations && map.mapIterations.length > 0) {
-                setMapIterations(map.mapIterations);
-                setCurrentIteration(0);
-                legacyState.mutateMapText(map.mapIterations[0].mapText);
-            }
-            setCurrentUrl(window.location.href);
-
-            if (window.location.hash.indexOf('#clone:') === 0) {
-                setCurrentUrl(`(${t('map.unsaved', 'unsaved')})`);
-                setSaveOutstanding(true);
-                setCurrentId('');
-                window.location.hash = '';
-            }
-
-            setSaveOutstanding(false);
-            setActionInProgress(false);
-
-            switch (mapPersistenceStrategy) {
-                case Defaults.MapPersistenceStrategy.Legacy:
-                    break;
-                default:
-                    setMapPersistenceStrategy(mapPersistenceStrategy);
-                    break;
-            }
-        };
-
-        setActionInProgress(true);
-        setCurrentUrl('(loading...)');
-        console.log('--- Set Load Strategy: ', mapPersistenceStrategy);
-        await LoadMap(mapPersistenceStrategy, followOnActions, currentId);
-    };
-
-    function newMap(mapPersistenceStrategy: string) {
-        legacyState.mutateMapText('');
-        setCurrentId('');
-        setCurrentUrl(`(${t('map.unsaved', 'unsaved')})`);
-        setSaveOutstanding(false);
-        setCurrentIteration(-1);
-        setMapIterations([]);
-        setMapPersistenceStrategy(mapPersistenceStrategy);
-        Router.push({pathname: '/'}, undefined, {shallow: true});
-    }
-
-    async function saveMap() {
-        setCurrentUrl(`(${t('map.saving', 'saving...')})`);
-        saveToRemoteStorage(currentId);
-    }
-
-    function downloadMap() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = svgMapText;
-        tempElement.style.position = 'absolute';
-        tempElement.style.left = '-9999px';
-        document.body.appendChild(tempElement);
-        html2canvas(tempElement, {useCORS: true, allowTaint: true})
-            .then(canvas => {
-                const base64image = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = mapTitle;
-                link.href = base64image;
-                link.click();
-                tempElement.remove();
-            })
-            .catch(_ => {
-                tempElement.remove();
-            });
-    }
-
-    function downloadMapAsSVG() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current
-            .getElementsByTagName('svg')[0]
-            .outerHTML.replace(/&nbsp;/g, ' ')
-            .replace(/<svg([^>]*)>/, '<svg xmlns="http://www.w3.org/2000/svg"$1>');
-        saveMapText(
-            `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
-            `${mapTitle}.svg`,
-        );
-    }
-
-    const addIteration = () => {
-        const iterations = [...mapIterations];
-        iterations.push({
-            name: `Iteration ${iterations.length + 1}`,
-            mapText: legacyState.mapText,
-        });
-        setMapIterations(iterations);
-    };
-
-    const saveMapText = (data: string, fileName: string) => {
-        const a = document.createElement('a');
-        document.body.appendChild(a);
-        a.setAttribute('style', 'display: none');
-        const blob = new Blob([data], {type: 'data:attachment/xml'});
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
-
-    useEffect(() => {
-        window.addEventListener('beforeunload', (event: BeforeUnloadEvent) => {
-            if (saveOutstanding) {
-                event.preventDefault();
-                event.returnValue = '';
-            }
-        });
+    // Map persistence hook
+    const mapPersistence = useMapPersistence({
+        currentId,
+        setCurrentId,
+        mapPersistenceStrategy,
+        setMapPersistenceStrategy,
+        setShouldLoad,
+        setCurrentUrl,
+        setSaveOutstanding,
+        saveOutstanding,
+        setActionInProgress,
+        mapIterations,
+        setMapIterations,
+        currentIteration,
+        setCurrentIteration,
+        mapText: legacyState.mapText,
+        mutateMapText,
     });
 
-    // Memoized parsing to prevent unnecessary re-computation
-    const parsedMapData = useMemo(() => {
-        try {
-            const converter = new Converter(featureSwitches);
-            const unifiedConverter = new UnifiedConverter(featureSwitches);
+    // Map parsing hook
+    const {parsedMapData, getMapStyleDefs} = useMapParsing({
+        mapText: legacyState.mapText,
+        featureSwitches,
+    });
 
-            const legacyResult = converter.parse(legacyState.mapText);
-            const unifiedResult = unifiedConverter.parse(legacyState.mapText);
+    // Map dimensions hook
+    const {getHeight, getWidth} = useMapDimensions({
+        mapSize,
+        mapOnlyView,
+        hideNav,
+        setMapDimensions: mapActions.setMapDimensions,
+        setMapCanvasDimensions: mapActions.setMapCanvasDimensions,
+    });
 
-            return {
-                isValid: true,
-                legacy: legacyResult,
-                unified: unifiedResult,
-                errors: legacyResult.errors,
-            };
-        } catch (err) {
-            console.log('Error parsing map:', err);
-            return {
-                isValid: false,
-                legacy: null,
-                unified: null,
-                errors: [],
-            };
-        }
-    }, [legacyState.mapText, featureSwitches]);
+
+
+
 
     useEffect(() => {
         if (parsedMapData.isValid && parsedMapData.legacy) {
