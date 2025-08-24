@@ -1,4 +1,4 @@
-import React, {MouseEvent} from 'react';
+import React, {MouseEvent, useRef, useEffect, useState} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
@@ -9,6 +9,7 @@ import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
 import {ModernNotDefinedCoordsMatcher} from './positionUpdaters/ModernNotDefinedCoordsMatcher';
+import {measureTextElement, createSelectionBoxDimensions, estimateTextDimensions} from '../../utils/textMeasurement';
 
 interface ModernAnchorProps {
     anchor: UnifiedComponent;
@@ -31,6 +32,13 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
 }) => {
     const {isSelected, selectComponent} = useComponentSelection();
     const identity = 'anchor';
+    const textElementRef = useRef<SVGTextElement>(null);
+    const [selectionBoxDimensions, setSelectionBoxDimensions] = useState(() => {
+        // Initial estimate based on text content
+        const fontSize = parseInt(mapStyleDefs?.component?.fontSize || '14');
+        const estimated = estimateTextDimensions(anchor.name, fontSize, mapStyleDefs?.fontFamily || 'Arial, sans-serif', false);
+        return createSelectionBoxDimensions(estimated, 6); // 6px padding
+    });
 
     // Check if this anchor is currently selected
     const isElementSelected = isSelected(anchor.id);
@@ -45,6 +53,27 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
     ]);
     const x = () => positionCalc.maturityToX(anchor.maturity, mapDimensions.width);
     const y = () => positionCalc.visibilityToY(anchor.visibility, mapDimensions.height);
+
+    // Measure actual text element dimensions after render
+    useEffect(() => {
+        if (textElementRef.current) {
+            // Use requestAnimationFrame to ensure the element is fully rendered
+            requestAnimationFrame(() => {
+                if (textElementRef.current) {
+                    const measured = measureTextElement(textElementRef.current);
+                    const boxDimensions = createSelectionBoxDimensions(measured, 6);
+                    setSelectionBoxDimensions(boxDimensions);
+                }
+            });
+        }
+    }, [anchor.name, mapStyleDefs]);
+
+    // Update dimensions when anchor name changes
+    useEffect(() => {
+        const fontSize = parseInt(mapStyleDefs?.component?.fontSize || '14');
+        const estimated = estimateTextDimensions(anchor.name, fontSize, mapStyleDefs?.fontFamily || 'Arial, sans-serif', false);
+        setSelectionBoxDimensions(createSelectionBoxDimensions(estimated, 6));
+    }, [anchor.name, mapStyleDefs]);
 
     function endDrag(moved: {y: number; x: number}) {
         const visibility = positionCalc.yToVisibility(moved.y, mapDimensions.height);
@@ -71,10 +100,10 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                     {/* Selection indicator background */}
                     {isElementSelected && (
                         <rect
-                            x={-20}
-                            y={-15}
-                            width={40}
-                            height={20}
+                            x={selectionBoxDimensions.x}
+                            y={selectionBoxDimensions.y}
+                            width={selectionBoxDimensions.width}
+                            height={selectionBoxDimensions.height}
                             fill="rgba(33, 150, 243, 0.1)"
                             stroke="#2196F3"
                             strokeWidth={1}
@@ -89,6 +118,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                     )}
 
                     <ComponentTextSymbol
+                        ref={textElementRef}
                         id={elementKey('text')}
                         text={anchor.name}
                         x="0"

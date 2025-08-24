@@ -38,12 +38,12 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
     /* Hover state */
     &:hover {
         background: ${props => (props.$isSelected ? '#e3f2fd' : '#f5f5f5')};
-        transform: scale(1.02);
+        transform: scale(1.05);
     }
 
     /* Active state */
     &:active {
-        transform: scale(0.98);
+        transform: scale(0.95);
     }
 
     /* Focus state for keyboard navigation */

@@ -139,6 +139,29 @@ export const useMapDimensions = (props: UseMapDimensionsProps): UseMapDimensions
             }, 200); // Delay to ensure DOM has fully updated and map container has resized
         };
 
+        // Handle toolbar snap events specifically
+        const handleToolbarSnap = (event: CustomEvent) => {
+            // Update both map dimensions and canvas dimensions when toolbar snaps/unsnaps
+            // This should work exactly like panel resize events
+            setTimeout(() => {
+                const newWidth = getWidth();
+                const newHeight = getHeight();
+
+                // Update map dimensions (like panel resize does)
+                const dimensions = {
+                    width: mapSize.width > 0 ? mapSize.width : 100 + newWidth,
+                    height: mapSize.height > 0 ? mapSize.height : newHeight,
+                };
+                setMapDimensions(dimensions);
+
+                // Update canvas dimensions
+                setMapCanvasDimensions({
+                    width: newWidth,
+                    height: newHeight,
+                });
+            }, 200); // Delay to ensure DOM has fully updated and map container has resized
+        };
+
         // Handle standard window resize events (but not panel resizes)
         const handleWindowResize = (event: Event) => {
             // Only handle if it's not a programmatically dispatched event from panel resize
@@ -149,11 +172,13 @@ export const useMapDimensions = (props: UseMapDimensionsProps): UseMapDimensions
         window.addEventListener('load', initialLoad);
         window.addEventListener('resize', handleWindowResize);
         window.addEventListener('panelResize', handlePanelResize as EventListener);
+        window.addEventListener('toolbarSnap', handleToolbarSnap as EventListener);
 
         return () => {
             window.removeEventListener('resize', handleWindowResize);
             window.removeEventListener('load', initialLoad);
             window.removeEventListener('panelResize', handlePanelResize as EventListener);
+            window.removeEventListener('toolbarSnap', handleToolbarSnap as EventListener);
         };
     }, [setMapDimensions, setMapCanvasDimensions, mapSize, getWidth, getHeight]);
 

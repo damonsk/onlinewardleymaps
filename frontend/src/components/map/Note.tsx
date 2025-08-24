@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../constants/mapstyles';
 import {renameNote} from '../../constants/renameNote';
@@ -12,6 +12,7 @@ import Movable from './Movable';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
 import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import {NotDefinedCoordsMatcher} from './positionUpdaters/NotDefinedCoordsMatcher';
+import {measureTextElement, createSelectionBoxDimensions, estimateTextDimensions} from '../../utils/textMeasurement';
 
 interface MovedPosition {
     x: number;
@@ -43,6 +44,14 @@ const Note: React.FC<ModernNoteProps> = ({
     const {isSelected, selectComponent} = useComponentSelection();
     const [editMode, setEditMode] = useState(false);
     const [editText, setEditText] = useState(note.text);
+    const textElementRef = useRef<SVGTextElement>(null);
+    const [selectionBoxDimensions, setSelectionBoxDimensions] = useState(() => {
+        // Initial estimate based on text content
+        const isMultiLine = note.text.includes('\n');
+        const fontSize = parseInt(mapStyleDefs?.note?.fontSize || '14');
+        const estimated = estimateTextDimensions(note.text, fontSize, mapStyleDefs?.fontFamily || 'Arial, sans-serif', isMultiLine);
+        return createSelectionBoxDimensions(estimated, 6); // 6px padding
+    });
 
     // Check if this note is currently selected
     const isElementSelected = isSelected(note.id);
@@ -51,7 +60,27 @@ const Note: React.FC<ModernNoteProps> = ({
     React.useEffect(() => {
         setEditMode(false);
         setEditText(note.text);
-    }, [note.id, note.text]);
+        
+        // Update selection box dimensions when text changes
+        const isMultiLine = note.text.includes('\n');
+        const fontSize = parseInt(mapStyleDefs?.note?.fontSize || '14');
+        const estimated = estimateTextDimensions(note.text, fontSize, mapStyleDefs?.fontFamily || 'Arial, sans-serif', isMultiLine);
+        setSelectionBoxDimensions(createSelectionBoxDimensions(estimated, 6));
+    }, [note.id, note.text, mapStyleDefs]);
+
+    // Measure actual text element dimensions after render
+    useEffect(() => {
+        if (textElementRef.current && !editMode) {
+            // Use requestAnimationFrame to ensure the element is fully rendered
+            requestAnimationFrame(() => {
+                if (textElementRef.current) {
+                    const measured = measureTextElement(textElementRef.current);
+                    const boxDimensions = createSelectionBoxDimensions(measured, 6);
+                    setSelectionBoxDimensions(boxDimensions);
+                }
+            });
+        }
+    }, [note.text, editMode, mapStyleDefs]);
 
     // Cleanup effect to handle component unmounting during editing
     React.useEffect(() => {
@@ -267,10 +296,10 @@ const Note: React.FC<ModernNoteProps> = ({
                     {/* Selection indicator background */}
                     {isElementSelected && (
                         <rect
-                            x={-20}
-                            y={-10}
-                            width={40}
-                            height={20}
+                            x={selectionBoxDimensions.x}
+                            y={selectionBoxDimensions.y}
+                            width={selectionBoxDimensions.width}
+                            height={selectionBoxDimensions.height}
                             fill="rgba(33, 150, 243, 0.1)"
                             stroke="#2196F3"
                             strokeWidth={1}
@@ -288,9 +317,11 @@ const Note: React.FC<ModernNoteProps> = ({
                         renderEditMode()
                     ) : (
                         <ComponentTextSymbol
+                            ref={textElementRef}
                             id={`modern_note_text_${note.id}`}
                             note={note.text}
                             textTheme={mapStyleDefs?.note}
+                            textAnchor="start"
                             onClick={handleClick}
                             onDoubleClick={handleDoubleClick}
                         />

@@ -24,7 +24,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     storageKey = 'resizableSplitPane_leftWidth',
     isDarkTheme = false,
 }) => {
-    const getInitialWidth = () => {
+    const getInitialWidth = useCallback(() => {
         if (typeof window !== 'undefined' && storageKey) {
             const saved = localStorage.getItem(storageKey);
             if (saved) {
@@ -35,7 +35,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
             }
         }
         return defaultLeftWidth;
-    };
+    }, [defaultLeftWidth, minLeftWidth, maxLeftWidth, storageKey]);
 
     const [leftWidth, setLeftWidth] = useState(defaultLeftWidth);
     const [isDragging, setIsDragging] = useState(false);
@@ -44,7 +44,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     const startWidthRef = useRef<number>(0);
     const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Load width from localStorage on mount
+    // Load width from localStorage on mount only
     useEffect(() => {
         const initialWidth = getInitialWidth();
         console.log('ResizableSplitPane: localStorage check', {
@@ -94,7 +94,8 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                 }
             });
         }
-    }, [defaultLeftWidth, getInitialWidth, onResize]);
+    // Only run this effect once on mount - eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Dispatch resize events when width changes to notify the map
     const updateWidth = useCallback(

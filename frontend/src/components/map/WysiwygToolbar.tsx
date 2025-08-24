@@ -11,17 +11,17 @@ import {ToolbarItems} from './components/ToolbarItems';
 import {useToolbarState} from './hooks/useToolbarState';
 import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
 
-const ToolbarContainer = styled.div<{$isDragging: boolean}>`
+const ToolbarContainer = styled.div<{$isDragging: boolean; $isSnapped: boolean}>`
     position: fixed;
     width: 48px;
     background: #ffffff;
     border: 1px solid #e1e5e9;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 8px 6px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     z-index: 1000;
     transition: ${props => (props.$isDragging ? 'none' : 'all 0.2s ease')};
     cursor: ${props => (props.$isDragging ? 'grabbing' : 'default')};
@@ -29,14 +29,14 @@ const ToolbarContainer = styled.div<{$isDragging: boolean}>`
     /* Responsive behavior for different screen sizes */
     @media (max-width: 1200px) {
         width: 44px;
-        padding: 5px;
-        gap: 2px;
+        padding: 7px 5px;
+        gap: 3px;
     }
 
     @media (max-width: 768px) {
         width: 40px;
-        padding: 4px;
-        gap: 2px;
+        padding: 6px 4px;
+        gap: 3px;
     }
 
     /* Ensure toolbar stays visible even when map is zoomed or panned */
@@ -67,7 +67,7 @@ const ToolbarContainer = styled.div<{$isDragging: boolean}>`
     ${props =>
         props.$isDragging &&
         `
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
         transform: scale(1.02);
     `}
 `;
@@ -161,6 +161,36 @@ const DragHandle = styled.div`
             background: repeating-linear-gradient(to right, #ffffff 0px, #ffffff 2px, transparent 2px, transparent 4px);
         }
     }
+`;
+
+/**
+ * Snap zone overlay that appears when dragging the toolbar
+ * Shows the magnetic snap area positioned after the editor panel
+ */
+const SnapZoneOverlay = styled.div<{$visible: boolean; $snapZone: {x: number; y: number; width: number; height: number} | null}>`
+    position: fixed;
+    top: ${props => props.$snapZone?.y || 0}px;
+    left: ${props => props.$snapZone?.x || 0}px;
+    width: ${props => props.$snapZone?.width || 64}px;
+    height: ${props => (props.$snapZone?.height || window.innerHeight)}px;
+    background: rgba(0, 133, 208, 0.1);
+    border-right: 2px dashed rgba(0, 133, 208, 0.3);
+    z-index: 999;
+    pointer-events: none;
+    opacity: ${props => (props.$visible ? 1 : 0)};
+    transition: opacity 0.2s ease;
+    
+    &::before {
+        content: 'Snap Zone';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-90deg);
+        font-size: 12px;
+        color: rgba(0, 133, 208, 0.7);
+        font-weight: 500;
+        white-space: nowrap;
+    }
 `; /**
  * Hook to safely access undo/redo context (returns null if not available)
  */
@@ -187,6 +217,9 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         getSelectedLink,
         onDeleteLink,
         clearSelection,
+        onSnapChange,
+        mapOnlyView,
+        toolbarVisible,
     }) => {
         const {t} = useI18n();
 
@@ -200,7 +233,17 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         const {deleteComponent} = useMapComponentDeletion();
 
         // Toolbar state management
-        const {position, isDragging, toolbarRef, renderKey, handleMouseDown} = useToolbarState();
+        const {position, isDragging, toolbarRef, renderKey, handleMouseDown, isSnapped, snapState} = useToolbarState({
+            mapOnlyView,
+            toolbarVisible: toolbarVisible
+        });
+
+        // Notify parent component when snap state changes
+        useEffect(() => {
+            if (onSnapChange) {
+                onSnapChange(isSnapped);
+            }
+        }, [isSnapped, onSnapChange]);
 
         const handleItemClick = useCallback(
             (item: ToolbarItemType) => {
@@ -335,6 +378,9 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     clearSelection={clearSelection}
                 />
 
+                {/* Show snap zone overlay when dragging */}
+                <SnapZoneOverlay $visible={isDragging} $snapZone={snapState.snapZone} />
+
                 <ToolbarContainer
                     key={renderKey}
                     ref={toolbarRef}
@@ -342,6 +388,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     aria-label={t('map.toolbar.wysiwygLabel', 'Map component toolbar with keyboard shortcuts')}
                     aria-describedby="toolbar-instructions"
                     $isDragging={isDragging}
+                    $isSnapped={isSnapped}
                     suppressHydrationWarning={true}
                     style={{
                         left: `${position.x}px`,

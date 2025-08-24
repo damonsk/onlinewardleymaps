@@ -48,6 +48,10 @@ export interface ModernMapViewRefactoredProps {
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
     setNewComponentContext: React.Dispatch<React.SetStateAction<{x: string; y: string} | null>>;
     showLinkedEvolved: boolean;
+    showWysiwygToolbar?: boolean;
+    toolbarSnapped?: boolean;
+    onToolbarSnapChange?: (isSnapped: boolean) => void;
+    mapOnlyView?: boolean; // Presentation mode vs Editor mode
 }
 
 const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = props => {
@@ -173,7 +177,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
 
     // Memoized styling to prevent recreation on every render
     const containerStyle = useMemo(() => getContainerStyle(props.mapStyleDefs), [props.mapStyleDefs]);
-    const mapStyle = useMemo(() => getMapStyle(), []);
+    const mapStyle = useMemo(() => getMapStyle(props.toolbarSnapped), [props.toolbarSnapped]);
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as LegacyRef<HTMLDivElement> | undefined;
 
     // Unified toolbar selection handler that coordinates between different state hooks
@@ -253,18 +257,23 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             selectionManager={selectionManager}
             onContextMenuReady={setContextMenuActions}>
             <div ref={legacyRef} className={props.mapStyleDefs.className} style={containerStyle} onClick={handlers.handleContainerClick}>
-                <WysiwygToolbar
-                    mapStyleDefs={props.mapStyleDefs}
-                    mapDimensions={props.mapDimensions}
-                    mapText={props.mapText}
-                    mutateMapText={props.mutateMapText}
-                    selectedItem={toolbarState.selectedToolbarItem}
-                    onItemSelect={handleUnifiedToolbarSelection}
-                    keyboardShortcutsEnabled={true}
-                    getSelectedLink={selectionManager.getSelectedLink}
-                    onDeleteLink={componentOps.handleDeleteLink}
-                    clearSelection={selectionManager.clearSelection}
-                />
+                {(props.showWysiwygToolbar ?? true) && (
+                    <WysiwygToolbar
+                        mapStyleDefs={props.mapStyleDefs}
+                        mapDimensions={props.mapDimensions}
+                        mapText={props.mapText}
+                        mutateMapText={props.mutateMapText}
+                        selectedItem={toolbarState.selectedToolbarItem}
+                        onItemSelect={handleUnifiedToolbarSelection}
+                        keyboardShortcutsEnabled={true}
+                        getSelectedLink={selectionManager.getSelectedLink}
+                        onDeleteLink={componentOps.handleDeleteLink}
+                        clearSelection={selectionManager.clearSelection}
+                        onSnapChange={props.onToolbarSnapChange}
+                        mapOnlyView={props.mapOnlyView}
+                        toolbarVisible={props.showWysiwygToolbar}
+                    />
+                )}
 
                 <DragPreview
                     selectedItem={toolbarState.selectedToolbarItem}
@@ -360,9 +369,15 @@ const getContainerStyle = (mapStyleDefs: MapTheme): React.CSSProperties => {
     };
 };
 
-const getMapStyle = (): React.CSSProperties => ({
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-    position: 'relative',
-});
+const getMapStyle = (toolbarSnapped = false): React.CSSProperties => {
+    const toolbarWidth = 48; // Width to reserve for snapped toolbar (48px toolbar + 0px margin, reduced from 80px)
+    
+    return {
+        width: toolbarSnapped ? `calc(100% - ${toolbarWidth}px)` : '100%',
+        height: '100%',
+        overflow: 'hidden',
+        position: 'relative',
+        marginLeft: toolbarSnapped ? `${toolbarWidth}px` : '0',
+        transition: 'width 0.3s ease, margin-left 0.3s ease',
+    };
+};

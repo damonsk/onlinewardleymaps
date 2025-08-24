@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {memo, forwardRef} from 'react';
 import {TextTheme} from '../../constants/mapstyles';
 
 export interface ComponentTextSymbolProps {
@@ -18,7 +18,7 @@ export interface ComponentTextSymbolProps {
     setShowTextField?: (value: React.SetStateAction<boolean>) => void;
 }
 
-const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = ({
+const ComponentTextSymbol = forwardRef<SVGTextElement, ComponentTextSymbolProps>(({
     id,
     x,
     y,
@@ -31,7 +31,7 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     onClick,
     onDoubleClick,
     setShowTextField = null,
-}) => {
+}, ref) => {
     const renderMultiLineText = (id: string, textContent: string) => {
         // Split by actual line breaks (\n) only - no word wrapping for multi-line content
         const lines = textContent.split('\n');
@@ -79,8 +79,10 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     // Check if content has line breaks (multi-line)
     const hasLineBreaks = contentToRender.includes('\n');
 
-    // Check if content is long (for word wrapping) - only for single-line content
-    const isLong = !hasLineBreaks && contentToRender.length > 14;
+    // For notes: single-line notes (unquoted, no \n) should render as single text element
+    // Multi-line notes (quoted, with \n) should span multiple lines
+    // For components: check if content is long (for word wrapping) - only for single-line content
+    const isLong = !hasLineBreaks && !note && contentToRender.length > 14;
 
     let renderedContent;
     let transform = '';
@@ -90,20 +92,18 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
         renderedContent = renderMultiLineText(id, contentToRender);
         transform = ''; // No transform for multi-line text
     } else if (isLong) {
-        // Long single-line content (word wrapping)
+        // Long single-line component content (word wrapping) - only for components, not notes
         renderedContent = trimText(id, contentToRender);
         transform = 'translate(30, 10)';
     } else {
-        // Short single-line content
+        // Single-line content (notes without \n, short components)
         renderedContent = contentToRender;
         transform = '';
     }
     const handleDblClick = (e: React.MouseEvent<SVGTextElement, MouseEvent>): void => {
         e.stopPropagation();
-        console.log('DBLClick');
         // Call external double-click handler if provided (for Notes)
         if (onDoubleClick) {
-            console.log('DBLClick', onDoubleClick);
             onDoubleClick(e);
         }
 
@@ -115,6 +115,7 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
     return (
         <>
             <text
+                ref={ref}
                 id={id}
                 data-testid={id}
                 fontWeight={textTheme?.fontWeight || 'normal'}
@@ -131,5 +132,8 @@ const ComponentTextSymbol: React.FunctionComponent<ComponentTextSymbolProps> = (
             </text>
         </>
     );
-};
+});
+
+ComponentTextSymbol.displayName = 'ComponentTextSymbol';
+
 export default memo(ComponentTextSymbol);

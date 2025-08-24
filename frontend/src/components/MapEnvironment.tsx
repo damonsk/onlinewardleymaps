@@ -92,7 +92,130 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
     const [mapStyle, setMapStyle] = useState('plain');
     const [errorLine, setErrorLine] = useState<number[]>([]);
     const [showLineNumbers, setShowLineNumbers] = useState(false);
-    const [mapOnlyView, setMapOnlyView] = useState(false);
+    // Helper function to get initial mapOnlyView state from localStorage
+    const getInitialMapOnlyView = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_mapOnlyView');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return false; // Default to Editor Mode (false = Editor Mode, true = Presentation Mode)
+    }, []);
+
+    const [mapOnlyView, setMapOnlyView] = useState(() => getInitialMapOnlyView());
+    
+    // Wrapper function to persist mapOnlyView state to localStorage
+    const setMapOnlyViewWithPersistence = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+        const newValue = typeof value === 'function' ? value(mapOnlyView) : value;
+        
+        // Update state
+        setMapOnlyView(newValue);
+        
+        // Persist to localStorage
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem('onlinewardleymaps_mapOnlyView', newValue.toString());
+            } catch (error) {
+                // Ignore localStorage errors (e.g., private browsing mode)
+                console.warn('Failed to save mapOnlyView to localStorage:', error);
+            }
+        }
+    }, [mapOnlyView]);
+    
+    // Helper function to get initial showWysiwygToolbar state from localStorage
+    const getInitialShowWysiwygToolbar = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_showWysiwygToolbar');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return true; // Default to showing the toolbar
+    }, []);
+
+    // Helper function to get initial showMapIterations state from localStorage
+    const getInitialShowMapIterations = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_showMapIterations');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return true; // Default to showing the map iterations
+    }, []);
+
+    // Helper function to get initial toolbar snap state from localStorage
+    const getInitialToolbarSnapped = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_toolbarSnapped');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return false; // Default to not snapped
+    }, []);
+
+    const [showWysiwygToolbar, setShowWysiwygToolbar] = useState(() => getInitialShowWysiwygToolbar());
+    
+    // Wrapper function to persist showWysiwygToolbar state to localStorage
+    const setShowWysiwygToolbarWithPersistence = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+        const newValue = typeof value === 'function' ? value(showWysiwygToolbar) : value;
+        
+        // Update state
+        setShowWysiwygToolbar(newValue);
+        
+        // Persist to localStorage
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem('onlinewardleymaps_showWysiwygToolbar', newValue.toString());
+            } catch (error) {
+                // Ignore localStorage errors (e.g., private browsing mode)
+                console.warn('Failed to save showWysiwygToolbar to localStorage:', error);
+            }
+        }
+    }, [showWysiwygToolbar]);
+
+    const [showMapIterations, setShowMapIterations] = useState(() => getInitialShowMapIterations());
+    
+    // Wrapper function to persist showMapIterations state to localStorage
+    const setShowMapIterationsWithPersistence = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+        const newValue = typeof value === 'function' ? value(showMapIterations) : value;
+        
+        // Update state
+        setShowMapIterations(newValue);
+        
+        // Persist to localStorage
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem('onlinewardleymaps_showMapIterations', newValue.toString());
+            } catch (error) {
+                // Ignore localStorage errors (e.g., private browsing mode)
+                console.warn('Failed to save showMapIterations to localStorage:', error);
+            }
+        }
+    }, [showMapIterations]);
+
+    const [toolbarSnapped, setToolbarSnapped] = useState(() => getInitialToolbarSnapped());
+    
+    // Wrapper function to persist toolbarSnapped state to localStorage
+    const setToolbarSnappedWithPersistence = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+        const newValue = typeof value === 'function' ? value(toolbarSnapped) : value;
+        
+        // Update state
+        setToolbarSnapped(newValue);
+        
+        // Persist to localStorage
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem('onlinewardleymaps_toolbarSnapped', newValue.toString());
+            } catch (error) {
+                // Ignore localStorage errors (e.g., private browsing mode)
+                console.warn('Failed to save toolbarSnapped to localStorage:', error);
+            }
+        }
+    }, [toolbarSnapped]);
+    
     const [actionInProgress, setActionInProgress] = useState(false);
     const [hideNav, setHideNav] = useState(false);
 
@@ -502,6 +625,10 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                         setHighlightLine={legacyState.setHighlightLine}
                         setNewComponentContext={legacyState.setNewComponentContext}
                         showLinkedEvolved={legacyState.showLinkedEvolved}
+                        showWysiwygToolbar={showWysiwygToolbar}
+                        toolbarSnapped={toolbarSnapped}
+                        onToolbarSnapChange={setToolbarSnappedWithPersistence}
+                        mapOnlyView={mapOnlyView}
                     />
                 </ComponentSelectionProvider>
             </EditingProvider>
@@ -519,7 +646,11 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                 hideNav={hideNav}
                 shouldHideNav={shouldHideNav}
                 mapOnlyView={mapOnlyView}
-                setMapOnlyView={setMapOnlyView}
+                setMapOnlyView={setMapOnlyViewWithPersistence}
+                showWysiwygToolbar={showWysiwygToolbar}
+                setShowWysiwygToolbar={setShowWysiwygToolbarWithPersistence}
+                showMapIterations={showMapIterations}
+                setShowMapIterations={setShowMapIterationsWithPersistence}
                 currentUrl={currentUrl}
                 saveOutstanding={saveOutstanding}
                 mutateMapText={mutateMapText}

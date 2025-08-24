@@ -148,6 +148,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 let sourcePart = '';
                 let evolvedPart = '';
                 let maturityPart = '';
+                let hasArrow = false;
 
                 // Find the arrow position by looking for -> that's not inside quotes
                 let arrowPos = -1;
@@ -175,77 +176,120 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
                     if (!inQuotes && char === '-' && nextChar === '>') {
                         arrowPos = i;
+                        hasArrow = true;
                         break;
                     }
                 }
 
-                if (arrowPos === -1) {
-                    return line;
-                }
+                if (hasArrow && arrowPos !== -1) {
+                    // Case 1: Has arrow (evolve foo->bar 0.9)
+                    sourcePart = evolveContent.substring(0, arrowPos).trim();
+                    const remainder = evolveContent.substring(arrowPos + 2).trim();
 
-                sourcePart = evolveContent.substring(0, arrowPos).trim();
-                const remainder = evolveContent.substring(arrowPos + 2).trim();
+                    // Parse the remainder to separate evolved name from maturity and optional label
+                    const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+                    const maturityMatch = remainder.match(maturityPattern);
 
-                // Parse the remainder to separate evolved name from maturity and optional label
-                // We need to handle these patterns:
-                // - "Component B" 0.75
-                // - "Component B" 0.75 label [1.00, 2.00]
-                // - ComponentB 0.75
-                // - ComponentB 0.75 label [1.00, 2.00]
-
-                // Strategy: Find the last occurrence of a number pattern (maturity) and everything after it
-                // This handles both quoted and unquoted names, with or without labels
-                const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
-                const maturityMatch = remainder.match(maturityPattern);
-
-                if (maturityMatch) {
-                    // Found maturity (and possibly label), so split there
-                    const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
-                    evolvedPart = remainder.substring(0, maturityStartIndex).trim();
-                    maturityPart = maturityMatch[0]; // This includes maturity and optional label
-                } else {
-                    // No maturity found, treat everything as evolved name
-                    evolvedPart = remainder;
-                    maturityPart = '';
-                }
-
-                // Extract evolved component name from the evolve statement
-                let evolvedNameInLine = '';
-                if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
-                    // Extract quoted evolved name
-                    try {
-                        const quotedContent = evolvedPart.slice(1, -1); // Remove outer quotes
-                        evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-                    } catch (error) {
-                        return line;
-                    }
-                } else {
-                    // Unquoted evolved name
-                    evolvedNameInLine = evolvedPart;
-                }
-
-                // Check if this is the evolved component we're renaming
-                // We need to match the EVOLVED component name (after arrow), not the source name
-                if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(oldName)) {
-                    // Format the new name appropriately
-                    let formattedNewName = newName;
-                    const needsQuotes =
-                        newName.includes('\n') ||
-                        newName.includes('"') ||
-                        newName.includes("'") ||
-                        newName.includes('\\') ||
-                        newName.includes(' ');
-
-                    if (needsQuotes) {
-                        const escapedName = newName.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
-                        formattedNewName = `"${escapedName}"`;
+                    if (maturityMatch) {
+                        const maturityStartIndex = remainder.lastIndexOf(maturityMatch[0]);
+                        evolvedPart = remainder.substring(0, maturityStartIndex).trim();
+                        maturityPart = maturityMatch[0];
+                    } else {
+                        evolvedPart = remainder;
+                        maturityPart = '';
                     }
 
-                    // Reconstruct the evolve line with the new evolved name
-                    const newEvolveLine = `evolve ${sourcePart}->${formattedNewName}${maturityPart}`;
+                    // Extract evolved component name from the evolve statement
+                    let evolvedNameInLine = '';
+                    if (evolvedPart.startsWith('"') && evolvedPart.endsWith('"')) {
+                        try {
+                            const quotedContent = evolvedPart.slice(1, -1);
+                            evolvedNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        } catch (error) {
+                            return line;
+                        }
+                    } else {
+                        evolvedNameInLine = evolvedPart;
+                    }
 
-                    updated = true;
-                    return line.replace(trimmedLine, newEvolveLine);
+                    // Check if this is the evolved component we're renaming
+                    if (normalizeComponentName(evolvedNameInLine) === normalizeComponentName(oldName)) {
+                        // Format the new name appropriately
+                        let formattedNewName = newName;
+                        const needsQuotes =
+                            newName.includes('\n') ||
+                            newName.includes('"') ||
+                            newName.includes("'") ||
+                            newName.includes('\\') ||
+                            newName.includes(' ');
+
+                        if (needsQuotes) {
+                            const escapedName = newName.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+                            formattedNewName = `"${escapedName}"`;
+                        }
+
+                        // Reconstruct the evolve line with the new evolved name
+                        const newEvolveLine = `evolve ${sourcePart}->${formattedNewName}${maturityPart}`;
+
+                        updated = true;
+                        return line.replace(trimmedLine, newEvolveLine);
+                    }
+                } else {
+                    // Case 2: No arrow (evolve foo 0.9) - need to check if we're renaming the source component
+                    // Parse the content to separate source name from maturity and optional label
+                    const maturityPattern = /\s+([0-9]+(?:\.[0-9]+)?)(\s+label\s+\[[^\]]+\])?$/;
+                    const maturityMatch = evolveContent.match(maturityPattern);
+
+                    let sourceNamePart = '';
+                    let maturityAndLabelPart = '';
+
+                    if (maturityMatch) {
+                        const maturityStartIndex = evolveContent.lastIndexOf(maturityMatch[0]);
+                        sourceNamePart = evolveContent.substring(0, maturityStartIndex).trim();
+                        maturityAndLabelPart = maturityMatch[0];
+                    } else {
+                        sourceNamePart = evolveContent;
+                        maturityAndLabelPart = '';
+                    }
+
+                    // Extract source component name
+                    let sourceNameInLine = '';
+                    if (sourceNamePart.startsWith('"') && sourceNamePart.endsWith('"')) {
+                        try {
+                            const quotedContent = sourceNamePart.slice(1, -1);
+                            sourceNameInLine = quotedContent.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        } catch (error) {
+                            return line;
+                        }
+                    } else {
+                        sourceNameInLine = sourceNamePart;
+                    }
+
+                    // Check if this is the source component we're trying to rename the evolved version of
+                    if (normalizeComponentName(sourceNameInLine) === normalizeComponentName(oldName)) {
+                        // We found an evolve statement without an override, and the user is trying to rename
+                        // the evolved component. We need to add the arrow syntax with the new name.
+                        
+                        // Format the new name appropriately
+                        let formattedNewName = newName;
+                        const needsQuotes =
+                            newName.includes('\n') ||
+                            newName.includes('"') ||
+                            newName.includes("'") ||
+                            newName.includes('\\') ||
+                            newName.includes(' ');
+
+                        if (needsQuotes) {
+                            const escapedName = newName.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+                            formattedNewName = `"${escapedName}"`;
+                        }
+
+                        // Reconstruct the evolve line with the new override syntax
+                        const newEvolveLine = `evolve ${sourceNamePart}->${formattedNewName}${maturityAndLabelPart}`;
+
+                        updated = true;
+                        return line.replace(trimmedLine, newEvolveLine);
+                    }
                 }
 
                 return line;
@@ -304,15 +348,28 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
             // Use different renaming logic for evolved components
             if (component.evolved) {
-                // For evolved components, pass the evolved component's current displayed name (override)
-                // Handle the case where override might contain quotes
-                let evolvedCurrentName = component.override || component.name;
-                if (evolvedCurrentName.startsWith('"') && evolvedCurrentName.endsWith('"')) {
-                    // Remove outer quotes and unescape for matching
-                    evolvedCurrentName = evolvedCurrentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                // For evolved components, we need to distinguish between two cases:
+                // 1. Has override (evolve foo->bar 0.9) - rename the evolved name "bar"
+                // 2. No override (evolve foo 0.9) - add override syntax with new name
+                
+                if (component.override) {
+                    // Case 1: Has override - rename the existing evolved name
+                    let evolvedCurrentName = component.override;
+                    if (evolvedCurrentName.startsWith('"') && evolvedCurrentName.endsWith('"')) {
+                        // Remove outer quotes and unescape for matching
+                        evolvedCurrentName = evolvedCurrentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                    }
+                    result = renameEvolvedComponent(evolvedCurrentName, text, mapText, mutateMapText);
+                } else {
+                    // Case 2: No override - need to add override syntax
+                    // Pass the source component name so it can find "evolve sourceName maturity" and convert it to "evolve sourceName->newName maturity"
+                    let sourceComponentName = component.name;
+                    if (sourceComponentName.startsWith('"') && sourceComponentName.endsWith('"')) {
+                        // Remove outer quotes and unescape for matching
+                        sourceComponentName = sourceComponentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                    }
+                    result = renameEvolvedComponent(sourceComponentName, text, mapText, mutateMapText);
                 }
-                // Pass the raw text to renameEvolvedComponent - it will handle its own escaping
-                result = renameEvolvedComponent(evolvedCurrentName, text, mapText, mutateMapText);
             } else {
                 result = rename(component.line, component.name, processedText, mapText, mutateMapText);
             }

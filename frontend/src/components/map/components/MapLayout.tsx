@@ -22,6 +22,10 @@ interface MapLayoutProps {
     // Header props
     mapOnlyView: boolean;
     setMapOnlyView: React.Dispatch<React.SetStateAction<boolean>>;
+    showWysiwygToolbar: boolean;
+    setShowWysiwygToolbar: React.Dispatch<React.SetStateAction<boolean>>;
+    showMapIterations: boolean;
+    setShowMapIterations: React.Dispatch<React.SetStateAction<boolean>>;
     currentUrl: string;
     saveOutstanding: boolean;
     mutateMapText: (text: string) => void;
@@ -63,6 +67,10 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
     shouldHideNav,
     mapOnlyView,
     setMapOnlyView,
+    showWysiwygToolbar,
+    setShowWysiwygToolbar,
+    showMapIterations,
+    setShowMapIterations,
     currentUrl,
     saveOutstanding,
     mutateMapText,
@@ -114,6 +122,10 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
                 <NewHeader
                     mapOnlyView={mapOnlyView}
                     setMapOnlyView={setMapOnlyView}
+                    showWysiwygToolbar={showWysiwygToolbar}
+                    setShowWysiwygToolbar={setShowWysiwygToolbar}
+                    showMapIterations={showMapIterations}
+                    setShowMapIterations={setShowMapIterations}
                     currentUrl={currentUrl}
                     saveOutstanding={saveOutstanding}
                     mutateMapText={mutateMapText}
@@ -130,14 +142,16 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
 
                 <Breadcrumb currentUrl={currentUrl} />
 
-                <NewMapIterations
-                    mapIterations={mapIterations}
-                    currentIteration={currentIteration}
-                    setMapIterations={setMapIterations}
-                    setMapText={setMapText}
-                    addIteration={addIteration}
-                    setCurrentIteration={setCurrentIteration}
-                />
+                {(showMapIterations ?? true) && (
+                    <NewMapIterations
+                        mapIterations={mapIterations}
+                        currentIteration={currentIteration}
+                        setMapIterations={setMapIterations}
+                        setMapText={setMapText}
+                        addIteration={addIteration}
+                        setCurrentIteration={setCurrentIteration}
+                    />
+                )}
             </Box>
 
             <Box sx={{flexGrow: 1, height: '100%', overflow: 'hidden'}}>

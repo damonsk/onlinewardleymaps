@@ -69,6 +69,9 @@ export interface WysiwygToolbarProps {
     getSelectedLink?: () => {id: string; linkData: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}} | null;
     onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     clearSelection?: () => void; // Callback to clear current selection
+    onSnapChange?: (isSnapped: boolean) => void; // Callback for snap state changes
+    mapOnlyView?: boolean; // Presentation mode (true) vs Editor mode (false)
+    toolbarVisible?: boolean; // Whether the toolbar is currently visible
 }
 
 /**

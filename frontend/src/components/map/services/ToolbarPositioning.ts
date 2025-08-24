@@ -1,12 +1,49 @@
-interface Position {
+// Types
+export interface Position {
     x: number;
     y: number;
 }
 
-interface DragOffset {
+export interface DragOffset {
     x: number;
     y: number;
 }
+
+export interface SnapZone {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+
+export interface SnapState {
+    isSnapped: boolean;
+    snapZone: SnapZone | null;
+}
+
+export interface ViewportMode {
+    isEditorMode: boolean;
+    isPresentationMode: boolean;
+}
+
+// Configuration constants
+const CONFIG = {
+    SNAP_ZONE_WIDTH: 64,
+    DEFAULT_MARGIN: 16,
+    MIN_TOP_MARGIN: 100,
+    BOTTOM_MARGIN: 50,
+    RESIZER_WIDTH: 8,
+    FALLBACK_PANEL_WIDTH_PERCENT: 0.33,
+    DEFAULT_TOOLBAR_WIDTH: 48,
+    DEFAULT_TOOLBAR_HEIGHT: 400,
+    STORAGE_KEY_SUFFIX: '_snapped',
+    PANEL_WIDTH_STORAGE_KEY: 'wardleyMapEditor_splitPaneWidth',
+    EVENT_DELAYS: {
+        RENDER_STABILITY: 10,
+        SNAP_EVENT: 100,
+        PANEL_RESIZE: 200,
+    },
+} as const;
 
 export class ToolbarPositioning {
     /**
@@ -14,11 +51,11 @@ export class ToolbarPositioning {
      */
     static getDefaultPosition(): Position {
         if (typeof window === 'undefined') {
-            return {x: 16, y: 300};
+            return { x: CONFIG.DEFAULT_MARGIN, y: 300 };
         }
 
         return {
-            x: 16,
+            x: CONFIG.DEFAULT_MARGIN,
             y: window.innerHeight / 2 - 200,
         };
     }
@@ -117,9 +154,37 @@ export class ToolbarPositioning {
 
     /**
      * Calculates position adjustment needed after window resize
+     * Handles both snapped and floating states intelligently
      */
-    static adjustForWindowResize(currentPosition: Position, toolbarElement: HTMLElement | null): Position {
-        return ToolbarPositioning.constrainToViewport(currentPosition, toolbarElement);
+    static adjustForWindowResize(
+        currentPosition: Position, 
+        toolbarElement: HTMLElement | null, 
+        mapOnlyView?: boolean
+    ): Position {
+        if (typeof window === 'undefined' || !toolbarElement) {
+            return currentPosition;
+        }
+
+        const toolbarRect = toolbarElement.getBoundingClientRect();
+        const isCurrentlySnapped = ToolbarPositioning.isInSnapZone(currentPosition, toolbarElement, mapOnlyView);
+        
+        if (isCurrentlySnapped) {
+            // For snapped toolbars, recalculate snap position for new layout
+            return ToolbarPositioning.getSnappedPosition(toolbarElement, mapOnlyView);
+        } else {
+            // For floating toolbars, constrain to new viewport with intelligent positioning
+            const constrainedPosition = ToolbarPositioning.constrainToViewport(currentPosition, toolbarElement);
+            
+            // Adjust Y position if toolbar would be too close to top edge
+            if (constrainedPosition.y < CONFIG.MIN_TOP_MARGIN) {
+                constrainedPosition.y = Math.min(
+                    CONFIG.MIN_TOP_MARGIN, 
+                    window.innerHeight - toolbarRect.height - CONFIG.BOTTOM_MARGIN
+                );
+            }
+            
+            return constrainedPosition;
+        }
     }
 
     /**
@@ -127,11 +192,11 @@ export class ToolbarPositioning {
      */
     static getCenterPosition(): Position {
         if (typeof window === 'undefined') {
-            return {x: 16, y: 300};
+            return { x: CONFIG.DEFAULT_MARGIN, y: 300 };
         }
 
         return {
-            x: window.innerWidth / 2 - 24, // Half toolbar width (48px / 2)
+            x: window.innerWidth / 2 - CONFIG.DEFAULT_TOOLBAR_WIDTH / 2,
             y: window.innerHeight / 2 - 200, // Approximate half toolbar height
         };
     }
@@ -144,33 +209,219 @@ export class ToolbarPositioning {
             return ToolbarPositioning.getDefaultPosition();
         }
 
-        const margin = 16;
-        const toolbarWidth = toolbarElement?.getBoundingClientRect().width || 48;
-        const toolbarHeight = toolbarElement?.getBoundingClientRect().height || 400;
+        const toolbarWidth = toolbarElement?.getBoundingClientRect().width || CONFIG.DEFAULT_TOOLBAR_WIDTH;
+        const toolbarHeight = toolbarElement?.getBoundingClientRect().height || CONFIG.DEFAULT_TOOLBAR_HEIGHT;
 
         switch (edge) {
             case 'left':
                 return {
-                    x: margin,
+                    x: CONFIG.DEFAULT_MARGIN,
                     y: window.innerHeight / 2 - toolbarHeight / 2,
                 };
             case 'right':
                 return {
-                    x: window.innerWidth - toolbarWidth - margin,
+                    x: window.innerWidth - toolbarWidth - CONFIG.DEFAULT_MARGIN,
                     y: window.innerHeight / 2 - toolbarHeight / 2,
                 };
             case 'top':
                 return {
                     x: window.innerWidth / 2 - toolbarWidth / 2,
-                    y: margin,
+                    y: CONFIG.DEFAULT_MARGIN,
                 };
             case 'bottom':
                 return {
                     x: window.innerWidth / 2 - toolbarWidth / 2,
-                    y: window.innerHeight - toolbarHeight - margin,
+                    y: window.innerHeight - toolbarHeight - CONFIG.DEFAULT_MARGIN,
                 };
             default:
                 return ToolbarPositioning.getDefaultPosition();
+        }
+    }
+
+    /**
+     * Defines the magnetic snap zone on the left side of the screen
+     * In editor mode, positions it after the editor panel instead of at the leftmost edge
+     */
+    static getSnapZone(mapOnlyView?: boolean): SnapZone {
+        if (typeof window === 'undefined') {
+            return { x: 0, y: 0, width: CONFIG.SNAP_ZONE_WIDTH, height: 800 };
+        }
+
+        const mode = ToolbarPositioning.getViewportMode(mapOnlyView);
+        
+        // PRESENTATION MODE: Position at left edge
+        if (mode.isPresentationMode) {
+            return {
+                x: 0,
+                y: 0,
+                width: CONFIG.SNAP_ZONE_WIDTH,
+                height: window.innerHeight,
+            };
+        }
+        
+        // EDITOR MODE: Calculate position after editor panel
+        const leftPanelWidth = ToolbarPositioning.getEditorPanelWidth();
+        const snapZoneX = leftPanelWidth + CONFIG.RESIZER_WIDTH;
+
+        return {
+            x: snapZoneX,
+            y: 0,
+            width: CONFIG.SNAP_ZONE_WIDTH,
+            height: window.innerHeight,
+        };
+    }
+
+    /**
+     * Determines the current viewport mode based on mapOnlyView parameter
+     */
+    private static getViewportMode(mapOnlyView?: boolean): ViewportMode {
+        const isEditorMode = mapOnlyView === false;
+        return {
+            isEditorMode,
+            isPresentationMode: !isEditorMode,
+        };
+    }
+
+    /**
+     * Gets the editor panel width using multiple fallback strategies
+     */
+    private static getEditorPanelWidth(): number {
+        // Primary: Get width from localStorage (most reliable for editor mode)
+        const savedWidth = localStorage.getItem(CONFIG.PANEL_WIDTH_STORAGE_KEY);
+        if (savedWidth) {
+            const widthPercent = parseFloat(savedWidth);
+            if (!isNaN(widthPercent) && widthPercent > 0 && widthPercent < 100) {
+                return (window.innerWidth * widthPercent) / 100;
+            }
+        }
+        
+        // Fallback: DOM element measurement
+        const leftPanelElement = document.querySelector('.editor-panel, [data-testid="left-panel"], .left-panel');
+        if (leftPanelElement) {
+            const elementWidth = leftPanelElement.getBoundingClientRect().width;
+            if (elementWidth > 0) {
+                return elementWidth;
+            }
+        }
+        
+        // Final fallback: Use default percentage
+        return window.innerWidth * CONFIG.FALLBACK_PANEL_WIDTH_PERCENT;
+    }
+
+    /**
+     * Checks if the toolbar position is within the snap zone
+     * Uses more lenient bounds checking for editor mode
+     */
+    static isInSnapZone(position: Position, toolbarElement: HTMLElement | null, mapOnlyView?: boolean): boolean {
+        if (!toolbarElement) return false;
+
+        const snapZone = ToolbarPositioning.getSnapZone(mapOnlyView);
+        const toolbarRect = toolbarElement.getBoundingClientRect();
+        const mode = ToolbarPositioning.getViewportMode(mapOnlyView);
+        
+        // In editor mode, check if toolbar is positioned within the snap zone area
+        // In presentation mode, check traditional snap zone boundaries
+        if (mode.isEditorMode) {
+            // Check if toolbar is positioned within the snap zone area (after editor panel)
+            const isInHorizontalRange = position.x >= snapZone.x && position.x <= snapZone.x + snapZone.width + CONFIG.DEFAULT_MARGIN;
+            const isInVerticalRange = position.y >= snapZone.y && position.y + toolbarRect.height <= snapZone.y + snapZone.height;
+            return isInHorizontalRange && isInVerticalRange;
+        } else {
+            // Presentation mode: use center-based detection
+            const toolbarCenterX = position.x + toolbarRect.width / 2;
+            return (
+                toolbarCenterX >= snapZone.x &&
+                toolbarCenterX <= snapZone.x + snapZone.width &&
+                position.y >= snapZone.y &&
+                position.y + toolbarRect.height <= snapZone.y + snapZone.height
+            );
+        }
+    }
+
+    /**
+     * Gets the snapped position for the toolbar
+     * Handles different viewport sizes and positions relative to editor panel
+     */
+    static getSnappedPosition(toolbarElement: HTMLElement | null, mapOnlyView?: boolean): Position {
+        if (typeof window === 'undefined' || !toolbarElement) {
+            return { x: CONFIG.DEFAULT_MARGIN, y: CONFIG.MIN_TOP_MARGIN };
+        }
+
+        const snapZone = ToolbarPositioning.getSnapZone(mapOnlyView);
+        const toolbarRect = toolbarElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate ideal centered Y position with constraints
+        let idealY = viewportHeight / 2 - toolbarRect.height / 2;
+        idealY = Math.max(CONFIG.MIN_TOP_MARGIN, idealY);
+        idealY = Math.min(idealY, viewportHeight - toolbarRect.height - CONFIG.BOTTOM_MARGIN);
+        
+        // Position toolbar within the snap zone with appropriate margin
+        // Both modes get margin from their respective snap zone edge
+        const toolbarX = snapZone.x + CONFIG.DEFAULT_MARGIN;
+        
+        return {
+            x: toolbarX,
+            y: idealY,
+        };
+    }
+
+    /**
+     * Handles mode changes for snapped toolbars
+     * Recalculates position when switching between editor and presentation modes
+     */
+    static handleModeChange(
+        currentPosition: Position,
+        toolbarElement: HTMLElement | null,
+        isCurrentlySnapped: boolean,
+        newMapOnlyView?: boolean
+    ): Position {
+        if (!isCurrentlySnapped || !toolbarElement) {
+            return currentPosition;
+        }
+        
+        // For snapped toolbars, recalculate position based on new mode
+        return ToolbarPositioning.getSnappedPosition(toolbarElement, newMapOnlyView);
+    }
+
+    /**
+     * Calculates the snap state based on current position
+     * Returns the snap zone for dragging preview
+     */
+    static calculateSnapState(position: Position, toolbarElement: HTMLElement | null, mapOnlyView?: boolean): SnapState {
+        const snapZone = ToolbarPositioning.getSnapZone(mapOnlyView);
+        const isSnapped = ToolbarPositioning.isInSnapZone(position, toolbarElement, mapOnlyView);
+
+        return {
+            isSnapped,
+            snapZone,
+        };
+    }
+
+    /**
+     * Loads snap state from localStorage
+     */
+    static loadSnapState(storageKey: string): boolean {
+        if (typeof window === 'undefined') return false;
+
+        try {
+            const saved = localStorage.getItem(`${storageKey}${CONFIG.STORAGE_KEY_SUFFIX}`);
+            return saved === 'true';
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Saves snap state to localStorage
+     */
+    static saveSnapState(isSnapped: boolean, storageKey: string): void {
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem(`${storageKey}${CONFIG.STORAGE_KEY_SUFFIX}`, isSnapped.toString());
+            } catch {
+                // Ignore localStorage errors
+            }
         }
     }
 }
