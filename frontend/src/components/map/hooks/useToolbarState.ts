@@ -1,89 +1,116 @@
-import {useCallback, useState} from 'react';
-import {PST_SUB_ITEMS} from '../../../constants/toolbarItems';
-import {ToolbarItem} from '../../../types/toolbar';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {ToolbarPositioning} from '../services/ToolbarPositioning';
 
-export interface ToolbarState {
-    selectedToolbarItem: ToolbarItem | null;
-    isValidDropZone: boolean;
-    methodHighlightedComponent: any; // UnifiedComponent | null
+interface Position {
+    x: number;
+    y: number;
 }
 
-export interface ToolbarActions {
-    setSelectedToolbarItem: (item: ToolbarItem | null) => void;
-    setIsValidDropZone: (isValid: boolean) => void;
-    setMethodHighlightedComponent: (component: any) => void;
-    handleToolbarItemSelect: (item: ToolbarItem | null) => void;
+interface UseToolbarStateProps {
+    defaultPosition?: Position;
+    storageKey?: string;
 }
 
-export interface ToolbarStateDependencies {
-    onLinkingModeStart?: () => void;
-    onDrawingModeStart?: (item: ToolbarItem) => void;
-    onMethodApplicationModeStart?: (item: ToolbarItem) => void;
-    onModeReset?: () => void;
-    showUserFeedback?: (message: string, type?: 'success' | 'error' | 'warning' | 'info') => void;
+interface UseToolbarStateReturn {
+    position: Position;
+    isDragging: boolean;
+    toolbarRef: React.RefObject<HTMLDivElement>;
+    renderKey: number;
+    handleMouseDown: (e: React.MouseEvent) => void;
+    resetPosition: () => void;
 }
 
-export const useToolbarState = (dependencies?: ToolbarStateDependencies): ToolbarState & ToolbarActions => {
-    const [selectedToolbarItem, setSelectedToolbarItem] = useState<ToolbarItem | null>(null);
-    const [isValidDropZone, setIsValidDropZone] = useState(false);
-    const [methodHighlightedComponent, setMethodHighlightedComponent] = useState<any>(null);
+export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarStateReturn => {
+    const {
+        defaultPosition,
+        storageKey = 'wysiwyg-toolbar-position',
+    } = props;
 
-    const handleToolbarItemSelect = useCallback(
-        (item: ToolbarItem | null) => {
-            console.log('Toolbar item selection changed:', item?.id || 'none');
+    const [position, setPosition] = useState<Position>(() => {
+        return ToolbarPositioning.loadSavedPosition(storageKey);
+    });
 
-            // Handle PST tool default selection
-            let finalItem = item;
-            if (item?.id === 'pst' && !item.selectedSubItem && item.subItems) {
-                const pioneerSubItem = PST_SUB_ITEMS.find(subItem => subItem.id === 'pioneers');
-                if (pioneerSubItem) {
-                    finalItem = {
-                        ...item,
-                        selectedSubItem: pioneerSubItem,
-                    };
-                    console.log('Auto-selected Pioneer for PST tool via keyboard shortcut');
-                }
-            }
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
+    const [renderKey, setRenderKey] = useState(0);
+    const toolbarRef = useRef<HTMLDivElement>(null);
 
-            setSelectedToolbarItem(finalItem);
+    // Force a re-render after initial mount to ensure styled-components classes are stable
+    useEffect(() => {
+        const timer = setTimeout(() => setRenderKey(1), 10);
+        return () => clearTimeout(timer);
+    }, []);
 
-            // Reset drop zone validation when selection changes
-            if (!item) {
-                setIsValidDropZone(false);
-            }
+    // Save position to localStorage whenever it changes
+    useEffect(() => {
+        ToolbarPositioning.savePosition(position, storageKey);
+    }, [position, storageKey]);
 
-            // Handle different tool types with proper state coordination
-            if (item?.toolType === 'linking') {
-                dependencies?.onLinkingModeStart?.();
-                dependencies?.showUserFeedback?.('Hover & click components to link', 'info');
-            } else if (item?.toolType === 'drawing') {
-                dependencies?.onDrawingModeStart?.(item);
-                if (item.selectedSubItem) {
-                    dependencies?.showUserFeedback?.(`Click and drag to draw ${item.selectedSubItem.label} box`, 'info');
-                } else {
-                    dependencies?.showUserFeedback?.('Select a PST type from the dropdown first', 'warning');
-                }
-            } else if (item?.toolType === 'method-application') {
-                dependencies?.onMethodApplicationModeStart?.(item);
-                const methodName = item.methodName || 'method';
-                dependencies?.showUserFeedback?.(`Hover over components to apply ${methodName} method`, 'info');
-            } else {
-                // Reset all tool states when switching to other tools or deselecting
-                dependencies?.onModeReset?.();
-            }
+    // Constrain position to viewport bounds
+    const constrainPosition = useCallback((x: number, y: number): Position => {
+        return ToolbarPositioning.constrainToViewport({x, y}, toolbarRef.current);
+    }, []);
 
-            console.log('Toolbar item processed:', finalItem?.id || 'none', 'with toolType:', finalItem?.toolType || 'none');
+    const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        if (!toolbarRef.current) return;
+
+        const offset = ToolbarPositioning.calculateDragOffset(e, toolbarRef.current);
+        setDragOffset(offset);
+        setIsDragging(true);
+        e.preventDefault();
+    }, []);
+
+    const handleMouseMove = useCallback(
+        (e: MouseEvent) => {
+            if (!isDragging) return;
+
+            const newPosition = ToolbarPositioning.calculateDragPosition(e, dragOffset, toolbarRef.current);
+            setPosition(newPosition);
         },
-        [dependencies],
+        [isDragging, dragOffset],
     );
 
+    const handleMouseUp = useCallback(() => {
+        setIsDragging(false);
+    }, []);
+
+    const resetPosition = useCallback(() => {
+        const newPosition = defaultPosition || ToolbarPositioning.getDefaultPosition();
+        setPosition(newPosition);
+    }, [defaultPosition]);
+
+    // Add global mouse event listeners when dragging
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        if (isDragging) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            return () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            };
+        }
+    }, [isDragging, handleMouseMove, handleMouseUp]);
+
+    // Handle window resize to keep toolbar in bounds
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const handleResize = () => {
+            setPosition((prev: Position) => ToolbarPositioning.adjustForWindowResize(prev, toolbarRef.current));
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return {
-        selectedToolbarItem,
-        isValidDropZone,
-        methodHighlightedComponent,
-        setSelectedToolbarItem,
-        setIsValidDropZone,
-        setMethodHighlightedComponent,
-        handleToolbarItemSelect,
+        position,
+        isDragging,
+        toolbarRef,
+        renderKey,
+        handleMouseDown,
+        resetPosition,
     };
 };
