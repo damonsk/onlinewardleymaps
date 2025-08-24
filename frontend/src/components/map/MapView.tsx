@@ -20,6 +20,7 @@ import {useDrawingState} from './hooks/useDrawingState';
 import {useLinkingState} from './hooks/useLinkingState';
 import {useMapHandlers} from './hooks/useMapHandlers';
 import {useSelectionManager} from './hooks/useSelectionManager';
+import {useToolbarItemState} from './hooks/useToolbarItemState';
 import {useToolbarState} from './hooks/useToolbarState';
 import {useUserFeedback} from './hooks/useUserFeedback';
 
@@ -73,34 +74,8 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
     const linkingState = useLinkingState(props.wardleyMap, props.mapText, props.mutateMapText, showUserFeedback);
     const drawingState = useDrawingState(props.mapDimensions);
 
-    // Toolbar state with dependencies to coordinate with other states
-    const toolbarState = useToolbarState({
-        onLinkingModeStart: () => {
-            linkingState.setLinkingState('selecting-source');
-            linkingState.setSourceComponent(null);
-            linkingState.setHighlightedComponent(null);
-            linkingState.setShowCancellationHint(false);
-            // Reset drawing state when switching to linking
-            drawingState.stopDrawing();
-        },
-        onDrawingModeStart: item => {
-            // Reset linking state when switching to drawing
-            linkingState.resetLinkingState();
-            toolbarState.setMethodHighlightedComponent(null);
-        },
-        onMethodApplicationModeStart: item => {
-            // Reset linking and drawing state when switching to method application
-            linkingState.resetLinkingState();
-            drawingState.stopDrawing();
-        },
-        onModeReset: () => {
-            // Reset all tool states when switching to other tools
-            linkingState.resetLinkingState();
-            drawingState.stopDrawing();
-            toolbarState.setMethodHighlightedComponent(null);
-        },
-        showUserFeedback,
-    });
+    // Toolbar item selection state management
+    const toolbarState = useToolbarItemState();
 
     // Component operations (delete, edit, evolve, etc.)
     const componentOps = useComponentOperations({
@@ -235,7 +210,9 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             } else if (item?.toolType === 'drawing') {
                 // Reset linking state when switching to drawing
                 linkingState.resetLinkingState();
-                toolbarState.setMethodHighlightedComponent(null);
+                if (toolbarState.setMethodHighlightedComponent) {
+                    toolbarState.setMethodHighlightedComponent(null);
+                }
                 if (item.selectedSubItem) {
                     showUserFeedback(`Click and drag to draw ${item.selectedSubItem.label} box`, 'info');
                 } else {
@@ -251,7 +228,9 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 // Reset all tool states when switching to other tools or deselecting
                 linkingState.resetLinkingState();
                 drawingState.stopDrawing();
-                toolbarState.setMethodHighlightedComponent(null);
+                if (toolbarState.setMethodHighlightedComponent) {
+                    toolbarState.setMethodHighlightedComponent(null);
+                }
             }
 
             console.log('Toolbar item processed:', finalItem?.id || 'none', 'with toolType:', finalItem?.toolType || 'none');
