@@ -15,7 +15,7 @@ interface UseToolbarStateProps {
 interface UseToolbarStateReturn {
     position: Position;
     isDragging: boolean;
-    toolbarRef: React.RefObject<HTMLDivElement>;
+    toolbarRef: React.RefObject<HTMLDivElement | null>;
     renderKey: number;
     handleMouseDown: (e: React.MouseEvent) => void;
     resetPosition: () => void;
