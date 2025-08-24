@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
+import {ToolbarItem} from '../../../types/toolbar';
 import {ToolbarPositioning} from '../services/ToolbarPositioning';
 
 interface Position {
@@ -18,6 +19,17 @@ interface UseToolbarStateReturn {
     renderKey: number;
     handleMouseDown: (e: React.MouseEvent) => void;
     resetPosition: () => void;
+}
+
+// Types expected by useMapHandlers
+export interface ToolbarState {
+    selectedToolbarItem: ToolbarItem | null;
+    isValidDropZone: boolean;
+}
+
+export interface ToolbarActions {
+    setSelectedToolbarItem: (item: ToolbarItem | null) => void;
+    setIsValidDropZone: (isValid: boolean) => void;
 }
 
 export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarStateReturn => {
