@@ -1,8 +1,8 @@
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {getToolbarItemByShortcut} from '../../constants/toolbarItems';
 import {KeyboardShortcutHandlerProps} from '../../types/toolbar';
-import {useUndoRedo} from '../UndoRedoProvider';
+import {UndoRedoContext} from '../UndoRedoProvider';
 
 /**
  * Screen reader announcement component for keyboard shortcut activation
@@ -63,8 +63,8 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
         const [announceText, setAnnounceText] = useState('');
         const [platform] = useState(() => detectPlatform());
 
-        // Get undo/redo context (hooks must always be called)
-        const undoRedoContext = useUndoRedo();
+        // Get undo/redo context safely (may be null if provider is not available)
+        const undoRedoContext = useContext(UndoRedoContext);
         /**
          * Check if keyboard shortcuts should be active
          * Prevents interference with text editing contexts
@@ -102,22 +102,12 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
             (event: KeyboardEvent): boolean => {
                 const selectedLink = getSelectedLink?.();
 
-                console.log('KeyboardShortcutHandler deletion check:', {
-                    key: event.key,
-                    selectedComponentId,
-                    selectedLink: selectedLink?.id,
-                    hasDeleteHandler: !!onDeleteComponent,
-                    hasLinkDeleteHandler: !!onDeleteLink,
-                    getSelectedLinkFunction: !!getSelectedLink,
-                    selectedLinkFull: selectedLink,
-                });
 
                 // Check if we have either a component or link selected
                 const hasComponentSelection = selectedComponentId && onDeleteComponent;
                 const hasLinkSelection = selectedLink && onDeleteLink;
 
                 if (!hasComponentSelection && !hasLinkSelection) {
-                    console.log('Deletion blocked - no selected component/link or delete handler');
                     return false;
                 }
 
@@ -130,19 +120,15 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     try {
                         if (hasLinkSelection) {
                             // Delete selected link
-                            console.log('Processing deletion for link:', selectedLink.id);
                             onDeleteLink(selectedLink.linkData);
                             clearSelection?.(); // Clear selection after successful link deletion
                             setAnnounceText(`Link deleted`);
-                            console.log('Link deletion successful');
                         } else if (hasComponentSelection) {
                             // Delete selected component
                             const componentIdStr = String(selectedComponentId);
-                            console.log('Processing deletion for component:', componentIdStr);
                             onDeleteComponent(componentIdStr);
                             clearSelection?.(); // Clear selection after successful component deletion
                             setAnnounceText(`Component deleted`);
-                            console.log('Component deletion successful');
                         }
                     } catch (error) {
                         console.error('Error deleting element:', error);
@@ -170,7 +156,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
                 // Undo: Ctrl+Z (Windows) or Cmd+Z (Mac)
                 if (key === 'z' && isCtrlOrCmd && !event.shiftKey && !event.altKey) {
-                    if (undoRedoContext.canUndo) {
+                    if (undoRedoContext?.canUndo) {
                         event.preventDefault();
                         undoRedoContext.undo();
                         const lastAction = undoRedoContext.getLastAction();
@@ -186,7 +172,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     (key === 'y' && isCtrlOrCmd && !isMac && !event.shiftKey && !event.altKey) ||
                     (key === 'z' && isCtrlOrCmd && isMac && event.shiftKey && !event.altKey)
                 ) {
-                    if (undoRedoContext.canRedo) {
+                    if (undoRedoContext?.canRedo) {
                         event.preventDefault();
                         undoRedoContext.redo();
                         const nextAction = undoRedoContext.getNextAction();

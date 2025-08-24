@@ -6,7 +6,7 @@ import {ActionType, UndoRedoContextValue, UndoRedoProviderProps} from '../types/
 /**
  * Context for undo/redo functionality
  */
-const UndoRedoContext = createContext<UndoRedoContextValue | null>(null);
+export const UndoRedoContext = createContext<UndoRedoContextValue | null>(null);
 
 /**
  * Hook to access the undo/redo context
