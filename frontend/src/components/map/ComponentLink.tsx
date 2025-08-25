@@ -1,10 +1,10 @@
 import React from 'react';
-import { MapDimensions } from '../../constants/defaults';
-import { MapTheme } from '../../constants/mapstyles';
-import { UnifiedComponent } from '../../types/unified/components';
-import { FlowLink } from '../../types/unified/links';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
-import { useComponentLinkHighlight } from '../contexts/ComponentLinkHighlightContext';
+import {MapDimensions} from '../../constants/defaults';
+import {MapTheme} from '../../constants/mapstyles';
+import {UnifiedComponent} from '../../types/unified/components';
+import {FlowLink} from '../../types/unified/links';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import FlowText from './FlowText';
 import ModernPositionCalculator from './ModernPositionCalculator';

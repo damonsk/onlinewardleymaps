@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ToolbarItem } from '../../../types/toolbar';
-import { Position, SnapState, ToolbarPositioning } from '../services/ToolbarPositioning';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ToolbarItem} from '../../../types/toolbar';
+import {Position, SnapState, ToolbarPositioning} from '../services/ToolbarPositioning';
 
 // Configuration constants
 const HOOK_CONFIG = {
@@ -41,12 +41,7 @@ export interface ToolbarActions {
 }
 
 export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarStateReturn => {
-    const {
-        defaultPosition, 
-        storageKey = HOOK_CONFIG.DEFAULT_STORAGE_KEY, 
-        mapOnlyView,
-        toolbarVisible = true
-    } = props;
+    const {defaultPosition, storageKey = HOOK_CONFIG.DEFAULT_STORAGE_KEY, mapOnlyView, toolbarVisible = true} = props;
 
     const [position, setPosition] = useState<Position>(() => {
         return ToolbarPositioning.loadSavedPosition(storageKey);
@@ -86,7 +81,7 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
     const dispatchSnapEvent = useCallback((effectiveSnappedState: boolean) => {
         setTimeout(() => {
             const event = new CustomEvent('toolbarSnap', {
-                detail: { isSnapped: effectiveSnappedState }
+                detail: {isSnapped: effectiveSnappedState},
             });
             window.dispatchEvent(event);
         }, HOOK_CONFIG.SNAP_EVENT_DELAY);
@@ -109,13 +104,8 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
     // Handle mode changes for snapped toolbars
     useEffect(() => {
         if (isSnapped && toolbarRef.current) {
-            const newPosition = ToolbarPositioning.handleModeChange(
-                position,
-                toolbarRef.current,
-                isSnapped,
-                mapOnlyView
-            );
-            
+            const newPosition = ToolbarPositioning.handleModeChange(position, toolbarRef.current, isSnapped, mapOnlyView);
+
             // Only update position if it actually changed
             if (newPosition.x !== position.x || newPosition.y !== position.y) {
                 setPosition(newPosition);
@@ -230,21 +220,21 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
         const handleResize = () => {
             setPosition((prev: Position) => {
                 const newPosition = ToolbarPositioning.adjustForWindowResize(prev, toolbarRef.current, mapOnlyView);
-                
+
                 // If toolbar is currently snapped, ensure we maintain the snap state
                 // and update to the correct snapped position for the new viewport
                 if (isSnapped) {
                     const snappedPosition = ToolbarPositioning.getSnappedPosition(toolbarRef.current, mapOnlyView);
                     return snappedPosition;
                 }
-                
+
                 return newPosition;
             });
         };
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('panelResize', handlePanelResize);
-        
+
         return () => {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('panelResize', handlePanelResize);

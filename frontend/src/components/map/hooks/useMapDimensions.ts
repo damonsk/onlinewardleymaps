@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react';
-import { MapSize } from '../../../types/base';
+import {useCallback, useEffect} from 'react';
+import {MapSize} from '../../../types/base';
 
 interface UseMapDimensionsProps {
     mapSize: MapSize;

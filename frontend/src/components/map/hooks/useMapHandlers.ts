@@ -3,7 +3,11 @@ import {ToolbarItem} from '../../../types/toolbar';
 import {UnifiedComponent} from '../../../types/unified/components';
 import {addLinkToMapText, generateLinkSyntax, linkExists} from '../../../utils/componentDetection';
 import {extractAllComponentNames, insertPipelineComponent, placeComponent} from '../../../utils/mapTextGeneration';
-import {detectNearbyPipeline, generateUniquePipelineComponentName, validatePositionWithPipelineDetection} from '../../../utils/pipelineDetection';
+import {
+    detectNearbyPipeline,
+    generateUniquePipelineComponentName,
+    validatePositionWithPipelineDetection,
+} from '../../../utils/pipelineDetection';
 import {ModernMapViewRefactoredProps} from '../MapView';
 import {generateUniqueComponentName, validatePosition, validateRectangle} from '../utils/validation';
 import {ComponentOperations} from './useComponentOperations';
@@ -374,10 +378,11 @@ export const useMapHandlers = ({
 
                 const actionDescription = item.id === 'pipeline' ? 'Added pipeline' : `Added component \"${result.componentName}\"`;
                 props.mutateMapText(result.updatedMapText, 'toolbar-component', actionDescription);
-                
-                const successMessage = item.id === 'pipeline' 
-                    ? `Pipeline \"${result.componentName}\" created with default components!`
-                    : `Component \"${result.componentName}\" added successfully!`;
+
+                const successMessage =
+                    item.id === 'pipeline'
+                        ? `Pipeline \"${result.componentName}\" created with default components!`
+                        : `Component \"${result.componentName}\" added successfully!`;
                 showUserFeedback(successMessage, 'success');
 
                 toolbarState.setSelectedToolbarItem(null);
@@ -399,38 +404,32 @@ export const useMapHandlers = ({
             try {
                 // Get all existing component names from map text to generate unique name
                 const existingNames = extractAllComponentNames(props.mapText);
-                
+
                 // Generate unique component name
                 const componentName = generateUniquePipelineComponentName('New Component', existingNames);
-                
+
                 // Insert component into pipeline
                 const updatedMapText = insertPipelineComponent(
                     props.mapText,
                     pipelineBounds.name,
                     componentName,
-                    position.x // Use maturity (x) position
+                    position.x, // Use maturity (x) position
                 );
-                
+
                 props.mutateMapText(
                     updatedMapText,
                     'toolbar-component',
-                    `Added component "${componentName}" to pipeline "${pipelineBounds.name}"`
+                    `Added component "${componentName}" to pipeline "${pipelineBounds.name}"`,
                 );
-                
-                showUserFeedback(
-                    `Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`,
-                    'success'
-                );
-                
+
+                showUserFeedback(`Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`, 'success');
+
                 toolbarState.setSelectedToolbarItem(null);
                 toolbarState.setIsValidDropZone(false);
                 setHighlightedPipelineId(null); // Clear pipeline highlighting after successful insertion
             } catch (error) {
                 console.error('Pipeline component insertion failed:', error);
-                showUserFeedback(
-                    `Failed to add component to pipeline "${pipelineBounds.name}". Please try again.`,
-                    'error'
-                );
+                showUserFeedback(`Failed to add component to pipeline "${pipelineBounds.name}". Please try again.`, 'error');
                 toolbarState.setSelectedToolbarItem(null);
                 toolbarState.setIsValidDropZone(false);
                 setHighlightedPipelineId(null); // Clear pipeline highlighting on error
@@ -484,19 +483,13 @@ export const useMapHandlers = ({
         [clearSelection, selectionManager, contextMenuActions],
     );
 
-    const handlePipelineMouseEnter = useCallback(
-        (pipelineId: string) => {
-            setHighlightedPipelineId(pipelineId);
-        },
-        [],
-    );
+    const handlePipelineMouseEnter = useCallback((pipelineId: string) => {
+        setHighlightedPipelineId(pipelineId);
+    }, []);
 
-    const handlePipelineMouseLeave = useCallback(
-        () => {
-            setHighlightedPipelineId(null);
-        },
-        [],
-    );
+    const handlePipelineMouseLeave = useCallback(() => {
+        setHighlightedPipelineId(null);
+    }, []);
 
     return {
         handleContainerClick,

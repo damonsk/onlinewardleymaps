@@ -14,10 +14,10 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
-import { useI18n } from '../../hooks/useI18n';
-import { MapIteration } from '../../repository/OwnApiWardleyMap';
+import {styled} from '@mui/material/styles';
+import React, {FunctionComponent, useEffect, useRef} from 'react';
+import {useI18n} from '../../hooks/useI18n';
+import {MapIteration} from '../../repository/OwnApiWardleyMap';
 
 export interface NewMapIterationsProps {
     mapIterations: MapIteration[];

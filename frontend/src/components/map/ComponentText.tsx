@@ -269,7 +269,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     if (normalizeComponentName(sourceNameInLine) === normalizeComponentName(oldName)) {
                         // We found an evolve statement without an override, and the user is trying to rename
                         // the evolved component. We need to add the arrow syntax with the new name.
-                        
+
                         // Format the new name appropriately
                         let formattedNewName = newName;
                         const needsQuotes =
@@ -351,13 +351,17 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                 // For evolved components, we need to distinguish between two cases:
                 // 1. Has override (evolve foo->bar 0.9) - rename the evolved name "bar"
                 // 2. No override (evolve foo 0.9) - add override syntax with new name
-                
+
                 if (component.override) {
                     // Case 1: Has override - rename the existing evolved name
                     let evolvedCurrentName = component.override;
                     if (evolvedCurrentName.startsWith('"') && evolvedCurrentName.endsWith('"')) {
                         // Remove outer quotes and unescape for matching
-                        evolvedCurrentName = evolvedCurrentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        evolvedCurrentName = evolvedCurrentName
+                            .slice(1, -1)
+                            .replace(/\\"/g, '"')
+                            .replace(/\\n/g, '\n')
+                            .replace(/\\\\/g, '\\');
                     }
                     result = renameEvolvedComponent(evolvedCurrentName, text, mapText, mutateMapText);
                 } else {
@@ -366,7 +370,11 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
                     let sourceComponentName = component.name;
                     if (sourceComponentName.startsWith('"') && sourceComponentName.endsWith('"')) {
                         // Remove outer quotes and unescape for matching
-                        sourceComponentName = sourceComponentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                        sourceComponentName = sourceComponentName
+                            .slice(1, -1)
+                            .replace(/\\"/g, '"')
+                            .replace(/\\n/g, '\n')
+                            .replace(/\\\\/g, '\\');
                     }
                     result = renameEvolvedComponent(sourceComponentName, text, mapText, mutateMapText);
                 }

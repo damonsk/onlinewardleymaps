@@ -36,7 +36,7 @@ export const TOOLBAR_TEMPLATES = {
     note: (name: string, y: string, x: string) => generateNoteText(name, y, x),
     pipeline: ((name: string, y: string, x: string, existingMapText: string = '') => {
         try {
-            const position = { x: parseFloat(x), y: parseFloat(y) };
+            const position = {x: parseFloat(x), y: parseFloat(y)};
             return generatePipelineMapTextWithGlobalUniqueness(name, position, existingMapText);
         } catch (error) {
             console.warn('Failed to generate enhanced pipeline text with global uniqueness, using basic fallback:', error);

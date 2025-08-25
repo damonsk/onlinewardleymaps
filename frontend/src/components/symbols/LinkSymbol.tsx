@@ -64,7 +64,7 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     // Highlighting styles
     const highlightColor = '#2196F3';
     const highlightStrokeWidth = Math.max(strokeWidth * 1.5, 3);
-    
+
     // Apply highlighting when link is part of a component's dependency chain
     const effectiveStroke = isHighlighted ? highlightColor : stroke;
     const effectiveStrokeWidth = isHighlighted ? highlightStrokeWidth : strokeWidth;
@@ -122,7 +122,8 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                 onMouseLeave={() => setIsHovered(false)}
                 style={{
                     cursor,
-                    transition: 'stroke 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                    transition:
+                        'stroke 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 }}
             />
             {flow && (
@@ -140,7 +141,8 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                     onMouseLeave={() => setIsHovered(false)}
                     style={{
                         cursor,
-                        transition: 'stroke 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        transition:
+                            'stroke 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                     }}
                 />
             )}

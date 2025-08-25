@@ -236,7 +236,7 @@ export function createFallbackTemplate(itemId: string, category: string): (name:
             case 'pipeline':
                 // Use the enhanced pipeline generation for fallback
                 try {
-                    return generatePipelineMapText(safeName, { x: parseFloat(safeX), y: parseFloat(safeY) });
+                    return generatePipelineMapText(safeName, {x: parseFloat(safeX), y: parseFloat(safeY)});
                 } catch (error) {
                     console.warn('Failed to generate enhanced pipeline text, using basic fallback:', error);
                     return `pipeline ${safeName} [${safeY}, ${safeX}]`;
@@ -265,10 +265,10 @@ export function createFallbackTemplate(itemId: string, category: string): (name:
  * @returns Generated map text string
  */
 export function generateComponentMapText(
-    item: ToolbarItem, 
-    componentName: string, 
+    item: ToolbarItem,
+    componentName: string,
     position: {x: number; y: number},
-    existingMapText: string = ''
+    existingMapText: string = '',
 ): string {
     if (!item) {
         throw new Error('Toolbar item is required');
@@ -479,10 +479,7 @@ export function placeComponent(
  * @param spacing - Desired spacing between components (default: 0.3)
  * @returns Object containing calculated component positions
  */
-export function calculatePipelineComponentPositions(
-    baseMaturity: number,
-    spacing: number = 0.3,
-): { component1: number; component2: number } {
+export function calculatePipelineComponentPositions(baseMaturity: number, spacing: number = 0.3): {component1: number; component2: number} {
     if (typeof baseMaturity !== 'number' || isNaN(baseMaturity)) {
         throw new Error('Base maturity must be a valid number');
     }
@@ -539,7 +536,7 @@ export function generatePipelineBlock(pipelineName: string, baseMaturity: number
     }
 
     const positions = calculatePipelineComponentPositions(baseMaturity);
-    
+
     return `pipeline ${pipelineName}
 {
     component Pipeline Component 1 [${positions.component1.toFixed(2)}]
@@ -554,10 +551,7 @@ export function generatePipelineBlock(pipelineName: string, baseMaturity: number
  * @param position - Position coordinates {x: maturity, y: visibility}
  * @returns Complete pipeline map text
  */
-export function generatePipelineMapText(
-    pipelineName: string,
-    position: { x: number; y: number }
-): string {
+export function generatePipelineMapText(pipelineName: string, position: {x: number; y: number}): string {
     if (!pipelineName || typeof pipelineName !== 'string') {
         throw new Error('Pipeline name must be a non-empty string');
     }
@@ -568,13 +562,13 @@ export function generatePipelineMapText(
 
     const formattedY = formatCoordinate(position.y);
     const formattedX = formatCoordinate(position.x);
-    
+
     // Generate component line
     const componentLine = `component ${pipelineName} [${formattedY}, ${formattedX}]`;
-    
+
     // Generate pipeline block
     const pipelineBlock = generatePipelineBlock(pipelineName, position.x);
-    
+
     return `${componentLine}\n${pipelineBlock}`;
 }
 
@@ -593,7 +587,7 @@ export function insertPipelineComponent(
     pipelineName: string,
     componentName: string,
     maturity: number,
-    labelOffset?: { x: number; y: number }
+    labelOffset?: {x: number; y: number},
 ): string {
     if (!mapText || typeof mapText !== 'string') {
         throw new Error('Map text must be a non-empty string');
@@ -613,7 +607,7 @@ export function insertPipelineComponent(
 
     const lines = mapText.split('\n');
     const pipelineBlockStart = findPipelineBlockStart(lines, pipelineName);
-    
+
     if (pipelineBlockStart === -1) {
         throw new Error(`Pipeline "${pipelineName}" not found in map text`);
     }
@@ -621,7 +615,7 @@ export function insertPipelineComponent(
     // Format the new component line
     const formattedMaturity = formatCoordinate(maturity);
     let componentLine = `    component ${componentName} [${formattedMaturity}]`;
-    
+
     if (labelOffset) {
         componentLine += ` label [${labelOffset.x}, ${labelOffset.y}]`;
     }
@@ -629,7 +623,7 @@ export function insertPipelineComponent(
     // Insert the component line at the beginning of the pipeline block (after the opening brace)
     const insertIndex = pipelineBlockStart + 1;
     lines.splice(insertIndex, 0, componentLine);
-    
+
     return lines.join('\n');
 }
 
@@ -643,7 +637,7 @@ export function insertPipelineComponent(
 function findPipelineBlockStart(lines: string[], pipelineName: string): number {
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        
+
         // Look for pipeline declaration
         if (line.startsWith(`pipeline ${pipelineName}`)) {
             // Find the opening brace on the same or next line
@@ -692,7 +686,7 @@ export function calculatePipelineBounds(pipeline: any): PipelineBounds {
     }
 
     const maturities = pipeline.components.map((c: any) => c.maturity || 0).filter((m: number) => !isNaN(m));
-    
+
     if (maturities.length === 0) {
         throw new Error('Pipeline has no valid component maturities');
     }
@@ -715,18 +709,18 @@ export function calculatePipelineBounds(pipeline: any): PipelineBounds {
  * @returns True if position is within bounds
  */
 export function isPositionWithinPipelineBounds(
-    position: { x: number; y: number },
+    position: {x: number; y: number},
     pipelineBounds: PipelineBounds,
-    tolerance: number = 0.1
+    tolerance: number = 0.1,
 ): boolean {
     // Check maturity bounds (x-axis)
     const withinMaturityRange = position.x >= pipelineBounds.minMaturity && position.x <= pipelineBounds.maxMaturity;
-    
+
     // Check visibility proximity (y-axis) with asymmetric tolerance
     // In Wardley Maps: higher visibility = higher on screen = "above" the pipeline visually
     // We want smaller tolerance above the pipeline to fix excessive capture area
     const visibilityDifference = position.y - pipelineBounds.visibility;
-    
+
     let actualTolerance = tolerance;
     if (visibilityDifference > 0) {
         // Position is above the pipeline (higher visibility)
@@ -734,9 +728,9 @@ export function isPositionWithinPipelineBounds(
         actualTolerance = tolerance * 0.3; // 30% of normal tolerance
     }
     // Position is below the pipeline (lower visibility) - use full tolerance
-    
+
     const withinVisibilityTolerance = Math.abs(visibilityDifference) <= actualTolerance;
-    
+
     return withinMaturityRange && withinVisibilityTolerance;
 }
 
@@ -755,22 +749,22 @@ export function extractAllComponentNames(mapText: string): string[] {
     const componentNames = new Set<string>();
     const lines = mapText.split('\n');
     let inPipelineBlock = false;
-    
+
     for (const line of lines) {
         const trimmedLine = line.trim();
-        
+
         // Check if we're entering a pipeline block
         if (trimmedLine.includes('{')) {
             inPipelineBlock = true;
             continue;
         }
-        
+
         // Check if we're exiting a pipeline block
         if (trimmedLine === '}') {
             inPipelineBlock = false;
             continue;
         }
-        
+
         // Match components inside pipeline blocks: component Name [maturity]
         if (inPipelineBlock) {
             const pipelineComponentMatch = trimmedLine.match(/^component\s+(.+?)\s*\[/);
@@ -782,7 +776,7 @@ export function extractAllComponentNames(mapText: string): string[] {
                 continue;
             }
         }
-        
+
         // Match regular components: component Name [coordinates]
         const componentMatch = trimmedLine.match(/^component\s+(.+?)\s*\[/);
         if (componentMatch) {
@@ -792,7 +786,7 @@ export function extractAllComponentNames(mapText: string): string[] {
             }
             continue;
         }
-        
+
         // Match anchors: anchor Name [coordinates]
         const anchorMatch = trimmedLine.match(/^anchor\s+(.+?)\s*\[/);
         if (anchorMatch) {
@@ -802,7 +796,7 @@ export function extractAllComponentNames(mapText: string): string[] {
             }
             continue;
         }
-        
+
         // Match notes: note "Text" [coordinates] or note Text [coordinates]
         const noteMatch = trimmedLine.match(/^note\s+(.+?)\s*\[/);
         if (noteMatch) {
@@ -816,7 +810,7 @@ export function extractAllComponentNames(mapText: string): string[] {
             }
         }
     }
-    
+
     return Array.from(componentNames);
 }
 
@@ -830,8 +824,8 @@ export function extractAllComponentNames(mapText: string): string[] {
  */
 export function generatePipelineMapTextWithGlobalUniqueness(
     pipelineName: string,
-    position: { x: number; y: number },
-    existingMapText: string = ''
+    position: {x: number; y: number},
+    existingMapText: string = '',
 ): string {
     if (!pipelineName || typeof pipelineName !== 'string') {
         throw new Error('Pipeline name must be a non-empty string');
@@ -843,16 +837,16 @@ export function generatePipelineMapTextWithGlobalUniqueness(
 
     const formattedY = formatCoordinate(position.y);
     const formattedX = formatCoordinate(position.x);
-    
+
     // Generate component line
     const componentLine = `component ${pipelineName} [${formattedY}, ${formattedX}]`;
-    
+
     // Get all existing component names for global uniqueness
     const existingNames = extractAllComponentNames(existingMapText);
-    
+
     // Generate pipeline block with globally unique component names
     const pipelineBlock = generatePipelineBlockWithUniqueness(pipelineName, position.x, existingNames);
-    
+
     return `${componentLine}\n${pipelineBlock}`;
 }
 
@@ -864,31 +858,27 @@ export function generatePipelineMapTextWithGlobalUniqueness(
  * @param existingNames - Array of existing component names for uniqueness checking
  * @returns Formatted pipeline block string with unique component names
  */
-export function generatePipelineBlockWithUniqueness(
-    pipelineName: string, 
-    baseMaturity: number, 
-    existingNames: string[] = []
-): string {
+export function generatePipelineBlockWithUniqueness(pipelineName: string, baseMaturity: number, existingNames: string[] = []): string {
     if (!pipelineName || typeof pipelineName !== 'string') {
         throw new Error('Pipeline name must be a non-empty string');
     }
 
     const positions = calculatePipelineComponentPositions(baseMaturity);
-    
+
     // Generate unique names for pipeline components
     const component1Name = generateUniqueComponentName({
         baseName: 'Pipeline Component 1',
         existingNames: existingNames,
     });
-    
+
     // Update existing names to include the first component
     const updatedExistingNames = [...existingNames, component1Name];
-    
+
     const component2Name = generateUniqueComponentName({
         baseName: 'Pipeline Component 2',
         existingNames: updatedExistingNames,
     });
-    
+
     return `pipeline ${pipelineName}
 {
     component ${component1Name} [${positions.component1.toFixed(2)}]

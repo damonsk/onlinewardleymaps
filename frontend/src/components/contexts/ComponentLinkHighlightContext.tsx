@@ -1,14 +1,14 @@
 /**
  * Component Link Highlighting Context
- * 
+ *
  * This context manages the hover state for component link highlighting.
  * It tracks which component is being hovered and provides information
  * about which links should be highlighted.
  */
 
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { ComponentDependencyGraph, createDependencyGraph } from '../../utils/dependencyGraph';
-import { ProcessedLinkGroup } from '../../utils/mapProcessing';
+import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
+import {ComponentDependencyGraph, createDependencyGraph} from '../../utils/dependencyGraph';
+import {ProcessedLinkGroup} from '../../utils/mapProcessing';
 
 export interface LinkHighlightState {
     hoveredComponent: string | null;
@@ -31,10 +31,7 @@ export interface ComponentLinkHighlightProviderProps {
     processedLinks?: ProcessedLinkGroup[];
 }
 
-export const ComponentLinkHighlightProvider: React.FC<ComponentLinkHighlightProviderProps> = ({
-    children,
-    processedLinks = [],
-}) => {
+export const ComponentLinkHighlightProvider: React.FC<ComponentLinkHighlightProviderProps> = ({children, processedLinks = []}) => {
     const [hoveredComponent, setHoveredComponentState] = useState<string | null>(null);
     const [dependencyGraph, setDependencyGraph] = useState<ComponentDependencyGraph | null>(null);
 
@@ -62,10 +59,7 @@ export const ComponentLinkHighlightProvider: React.FC<ComponentLinkHighlightProv
         }
 
         const highlightedLinks = new Set<string>(dependencyGraph.getDescendantLinks(hoveredComponent));
-        const highlightedComponents = new Set<string>([
-            hoveredComponent,
-            ...dependencyGraph.getDescendants(hoveredComponent),
-        ]);
+        const highlightedComponents = new Set<string>([hoveredComponent, ...dependencyGraph.getDescendants(hoveredComponent)]);
 
         return {
             hoveredComponent,
@@ -105,11 +99,7 @@ export const ComponentLinkHighlightProvider: React.FC<ComponentLinkHighlightProv
         updateDependencyGraph,
     };
 
-    return (
-        <ComponentLinkHighlightContext.Provider value={contextValue}>
-            {children}
-        </ComponentLinkHighlightContext.Provider>
-    );
+    return <ComponentLinkHighlightContext.Provider value={contextValue}>{children}</ComponentLinkHighlightContext.Provider>;
 };
 
 export const useComponentLinkHighlight = (): ComponentLinkHighlightContextValue => {

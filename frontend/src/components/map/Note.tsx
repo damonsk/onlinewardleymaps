@@ -60,7 +60,7 @@ const Note: React.FC<ModernNoteProps> = ({
     React.useEffect(() => {
         setEditMode(false);
         setEditText(note.text);
-        
+
         // Update selection box dimensions when text changes
         const isMultiLine = note.text.includes('\n');
         const fontSize = parseInt(mapStyleDefs?.note?.fontSize || '14');

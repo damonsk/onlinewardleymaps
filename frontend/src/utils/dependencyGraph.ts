@@ -1,11 +1,11 @@
 /**
  * Dependency Graph Utility for Component Link Highlighting
- * 
+ *
  * This utility builds a dependency graph from links data to enable
  * highlighting of descendant linked components when hovering over a component.
  */
 
-import { ProcessedLinkGroup } from './mapProcessing';
+import {ProcessedLinkGroup} from './mapProcessing';
 
 export interface DependencyNode {
     componentName: string;
@@ -22,7 +22,7 @@ export interface ComponentDependencyGraph {
 
 /**
  * Creates a dependency graph from processed links
- * 
+ *
  * @param processedLinks - The processed link groups from the map
  * @returns ComponentDependencyGraph with methods to query dependencies
  */
@@ -46,14 +46,14 @@ export function createDependencyGraph(processedLinks: ProcessedLinkGroup[]): Com
         linkGroup.links.forEach(processedLink => {
             const startElement = processedLink.startElement;
             const endElement = processedLink.endElement;
-            
+
             if (startElement && endElement) {
                 const startNode = initializeNode(startElement.name);
                 initializeNode(endElement.name); // Ensure end node exists
-                
+
                 // Create link ID for this connection
                 const linkId = `${startElement.name}->${endElement.name}`;
-                
+
                 // Add direct dependency
                 startNode.descendants.add(endElement.name);
                 startNode.linkIds.add(linkId);
@@ -66,20 +66,20 @@ export function createDependencyGraph(processedLinks: ProcessedLinkGroup[]): Com
         if (visited.has(componentName)) {
             return new Set(); // Prevent cycles
         }
-        
+
         visited.add(componentName);
         const node = nodes.get(componentName);
-        
+
         if (!node) {
             return new Set();
         }
 
         const allDescendants = new Set<string>();
-        
+
         // Add direct descendants
         node.descendants.forEach(descendant => {
             allDescendants.add(descendant);
-            
+
             // Recursively add descendants of descendants
             const transitiveDescendants = findAllDescendants(descendant, new Set(visited));
             transitiveDescendants.forEach(transitive => allDescendants.add(transitive));
@@ -92,19 +92,19 @@ export function createDependencyGraph(processedLinks: ProcessedLinkGroup[]): Com
     nodes.forEach((node, componentName) => {
         const allDescendants = findAllDescendants(componentName);
         node.descendants = allDescendants;
-        
+
         // Update linkIds to include all links in the descendant chain
         const allLinkIds = new Set<string>();
-        
+
         // Add links that originate from this component or any of its descendants
         processedLinks.forEach(linkGroup => {
             linkGroup.links.forEach(processedLink => {
                 const startElement = processedLink.startElement;
                 const endElement = processedLink.endElement;
-                
+
                 if (startElement && endElement) {
                     const linkId = `${startElement.name}->${endElement.name}`;
-                    
+
                     // Include link if:
                     // 1. This component is the direct start of the link
                     // 2. Any descendant of this component is the start of the link
@@ -114,7 +114,7 @@ export function createDependencyGraph(processedLinks: ProcessedLinkGroup[]): Com
                 }
             });
         });
-        
+
         node.linkIds = allLinkIds;
     });
 

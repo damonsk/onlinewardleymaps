@@ -19,7 +19,7 @@ export interface TextDimensions {
  */
 export function measureTextElement(element: SVGTextElement | null): TextDimensions {
     if (!element) {
-        return { width: 40, height: 20, x: -20, y: -10 }; // Default fallback size
+        return {width: 40, height: 20, x: -20, y: -10}; // Default fallback size
     }
 
     try {
@@ -32,7 +32,7 @@ export function measureTextElement(element: SVGTextElement | null): TextDimensio
         };
     } catch (error) {
         console.warn('Failed to measure text element, using default dimensions:', error);
-        return { width: 40, height: 20, x: -20, y: -10 };
+        return {width: 40, height: 20, x: -20, y: -10};
     }
 }
 
@@ -49,16 +49,16 @@ export function estimateTextDimensions(
     text: string,
     fontSize: number = 14,
     fontFamily: string = 'Arial, sans-serif',
-    isMultiLine: boolean = false
+    isMultiLine: boolean = false,
 ): TextDimensions {
     if (!text || text.trim().length === 0) {
-        return { width: 10, height: fontSize, x: -5, y: -fontSize / 2 };
+        return {width: 10, height: fontSize, x: -5, y: -fontSize / 2};
     }
 
     // Create a temporary canvas to measure text
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    
+
     if (!context) {
         // Fallback to character-based estimation
         const avgCharWidth = fontSize * 0.6; // Approximation
@@ -66,7 +66,7 @@ export function estimateTextDimensions(
         const maxLineLength = Math.max(...lines.map(line => line.length));
         const width = maxLineLength * avgCharWidth;
         const height = lines.length * fontSize * 1.2; // Line height factor
-        
+
         return {
             width,
             height,
@@ -76,18 +76,18 @@ export function estimateTextDimensions(
     }
 
     context.font = `${fontSize}px ${fontFamily}`;
-    
+
     if (isMultiLine) {
         const lines = text.split('\n');
         let maxWidth = 0;
-        
+
         for (const line of lines) {
             const lineWidth = context.measureText(line).width;
             maxWidth = Math.max(maxWidth, lineWidth);
         }
-        
+
         const height = lines.length * fontSize * 1.2; // Line height factor
-        
+
         return {
             width: maxWidth,
             height,
@@ -98,7 +98,7 @@ export function estimateTextDimensions(
         const metrics = context.measureText(text);
         const width = metrics.width;
         const height = fontSize; // Single line height
-        
+
         return {
             width,
             height,
@@ -114,13 +114,10 @@ export function estimateTextDimensions(
  * @param padding - Additional padding around the text (default: 4px)
  * @returns Selection box dimensions
  */
-export function createSelectionBoxDimensions(
-    textDimensions: TextDimensions,
-    padding: number = 4
-): TextDimensions {
+export function createSelectionBoxDimensions(textDimensions: TextDimensions, padding: number = 4): TextDimensions {
     return {
-        width: textDimensions.width + (padding * 2),
-        height: textDimensions.height + (padding * 2),
+        width: textDimensions.width + padding * 2,
+        height: textDimensions.height + padding * 2,
         x: textDimensions.x - padding,
         y: textDimensions.y - padding,
     };
@@ -138,10 +135,10 @@ export function useTextDimensions(
     text: string,
     fontSize: number = 14,
     fontFamily: string = 'Arial, sans-serif',
-    isMultiLine: boolean = false
+    isMultiLine: boolean = false,
 ) {
     const [dimensions, setDimensions] = React.useState<TextDimensions>(() =>
-        estimateTextDimensions(text, fontSize, fontFamily, isMultiLine)
+        estimateTextDimensions(text, fontSize, fontFamily, isMultiLine),
     );
 
     const textRef = React.useCallback((element: SVGTextElement | null) => {
@@ -159,5 +156,5 @@ export function useTextDimensions(
         setDimensions(estimateTextDimensions(text, fontSize, fontFamily, isMultiLine));
     }, [text, fontSize, fontFamily, isMultiLine]);
 
-    return { textRef, dimensions };
+    return {textRef, dimensions};
 }

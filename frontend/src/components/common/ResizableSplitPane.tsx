@@ -94,7 +94,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                 }
             });
         }
-    // Only run this effect once on mount - eslint-disable-next-line react-hooks/exhaustive-deps
+        // Only run this effect once on mount - eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Dispatch resize events when width changes to notify the map

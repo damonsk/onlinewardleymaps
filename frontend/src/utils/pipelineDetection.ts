@@ -1,6 +1,6 @@
 /**
  * Pipeline Detection and Position Validation Utilities
- * 
+ *
  * This module provides enhanced position validation that can detect when a component
  * should be snapped to an existing pipeline based on its position.
  */
@@ -17,7 +17,7 @@ export interface PositionValidationResult {
     errors: string[];
     nearbyPipeline?: PipelineBounds;
     shouldSnapToPipeline?: boolean;
-    suggestedPosition?: { x: number; y: number };
+    suggestedPosition?: {x: number; y: number};
 }
 
 /**
@@ -29,18 +29,18 @@ export interface PositionValidationResult {
  * @returns Enhanced validation result
  */
 export function validatePositionWithPipelineDetection(
-    position: { x: number; y: number },
+    position: {x: number; y: number},
     wardleyMap: UnifiedWardleyMap,
     options: {
         tolerance?: number;
         enablePipelineSnapping?: boolean;
-    } = {}
+    } = {},
 ): PositionValidationResult {
     const {tolerance = 0.1, enablePipelineSnapping = true} = options;
 
     // Basic position validation
     const errors: string[] = [];
-    
+
     if (typeof position.x !== 'number' || isNaN(position.x)) {
         errors.push('Position x must be a valid number');
     } else if (position.x < 0 || position.x > 1) {
@@ -66,7 +66,7 @@ export function validatePositionWithPipelineDetection(
     // Pipeline detection
     try {
         const nearbyPipeline = detectNearbyPipeline(position, wardleyMap.pipelines || [], tolerance);
-        
+
         if (nearbyPipeline) {
             return {
                 ...basicValidation,
@@ -95,9 +95,9 @@ export function validatePositionWithPipelineDetection(
  * @returns Pipeline bounds if position is nearby, undefined otherwise
  */
 export function detectNearbyPipeline(
-    position: { x: number; y: number },
+    position: {x: number; y: number},
     pipelines: PipelineData[],
-    tolerance: number = 0.1
+    tolerance: number = 0.1,
 ): PipelineBounds | undefined {
     if (!pipelines || !Array.isArray(pipelines)) {
         return undefined;
@@ -106,7 +106,7 @@ export function detectNearbyPipeline(
     for (const pipeline of pipelines) {
         try {
             const bounds = calculatePipelineBounds(pipeline);
-            
+
             if (isPositionWithinPipelineBounds(position, bounds, tolerance)) {
                 return bounds;
             }
@@ -152,20 +152,18 @@ export function getAllPipelineBounds(wardleyMap: UnifiedWardleyMap): PipelineBou
  * @returns Best matching pipeline bounds or undefined
  */
 export function findBestPipelineForPosition(
-    position: { x: number; y: number },
+    position: {x: number; y: number},
     wardleyMap: UnifiedWardleyMap,
-    tolerance: number = 0.1
+    tolerance: number = 0.1,
 ): PipelineBounds | undefined {
     const allBounds = getAllPipelineBounds(wardleyMap);
-    
+
     if (allBounds.length === 0) {
         return undefined;
     }
 
     // Find pipelines that contain the position
-    const matchingPipelines = allBounds.filter(bounds =>
-        isPositionWithinPipelineBounds(position, bounds, tolerance)
-    );
+    const matchingPipelines = allBounds.filter(bounds => isPositionWithinPipelineBounds(position, bounds, tolerance));
 
     if (matchingPipelines.length === 0) {
         return undefined;
@@ -194,7 +192,7 @@ export function findBestPipelineForPosition(
 export function generateUniquePipelineComponentName(
     baseName: string = 'New Component',
     existingNames: string[] = [],
-    maxAttempts: number = 100
+    maxAttempts: number = 100,
 ): string {
     if (!existingNames.includes(baseName)) {
         return baseName;

@@ -35,7 +35,7 @@ interface AnnotationRendererProps {
     drawingStartPosition?: {x: number; y: number} | null;
     drawingCurrentPosition?: {x: number; y: number};
     selectedToolbarItem?: any;
-    
+
     // Pipeline highlighting
     highlightedPipelineId?: string | null;
     onPipelineMouseEnter?: (pipelineId: string) => void;

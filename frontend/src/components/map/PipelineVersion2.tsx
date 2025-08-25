@@ -191,7 +191,9 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                 styles={props.mapStyleDefs.component}
                 stroke={props.mapStyleDefs.component.stroke}
                 isHighlighted={props.isHighlighted}
-                onMouseEnter={props.selectedToolbarItem?.id === 'component' ? () => props.onPipelineMouseEnter?.(props.pipeline.name) : undefined}
+                onMouseEnter={
+                    props.selectedToolbarItem?.id === 'component' ? () => props.onPipelineMouseEnter?.(props.pipeline.name) : undefined
+                }
                 onMouseLeave={props.selectedToolbarItem?.id === 'component' ? props.onPipelineMouseLeave : undefined}
             />
             {componentSymbols}

@@ -1,19 +1,19 @@
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ReactSVGPanZoom, UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
-import { MapElements } from '../../processing/MapElements';
-import { MapTitleManager } from '../../services/MapTitleManager';
-import { processLinks } from '../../utils/mapProcessing';
-import { useEditing } from '../EditingContext';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
-import { ComponentLinkHighlightProvider } from '../contexts/ComponentLinkHighlightContext';
+import {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ReactSVGPanZoom, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
+import {MapElements} from '../../processing/MapElements';
+import {MapTitleManager} from '../../services/MapTitleManager';
+import {processLinks} from '../../utils/mapProcessing';
+import {useEditing} from '../EditingContext';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {ComponentLinkHighlightProvider} from '../contexts/ComponentLinkHighlightContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
-import { DebugOverlay } from './debug/DebugOverlay';
-import { useCanvasState } from './hooks/useCanvasState';
-import { useMapEventHandlers } from './hooks/useMapEventHandlers';
-import { usePSTInteractions } from './hooks/usePSTInteractions';
-import { UnifiedMapCanvasProps } from './types/MapCanvasProps';
+import {DebugOverlay} from './debug/DebugOverlay';
+import {useCanvasState} from './hooks/useCanvasState';
+import {useMapEventHandlers} from './hooks/useMapEventHandlers';
+import {usePSTInteractions} from './hooks/usePSTInteractions';
+import {UnifiedMapCanvasProps} from './types/MapCanvasProps';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
@@ -300,7 +300,15 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 waitingForPanelRestore,
             });
         }
-    }, [mapDimensions.width, mapDimensions.height, mapCanvasDimensions.width, mapCanvasDimensions.height, waitingForPanelRestore, setIsInitialSizingComplete, wardleyMap.components.length]);
+    }, [
+        mapDimensions.width,
+        mapDimensions.height,
+        mapCanvasDimensions.width,
+        mapCanvasDimensions.height,
+        waitingForPanelRestore,
+        setIsInitialSizingComplete,
+        wardleyMap.components.length,
+    ]);
 
     // Style configuration
     const fill = {

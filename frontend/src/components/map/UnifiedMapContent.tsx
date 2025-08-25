@@ -74,7 +74,7 @@ interface ModernUnifiedMapContentProps {
         event: React.MouseEvent,
     ) => void;
     isLinkSelected?: (linkId: string) => boolean;
-    
+
     // Pipeline highlighting
     highlightedPipelineId?: string | null;
     onPipelineMouseEnter?: (pipelineId: string) => void;

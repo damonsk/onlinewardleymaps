@@ -1,30 +1,30 @@
-import React, { LegacyRef, useCallback, useMemo, useState } from 'react';
-import { EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets } from '../../constants/defaults';
-import { PST_SUB_ITEMS } from '../../constants/toolbarItems';
-import { MapPropertiesManager } from '../../services/MapPropertiesManager';
-import { MapAnnotationsPosition } from '../../types/base';
-import { MapTheme } from '../../types/map/styles';
-import { ToolbarItem } from '../../types/toolbar';
-import { ActionType } from '../../types/undo-redo';
-import { UnifiedWardleyMap } from '../../types/unified/map';
-import { useComponentSelection } from '../ComponentSelectionContext';
-import { useFeatureSwitches } from '../FeatureSwitchesContext';
-import { ContextMenuProvider } from './ContextMenuProvider';
+import React, {LegacyRef, useCallback, useMemo, useState} from 'react';
+import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
+import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
+import {MapPropertiesManager} from '../../services/MapPropertiesManager';
+import {MapAnnotationsPosition} from '../../types/base';
+import {MapTheme} from '../../types/map/styles';
+import {ToolbarItem} from '../../types/toolbar';
+import {ActionType} from '../../types/undo-redo';
+import {UnifiedWardleyMap} from '../../types/unified/map';
+import {useComponentSelection} from '../ComponentSelectionContext';
+import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {ContextMenuProvider} from './ContextMenuProvider';
 import EvolutionStagesDialog from './EvolutionStagesDialog';
-import { DefaultThemes } from './foundation/Fill';
+import {DefaultThemes} from './foundation/Fill';
 import MapSizeDialog from './MapSizeDialog';
 
 // New custom hooks for separated concerns
-import { useComponentOperations } from './hooks/useComponentOperations';
-import { useDrawingState } from './hooks/useDrawingState';
-import { useLinkingState } from './hooks/useLinkingState';
-import { useMapHandlers } from './hooks/useMapHandlers';
-import { useSelectionManager } from './hooks/useSelectionManager';
-import { useToolbarItemState } from './hooks/useToolbarItemState';
-import { useUserFeedback } from './hooks/useUserFeedback';
+import {useComponentOperations} from './hooks/useComponentOperations';
+import {useDrawingState} from './hooks/useDrawingState';
+import {useLinkingState} from './hooks/useLinkingState';
+import {useMapHandlers} from './hooks/useMapHandlers';
+import {useSelectionManager} from './hooks/useSelectionManager';
+import {useToolbarItemState} from './hooks/useToolbarItemState';
+import {useUserFeedback} from './hooks/useUserFeedback';
 
 // New components for separated UI concerns
-import { UserFeedbackNotification } from './components/UserFeedbackNotification';
+import {UserFeedbackNotification} from './components/UserFeedbackNotification';
 import DragPreview from './DragPreview';
 import UnifiedMapCanvas from './UnifiedMapCanvas';
 import WysiwygToolbar from './WysiwygToolbar';
@@ -176,12 +176,12 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
 
     // Memoized styling to prevent recreation on every render
     const containerStyle = useMemo(() => getContainerStyle(props.mapStyleDefs), [props.mapStyleDefs]);
-    
+
     // Calculate effective toolbar snapped state for map sizing
     // Toolbar affects map size only if it's both snapped AND visible
     const effectiveToolbarSnapped = (props.toolbarSnapped ?? false) && (props.showWysiwygToolbar ?? true);
     const mapStyle = useMemo(() => getMapStyle(effectiveToolbarSnapped), [effectiveToolbarSnapped]);
-    
+
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as LegacyRef<HTMLDivElement> | undefined;
 
     // Unified toolbar selection handler that coordinates between different state hooks
@@ -378,7 +378,7 @@ const getContainerStyle = (mapStyleDefs: MapTheme): React.CSSProperties => {
 
 const getMapStyle = (toolbarSnapped = false): React.CSSProperties => {
     const toolbarWidth = 48; // Width to reserve for snapped toolbar (48px toolbar + 0px margin, reduced from 80px)
-    
+
     return {
         width: toolbarSnapped ? `calc(100% - ${toolbarWidth}px)` : '100%',
         height: '100%',

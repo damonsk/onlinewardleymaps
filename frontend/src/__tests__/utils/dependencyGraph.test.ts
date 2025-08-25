@@ -6,7 +6,7 @@ import {
     createDependencyGraph,
     normalizeComponentName,
 } from '../../utils/dependencyGraph';
-import { ProcessedLinkGroup } from '../../utils/mapProcessing';
+import {ProcessedLinkGroup} from '../../utils/mapProcessing';
 
 describe('Component Link Highlighting Dependency Graph', () => {
     describe('createDependencyGraph', () => {
@@ -27,7 +27,15 @@ describe('Component Link Highlighting Dependency Graph', () => {
                     links: [
                         {
                             key: 1,
-                            link: {start: 'Business', end: 'Cup of Tea', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Business',
+                                end: 'Cup of Tea',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Business', id: 'business', type: 'anchor'} as any,
                             endElement: {name: 'Cup of Tea', id: 'cup-of-tea', type: 'component'} as any,
                         },
@@ -56,9 +64,7 @@ describe('Component Link Highlighting Dependency Graph', () => {
 
             // Business should have all downstream links
             const businessLinks = dependencyGraph.getDescendantLinks('Business');
-            expect(businessLinks).toEqual(
-                expect.arrayContaining(['Business->Cup of Tea', 'Cup of Tea->Tea', 'Tea->Hot Water']),
-            );
+            expect(businessLinks).toEqual(expect.arrayContaining(['Business->Cup of Tea', 'Cup of Tea->Tea', 'Tea->Hot Water']));
 
             // Cup of Tea should have Tea and Hot Water as descendants
             const cupOfTeaDescendants = dependencyGraph.getDescendants('Cup of Tea');
@@ -88,7 +94,15 @@ describe('Component Link Highlighting Dependency Graph', () => {
                     name: 'links',
                     links: [
                         {
-                            link: {start: 'Business', end: 'Cup of Tea', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Business',
+                                end: 'Cup of Tea',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Business', id: 'business', type: 'anchor'} as any,
                             endElement: {name: 'Cup of Tea', id: 'cup-of-tea', type: 'component'} as any,
                         },
@@ -121,12 +135,7 @@ describe('Component Link Highlighting Dependency Graph', () => {
             // Business should have all links in both branches
             const businessLinks = dependencyGraph.getDescendantLinks('Business');
             expect(businessLinks).toEqual(
-                expect.arrayContaining([
-                    'Business->Cup of Tea',
-                    'Cup of Tea->Tea',
-                    'Cup of Tea->Cup',
-                    'Tea->Hot Water',
-                ]),
+                expect.arrayContaining(['Business->Cup of Tea', 'Cup of Tea->Tea', 'Cup of Tea->Cup', 'Tea->Hot Water']),
             );
 
             // Cup of Tea should have both branches
@@ -145,7 +154,15 @@ describe('Component Link Highlighting Dependency Graph', () => {
                     name: 'links',
                     links: [
                         {
-                            link: {start: 'Business', end: 'Cup of Tea', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Business',
+                                end: 'Cup of Tea',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Business', id: 'business', type: 'anchor'} as any,
                             endElement: {name: 'Cup of Tea', id: 'cup-of-tea', type: 'component'} as any,
                         },
@@ -175,12 +192,28 @@ describe('Component Link Highlighting Dependency Graph', () => {
                     name: 'links',
                     links: [
                         {
-                            link: {start: 'Business', end: 'Cup of Tea', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Business',
+                                end: 'Cup of Tea',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Business', id: 'business', type: 'anchor'} as any,
                             endElement: {name: 'Cup of Tea', id: 'cup-of-tea', type: 'component'} as any,
                         },
                         {
-                            link: {start: 'Public', end: 'Customer Service', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Public',
+                                end: 'Customer Service',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Public', id: 'public', type: 'anchor'} as any,
                             endElement: {name: 'Customer Service', id: 'customer-service', type: 'component'} as any,
                         },
@@ -230,7 +263,7 @@ describe('Component Link Highlighting Dependency Graph', () => {
             // This should not throw an error or cause infinite recursion
             expect(() => {
                 const dependencyGraph = createDependencyGraph(processedLinks);
-                
+
                 // All components should be present in the graph
                 expect(dependencyGraph.nodes.has('A')).toBe(true);
                 expect(dependencyGraph.nodes.has('B')).toBe(true);
@@ -248,7 +281,15 @@ describe('Component Link Highlighting Dependency Graph', () => {
                     name: 'links',
                     links: [
                         {
-                            link: {start: 'Multi-line\nComponent\nName', end: 'Simple Component', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Multi-line\nComponent\nName',
+                                end: 'Simple Component',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Multi-line\nComponent\nName', id: 'multi', type: 'component'} as any,
                             endElement: {name: 'Simple Component', id: 'simple', type: 'component'} as any,
                         },
@@ -356,7 +397,15 @@ describe('Component Link Highlighting Dependency Graph', () => {
                     name: 'links',
                     links: [
                         {
-                            link: {start: 'Business', end: 'Cup of Tea', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Business',
+                                end: 'Cup of Tea',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Business', id: 'business', type: 'anchor'} as any,
                             endElement: {name: 'Cup of Tea', id: 'cup-of-tea', type: 'component'} as any,
                         },
@@ -390,12 +439,7 @@ describe('Component Link Highlighting Dependency Graph', () => {
 
             const businessLinks = dependencyGraph.getDescendantLinks('Business');
             expect(businessLinks).toEqual(
-                expect.arrayContaining([
-                    'Business->Cup of Tea',
-                    'Cup of Tea->Tea',
-                    'Cup of Tea->Cup',
-                    'Tea->Hot Water',
-                ]),
+                expect.arrayContaining(['Business->Cup of Tea', 'Cup of Tea->Tea', 'Cup of Tea->Cup', 'Tea->Hot Water']),
             );
             expect(businessLinks).toHaveLength(4);
 

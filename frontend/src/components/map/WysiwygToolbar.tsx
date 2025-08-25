@@ -172,14 +172,14 @@ const SnapZoneOverlay = styled.div<{$visible: boolean; $snapZone: {x: number; y:
     top: ${props => props.$snapZone?.y || 0}px;
     left: ${props => props.$snapZone?.x || 0}px;
     width: ${props => props.$snapZone?.width || 64}px;
-    height: ${props => (props.$snapZone?.height || window.innerHeight)}px;
+    height: ${props => props.$snapZone?.height || window.innerHeight}px;
     background: rgba(0, 133, 208, 0.1);
     border-right: 2px dashed rgba(0, 133, 208, 0.3);
     z-index: 999;
     pointer-events: none;
     opacity: ${props => (props.$visible ? 1 : 0)};
     transition: opacity 0.2s ease;
-    
+
     &::before {
         content: 'Snap Zone';
         position: absolute;
@@ -235,7 +235,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         // Toolbar state management
         const {position, isDragging, toolbarRef, renderKey, handleMouseDown, isSnapped, snapState} = useToolbarState({
             mapOnlyView,
-            toolbarVisible: toolbarVisible
+            toolbarVisible: toolbarVisible,
         });
 
         // Notify parent component when snap state changes
