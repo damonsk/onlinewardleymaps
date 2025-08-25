@@ -138,7 +138,12 @@ describe('Map Text Generation - Multi-line Note Support', () => {
             expect(componentTemplate('Test Component', '0.50', '0.70')).toBe('component Test Component [0.50, 0.70]');
 
             const pipelineTemplate = createFallbackTemplate('pipeline', 'pipeline');
-            expect(pipelineTemplate('Test Pipeline', '0.50', '0.70')).toBe('pipeline Test Pipeline [0.50, 0.70]');
+            const result = pipelineTemplate('Test Pipeline', '0.50', '0.70');
+            // Enhanced pipeline template creates full pipeline structure
+            expect(result).toContain('component Test Pipeline [0.50, 0.70]');
+            expect(result).toContain('pipeline Test Pipeline');
+            expect(result).toContain('Pipeline Component 1');
+            expect(result).toContain('Pipeline Component 2');
         });
     });
 

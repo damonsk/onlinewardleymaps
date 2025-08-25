@@ -1,10 +1,10 @@
-import {useCallback} from 'react';
-import {ToolbarItem} from '../../../../types/toolbar';
-import {ActionType} from '../../../../types/undo-redo';
-import {UnifiedWardleyMap} from '../../../../types/unified/map';
-import {placeComponent} from '../../../../utils/mapTextGeneration';
-import {validatePositionWithPipelineDetection} from '../../../../utils/pipelineDetection';
-import {validatePosition, validateRectangle} from '../../utils/validation';
+import { useCallback } from 'react';
+import { ToolbarItem } from '../../../../types/toolbar';
+import { ActionType } from '../../../../types/undo-redo';
+import { UnifiedWardleyMap } from '../../../../types/unified/map';
+import { placeComponent } from '../../../../utils/mapTextGeneration';
+import { validatePositionWithPipelineDetection } from '../../../../utils/pipelineDetection';
+import { validatePosition, validateRectangle } from '../../utils/validation';
 
 interface DrawingToolbarDependencies {
     props: {

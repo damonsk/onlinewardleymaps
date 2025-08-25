@@ -511,7 +511,11 @@ describe('Map Text Generation Utilities', () => {
             const template = createFallbackTemplate('pipeline', 'pipeline');
             const result = template('Test Pipeline', '0.70', '0.50');
 
-            expect(result).toBe('pipeline Test Pipeline [0.70, 0.50]');
+            // The enhanced pipeline template creates a full pipeline structure
+            expect(result).toContain('component Test Pipeline [0.70, 0.50]');
+            expect(result).toContain('pipeline Test Pipeline');
+            expect(result).toContain('component Pipeline Component 1');
+            expect(result).toContain('component Pipeline Component 2');
         });
 
         it('should create anchor template', () => {

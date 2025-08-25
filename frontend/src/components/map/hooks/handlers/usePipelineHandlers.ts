@@ -1,8 +1,8 @@
-import {useCallback, useState} from 'react';
-import {ActionType} from '../../../../types/undo-redo';
-import {UnifiedWardleyMap} from '../../../../types/unified/map';
-import {extractAllComponentNames, insertPipelineComponent} from '../../../../utils/mapTextGeneration';
-import {generateUniquePipelineComponentName} from '../../../../utils/pipelineDetection';
+import { useCallback, useState } from 'react';
+import { ActionType } from '../../../../types/undo-redo';
+import { UnifiedWardleyMap } from '../../../../types/unified/map';
+import { extractAllComponentNames, insertPipelineComponent } from '../../../../utils/mapTextGeneration';
+import { generateUniquePipelineComponentName } from '../../../../utils/pipelineDetection';
 
 interface PipelineHandlerDependencies {
     props: {

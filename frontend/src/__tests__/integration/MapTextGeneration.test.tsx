@@ -408,7 +408,11 @@ describe('Map Text Generation Integration Tests', () => {
             if (pipelineItem) {
                 const updatedText = placeComponent(pipelineItem);
                 expect(updatedText).toContain('title Test Map');
-                expect(updatedText).toMatch(/pipeline New Pipeline \[[0-9.]+, [0-9.]+\]/);
+                // Enhanced pipeline creates component and pipeline block
+                expect(updatedText).toMatch(/component New Pipeline \[[0-9.]+, [0-9.]+\]/);
+                expect(updatedText).toContain('pipeline New Pipeline');
+                expect(updatedText).toContain('Pipeline Component 1');
+                expect(updatedText).toContain('Pipeline Component 2');
             }
         });
 

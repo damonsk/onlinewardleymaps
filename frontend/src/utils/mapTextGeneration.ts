@@ -450,8 +450,10 @@ export function placeComponent(
     }
 
     try {
-        // Generate unique component name using all existing component names from map text
-        const existingNames = extractAllComponentNames(currentMapText);
+        // Generate unique component name using all existing component names from both map text and existing components
+        const mapTextNames = extractAllComponentNames(currentMapText);
+        const componentNames = existingComponents.map(c => c.name);
+        const existingNames = [...new Set([...mapTextNames, ...componentNames])];
         const componentName = generateUniqueComponentName({
             baseName: item.defaultName,
             existingNames,
@@ -674,7 +676,17 @@ export function calculatePipelineBounds(pipeline: any): PipelineBounds {
     }
 
     if (!pipeline.components || !Array.isArray(pipeline.components) || pipeline.components.length === 0) {
-        // For pipelines with no components, use a small default range around the pipeline position
+        // For pipelines with no components, use range from maturity1 to maturity2 if available
+        if (pipeline.maturity1 !== undefined && pipeline.maturity2 !== undefined) {
+            return {
+                name: pipeline.name,
+                minMaturity: Math.max(0, pipeline.maturity1 - 0.1),
+                maxMaturity: Math.min(1, pipeline.maturity2 + 0.1),
+                visibility: pipeline.visibility || 0.5,
+                line: pipeline.line,
+            };
+        }
+        // Fallback: use a small default range around the pipeline position
         const defaultMaturity = pipeline.maturity1 || pipeline.maturity2 || 0.5;
         return {
             name: pipeline.name,

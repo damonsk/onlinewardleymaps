@@ -167,7 +167,16 @@ const createTestMapData = (): UnifiedWardleyMap => ({
 const mockMapProps = {
     mapDimensions: {width: 500, height: 400} as MapDimensions,
     mapCanvasDimensions: {width: 500, height: 400} as MapCanvasDimensions,
-    mapStyleDefs: {className: 'plain'} as MapTheme,
+    mapStyleDefs: {
+        className: 'plain',
+        component: {
+            stroke: '#000000',
+            fontSize: '14px',
+            fontWeight: 'normal',
+            textColor: '#000000',
+        },
+        fontFamily: 'Arial, sans-serif',
+    } as MapTheme,
     mapEvolutionStates: {
         genesis: {l1: 'Genesis', l2: ''},
         custom: {l1: 'Custom Built', l2: ''},
@@ -266,7 +275,7 @@ component Pipeline Component 2 [0.40, 0.50]`;
         });
 
         it('should handle edge cases with tolerance', () => {
-            const position = {x: 0.45, y: 0.65}; // Near pipeline but outside tolerance
+            const position = {x: 0.45, y: 0.59}; // Near pipeline within reduced tolerance (0.02 above, within 0.03 tolerance)
 
             // With default tolerance (0.1), should detect
             const result1 = validatePositionWithPipelineDetection(position, wardleyMap);
@@ -283,7 +292,7 @@ component Pipeline Component 2 [0.40, 0.50]`;
     describe('Visual Component Rendering', () => {
         it('should render map view with pipeline highlighting capability', async () => {
             render(
-                <UndoRedoProvider>
+                <UndoRedoProvider mutateMapText={mutateMapText} mapText={mapText}>
                     <EditingProvider>
                         <ComponentSelectionProvider>
                             <MapView {...mockMapProps} wardleyMap={wardleyMap} mapText={mapText} mutateMapText={mutateMapText} />

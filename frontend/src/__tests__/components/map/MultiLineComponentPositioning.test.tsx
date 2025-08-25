@@ -3,6 +3,7 @@ import {render, fireEvent, screen} from '@testing-library/react';
 import {ComponentSelectionProvider} from '../../../components/ComponentSelectionContext';
 import {ContextMenuProvider} from '../../../components/map/ContextMenuProvider';
 import {UndoRedoProvider} from '../../../components/UndoRedoProvider';
+import {ComponentLinkHighlightProvider} from '../../../components/contexts/ComponentLinkHighlightContext';
 import MapComponent from '../../../components/map/MapComponent';
 import {UnifiedComponent} from '../../../types/unified';
 import {MapDimensions} from '../../../constants/defaults';
@@ -53,19 +54,21 @@ describe('Multi-line Component Positioning', () => {
         return render(
             <UndoRedoProvider mapText={mapText} mutateMapText={mutateMapText}>
                 <ComponentSelectionProvider>
-                    <ContextMenuProvider>
-                        <svg>
-                            <MapComponent
-                                mapDimensions={mockMapDimensions}
-                                component={component}
-                                mapText={mapText}
-                                mutateMapText={mutateMapText}
-                                mapStyleDefs={mockMapStyleDefs}
-                                setHighlightLine={jest.fn()}
-                                scaleFactor={1}
-                            />
-                        </svg>
-                    </ContextMenuProvider>
+                    <ComponentLinkHighlightProvider>
+                        <ContextMenuProvider>
+                            <svg>
+                                <MapComponent
+                                    mapDimensions={mockMapDimensions}
+                                    component={component}
+                                    mapText={mapText}
+                                    mutateMapText={mutateMapText}
+                                    mapStyleDefs={mockMapStyleDefs}
+                                    setHighlightLine={jest.fn()}
+                                    scaleFactor={1}
+                                />
+                            </svg>
+                        </ContextMenuProvider>
+                    </ComponentLinkHighlightProvider>
                 </ComponentSelectionProvider>
             </UndoRedoProvider>,
         );

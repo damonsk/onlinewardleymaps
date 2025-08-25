@@ -1,5 +1,5 @@
-import {useCallback} from 'react';
-import {ToolbarItem} from '../../../../types/toolbar';
+import { useCallback } from 'react';
+import { ToolbarItem } from '../../../../types/toolbar';
 
 interface ClickHandlerDependencies {
     toolbarState: {

@@ -4,6 +4,7 @@ import Note from '../../../components/map/Note';
 import Anchor from '../../../components/map/Anchor';
 import {ComponentSelectionProvider, useComponentSelection} from '../../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../../components/EditingContext';
+import {ComponentLinkHighlightProvider} from '../../../components/contexts/ComponentLinkHighlightContext';
 import {MapDimensions} from '../../../constants/defaults';
 import {MapTheme} from '../../../constants/mapstyles';
 import {MapNotes} from '../../../types/base';
@@ -84,7 +85,9 @@ describe('Dynamic Selection Boxes', () => {
         return render(
             <svg>
                 <ComponentSelectionProvider>
-                    <EditingProvider>{component}</EditingProvider>
+                    <ComponentLinkHighlightProvider>
+                        <EditingProvider>{component}</EditingProvider>
+                    </ComponentLinkHighlightProvider>
                 </ComponentSelectionProvider>
             </svg>,
         );
@@ -115,9 +118,10 @@ describe('Dynamic Selection Boxes', () => {
             const noteElement = screen.getByTestId('map-note-note-1');
             expect(noteElement).toBeInTheDocument();
 
-            // The selection box should not be visible initially (not selected)
+            // The selection box should be hidden initially (not selected)
             const selectionRect = noteElement.querySelector('rect');
-            expect(selectionRect).not.toBeInTheDocument();
+            expect(selectionRect).toBeInTheDocument();
+            expect(selectionRect).toHaveStyle('opacity: 0');
         });
 
         it('should create larger selection box for long single-line note', async () => {
@@ -201,9 +205,10 @@ describe('Dynamic Selection Boxes', () => {
             const anchorElement = screen.getByTestId('map-anchor-anchor-1');
             expect(anchorElement).toBeInTheDocument();
 
-            // The selection box should not be visible initially (not selected)
+            // The selection box should be hidden initially (not selected)
             const selectionRect = anchorElement.querySelector('rect');
-            expect(selectionRect).not.toBeInTheDocument();
+            expect(selectionRect).toBeInTheDocument();
+            expect(selectionRect).toHaveStyle('opacity: 0');
         });
 
         it('should create wider selection box for long anchor name', async () => {

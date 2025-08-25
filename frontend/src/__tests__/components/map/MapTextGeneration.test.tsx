@@ -129,7 +129,7 @@ describe('Map Text Generation and Mutation', () => {
                 },
                 {
                     itemId: 'pipeline',
-                    expectedTemplate: 'pipeline Test Component [0.50, 0.60]',
+                    expectedTemplate: 'component Test Component [0.50, 0.60]\npipeline Test Component\n{\n    component Pipeline Component 1 [0.45]\n    component Pipeline Component 2 [0.75]\n}',
                 },
                 {
                     itemId: 'anchor',

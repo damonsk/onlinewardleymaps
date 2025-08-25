@@ -210,8 +210,8 @@ pipeline Kettle
         });
 
         it('should use default tolerance', () => {
-            const result = isPositionWithinPipelineBounds({x: 0.5, y: 0.75}, bounds);
-            expect(result).toBe(true); // Within default 0.1 tolerance
+            const result = isPositionWithinPipelineBounds({x: 0.5, y: 0.72}, bounds);
+            expect(result).toBe(true); // Within reduced tolerance above pipeline (0.02 difference, within 0.03 tolerance)
         });
     });
 });
@@ -240,8 +240,8 @@ describe('Pipeline Workflow Integration', () => {
         expect(component2Line).toBeDefined();
 
         // Extract maturity values
-        const match1 = component1Line?.match(/\\[(\\d+\\.\\d+)\\]/);
-        const match2 = component2Line?.match(/\\[(\\d+\\.\\d+)\\]/);
+        const match1 = component1Line?.match(/\[(\d+\.\d+)\]/);
+        const match2 = component2Line?.match(/\[(\d+\.\d+)\]/);
 
         expect(match1).toBeDefined();
         expect(match2).toBeDefined();

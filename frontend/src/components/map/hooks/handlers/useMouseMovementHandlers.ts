@@ -1,8 +1,8 @@
-import {useCallback} from 'react';
-import {UnifiedComponent} from '../../../../types/unified/components';
-import {UnifiedWardleyMap} from '../../../../types/unified/map';
-import {linkExists} from '../../../../utils/componentDetection';
-import {validatePosition} from '../../utils/validation';
+import { useCallback } from 'react';
+import { UnifiedComponent } from '../../../../types/unified/components';
+import { UnifiedWardleyMap } from '../../../../types/unified/map';
+import { linkExists } from '../../../../utils/componentDetection';
+import { validatePosition } from '../../utils/validation';
 
 interface MouseMovementDependencies {
     toolbarState: {

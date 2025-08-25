@@ -15,12 +15,12 @@ describe('Pipeline Requirements Validation', () => {
             const result = TOOLBAR_TEMPLATES.pipeline('Kettle', '0.45', '0.57');
             
             // Must contain component line
-            expect(result).toMatch(/^component Kettle \\[0\\.45, 0\\.57\\]/m);
+            expect(result).toMatch(/^component Kettle \[0\.45, 0\.57\]/m);
             
             // Must contain pipeline block
             expect(result).toMatch(/^pipeline Kettle$/m);
-            expect(result).toMatch(/^\\{$/m);
-            expect(result).toMatch(/^\\}$/m);
+            expect(result).toMatch(/^\{$/m);
+            expect(result).toMatch(/^\}$/m);
             
             // Must contain default components
             expect(result).toMatch(/component Pipeline Component 1 \[/);
@@ -62,8 +62,8 @@ describe('Pipeline Requirements Validation', () => {
             testCases.forEach(testCase => {
                 const result = TOOLBAR_TEMPLATES.pipeline('Test', '0.5', testCase.x);
                 
-                const component1Match = result.match(/Pipeline Component 1 \\[(\\d+\\.\\d+)\\]/);
-                const component2Match = result.match(/Pipeline Component 2 \\[(\\d+\\.\\d+)\\]/);
+                const component1Match = result.match(/Pipeline Component 1 \[(\d+\.\d+)\]/);
+                const component2Match = result.match(/Pipeline Component 2 \[(\d+\.\d+)\]/);
                 
                 expect(component1Match).toBeTruthy();
                 expect(component2Match).toBeTruthy();
@@ -86,8 +86,8 @@ describe('Pipeline Requirements Validation', () => {
             edgeCases.forEach(x => {
                 const result = TOOLBAR_TEMPLATES.pipeline('Edge', '0.5', x);
                 
-                const component1Match = result.match(/Pipeline Component 1 \\[(\\d+\\.\\d+)\\]/);
-                const component2Match = result.match(/Pipeline Component 2 \\[(\\d+\\.\\d+)\\]/);
+                const component1Match = result.match(/Pipeline Component 1 \[(\d+\.\d+)\]/);
+                const component2Match = result.match(/Pipeline Component 2 \[(\d+\.\d+)\]/);
                 
                 const maturity1 = parseFloat(component1Match![1]);
                 const maturity2 = parseFloat(component2Match![1]);
@@ -115,10 +115,10 @@ pipeline Kettle
             const result = insertPipelineComponent(mockMapText, 'Kettle', 'foobar', 0.50);
             
             // Should contain the new component with only maturity
-            expect(result).toMatch(/component foobar \\[0\\.50\\]/);
+            expect(result).toMatch(/component foobar \[0\.50\]/);
             
             // Should not have visibility coordinate for pipeline component
-            expect(result).not.toMatch(/component foobar \\[0\\.50, /);
+            expect(result).not.toMatch(/component foobar \[0\.50, /);
             
             console.log('Map with inserted component:');
             console.log(result);
@@ -128,7 +128,7 @@ pipeline Kettle
             const result = insertPipelineComponent(mockMapText, 'Kettle', 'foobar', 0.50, { x: -10, y: -10 });
             
             // Should contain the component with label offset
-            expect(result).toMatch(/component foobar \\[0\\.50\\] label \\[-10, -10\\]/);
+            expect(result).toMatch(/component foobar \[0\.50\] label \[-10, -10\]/);
             
             console.log('Component with label offset:');
             console.log(result);

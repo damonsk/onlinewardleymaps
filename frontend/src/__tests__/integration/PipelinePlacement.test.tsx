@@ -283,13 +283,13 @@ describe('Pipeline Placement Integration Tests', () => {
         expect(mockMutateMapText).toHaveBeenCalled();
         const updatedText = mockMutateMapText.mock.calls[0][0];
 
-        // Should contain pipeline but not a separate component entry
+        // Enhanced pipeline now contains both component and pipeline entries
         expect(updatedText).toContain('pipeline New Pipeline');
-        expect(updatedText).not.toContain('component New Pipeline');
+        expect(updatedText).toContain('component New Pipeline');
 
-        // Extract the coordinates from pipeline entry
-        const pipelineMatch = updatedText.match(/pipeline New Pipeline \[([0-9.]+), ([0-9.]+)\]/);
-        expect(pipelineMatch).toBeTruthy();
+        // Extract the coordinates from component entry (enhanced pipeline has component + pipeline)
+        const componentMatch = updatedText.match(/component New Pipeline \[([0-9.]+), ([0-9.]+)\]/);
+        expect(componentMatch).toBeTruthy();
     });
 
     it('should place pipeline without unique name generation', () => {
@@ -335,9 +335,9 @@ describe('Pipeline Placement Integration Tests', () => {
         expect(mockMutateMapText).toHaveBeenCalled();
         const updatedText = mockMutateMapText.mock.calls[0][0];
 
-        // Should contain new pipeline with base name, no unique suffix in mapText
+        // Enhanced pipeline now contains both component and pipeline entries
         expect(updatedText).toContain('pipeline New Pipeline');
-        expect(updatedText).not.toContain('component New Pipeline');
+        expect(updatedText).toContain('component New Pipeline');
 
         // Should also preserve the existing pipeline
         expect(updatedText).toContain('pipeline New Pipeline [0.5, 0.5]');

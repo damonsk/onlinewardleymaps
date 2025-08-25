@@ -35,8 +35,8 @@ describe('Pipeline Toolbar Integration Tests', () => {
             const result = TOOLBAR_TEMPLATES.pipeline('Test', '0.50', '0.50');
 
             // Extract component maturities
-            const component1Match = result.match(/Pipeline Component 1 \\[(\\d+\\.\\d+)\\]/);
-            const component2Match = result.match(/Pipeline Component 2 \\[(\\d+\\.\\d+)\\]/);
+            const component1Match = result.match(/Pipeline Component 1 \[(\d+\.\d+)\]/);
+            const component2Match = result.match(/Pipeline Component 2 \[(\d+\.\d+)\]/);
 
             expect(component1Match).toBeTruthy();
             expect(component2Match).toBeTruthy();
@@ -66,8 +66,8 @@ describe('Pipeline Toolbar Integration Tests', () => {
 
             // Extract and validate component positions for edge cases
             [leftResult, rightResult].forEach(result => {
-                const component1Match = result.match(/Pipeline Component 1 \\[(\\d+\\.\\d+)\\]/);
-                const component2Match = result.match(/Pipeline Component 2 \\[(\\d+\\.\\d+)\\]/);
+                const component1Match = result.match(/Pipeline Component 1 \[(\d+\.\d+)\]/);
+                const component2Match = result.match(/Pipeline Component 2 \[(\d+\.\d+)\]/);
 
                 const maturity1 = parseFloat(component1Match![1]);
                 const maturity2 = parseFloat(component2Match![1]);
@@ -274,8 +274,8 @@ pipeline Kettle
 }`;
 
             // Verify the components have reasonable positioning
-            const originalComponent1 = kettlePipeline.match(/Pipeline Component 1 \\[(\\d+\\.\\d+)\\]/);
-            const originalComponent2 = kettlePipeline.match(/Pipeline Component 2 \\[(\\d+\\.\\d+)\\]/);
+            const originalComponent1 = kettlePipeline.match(/Pipeline Component 1 \[(\d+\.\d+)\]/);
+            const originalComponent2 = kettlePipeline.match(/Pipeline Component 2 \[(\d+\.\d+)\]/);
 
             expect(originalComponent1).toBeTruthy();
             expect(originalComponent2).toBeTruthy();
