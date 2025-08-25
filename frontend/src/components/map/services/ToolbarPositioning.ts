@@ -241,6 +241,7 @@ export class ToolbarPositioning {
     /**
      * Defines the magnetic snap zone on the left side of the screen
      * In editor mode, positions it after the editor panel instead of at the leftmost edge
+     * Constrains the zone to the main content area, excluding breadcrumb and header
      */
     static getSnapZone(mapOnlyView?: boolean): SnapZone {
         if (typeof window === 'undefined') {
@@ -249,25 +250,28 @@ export class ToolbarPositioning {
 
         const mode = ToolbarPositioning.getViewportMode(mapOnlyView);
         
-        // PRESENTATION MODE: Position at left edge
+        // Calculate the main content area boundaries (excluding header, breadcrumb, etc.)
+        const contentAreaBounds = ToolbarPositioning.getMainContentAreaBounds();
+        
+        // PRESENTATION MODE: Position at left edge within content area
         if (mode.isPresentationMode) {
             return {
                 x: 0,
-                y: 0,
+                y: contentAreaBounds.top,
                 width: CONFIG.SNAP_ZONE_WIDTH,
-                height: window.innerHeight,
+                height: contentAreaBounds.height,
             };
         }
         
-        // EDITOR MODE: Calculate position after editor panel
+        // EDITOR MODE: Calculate position after editor panel within content area
         const leftPanelWidth = ToolbarPositioning.getEditorPanelWidth();
         const snapZoneX = leftPanelWidth + CONFIG.RESIZER_WIDTH;
 
         return {
             x: snapZoneX,
-            y: 0,
+            y: contentAreaBounds.top,
             width: CONFIG.SNAP_ZONE_WIDTH,
-            height: window.innerHeight,
+            height: contentAreaBounds.height,
         };
     }
 
@@ -309,6 +313,81 @@ export class ToolbarPositioning {
     }
 
     /**
+     * Gets the bounds of the main content area, excluding header, breadcrumb, and navigation
+     * This is where the toolbar should be constrained to avoid overlapping UI elements
+     */
+    private static getMainContentAreaBounds(): { top: number; height: number } {
+        if (typeof window === 'undefined') {
+            return { top: CONFIG.MIN_TOP_MARGIN, height: 600 };
+        }
+
+        // Primary: Try to find the main content container by data-testid
+        let mainContentElement = document.querySelector('[data-testid="main-content-area"]') as HTMLElement;
+        
+        // Fallback: Try other selectors for the main content container
+        if (!mainContentElement) {
+            const selectors = [
+                'div[sx*="flexGrow: 1"]',
+                '.main-content-area',
+                '[data-testid="resizable-split-pane"]',
+            ];
+            
+            for (const selector of selectors) {
+                mainContentElement = document.querySelector(selector) as HTMLElement;
+                if (mainContentElement) break;
+            }
+        }
+        
+        // Alternative: Find by looking for the parent of ResizableSplitPane or map canvas
+        if (!mainContentElement) {
+            const splitPaneElement = document.querySelector('[data-testid="resizable-split-pane"], .resizable-split-pane');
+            const mapCanvasElement = document.querySelector('svg[data-testid="map-canvas"], canvas[data-testid="map-canvas"]');
+            
+            if (splitPaneElement) {
+                mainContentElement = splitPaneElement.parentElement as HTMLElement;
+            } else if (mapCanvasElement) {
+                // Find the closest container that looks like our main content area
+                let currentElement = mapCanvasElement.parentElement;
+                while (currentElement) {
+                    const style = window.getComputedStyle(currentElement);
+                    if (style.flexGrow === '1' || style.height === '100%') {
+                        mainContentElement = currentElement as HTMLElement;
+                        break;
+                    }
+                    currentElement = currentElement.parentElement;
+                }
+            }
+        }
+
+        if (mainContentElement) {
+            const rect = mainContentElement.getBoundingClientRect();
+            return {
+                top: rect.top,
+                height: rect.height,
+            };
+        }
+
+        // Fallback: Calculate based on common header/breadcrumb heights
+        // Try to find the top navigation wrapper
+        const topNavWrapper = document.getElementById('top-nav-wrapper');
+        let topOffset: number = CONFIG.MIN_TOP_MARGIN;
+        
+        if (topNavWrapper) {
+            const rect = topNavWrapper.getBoundingClientRect();
+            topOffset = rect.bottom; // Start right after the top navigation area
+        } else {
+            // Fallback: Estimate based on typical header + breadcrumb height
+            // Header is usually ~64px, breadcrumb ~40px, iterations ~60px
+            topOffset = 164; // Conservative estimate
+        }
+
+        return {
+            top: Math.max(topOffset, CONFIG.MIN_TOP_MARGIN),
+            height: window.innerHeight - topOffset - CONFIG.BOTTOM_MARGIN,
+        };
+    }
+
+    /**
      * Checks if the toolbar position is within the snap zone
      * Uses more lenient bounds checking for editor mode
      */
@@ -341,6 +420,7 @@ export class ToolbarPositioning {
     /**
      * Gets the snapped position for the toolbar
      * Handles different viewport sizes and positions relative to editor panel
+     * Centers the toolbar within the main content area
      */
     static getSnappedPosition(toolbarElement: HTMLElement | null, mapOnlyView?: boolean): Position {
         if (typeof window === 'undefined' || !toolbarElement) {
@@ -349,12 +429,16 @@ export class ToolbarPositioning {
 
         const snapZone = ToolbarPositioning.getSnapZone(mapOnlyView);
         const toolbarRect = toolbarElement.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
+        const contentAreaBounds = ToolbarPositioning.getMainContentAreaBounds();
         
-        // Calculate ideal centered Y position with constraints
-        let idealY = viewportHeight / 2 - toolbarRect.height / 2;
-        idealY = Math.max(CONFIG.MIN_TOP_MARGIN, idealY);
-        idealY = Math.min(idealY, viewportHeight - toolbarRect.height - CONFIG.BOTTOM_MARGIN);
+        // Calculate ideal centered Y position within the content area
+        const contentCenterY = contentAreaBounds.top + (contentAreaBounds.height / 2);
+        let idealY = contentCenterY - (toolbarRect.height / 2);
+        
+        // Ensure toolbar stays within the content area bounds with margins
+        const minY = contentAreaBounds.top + CONFIG.DEFAULT_MARGIN;
+        const maxY = contentAreaBounds.top + contentAreaBounds.height - toolbarRect.height - CONFIG.DEFAULT_MARGIN;
+        idealY = Math.max(minY, Math.min(idealY, maxY));
         
         // Position toolbar within the snap zone with appropriate margin
         // Both modes get margin from their respective snap zone edge

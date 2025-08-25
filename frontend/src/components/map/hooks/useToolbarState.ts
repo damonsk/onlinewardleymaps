@@ -83,24 +83,28 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
     }, [isSnapped, storageKey]);
 
     // Dispatch toolbar snap event for map canvas to resize
-    const dispatchSnapEvent = useCallback((snappedState: boolean) => {
+    const dispatchSnapEvent = useCallback((effectiveSnappedState: boolean) => {
         setTimeout(() => {
             const event = new CustomEvent('toolbarSnap', {
-                detail: { isSnapped: snappedState }
+                detail: { isSnapped: effectiveSnappedState }
             });
             window.dispatchEvent(event);
         }, HOOK_CONFIG.SNAP_EVENT_DELAY);
     }, []);
 
+    // Calculate effective snap state for canvas sizing
+    // Toolbar is effectively snapped for canvas sizing only if it's both snapped AND visible
+    const effectiveSnappedForCanvas = isSnapped && toolbarVisible;
+
     // Handle toolbar visibility changes
     // When toolbar visibility changes while snapped, we need to notify the map canvas to resize
     useEffect(() => {
-        // Dispatch event when toolbar visibility changes and toolbar is snapped
-        // This will tell the map canvas to resize appropriately
-        if (isSnapped) {
-            dispatchSnapEvent(true);
-        }
-    }, [toolbarVisible, isSnapped, dispatchSnapEvent]);
+        // Dispatch event based on effective snap state (snap state AND visibility)
+        // This will tell the map canvas to resize appropriately:
+        // - Hidden + Snapped = behave as unsnapped for canvas sizing
+        // - Visible + Snapped = behave as snapped for canvas sizing
+        dispatchSnapEvent(effectiveSnappedForCanvas);
+    }, [toolbarVisible, isSnapped, dispatchSnapEvent, effectiveSnappedForCanvas]);
 
     // Handle mode changes for snapped toolbars
     useEffect(() => {
@@ -124,9 +128,11 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
         const newSnapState = ToolbarPositioning.calculateSnapState(position, toolbarRef.current, mapOnlyView);
         if (newSnapState.isSnapped !== isSnapped) {
             setIsSnapped(newSnapState.isSnapped);
-            dispatchSnapEvent(newSnapState.isSnapped);
+            // Dispatch event with effective snap state (considering visibility)
+            const effectiveSnapped = newSnapState.isSnapped && toolbarVisible;
+            dispatchSnapEvent(effectiveSnapped);
         }
-    }, [position, isSnapped, mapOnlyView, dispatchSnapEvent]);
+    }, [position, isSnapped, mapOnlyView, toolbarVisible, dispatchSnapEvent]);
 
     // Constrain position to viewport bounds
     const constrainPosition = useCallback((x: number, y: number): Position => {
@@ -174,16 +180,18 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
             const defaultPos = ToolbarPositioning.getDefaultPosition();
             setPosition(defaultPos);
             setIsSnapped(false);
+            // Always dispatch false when unsnapping
+            dispatchSnapEvent(false);
         } else {
             // Snap to left zone
             const snappedPosition = ToolbarPositioning.getSnappedPosition(toolbarRef.current, mapOnlyView);
             setPosition(snappedPosition);
             setIsSnapped(true);
+            // Dispatch based on effective snap state (considering visibility)
+            const effectiveSnapped = toolbarVisible;
+            dispatchSnapEvent(effectiveSnapped);
         }
-        
-        // Dispatch toolbar snap event for map canvas to resize
-        dispatchSnapEvent(!isSnapped);
-    }, [isSnapped, mapOnlyView, dispatchSnapEvent]);
+    }, [isSnapped, mapOnlyView, toolbarVisible, dispatchSnapEvent]);
 
     const resetPosition = useCallback(() => {
         const newPosition = defaultPosition || ToolbarPositioning.getDefaultPosition();

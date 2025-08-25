@@ -177,7 +177,12 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
 
     // Memoized styling to prevent recreation on every render
     const containerStyle = useMemo(() => getContainerStyle(props.mapStyleDefs), [props.mapStyleDefs]);
-    const mapStyle = useMemo(() => getMapStyle(props.toolbarSnapped), [props.toolbarSnapped]);
+    
+    // Calculate effective toolbar snapped state for map sizing
+    // Toolbar affects map size only if it's both snapped AND visible
+    const effectiveToolbarSnapped = (props.toolbarSnapped ?? false) && (props.showWysiwygToolbar ?? true);
+    const mapStyle = useMemo(() => getMapStyle(effectiveToolbarSnapped), [effectiveToolbarSnapped]);
+    
     const legacyRef: LegacyRef<HTMLDivElement> | undefined = props.mapRef as LegacyRef<HTMLDivElement> | undefined;
 
     // Unified toolbar selection handler that coordinates between different state hooks

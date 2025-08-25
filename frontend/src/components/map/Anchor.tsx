@@ -97,7 +97,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                         transition: 'all 0.2s ease-in-out',
                         filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
                     }}>
-                    {/* Selection indicator background */}
+                    {/* Selection indicator background - rendered first */}
                     {isElementSelected && (
                         <rect
                             x={selectionBoxDimensions.x}
@@ -117,6 +117,26 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                         />
                     )}
 
+                    {/* Hover indicator - rendered second so text appears above */}
+                    <rect
+                        className="anchor-hover-indicator"
+                        x={selectionBoxDimensions.x}
+                        y={selectionBoxDimensions.y}
+                        width={selectionBoxDimensions.width}
+                        height={selectionBoxDimensions.height}
+                        fill="#87ceeb"
+                        stroke="#2196F3"
+                        strokeWidth={1}
+                        rx={4}
+                        ry={4}
+                        style={{
+                            opacity: 0,
+                            transition: 'opacity 0.3s ease-in-out',
+                            pointerEvents: 'none',
+                        }}
+                    />
+
+                    {/* Anchor text content - rendered last so it appears on top */}
                     <ComponentTextSymbol
                         ref={textElementRef}
                         id={elementKey('text')}
@@ -128,20 +148,6 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                         textTheme={mapStyleDefs.component}
                         onClick={handleClick}
                     />
-
-                    {/* Hover indicator for deletable anchors */}
-                    <g
-                        className="anchor-hover-indicator"
-                        style={{
-                            opacity: 0,
-                            transition: 'opacity 0.2s ease-in-out',
-                            pointerEvents: 'none',
-                        }}>
-                        <circle cx={15} cy={-15} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
-                        <text x={15} y={-15} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-                            ×
-                        </text>
-                    </g>
                 </g>
             </Movable>
 
@@ -158,9 +164,21 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                       }
                     }
                     
+                    @keyframes fadeIn {
+                      0% {
+                        opacity: 0;
+                      }
+                      40% {
+                        opacity: 0.2;
+                      }
+                      100% {
+                        opacity: 0.5;
+                      }
+                    }
+                    
                     g[data-testid^="map-anchor-"]:hover .anchor-hover-indicator {
-                      opacity: 0.8 !important;
-                      animation: fadeIn 0.2s ease-in-out;
+                      opacity: 0.5 !important;
+                      animation: fadeIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                     }
                     `}
                 </style>

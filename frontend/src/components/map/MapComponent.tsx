@@ -2,14 +2,13 @@ import React from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
+import {normalizeComponentName} from '../../utils/componentNameMatching';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import ComponentText from './ComponentText';
 import {useContextMenu} from './ContextMenuProvider';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
-import {normalizeComponentName, escapeComponentNameForMapText} from '../../utils/componentNameMatching';
-import {safeParseComponentName} from '../../utils/errorHandling';
 
 interface MovedPosition {
     x: number;
@@ -277,7 +276,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         filter: isElementSelected ? 'brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))' : 'none',
                     }}
                     data-testid={`map-component-${component.id}`}>
-                    {/* Selection indicator background */}
+                    {/* Selection indicator background - rendered first */}
                     {isElementSelected && (
                         <circle
                             cx={0}
@@ -294,21 +293,19 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                         />
                     )}
 
-                    {children}
-
-                    {/* Hover indicator for deletable components */}
+                    {/* Hover indicator - rendered second */}
                     <g
                         className="component-hover-indicator"
                         style={{
                             opacity: 0,
-                            transition: 'opacity 0.2s ease-in-out',
+                            transition: 'opacity 0.1s ease-in-out',
                             pointerEvents: 'none',
                         }}>
-                        <circle cx={8} cy={-8} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
-                        <text x={8} y={-8} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-                            ×
-                        </text>
+                        <circle cx={0} cy={0} r={12} fill="#87ceeb" stroke="#2196F3" strokeWidth="1" />
                     </g>
+
+                    {/* Component content - rendered last so it appears on top */}
+                    {children}
                 </g>
             </Movable>
 
@@ -359,6 +356,15 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                       50% {
                         stroke-opacity: 0.8;
                         r: 14;
+                      }
+                    }
+                    
+                    @keyframes fadeIn {
+                      from {
+                        opacity: 0;
+                      }
+                      to {
+                        opacity: 0.8;
                       }
                     }
                     

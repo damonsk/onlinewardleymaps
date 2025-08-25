@@ -313,6 +313,25 @@ const Note: React.FC<ModernNoteProps> = ({
                         />
                     )}
 
+                    {/* Hover indicator for notes - rendered first so text appears above */}
+                    <rect
+                        className="note-hover-indicator"
+                        x={selectionBoxDimensions.x}
+                        y={selectionBoxDimensions.y}
+                        width={selectionBoxDimensions.width}
+                        height={selectionBoxDimensions.height}
+                        fill="#87ceeb"
+                        stroke="#2196F3"
+                        strokeWidth={1}
+                        rx={4}
+                        ry={4}
+                        style={{
+                            opacity: 0,
+                            transition: 'opacity 0.3s ease-in-out',
+                            pointerEvents: 'none',
+                        }}
+                    />
+
                     {editMode ? (
                         renderEditMode()
                     ) : (
@@ -326,20 +345,6 @@ const Note: React.FC<ModernNoteProps> = ({
                             onDoubleClick={handleDoubleClick}
                         />
                     )}
-
-                    {/* Hover indicator for deletable notes */}
-                    <g
-                        className="note-hover-indicator"
-                        style={{
-                            opacity: 0,
-                            transition: 'opacity 0.2s ease-in-out',
-                            pointerEvents: 'none',
-                        }}>
-                        <circle cx={15} cy={-8} r={6} fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
-                        <text x={15} y={-8} fill="white" fontSize="8" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-                            ×
-                        </text>
-                    </g>
                 </g>
             </Movable>
 
@@ -356,9 +361,21 @@ const Note: React.FC<ModernNoteProps> = ({
                       }
                     }
                     
+                    @keyframes fadeIn {
+                      0% {
+                        opacity: 0;
+                      }
+                      40% {
+                        opacity: 0.2;
+                      }
+                      100% {
+                        opacity: 0.5;
+                      }
+                    }
+                    
                     g[data-testid^="map-note-"]:hover .note-hover-indicator {
-                      opacity: 0.8 !important;
-                      animation: fadeIn 0.2s ease-in-out;
+                      opacity: 0.5 !important;
+                      animation: fadeIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                     }
                     `}
                 </style>

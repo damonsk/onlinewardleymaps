@@ -154,7 +154,9 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
                 )}
             </Box>
 
-            <Box sx={{flexGrow: 1, height: '100%', overflow: 'hidden'}}>
+            <Box 
+                data-testid="main-content-area"
+                sx={{flexGrow: 1, height: '100%', overflow: 'hidden'}}>
                 {mapOnlyView === false ? (
                     <ResizableSplitPane
                         defaultLeftWidth={33}

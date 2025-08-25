@@ -143,6 +143,8 @@ export const useMapDimensions = (props: UseMapDimensionsProps): UseMapDimensions
         const handleToolbarSnap = (event: CustomEvent) => {
             // Update both map dimensions and canvas dimensions when toolbar snaps/unsnaps
             // This should work exactly like panel resize events
+            // In Editor Mode (ResizableSplitPane), we need extra time for CSS transitions to complete
+            const delay = mapOnlyView ? 200 : 400; // Longer delay for Editor Mode
             setTimeout(() => {
                 const newWidth = getWidth();
                 const newHeight = getHeight();
@@ -159,7 +161,7 @@ export const useMapDimensions = (props: UseMapDimensionsProps): UseMapDimensions
                     width: newWidth,
                     height: newHeight,
                 });
-            }, 200); // Delay to ensure DOM has fully updated and map container has resized
+            }, delay); // Dynamic delay based on layout mode
         };
 
         // Handle standard window resize events (but not panel resizes)
@@ -180,7 +182,7 @@ export const useMapDimensions = (props: UseMapDimensionsProps): UseMapDimensions
             window.removeEventListener('panelResize', handlePanelResize as EventListener);
             window.removeEventListener('toolbarSnap', handleToolbarSnap as EventListener);
         };
-    }, [setMapDimensions, setMapCanvasDimensions, mapSize, getWidth, getHeight]);
+    }, [setMapDimensions, setMapCanvasDimensions, mapSize, getWidth, getHeight, mapOnlyView]);
 
     return {
         getHeight,

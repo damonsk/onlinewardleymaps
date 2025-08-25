@@ -253,6 +253,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             console.log('Initial fit effect triggered', {
                 width: mapDimensions.width,
                 height: mapDimensions.height,
+                canvasWidth: mapCanvasDimensions.width,
+                canvasHeight: mapCanvasDimensions.height,
                 components: wardleyMap.components.length,
                 waitingForPanelRestore,
             });
@@ -300,11 +302,13 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             console.log('Initial fit conditions not met', {
                 width: mapDimensions.width,
                 height: mapDimensions.height,
+                canvasWidth: mapCanvasDimensions.width,
+                canvasHeight: mapCanvasDimensions.height,
                 components: wardleyMap.components.length,
                 waitingForPanelRestore,
             });
         }
-    }, [mapDimensions.width, mapDimensions.height, waitingForPanelRestore, setIsInitialSizingComplete, wardleyMap.components.length]);
+    }, [mapDimensions.width, mapDimensions.height, mapCanvasDimensions.width, mapCanvasDimensions.height, waitingForPanelRestore, setIsInitialSizingComplete, wardleyMap.components.length]);
 
     // Style configuration
     const fill = {

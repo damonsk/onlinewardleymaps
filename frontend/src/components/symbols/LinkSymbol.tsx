@@ -68,7 +68,7 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
 
     const getStrokeWidth = () => {
         if (isSelected) return strokeWidth + 2;
-        if (isHovered && onClick) return strokeWidth + 1;
+        if (isHovered && onClick) return strokeWidth + 4;
         return strokeWidth;
     };
 
