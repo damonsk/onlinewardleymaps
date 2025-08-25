@@ -1,12 +1,9 @@
 // ComponentLinkHighlightContext.test.tsx
 import '@testing-library/jest-dom';
-import { act, render, renderHook, screen } from '@testing-library/react';
+import {act, render, renderHook, screen} from '@testing-library/react';
 import React from 'react';
-import {
-    ComponentLinkHighlightProvider,
-    useComponentLinkHighlight,
-} from '../../../components/contexts/ComponentLinkHighlightContext';
-import { ProcessedLinkGroup } from '../../../utils/mapProcessing';
+import {ComponentLinkHighlightProvider, useComponentLinkHighlight} from '../../../components/contexts/ComponentLinkHighlightContext';
+import {ProcessedLinkGroup} from '../../../utils/mapProcessing';
 
 describe('ComponentLinkHighlightContext', () => {
     const mockProcessedLinks: ProcessedLinkGroup[] = [
@@ -66,11 +63,7 @@ describe('ComponentLinkHighlightContext', () => {
         it('should handle empty processed links', () => {
             const TestComponent = () => {
                 const {linkHighlightState} = useComponentLinkHighlight();
-                return (
-                    <div data-testid="empty-state">
-                        {linkHighlightState.highlightedLinks.size === 0 ? 'Empty' : 'Has Links'}
-                    </div>
-                );
+                return <div data-testid="empty-state">{linkHighlightState.highlightedLinks.size === 0 ? 'Empty' : 'Has Links'}</div>;
             };
 
             render(
@@ -267,7 +260,15 @@ describe('ComponentLinkHighlightContext', () => {
                     name: 'links',
                     links: [
                         {
-                            link: {start: 'Business', end: 'Cup of Tea', flow: false, future: false, past: false, context: '', flowValue: ''},
+                            link: {
+                                start: 'Business',
+                                end: 'Cup of Tea',
+                                flow: false,
+                                future: false,
+                                past: false,
+                                context: '',
+                                flowValue: '',
+                            },
                             startElement: {name: 'Business', id: 'business', type: 'anchor'} as any,
                             endElement: {name: 'Cup of Tea', id: 'cup-of-tea', type: 'component'} as any,
                         },

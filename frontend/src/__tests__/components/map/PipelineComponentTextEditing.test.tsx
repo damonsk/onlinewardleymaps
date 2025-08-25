@@ -103,8 +103,8 @@ describe('Pipeline Component Text Editing', () => {
 
         // Find the component text (if it exists)
         const componentTextElements = screen.queryAllByText(/Pipeline Component 1/);
-        
-        // Even if the text isn't rendered (due to mocked positioning), 
+
+        // Even if the text isn't rendered (due to mocked positioning),
         // the important thing is that no errors were thrown during render
         // This tests that mapStyleDefs is properly passed down to InlineEditor
         expect(componentTextElements).toBeDefined();

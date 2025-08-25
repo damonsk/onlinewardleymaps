@@ -313,9 +313,7 @@ evolve foo 0.9`;
             fireEvent.keyDown(input, {key: 'Enter', ctrlKey: true});
 
             await waitFor(() => {
-                expect(alertSpy).toHaveBeenCalledWith(
-                    expect.stringContaining('Could not find evolved component "NonExistent"')
-                );
+                expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Could not find evolved component "NonExistent"'));
             });
 
             alertSpy.mockRestore();

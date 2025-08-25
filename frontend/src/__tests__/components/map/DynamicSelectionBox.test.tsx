@@ -11,17 +11,17 @@ import {UnifiedComponent} from '../../../types/unified';
 
 // Mock the text measurement utilities
 jest.mock('../../../utils/textMeasurement', () => ({
-    measureTextElement: jest.fn((element) => {
-        if (!element) return { width: 40, height: 20, x: -20, y: -10 };
-        
+    measureTextElement: jest.fn(element => {
+        if (!element) return {width: 40, height: 20, x: -20, y: -10};
+
         // Mock getBBox behavior based on text content
         const textContent = element.textContent || '';
         const charWidth = 8; // Approximate character width
         const lineHeight = 16; // Approximate line height
-        
+
         const lines = textContent.includes('\n') ? textContent.split('\n') : [textContent];
         const maxLineLength = Math.max(...lines.map(line => line.length));
-        
+
         return {
             width: maxLineLength * charWidth,
             height: lines.length * lineHeight,
@@ -30,8 +30,8 @@ jest.mock('../../../utils/textMeasurement', () => ({
         };
     }),
     createSelectionBoxDimensions: jest.fn((textDimensions, padding = 4) => ({
-        width: textDimensions.width + (padding * 2),
-        height: textDimensions.height + (padding * 2),
+        width: textDimensions.width + padding * 2,
+        height: textDimensions.height + padding * 2,
         x: textDimensions.x - padding,
         y: textDimensions.y - padding,
     })),
@@ -41,7 +41,7 @@ jest.mock('../../../utils/textMeasurement', () => ({
         const maxLineLength = Math.max(...lines.map(line => line.length));
         const width = maxLineLength * charWidth;
         const height = lines.length * fontSize * 1.2;
-        
+
         return {
             width,
             height,
@@ -84,11 +84,9 @@ describe('Dynamic Selection Boxes', () => {
         return render(
             <svg>
                 <ComponentSelectionProvider>
-                    <EditingProvider>
-                        {component}
-                    </EditingProvider>
+                    <EditingProvider>{component}</EditingProvider>
                 </ComponentSelectionProvider>
-            </svg>
+            </svg>,
         );
     };
 
@@ -111,7 +109,7 @@ describe('Dynamic Selection Boxes', () => {
                     mapStyleDefs={mockMapStyleDefs}
                     setHighlightLine={mockSetHighlightLine}
                     scaleFactor={1}
-                />
+                />,
             );
 
             const noteElement = screen.getByTestId('map-note-note-1');
@@ -140,7 +138,7 @@ describe('Dynamic Selection Boxes', () => {
                     mapStyleDefs={mockMapStyleDefs}
                     setHighlightLine={mockSetHighlightLine}
                     scaleFactor={1}
-                />
+                />,
             );
 
             const noteElement = screen.getByTestId('map-note-note-2');
@@ -165,7 +163,7 @@ describe('Dynamic Selection Boxes', () => {
                     mapStyleDefs={mockMapStyleDefs}
                     setHighlightLine={mockSetHighlightLine}
                     scaleFactor={1}
-                />
+                />,
             );
 
             const noteElement = screen.getByTestId('map-note-note-3');
@@ -197,7 +195,7 @@ describe('Dynamic Selection Boxes', () => {
                     mapStyleDefs={mockMapStyleDefs}
                     onClick={mockOnClick}
                     scaleFactor={1}
-                />
+                />,
             );
 
             const anchorElement = screen.getByTestId('map-anchor-anchor-1');
@@ -227,7 +225,7 @@ describe('Dynamic Selection Boxes', () => {
                     mapStyleDefs={mockMapStyleDefs}
                     onClick={mockOnClick}
                     scaleFactor={1}
-                />
+                />,
             );
 
             const anchorElement = screen.getByTestId('map-anchor-anchor-2');
@@ -248,11 +246,11 @@ describe('Dynamic Selection Boxes', () => {
             // Use the ComponentSelectionContext to test selected state
             const TestWrapper = () => {
                 const {selectComponent} = useComponentSelection();
-                
+
                 React.useEffect(() => {
                     selectComponent('note-selected');
                 }, [selectComponent]);
-                
+
                 return (
                     <Note
                         note={note}
@@ -273,7 +271,7 @@ describe('Dynamic Selection Boxes', () => {
                             <TestWrapper />
                         </EditingProvider>
                     </ComponentSelectionProvider>
-                </svg>
+                </svg>,
             );
 
             const noteElement = screen.getByTestId('map-note-note-selected');
