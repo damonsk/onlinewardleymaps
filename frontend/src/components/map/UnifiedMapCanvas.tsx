@@ -14,6 +14,7 @@ import {
 import {updatePSTInMapText} from '../../utils/pstElementUtils';
 import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {ComponentLinkHighlightProvider} from '../contexts/ComponentLinkHighlightContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
@@ -477,63 +478,65 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     />
 
                     <DebugOverlay enabled={DEBUG_COORDINATES} lastClickPosition={lastClickPosition} />
-                    <UnifiedMapContent
-                        mapElements={mapElements}
-                        mapDimensions={mapDimensions}
-                        mapStyleDefs={mapStyleDefs}
-                        launchUrl={launchUrl}
-                        mapAttitudes={wardleyMap.attitudes}
-                        mapText={mapText}
-                        mutateMapText={mutateMapText}
-                        scaleFactor={scaleFactor}
-                        mapElementsClicked={mapElementsClicked}
-                        links={processedLinks}
-                        evolutionOffsets={evolutionOffsets}
-                        enableNewPipelines={true}
-                        setHighlightLine={setHighlightLine}
-                        clicked={clicked}
-                        enableAccelerators={enableAccelerators}
-                        mapAccelerators={wardleyMap.accelerators.map((accelerator: any) => ({
-                            ...accelerator,
-                            type: accelerator.deaccelerator ? 'deaccelerator' : 'accelerator',
-                            label: accelerator.label || {x: 0, y: 0},
-                        }))}
-                        mapNotes={wardleyMap.notes}
-                        mapAnnotations={wardleyMap.annotations}
-                        mapAnnotationsPresentation={mapAnnotationsPresentation}
-                        mapMethods={wardleyMap.methods}
-                        linkingState={props.linkingState}
-                        sourceComponent={props.sourceComponent}
-                        mousePosition={currentMousePosition}
-                        highlightedComponent={props.highlightedComponent}
-                        isDuplicateLink={props.isDuplicateLink}
-                        isInvalidTarget={props.isInvalidTarget}
-                        showCancellationHint={props.showCancellationHint}
-                        isSourceDeleted={props.isSourceDeleted}
-                        isTargetDeleted={props.isTargetDeleted}
-                        isDrawing={props.isDrawing}
-                        drawingStartPosition={props.drawingStartPosition}
-                        drawingCurrentPosition={props.drawingCurrentPosition}
-                        selectedToolbarItem={props.selectedToolbarItem}
-                        methodHighlightedComponent={props.methodHighlightedComponent}
-                        hoveredPSTElement={hoveredPSTElement}
-                        resizingPSTElement={resizingPSTElement}
-                        resizeHandle={resizeHandle}
-                        resizePreviewBounds={resizePreviewBounds}
-                        keyboardModifiers={keyboardModifiers}
-                        onPSTHover={handlePSTHover}
-                        onPSTResizeStart={handlePSTResizeStart}
-                        onPSTResizeMove={handlePSTResizeMove}
-                        onPSTResizeEnd={handlePSTResizeEnd}
-                        draggingPSTElement={draggingPSTElement}
-                        dragPreviewBounds={dragPreviewBounds}
-                        onPSTDragStart={handlePSTDragStart}
-                        onPSTDragMove={handlePSTDragMove}
-                        onPSTDragEnd={handlePSTDragEnd}
-                        onLinkClick={props.onLinkClick}
-                        onLinkContextMenu={props.onLinkContextMenu}
-                        isLinkSelected={props.isLinkSelected}
-                    />
+                    <ComponentLinkHighlightProvider processedLinks={processedLinks}>
+                        <UnifiedMapContent
+                            mapElements={mapElements}
+                            mapDimensions={mapDimensions}
+                            mapStyleDefs={mapStyleDefs}
+                            launchUrl={launchUrl}
+                            mapAttitudes={wardleyMap.attitudes}
+                            mapText={mapText}
+                            mutateMapText={mutateMapText}
+                            scaleFactor={scaleFactor}
+                            mapElementsClicked={mapElementsClicked}
+                            links={processedLinks}
+                            evolutionOffsets={evolutionOffsets}
+                            enableNewPipelines={true}
+                            setHighlightLine={setHighlightLine}
+                            clicked={clicked}
+                            enableAccelerators={enableAccelerators}
+                            mapAccelerators={wardleyMap.accelerators.map((accelerator: any) => ({
+                                ...accelerator,
+                                type: accelerator.deaccelerator ? 'deaccelerator' : 'accelerator',
+                                label: accelerator.label || {x: 0, y: 0},
+                            }))}
+                            mapNotes={wardleyMap.notes}
+                            mapAnnotations={wardleyMap.annotations}
+                            mapAnnotationsPresentation={mapAnnotationsPresentation}
+                            mapMethods={wardleyMap.methods}
+                            linkingState={props.linkingState}
+                            sourceComponent={props.sourceComponent}
+                            mousePosition={currentMousePosition}
+                            highlightedComponent={props.highlightedComponent}
+                            isDuplicateLink={props.isDuplicateLink}
+                            isInvalidTarget={props.isInvalidTarget}
+                            showCancellationHint={props.showCancellationHint}
+                            isSourceDeleted={props.isSourceDeleted}
+                            isTargetDeleted={props.isTargetDeleted}
+                            isDrawing={props.isDrawing}
+                            drawingStartPosition={props.drawingStartPosition}
+                            drawingCurrentPosition={props.drawingCurrentPosition}
+                            selectedToolbarItem={props.selectedToolbarItem}
+                            methodHighlightedComponent={props.methodHighlightedComponent}
+                            hoveredPSTElement={hoveredPSTElement}
+                            resizingPSTElement={resizingPSTElement}
+                            resizeHandle={resizeHandle}
+                            resizePreviewBounds={resizePreviewBounds}
+                            keyboardModifiers={keyboardModifiers}
+                            onPSTHover={handlePSTHover}
+                            onPSTResizeStart={handlePSTResizeStart}
+                            onPSTResizeMove={handlePSTResizeMove}
+                            onPSTResizeEnd={handlePSTResizeEnd}
+                            draggingPSTElement={draggingPSTElement}
+                            dragPreviewBounds={dragPreviewBounds}
+                            onPSTDragStart={handlePSTDragStart}
+                            onPSTDragMove={handlePSTDragMove}
+                            onPSTDragEnd={handlePSTDragEnd}
+                            onLinkClick={props.onLinkClick}
+                            onLinkContextMenu={props.onLinkContextMenu}
+                            isLinkSelected={props.isLinkSelected}
+                        />
+                    </ComponentLinkHighlightProvider>
                 </svg>
             </UncontrolledReactSVGPanZoom>
             {showMapToolbar && (

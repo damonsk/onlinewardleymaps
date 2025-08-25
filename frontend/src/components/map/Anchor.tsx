@@ -3,6 +3,7 @@ import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {UnifiedComponent} from '../../types/unified';
 import {useComponentSelection} from '../ComponentSelectionContext';
+import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
@@ -31,6 +32,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
     scaleFactor,
 }) => {
     const {isSelected, selectComponent} = useComponentSelection();
+    const {setHoveredComponent} = useComponentLinkHighlight();
     const identity = 'anchor';
     const textElementRef = useRef<SVGTextElement>(null);
     const [selectionBoxDimensions, setSelectionBoxDimensions] = useState(() => {
@@ -87,11 +89,21 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
         event.stopPropagation();
     };
 
+    const handleMouseEnter = () => {
+        setHoveredComponent(anchor.name);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredComponent(null);
+    };
+
     return (
         <>
             <Movable id={elementKey()} scaleFactor={scaleFactor} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false}>
                 <g
                     data-testid={`map-anchor-${anchor.id}`}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',

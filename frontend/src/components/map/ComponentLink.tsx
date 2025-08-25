@@ -4,6 +4,7 @@ import {MapTheme} from '../../constants/mapstyles';
 import {UnifiedComponent} from '../../types/unified/components';
 import {FlowLink} from '../../types/unified/links';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
+import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import FlowText from './FlowText';
 import ModernPositionCalculator from './ModernPositionCalculator';
@@ -35,6 +36,7 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
     isLinkSelected,
 }) => {
     const {enableLinkContext} = useFeatureSwitches();
+    const {isLinkHighlighted} = useComponentLinkHighlight();
     const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
     const isFlow = link.flow !== false;
@@ -70,6 +72,7 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
     // Link selection state and handlers
     const linkId = `${startElement.name}->${endElement.name}`;
     const linkSelected = isLinkSelected?.(linkId) || false;
+    const linkHighlighted = isLinkHighlighted(linkId);
 
     const handleLinkClick = (event: React.MouseEvent) => {
         if (onLinkClick) {
@@ -114,6 +117,7 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
                 onClick={handleLinkClick}
                 onContextMenu={handleLinkContextMenu}
                 isSelected={linkSelected}
+                isHighlighted={linkHighlighted}
             />
             {link.flowValue && (
                 <FlowText

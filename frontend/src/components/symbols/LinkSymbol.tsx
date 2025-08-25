@@ -26,6 +26,7 @@ interface ModernLinkSymbolProps {
     onClick?: (event: React.MouseEvent) => void;
     onContextMenu?: (event: React.MouseEvent) => void;
     isSelected?: boolean;
+    isHighlighted?: boolean;
 }
 
 const defaultStyles: LinkStyles = {
@@ -53,23 +54,33 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
     onClick,
     onContextMenu,
     isSelected,
+    isHighlighted = false,
 }) => {
     const [isHovered, setIsHovered] = useState(false);
     const finalStyles = {...defaultStyles, ...styles};
     const stroke = evolved ? finalStyles.evolvedStroke : finalStyles.stroke;
     const strokeWidth = evolved ? finalStyles.evolvedStrokeWidth : finalStyles.strokeWidth;
 
+    // Highlighting styles
+    const highlightColor = '#2196F3';
+    const highlightStrokeWidth = Math.max(strokeWidth * 1.5, 3);
+    
+    // Apply highlighting when link is part of a component's dependency chain
+    const effectiveStroke = isHighlighted ? highlightColor : stroke;
+    const effectiveStrokeWidth = isHighlighted ? highlightStrokeWidth : strokeWidth;
+    const effectiveOpacity = isHighlighted ? 0.6 : 1;
+
     // Apply selection and hover styling
     const getStroke = () => {
         if (isSelected) return '#007acc';
         if (isHovered && onClick) return '#87ceeb'; // Light blue on hover
-        return stroke;
+        return effectiveStroke;
     };
 
     const getStrokeWidth = () => {
         if (isSelected) return strokeWidth + 2;
         if (isHovered && onClick) return strokeWidth + 4;
-        return strokeWidth;
+        return effectiveStrokeWidth;
     };
 
     const selectionStroke = getStroke();
@@ -101,6 +112,7 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                 strokeDasharray={strokeDasharray}
                 stroke={selectionStroke}
                 strokeWidth={selectionStrokeWidth}
+                strokeOpacity={effectiveOpacity}
                 markerStart={isMarkerStart ? marker : undefined}
                 markerEnd={isMarkerStart ? undefined : marker}
                 filter={filter}
@@ -108,7 +120,10 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                 onContextMenu={onContextMenu}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                style={{cursor}}
+                style={{
+                    cursor,
+                    transition: 'stroke 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                }}
             />
             {flow && (
                 <line
@@ -117,12 +132,16 @@ const LinkSymbol: React.FC<ModernLinkSymbolProps> = ({
                     x2={x2}
                     y2={y2}
                     strokeWidth={finalStyles.flowStrokeWidth}
-                    stroke={finalStyles.flow}
+                    stroke={isHighlighted ? highlightColor : finalStyles.flow}
+                    strokeOpacity={effectiveOpacity}
                     onClick={onClick}
                     onContextMenu={onContextMenu}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
-                    style={{cursor}}
+                    style={{
+                        cursor,
+                        transition: 'stroke 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke-opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                    }}
                 />
             )}
         </g>

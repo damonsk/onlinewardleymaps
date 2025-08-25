@@ -6,6 +6,7 @@ import {normalizeComponentName} from '../../utils/componentNameMatching';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import ComponentText from './ComponentText';
 import {useContextMenu} from './ContextMenuProvider';
+import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
 import Inertia from './Inertia';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
@@ -40,6 +41,7 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 }) => {
     const {isSelected, selectComponent} = useComponentSelection();
     const {showContextMenu} = useContextMenu();
+    const {setHoveredComponent} = useComponentLinkHighlight();
     const calculatedPosition = new ModernPositionCalculator();
     const posX = calculatedPosition.maturityToX(component.maturity, mapDimensions.width);
     const posY = calculatedPosition.visibilityToY(component.visibility, mapDimensions.height) + (component.offsetY ? component.offsetY : 0);
@@ -86,6 +88,14 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
         // Show context menu at cursor position
         console.log('Showing context menu at:', {x: e.clientX, y: e.clientY});
         showContextMenu({x: e.clientX, y: e.clientY}, component.id);
+    };
+
+    const handleMouseEnter = () => {
+        setHoveredComponent(component.name);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredComponent(null);
     };
 
     const updatePosition = (movedPosition: MovedPosition) => {
@@ -270,6 +280,8 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     id={component.id}
                     onClick={handleClick}
                     onContextMenu={handleContextMenu}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',
