@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useCallback} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../constants/defaults';
 import {MapTheme} from '../types/map/styles';
 import {MapRenderState, UnifiedComponent, UnifiedWardleyMap, createEmptyMap, groupComponentsByType} from '../types/unified';

@@ -1,6 +1,6 @@
-import {useCallback, useEffect, useRef, useState, useMemo} from 'react';
-import {ToolbarItem} from '../../../types/toolbar';
-import {ToolbarPositioning, SnapState, Position} from '../services/ToolbarPositioning';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ToolbarItem } from '../../../types/toolbar';
+import { Position, SnapState, ToolbarPositioning } from '../services/ToolbarPositioning';
 
 // Configuration constants
 const HOOK_CONFIG = {

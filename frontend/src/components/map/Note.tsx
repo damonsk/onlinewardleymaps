@@ -1,8 +1,9 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../constants/mapstyles';
 import {renameNote} from '../../constants/renameNote';
 import {MapNotes} from '../../types/base';
+import {createSelectionBoxDimensions, estimateTextDimensions, measureTextElement} from '../../utils/textMeasurement';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {useEditing} from '../EditingContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
@@ -12,7 +13,6 @@ import Movable from './Movable';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
 import ModernLineNumberPositionUpdater from './positionUpdaters/ModernLineNumberPositionUpdater';
 import {NotDefinedCoordsMatcher} from './positionUpdaters/NotDefinedCoordsMatcher';
-import {measureTextElement, createSelectionBoxDimensions, estimateTextDimensions} from '../../utils/textMeasurement';
 
 interface MovedPosition {
     x: number;

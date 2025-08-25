@@ -1,28 +1,19 @@
-import {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {ReactSVGPanZoom, TOOL_NONE, UncontrolledReactSVGPanZoom} from 'react-svg-pan-zoom';
-import {DEFAULT_RESIZE_CONSTRAINTS} from '../../constants/pstConfig';
-import {MapElements} from '../../processing/MapElements';
-import {MapTitleManager} from '../../services/MapTitleManager';
-import {PSTCoordinates, PSTElement, ResizeHandle} from '../../types/map/pst';
-import {processLinks} from '../../utils/mapProcessing';
-import {
-    calculateResizedBounds,
-    constrainPSTBounds,
-    convertBoundsToPSTCoordinates,
-    convertPSTCoordinatesToBounds,
-} from '../../utils/pstCoordinateUtils';
-import {updatePSTInMapText} from '../../utils/pstElementUtils';
-import {useEditing} from '../EditingContext';
-import {useFeatureSwitches} from '../FeatureSwitchesContext';
-import {ComponentLinkHighlightProvider} from '../contexts/ComponentLinkHighlightContext';
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactSVGPanZoom, UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
+import { MapElements } from '../../processing/MapElements';
+import { MapTitleManager } from '../../services/MapTitleManager';
+import { processLinks } from '../../utils/mapProcessing';
+import { useEditing } from '../EditingContext';
+import { useFeatureSwitches } from '../FeatureSwitchesContext';
+import { ComponentLinkHighlightProvider } from '../contexts/ComponentLinkHighlightContext';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
-import {DebugOverlay} from './debug/DebugOverlay';
-import {useCanvasState} from './hooks/useCanvasState';
-import {useMapEventHandlers} from './hooks/useMapEventHandlers';
-import {usePSTInteractions} from './hooks/usePSTInteractions';
-import {UnifiedMapCanvasProps} from './types/MapCanvasProps';
+import { DebugOverlay } from './debug/DebugOverlay';
+import { useCanvasState } from './hooks/useCanvasState';
+import { useMapEventHandlers } from './hooks/useMapEventHandlers';
+import { usePSTInteractions } from './hooks/usePSTInteractions';
+import { UnifiedMapCanvasProps } from './types/MapCanvasProps';
 
 // Debug mode for coordinate issues - set to false to disable debug indicators
 const DEBUG_COORDINATES = false;
@@ -535,6 +526,9 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                             onLinkClick={props.onLinkClick}
                             onLinkContextMenu={props.onLinkContextMenu}
                             isLinkSelected={props.isLinkSelected}
+                            highlightedPipelineId={props.highlightedPipelineId}
+                            onPipelineMouseEnter={props.onPipelineMouseEnter}
+                            onPipelineMouseLeave={props.onPipelineMouseLeave}
                         />
                     </ComponentLinkHighlightProvider>
                 </svg>

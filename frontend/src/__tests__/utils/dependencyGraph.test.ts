@@ -1,12 +1,12 @@
 // dependencyGraph.test.ts
 import '@testing-library/jest-dom';
 import {
-    createDependencyGraph,
-    normalizeComponentName,
     areComponentNamesEquivalent,
     ComponentDependencyGraph,
+    createDependencyGraph,
+    normalizeComponentName,
 } from '../../utils/dependencyGraph';
-import {ProcessedLinkGroup} from '../../utils/mapProcessing';
+import { ProcessedLinkGroup } from '../../utils/mapProcessing';
 
 describe('Component Link Highlighting Dependency Graph', () => {
     describe('createDependencyGraph', () => {

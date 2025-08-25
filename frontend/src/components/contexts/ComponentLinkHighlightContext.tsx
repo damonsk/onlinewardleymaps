@@ -6,7 +6,7 @@
  * about which links should be highlighted.
  */
 
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { ComponentDependencyGraph, createDependencyGraph } from '../../utils/dependencyGraph';
 import { ProcessedLinkGroup } from '../../utils/mapProcessing';
 

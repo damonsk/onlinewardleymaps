@@ -27,6 +27,9 @@ export interface ToolbarInteractionProps {
     selectedToolbarItem?: ToolbarItem | null;
     onToolbarItemDrop?: (item: ToolbarItem, position: {x: number; y: number}) => void;
     onMouseMove?: (position: {x: number; y: number; nearestComponent?: UnifiedComponent | null}) => void;
+    highlightedPipelineId?: string | null;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
 }
 
 export interface LinkingInteractionProps {

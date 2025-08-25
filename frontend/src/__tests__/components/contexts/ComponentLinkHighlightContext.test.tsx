@@ -1,13 +1,12 @@
 // ComponentLinkHighlightContext.test.tsx
 import '@testing-library/jest-dom';
-import {render, screen} from '@testing-library/react';
-import {act, renderHook} from '@testing-library/react';
+import { act, render, renderHook, screen } from '@testing-library/react';
 import React from 'react';
 import {
     ComponentLinkHighlightProvider,
     useComponentLinkHighlight,
 } from '../../../components/contexts/ComponentLinkHighlightContext';
-import {ProcessedLinkGroup} from '../../../utils/mapProcessing';
+import { ProcessedLinkGroup } from '../../../utils/mapProcessing';
 
 describe('ComponentLinkHighlightContext', () => {
     const mockProcessedLinks: ProcessedLinkGroup[] = [

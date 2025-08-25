@@ -83,6 +83,11 @@ interface ElementGroupingProps {
         event: React.MouseEvent,
     ) => void;
     isLinkSelected?: (linkId: string) => boolean;
+    
+    // Pipeline highlighting
+    highlightedPipelineId?: string | null;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
 }
 
 export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
@@ -170,6 +175,9 @@ export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
                 drawingStartPosition={props.drawingStartPosition}
                 drawingCurrentPosition={props.drawingCurrentPosition}
                 selectedToolbarItem={props.selectedToolbarItem}
+                highlightedPipelineId={props.highlightedPipelineId}
+                onPipelineMouseEnter={props.onPipelineMouseEnter}
+                onPipelineMouseLeave={props.onPipelineMouseLeave}
             />
         </g>
     );

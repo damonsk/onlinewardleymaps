@@ -15,7 +15,12 @@ import {
     ToolbarUndoIcon,
 } from '../components/map/ToolbarIconWrappers';
 import {ToolbarCategory, ToolbarConfiguration, ToolbarItem, ToolbarSubItem} from '../types/toolbar';
-import {generateNoteText} from '../utils/mapTextGeneration';
+import {generateNoteText, generatePipelineMapTextWithGlobalUniqueness} from '../utils/mapTextGeneration';
+
+/**
+ * Enhanced template function type that includes access to existing map text for global uniqueness
+ */
+type PipelineTemplateFunction = (name: string, y: string, x: string, existingMapText?: string) => string;
 
 /**
  * Template functions for generating map text syntax
@@ -29,7 +34,15 @@ export const TOOLBAR_TEMPLATES = {
     build: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (build)`,
     outsource: (name: string, y: string, x: string) => `component ${name} [${y}, ${x}] (outsource)`,
     note: (name: string, y: string, x: string) => generateNoteText(name, y, x),
-    pipeline: (name: string, y: string, x: string) => `pipeline ${name} [${y}, ${x}]`,
+    pipeline: ((name: string, y: string, x: string, existingMapText: string = '') => {
+        try {
+            const position = { x: parseFloat(x), y: parseFloat(y) };
+            return generatePipelineMapTextWithGlobalUniqueness(name, position, existingMapText);
+        } catch (error) {
+            console.warn('Failed to generate enhanced pipeline text with global uniqueness, using basic fallback:', error);
+            return `pipeline ${name} [${y}, ${x}]`;
+        }
+    }) as PipelineTemplateFunction,
     anchor: (name: string, y: string, x: string) => `anchor ${name} [${y}, ${x}]`,
 } as const;
 

@@ -30,6 +30,10 @@ interface ModernPipelineVersion2Props {
     setHighlightLine: (line?: number) => void;
     linkingFunction: (data: {el: UnifiedComponent; e: MouseEvent<Element>}) => void;
     scaleFactor: number;
+    isHighlighted?: boolean;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
+    selectedToolbarItem?: any;
 }
 
 function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element {
@@ -153,6 +157,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                             mutateMapText={props.mutateMapText}
                             onLabelMove={moved => endDragForLabel(c.pipelineComponent, moved)}
                             scaleFactor={props.scaleFactor}
+                            mapStyleDefs={props.mapStyleDefs}
                         />
                     </g>
                 )}
@@ -185,6 +190,9 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                 x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
                 stroke={props.mapStyleDefs.component.stroke}
+                isHighlighted={props.isHighlighted}
+                onMouseEnter={props.selectedToolbarItem?.id === 'component' ? () => props.onPipelineMouseEnter?.(props.pipeline.name) : undefined}
+                onMouseLeave={props.selectedToolbarItem?.id === 'component' ? props.onPipelineMouseLeave : undefined}
             />
             {componentSymbols}
         </>

@@ -1,16 +1,16 @@
-import React, {MouseEvent, useRef, useEffect, useState} from 'react';
-import {MapDimensions} from '../../constants/defaults';
-import {MapTheme} from '../../types/map/styles';
-import {UnifiedComponent} from '../../types/unified';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
+import React, { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
+import { createSelectionBoxDimensions, estimateTextDimensions, measureTextElement } from '../../utils/textMeasurement';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { useComponentLinkHighlight } from '../contexts/ComponentLinkHighlightContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
-import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
-import {ModernNotDefinedCoordsMatcher} from './positionUpdaters/ModernNotDefinedCoordsMatcher';
-import {measureTextElement, createSelectionBoxDimensions, estimateTextDimensions} from '../../utils/textMeasurement';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
+import { ModernNotDefinedCoordsMatcher } from './positionUpdaters/ModernNotDefinedCoordsMatcher';
 
 interface ModernAnchorProps {
     anchor: UnifiedComponent;

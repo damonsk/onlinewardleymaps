@@ -1,8 +1,9 @@
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import {ToolbarItem} from '../../../types/toolbar';
 import {UnifiedComponent} from '../../../types/unified/components';
 import {addLinkToMapText, generateLinkSyntax, linkExists} from '../../../utils/componentDetection';
-import {placeComponent} from '../../../utils/mapTextGeneration';
+import {extractAllComponentNames, insertPipelineComponent, placeComponent} from '../../../utils/mapTextGeneration';
+import {detectNearbyPipeline, generateUniquePipelineComponentName, validatePositionWithPipelineDetection} from '../../../utils/pipelineDetection';
 import {ModernMapViewRefactoredProps} from '../MapView';
 import {generateUniqueComponentName, validatePosition, validateRectangle} from '../utils/validation';
 import {ComponentOperations} from './useComponentOperations';
@@ -40,6 +41,9 @@ export interface MapHandlers {
     handleLinkClick: (linkInfo: any) => void;
     handleLinkContextMenu: (linkInfo: any, event: React.MouseEvent) => void;
     handleCanvasContextMenu: (event: React.MouseEvent) => void;
+    highlightedPipelineId: string | null;
+    handlePipelineMouseEnter: (pipelineId: string) => void;
+    handlePipelineMouseLeave: () => void;
 }
 
 export const useMapHandlers = ({
@@ -53,12 +57,15 @@ export const useMapHandlers = ({
     selectionManager,
     contextMenuActions,
 }: UseMapHandlersProps): MapHandlers => {
+    // Pipeline highlighting state for hover detection
+    const [highlightedPipelineId, setHighlightedPipelineId] = useState<string | null>(null);
     const handleContainerClick = useCallback(
         (event: React.MouseEvent) => {
             if (event.target === event.currentTarget) {
                 if (toolbarState.selectedToolbarItem) {
                     toolbarState.setSelectedToolbarItem(null);
                     toolbarState.setIsValidDropZone(false);
+                    setHighlightedPipelineId(null); // Clear pipeline highlighting
                 }
 
                 if (linkingState.linkingState !== 'idle') {
@@ -202,6 +209,10 @@ export const useMapHandlers = ({
             const validation = validatePosition(position);
             if (!validation.isValid) {
                 toolbarState.setIsValidDropZone(false);
+                // Only clear highlighting if not set by direct hover
+                if (!highlightedPipelineId) {
+                    setHighlightedPipelineId(null);
+                }
                 return;
             }
 
@@ -212,6 +223,10 @@ export const useMapHandlers = ({
             }
 
             toolbarState.setIsValidDropZone(validation.isValid);
+
+            // Pipeline highlighting is now handled via direct SVG hover events
+            // (onMouseEnter/onMouseLeave on ModernPipelineBoxSymbol)
+            // Coordinate-based detection is disabled to prevent excessive re-renders
 
             // Handle linking state updates
             if (linkingState.linkingState !== 'idle') {
@@ -317,12 +332,33 @@ export const useMapHandlers = ({
 
     const handleToolbarItemDrop = useCallback(
         (item: ToolbarItem, position: {x: number; y: number}) => {
-            const validation = validatePosition(position);
-            if (!validation.isValid) {
-                showUserFeedback(validation.errors[0], 'error');
+            // Enhanced validation with pipeline detection for component items
+            if (item.id === 'component') {
+                const validation = validatePositionWithPipelineDetection(position, props.wardleyMap, {
+                    tolerance: 0.1,
+                    enablePipelineSnapping: true,
+                });
+
+                if (!validation.isValid) {
+                    showUserFeedback(validation.errors[0], 'error');
+                    return;
+                }
+
+                // Handle pipeline component insertion
+                if (validation.shouldSnapToPipeline && validation.nearbyPipeline) {
+                    handlePipelineComponentInsertion(validation.nearbyPipeline, position);
+                    return;
+                }
+            }
+
+            // Default position validation for non-component items or components not near pipelines
+            const basicValidation = validatePosition(position);
+            if (!basicValidation.isValid) {
+                showUserFeedback(basicValidation.errors[0], 'error');
                 return;
             }
 
+            // Standard component placement logic
             try {
                 const placementParams = {
                     item,
@@ -336,16 +372,68 @@ export const useMapHandlers = ({
                     preserveWhitespace: false,
                 });
 
-                props.mutateMapText(result.updatedMapText, 'toolbar-component', `Added component \"${result.componentName}\"`);
-                showUserFeedback(`Component \"${result.componentName}\" added successfully!`, 'success');
+                const actionDescription = item.id === 'pipeline' ? 'Added pipeline' : `Added component \"${result.componentName}\"`;
+                props.mutateMapText(result.updatedMapText, 'toolbar-component', actionDescription);
+                
+                const successMessage = item.id === 'pipeline' 
+                    ? `Pipeline \"${result.componentName}\" created with default components!`
+                    : `Component \"${result.componentName}\" added successfully!`;
+                showUserFeedback(successMessage, 'success');
 
                 toolbarState.setSelectedToolbarItem(null);
                 toolbarState.setIsValidDropZone(false);
+                setHighlightedPipelineId(null); // Clear pipeline highlighting after placement
             } catch (error) {
                 console.error('Component placement failed:', error);
                 showUserFeedback('Failed to add component. Please try again.', 'error');
                 toolbarState.setSelectedToolbarItem(null);
                 toolbarState.setIsValidDropZone(false);
+                setHighlightedPipelineId(null); // Clear pipeline highlighting on error
+            }
+        },
+        [props, toolbarState, showUserFeedback],
+    );
+
+    const handlePipelineComponentInsertion = useCallback(
+        (pipelineBounds: any, position: {x: number; y: number}) => {
+            try {
+                // Get all existing component names from map text to generate unique name
+                const existingNames = extractAllComponentNames(props.mapText);
+                
+                // Generate unique component name
+                const componentName = generateUniquePipelineComponentName('New Component', existingNames);
+                
+                // Insert component into pipeline
+                const updatedMapText = insertPipelineComponent(
+                    props.mapText,
+                    pipelineBounds.name,
+                    componentName,
+                    position.x // Use maturity (x) position
+                );
+                
+                props.mutateMapText(
+                    updatedMapText,
+                    'toolbar-component',
+                    `Added component "${componentName}" to pipeline "${pipelineBounds.name}"`
+                );
+                
+                showUserFeedback(
+                    `Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`,
+                    'success'
+                );
+                
+                toolbarState.setSelectedToolbarItem(null);
+                toolbarState.setIsValidDropZone(false);
+                setHighlightedPipelineId(null); // Clear pipeline highlighting after successful insertion
+            } catch (error) {
+                console.error('Pipeline component insertion failed:', error);
+                showUserFeedback(
+                    `Failed to add component to pipeline "${pipelineBounds.name}". Please try again.`,
+                    'error'
+                );
+                toolbarState.setSelectedToolbarItem(null);
+                toolbarState.setIsValidDropZone(false);
+                setHighlightedPipelineId(null); // Clear pipeline highlighting on error
             }
         },
         [props, toolbarState, showUserFeedback],
@@ -396,6 +484,20 @@ export const useMapHandlers = ({
         [clearSelection, selectionManager, contextMenuActions],
     );
 
+    const handlePipelineMouseEnter = useCallback(
+        (pipelineId: string) => {
+            setHighlightedPipelineId(pipelineId);
+        },
+        [],
+    );
+
+    const handlePipelineMouseLeave = useCallback(
+        () => {
+            setHighlightedPipelineId(null);
+        },
+        [],
+    );
+
     return {
         handleContainerClick,
         handleComponentClick,
@@ -407,5 +509,8 @@ export const useMapHandlers = ({
         handleLinkClick,
         handleLinkContextMenu,
         handleCanvasContextMenu,
+        highlightedPipelineId,
+        handlePipelineMouseEnter,
+        handlePipelineMouseLeave,
     };
 };

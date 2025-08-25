@@ -35,6 +35,11 @@ interface AnnotationRendererProps {
     drawingStartPosition?: {x: number; y: number} | null;
     drawingCurrentPosition?: {x: number; y: number};
     selectedToolbarItem?: any;
+    
+    // Pipeline highlighting
+    highlightedPipelineId?: string | null;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
 }
 
 export const AnnotationRenderer: React.FC<AnnotationRendererProps> = ({
@@ -54,6 +59,9 @@ export const AnnotationRenderer: React.FC<AnnotationRendererProps> = ({
     drawingStartPosition,
     drawingCurrentPosition,
     selectedToolbarItem,
+    highlightedPipelineId,
+    onPipelineMouseEnter,
+    onPipelineMouseLeave,
 }) => {
     const featureSwitches = useFeatureSwitches();
 
@@ -90,6 +98,10 @@ export const AnnotationRenderer: React.FC<AnnotationRendererProps> = ({
                 setHighlightLine={setHighlightLineDispatch}
                 clicked={clicked}
                 scaleFactor={scaleFactor}
+                highlightedPipelineId={highlightedPipelineId}
+                onPipelineMouseEnter={onPipelineMouseEnter}
+                onPipelineMouseLeave={onPipelineMouseLeave}
+                selectedToolbarItem={selectedToolbarItem}
             />
 
             <g id="notes">
