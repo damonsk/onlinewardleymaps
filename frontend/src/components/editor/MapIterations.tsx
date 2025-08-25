@@ -50,13 +50,17 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
     const renameInput = useRef<HTMLInputElement | null>(null);
 
     const handleClickOpen = () => {
-        setOpenRename(true);
-        setValue(mapIterations[currentIteration].name);
+        if (currentIteration >= 0 && currentIteration < mapIterations.length) {
+            setOpenRename(true);
+            setValue(mapIterations[currentIteration].name);
+        }
     };
 
     const handleClickOpenDelete = () => {
-        setOpenDelete(true);
-        setValue(mapIterations[currentIteration].name);
+        if (currentIteration >= 0 && currentIteration < mapIterations.length) {
+            setOpenDelete(true);
+            setValue(mapIterations[currentIteration].name);
+        }
     };
 
     const handleClose = (beforeAction?: () => void | null) => {
@@ -149,12 +153,12 @@ export const NewMapIterations: FunctionComponent<NewMapIterationsProps> = ({
                     </Button>
                     <Box sx={{flex: '1 1 auto'}} />
 
-                    {(mapIterations.length > 0 || currentIteration > 0) && (
+                    {mapIterations.length > 0 && currentIteration >= 0 && currentIteration < mapIterations.length && (
                         <Button size="small" onClick={handleClickOpenDelete}>
                             {t('common.delete', 'Delete')} <DeleteIcon />
                         </Button>
                     )}
-                    {(mapIterations.length > 0 || currentIteration > 0) && (
+                    {mapIterations.length > 0 && currentIteration >= 0 && currentIteration < mapIterations.length && (
                         <Button size="small" onClick={handleClickOpen}>
                             {t('common.rename', 'Rename')} <EditIcon />
                         </Button>

@@ -338,6 +338,12 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
     const legacyEcosystems = groupedComponents.ecosystems.map(convertToLegacyComponent);
     const legacyLinks = convertToLegacyLinks(state.map.links);
 
+    // Memoize the setter functions to prevent infinite loops in useEffect dependencies
+    const mutateMapText = useMemo(() => createReactSetter(actions.setMapText), [actions.setMapText]);
+    const setHighlightLine = useMemo(() => createReactSetter(actions.setHighlightedLine), [actions.setHighlightedLine]);
+    const setNewComponentContext = useMemo(() => createReactSetter(actions.setNewComponentContext), [actions.setNewComponentContext]);
+    const setShowLinkedEvolved = useMemo(() => createReactSetter(actions.setShowLinkedEvolved), [actions.setShowLinkedEvolved]);
+
     return {
         mapText: state.mapText,
         mapTitle: state.map.title,
@@ -364,9 +370,9 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
         evolutionOffsets: state.evolutionOffsets,
         mapEvolutionStates: state.mapEvolutionStates,
 
-        mutateMapText: createReactSetter(actions.setMapText),
-        setHighlightLine: createReactSetter(actions.setHighlightedLine),
-        setNewComponentContext: createReactSetter(actions.setNewComponentContext),
-        setShowLinkedEvolved: createReactSetter(actions.setShowLinkedEvolved),
+        mutateMapText,
+        setHighlightLine,
+        setNewComponentContext,
+        setShowLinkedEvolved,
     };
 };
