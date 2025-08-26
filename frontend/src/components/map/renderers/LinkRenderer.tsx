@@ -26,6 +26,10 @@ interface LinkRendererProps {
         custom: number;
     };
 
+    // Map text for link context editing
+    mapText?: string;
+    mutateMapText?: (newText: string) => void;
+
     // Link interaction handlers
     onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     onLinkContextMenu?: (
@@ -54,6 +58,8 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
     links,
     mapElementsClicked,
     evolutionOffsets,
+    mapText,
+    mutateMapText,
     onLinkClick,
     onLinkContextMenu,
     isLinkSelected,
@@ -87,6 +93,8 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
                                 endElement={l.endElement}
                                 link={l.link}
                                 scaleFactor={scaleFactor}
+                                mapText={mapText}
+                                mutateMapText={mutateMapText}
                                 onLinkClick={onLinkClick}
                                 onLinkContextMenu={onLinkContextMenu}
                                 isLinkSelected={isLinkSelected}

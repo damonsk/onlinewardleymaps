@@ -49,16 +49,6 @@ const ComponentTextSymbol = forwardRef<SVGTextElement, ComponentTextSymbolProps>
             return tspans;
         };
 
-        const trimText = (id: string, longText: string) =>
-            longText
-                .trim()
-                .split(' ')
-                .map((text, i) => (
-                    <tspan key={'component_text_span_' + id + '_' + i} x={0} dy={i > 0 ? 15 : 0} textAnchor="middle">
-                        {text.trim()}
-                    </tspan>
-                ));
-
         const displayFill = evolved ? textTheme?.evolvedTextColor : textTheme?.textColor || 'black';
 
         // Determine the content to render (note takes precedence over text)
@@ -69,9 +59,9 @@ const ComponentTextSymbol = forwardRef<SVGTextElement, ComponentTextSymbolProps>
 
         // For notes: single-line notes (unquoted, no \n) should render as single text element
         // Multi-line notes (quoted, with \n) should span multiple lines
-        // For components: check if content is long (for word wrapping) - only for single-line content
-        const isLong = !hasLineBreaks && !note && contentToRender.length > 14;
-
+        // For components: render single-line content without word wrapping (similar to Notes)
+        // Only multi-line content with explicit \n should span multiple lines
+        
         let renderedContent;
         let transform = '';
 
@@ -79,12 +69,8 @@ const ComponentTextSymbol = forwardRef<SVGTextElement, ComponentTextSymbolProps>
             // Multi-line content with actual line breaks (for both notes and component names)
             renderedContent = renderMultiLineText(id, contentToRender);
             transform = ''; // No transform for multi-line text
-        } else if (isLong) {
-            // Long single-line component content (word wrapping) - only for components, not notes
-            renderedContent = trimText(id, contentToRender);
-            transform = 'translate(30, 10)';
         } else {
-            // Single-line content (notes without \n, short components)
+            // Single-line content (both notes and components) - no automatic word wrapping
             renderedContent = contentToRender;
             transform = '';
         }

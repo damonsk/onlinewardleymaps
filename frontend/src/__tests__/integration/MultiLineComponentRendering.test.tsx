@@ -157,8 +157,8 @@ describe('Multi-line Component Rendering Integration', () => {
             expect(textElement.getAttribute('transform')).toBe('');
         });
 
-        it('should apply word wrapping to long single-line component names', () => {
-            const longSingleLineComponentName = 'This is a very long single line component name that should be wrapped';
+        it('should NOT apply word wrapping to long single-line component names', () => {
+            const longSingleLineComponentName = 'This is a very long single line component name that should NOT be wrapped';
 
             render(
                 <svg>
@@ -169,12 +169,12 @@ describe('Multi-line Component Rendering Integration', () => {
             const textElement = screen.getByTestId('test-long-single-line');
             expect(textElement).toBeInTheDocument();
 
-            // Should apply transform for word wrapping
-            expect(textElement.getAttribute('transform')).toBe('translate(30, 10)');
+            // Should NOT apply transform for word wrapping
+            expect(textElement.getAttribute('transform')).toBe('');
 
-            // Should have multiple tspans for word wrapping
+            // Should render as single text content, no tspans
             const tspans = textElement.querySelectorAll('tspan');
-            expect(tspans.length).toBeGreaterThan(1);
+            expect(tspans.length).toBe(0);
         });
     });
 

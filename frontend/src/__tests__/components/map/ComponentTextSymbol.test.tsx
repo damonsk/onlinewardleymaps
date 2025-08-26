@@ -365,8 +365,8 @@ describe('ComponentTextSymbol', () => {
     });
 
     describe('Long Text Handling', () => {
-        it('should handle long text with tspan elements correctly', () => {
-            const longText = 'This is a very long component name that should be split';
+        it('should handle long text without splitting into tspan elements', () => {
+            const longText = 'This is a very long component name that should NOT be split';
             const props = {...defaultProps, text: longText};
 
             renderInSvg(<ComponentTextSymbol {...props} />);
@@ -374,13 +374,15 @@ describe('ComponentTextSymbol', () => {
             const textElement = screen.getByTestId('test-component-text');
             expect(textElement).toBeInTheDocument();
 
-            // Should have transform attribute for long text
-            expect(textElement).toHaveAttribute('transform', 'translate(30, 10)');
+            // Should NOT have transform attribute since we no longer split long text
+            expect(textElement).toHaveAttribute('transform', '');
+            // Should render as single text content without tspans
+            expect(textElement).toHaveTextContent(longText);
         });
 
         it('should handle double-click on long text correctly', () => {
             const mockSetShowTextField = jest.fn();
-            const longText = 'This is a very long component name that should be split';
+            const longText = 'This is a very long component name that should NOT be split';
             const props = {
                 ...defaultProps,
                 text: longText,

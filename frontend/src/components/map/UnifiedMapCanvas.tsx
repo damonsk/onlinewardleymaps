@@ -545,14 +545,18 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 <div
                     style={{
                         position: 'absolute',
-                        bottom: '20px', // Reduced from 60px to 20px, saving 40px
+                        bottom: '20px',
                         left: '20px',
                         zIndex: 1000,
-                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        backgroundColor: '#ffffff',
                         borderRadius: '8px',
-                        padding: '8px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                        border: '1px solid rgba(0,0,0,0.1)',
+                        padding: '8px 6px',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                        border: '1px solid #e1e5e9',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: '4px',
+                        userSelect: 'none',
                     }}>
                     <MapCanvasToolbar
                         shouldHideNav={props.shouldHideNav || (() => {})}

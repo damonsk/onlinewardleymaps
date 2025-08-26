@@ -126,6 +126,8 @@ export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
                 links={props.links}
                 mapElementsClicked={props.mapElementsClicked}
                 evolutionOffsets={props.evolutionOffsets}
+                mapText={props.mapText}
+                mutateMapText={props.mutateMapText}
                 onLinkClick={props.onLinkClick}
                 onLinkContextMenu={props.onLinkContextMenu}
                 isLinkSelected={props.isLinkSelected}

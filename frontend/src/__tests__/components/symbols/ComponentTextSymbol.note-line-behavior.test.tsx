@@ -123,23 +123,23 @@ describe('ComponentTextSymbol Note Line Behavior', () => {
     });
 
     describe('Distinction between components and notes', () => {
-        it('should apply word wrapping to long component text but not to long note text', () => {
-            // Long component text (should be word-wrapped)
+        it('should NOT apply word wrapping to long component text or long note text', () => {
+            // Long component text (should NOT be word-wrapped anymore)
             render(
                 <svg>
                     <ComponentTextSymbol
                         id="test-long-component"
-                        text="This is a very long component name that should be word wrapped"
+                        text="This is a very long component name that should NOT be word wrapped"
                         textTheme={mockTextTheme}
                     />
                 </svg>,
             );
 
             const componentElement = screen.getByTestId('test-long-component');
-            expect(componentElement.getAttribute('transform')).toBe('translate(30, 10)');
+            expect(componentElement.getAttribute('transform')).toBe('');
 
             const componentTspans = componentElement.querySelectorAll('tspan');
-            expect(componentTspans.length).toBeGreaterThan(1); // Word-wrapped into multiple spans
+            expect(componentTspans.length).toBe(0); // No word wrapping for long components
 
             // Long note text (should NOT be word-wrapped)
             render(

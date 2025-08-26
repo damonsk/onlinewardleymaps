@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../constants/mapstyles';
 import {UnifiedComponent} from '../../types/unified/components';
@@ -7,6 +7,7 @@ import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
 import LinkSymbol from '../symbols/LinkSymbol';
 import FlowText from './FlowText';
+import LinkTextEditor from './LinkTextEditor';
 import ModernPositionCalculator from './ModernPositionCalculator';
 
 interface ModernComponentLinkProps {
@@ -16,6 +17,8 @@ interface ModernComponentLinkProps {
     endElement: UnifiedComponent;
     link: FlowLink;
     scaleFactor: number;
+    mapText?: string;
+    mutateMapText?: (newText: string) => void;
     onLinkClick?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
     onLinkContextMenu?: (
         linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number},
@@ -31,12 +34,15 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
     endElement,
     link,
     scaleFactor,
+    mapText,
+    mutateMapText,
     onLinkClick,
     onLinkContextMenu,
     isLinkSelected,
 }) => {
     const {enableLinkContext} = useFeatureSwitches();
     const {isLinkHighlighted} = useComponentLinkHighlight();
+    const [isEditingContext, setIsEditingContext] = useState(false);
     const {height, width} = mapDimensions;
     const positionCalc = new ModernPositionCalculator();
     const isFlow = link.flow !== false;
@@ -103,6 +109,21 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
         }
     };
 
+    const handleLinkContextDoubleClick = useCallback((event: React.MouseEvent) => {
+        if (enableLinkContext && mapText && mutateMapText) {
+            event.stopPropagation();
+            setIsEditingContext(true);
+        }
+    }, [enableLinkContext, mapText, mutateMapText]);
+
+    const handleSaveContext = useCallback(() => {
+        setIsEditingContext(false);
+    }, []);
+
+    const handleCancelContext = useCallback(() => {
+        setIsEditingContext(false);
+    }, []);
+
     return (
         <>
             <LinkSymbol
@@ -131,15 +152,39 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
                 />
             )}
             {enableLinkContext && link.context && (
-                <text
-                    className="link-context"
-                    fontSize={mapStyleDefs.link?.contextFontSize ?? '10px'}
-                    textAnchor="middle"
-                    x={centerX}
-                    y={centerY - buffer}
-                    transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}>
-                    {link.context}
-                </text>
+                <>
+                    {isEditingContext && mapText && mutateMapText ? (
+                        <foreignObject
+                            x={centerX - 75}
+                            y={centerY - buffer - 20}
+                            width={150}
+                            height={40}
+                            style={{pointerEvents: 'auto'}}>
+                            <LinkTextEditor
+                                link={link}
+                                x={0}
+                                y={0}
+                                mapText={mapText}
+                                mutateMapText={mutateMapText}
+                                mapStyleDefs={mapStyleDefs}
+                                onSave={handleSaveContext}
+                                onCancel={handleCancelContext}
+                            />
+                        </foreignObject>
+                    ) : (
+                        <text
+                            className="link-context"
+                            fontSize={mapStyleDefs.link?.contextFontSize ?? '10px'}
+                            textAnchor="middle"
+                            x={centerX}
+                            y={centerY - buffer}
+                            transform={`rotate(${adjustedAngle} ${centerX} ${centerY})`}
+                            onDoubleClick={handleLinkContextDoubleClick}
+                            style={{cursor: mapText && mutateMapText ? 'pointer' : 'default'}}>
+                            {link.context}
+                        </text>
+                    )}
+                </>
             )}
         </>
     );

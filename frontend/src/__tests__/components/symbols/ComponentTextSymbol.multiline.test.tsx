@@ -24,12 +24,12 @@ describe('ComponentTextSymbol Multi-line Support', () => {
             expect(textElement.getAttribute('transform')).toBe('');
         });
 
-        it('should render long single-line text with word wrapping', () => {
+        it('should render long single-line text without word wrapping', () => {
             render(
                 <svg>
                     <ComponentTextSymbol
                         id="test-long"
-                        text="This is a very long single line text that should be wrapped"
+                        text="This is a very long single line text that should NOT be wrapped"
                         textTheme={mockTextTheme}
                     />
                 </svg>,
@@ -37,11 +37,11 @@ describe('ComponentTextSymbol Multi-line Support', () => {
 
             const textElement = screen.getByTestId('test-long');
             expect(textElement).toBeInTheDocument();
-            expect(textElement.getAttribute('transform')).toBe('translate(30, 10)');
+            expect(textElement.getAttribute('transform')).toBe('');
 
-            // Should have multiple tspan elements for word wrapping
+            // Should NOT have multiple tspan elements - no word wrapping
             const tspans = textElement.querySelectorAll('tspan');
-            expect(tspans.length).toBeGreaterThan(1);
+            expect(tspans.length).toBe(0); // Single text element, no tspans
         });
 
         it('should handle empty text', () => {
