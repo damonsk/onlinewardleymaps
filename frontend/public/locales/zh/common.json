@@ -106,7 +106,8 @@
         "inertia": "惯性",
         "linkComponents": "链接组件",
         "type": "类型",
-        "text": "文本"
+        "text": "文本",
+        "saveError": "保存组件错误：{{error}}"
     },
     "links": {
         "link": "链接",
@@ -122,7 +123,8 @@
         "addAnnotation": "添加注释",
         "editAnnotation": "编辑注释",
         "deleteAnnotation": "删除注释",
-        "annotationText": "注释文本"
+        "annotationText": "注释文本",
+        "saveError": "保存笔记错误：{{error}}"
     },
     "iterations": {
         "iteration": "迭代",
@@ -157,7 +159,8 @@
             "error": "验证错误",
             "lineError": "第 {{line}} 行出错",
             "componentNotFound": "找不到组件 '{{component}}'",
-            "invalidSyntax": "无效语法"
+            "invalidSyntax": "无效语法",
+            "elementNotFound": "未找到地图元素或语法无效"
         },
         "usages": {
             "to_set_the_title": "设置标题",
@@ -184,7 +187,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "突出显示具有构建、购买或外包执行方法的组件"
         },
         "hideUsage": "隐藏用法",
-        "showUsage": "显示用法"
+        "showUsage": "显示用法",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "多行文本编辑器",
+                "singleLine": "文本编辑器"
+            },
+            "validation": {
+                "required": "此字段是必填的",
+                "minLength": "最小长度为{{count}}个字符",
+                "maxLength": "最大长度为{{count}}个字符",
+                "invalidFormat": "格式无效",
+                "invalidCharacters": "包含无效字符",
+                "saveFailed": "保存失败。请重试。"
+            }
+        },
+        "link": {
+            "placeholder": "输入链接文本...",
+            "ariaDescription": "输入在链接上显示的文本。不能包含换行符或分号。",
+            "validation": {
+                "noLineBreaks": "链接文本不能包含换行符",
+                "noSemicolons": "链接文本不能包含分号",
+                "updateFailed": "更新链接文本失败",
+                "unexpectedError": "发生了意外错误"
+            }
+        }
     },
     "theme": {
         "light": "浅色主题",
@@ -220,7 +247,8 @@
         "downloadExtension": "Download Visual Studio Code Extension",
         "wardleyMapping": "沃德利映射由西蒙·沃德利提供，CC BY-SA 4.0。了解更多，请参阅",
         "wardleyMappingLink": "书籍",
-        "createdBy": "创建者"
+        "createdBy": "创建者",
+        "patreonAlt": "成为赞助者"
     },
     "dialogs": {
         "deleteConfirmation": "此操作无法撤消。",
@@ -229,6 +257,32 @@
         "networkError": "网络错误。请重试。",
         "saveError": "保存错误。请重试。",
         "loadError": "加载错误。请重试。",
-        "areYouSure": "Are you sure?"
+        "areYouSure": "Are you sure?",
+        "setMapSize": "设置地图大小",
+        "mapSizeDescription": "为您的地图画布设置尺寸。数值必须在100到5000像素之间。",
+        "width": "宽度",
+        "height": "高度",
+        "editEvolutionStages": "编辑进化阶段",
+        "evolutionStagesDescription": "自定义四个进化阶段的名称。这些将作为标签显示在您地图的进化轴上。",
+        "stage1": "阶段1（起源）",
+        "stage2": "阶段2（定制构建）",
+        "stage3": "阶段3（产品）",
+        "stage4": "阶段4（商品）",
+        "validation": {
+            "required": "{{field}}是必填的",
+            "invalidNumber": "{{field}}必须是有效数字",
+            "wholeNumber": "{{field}}必须是整数",
+            "tooSmall": "{{field}}必须至少为{{min}}",
+            "tooLarge": "{{field}}不能超过{{max}}",
+            "stageRequired": "阶段{{number}}名称是必填的",
+            "stageTooLong": "阶段{{number}}名称必须在50个字符或更少"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "撤销/重做错误",
+            "description": "撤销/重做系统发生错误。应用程序将继续工作，但撤销/重做功能可能会受限。",
+            "detailsLabel": "错误详情"
+        }
     }
 }

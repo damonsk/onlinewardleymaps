@@ -1,4 +1,5 @@
 import React, {createContext, useCallback, useContext, useMemo} from 'react';
+import {useI18n} from '../hooks/useI18n';
 import {UNDO_REDO_CONFIG} from '../constants/undoRedo';
 import {useUndoRedoManager} from '../hooks/useUndoRedoManager';
 import {ActionType, UndoRedoContextValue, UndoRedoProviderProps} from '../types/undo-redo';
@@ -187,6 +188,26 @@ export const UndoRedoProvider: React.FC<UndoRedoProviderProps> = ({
 };
 
 /**
+ * Localized error fallback component
+ */
+const LocalizedErrorFallback: React.FC<{error: Error}> = ({error}) => {
+    const {t} = useI18n();
+    
+    return (
+        <div style={{padding: '20px', border: '1px solid #ff6b6b', borderRadius: '4px', backgroundColor: '#ffe0e0'}}>
+            <h3>{t('undoRedo.error.title', 'Undo/Redo Error')}</h3>
+            <p>
+                {t('undoRedo.error.description', 'An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be limited.')}
+            </p>
+            <details>
+                <summary>{t('undoRedo.error.detailsLabel', 'Error Details')}</summary>
+                <pre style={{fontSize: '12px', overflow: 'auto'}}>{error.message}</pre>
+            </details>
+        </div>
+    );
+};
+
+/**
  * Error boundary component for undo/redo operations
  * This can be used to wrap components that use undo/redo functionality
  */
@@ -219,19 +240,8 @@ export class UndoRedoErrorBoundary extends React.Component<
                 return <FallbackComponent error={this.state.error} />;
             }
 
-            return (
-                <div style={{padding: '20px', border: '1px solid #ff6b6b', borderRadius: '4px', backgroundColor: '#ffe0e0'}}>
-                    <h3>Undo/Redo Error</h3>
-                    <p>
-                        An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be
-                        limited.
-                    </p>
-                    <details>
-                        <summary>Error Details</summary>
-                        <pre style={{fontSize: '12px', overflow: 'auto'}}>{this.state.error.message}</pre>
-                    </details>
-                </div>
-            );
+            // Use the localized fallback component
+            return <LocalizedErrorFallback error={this.state.error} />;
         }
 
         return this.props.children;

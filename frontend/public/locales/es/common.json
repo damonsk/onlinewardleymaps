@@ -106,7 +106,8 @@
         "inertia": "Inercia",
         "linkComponents": "Enlazar Componentes",
         "type": "Tipo",
-        "text": "Texto"
+        "text": "Texto",
+        "saveError": "Error al guardar componente: {{error}}"
     },
     "links": {
         "link": "Enlace",
@@ -122,7 +123,8 @@
         "addAnnotation": "Añadir Anotación",
         "editAnnotation": "Editar Anotación",
         "deleteAnnotation": "Eliminar Anotación",
-        "annotationText": "Texto de Anotación"
+        "annotationText": "Texto de Anotación",
+        "saveError": "Error al guardar nota: {{error}}"
     },
     "iterations": {
         "iteration": "Iteración",
@@ -157,7 +159,8 @@
             "error": "Error de Validación",
             "lineError": "Error en la línea {{line}}",
             "componentNotFound": "Componente '{{component}}' no encontrado",
-            "invalidSyntax": "Sintaxis no válida"
+            "invalidSyntax": "Sintaxis no válida",
+            "elementNotFound": "Elemento del mapa no encontrado o sintaxis no válida"
         },
         "usages": {
             "to_set_the_title": "Para establecer el título",
@@ -184,7 +187,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar un componente con un método de ejecución de construir, comprar o externalizar"
         },
         "hideUsage": "Ocultar Uso",
-        "showUsage": "Mostrar Uso"
+        "showUsage": "Mostrar Uso",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Editor de texto multilínea",
+                "singleLine": "Editor de texto"
+            },
+            "validation": {
+                "required": "Este campo es obligatorio",
+                "minLength": "La longitud mínima es {{count}} caracteres",
+                "maxLength": "La longitud máxima es {{count}} caracteres",
+                "invalidFormat": "Formato no válido",
+                "invalidCharacters": "Contiene caracteres no válidos",
+                "saveFailed": "Error al guardar. Por favor, inténtalo de nuevo."
+            }
+        },
+        "link": {
+            "placeholder": "Ingresa texto del enlace...",
+            "ariaDescription": "Ingresa el texto que se mostrará en el enlace. No puede contener saltos de línea o punto y coma.",
+            "validation": {
+                "noLineBreaks": "El texto del enlace no puede contener saltos de línea",
+                "noSemicolons": "El texto del enlace no puede contener punto y coma",
+                "updateFailed": "Error al actualizar el texto del enlace",
+                "unexpectedError": "Ocurrió un error inesperado"
+            }
+        }
     },
     "theme": {
         "light": "Tema Claro",
@@ -220,7 +247,8 @@
         "community": "Únete a la comunidad",
         "documentation": "Documentación",
         "support": "Soporte",
-        "createdBy": "Creado por"
+        "createdBy": "Creado por",
+        "patreonAlt": "Conviértete en Mecenas"
     },
     "dialogs": {
         "areYouSure": "¿Estás seguro?",
@@ -229,6 +257,32 @@
         "invalidInput": "Por favor, introduce una entrada válida.",
         "networkError": "Error de red. Por favor, inténtalo de nuevo.",
         "saveError": "Error al guardar. Por favor, inténtalo de nuevo.",
-        "loadError": "Error al cargar. Por favor, inténtalo de nuevo."
+        "loadError": "Error al cargar. Por favor, inténtalo de nuevo.",
+        "setMapSize": "Establecer Tamaño del Mapa",
+        "mapSizeDescription": "Establece las dimensiones del lienzo de tu mapa. Los valores deben estar entre 100 y 5000 píxeles.",
+        "width": "Ancho",
+        "height": "Alto",
+        "editEvolutionStages": "Editar Etapas de Evolución",
+        "evolutionStagesDescription": "Personaliza los nombres de las cuatro etapas de evolución. Estas aparecerán como etiquetas en el eje de evolución de tu mapa.",
+        "stage1": "Etapa 1 (Génesis)",
+        "stage2": "Etapa 2 (Personalizado)",
+        "stage3": "Etapa 3 (Producto)",
+        "stage4": "Etapa 4 (Mercancía)",
+        "validation": {
+            "required": "{{field}} es obligatorio",
+            "invalidNumber": "{{field}} debe ser un número válido",
+            "wholeNumber": "{{field}} debe ser un número entero",
+            "tooSmall": "{{field}} debe ser al menos {{min}}",
+            "tooLarge": "{{field}} no debe ser mayor que {{max}}",
+            "stageRequired": "El nombre de la Etapa {{number}} es obligatorio",
+            "stageTooLong": "El nombre de la Etapa {{number}} debe tener 50 caracteres o menos"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Error de Deshacer/Rehacer",
+            "description": "Ocurrió un error en el sistema de deshacer/rehacer. La aplicación seguirá funcionando, pero la funcionalidad de deshacer/rehacer puede estar limitada.",
+            "detailsLabel": "Detalles del Error"
+        }
     }
 }

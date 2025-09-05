@@ -106,7 +106,8 @@
         "inertia": "Inércia",
         "linkComponents": "Ligar Componentes",
         "type": "Tipo",
-        "text": "Texto"
+        "text": "Texto",
+        "saveError": "Erro ao salvar componente: {{error}}"
     },
     "links": {
         "link": "Ligação",
@@ -122,7 +123,8 @@
         "addAnnotation": "Adicionar Anotação",
         "editAnnotation": "Editar Anotação",
         "deleteAnnotation": "Eliminar Anotação",
-        "annotationText": "Texto da Anotação"
+        "annotationText": "Texto da Anotação",
+        "saveError": "Erro ao salvar nota: {{error}}"
     },
     "iterations": {
         "iteration": "Iteração",
@@ -157,7 +159,8 @@
             "error": "Erro de Validação",
             "lineError": "Erro na linha {{line}}",
             "componentNotFound": "Componente '{{component}}' não encontrado",
-            "invalidSyntax": "Sintaxe inválida"
+            "invalidSyntax": "Sintaxe inválida",
+            "elementNotFound": "Elemento do mapa não encontrado ou sintaxe inválida"
         },
         "usages": {
             "to_set_the_title": "Para definir o título",
@@ -184,7 +187,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar um componente com um método de execução de construção, compra ou terceirização"
         },
         "hideUsage": "Ocultar Utilização",
-        "showUsage": "Mostrar Utilização"
+        "showUsage": "Mostrar Utilização",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Editor de texto de várias linhas",
+                "singleLine": "Editor de texto"
+            },
+            "validation": {
+                "required": "Este campo é obrigatório",
+                "minLength": "O comprimento mínimo é {{count}} caracteres",
+                "maxLength": "O comprimento máximo é {{count}} caracteres",
+                "invalidFormat": "Formato inválido",
+                "invalidCharacters": "Contém caracteres inválidos",
+                "saveFailed": "Falha ao salvar. Tente novamente."
+            }
+        },
+        "link": {
+            "placeholder": "Digite o texto do link...",
+            "ariaDescription": "Digite o texto a ser exibido no link. Não pode conter quebras de linha ou ponto e vírgula.",
+            "validation": {
+                "noLineBreaks": "O texto do link não pode conter quebras de linha",
+                "noSemicolons": "O texto do link não pode conter ponto e vírgula",
+                "updateFailed": "Falha ao atualizar o texto do link",
+                "unexpectedError": "Ocorreu um erro inesperado"
+            }
+        }
     },
     "theme": {
         "light": "Tema Claro",
@@ -220,7 +247,8 @@
         "downloadExtension": "Download Visual Studio Code Extension",
         "wardleyMapping": "Mapeamento Wardley cortesia de Simon Wardley, CC BY-SA 4.0. Para saber mais, veja",
         "wardleyMappingLink": "o livro",
-        "createdBy": "Criado por"
+        "createdBy": "Criado por",
+        "patreonAlt": "Torne-se um Patrono"
     },
     "dialogs": {
         "deleteConfirmation": "Esta ação não pode ser desfeita.",
@@ -229,6 +257,32 @@
         "networkError": "Erro de rede. Por favor, tente novamente.",
         "saveError": "Erro ao guardar. Por favor, tente novamente.",
         "loadError": "Erro ao carregar. Por favor, tente novamente.",
-        "areYouSure": "Are you sure?"
+        "areYouSure": "Are you sure?",
+        "setMapSize": "Definir Tamanho do Mapa",
+        "mapSizeDescription": "Defina as dimensões para sua tela do mapa. Os valores devem estar entre 100 e 5000 pixels.",
+        "width": "Largura",
+        "height": "Altura",
+        "editEvolutionStages": "Editar Estágios de Evolução",
+        "evolutionStagesDescription": "Personalize os nomes dos quatro estágios de evolução. Estes aparecerão como rótulos no eixo de evolução do seu mapa.",
+        "stage1": "Estágio 1 (Gênesis)",
+        "stage2": "Estágio 2 (Personalizado)",
+        "stage3": "Estágio 3 (Produto)",
+        "stage4": "Estágio 4 (Commodity)",
+        "validation": {
+            "required": "{{field}} é obrigatório",
+            "invalidNumber": "{{field}} deve ser um número válido",
+            "wholeNumber": "{{field}} deve ser um número inteiro",
+            "tooSmall": "{{field}} deve ser pelo menos {{min}}",
+            "tooLarge": "{{field}} não deve exceder {{max}}",
+            "stageRequired": "O nome do Estágio {{number}} é obrigatório",
+            "stageTooLong": "O nome do Estágio {{number}} deve ter 50 caracteres ou menos"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Erro de Desfazer/Refazer",
+            "description": "Ocorreu um erro no sistema de desfazer/refazer. A aplicação continuará a funcionar, mas a funcionalidade de desfazer/refazer pode ser limitada.",
+            "detailsLabel": "Detalhes do Erro"
+        }
     }
 }

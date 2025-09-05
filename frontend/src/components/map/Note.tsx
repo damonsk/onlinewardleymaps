@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../constants/mapstyles';
 import {renameNote} from '../../constants/renameNote';
@@ -8,6 +9,7 @@ import {useComponentSelection} from '../ComponentSelectionContext';
 import {useEditing} from '../EditingContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
+import {useUserFeedback} from './hooks/useUserFeedback';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
 import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
@@ -42,6 +44,8 @@ const Note: React.FC<ModernNoteProps> = ({
 }) => {
     const {startEditing, stopEditing, isElementEditing} = useEditing();
     const {isSelected, selectComponent} = useComponentSelection();
+    const {t} = useI18n();
+    const {showUserFeedback} = useUserFeedback();
     const [editMode, setEditMode] = useState(false);
     const [editText, setEditText] = useState(note.text);
     const textElementRef = useRef<SVGTextElement>(null);
@@ -126,9 +130,8 @@ const Note: React.FC<ModernNoteProps> = ({
             const result = renameNote(note.line, note.text, editText.trim(), mapText, mutateMapText);
             if (!result.success) {
                 console.error('Failed to save note:', result.error);
-                // For now, just log the error. In a production app, you might show a toast notification
-                // or keep the editor open to allow the user to retry
-                alert(result.error); // Simple error notification - could be enhanced with a proper toast system
+                // Show localized user feedback instead of alert
+                showUserFeedback(t('annotations.saveError') || `Error saving note: ${result.error}`, 'error');
                 return; // Don't close the editor if save failed
             }
         }

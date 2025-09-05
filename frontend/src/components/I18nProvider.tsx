@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {useI18n} from '../hooks/useI18n';
 
 interface I18nProviderProps {
     children: React.ReactNode;
@@ -11,6 +12,7 @@ interface I18nProviderProps {
  */
 export const I18nProvider: React.FC<I18nProviderProps> = ({children}) => {
     const {ready} = useTranslation('common', {useSuspense: false});
+    const {t} = useI18n();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -28,7 +30,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({children}) => {
                     height: '100vh',
                     fontFamily: 'Arial, sans-serif',
                 }}>
-                Loading...
+                {t('common.loading', 'Loading...')}
             </div>
         );
     }

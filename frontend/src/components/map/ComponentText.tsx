@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 import {rename} from '../../constants/rename';
 import {UnifiedComponent} from '../../types/unified';
 import {normalizeComponentName} from '../../utils/componentNameMatching';
@@ -8,6 +9,7 @@ import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
 import InlineEditor from './InlineEditor';
+import {useUserFeedback} from './hooks/useUserFeedback';
 import RelativeMovable from './RelativeMovable';
 
 interface MovedPosition {
@@ -48,6 +50,8 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 }) => {
     const {enableDoubleClickRename} = useFeatureSwitches();
     const {startEditing, stopEditing, isElementEditing, editingState} = useEditing();
+    const {t} = useI18n();
+    const {showUserFeedback} = useUserFeedback();
     const [editMode, setEditMode] = useState(false);
     const [forceMultiLine, setForceMultiLine] = useState(false);
 
@@ -384,9 +388,8 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
             if (!result.success) {
                 console.error('Failed to save component:', result.error);
-                // For now, just log the error. In a production app, you might show a toast notification
-                // or keep the editor open to allow the user to retry
-                alert(result.error); // Simple error notification - could be enhanced with a proper toast system
+                // Show localized user feedback instead of alert
+                showUserFeedback(t('components.saveError') || `Error saving component: ${result.error}`, 'error');
                 return; // Don't close the editor if save failed
             }
         }

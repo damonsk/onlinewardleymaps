@@ -50,11 +50,11 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isO
         const trimmedValue = value.trim();
 
         if (!trimmedValue) {
-            return `Stage ${stageNumber} name is required`;
+            return t('dialogs.validation.stageRequired') || `Stage ${stageNumber} name is required`;
         }
 
         if (trimmedValue.length > 50) {
-            return `Stage ${stageNumber} name must be 50 characters or less`;
+            return t('dialogs.validation.stageTooLong') || `Stage ${stageNumber} name must be 50 characters or less`;
         }
 
         return '';

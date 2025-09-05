@@ -52,7 +52,10 @@
         "becomePatron": "Werden Sie Patron ❤️"
     },
     "map": {
-        "title": "Wardley-Karte",
+        "title": {
+            "placeholder": "Kartentitel eingeben",
+            "ariaLabel": "Kartentitel bearbeiten"
+        },
         "newMap": "Neue Karte",
         "saveMap": "Karte Speichern",
         "loadMap": "Karte Laden",
@@ -106,7 +109,8 @@
         "inertia": "Trägheit",
         "linkComponents": "Komponenten Verbinden",
         "type": "Typ",
-        "text": "Textinhalt"
+        "text": "Textinhalt",
+        "saveError": "Fehler beim Speichern der Komponente: {{error}}"
     },
     "links": {
         "link": "Verbindung",
@@ -122,7 +126,8 @@
         "addAnnotation": "Anmerkung Hinzufügen",
         "editAnnotation": "Anmerkung Bearbeiten",
         "deleteAnnotation": "Anmerkung Löschen",
-        "annotationText": "Anmerkungstext"
+        "annotationText": "Anmerkungstext",
+        "saveError": "Fehler beim Speichern der Notiz: {{error}}"
     },
     "iterations": {
         "iteration": "Version",
@@ -157,7 +162,32 @@
             "error": "Validierungsfehler",
             "lineError": "Fehler in Zeile {{line}}",
             "componentNotFound": "Komponente '{{component}}' nicht gefunden",
-            "invalidSyntax": "Ungültige Syntax"
+            "invalidSyntax": "Ungültige Syntax",
+            "elementNotFound": "Kartenelement nicht gefunden oder ungültige Syntax"
+        },
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Mehrzeiliger Texteditor",
+                "singleLine": "Texteditor"
+            },
+            "validation": {
+                "required": "Dieses Feld ist erforderlich",
+                "minLength": "Mindestlänge ist {{count}} Zeichen",
+                "maxLength": "Maximale Länge ist {{count}} Zeichen",
+                "invalidFormat": "Ungültiges Format",
+                "invalidCharacters": "Enthält ungültige Zeichen",
+                "saveFailed": "Speichern fehlgeschlagen. Bitte versuchen Sie es erneut."
+            }
+        },
+        "link": {
+            "placeholder": "Link-Text eingeben...",
+            "ariaDescription": "Geben Sie den Text ein, der auf dem Link angezeigt werden soll. Darf keine Zeilenumbrüche oder Semikolons enthalten.",
+            "validation": {
+                "noLineBreaks": "Link-Text darf keine Zeilenumbrüche enthalten",
+                "noSemicolons": "Link-Text darf keine Semikolons enthalten",
+                "updateFailed": "Aktualisierung des Link-Textes fehlgeschlagen",
+                "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten"
+            }
         },
         "usages": {
             "to_set_the_title": "Um den Titel festzulegen",
@@ -220,7 +250,8 @@
         "community": "Der Gemeinschaft Beitreten",
         "documentation": "Dokumentation",
         "support": "Unterstützung",
-        "createdBy": "Erstellt von"
+        "createdBy": "Erstellt von",
+        "patreonAlt": "Werden Sie Patron"
     },
     "dialogs": {
         "areYouSure": "Sind Sie sicher?",
@@ -229,6 +260,32 @@
         "invalidInput": "Bitte geben Sie eine gültige Eingabe ein.",
         "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
         "saveError": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
-        "loadError": "Fehler beim Laden. Bitte versuchen Sie es erneut."
+        "loadError": "Fehler beim Laden. Bitte versuchen Sie es erneut.",
+        "setMapSize": "Kartengröße festlegen",
+        "mapSizeDescription": "Legen Sie die Abmessungen für Ihre Kartenleinwand fest. Werte müssen zwischen 100 und 5000 Pixel liegen.",
+        "width": "Breite",
+        "height": "Höhe",
+        "editEvolutionStages": "Evolutionsstufen bearbeiten",
+        "evolutionStagesDescription": "Passen Sie die Namen der vier Evolutionsstufen an. Diese werden als Beschriftungen auf der Evolutionsachse Ihrer Karte angezeigt.",
+        "stage1": "Stufe 1 (Entstehung)",
+        "stage2": "Stufe 2 (Angepasst)",
+        "stage3": "Stufe 3 (Produkt)",
+        "stage4": "Stufe 4 (Standardware)",
+        "validation": {
+            "required": "{{field}} ist erforderlich",
+            "invalidNumber": "{{field}} muss eine gültige Zahl sein",
+            "wholeNumber": "{{field}} muss eine ganze Zahl sein",
+            "tooSmall": "{{field}} muss mindestens {{min}} sein",
+            "tooLarge": "{{field}} darf höchstens {{max}} sein",
+            "stageRequired": "Name für Stufe {{number}} ist erforderlich",
+            "stageTooLong": "Name für Stufe {{number}} darf höchstens 50 Zeichen lang sein"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Rückgängig/Wiederholen Fehler",
+            "description": "Ein Fehler ist im Rückgängig/Wiederholen-System aufgetreten. Die Anwendung funktioniert weiterhin, aber die Rückgängig/Wiederholen-Funktionalität könnte eingeschränkt sein.",
+            "detailsLabel": "Fehlerdetails"
+        }
     }
 }

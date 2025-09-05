@@ -106,7 +106,8 @@
         "inertia": "Inertie",
         "linkComponents": "Lier les Composants",
         "type": "Catégorie",
-        "text": "Texte"
+        "text": "Texte",
+        "saveError": "Erreur lors de l'enregistrement du composant: {{error}}"
     },
     "links": {
         "link": "Lien",
@@ -122,7 +123,8 @@
         "addAnnotation": "Ajouter une Annotation",
         "editAnnotation": "Modifier l'Annotation",
         "deleteAnnotation": "Supprimer l'Annotation",
-        "annotationText": "Texte d'Annotation"
+        "annotationText": "Texte d'Annotation",
+        "saveError": "Erreur lors de l'enregistrement de la note: {{error}}"
     },
     "iterations": {
         "iteration": "Itération",
@@ -157,7 +159,8 @@
             "error": "Erreur de Validation",
             "lineError": "Erreur à la ligne {{line}}",
             "componentNotFound": "Composant '{{component}}' non trouvé",
-            "invalidSyntax": "Syntaxe invalide"
+            "invalidSyntax": "Syntaxe invalide",
+            "elementNotFound": "Élément de carte introuvable ou syntaxe invalide"
         },
         "usages": {
             "to_set_the_title": "Pour définir le titre",
@@ -184,7 +187,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Mettre en évidence un composant avec une méthode d'exécution de construction, d'achat ou d'externalisation"
         },
         "hideUsage": "Masquer l'Utilisation",
-        "showUsage": "Afficher l'Utilisation"
+        "showUsage": "Afficher l'Utilisation",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Éditeur de texte multiligne",
+                "singleLine": "Éditeur de texte"
+            },
+            "validation": {
+                "required": "Ce champ est obligatoire",
+                "minLength": "La longueur minimale est de {{count}} caractères",
+                "maxLength": "La longueur maximale est de {{count}} caractères",
+                "invalidFormat": "Format invalide",
+                "invalidCharacters": "Contient des caractères invalides",
+                "saveFailed": "Échec de l'enregistrement. Veuillez réessayer."
+            }
+        },
+        "link": {
+            "placeholder": "Entrez le texte du lien...",
+            "ariaDescription": "Entrez le texte à afficher sur le lien. Ne peut pas contenir de sauts de ligne ou de point-virgules.",
+            "validation": {
+                "noLineBreaks": "Le texte du lien ne peut pas contenir de sauts de ligne",
+                "noSemicolons": "Le texte du lien ne peut pas contenir de point-virgules",
+                "updateFailed": "Échec de la mise à jour du texte du lien",
+                "unexpectedError": "Une erreur inattendue s'est produite"
+            }
+        }
     },
     "theme": {
         "light": "Thème Clair",
@@ -220,7 +247,8 @@
         "community": "Rejoindre la communauté",
         "documentation": "Documentation",
         "support": "Assistance technique",
-        "createdBy": "Créé par"
+        "createdBy": "Créé par",
+        "patreonAlt": "Devenir un Mécène"
     },
     "dialogs": {
         "areYouSure": "Êtes-vous sûr ?",
@@ -229,6 +257,32 @@
         "invalidInput": "Veuillez entrer une saisie valide.",
         "networkError": "Erreur réseau. Veuillez réessayer.",
         "saveError": "Erreur lors de l'enregistrement. Veuillez réessayer.",
-        "loadError": "Erreur lors du chargement. Veuillez réessayer."
+        "loadError": "Erreur lors du chargement. Veuillez réessayer.",
+        "setMapSize": "Définir la Taille de la Carte",
+        "mapSizeDescription": "Définissez les dimensions de votre canevas de carte. Les valeurs doivent être comprises entre 100 et 5000 pixels.",
+        "width": "Largeur",
+        "height": "Hauteur",
+        "editEvolutionStages": "Modifier les Étapes d'Évolution",
+        "evolutionStagesDescription": "Personnalisez les noms des quatre étapes d'évolution. Celles-ci apparaîtront comme étiquettes sur l'axe d'évolution de votre carte.",
+        "stage1": "Étape 1 (Genèse)",
+        "stage2": "Étape 2 (Sur Mesure)",
+        "stage3": "Étape 3 (Produit)",
+        "stage4": "Étape 4 (Commodité)",
+        "validation": {
+            "required": "{{field}} est obligatoire",
+            "invalidNumber": "{{field}} doit être un nombre valide",
+            "wholeNumber": "{{field}} doit être un nombre entier",
+            "tooSmall": "{{field}} doit être au moins {{min}}",
+            "tooLarge": "{{field}} ne doit pas dépasser {{max}}",
+            "stageRequired": "Le nom de l'Étape {{number}} est obligatoire",
+            "stageTooLong": "Le nom de l'Étape {{number}} doit contenir 50 caractères ou moins"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Erreur Annuler/Rétablir",
+            "description": "Une erreur s'est produite dans le système d'annulation/rétablissement. L'application continuera à fonctionner, mais la fonctionnalité d'annulation/rétablissement peut être limitée.",
+            "detailsLabel": "Détails de l'Erreur"
+        }
     }
 }

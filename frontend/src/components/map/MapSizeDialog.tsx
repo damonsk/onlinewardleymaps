@@ -30,21 +30,21 @@ export const MapSizeDialog: React.FC<MapSizeDialogProps> = ({isOpen, currentSize
 
     const validateSize = (value: string, fieldName: string): string => {
         if (!value.trim()) {
-            return `${fieldName} is required`;
+            return t('dialogs.validation.required') || `${fieldName} is required`;
         }
 
         const numValue = parseInt(value, 10);
 
         if (isNaN(numValue) || !Number.isInteger(numValue)) {
-            return `${fieldName} must be a whole number`;
+            return t('dialogs.validation.wholeNumber') || `${fieldName} must be a whole number`;
         }
 
         if (numValue < 100) {
-            return `${fieldName} must be at least 100`;
+            return t('dialogs.validation.tooSmall') || `${fieldName} must be at least 100`;
         }
 
         if (numValue > 5000) {
-            return `${fieldName} must be no more than 5000`;
+            return t('dialogs.validation.tooLarge') || `${fieldName} must be no more than 5000`;
         }
 
         return '';

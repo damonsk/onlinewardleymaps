@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
+import {useI18n} from '../../hooks/useI18n';
 import {MapTheme} from '../../types/map/styles';
 import {hasSafariSVGQuirks} from '../../utils/browserDetection';
 
@@ -274,6 +275,7 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
     ariaLabel,
     ariaDescription,
 }) => {
+    const {t} = useI18n();
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const [validationError, setValidationError] = useState<string | null>(null);
     const [showRealTimeValidation, setShowRealTimeValidation] = useState(false);
@@ -364,29 +366,29 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         if (!validation) return null;
 
         if (validation.required && val.trim().length === 0) {
-            return 'This field is required';
+            return t('editor.inline.validation.required', 'This field is required');
         }
 
         if (validation.minLength && val.length < validation.minLength) {
-            return `Minimum length is ${validation.minLength} characters`;
+            return t('editor.inline.validation.minLength') || `Minimum length is ${validation.minLength} characters`;
         }
 
         if (validation.maxLength && val.length > validation.maxLength) {
-            return `Maximum length is ${validation.maxLength} characters`;
+            return t('editor.inline.validation.maxLength') || `Maximum length is ${validation.maxLength} characters`;
         }
 
         if (validation.pattern && !validation.pattern.test(val)) {
-            return 'Invalid format';
+            return t('editor.inline.validation.invalidFormat', 'Invalid format');
         }
 
         // Check for forbidden characters (if not sanitizing)
         if (!validation.sanitizeInput && validation.forbiddenCharacters && validation.forbiddenCharacters.test(val)) {
-            return 'Contains invalid characters';
+            return t('editor.inline.validation.invalidCharacters', 'Contains invalid characters');
         }
 
         // Check for allowed characters (if not sanitizing)
         if (!validation.sanitizeInput && validation.allowedCharacters && !validation.allowedCharacters.test(val)) {
-            return 'Contains invalid characters';
+            return t('editor.inline.validation.invalidCharacters', 'Contains invalid characters');
         }
 
         if (validation.customValidator) {
@@ -500,7 +502,7 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
             onSave();
         } catch (err) {
             console.error('Error during save:', err);
-            setValidationError('Failed to save. Please try again.');
+            setValidationError(t('editor.inline.validation.saveFailed', 'Failed to save. Please try again.'));
             // Keep the editor open for retry
         }
     };
@@ -545,7 +547,10 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         onBlur: handleBlur,
         onFocus: handleFocus,
         placeholder,
-        'aria-label': ariaLabel || (isMultiLine ? 'Multi-line text editor' : 'Text editor'),
+        'aria-label': ariaLabel || t(
+            isMultiLine ? 'editor.inline.ariaLabel.multiLine' : 'editor.inline.ariaLabel.singleLine',
+            isMultiLine ? 'Multi-line text editor' : 'Text editor'
+        ),
         'aria-describedby': ariaDescription || validationError ? 'inline-editor-description' : undefined,
         'aria-invalid': !!validationError,
         'aria-required': validation?.required || false,

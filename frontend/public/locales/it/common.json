@@ -106,7 +106,8 @@
         "inertia": "Inerzia",
         "linkComponents": "Collega Componenti",
         "type": "Tipo",
-        "text": "Testo"
+        "text": "Testo",
+        "saveError": "Errore nel salvare il componente: {{error}}"
     },
     "links": {
         "link": "Collegamento",
@@ -122,7 +123,8 @@
         "addAnnotation": "Aggiungi Annotazione",
         "editAnnotation": "Modifica Annotazione",
         "deleteAnnotation": "Elimina Annotazione",
-        "annotationText": "Testo Annotazione"
+        "annotationText": "Testo Annotazione",
+        "saveError": "Errore nel salvare la nota: {{error}}"
     },
     "iterations": {
         "iteration": "Iterazione",
@@ -157,7 +159,8 @@
             "error": "Errore di Validazione",
             "lineError": "Errore alla riga {{line}}",
             "componentNotFound": "Componente '{{component}}' non trovato",
-            "invalidSyntax": "Sintassi non valida"
+            "invalidSyntax": "Sintassi non valida",
+            "elementNotFound": "Elemento della mappa non trovato o sintassi non valida"
         },
         "usages": {
             "to_set_the_title": "Per impostare il titolo",
@@ -184,7 +187,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Evidenzia un componente con un metodo di esecuzione di costruzione, acquisto o esternalizzazione"
         },
         "hideUsage": "Nascondi Utilizzo",
-        "showUsage": "Mostra Utilizzo"
+        "showUsage": "Mostra Utilizzo",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Editor di testo multi-riga",
+                "singleLine": "Editor di testo"
+            },
+            "validation": {
+                "required": "Questo campo è obbligatorio",
+                "minLength": "La lunghezza minima è {{count}} caratteri",
+                "maxLength": "La lunghezza massima è {{count}} caratteri",
+                "invalidFormat": "Formato non valido",
+                "invalidCharacters": "Contiene caratteri non validi",
+                "saveFailed": "Salvataggio fallito. Riprova."
+            }
+        },
+        "link": {
+            "placeholder": "Inserisci il testo del collegamento...",
+            "ariaDescription": "Inserisci il testo da visualizzare sul collegamento. Non può contenere interruzioni di riga o punti e virgola.",
+            "validation": {
+                "noLineBreaks": "Il testo del collegamento non può contenere interruzioni di riga",
+                "noSemicolons": "Il testo del collegamento non può contenere punti e virgola",
+                "updateFailed": "Aggiornamento del testo del collegamento fallito",
+                "unexpectedError": "Si è verificato un errore imprevisto"
+            }
+        }
     },
     "theme": {
         "light": "Tema Chiaro",
@@ -220,7 +247,8 @@
         "downloadExtension": "Scarica Estensione Visual Studio Code",
         "wardleyMapping": "Mappatura Wardley per gentile concessione di Simon Wardley, CC BY-SA 4.0. Per saperne di più, vedi",
         "wardleyMappingLink": "il libro",
-        "createdBy": "Creato da"
+        "createdBy": "Creato da",
+        "patreonAlt": "Diventa un Sostenitore"
     },
     "dialogs": {
         "deleteConfirmation": "Questa azione non può essere annullata.",
@@ -229,6 +257,32 @@
         "networkError": "Errore di rete. Riprova.",
         "saveError": "Errore durante il salvataggio. Riprova.",
         "loadError": "Errore durante il caricamento. Riprova.",
-        "areYouSure": "Sei sicuro?"
+        "areYouSure": "Sei sicuro?",
+        "setMapSize": "Imposta Dimensione Mappa",
+        "mapSizeDescription": "Imposta le dimensioni per il tuo canvas della mappa. I valori devono essere compresi tra 100 e 5000 pixel.",
+        "width": "Larghezza",
+        "height": "Altezza",
+        "editEvolutionStages": "Modifica Fasi di Evoluzione",
+        "evolutionStagesDescription": "Personalizza i nomi delle quattro fasi di evoluzione. Queste appariranno come etichette sull'asse di evoluzione della tua mappa.",
+        "stage1": "Fase 1 (Genesi)",
+        "stage2": "Fase 2 (Personalizzato)",
+        "stage3": "Fase 3 (Prodotto)",
+        "stage4": "Fase 4 (Commodity)",
+        "validation": {
+            "required": "{{field}} è obbligatorio",
+            "invalidNumber": "{{field}} deve essere un numero valido",
+            "wholeNumber": "{{field}} deve essere un numero intero",
+            "tooSmall": "{{field}} deve essere almeno {{min}}",
+            "tooLarge": "{{field}} non deve superare {{max}}",
+            "stageRequired": "Il nome della Fase {{number}} è obbligatorio",
+            "stageTooLong": "Il nome della Fase {{number}} deve essere di 50 caratteri o meno"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Errore Annulla/Ripristina",
+            "description": "Si è verificato un errore nel sistema di annulla/ripristina. L'applicazione continuerà a funzionare, ma la funzionalità di annulla/ripristina potrebbe essere limitata.",
+            "detailsLabel": "Dettagli dell'Errore"
+        }
     }
 }

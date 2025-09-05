@@ -65,6 +65,10 @@
         "yourMap": "Your Map",
         "unsaved": "unsaved",
         "saving": "saving...",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "contextMenu": {
             "title": "Context menu",
             "ariaLabel": "Context menu"
@@ -106,7 +110,8 @@
         "inertia": "Inertia",
         "linkComponents": "Link Components",
         "type": "Type",
-        "text": "Text"
+        "text": "Text",
+        "saveError": "Error saving component: {{error}}"
     },
     "links": {
         "link": "Link",
@@ -122,7 +127,8 @@
         "addAnnotation": "Add Annotation",
         "editAnnotation": "Edit Annotation",
         "deleteAnnotation": "Delete Annotation",
-        "annotationText": "Annotation Text"
+        "annotationText": "Annotation Text",
+        "saveError": "Error saving note: {{error}}"
     },
     "iterations": {
         "iteration": "Iteration",
@@ -143,6 +149,30 @@
         "usage": "Usage",
         "example": "Example",
         "usageDescription": "Quick reference of all available map elements. You can add an example to your map by clicking the available links.",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Multi-line text editor",
+                "singleLine": "Text editor"
+            },
+            "validation": {
+                "required": "This field is required",
+                "minLength": "Minimum length is {{count}} characters",
+                "maxLength": "Maximum length is {{count}} characters",
+                "invalidFormat": "Invalid format",
+                "invalidCharacters": "Contains invalid characters",
+                "saveFailed": "Failed to save. Please try again."
+            }
+        },
+        "link": {
+            "placeholder": "Enter link text...",
+            "ariaDescription": "Enter text to display on the link. Cannot contain line breaks or semicolons.",
+            "validation": {
+                "noLineBreaks": "Link text cannot contain line breaks",
+                "noSemicolons": "Link text cannot contain semicolons",
+                "updateFailed": "Failed to update link text",
+                "unexpectedError": "An unexpected error occurred"
+            }
+        },
         "undo": {
             "title": "Undo",
             "description": "Undo last action",
@@ -157,7 +187,8 @@
             "error": "Validation Error",
             "lineError": "Error on line {{line}}",
             "componentNotFound": "Component '{{component}}' not found",
-            "invalidSyntax": "Invalid syntax"
+            "invalidSyntax": "Invalid syntax",
+            "elementNotFound": "Map element not found or invalid syntax"
         },
         "usages": {
             "to_set_the_title": "To set the title",
@@ -220,7 +251,8 @@
         "community": "Join the community",
         "documentation": "Documentation",
         "support": "Support",
-        "createdBy": "Created by"
+        "createdBy": "Created by",
+        "patreonAlt": "Become a Patron"
     },
     "dialogs": {
         "areYouSure": "Are you sure?",
@@ -229,6 +261,32 @@
         "invalidInput": "Please enter a valid input.",
         "networkError": "Network error. Please try again.",
         "saveError": "Error saving. Please try again.",
-        "loadError": "Error loading. Please try again."
+        "loadError": "Error loading. Please try again.",
+        "setMapSize": "Set Map Size",
+        "mapSizeDescription": "Set the dimensions for your map canvas. Values must be between 100 and 5000 pixels.",
+        "width": "Width",
+        "height": "Height",
+        "editEvolutionStages": "Edit Evolution Stages",
+        "evolutionStagesDescription": "Customize the names of the four evolution stages. These will appear as labels on the evolution axis of your map.",
+        "stage1": "Stage 1 (Genesis)",
+        "stage2": "Stage 2 (Custom Built)",
+        "stage3": "Stage 3 (Product)",
+        "stage4": "Stage 4 (Commodity)",
+        "validation": {
+            "required": "{{field}} is required",
+            "invalidNumber": "{{field}} must be a valid number",
+            "wholeNumber": "{{field}} must be a whole number",
+            "tooSmall": "{{field}} must be at least {{min}}",
+            "tooLarge": "{{field}} must be no more than {{max}}",
+            "stageRequired": "Stage {{number}} name is required",
+            "stageTooLong": "Stage {{number}} name must be 50 characters or less"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Undo/Redo Error",
+            "description": "An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be limited.",
+            "detailsLabel": "Error Details"
+        }
     }
 }

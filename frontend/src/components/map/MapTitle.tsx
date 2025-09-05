@@ -1,4 +1,5 @@
-import {useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 import {MapTheme} from '../../types/map/styles';
 import {calculateTitleEditorPosition, debugPosition} from '../../utils/svgPositioning';
 import InlineEditor from './InlineEditor';
@@ -13,6 +14,7 @@ interface MapTitleProps {
 
 function MapTitle(props: MapTitleProps) {
     const {mapTitle, mapText, onTitleUpdate, mapStyleDefs, isEditable = true} = props;
+    const {t} = useI18n();
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(mapTitle);
 
@@ -62,13 +64,13 @@ function MapTitle(props: MapTitleProps) {
                     mapStyleDefs={mapStyleDefs}
                     autoFocus={true}
                     selectAllOnFocus={true}
-                    placeholder="Enter map title"
+                    placeholder={t('map.title.placeholder', 'Enter map title')}
                     validation={{
                         required: true,
                         maxLength: 200,
                         minLength: 1,
                     }}
-                    ariaLabel="Edit map title"
+                    ariaLabel={t('map.title.ariaLabel', 'Edit map title')}
                 />
             </foreignObject>
         );

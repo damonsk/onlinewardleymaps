@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
             <Box sx={{width: '50%', textAlign: 'right'}}>
                 <Typography>
                     <Link href="https://www.patreon.com/mapsascode" rel="noreferrer noopener" target="_blank">
-                        <img alt="Patreon Button" height="38" src="/become_a_patron_button.png" width="162" />
+                        <img alt={t('footer.patreonAlt', 'Become a Patron')} height="38" src="/become_a_patron_button.png" width="162" />
                     </Link>
                 </Typography>
                 <Typography>

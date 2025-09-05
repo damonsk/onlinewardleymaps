@@ -106,7 +106,8 @@
         "inertia": "慣性",
         "linkComponents": "コンポーネントをリンク",
         "type": "タイプ",
-        "text": "テキスト"
+        "text": "テキスト",
+        "saveError": "コンポーネントの保存エラー: {{error}}"
     },
     "links": {
         "link": "リンク",
@@ -122,7 +123,8 @@
         "addAnnotation": "注釈を追加",
         "editAnnotation": "注釈を編集",
         "deleteAnnotation": "注釈を削除",
-        "annotationText": "注釈テキスト"
+        "annotationText": "注釈テキスト",
+        "saveError": "ノートの保存エラー: {{error}}"
     },
     "iterations": {
         "iteration": "イテレーション",
@@ -157,7 +159,8 @@
             "error": "検証エラー",
             "lineError": "行 {{line}} でエラー",
             "componentNotFound": "コンポーネント「{{component}}」が見つかりません",
-            "invalidSyntax": "無効な構文"
+            "invalidSyntax": "無効な構文",
+            "elementNotFound": "マップ要素が見つからないか、構文が無効です"
         },
         "usages": {
             "to_set_the_title": "タイトルを設定する",
@@ -184,7 +187,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "ビルド、バイ、アウトソースの実行方法でコンポーネントをハイライト"
         },
         "hideUsage": "使用法を非表示",
-        "showUsage": "使用法を表示"
+        "showUsage": "使用法を表示",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "複数行テキストエディタ",
+                "singleLine": "テキストエディタ"
+            },
+            "validation": {
+                "required": "このフィールドは必須です",
+                "minLength": "最小文字数は{{count}}文字です",
+                "maxLength": "最大文字数は{{count}}文字です",
+                "invalidFormat": "無効な形式です",
+                "invalidCharacters": "無効な文字が含まれています",
+                "saveFailed": "保存に失敗しました。もう一度お試しください。"
+            }
+        },
+        "link": {
+            "placeholder": "リンクテキストを入力...",
+            "ariaDescription": "リンクに表示するテキストを入力してください。改行やセミコロンは含められません。",
+            "validation": {
+                "noLineBreaks": "リンクテキストに改行を含めることはできません",
+                "noSemicolons": "リンクテキストにセミコロンを含めることはできません",
+                "updateFailed": "リンクテキストの更新に失敗しました",
+                "unexpectedError": "予期しないエラーが発生しました"
+            }
+        }
     },
     "theme": {
         "light": "ライトテーマ",
@@ -220,7 +247,8 @@
         "downloadExtension": "Download Visual Studio Code Extension",
         "wardleyMapping": "ワードリーマッピングはサイモン・ワードリーの提供、CC BY-SA 4.0。詳細については、",
         "wardleyMappingLink": "書籍",
-        "createdBy": "作成者"
+        "createdBy": "作成者",
+        "patreonAlt": "パトロンになる"
     },
     "dialogs": {
         "deleteConfirmation": "この操作は元に戻せません。",
@@ -229,6 +257,32 @@
         "networkError": "ネットワークエラー。もう一度お試しください。",
         "saveError": "保存エラー。もう一度お試しください。",
         "loadError": "読み込みエラー。もう一度お試しください。",
-        "areYouSure": "Are you sure?"
+        "areYouSure": "Are you sure?",
+        "setMapSize": "マップサイズの設定",
+        "mapSizeDescription": "マップキャンバスのサイズを設定します。値は100〜5000ピクセルの間である必要があります。",
+        "width": "幅",
+        "height": "高さ",
+        "editEvolutionStages": "進化段階の編集",
+        "evolutionStagesDescription": "4つの進化段階の名前をカスタマイズします。これらはマップの進化軸にラベルとして表示されます。",
+        "stage1": "段階1 (創成期)",
+        "stage2": "段階2 (カスタム構築)",
+        "stage3": "段階3 (製品)",
+        "stage4": "段階4 (コモディティ)",
+        "validation": {
+            "required": "{{field}}は必須です",
+            "invalidNumber": "{{field}}は有効な数値である必要があります",
+            "wholeNumber": "{{field}}は整数である必要があります",
+            "tooSmall": "{{field}}は最低{{min}}である必要があります",
+            "tooLarge": "{{field}}は最大{{max}}を超えてはいけません",
+            "stageRequired": "段階{{number}}の名前は必須です",
+            "stageTooLong": "段階{{number}}の名前は50文字以下である必要があります"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "元に戻す/やり直しエラー",
+            "description": "元に戻す/やり直しシステムでエラーが発生しました。アプリケーションは動作を続けますが、元に戻す/やり直し機能が制限される場合があります。",
+            "detailsLabel": "エラー詳細"
+        }
     }
 }

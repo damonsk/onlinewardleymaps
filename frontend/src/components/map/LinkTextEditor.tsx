@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 import {MapTheme} from '../../constants/mapstyles';
 import {FlowLink} from '../../types/unified/links';
 import {updateLinkContextText} from '../../utils/linkTextUpdate';
@@ -27,6 +28,7 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
     onCancel,
     autoFocus = true,
 }) => {
+    const {t} = useI18n();
     const [editValue, setEditValue] = useState(link.context || '');
     const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -42,13 +44,13 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
         
         // Check for line breaks (not allowed)
         if (trimmedValue.includes('\n') || trimmedValue.includes('\r')) {
-            setValidationError('Link text cannot contain line breaks');
+            setValidationError(t('editor.link.validation.noLineBreaks', 'Link text cannot contain line breaks'));
             return;
         }
 
         // Check for characters that could break link syntax
         if (trimmedValue.includes(';')) {
-            setValidationError('Link text cannot contain semicolons');
+            setValidationError(t('editor.link.validation.noSemicolons', 'Link text cannot contain semicolons'));
             return;
         }
 
@@ -59,12 +61,12 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
                 mutateMapText(updatedMapText);
                 onSave();
             } else {
-                setValidationError(result.error || 'Failed to update link text');
+                setValidationError(result.error || t('editor.link.validation.updateFailed', 'Failed to update link text'));
             }
         } catch (error) {
-            setValidationError(error instanceof Error ? error.message : 'An unexpected error occurred');
+            setValidationError(error instanceof Error ? error.message : t('editor.link.validation.unexpectedError', 'An unexpected error occurred'));
         }
-    }, [editValue, mapText, link, mutateMapText, onSave]);
+    }, [editValue, mapText, link, mutateMapText, onSave, t]);
 
     const handleCancel = useCallback(() => {
         setEditValue(link.context || '');
@@ -81,15 +83,15 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
         const trimmedValue = value.trim();
         
         if (trimmedValue.includes('\n') || trimmedValue.includes('\r')) {
-            return 'Link text cannot contain line breaks';
+            return t('editor.link.validation.noLineBreaks', 'Link text cannot contain line breaks');
         }
         
         if (trimmedValue.includes(';')) {
-            return 'Link text cannot contain semicolons';
+            return t('editor.link.validation.noSemicolons', 'Link text cannot contain semicolons');
         }
         
         return null;
-    }, []);
+    }, [t]);
 
     return (
         <InlineEditor
@@ -98,7 +100,7 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
             onSave={handleSave}
             onCancel={handleCancel}
             isMultiLine={false}
-            placeholder="Enter link text..."
+            placeholder={t('editor.link.placeholder', 'Enter link text...')}
             x={x}
             y={y}
             width={150}
@@ -118,7 +120,7 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
             realTimeValidation={true}
             showCharacterCount={true}
             ariaLabel={`Edit link text for ${link.start} to ${link.end}`}
-            ariaDescription="Enter text to display on the link. Cannot contain line breaks or semicolons."
+            ariaDescription={t('editor.link.ariaDescription', 'Enter text to display on the link. Cannot contain line breaks or semicolons.')}
         />
     );
 };
