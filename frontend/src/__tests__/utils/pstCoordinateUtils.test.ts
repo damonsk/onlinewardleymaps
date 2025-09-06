@@ -43,8 +43,9 @@ describe('PST Coordinate Utilities', () => {
 
             const bounds = convertPSTCoordinatesToBounds(coordinates, mockMapDimensions);
 
-            expect(bounds.x).toBeCloseTo(160, 1); // 0.2 * 800
-            expect(bounds.y).toBeCloseTo(120, 1); // (1 - 0.8) * 600
+            // Expected values now include viewBox offset (-35, -45)
+            expect(bounds.x).toBeCloseTo(125, 1); // (0.2 * 800) + (-35) = 160 - 35 = 125
+            expect(bounds.y).toBeCloseTo(75, 1); // ((1 - 0.8) * 600) + (-45) = 120 - 45 = 75
             expect(bounds.width).toBeCloseTo(320, 1); // (0.6 - 0.2) * 800
             expect(bounds.height).toBeCloseTo(240, 1); // (0.8 - 0.4) * 600
         });
@@ -59,8 +60,9 @@ describe('PST Coordinate Utilities', () => {
 
             const bounds = convertPSTCoordinatesToBounds(coordinates, mockMapDimensions);
 
-            expect(bounds.x).toBe(0);
-            expect(bounds.y).toBe(0);
+            // Expected values now include viewBox offset (-35, -45)
+            expect(bounds.x).toBe(-35); // 0 + (-35)
+            expect(bounds.y).toBe(-45); // 0 + (-45)
             expect(bounds.width).toBe(800);
             expect(bounds.height).toBe(600);
         });
@@ -76,8 +78,9 @@ describe('PST Coordinate Utilities', () => {
             const bounds = convertPSTCoordinatesToBounds(coordinates, mockMapDimensions);
 
             // Should use minimum values for x,y and absolute differences for width,height
-            expect(bounds.x).toBeCloseTo(160, 1); // min(0.6*800, 0.2*800)
-            expect(bounds.y).toBeCloseTo(120, 1); // min((1-0.4)*600, (1-0.8)*600)
+            // Expected values now include viewBox offset (-35, -45)
+            expect(bounds.x).toBeCloseTo(125, 1); // min(0.6*800, 0.2*800) + (-35) = 160 - 35 = 125
+            expect(bounds.y).toBeCloseTo(75, 1); // min((1-0.4)*600, (1-0.8)*600) + (-45) = 120 - 45 = 75
             expect(bounds.width).toBeCloseTo(320, 1); // abs(0.6*800 - 0.2*800)
             expect(bounds.height).toBeCloseTo(240, 1); // abs((1-0.4)*600 - (1-0.8)*600)
         });
@@ -86,8 +89,8 @@ describe('PST Coordinate Utilities', () => {
     describe('convertBoundsToPSTCoordinates', () => {
         it('should convert SVG bounds back to PST coordinates', () => {
             const bounds: PSTBounds = {
-                x: 160,
-                y: 120,
+                x: 125, // 160 - 35 (viewBox offset)
+                y: 75,  // 120 - 45 (viewBox offset)
                 width: 320,
                 height: 240,
             };
@@ -118,8 +121,8 @@ describe('PST Coordinate Utilities', () => {
 
         it('should handle zero-sized bounds', () => {
             const bounds: PSTBounds = {
-                x: 400,
-                y: 300,
+                x: 365, // 400 - 35 (viewBox offset)
+                y: 255, // 300 - 45 (viewBox offset)
                 width: 0,
                 height: 0,
             };

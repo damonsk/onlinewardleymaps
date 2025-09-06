@@ -1,15 +1,15 @@
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import {getToolbarItemById, TOOLBAR_ITEMS} from '../../constants/toolbarItems';
-import {useI18n} from '../../hooks/useI18n';
-import {useMapComponentDeletion} from '../../hooks/useMapComponentDeletion';
-import {ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps} from '../../types/toolbar';
-import {findEvolvedComponentInfo} from '../../utils/evolvedComponentUtils';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {useUndoRedo} from '../UndoRedoProvider';
-import {ToolbarItems} from './components/ToolbarItems';
-import {useToolbarState} from './hooks/useToolbarState';
-import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
+import { getToolbarItemById, TOOLBAR_ITEMS } from '../../constants/toolbarItems';
+import { useI18n } from '../../hooks/useI18n';
+import { useMapComponentDeletion } from '../../hooks/useMapComponentDeletion';
+import { ToolbarItem as ToolbarItemType, ToolbarSubItem, WysiwygToolbarProps } from '../../types/toolbar';
+import { findEvolvedComponentInfo } from '../../utils/evolvedComponentUtils';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { useUndoRedo } from '../UndoRedoProvider';
+import { ToolbarItems } from './components/ToolbarItems';
+import { useToolbarState } from './hooks/useToolbarState';
+import { KeyboardShortcutHandler } from './KeyboardShortcutHandler';
 
 const ToolbarContainer = styled.div<{$isDragging: boolean; $isSnapped: boolean}>`
     position: fixed;

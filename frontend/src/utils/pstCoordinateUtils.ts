@@ -9,6 +9,7 @@ import {DEFAULT_RESIZE_CONSTRAINTS} from '../constants/pstConfig';
 
 /**
  * Convert PST map coordinates (0-1 range) to SVG bounds for rendering
+ * Accounts for the SVG viewBox offset (-35, -45)
  */
 export function convertPSTCoordinatesToBounds(coordinates: PSTCoordinates, mapDimensions: MapDimensions): PSTBounds {
     // Convert maturity (0-1) to SVG X coordinates
@@ -28,9 +29,14 @@ export function convertPSTCoordinatesToBounds(coordinates: PSTCoordinates, mapDi
     const finalX = Math.min(x, right);
     const finalY = Math.min(y, bottom);
 
+    // Apply viewBox offset to match the SVG coordinate system
+    // The SVG viewBox is set to "-35 -45 width+105 height+137"
+    const viewBoxOffsetX = -35;
+    const viewBoxOffsetY = -45;
+
     return {
-        x: finalX,
-        y: finalY,
+        x: finalX + viewBoxOffsetX,
+        y: finalY + viewBoxOffsetY,
         width,
         height,
     };
@@ -38,16 +44,23 @@ export function convertPSTCoordinatesToBounds(coordinates: PSTCoordinates, mapDi
 
 /**
  * Convert SVG bounds back to PST map coordinates (0-1 range)
+ * Accounts for the SVG viewBox offset (-35, -45)
  */
 export function convertBoundsToPSTCoordinates(bounds: PSTBounds, mapDimensions: MapDimensions): PSTCoordinates {
+    // Remove viewBox offset to get raw coordinates
+    const viewBoxOffsetX = -35;
+    const viewBoxOffsetY = -45;
+    const rawX = bounds.x - viewBoxOffsetX;
+    const rawY = bounds.y - viewBoxOffsetY;
+
     // Convert SVG coordinates back to map coordinates (0-1 range)
-    const maturity1 = bounds.x / mapDimensions.width;
-    const maturity2 = (bounds.x + bounds.width) / mapDimensions.width;
+    const maturity1 = rawX / mapDimensions.width;
+    const maturity2 = (rawX + bounds.width) / mapDimensions.width;
 
     // Convert Y coordinates back to visibility (0-1 range)
     // Lower Y value = higher visibility
-    const visibility1 = 1 - bounds.y / mapDimensions.height;
-    const visibility2 = 1 - (bounds.y + bounds.height) / mapDimensions.height;
+    const visibility1 = 1 - rawY / mapDimensions.height;
+    const visibility2 = 1 - (rawY + bounds.height) / mapDimensions.height;
 
     // Ensure coordinates are within valid range (0-1)
     return {

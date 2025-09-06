@@ -60,6 +60,7 @@ export function useMapEventHandlers({
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
+            // Use raw coordinates for consistent coordinate system with preview
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
             onMouseDown(coordinates);
@@ -300,16 +301,19 @@ export function useMapEventHandlers({
         (event: any) => {
             const svgX = event.x || 0;
             const svgY = event.y || 0;
-            const coordinates = convertSvgToMapCoordinates(svgX, svgY);
-
+            
             if (!onMouseMove) return;
 
             // Handle different interaction modes
             if (selectedToolbarItem?.toolType === 'placement') {
+                const coordinates = convertSvgToMapCoordinates(svgX, svgY);
                 onMouseMove(coordinates);
             } else if (selectedToolbarItem?.toolType === 'drawing') {
+                // For drawing preview, use uncorrected coordinates to track mouse cursor
+                const coordinates = convertSvgToMapCoordinates(svgX, svgY);
                 onMouseMove(coordinates);
             } else if (selectedToolbarItem?.toolType === 'method-application') {
+                const coordinates = convertSvgToMapCoordinates(svgX, svgY);
                 const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const methodCompatibleComponents = allComponents.filter(component => {
                     return component.type === 'component' && !component.pipeline;
@@ -319,6 +323,7 @@ export function useMapEventHandlers({
                 const nearestComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
                 onMouseMove({...coordinates, nearestComponent});
             } else if (selectedToolbarItem?.id === 'component') {
+                const coordinates = convertSvgToMapCoordinates(svgX, svgY);
                 // Handle component conversion mode - same logic as method application
                 const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const methodCompatibleComponents = allComponents.filter(component => {
@@ -329,6 +334,7 @@ export function useMapEventHandlers({
                 const nearestComponent = findNearestComponent(rawCoordinates, methodCompatibleComponents, 0.05);
                 onMouseMove({...coordinates, nearestComponent});
             } else if (linkingState === 'selecting-source' || linkingState === 'selecting-target') {
+                const coordinates = convertSvgToMapCoordinates(svgX, svgY);
                 const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
                 const nearestComponent = findNearestComponent(coordinates, allComponents, 0.1);
                 onMouseMove({...coordinates, nearestComponent});
@@ -343,6 +349,7 @@ export function useMapEventHandlers({
 
             const svgX = event.x || 0;
             const svgY = event.y || 0;
+            // Use raw coordinates for consistent coordinate system with preview
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
 
             onMouseUp(coordinates);

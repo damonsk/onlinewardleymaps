@@ -79,6 +79,8 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
             }
 
             try {
+                // Use raw coordinates directly for PST creation
+                // The preview and placement should use the same coordinate system
                 const rectangle = calculateRectangle(deps.drawingState.drawingStartPosition, position);
                 const pstText = deps.toolbarState.selectedToolbarItem.selectedSubItem.template(
                     rectangle.minX.toFixed(2),

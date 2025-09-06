@@ -1,8 +1,8 @@
-import React, {memo, useCallback, KeyboardEvent, useState, useRef} from 'react';
+import React, { KeyboardEvent, memo, useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {useI18n} from '../../hooks/useI18n';
-import {ToolbarItem as ToolbarItemType, ToolbarItemProps, ToolbarSubItem} from '../../types/toolbar';
-import {ToolbarDropdown} from './ToolbarDropdown';
+import { useI18n } from '../../hooks/useI18n';
+import { ToolbarItemProps, ToolbarSubItem } from '../../types/toolbar';
+import { ToolbarDropdown } from './ToolbarDropdown';
 
 /**
  * Screen reader announcement component for accessibility
