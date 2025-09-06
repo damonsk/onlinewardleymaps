@@ -1,9 +1,9 @@
-import {useCallback, useEffect, useMemo} from 'react';
-import {ToolbarItem} from '../../../types/toolbar';
-import {UnifiedComponent} from '../../../types/unified/components';
-import {UnifiedWardleyMap} from '../../../types/unified/map';
-import {findNearestComponent} from '../../../utils/componentDetection';
-import {useCoordinateConversion} from './useCoordinateConversion';
+import { useCallback, useEffect } from 'react';
+import { ToolbarItem } from '../../../types/toolbar';
+import { UnifiedComponent } from '../../../types/unified/components';
+import { UnifiedWardleyMap } from '../../../types/unified/map';
+import { findNearestComponent } from '../../../utils/componentDetection';
+import { useCoordinateConversion } from './useCoordinateConversion';
 
 interface MapEventHandlersProps {
     // Coordinate conversion

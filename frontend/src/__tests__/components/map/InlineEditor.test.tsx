@@ -4,6 +4,46 @@ import InlineEditor from '../../../components/map/InlineEditor';
 import {MapTheme} from '../../../types/map/styles';
 import {Plain} from '../../../constants/mapstyles';
 
+// Mock the useI18n hook
+jest.mock('../../../hooks/useI18n', () => ({
+    useI18n: () => ({
+        t: (key: string, fallback?: string, params?: any) => {
+            // Return specific English messages for validation keys
+            switch (key) {
+                case 'editor.inline.validation.required':
+                    return 'This field is required';
+                case 'editor.inline.validation.minLength':
+                    return `Minimum length is ${params?.count || 5} characters`;
+                case 'editor.inline.validation.maxLength':
+                    return `Maximum length is ${params?.count || 10} characters`;
+                case 'editor.inline.validation.invalidFormat':
+                    return 'Invalid format';
+                case 'editor.inline.validation.invalidCharacters':
+                    return 'Contains invalid characters';
+                default:
+                    return fallback || key;
+            }
+        },
+        originalT: (key: string, params?: any) => {
+            // Return specific English messages for validation keys with interpolation
+            switch (key) {
+                case 'editor.inline.validation.required':
+                    return 'This field is required';
+                case 'editor.inline.validation.minLength':
+                    return `Minimum length is ${params?.count || 5} characters`;
+                case 'editor.inline.validation.maxLength':
+                    return `Maximum length is ${params?.count || 10} characters`;
+                case 'editor.inline.validation.invalidFormat':
+                    return 'Invalid format';
+                case 'editor.inline.validation.invalidCharacters':
+                    return 'Contains invalid characters';
+                default:
+                    return key;
+            }
+        },
+    }),
+}));
+
 // Mock styled-components theme
 const mockTheme: MapTheme = Plain;
 

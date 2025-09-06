@@ -2,20 +2,20 @@
  * Unit tests for PST coordinate conversion utilities
  */
 
+import { MapDimensions } from '../../constants/defaults';
+import { PSTBounds, PSTCoordinates, ResizeConstraints } from '../../types/map/pst';
 import {
-    convertPSTCoordinatesToBounds,
-    convertBoundsToPSTCoordinates,
-    validatePSTCoordinates,
-    validatePSTBounds,
+    calculateDistance,
+    calculateResizedBounds,
     constrainPSTBounds,
+    convertBoundsToPSTCoordinates,
+    convertPSTCoordinatesToBounds,
     getPSTBoundsCenter,
     isPointInPSTBounds,
-    calculateDistance,
     snapToGrid,
-    calculateResizedBounds,
+    validatePSTBounds,
+    validatePSTCoordinates,
 } from '../../utils/pstCoordinateUtils';
-import {PSTCoordinates, PSTBounds, ResizeConstraints} from '../../types/map/pst';
-import {MapDimensions} from '../../constants/defaults';
 
 describe('PST Coordinate Utilities', () => {
     const mockMapDimensions: MapDimensions = {

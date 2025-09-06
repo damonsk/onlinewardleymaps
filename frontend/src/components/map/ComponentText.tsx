@@ -50,7 +50,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 }) => {
     const {enableDoubleClickRename} = useFeatureSwitches();
     const {startEditing, stopEditing, isElementEditing, editingState} = useEditing();
-    const {t} = useI18n();
+    const {t, originalT} = useI18n();
     const {showUserFeedback} = useUserFeedback();
     const [editMode, setEditMode] = useState(false);
     const [forceMultiLine, setForceMultiLine] = useState(false);
@@ -389,7 +389,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             if (!result.success) {
                 console.error('Failed to save component:', result.error);
                 // Show localized user feedback instead of alert
-                showUserFeedback(t('components.saveError') || `Error saving component: ${result.error}`, 'error');
+                showUserFeedback(originalT('components.saveError', {error: result.error}) || `Error saving component: ${result.error}`, 'error');
                 return; // Don't close the editor if save failed
             }
         }

@@ -275,7 +275,7 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
     ariaLabel,
     ariaDescription,
 }) => {
-    const {t} = useI18n();
+    const {t, originalT} = useI18n();
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const [validationError, setValidationError] = useState<string | null>(null);
     const [showRealTimeValidation, setShowRealTimeValidation] = useState(false);
@@ -370,11 +370,11 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         }
 
         if (validation.minLength && val.length < validation.minLength) {
-            return t('editor.inline.validation.minLength') || `Minimum length is ${validation.minLength} characters`;
+            return originalT('editor.inline.validation.minLength', {count: validation.minLength}) || `Minimum length is ${validation.minLength} characters`;
         }
 
         if (validation.maxLength && val.length > validation.maxLength) {
-            return t('editor.inline.validation.maxLength') || `Maximum length is ${validation.maxLength} characters`;
+            return originalT('editor.inline.validation.maxLength', {count: validation.maxLength}) || `Maximum length is ${validation.maxLength} characters`;
         }
 
         if (validation.pattern && !validation.pattern.test(val)) {

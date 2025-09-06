@@ -12,6 +12,37 @@ jest.mock('../../../constants/rename', () => ({
     rename: jest.fn(),
 }));
 
+// Mock the useUserFeedback hook
+const mockShowUserFeedback = jest.fn();
+jest.mock('../../../components/map/hooks/useUserFeedback', () => ({
+    useUserFeedback: () => ({
+        showUserFeedback: mockShowUserFeedback,
+        hideUserFeedback: jest.fn(),
+        userFeedback: {message: '', type: 'info', visible: false},
+        setUserFeedback: jest.fn(),
+    }),
+}));
+
+// Mock the useI18n hook
+jest.mock('../../../hooks/useI18n', () => ({
+    useI18n: () => ({
+        t: (key: string, fallback?: string, params?: any) => {
+            // Return specific fallback values for component error keys
+            if (key === 'components.saveError' && params?.error) {
+                return `Error saving component: ${params.error}`;
+            }
+            return fallback || key;
+        },
+        originalT: (key: string, params?: any) => {
+            // Return specific translations with interpolation
+            if (key === 'components.saveError' && params?.error) {
+                return `Error saving component: ${params.error}`;
+            }
+            return key;
+        },
+    }),
+}));
+
 describe('ComponentText Evolved Component Rename', () => {
     const mockMutateMapText = jest.fn();
     const mockMapStyleDefs = {
@@ -62,6 +93,7 @@ describe('ComponentText Evolved Component Rename', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockShowUserFeedback.mockClear();
     });
 
     describe('Evolved component without override name', () => {
@@ -286,9 +318,6 @@ evolve "Original Name"->"New Evolved\\\\nName" 0.95`);
 
     describe('Error handling', () => {
         it('should show error when evolved component is not found', async () => {
-            // Mock window.alert
-            const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
-
             const evolvedComponent: UnifiedComponent = {
                 id: 'component-1_evolved',
                 name: 'NonExistent',
@@ -319,10 +348,11 @@ evolve foo 0.9`;
             fireEvent.keyDown(input, {key: 'Enter', ctrlKey: true});
 
             await waitFor(() => {
-                expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Could not find evolved component "NonExistent"'));
+                expect(mockShowUserFeedback).toHaveBeenCalledWith(
+                    expect.stringContaining('Could not find evolved component "NonExistent"'),
+                    'error'
+                );
             });
-
-            alertSpy.mockRestore();
         });
     });
 });
