@@ -1,4 +1,5 @@
 import React, {LegacyRef, useCallback, useMemo, useState} from 'react';
+import {TOOL_NONE} from 'react-svg-pan-zoom';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../../constants/defaults';
 import {PST_SUB_ITEMS} from '../../constants/toolbarItems';
 import {MapPropertiesManager} from '../../services/MapPropertiesManager';

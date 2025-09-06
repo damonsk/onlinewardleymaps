@@ -218,7 +218,6 @@ export function useMapEventHandlers({
             const target = e.target as Element;
             if (target && !target.closest('[data-testid^="pst-box"]') && !target.closest('[data-testid^="pst-handle"]')) {
                 // This is a click outside PST elements - we can use this to trigger cleanup if needed
-                console.debug('Click detected outside PST elements');
             }
         };
         

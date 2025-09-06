@@ -35,12 +35,9 @@ export const useToolbarItemState = (): UseToolbarItemStateReturn => {
             setIsValidDropZone(false);
             setMethodHighlightedComponent(null);
         } else {
-            // For drawing tools, initialize as valid drop zone until mouse movement validates position
-            if (item.toolType === 'drawing' || item.toolType === 'placement') {
-                setIsValidDropZone(true);
-            } else {
-                setIsValidDropZone(false);
-            }
+            // Start with invalid drop zone - validation will be handled by other systems
+            // that have access to pan-zoom tool state and mouse position
+            setIsValidDropZone(false);
             setMethodHighlightedComponent(null);
         }
     }, []);

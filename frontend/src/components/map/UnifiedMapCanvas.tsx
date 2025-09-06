@@ -118,6 +118,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapText,
         mutateMapText,
         setTool: setTool,
+        currentTool: tool,
         panZoomValue: value,
     });
 
