@@ -218,6 +218,8 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             } else if (item?.toolType === 'drawing') {
                 // Reset linking state when switching to drawing
                 linkingState.resetLinkingState();
+                // Clear component selection when switching to drawing mode
+                clearSelection();
                 if (toolbarState.setMethodHighlightedComponent) {
                     toolbarState.setMethodHighlightedComponent(null);
                 }
@@ -238,6 +240,16 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 drawingState.stopDrawing();
                 if (toolbarState.setMethodHighlightedComponent) {
                     toolbarState.setMethodHighlightedComponent(null);
+                }
+                
+                // Force cleanup of any stuck document event listeners by resetting body styles
+                // This is a workaround for PST drag handlers that might be stuck
+                try {
+                    document.body.style.userSelect = '';
+                    document.body.style.webkitUserSelect = '';
+                    document.body.style.touchAction = '';
+                } catch (error) {
+                    console.warn('Error cleaning up body styles:', error);
                 }
             }
 

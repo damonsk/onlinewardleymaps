@@ -18,16 +18,22 @@ export const validatePosition = (position: Position | null): ValidationResult =>
 
     if (typeof position.x !== 'number' || typeof position.y !== 'number') {
         errors.push('Position coordinates must be numbers');
+        console.debug('validatePosition: Invalid types', {position, xType: typeof position.x, yType: typeof position.y});
         return {isValid: false, errors};
     }
 
     if (isNaN(position.x) || isNaN(position.y)) {
         errors.push('Position coordinates cannot be NaN');
+        console.debug('validatePosition: NaN values', {position});
         return {isValid: false, errors};
     }
 
-    if (position.x < 0 || position.x > 1 || position.y < 0 || position.y > 1) {
-        errors.push('Position coordinates must be between 0 and 1');
+    // Allow slightly out-of-bounds coordinates during interactive use (pan/zoom edge cases)
+    // but clamp them to valid range for actual placement
+    const tolerance = 0.1;
+    if (position.x < -tolerance || position.x > 1 + tolerance || position.y < -tolerance || position.y > 1 + tolerance) {
+        errors.push('Position coordinates are too far outside map boundaries');
+        console.debug('validatePosition: Out of bounds', {position});
         return {isValid: false, errors};
     }
 

@@ -144,8 +144,12 @@ const PSTBox: React.FC<PSTBoxProps> = ({
     const handleResizeEnd = useCallback(
         (handle: ResizeHandle) => {
             try {
+                console.log('PSTBox: handleResizeEnd called for handle:', handle, 'element:', pstElement.id);
+                console.log('PSTBox: onResizeEnd function exists:', !!onResizeEnd);
                 if (onResizeEnd) {
+                    console.log('PSTBox: About to call onResizeEnd');
                     onResizeEnd(pstElement, undefined);
+                    console.log('PSTBox: Called onResizeEnd successfully');
                 }
             } catch (error) {
                 console.error('Error in PST resize end:', error);
@@ -214,6 +218,8 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
             const startPosition = {x: clientX, y: clientY};
             dragStartPositionRef.current = startPosition;
+            
+            console.debug('PSTBox starting drag for element:', pstElement.id);
             setIsDragActive(true);
 
             if (onDragStart) {
@@ -289,10 +295,17 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
     const handlePointerEnd = useCallback(
         (event: MouseEvent | TouchEvent) => {
+            console.debug('PSTBox handlePointerEnd called:', {
+                isDragActive,
+                elementId: pstElement.id,
+                eventType: event.type
+            });
+            
             if (!isDragActive) {
                 return;
             }
 
+            console.debug('PSTBox preventing default and ending drag for element:', pstElement.id);
             event.preventDefault();
 
             setIsDragActive(false);
@@ -335,6 +348,8 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
     useEffect(() => {
         if (isDragActive) {
+            console.debug('PSTBox setting up document event listeners for drag, element:', pstElement.id);
+            
             document.addEventListener('mousemove', handleDragMove, {passive: false});
             document.addEventListener('mouseup', handleDragEnd, {passive: false});
             document.addEventListener('mouseleave', handleDragEnd, {passive: false});
@@ -348,6 +363,8 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             document.body.style.touchAction = 'none';
 
             return () => {
+                console.debug('PSTBox cleaning up document event listeners for element:', pstElement.id);
+                
                 document.removeEventListener('mousemove', handleDragMove);
                 document.removeEventListener('mouseup', handleDragEnd);
                 document.removeEventListener('mouseleave', handleDragEnd);
@@ -360,8 +377,10 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                 document.body.style.webkitUserSelect = '';
                 document.body.style.touchAction = '';
             };
+        } else {
+            console.debug('PSTBox isDragActive is false for element:', pstElement.id);
         }
-    }, [isDragActive, handleDragMove, handleDragEnd, handleTouchMove, handleTouchEnd]);
+    }, [isDragActive, handleDragMove, handleDragEnd, handleTouchMove, handleTouchEnd, pstElement.id]);
 
     useEffect(() => {
         if (isHovered || isResizing) {

@@ -34,6 +34,14 @@ export const useToolbarItemState = (): UseToolbarItemStateReturn => {
         if (!item) {
             setIsValidDropZone(false);
             setMethodHighlightedComponent(null);
+        } else {
+            // For drawing tools, initialize as valid drop zone until mouse movement validates position
+            if (item.toolType === 'drawing' || item.toolType === 'placement') {
+                setIsValidDropZone(true);
+            } else {
+                setIsValidDropZone(false);
+            }
+            setMethodHighlightedComponent(null);
         }
     }, []);
 

@@ -7,12 +7,14 @@ import {
     convertPSTCoordinatesToBounds,
 } from '../../../utils/pstCoordinateUtils';
 import {updatePSTInMapText} from '../../../utils/pstElementUtils';
+import {useCoordinateConversion} from './useCoordinateConversion';
 
 interface UsePSTInteractionsProps {
     mapDimensions: {width: number; height: number};
     mapText: string;
     mutateMapText: (text: string) => void;
     setTool: (tool: any) => void;
+    panZoomValue: any;
 }
 
 interface UsePSTInteractionsReturn {
@@ -42,7 +44,13 @@ interface UsePSTInteractionsReturn {
 }
 
 export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTInteractionsReturn => {
-    const {mapDimensions, mapText, mutateMapText, setTool} = props;
+    const {mapDimensions, mapText, mutateMapText, setTool, panZoomValue} = props;
+    
+    // Set up coordinate conversion
+    const {convertScreenToMapCoordinates} = useCoordinateConversion({
+        mapDimensions,
+        panZoomValue,
+    });
 
     // Hover state
     const [hoveredPSTElement, setHoveredPSTElement] = useState<PSTElement | null>(null);
@@ -175,11 +183,43 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
     );
 
     const handlePSTResizeEnd = useCallback(
-        (element: PSTElement, newCoordinates: PSTCoordinates) => {
+        (element: PSTElement, newCoordinates?: PSTCoordinates) => {
             try {
-                // Validate final coordinates and element
-                if (!element || !newCoordinates) {
-                    console.warn('Invalid element or coordinates for resize end:', {element, newCoordinates});
+                console.log('usePSTInteractions: handlePSTResizeEnd called for element:', element.id, 'newCoordinates:', newCoordinates);
+                
+                // If no coordinates provided, reset state (newer PSTResizeManager handles coordinates internally)
+                if (!element) {
+                    console.warn('Invalid element for resize end:', {element});
+                    resetResizeState();
+                    return;
+                }
+                
+                // If no newCoordinates provided, calculate them from resizePreviewBounds
+                if (!newCoordinates) {
+                    console.log('usePSTInteractions: No coordinates provided, attempting to calculate from resizePreviewBounds');
+                    
+                    if (resizePreviewBounds && mapDimensions) {
+                        try {
+                            // Convert bounds back to PST coordinates using the utility function
+                            const calculatedCoordinates = convertBoundsToPSTCoordinates(resizePreviewBounds, mapDimensions);
+                            
+                            console.log('usePSTInteractions: Calculated coordinates:', calculatedCoordinates);
+                            
+                            // Update the map text with calculated coordinates
+                            const updatedMapText = updatePSTInMapText(mapText, element, calculatedCoordinates);
+                            if (updatedMapText !== mapText) {
+                                mutateMapText(updatedMapText);
+                                console.log('PST element updated with calculated coordinates:', {elementId: element.id, newCoordinates: calculatedCoordinates});
+                            } else {
+                                console.warn('No changes made to PST element with calculated coordinates:', {elementId: element.id});
+                            }
+                        } catch (error) {
+                            console.error('Error calculating coordinates from bounds:', error);
+                        }
+                    } else {
+                        console.warn('Cannot calculate coordinates: missing resizePreviewBounds or mapDimensions');
+                    }
+                    
                     resetResizeState();
                     return;
                 }
@@ -200,12 +240,17 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
                 resetResizeState();
             }
         },
-        [mapText, mutateMapText, resetResizeState],
+        [mapText, mutateMapText, resetResizeState, resizePreviewBounds, mapDimensions],
     );
 
     const handlePSTDragStart = useCallback(
         (element: PSTElement, startPosition: {x: number; y: number}) => {
+            // DISABLED: This conflicts with PSTBox drag handling
+            console.log('usePSTInteractions drag disabled to prevent conflicts');
+            return;
+            
             try {
+                
                 // Validate element
                 if (!element || !element.coordinates) {
                     console.warn('Invalid PST element for drag start:', element);
@@ -246,8 +291,18 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
     const handlePSTDragMove = useCallback(
         (element: PSTElement, currentPosition: {x: number; y: number}) => {
             try {
-                // Validate drag state
+                // This handles coordinate updates during drag (needed for PST drag to work)
                 if (!draggingPSTElement || !dragOriginalBounds || !dragStartPosition) {
+                    // Start drag if not already started (PSTBox initiates drag differently)
+                    if (!draggingPSTElement && element) {
+                        setDraggingPSTElement(element);
+                        const bounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
+                        setDragOriginalBounds(bounds);
+                        setDragStartPosition(currentPosition);
+                        setDragPreviewBounds(bounds);
+                        console.log('PST drag started via move:', {element: element.id, bounds});
+                        return;
+                    }
                     console.warn('Invalid drag state during move:', {
                         hasElement: !!draggingPSTElement,
                         hasBounds: !!dragOriginalBounds,
@@ -256,9 +311,14 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
                     return;
                 }
 
-                // Calculate movement delta
-                const deltaX = currentPosition.x - dragStartPosition.x;
-                const deltaY = currentPosition.y - dragStartPosition.y;
+                // Calculate movement delta in client coordinates
+                const clientDeltaX = currentPosition.x - dragStartPosition.x;
+                const clientDeltaY = currentPosition.y - dragStartPosition.y;
+                
+                // Convert client pixel delta to SVG coordinate delta using pan-zoom transform
+                const transform = panZoomValue;
+                const deltaX = clientDeltaX / transform.a; // Scale X delta by zoom factor
+                const deltaY = clientDeltaY / transform.d; // Scale Y delta by zoom factor
 
                 // Calculate new bounds with offset
                 const newBounds = {
@@ -278,13 +338,13 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
                 console.error('Error during PST drag move:', error);
             }
         },
-        [draggingPSTElement, dragOriginalBounds, dragStartPosition, mapDimensions],
+        [draggingPSTElement, dragOriginalBounds, dragStartPosition, mapDimensions, panZoomValue],
     );
 
     const handlePSTDragEnd = useCallback(
         (element: PSTElement) => {
             try {
-                // Validate element and drag state
+                // Handle drag end and update map text
                 if (!element || !dragPreviewBounds) {
                     console.warn('Invalid element or bounds for drag end:', {element, dragPreviewBounds});
                     resetDragState();

@@ -95,13 +95,6 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         isEditing: editingState.isEditing,
     });
 
-    const pstInteractions = usePSTInteractions({
-        mapDimensions,
-        mapText,
-        mutateMapText,
-        setTool: canvasState.setTool,
-    });
-
     const {
         value,
         setValue,
@@ -119,6 +112,14 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         setWaitingForPanelRestore,
         handleZoomChange,
     } = canvasState;
+
+    const pstInteractions = usePSTInteractions({
+        mapDimensions,
+        mapText,
+        mutateMapText,
+        setTool: setTool,
+        panZoomValue: value,
+    });
 
     const {
         hoveredPSTElement,
@@ -416,7 +417,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     position: 'none',
                 }}
                 preventPanOutside={false}
-                onClick={handleMapClick}
+                onClick={(event) => {
+                    console.debug('SVG PanZoom onClick triggered:', {tool, selectedToolbarItem: props.selectedToolbarItem?.id});
+                    handleMapClick(event);
+                }}
                 onDoubleClick={handleMapDoubleClick}
                 onMouseMove={handleMapMouseMove}
                 onMouseUp={handleMapMouseUp}

@@ -214,6 +214,7 @@ const ResizeHandles: React.FC<ResizeHandlesProps> = ({
                 setDragStartPosition(null);
 
                 // Notify parent of resize end
+                console.log('ResizeHandles: calling onResizeEnd for handle:', currentActiveHandle);
                 if (onResizeEnd) {
                     onResizeEnd(currentActiveHandle);
                 }

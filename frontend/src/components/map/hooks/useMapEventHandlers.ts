@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from 'react';
+import {useCallback, useEffect, useMemo} from 'react';
 import {ToolbarItem} from '../../../types/toolbar';
 import {UnifiedComponent} from '../../../types/unified/components';
 import {UnifiedWardleyMap} from '../../../types/unified/map';
@@ -137,8 +137,10 @@ export function useMapEventHandlers({
                     onMethodApplication(clickedComponent, 'component');
                 } else if (onToolbarItemDrop) {
                     // Create new regular component using corrected coordinates
+                    console.debug('Component placement coordinates:', {svgX, svgY, eventX: event.x, eventY: event.y});
                     const offsetCorrection = {x: -30, y: -40};
                     const correctedCoordinates = convertSvgToMapCoordinates(svgX, svgY, offsetCorrection);
+                    console.debug('Corrected coordinates for component placement:', correctedCoordinates);
 
                     onToolbarItemDrop(selectedToolbarItem, correctedCoordinates);
                 }
@@ -150,8 +152,10 @@ export function useMapEventHandlers({
 
     const handleLinkingMode = useCallback(
         (event: any) => {
+            console.debug('handleLinkingMode check:', {linkingState, hasOnComponentClick: !!onComponentClick});
             if (!linkingState || linkingState === 'idle' || !onComponentClick) return false;
 
+            console.debug('handleLinkingMode processing click');
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const coordinates = convertSvgToMapCoordinates(svgX, svgY);
@@ -178,10 +182,17 @@ export function useMapEventHandlers({
 
     const handleToolbarItemPlacement = useCallback(
         (event: any) => {
+            console.debug('handleToolbarItemPlacement check:', {
+                hasSelectedToolbarItem: !!selectedToolbarItem,
+                toolType: selectedToolbarItem?.toolType,
+                hasOnToolbarItemDrop: !!onToolbarItemDrop
+            });
+            
             if (!selectedToolbarItem || selectedToolbarItem.toolType !== 'placement' || !onToolbarItemDrop) {
                 return false;
             }
 
+            console.debug('handleToolbarItemPlacement processing placement');
             const svgX = event.x || 0;
             const svgY = event.y || 0;
             const offsetCorrection = {x: -30, y: -40};
@@ -193,15 +204,66 @@ export function useMapEventHandlers({
         [selectedToolbarItem, onToolbarItemDrop, convertSvgToMapCoordinates],
     );
 
+    // Add document click listener for debugging and cleanup
+    useEffect(() => {
+        const debugClickHandler = (e: MouseEvent) => {
+            console.debug('Document click detected:', {
+                target: e.target,
+                coordinates: {x: e.clientX, y: e.clientY}
+            });
+        };
+        
+        const cleanupClickHandler = (e: MouseEvent) => {
+            // If clicking outside PST elements, ensure any lingering drag states are cleared
+            const target = e.target as Element;
+            if (target && !target.closest('[data-testid^="pst-box"]') && !target.closest('[data-testid^="pst-handle"]')) {
+                // This is a click outside PST elements - we can use this to trigger cleanup if needed
+                console.debug('Click detected outside PST elements');
+            }
+        };
+        
+        document.addEventListener('click', debugClickHandler);
+        document.addEventListener('click', cleanupClickHandler);
+        return () => {
+            document.removeEventListener('click', debugClickHandler);
+            document.removeEventListener('click', cleanupClickHandler);
+        };
+    }, []);
+
     const handleMapClick = useCallback(
         (event: any) => {
+            console.debug('handleMapClick called:', {
+                selectedToolbarItem: selectedToolbarItem?.id,
+                toolType: selectedToolbarItem?.toolType,
+                linkingState,
+                highlightedComponent: highlightedComponent?.id
+            });
+            
             // Handle different interaction modes in priority order
-            if (selectedToolbarItem?.toolType === 'drawing' && handleDrawingMode(event)) return;
-            if (selectedToolbarItem?.toolType === 'method-application' && handleMethodApplication(event)) return;
-            if (selectedToolbarItem?.id === 'component' && handleComponentConversion(event)) return;
-            if (handleLinkingMode(event)) return;
-            if (handleToolbarItemPlacement(event)) return;
+            if (selectedToolbarItem?.toolType === 'drawing' && handleDrawingMode(event)) {
+                console.debug('Drawing mode handled click');
+                return;
+            }
+            if (selectedToolbarItem?.toolType === 'method-application' && handleMethodApplication(event)) {
+                console.debug('Method application handled click');
+                return;
+            }
+            if (selectedToolbarItem?.id === 'component' && handleComponentConversion(event)) {
+                console.debug('Component conversion handled click');
+                return;
+            }
+            if (handleLinkingMode(event)) {
+                console.debug('Linking mode handled click');
+                return;
+            }
+            if (handleToolbarItemPlacement(event)) {
+                console.debug('Toolbar item placement handled click');
+                return;
+            } else {
+                console.debug('handleToolbarItemPlacement returned false - not processing click');
+            }
 
+            console.debug('No handler processed click, using default behavior');
             // Default click behavior
             if (enableZoomOnClick && handleMapCanvasClick) {
                 const pos = {x: event.x || 0, y: event.y || 0};

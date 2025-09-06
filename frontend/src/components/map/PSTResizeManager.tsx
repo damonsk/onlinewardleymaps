@@ -293,6 +293,7 @@ const PSTResizeManager: React.FC<PSTResizeManagerProps> = ({pstElements, mapDime
     // Handle resize end
     const handlePSTResizeEnd = useCallback(
         (element: PSTElement, data?: any) => {
+            console.log('PSTResizeManager: handlePSTResizeEnd called for element:', element.id, 'data:', data);
             const currentResizeState = resizeStateRef.current;
             if (!currentResizeState) {
                 console.error('PST resize end called without active resize state');
