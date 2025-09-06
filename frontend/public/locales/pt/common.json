@@ -284,5 +284,37 @@
             "description": "Ocorreu um erro no sistema de desfazer/refazer. A aplicação continuará a funcionar, mas a funcionalidade de desfazer/refazer pode ser limitada.",
             "detailsLabel": "Detalhes do Erro"
         }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Componente (C)",
+            "inertia": "Inércia (I)",
+            "market": "Mercado (M)",
+            "ecosystem": "Ecossistema (E)",
+            "buildMethod": "Método de Construção (B)",
+            "buyMethod": "Método de Compra (U)",
+            "outsourceMethod": "Método de Terceirização (O)",
+            "note": "Nota (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Âncora (A)",
+            "link": "Ligar Componentes (L)",
+            "pst": "Caixas PST (T)"
+        },
+        "pst": {
+            "pioneers": "Pioneiros",
+            "settlers": "Colonos",
+            "townPlanners": "Urbanistas"
+        },
+        "undo": {
+            "noActions": "Nenhuma ação para desfazer",
+            "withAction": "Desfazer: {{action}}"
+        },
+        "redo": {
+            "noActions": "Nenhuma ação para refazer",
+            "withAction": "Refazer: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Use atalhos de teclado para selecionar ferramentas rapidamente: C para Componente, L para Ligação, N para Nota, P para Pipeline, A para Âncora, M para Método, T para PST. Prima Escape para desselecionar."
+        }
     }
 }

@@ -403,8 +403,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                             height: '1px',
                             overflow: 'hidden',
                         }}>
-                        Use keyboard shortcuts to quickly select tools: C for Component, L for Link, N for Note, P for Pipeline, A for
-                        Anchor, M for Method, T for PST. Press Escape to deselect.
+                        {t('wysiwyg.instructions.keyboardShortcuts', 'Use keyboard shortcuts to quickly select tools: C for Component, L for Link, N for Note, P for Pipeline, A for Anchor, M for Method, T for PST. Press Escape to deselect.')}
                     </div>
 
                     <DragHandle

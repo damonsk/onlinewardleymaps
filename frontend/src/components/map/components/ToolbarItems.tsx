@@ -366,20 +366,24 @@ export const ToolbarItems: React.FC<ToolbarItemsProps> = memo(({mapStyleDefs, se
                     const isRedo = item.action === 'redo';
                     const isDisabled = isUndo ? !undoRedoContext.canUndo : !undoRedoContext.canRedo;
 
-                    // Get tooltip text with action description
+                    // Get tooltip text with action description using localized strings
                     let tooltipText = item.label;
                     if (isUndo && undoRedoContext.canUndo) {
                         const lastAction = undoRedoContext.getLastAction();
                         if (lastAction) {
-                            tooltipText = `Undo: ${lastAction.actionDescription}`;
+                            const undoTemplate = t('wysiwyg.undo.withAction', 'Undo: {{action}}');
+                            tooltipText = undoTemplate.replace('{{action}}', lastAction.actionDescription);
                         }
                     } else if (isRedo && undoRedoContext.canRedo) {
                         const nextAction = undoRedoContext.getNextAction();
                         if (nextAction) {
-                            tooltipText = `Redo: ${nextAction.actionDescription}`;
+                            const redoTemplate = t('wysiwyg.redo.withAction', 'Redo: {{action}}');
+                            tooltipText = redoTemplate.replace('{{action}}', nextAction.actionDescription);
                         }
                     } else {
-                        tooltipText = isUndo ? 'No actions to undo' : 'No actions to redo';
+                        tooltipText = isUndo 
+                            ? t('wysiwyg.undo.noActions', 'No actions to undo')
+                            : t('wysiwyg.redo.noActions', 'No actions to redo');
                     }
 
                     return (

@@ -284,5 +284,37 @@
             "description": "元に戻す/やり直しシステムでエラーが発生しました。アプリケーションは動作を続けますが、元に戻す/やり直し機能が制限される場合があります。",
             "detailsLabel": "エラー詳細"
         }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "コンポーネント (C)",
+            "inertia": "慣性 (I)",
+            "market": "マーケット (M)",
+            "ecosystem": "エコシステム (E)",
+            "buildMethod": "構築メソッド (B)",
+            "buyMethod": "購入メソッド (U)",
+            "outsourceMethod": "アウトソーシングメソッド (O)",
+            "note": "ノート (N)",
+            "pipeline": "パイプライン (P)",
+            "anchor": "アンカー (A)",
+            "link": "コンポーネントをリンク (L)",
+            "pst": "PSTボックス (T)"
+        },
+        "pst": {
+            "pioneers": "パイオニア",
+            "settlers": "セトラー",
+            "townPlanners": "タウンプランナー"
+        },
+        "undo": {
+            "noActions": "元に戻すアクションがありません",
+            "withAction": "元に戻す: {{action}}"
+        },
+        "redo": {
+            "noActions": "やり直すアクションがありません",
+            "withAction": "やり直す: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "キーボードショートカットでツールを素早く選択できます：Cはコンポーネント、Lはリンク、Nはノート、Pはパイプライン、Aはアンカー、Mはメソッド、TはPST。Escapeで選択を解除。"
+        }
     }
 }

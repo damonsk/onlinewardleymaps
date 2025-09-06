@@ -284,5 +284,37 @@
             "description": "撤销/重做系统发生错误。应用程序将继续工作，但撤销/重做功能可能会受限。",
             "detailsLabel": "错误详情"
         }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "组件 (C)",
+            "inertia": "惯性 (I)",
+            "market": "市场 (M)",
+            "ecosystem": "生态系统 (E)",
+            "buildMethod": "构建方法 (B)",
+            "buyMethod": "购买方法 (U)",
+            "outsourceMethod": "外包方法 (O)",
+            "note": "笔记 (N)",
+            "pipeline": "流水线 (P)",
+            "anchor": "锚点 (A)",
+            "link": "连接组件 (L)",
+            "pst": "PST盒子 (T)"
+        },
+        "pst": {
+            "pioneers": "先锋者",
+            "settlers": "定居者",
+            "townPlanners": "城镇规划师"
+        },
+        "undo": {
+            "noActions": "没有可撤销的操作",
+            "withAction": "撤销：{{action}}"
+        },
+        "redo": {
+            "noActions": "没有可重做的操作",
+            "withAction": "重做：{{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "使用键盘快捷键快速选择工具：C代表组件，L代表链接，N代表笔记，P代表流水线，A代表锚点，M代表方法，T代表PST。按Escape取消选择。"
+        }
     }
 }

@@ -284,5 +284,37 @@
             "description": "Si è verificato un errore nel sistema di annulla/ripristina. L'applicazione continuerà a funzionare, ma la funzionalità di annulla/ripristina potrebbe essere limitata.",
             "detailsLabel": "Dettagli dell'Errore"
         }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Componente (C)",
+            "inertia": "Inerzia (I)",
+            "market": "Mercato (M)",
+            "ecosystem": "Ecosistema (E)",
+            "buildMethod": "Metodo di Costruzione (B)",
+            "buyMethod": "Metodo di Acquisto (U)",
+            "outsourceMethod": "Metodo di Esternalizzazione (O)",
+            "note": "Nota (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Ancora (A)",
+            "link": "Collega Componenti (L)",
+            "pst": "Caselle PST (T)"
+        },
+        "pst": {
+            "pioneers": "Pionieri",
+            "settlers": "Coloni",
+            "townPlanners": "Urbanisti"
+        },
+        "undo": {
+            "noActions": "Nessuna azione da annullare",
+            "withAction": "Annulla: {{action}}"
+        },
+        "redo": {
+            "noActions": "Nessuna azione da ripristinare",
+            "withAction": "Ripristina: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Usa le scorciatoie da tastiera per selezionare rapidamente gli strumenti: C per Componente, L per Collegamento, N per Nota, P per Pipeline, A per Ancora, M per Metodo, T per PST. Premi Escape per deselezionare."
+        }
     }
 }

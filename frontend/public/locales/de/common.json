@@ -287,5 +287,37 @@
             "description": "Ein Fehler ist im Rückgängig/Wiederholen-System aufgetreten. Die Anwendung funktioniert weiterhin, aber die Rückgängig/Wiederholen-Funktionalität könnte eingeschränkt sein.",
             "detailsLabel": "Fehlerdetails"
         }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Komponente (C)",
+            "inertia": "Trägheit (I)",
+            "market": "Markt (M)",
+            "ecosystem": "Ökosystem (E)",
+            "buildMethod": "Bau-Methode (B)",
+            "buyMethod": "Kauf-Methode (U)",
+            "outsourceMethod": "Outsourcing-Methode (O)",
+            "note": "Notiz (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Anker (A)",
+            "link": "Komponenten Verknüpfen (L)",
+            "pst": "PST-Boxen (T)"
+        },
+        "pst": {
+            "pioneers": "Pioniere",
+            "settlers": "Siedler",
+            "townPlanners": "Stadtplaner"
+        },
+        "undo": {
+            "noActions": "Keine Aktionen zum Rückgängigmachen",
+            "withAction": "Rückgängig: {{action}}"
+        },
+        "redo": {
+            "noActions": "Keine Aktionen zum Wiederholen",
+            "withAction": "Wiederholen: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Verwenden Sie Tastaturkürzel zur schnellen Werkzeugauswahl: C für Komponente, L für Verknüpfung, N für Notiz, P für Pipeline, A für Anker, M für Methode, T für PST. Drücken Sie Escape zum Abwählen."
+        }
     }
 }

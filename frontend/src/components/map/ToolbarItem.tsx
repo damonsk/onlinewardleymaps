@@ -1,5 +1,6 @@
 import React, {memo, useCallback, KeyboardEvent, useState, useRef} from 'react';
 import styled from 'styled-components';
+import {useI18n} from '../../hooks/useI18n';
 import {ToolbarItem as ToolbarItemType, ToolbarItemProps, ToolbarSubItem} from '../../types/toolbar';
 import {ToolbarDropdown} from './ToolbarDropdown';
 
@@ -329,10 +330,42 @@ const KeyboardShortcutIndicator = styled.div<{$isSelected: boolean}>`
  * Individual toolbar item component with visual states and accessibility support
  */
 export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, onClick, mapStyleDefs, onSubItemSelect}) => {
+    const {t} = useI18n();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [announceText, setAnnounceText] = useState('');
     const buttonRef = useRef<HTMLButtonElement>(null);
     const IconComponent = item.icon;
+
+    // Get localized tooltip text with fallback to item.label
+    const getTooltipText = useCallback(() => {
+        // Map item IDs to translation keys
+        const tooltipKeyMap: Record<string, string> = {
+            'component': 'wysiwyg.tooltips.component',
+            'method-inertia': 'wysiwyg.tooltips.inertia', 
+            'method-market': 'wysiwyg.tooltips.market',
+            'method-ecosystem': 'wysiwyg.tooltips.ecosystem',
+            'method-build': 'wysiwyg.tooltips.buildMethod',
+            'method-buy': 'wysiwyg.tooltips.buyMethod',
+            'method-outsource': 'wysiwyg.tooltips.outsourceMethod',
+            'note': 'wysiwyg.tooltips.note',
+            'pipeline': 'wysiwyg.tooltips.pipeline',
+            'anchor': 'wysiwyg.tooltips.anchor',
+            'link': 'wysiwyg.tooltips.link',
+            'pst': 'wysiwyg.tooltips.pst'
+        };
+        
+        const tooltipKey = tooltipKeyMap[item.id];
+        if (tooltipKey) {
+            // Use translation with fallback to create tooltip with keyboard shortcut
+            const baseTooltip = item.keyboardShortcut 
+                ? `${item.label} (${item.keyboardShortcut.toUpperCase()})`
+                : item.label;
+            return t(tooltipKey, baseTooltip);
+        }
+        
+        // Fallback for items not in the map (like undo/redo which are handled elsewhere)
+        return item.keyboardShortcut ? `${item.label} (${item.keyboardShortcut.toUpperCase()})` : item.label;
+    }, [item, t]);
 
     const handleClick = useCallback(() => {
         if (item.subItems && item.subItems.length > 0) {
@@ -391,7 +424,7 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = memo(({item, isSelected, 
     }, []);
 
     // Create tooltip text with keyboard shortcut if available
-    const tooltipText = item.keyboardShortcut ? `${item.label} (${item.keyboardShortcut.toUpperCase()})` : item.label;
+    const tooltipText = getTooltipText();
 
     return (
         <>

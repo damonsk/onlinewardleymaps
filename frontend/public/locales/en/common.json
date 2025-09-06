@@ -71,7 +71,21 @@
         },
         "contextMenu": {
             "title": "Context menu",
-            "ariaLabel": "Context menu"
+            "ariaLabel": "Context menu",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
         },
         "toolbar": {
             "group": "button group",
@@ -287,6 +301,38 @@
             "title": "Undo/Redo Error",
             "description": "An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be limited.",
             "detailsLabel": "Error Details"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Component (C)",
+            "inertia": "Inertia (I)",
+            "market": "Market (M)",
+            "ecosystem": "Ecosystem (E)",
+            "buildMethod": "Build Method (B)",
+            "buyMethod": "Buy Method (U)",
+            "outsourceMethod": "Outsource Method (O)",
+            "note": "Note (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Anchor (A)",
+            "link": "Link Components (L)",
+            "pst": "PST Boxes (T)"
+        },
+        "pst": {
+            "pioneers": "Pioneers",
+            "settlers": "Settlers",
+            "townPlanners": "Town Planners"
+        },
+        "undo": {
+            "noActions": "No actions to undo",
+            "withAction": "Undo: {{action}}"
+        },
+        "redo": {
+            "noActions": "No actions to redo",
+            "withAction": "Redo: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Use keyboard shortcuts to quickly select tools: C for Component, L for Link, N for Note, P for Pipeline, A for Anchor, M for Method, T for PST. Press Escape to deselect."
         }
     }
 }

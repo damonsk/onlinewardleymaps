@@ -284,5 +284,37 @@
             "description": "실행 취소/다시 실행 시스템에서 오류가 발생했습니다. 애플리케이션은 계속 작동하지만, 실행 취소/다시 실행 기능이 제한될 수 있습니다.",
             "detailsLabel": "오류 세부 정보"
         }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "컴포넌트 (C)",
+            "inertia": "관성 (I)",
+            "market": "시장 (M)",
+            "ecosystem": "생태계 (E)",
+            "buildMethod": "구축 방법 (B)",
+            "buyMethod": "구매 방법 (U)",
+            "outsourceMethod": "아웃소싱 방법 (O)",
+            "note": "노트 (N)",
+            "pipeline": "파이프라인 (P)",
+            "anchor": "앵커 (A)",
+            "link": "컴포넌트 연결 (L)",
+            "pst": "PST 박스 (T)"
+        },
+        "pst": {
+            "pioneers": "선구자",
+            "settlers": "정착자",
+            "townPlanners": "도시 계획가"
+        },
+        "undo": {
+            "noActions": "취소할 작업이 없습니다",
+            "withAction": "취소: {{action}}"
+        },
+        "redo": {
+            "noActions": "다시 실행할 작업이 없습니다",
+            "withAction": "다시 실행: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "키보드 단축키로 도구를 빠르게 선택하세요: C는 컴포넌트, L은 링크, N은 노트, P는 파이프라인, A는 앵커, M은 방법, T는 PST. Escape로 선택 해제."
+        }
     }
 }

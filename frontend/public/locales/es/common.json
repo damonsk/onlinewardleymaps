@@ -67,7 +67,21 @@
         "saving": "guardando...",
         "contextMenu": {
             "title": "Menú contextual",
-            "ariaLabel": "Menú contextual"
+            "ariaLabel": "Menú contextual",
+            "editComponent": "Editar Componente",
+            "deleteComponent": "Eliminar Componente",
+            "deleteLink": "Eliminar Enlace",
+            "addInertia": "Añadir Inercia",
+            "removeInertia": "Eliminar Inercia",
+            "evolveComponent": "Evolucionar Componente",
+            "mapStyles": {
+                "plain": "Sencillo",
+                "wardley": "Wardley",
+                "colour": "Color"
+            },
+            "setMapSize": "Establecer Tamaño del Mapa",
+            "editEvolutionStages": "Editar Etapas de Evolución",
+            "delete": "Eliminar"
         },
         "toolbar": {
             "group": "grupo de botones",
@@ -283,6 +297,38 @@
             "title": "Error de Deshacer/Rehacer",
             "description": "Ocurrió un error en el sistema de deshacer/rehacer. La aplicación seguirá funcionando, pero la funcionalidad de deshacer/rehacer puede estar limitada.",
             "detailsLabel": "Detalles del Error"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Componente (C)",
+            "inertia": "Inercia (I)",
+            "market": "Mercado (M)",
+            "ecosystem": "Ecosistema (E)",
+            "buildMethod": "Método de Construcción (B)",
+            "buyMethod": "Método de Compra (U)",
+            "outsourceMethod": "Método de Externalización (O)",
+            "note": "Nota (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Ancla (A)",
+            "link": "Enlazar Componentes (L)",
+            "pst": "Cajas PST (T)"
+        },
+        "pst": {
+            "pioneers": "Pioneros",
+            "settlers": "Colonos",
+            "townPlanners": "Urbanistas"
+        },
+        "undo": {
+            "noActions": "No hay acciones para deshacer",
+            "withAction": "Deshacer: {{action}}"
+        },
+        "redo": {
+            "noActions": "No hay acciones para rehacer",
+            "withAction": "Rehacer: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Use atajos de teclado para seleccionar herramientas rápidamente: C para Componente, L para Enlace, N para Nota, P para Pipeline, A para Ancla, M para Método, T para PST. Presione Escape para deseleccionar."
         }
     }
 }

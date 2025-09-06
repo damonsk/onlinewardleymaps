@@ -67,7 +67,21 @@
         "saving": "sauvegarde...",
         "contextMenu": {
             "title": "Menu contextuel",
-            "ariaLabel": "Menu contextuel"
+            "ariaLabel": "Menu contextuel",
+            "editComponent": "Éditer Composant",
+            "deleteComponent": "Supprimer Composant",
+            "deleteLink": "Supprimer Lien",
+            "addInertia": "Ajouter Inertie",
+            "removeInertia": "Supprimer Inertie",
+            "evolveComponent": "Faire Évoluer Composant",
+            "mapStyles": {
+                "plain": "Simple",
+                "wardley": "Wardley",
+                "colour": "Couleur"
+            },
+            "setMapSize": "Définir Taille de la Carte",
+            "editEvolutionStages": "Éditer les Étapes d'Évolution",
+            "delete": "Supprimer"
         },
         "toolbar": {
             "group": "groupe de boutons",
@@ -283,6 +297,38 @@
             "title": "Erreur Annuler/Rétablir",
             "description": "Une erreur s'est produite dans le système d'annulation/rétablissement. L'application continuera à fonctionner, mais la fonctionnalité d'annulation/rétablissement peut être limitée.",
             "detailsLabel": "Détails de l'Erreur"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Composant (C)",
+            "inertia": "Inertie (I)",
+            "market": "Marché (M)",
+            "ecosystem": "Écosystème (E)",
+            "buildMethod": "Méthode de Construction (B)",
+            "buyMethod": "Méthode d'Achat (U)",
+            "outsourceMethod": "Méthode d'Externalisation (O)",
+            "note": "Note (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Ancre (A)",
+            "link": "Lier les Composants (L)",
+            "pst": "Boîtes PST (T)"
+        },
+        "pst": {
+            "pioneers": "Pionniers",
+            "settlers": "Colons",
+            "townPlanners": "Urbanistes"
+        },
+        "undo": {
+            "noActions": "Aucune action à annuler",
+            "withAction": "Annuler : {{action}}"
+        },
+        "redo": {
+            "noActions": "Aucune action à rétablir",
+            "withAction": "Rétablir : {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Utilisez les raccourcis clavier pour sélectionner rapidement les outils : C pour Composant, L pour Lien, N pour Note, P pour Pipeline, A pour Ancre, M pour Méthode, T pour PST. Appuyez sur Échap pour désélectionner."
         }
     }
 }
