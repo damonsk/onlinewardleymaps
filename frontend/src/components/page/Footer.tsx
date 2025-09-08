@@ -27,6 +27,7 @@ const Footer: React.FC = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             href="https://marketplace.visualstudio.com/items?itemName=damonsk.vscode-wardley-maps">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 alt={t('footer.downloadExtension')}
                                 src="https://img.shields.io/visual-studio-marketplace/v/damonsk.vscode-wardley-maps?style=flat&amp;label=Download Visual%20Studio%20Code%20Extension&amp;logo=visual-studio-code"
@@ -69,6 +70,7 @@ const Footer: React.FC = () => {
             <Box sx={{width: '50%', textAlign: 'right'}}>
                 <Typography>
                     <Link href="https://www.patreon.com/mapsascode" rel="noreferrer noopener" target="_blank">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img alt={t('footer.patreonAlt', 'Become a Patron')} height="38" src="/become_a_patron_button.png" width="162" />
                     </Link>
                 </Typography>

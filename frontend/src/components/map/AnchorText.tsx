@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useI18n} from '../../hooks/useI18n';
 import {renameAnchor} from '../../constants/renameAnchor';
 import {UnifiedComponent} from '../../types/unified';
@@ -24,7 +24,7 @@ interface AnchorTextProps {
 
 const AnchorText: React.FC<AnchorTextProps> = ({anchor, cx, cy, mapText, mutateMapText, mapStyleDefs, scaleFactor = 1, onClick}) => {
     // Resolve the display text for the anchor (handles quoted names)
-    const getDisplayText = () => {
+    const getDisplayText = useCallback(() => {
         let name = anchor.name;
 
         // If the anchor name is quoted (multi-line or escaped), unescape it for display
@@ -33,7 +33,7 @@ const AnchorText: React.FC<AnchorTextProps> = ({anchor, cx, cy, mapText, mutateM
         }
 
         return name;
-    };
+    }, [anchor.name]);
 
     const {enableDoubleClickRename} = useFeatureSwitches();
     const {startEditing, stopEditing, editingState} = useEditing();
@@ -49,7 +49,7 @@ const AnchorText: React.FC<AnchorTextProps> = ({anchor, cx, cy, mapText, mutateM
 
     useEffect(() => {
         setText(getDisplayText());
-    }, [anchor.name]);
+    }, [anchor.name, getDisplayText]);
 
     // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
     useEffect(() => {

@@ -145,51 +145,6 @@ export const useComponentOperations = ({
         [findComponent, startEditing, showUserFeedback],
     );
 
-    const handleToggleInertia = useCallback(
-        (componentId: string) => {
-            const component = findComponent(componentId);
-            if (!component) {
-                showUserFeedback(`Component "${componentId}" not found`, 'error');
-                return;
-            }
-            handleMethodApplication(component, 'inertia');
-        },
-        [findComponent, showUserFeedback],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    );
-
-    const handleEvolveComponent = useCallback(
-        (componentId: string) => {
-            const component = findComponent(componentId);
-            if (!component) {
-                showUserFeedback(`Component "${componentId}" not found`, 'error');
-                return;
-            }
-
-            if (component.evolved) {
-                showUserFeedback('Cannot evolve an already evolved component', 'warning');
-                return;
-            }
-
-            try {
-                const evolutionResult = componentEvolutionManager.evolveComponent(component, mapText);
-                if (evolutionResult.success) {
-                    mutateMapText(
-                        evolutionResult.updatedMapText,
-                        'toolbar-method',
-                        `Evolved component "${component.name}" to "${evolutionResult.evolvedComponent.name}"`,
-                    );
-                    showUserFeedback(`Successfully evolved "${component.name}"`, 'success');
-                } else {
-                    showUserFeedback(evolutionResult.error || 'Failed to evolve component', 'error');
-                }
-            } catch (error) {
-                console.error('Error evolving component:', error);
-                showUserFeedback('Failed to evolve component due to an unexpected error', 'error');
-            }
-        },
-        [findComponent, mapText, mutateMapText, showUserFeedback],
-    );
 
     const handleMethodApplication = useCallback(
         (component: UnifiedComponent, methodName: string) => {
@@ -261,6 +216,52 @@ export const useComponentOperations = ({
         },
         [wardleyMap, mapText, mutateMapText, showUserFeedback],
     );
+
+    const handleToggleInertia = useCallback(
+        (componentId: string) => {
+            const component = findComponent(componentId);
+            if (!component) {
+                showUserFeedback(`Component "${componentId}" not found`, 'error');
+                return;
+            }
+            handleMethodApplication(component, 'inertia');
+        },
+        [findComponent, showUserFeedback, handleMethodApplication],
+    );
+
+    const handleEvolveComponent = useCallback(
+        (componentId: string) => {
+            const component = findComponent(componentId);
+            if (!component) {
+                showUserFeedback(`Component "${componentId}" not found`, 'error');
+                return;
+            }
+
+            if (component.evolved) {
+                showUserFeedback('Cannot evolve an already evolved component', 'warning');
+                return;
+            }
+
+            try {
+                const evolutionResult = componentEvolutionManager.evolveComponent(component, mapText);
+                if (evolutionResult.success) {
+                    mutateMapText(
+                        evolutionResult.updatedMapText,
+                        'toolbar-method',
+                        `Evolved component "${component.name}" to "${evolutionResult.evolvedComponent.name}"`,
+                    );
+                    showUserFeedback(`Successfully evolved "${component.name}"`, 'success');
+                } else {
+                    showUserFeedback(evolutionResult.error || 'Failed to evolve component', 'error');
+                }
+            } catch (error) {
+                console.error('Error evolving component:', error);
+                showUserFeedback('Failed to evolve component due to an unexpected error', 'error');
+            }
+        },
+        [findComponent, mapText, mutateMapText, showUserFeedback],
+    );
+
 
     return {
         handleDeleteComponent,

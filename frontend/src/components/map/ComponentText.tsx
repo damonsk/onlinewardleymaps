@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useI18n} from '../../hooks/useI18n';
 import {rename} from '../../constants/rename';
 import {UnifiedComponent} from '../../types/unified';
@@ -45,7 +45,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     element,
 }) => {
     // Resolve the display text for the component (handles evolved overrides and quoted names)
-    const getDisplayText = () => {
+    const getDisplayText = useCallback(() => {
         // For evolved components, always prioritize the unquoted override name
         if (component.evolved && component.override) {
             if (component.override.startsWith('"') && component.override.endsWith('"')) {
@@ -63,7 +63,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         }
 
         return name;
-    };
+    }, [component.evolved, component.override, component.name, element?.name]);
     const {enableDoubleClickRename} = useFeatureSwitches();
     const {startEditing, stopEditing, isElementEditing, editingState} = useEditing();
     const {originalT} = useI18n();
@@ -78,7 +78,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
     useEffect(() => {
         setText(getDisplayText());
-    }, [component.name, component.override, component.evolved, element?.name]);
+    }, [component.name, component.override, component.evolved, element?.name, getDisplayText]);
 
     // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
     useEffect(() => {

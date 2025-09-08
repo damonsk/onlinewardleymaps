@@ -191,7 +191,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 return;
             }
         },
-        [mapElementsClicked, setHighlightLine, mutateMapText, mapText, props],
+        [setHighlightLine, props],
     );
 
     // Title update handler
@@ -342,7 +342,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                 setIsInitialSizingComplete(true);
             }
         }
-    }, [waitingForPanelRestore]);
+    }, [waitingForPanelRestore, setIsInitialSizingComplete]);
 
     // Fallback timeout to ensure loading state doesn't persist indefinitely
     useEffect(() => {
@@ -354,7 +354,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         }, 3000); // 3 second fallback
 
         return () => clearTimeout(fallbackTimer);
-    }, [isInitialSizingComplete]);
+    }, [isInitialSizingComplete, setIsInitialSizingComplete]);
 
     return (
         <div id="map-canvas" style={{width: '100%', height: '100%', position: 'relative'}}>

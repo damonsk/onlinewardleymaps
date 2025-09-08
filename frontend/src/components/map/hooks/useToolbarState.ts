@@ -111,7 +111,7 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
                 setPosition(newPosition);
             }
         }
-    }, [mapOnlyView, isSnapped]); // React to mode changes and snap state changes
+    }, [mapOnlyView, isSnapped, position]); // React to mode changes and snap state changes
 
     // Update snap state when position changes
     useEffect(() => {

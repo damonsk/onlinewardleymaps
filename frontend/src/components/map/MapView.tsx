@@ -256,7 +256,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
 
             console.log('Toolbar item processed:', finalItem?.id || 'none', 'with toolType:', finalItem?.toolType || 'none');
         },
-        [toolbarState, linkingState, drawingState, showUserFeedback],
+        [toolbarState, linkingState, drawingState, showUserFeedback, clearSelection],
     );
 
     return (
