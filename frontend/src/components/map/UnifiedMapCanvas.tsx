@@ -418,7 +418,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     position: 'none',
                 }}
                 preventPanOutside={false}
-                onClick={(event) => {
+                onClick={event => {
                     console.debug('SVG PanZoom onClick triggered:', {tool, selectedToolbarItem: props.selectedToolbarItem?.id});
                     handleMapClick(event);
                 }}

@@ -109,12 +109,15 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
         }
     };
 
-    const handleLinkContextDoubleClick = useCallback((event: React.MouseEvent) => {
-        if (enableLinkContext && mapText && mutateMapText) {
-            event.stopPropagation();
-            setIsEditingContext(true);
-        }
-    }, [enableLinkContext, mapText, mutateMapText]);
+    const handleLinkContextDoubleClick = useCallback(
+        (event: React.MouseEvent) => {
+            if (enableLinkContext && mapText && mutateMapText) {
+                event.stopPropagation();
+                setIsEditingContext(true);
+            }
+        },
+        [enableLinkContext, mapText, mutateMapText],
+    );
 
     const handleSaveContext = useCallback(() => {
         setIsEditingContext(false);
@@ -154,12 +157,7 @@ const ComponentLink: React.FC<ModernComponentLinkProps> = ({
             {enableLinkContext && link.context && (
                 <>
                     {isEditingContext && mapText && mutateMapText ? (
-                        <foreignObject
-                            x={centerX - 75}
-                            y={centerY - buffer - 20}
-                            width={150}
-                            height={40}
-                            style={{pointerEvents: 'auto'}}>
+                        <foreignObject x={centerX - 75} y={centerY - buffer - 20} width={150} height={40} style={{pointerEvents: 'auto'}}>
                             <LinkTextEditor
                                 link={link}
                                 x={0}

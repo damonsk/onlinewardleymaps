@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
-import { UnifiedComponent } from '../../../../types/unified/components';
-import { linkExists } from '../../../../utils/componentDetection';
-import { ComponentLinkingOperations } from './useComponentLinkingOperations';
+import {useCallback} from 'react';
+import {UnifiedComponent} from '../../../../types/unified/components';
+import {linkExists} from '../../../../utils/componentDetection';
+import {ComponentLinkingOperations} from './useComponentLinkingOperations';
 
 interface ComponentInteractionDependencies {
     linkingState: {

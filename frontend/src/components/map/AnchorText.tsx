@@ -22,27 +22,14 @@ interface AnchorTextProps {
     onClick?: (event: React.MouseEvent) => void;
 }
 
-const AnchorText: React.FC<AnchorTextProps> = ({
-    anchor,
-    cx,
-    cy,
-    mapText,
-    mutateMapText,
-    mapStyleDefs,
-    scaleFactor = 1,
-    onClick,
-}) => {
+const AnchorText: React.FC<AnchorTextProps> = ({anchor, cx, cy, mapText, mutateMapText, mapStyleDefs, scaleFactor = 1, onClick}) => {
     // Resolve the display text for the anchor (handles quoted names)
     const getDisplayText = () => {
         let name = anchor.name;
 
         // If the anchor name is quoted (multi-line or escaped), unescape it for display
         if (name && name.startsWith('"') && name.endsWith('"')) {
-            name = name
-                .slice(1, -1)
-                .replace(/\\"/g, '"')
-                .replace(/\\n/g, '\n')
-                .replace(/\\\\/g, '\\');
+            name = name.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
         }
 
         return name;
@@ -111,10 +98,7 @@ const AnchorText: React.FC<AnchorTextProps> = ({
             if (!result.success) {
                 console.error('Failed to save anchor:', result.error);
                 // Show localized user feedback instead of alert
-                showUserFeedback(
-                    originalT('anchors.saveError', {error: result.error}) || `Error saving anchor: ${result.error}`, 
-                    'error'
-                );
+                showUserFeedback(originalT('anchors.saveError', {error: result.error}) || `Error saving anchor: ${result.error}`, 'error');
                 return; // Don't close the editor if save failed
             }
         }
@@ -146,11 +130,7 @@ const AnchorText: React.FC<AnchorTextProps> = ({
         const editorPosition = calculateComponentEditorPosition(anchorPosition, labelOffset, editorDimensions);
 
         // Debug positioning in development
-        debugPosition(
-            'AnchorText Editor',
-            {x: anchorPosition.x + labelOffset.x, y: anchorPosition.y + labelOffset.y},
-            editorPosition,
-        );
+        debugPosition('AnchorText Editor', {x: anchorPosition.x + labelOffset.x, y: anchorPosition.y + labelOffset.y}, editorPosition);
 
         return (
             <foreignObject

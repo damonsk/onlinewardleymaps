@@ -74,7 +74,7 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
         setResizeStartPosition(null);
         setOriginalBounds(null);
         setKeyboardModifiers({maintainAspectRatio: false, resizeFromCenter: false});
-        
+
         // Restore original tool state
         if (originalTool !== null) {
             setTool(originalTool);
@@ -105,13 +105,13 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
 
             try {
                 const bounds = convertPSTCoordinatesToBounds(element.coordinates, mapDimensions);
-                
+
                 setResizingPSTElement(element);
                 setResizeHandle(handle);
                 setResizeStartPosition(startPosition);
                 setOriginalBounds(bounds);
                 setResizePreviewBounds(bounds);
-                
+
                 // Store current tool and disable pan/zoom during resize
                 setOriginalTool(currentTool);
                 setTool('TOOL_NONE');
@@ -160,7 +160,7 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
 
             try {
                 let coordinatesToUpdate = newCoordinates;
-                
+
                 // If no coordinates provided, calculate from preview bounds
                 if (!coordinatesToUpdate && resizePreviewBounds) {
                     coordinatesToUpdate = convertBoundsToPSTCoordinates(resizePreviewBounds, mapDimensions);
@@ -182,12 +182,9 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
         [mapText, mutateMapText, resetResizeState, resizePreviewBounds, mapDimensions],
     );
 
-    const handlePSTDragStart = useCallback(
-        (_element: PSTElement, _startPosition: {x: number; y: number}) => {
-            // DISABLED: Conflicts with PSTBox drag handling - PSTBox manages drag start internally
-        },
-        [],
-    );
+    const handlePSTDragStart = useCallback((_element: PSTElement, _startPosition: {x: number; y: number}) => {
+        // DISABLED: Conflicts with PSTBox drag handling - PSTBox manages drag start internally
+    }, []);
 
     const handlePSTDragMove = useCallback(
         (element: PSTElement, currentPosition: {x: number; y: number}) => {
@@ -236,7 +233,7 @@ export const usePSTInteractions = (props: UsePSTInteractionsProps): UsePSTIntera
             try {
                 const newCoordinates = convertBoundsToPSTCoordinates(dragPreviewBounds, mapDimensions);
                 const updatedMapText = updatePSTInMapText(mapText, element, newCoordinates);
-                
+
                 if (updatedMapText !== mapText) {
                     mutateMapText(updatedMapText);
                 }

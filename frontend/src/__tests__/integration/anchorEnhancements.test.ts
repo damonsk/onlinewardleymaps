@@ -9,46 +9,39 @@ describe('Anchor Enhancement Integration', () => {
                 'component ServiceA [0.3, 0.8]',
                 'component ServiceB [0.7, 0.6]',
                 'ServiceA->MainAnchor',
-                'ServiceB->MainAnchor'
+                'ServiceB->MainAnchor',
             ].join('\n');
 
             const mutateMapText = jest.fn();
             const result = renameAnchor(2, 'MainAnchor', 'CoreAnchor', mapText, mutateMapText);
 
             expect(result.success).toBe(true);
-            expect(mutateMapText).toHaveBeenCalledWith([
-                'title Test Map',
-                'anchor CoreAnchor [0.5, 0.7]',
-                'component ServiceA [0.3, 0.8]',
-                'component ServiceB [0.7, 0.6]',
-                'ServiceA->CoreAnchor',
-                'ServiceB->CoreAnchor'
-            ].join('\n'));
+            expect(mutateMapText).toHaveBeenCalledWith(
+                [
+                    'title Test Map',
+                    'anchor CoreAnchor [0.5, 0.7]',
+                    'component ServiceA [0.3, 0.8]',
+                    'component ServiceB [0.7, 0.6]',
+                    'ServiceA->CoreAnchor',
+                    'ServiceB->CoreAnchor',
+                ].join('\n'),
+            );
         });
 
         it('should handle quoted anchor names with spaces', () => {
-            const mapText = [
-                'anchor "Main Anchor" [0.5, 0.7]',
-                'component ServiceA [0.3, 0.8]',
-                'ServiceA->"Main Anchor"'
-            ].join('\n');
+            const mapText = ['anchor "Main Anchor" [0.5, 0.7]', 'component ServiceA [0.3, 0.8]', 'ServiceA->"Main Anchor"'].join('\n');
 
             const mutateMapText = jest.fn();
             const result = renameAnchor(1, 'Main Anchor', 'Core Anchor', mapText, mutateMapText);
 
             expect(result.success).toBe(true);
-            expect(mutateMapText).toHaveBeenCalledWith([
-                'anchor "Core Anchor" [0.5, 0.7]',
-                'component ServiceA [0.3, 0.8]',
-                'ServiceA->"Core Anchor"'
-            ].join('\n'));
+            expect(mutateMapText).toHaveBeenCalledWith(
+                ['anchor "Core Anchor" [0.5, 0.7]', 'component ServiceA [0.3, 0.8]', 'ServiceA->"Core Anchor"'].join('\n'),
+            );
         });
 
         it('should detect conflicts with existing components', () => {
-            const mapText = [
-                'anchor TestAnchor [0.5, 0.7]',
-                'component ExistingComponent [0.3, 0.8]'
-            ].join('\n');
+            const mapText = ['anchor TestAnchor [0.5, 0.7]', 'component ExistingComponent [0.3, 0.8]'].join('\n');
 
             const mutateMapText = jest.fn();
             const result = renameAnchor(1, 'TestAnchor', 'ExistingComponent', mapText, mutateMapText);
@@ -60,7 +53,7 @@ describe('Anchor Enhancement Integration', () => {
 
         it('should preserve anchor labels during renaming', () => {
             const mapText = 'anchor TestAnchor [0.5, 0.7] label [10, 20]';
-            
+
             const mutateMapText = jest.fn();
             const result = renameAnchor(1, 'TestAnchor', 'NewAnchor', mapText, mutateMapText);
 
@@ -88,7 +81,7 @@ describe('Anchor Enhancement Integration', () => {
                     maturity: 0.5,
                     visibility: 0.7,
                     line: 1,
-                }
+                },
             };
 
             // If this compiles without errors, our type definitions are correct

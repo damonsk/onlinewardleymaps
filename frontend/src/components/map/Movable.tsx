@@ -61,7 +61,7 @@ const Movable: React.FC<ModernMovableProps> = props => {
         if (e.button !== 0) {
             return;
         }
-        
+
         setMoving(true);
         const pageX = e.pageX;
         const pageY = e.pageY;

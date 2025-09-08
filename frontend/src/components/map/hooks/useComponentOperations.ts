@@ -47,11 +47,7 @@ export const useComponentOperations = ({
     );
 
     const handleDeleteComponent = useCallback(
-        (
-            componentId: string,
-            componentType?: 'component' | 'evolved-component' | 'pst-element' | 'anchor',
-            componentData?: any,
-        ) => {
+        (componentId: string, componentType?: 'component' | 'evolved-component' | 'pst-element' | 'anchor', componentData?: any) => {
             if (!componentId || !mapText) {
                 console.warn('Cannot delete component: missing componentId or mapText');
                 return;
@@ -141,7 +137,7 @@ export const useComponentOperations = ({
                 showUserFeedback(`Component "${componentId}" not found`, 'error');
                 return;
             }
-            
+
             // Determine the correct editing type based on component properties
             const editingType = component.type === 'anchor' ? 'anchor' : 'component';
             startEditing(componentId, editingType);

@@ -370,11 +370,17 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         }
 
         if (validation.minLength && val.length < validation.minLength) {
-            return originalT('editor.inline.validation.minLength', {count: validation.minLength}) || `Minimum length is ${validation.minLength} characters`;
+            return (
+                originalT('editor.inline.validation.minLength', {count: validation.minLength}) ||
+                `Minimum length is ${validation.minLength} characters`
+            );
         }
 
         if (validation.maxLength && val.length > validation.maxLength) {
-            return originalT('editor.inline.validation.maxLength', {count: validation.maxLength}) || `Maximum length is ${validation.maxLength} characters`;
+            return (
+                originalT('editor.inline.validation.maxLength', {count: validation.maxLength}) ||
+                `Maximum length is ${validation.maxLength} characters`
+            );
         }
 
         if (validation.pattern && !validation.pattern.test(val)) {
@@ -547,10 +553,12 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         onBlur: handleBlur,
         onFocus: handleFocus,
         placeholder,
-        'aria-label': ariaLabel || t(
-            isMultiLine ? 'editor.inline.ariaLabel.multiLine' : 'editor.inline.ariaLabel.singleLine',
-            isMultiLine ? 'Multi-line text editor' : 'Text editor'
-        ),
+        'aria-label':
+            ariaLabel ||
+            t(
+                isMultiLine ? 'editor.inline.ariaLabel.multiLine' : 'editor.inline.ariaLabel.singleLine',
+                isMultiLine ? 'Multi-line text editor' : 'Text editor',
+            ),
         'aria-describedby': ariaDescription || validationError ? 'inline-editor-description' : undefined,
         'aria-invalid': !!validationError,
         'aria-required': validation?.required || false,

@@ -271,7 +271,12 @@ export const useContextMenuState = ({mapText, wardleyMap, onContextMenuReady}: U
             }
 
             // Auto-select the component if not already selected
-            if (mapElement.type === 'component' || mapElement.type === 'evolved-component' || mapElement.type === 'pst-element' || mapElement.type === 'anchor') {
+            if (
+                mapElement.type === 'component' ||
+                mapElement.type === 'evolved-component' ||
+                mapElement.type === 'pst-element' ||
+                mapElement.type === 'anchor'
+            ) {
                 if (!isSelected(mapElement.id)) {
                     selectComponent(mapElement.id);
                 }

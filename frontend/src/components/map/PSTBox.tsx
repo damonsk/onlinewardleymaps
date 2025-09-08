@@ -212,7 +212,7 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
             const startPosition = {x: clientX, y: clientY};
             dragStartPositionRef.current = startPosition;
-            
+
             setIsDragActive(true);
 
             if (onDragStart) {
@@ -291,9 +291,9 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             console.debug('PSTBox handlePointerEnd called:', {
                 isDragActive,
                 elementId: pstElement.id,
-                eventType: event.type
+                eventType: event.type,
             });
-            
+
             if (!isDragActive) {
                 return;
             }
@@ -340,7 +340,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
 
     useEffect(() => {
         if (isDragActive) {
-            
             document.addEventListener('mousemove', handleDragMove, {passive: false});
             document.addEventListener('mouseup', handleDragEnd, {passive: false});
             document.addEventListener('mouseleave', handleDragEnd, {passive: false});
@@ -354,7 +353,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
             document.body.style.touchAction = 'none';
 
             return () => {
-                
                 document.removeEventListener('mousemove', handleDragMove);
                 document.removeEventListener('mouseup', handleDragEnd);
                 document.removeEventListener('mouseleave', handleDragEnd);

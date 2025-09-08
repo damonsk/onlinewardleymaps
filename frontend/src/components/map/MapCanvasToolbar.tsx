@@ -191,9 +191,7 @@ const MapCanvasToolbar: React.FC<MapCanvasToolbarProps> = ({shouldHideNav, hideN
                 onClick={() => shouldHideNav()}
                 aria-label={hideNav ? t('map.toolbar.exitFullscreen', 'Exit Fullscreen') : t('map.toolbar.fullscreen', 'Fullscreen')}
                 $isSelected={false}>
-                <IconContainer>
-                    {hideNav ? <FullscreenExitIcon /> : <FullscreenIcon />}
-                </IconContainer>
+                <IconContainer>{hideNav ? <FullscreenExitIcon /> : <FullscreenIcon />}</IconContainer>
             </StyledToolbarButton>
         </StyledToolbarContainer>
     );

@@ -242,7 +242,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 if (toolbarState.setMethodHighlightedComponent) {
                     toolbarState.setMethodHighlightedComponent(null);
                 }
-                
+
                 // Force cleanup of any stuck document event listeners by resetting body styles
                 // This is a workaround for PST drag handlers that might be stuck
                 try {

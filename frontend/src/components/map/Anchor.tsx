@@ -94,15 +94,12 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
     const handleContextMenu = (event: MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
-        
+
         // Select the anchor when right-clicked
         selectComponent(anchor.id);
-        
+
         // Show context menu
-        showContextMenu(
-            {x: event.clientX, y: event.clientY},
-            anchor.id
-        );
+        showContextMenu({x: event.clientX, y: event.clientY}, anchor.id);
     };
 
     const handleMouseEnter = () => {

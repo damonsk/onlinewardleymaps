@@ -2,8 +2,8 @@
  * Unit tests for PST coordinate conversion utilities
  */
 
-import { MapDimensions } from '../../constants/defaults';
-import { PSTBounds, PSTCoordinates, ResizeConstraints } from '../../types/map/pst';
+import {MapDimensions} from '../../constants/defaults';
+import {PSTBounds, PSTCoordinates, ResizeConstraints} from '../../types/map/pst';
 import {
     calculateDistance,
     calculateResizedBounds,
@@ -90,7 +90,7 @@ describe('PST Coordinate Utilities', () => {
         it('should convert SVG bounds back to PST coordinates', () => {
             const bounds: PSTBounds = {
                 x: 125, // 160 - 35 (viewBox offset)
-                y: 75,  // 120 - 45 (viewBox offset)
+                y: 75, // 120 - 45 (viewBox offset)
                 width: 320,
                 height: 240,
             };

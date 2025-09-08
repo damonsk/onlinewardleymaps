@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
-import { UnifiedComponent } from '../../../../types/unified/components';
-import { UnifiedWardleyMap } from '../../../../types/unified/map';
-import { linkExists } from '../../../../utils/componentDetection';
-import { validatePosition } from '../../utils/validation';
+import {useCallback} from 'react';
+import {UnifiedComponent} from '../../../../types/unified/components';
+import {UnifiedWardleyMap} from '../../../../types/unified/map';
+import {linkExists} from '../../../../utils/componentDetection';
+import {validatePosition} from '../../utils/validation';
 
 interface MouseMovementDependencies {
     toolbarState: {
@@ -32,7 +32,7 @@ export const useMouseMovementHandlers = (deps: MouseMovementDependencies): Mouse
     const handleMouseMove = useCallback(
         (position: {x: number; y: number; nearestComponent?: UnifiedComponent | null}) => {
             const validation = validatePosition(position);
-            
+
             // Debug logging to understand what's causing invalid coordinates
             if (!validation.isValid && Math.random() < 0.01) {
                 console.debug('Mouse movement validation failed:', {

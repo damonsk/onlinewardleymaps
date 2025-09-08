@@ -13,59 +13,59 @@ import {createUnifiedComponent, createPipeline} from '../../types/unified/compon
 import {UnifiedWardleyMap} from '../../types/unified/map';
 
 const createMockWardleyMap = (): UnifiedWardleyMap => ({
-        title: 'Test Map',
-        components: [
-            createUnifiedComponent({
-                id: 'kettle',
-                name: 'Kettle',
-                type: 'component',
-                maturity: 0.45,
-                visibility: 0.57,
-                line: 1,
-            }),
-        ],
-        anchors: [],
-        submaps: [],
-        markets: [],
-        ecosystems: [],
-        links: [],
-        evolved: [],
-        pipelines: [
-            createPipeline({
-                id: 'kettle_pipeline',
-                name: 'Kettle',
-                visibility: 0.57,
-                line: 2,
-                components: [
-                    {id: 'pc1', name: 'Pipeline Component 1', maturity: 0.3, visibility: 0.57, line: 3},
-                    {id: 'pc2', name: 'Pipeline Component 2', maturity: 0.6, visibility: 0.57, line: 4},
-                ],
-            }),
-            createPipeline({
-                id: 'another_pipeline',
-                name: 'Another Pipeline',
-                visibility: 0.8,
-                line: 5,
-                components: [
-                    {id: 'apc1', name: 'Another Component 1', maturity: 0.1, visibility: 0.8, line: 6},
-                    {id: 'apc2', name: 'Another Component 2', maturity: 0.2, visibility: 0.8, line: 7},
-                ],
-            }),
-        ],
-        attitudes: [],
-        accelerators: [],
-        notes: [],
-        annotations: [],
-        methods: [],
-        presentation: {
-            style: '',
-            annotations: {visibility: 0, maturity: 0},
-            size: {height: 600, width: 800},
-        },
-        errors: [],
-        evolution: [],
-        urls: [],
-    });
+    title: 'Test Map',
+    components: [
+        createUnifiedComponent({
+            id: 'kettle',
+            name: 'Kettle',
+            type: 'component',
+            maturity: 0.45,
+            visibility: 0.57,
+            line: 1,
+        }),
+    ],
+    anchors: [],
+    submaps: [],
+    markets: [],
+    ecosystems: [],
+    links: [],
+    evolved: [],
+    pipelines: [
+        createPipeline({
+            id: 'kettle_pipeline',
+            name: 'Kettle',
+            visibility: 0.57,
+            line: 2,
+            components: [
+                {id: 'pc1', name: 'Pipeline Component 1', maturity: 0.3, visibility: 0.57, line: 3},
+                {id: 'pc2', name: 'Pipeline Component 2', maturity: 0.6, visibility: 0.57, line: 4},
+            ],
+        }),
+        createPipeline({
+            id: 'another_pipeline',
+            name: 'Another Pipeline',
+            visibility: 0.8,
+            line: 5,
+            components: [
+                {id: 'apc1', name: 'Another Component 1', maturity: 0.1, visibility: 0.8, line: 6},
+                {id: 'apc2', name: 'Another Component 2', maturity: 0.2, visibility: 0.8, line: 7},
+            ],
+        }),
+    ],
+    attitudes: [],
+    accelerators: [],
+    notes: [],
+    annotations: [],
+    methods: [],
+    presentation: {
+        style: '',
+        annotations: {visibility: 0, maturity: 0},
+        size: {height: 600, width: 800},
+    },
+    errors: [],
+    evolution: [],
+    urls: [],
+});
 
 describe('Pipeline Detection Utilities', () => {
     describe('validatePositionWithPipelineDetection', () => {

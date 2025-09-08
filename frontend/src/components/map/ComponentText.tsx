@@ -49,11 +49,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         // For evolved components, always prioritize the unquoted override name
         if (component.evolved && component.override) {
             if (component.override.startsWith('"') && component.override.endsWith('"')) {
-                return component.override
-                    .slice(1, -1)
-                    .replace(/\\"/g, '"')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\\\/g, '\\');
+                return component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
             }
             return component.override;
         }
@@ -63,11 +59,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
 
         // If the component name is quoted (multi-line or escaped), unescape it for display
         if (name && name.startsWith('"') && name.endsWith('"')) {
-            name = name
-                .slice(1, -1)
-                .replace(/\\"/g, '"')
-                .replace(/\\n/g, '\n')
-                .replace(/\\\\/g, '\\');
+            name = name.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
         }
 
         return name;
@@ -388,7 +380,10 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             if (!result.success) {
                 console.error('Failed to save component:', result.error);
                 // Show localized user feedback instead of alert
-                showUserFeedback(originalT('components.saveError', {error: result.error}) || `Error saving component: ${result.error}`, 'error');
+                showUserFeedback(
+                    originalT('components.saveError', {error: result.error}) || `Error saving component: ${result.error}`,
+                    'error',
+                );
                 return; // Don't close the editor if save failed
             }
         }

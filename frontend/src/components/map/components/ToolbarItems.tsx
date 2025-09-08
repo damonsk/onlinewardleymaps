@@ -1,11 +1,11 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import styled from 'styled-components';
-import { TOOLBAR_ITEMS } from '../../../constants/toolbarItems';
-import { useI18n } from '../../../hooks/useI18n';
-import { ToolbarItem as ToolbarItemType, ToolbarSubItem } from '../../../types/toolbar';
-import { useUndoRedo } from '../../UndoRedoProvider';
-import { ToolbarRedoIcon, ToolbarUndoIcon } from '../ToolbarIconWrappers';
-import { ToolbarItem } from '../ToolbarItem';
+import {TOOLBAR_ITEMS} from '../../../constants/toolbarItems';
+import {useI18n} from '../../../hooks/useI18n';
+import {ToolbarItem as ToolbarItemType, ToolbarSubItem} from '../../../types/toolbar';
+import {useUndoRedo} from '../../UndoRedoProvider';
+import {ToolbarRedoIcon, ToolbarUndoIcon} from '../ToolbarIconWrappers';
+import {ToolbarItem} from '../ToolbarItem';
 
 /**
  * Styled separator for grouping toolbar items
@@ -381,7 +381,7 @@ export const ToolbarItems: React.FC<ToolbarItemsProps> = memo(({mapStyleDefs, se
                             tooltipText = redoTemplate.replace('{{action}}', nextAction.actionDescription);
                         }
                     } else {
-                        tooltipText = isUndo 
+                        tooltipText = isUndo
                             ? t('wysiwyg.undo.noActions', 'No actions to undo')
                             : t('wysiwyg.redo.noActions', 'No actions to redo');
                     }

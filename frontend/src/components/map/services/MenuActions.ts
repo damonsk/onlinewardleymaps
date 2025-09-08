@@ -70,9 +70,13 @@ export class MenuActions {
                     componentId: String(componentId),
                     componentName,
                     componentType:
-                        componentType === 'evolved-component' ? 'evolved-component' : 
-                        componentType === 'pst-element' ? 'pst' : 
-                        componentType === 'anchor' ? 'anchor' : 'component',
+                        componentType === 'evolved-component'
+                            ? 'evolved-component'
+                            : componentType === 'pst-element'
+                              ? 'pst'
+                              : componentType === 'anchor'
+                                ? 'anchor'
+                                : 'component',
                 });
             }
 
@@ -93,10 +97,12 @@ export class MenuActions {
 
         // For backward compatibility, allow string/number IDs
         // Only check type restriction if we have a MapElement object
-        if (typeof currentElement === 'object' && 
-            currentElement.type !== 'component' && 
+        if (
+            typeof currentElement === 'object' &&
+            currentElement.type !== 'component' &&
             currentElement.type !== 'evolved-component' &&
-            currentElement.type !== 'anchor') {
+            currentElement.type !== 'anchor'
+        ) {
             console.warn('Cannot edit: invalid element type');
             hideContextMenu();
             return;

@@ -41,7 +41,7 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
     const handleSave = useCallback(() => {
         // Validate input
         const trimmedValue = editValue.trim();
-        
+
         // Check for line breaks (not allowed)
         if (trimmedValue.includes('\n') || trimmedValue.includes('\r')) {
             setValidationError(t('editor.link.validation.noLineBreaks', 'Link text cannot contain line breaks'));
@@ -56,7 +56,7 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
 
         try {
             const {mapText: updatedMapText, result} = updateLinkContextText(mapText, link, trimmedValue);
-            
+
             if (result.success) {
                 mutateMapText(updatedMapText);
                 onSave();
@@ -64,7 +64,9 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
                 setValidationError(result.error || t('editor.link.validation.updateFailed', 'Failed to update link text'));
             }
         } catch (error) {
-            setValidationError(error instanceof Error ? error.message : t('editor.link.validation.unexpectedError', 'An unexpected error occurred'));
+            setValidationError(
+                error instanceof Error ? error.message : t('editor.link.validation.unexpectedError', 'An unexpected error occurred'),
+            );
         }
     }, [editValue, mapText, link, mutateMapText, onSave, t]);
 
@@ -79,19 +81,22 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
         setValidationError(null);
     }, []);
 
-    const customValidator = useCallback((value: string): string | null => {
-        const trimmedValue = value.trim();
-        
-        if (trimmedValue.includes('\n') || trimmedValue.includes('\r')) {
-            return t('editor.link.validation.noLineBreaks', 'Link text cannot contain line breaks');
-        }
-        
-        if (trimmedValue.includes(';')) {
-            return t('editor.link.validation.noSemicolons', 'Link text cannot contain semicolons');
-        }
-        
-        return null;
-    }, [t]);
+    const customValidator = useCallback(
+        (value: string): string | null => {
+            const trimmedValue = value.trim();
+
+            if (trimmedValue.includes('\n') || trimmedValue.includes('\r')) {
+                return t('editor.link.validation.noLineBreaks', 'Link text cannot contain line breaks');
+            }
+
+            if (trimmedValue.includes(';')) {
+                return t('editor.link.validation.noSemicolons', 'Link text cannot contain semicolons');
+            }
+
+            return null;
+        },
+        [t],
+    );
 
     return (
         <InlineEditor
@@ -120,7 +125,10 @@ const LinkTextEditor: React.FC<LinkTextEditorProps> = ({
             realTimeValidation={true}
             showCharacterCount={true}
             ariaLabel={`Edit link text for ${link.start} to ${link.end}`}
-            ariaDescription={t('editor.link.ariaDescription', 'Enter text to display on the link. Cannot contain line breaks or semicolons.')}
+            ariaDescription={t(
+                'editor.link.ariaDescription',
+                'Enter text to display on the link. Cannot contain line breaks or semicolons.',
+            )}
         />
     );
 };

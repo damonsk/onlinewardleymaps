@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
-import { ActionType } from '../../../../types/undo-redo';
-import { UnifiedComponent } from '../../../../types/unified/components';
-import { UnifiedWardleyMap } from '../../../../types/unified/map';
-import { addLinkToMapText, generateLinkSyntax } from '../../../../utils/componentDetection';
-import { generateUniqueComponentName, validatePosition } from '../../utils/validation';
+import {useCallback} from 'react';
+import {ActionType} from '../../../../types/undo-redo';
+import {UnifiedComponent} from '../../../../types/unified/components';
+import {UnifiedWardleyMap} from '../../../../types/unified/map';
+import {addLinkToMapText, generateLinkSyntax} from '../../../../utils/componentDetection';
+import {generateUniqueComponentName, validatePosition} from '../../utils/validation';
 
 interface ComponentLinkingDependencies {
     props: {

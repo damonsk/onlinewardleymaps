@@ -1,9 +1,9 @@
-import { useCallback, useEffect } from 'react';
-import { ToolbarItem } from '../../../types/toolbar';
-import { UnifiedComponent } from '../../../types/unified/components';
-import { UnifiedWardleyMap } from '../../../types/unified/map';
-import { findNearestComponent } from '../../../utils/componentDetection';
-import { useCoordinateConversion } from './useCoordinateConversion';
+import {useCallback, useEffect} from 'react';
+import {ToolbarItem} from '../../../types/toolbar';
+import {UnifiedComponent} from '../../../types/unified/components';
+import {UnifiedWardleyMap} from '../../../types/unified/map';
+import {findNearestComponent} from '../../../utils/componentDetection';
+import {useCoordinateConversion} from './useCoordinateConversion';
 
 interface MapEventHandlersProps {
     // Coordinate conversion
@@ -186,9 +186,9 @@ export function useMapEventHandlers({
             console.debug('handleToolbarItemPlacement check:', {
                 hasSelectedToolbarItem: !!selectedToolbarItem,
                 toolType: selectedToolbarItem?.toolType,
-                hasOnToolbarItemDrop: !!onToolbarItemDrop
+                hasOnToolbarItemDrop: !!onToolbarItemDrop,
             });
-            
+
             if (!selectedToolbarItem || selectedToolbarItem.toolType !== 'placement' || !onToolbarItemDrop) {
                 return false;
             }
@@ -210,10 +210,10 @@ export function useMapEventHandlers({
         const debugClickHandler = (e: MouseEvent) => {
             console.debug('Document click detected:', {
                 target: e.target,
-                coordinates: {x: e.clientX, y: e.clientY}
+                coordinates: {x: e.clientX, y: e.clientY},
             });
         };
-        
+
         const cleanupClickHandler = (e: MouseEvent) => {
             // If clicking outside PST elements, ensure any lingering drag states are cleared
             const target = e.target as Element;
@@ -221,7 +221,7 @@ export function useMapEventHandlers({
                 // This is a click outside PST elements - we can use this to trigger cleanup if needed
             }
         };
-        
+
         document.addEventListener('click', debugClickHandler);
         document.addEventListener('click', cleanupClickHandler);
         return () => {
@@ -236,9 +236,9 @@ export function useMapEventHandlers({
                 selectedToolbarItem: selectedToolbarItem?.id,
                 toolType: selectedToolbarItem?.toolType,
                 linkingState,
-                highlightedComponent: highlightedComponent?.id
+                highlightedComponent: highlightedComponent?.id,
             });
-            
+
             // Handle different interaction modes in priority order
             if (selectedToolbarItem?.toolType === 'drawing' && handleDrawingMode(event)) {
                 console.debug('Drawing mode handled click');
@@ -301,7 +301,7 @@ export function useMapEventHandlers({
         (event: any) => {
             const svgX = event.x || 0;
             const svgY = event.y || 0;
-            
+
             if (!onMouseMove) return;
 
             // Handle different interaction modes

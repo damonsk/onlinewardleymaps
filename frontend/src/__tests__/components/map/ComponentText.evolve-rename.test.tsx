@@ -235,10 +235,13 @@ evolve "Multi Line\\nComponent" 0.9`;
             fireEvent.change(input, {target: {value: 'Evolved Multi Line Component'}});
             fireEvent.keyDown(input, {key: 'Enter', ctrlKey: true});
 
-            await waitFor(() => {
-                expect(mockMutateMapText).toHaveBeenCalledWith(`component "Multi Line\\\\nComponent" [0.5, 0.7]
+            await waitFor(
+                () => {
+                    expect(mockMutateMapText).toHaveBeenCalledWith(`component "Multi Line\\\\nComponent" [0.5, 0.7]
 evolve "Multi Line\\\\nComponent"->"Evolved Multi Line Component" 0.9`);
-            }, { timeout: 10000 });
+                },
+                {timeout: 10000},
+            );
         }, 15000);
     });
 
@@ -350,7 +353,7 @@ evolve foo 0.9`;
             await waitFor(() => {
                 expect(mockShowUserFeedback).toHaveBeenCalledWith(
                     expect.stringContaining('Could not find evolved component "NonExistent"'),
-                    'error'
+                    'error',
                 );
             });
         });
