@@ -2,7 +2,7 @@
  * Hook for map component deletion with undo/redo integration
  */
 
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useUndoRedo} from '../components/UndoRedoProvider';
 import {UndoRedoDeletionParams, UndoRedoMapComponentDeleter} from '../services/UndoRedoMapComponentDeleter';
 
@@ -18,7 +18,7 @@ export interface UseMapComponentDeletionResult {
  */
 export const useMapComponentDeletion = (deleter?: UndoRedoMapComponentDeleter): UseMapComponentDeletionResult => {
     const undoRedoContext = useUndoRedo();
-    const componentDeleter = deleter || new UndoRedoMapComponentDeleter();
+    const componentDeleter = useMemo(() => deleter || new UndoRedoMapComponentDeleter(), [deleter]);
 
     const deleteComponent = useCallback(
         (params: UndoRedoDeletionParams) => {
