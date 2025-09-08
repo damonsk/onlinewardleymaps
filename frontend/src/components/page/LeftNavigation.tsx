@@ -14,7 +14,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Router from 'next/router';
-import React, {FunctionComponent, KeyboardEvent, useMemo, useState} from 'react';
+import React, {FunctionComponent, KeyboardEvent, useCallback, useMemo, useState} from 'react';
 import {useI18n} from '../../hooks/useI18n';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 
@@ -35,13 +35,13 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
     const {t, currentLanguage, changeLanguage, supportedLanguages} = useI18n();
     const [anchorLanguageEl, setAnchorLanguageEl] = useState<Element | null>(null);
 
-    const history = {
+    const history = useMemo(() => ({
         push: (url: string) => {
             Router.push({
                 pathname: url,
             });
         },
-    };
+    }), []);
     const toggleDrawer = () => (event: KeyboardEvent) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -49,10 +49,10 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
         toggleMenu();
     };
 
-    const complete = (followAction: () => void) => {
+    const complete = useCallback((followAction: () => void) => {
         toggleMenu();
         if (followAction) followAction();
-    };
+    }, [toggleMenu]);
 
     const handleLanguageClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorLanguageEl(event.currentTarget);
@@ -89,7 +89,7 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
                 visible: true,
             },
         ],
-        [t, enableDashboard],
+        [t, enableDashboard, complete, history],
     );
 
     const themeToggleText = useMemo(
