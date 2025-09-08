@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useMapComponentDeletion} from '../../../hooks/useMapComponentDeletion';
 import {componentEvolutionManager} from '../../../services/ComponentEvolutionManager';
 import {LinkDeleter} from '../../../services/LinkDeleter';
@@ -36,7 +36,7 @@ export const useComponentOperations = ({
 }: UseComponentOperationsProps): ComponentOperations => {
     const {deleteComponent} = useMapComponentDeletion();
     const {startEditing} = useEditing();
-    const linkDeleter = new LinkDeleter();
+    const linkDeleter = useMemo(() => new LinkDeleter(), []);
 
     const findComponent = useCallback(
         (componentId: string): UnifiedComponent | null => {
