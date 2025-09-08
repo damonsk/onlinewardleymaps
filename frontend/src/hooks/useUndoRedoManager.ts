@@ -238,7 +238,7 @@ export const useUndoRedoManager = ({
             // Set up debounced processing
             debouncedProcessChange();
         },
-        [isUndoRedoOperation, mapText, debounceMs, processPendingChange],
+        [isUndoRedoOperation, mapText, debounceMs, processPendingChange, debouncedProcessChange],
     );
 
     /**
