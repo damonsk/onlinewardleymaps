@@ -3,9 +3,9 @@
  * Handles conversion between map coordinates (0-1) and SVG coordinates for PST elements
  */
 
-import { MapDimensions } from '../constants/defaults';
-import { DEFAULT_RESIZE_CONSTRAINTS } from '../constants/pstConfig';
-import { PSTBounds, PSTCoordinates, ResizeConstraints, ResizeModifiers } from '../types/map/pst';
+import {MapDimensions} from '../constants/defaults';
+import {DEFAULT_RESIZE_CONSTRAINTS} from '../constants/pstConfig';
+import {PSTBounds, PSTCoordinates, ResizeConstraints, ResizeModifiers} from '../types/map/pst';
 
 /**
  * Convert PST map coordinates (0-1 range) to SVG bounds for rendering

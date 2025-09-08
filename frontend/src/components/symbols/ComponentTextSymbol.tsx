@@ -61,7 +61,7 @@ const ComponentTextSymbol = forwardRef<SVGTextElement, ComponentTextSymbolProps>
         // Multi-line notes (quoted, with \n) should span multiple lines
         // For components: render single-line content without word wrapping (similar to Notes)
         // Only multi-line content with explicit \n should span multiple lines
-        
+
         let renderedContent;
         let transform = '';
 

@@ -8,7 +8,7 @@ export interface RenameAnchorResult {
 /**
  * Renames an anchor in the map text and updates all references to it.
  * Handles both single-line and multi-line anchor names with proper quoting.
- * 
+ *
  * @param line - The line number where the anchor is defined (1-based)
  * @param oldName - The current anchor name
  * @param newName - The new anchor name
@@ -73,11 +73,7 @@ export function renameAnchor(
 
         // Handle quoted anchor names
         if (anchorNameInLine.startsWith('"') && anchorNameInLine.endsWith('"')) {
-            anchorNameInLine = anchorNameInLine
-                .slice(1, -1)
-                .replace(/\\"/g, '"')
-                .replace(/\\n/g, '\n')
-                .replace(/\\\\/g, '\\');
+            anchorNameInLine = anchorNameInLine.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
         }
 
         // Verify this is the correct anchor
@@ -95,20 +91,13 @@ export function renameAnchor(
         }
 
         // Determine if we need quoted format for the new name
-        const needsQuotes = 
-            newName.includes('\n') || 
-            newName.includes('"') || 
-            newName.includes("'") || 
-            newName.includes('\\') ||
-            newName.includes(' ');
+        const needsQuotes =
+            newName.includes('\n') || newName.includes('"') || newName.includes("'") || newName.includes('\\') || newName.includes(' ');
 
         let formattedNewName = newName;
         if (needsQuotes) {
             // Escape the name for DSL format
-            const escapedName = newName
-                .replace(/\\/g, '\\\\')
-                .replace(/"/g, '\\"')
-                .replace(/\n/g, '\\n');
+            const escapedName = newName.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
             formattedNewName = `"${escapedName}"`;
         }
 
@@ -116,7 +105,7 @@ export function renameAnchor(
         const coordinates = match[2];
         const labelPart = match[3] ? ` label [${match[3]}]` : '';
         const newAnchorLine = `anchor ${formattedNewName} [${coordinates}]${labelPart}`;
-        
+
         lines[line - 1] = elementAtLine.replace(elementAtLine.trim(), newAnchorLine);
 
         // Update all references to the anchor throughout the map
@@ -137,53 +126,45 @@ export function renameAnchor(
  */
 function checkForNameConflicts(newName: string, oldName: string, mapText: string): RenameAnchorResult {
     const lines = mapText.split('\n');
-    
+
     for (const line of lines) {
         const trimmedLine = line.trim();
-        
+
         // Check component definitions
         if (trimmedLine.startsWith('component ')) {
             const componentMatch = trimmedLine.match(/^component\s+(.+?)\s+\[/);
             if (componentMatch) {
                 let componentName = componentMatch[1].trim();
-                
+
                 // Handle quoted component names
                 if (componentName.startsWith('"') && componentName.endsWith('"')) {
-                    componentName = componentName
-                        .slice(1, -1)
-                        .replace(/\\"/g, '"')
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\\\/g, '\\');
+                    componentName = componentName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 }
-                
+
                 if (componentNamesMatch(componentName, newName) && !componentNamesMatch(componentName, oldName)) {
                     return {success: false, error: `A component named "${newName}" already exists`};
                 }
             }
         }
-        
+
         // Check other anchor definitions
         if (trimmedLine.startsWith('anchor ')) {
             const anchorMatch = trimmedLine.match(/^anchor\s+(.+?)\s+\[/);
             if (anchorMatch) {
                 let anchorName = anchorMatch[1].trim();
-                
+
                 // Handle quoted anchor names
                 if (anchorName.startsWith('"') && anchorName.endsWith('"')) {
-                    anchorName = anchorName
-                        .slice(1, -1)
-                        .replace(/\\"/g, '"')
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\\\/g, '\\');
+                    anchorName = anchorName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 }
-                
+
                 if (componentNamesMatch(anchorName, newName) && !componentNamesMatch(anchorName, oldName)) {
                     return {success: false, error: `An anchor named "${newName}" already exists`};
                 }
             }
         }
     }
-    
+
     return {success: true};
 }
 
@@ -199,10 +180,7 @@ function updateAnchorReferences(lines: string[], oldName: string, newName: strin
         if (ep.startsWith('"')) {
             const match = ep.match(/^"((?:[^"\\]|\\.)*)"/);
             if (match) {
-                const unescaped = match[1]
-                    .replace(/\\"/g, '"')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\\\/g, '\\');
+                const unescaped = match[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
                 return {raw: match[0], name: unescaped, quoted: true};
             }
         }

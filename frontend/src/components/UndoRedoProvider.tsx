@@ -192,12 +192,15 @@ export const UndoRedoProvider: React.FC<UndoRedoProviderProps> = ({
  */
 const LocalizedErrorFallback: React.FC<{error: Error}> = ({error}) => {
     const {t} = useI18n();
-    
+
     return (
         <div style={{padding: '20px', border: '1px solid #ff6b6b', borderRadius: '4px', backgroundColor: '#ffe0e0'}}>
             <h3>{t('undoRedo.error.title', 'Undo/Redo Error')}</h3>
             <p>
-                {t('undoRedo.error.description', 'An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be limited.')}
+                {t(
+                    'undoRedo.error.description',
+                    'An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be limited.',
+                )}
             </p>
             <details>
                 <summary>{t('undoRedo.error.detailsLabel', 'Error Details')}</summary>

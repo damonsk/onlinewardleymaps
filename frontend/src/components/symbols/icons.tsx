@@ -61,14 +61,7 @@ export interface ComponentIconProps {
     hideLabel?: boolean;
 }
 
-export const ComponentIcon: React.FC<ComponentIconProps> = ({
-    id,
-    mapStyleDefs,
-    onClick,
-    hideLabel = false,
-    text,
-    evolved,
-}) => (
+export const ComponentIcon: React.FC<ComponentIconProps> = ({id, mapStyleDefs, onClick, hideLabel = false, text, evolved}) => (
     <IconWrapper
         width={hideLabel ? hideLabelIconWidth : iconWidth}
         height={iconHeight}

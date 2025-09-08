@@ -13,14 +13,14 @@ export interface LinkTextUpdateResult {
  * @returns Updated map text or the original if update fails
  */
 export const updateLinkContextText = (
-    mapText: string, 
-    link: FlowLink, 
-    newContextText: string
+    mapText: string,
+    link: FlowLink,
+    newContextText: string,
 ): {mapText: string; result: LinkTextUpdateResult} => {
     if (!mapText || typeof mapText !== 'string') {
         return {
             mapText,
-            result: {success: false, error: 'Invalid map text provided'}
+            result: {success: false, error: 'Invalid map text provided'},
         };
     }
 
@@ -43,18 +43,18 @@ export const updateLinkContextText = (
         if (!updated) {
             return {
                 mapText,
-                result: {success: false, error: 'Link not found in map text'}
+                result: {success: false, error: 'Link not found in map text'},
             };
         }
 
         return {
             mapText: updatedLines.join('\n'),
-            result: {success: true}
+            result: {success: true},
         };
     } catch (error) {
         return {
             mapText,
-            result: {success: false, error: `Failed to update link context: ${error instanceof Error ? error.message : String(error)}`}
+            result: {success: false, error: `Failed to update link context: ${error instanceof Error ? error.message : String(error)}`},
         };
     }
 };
@@ -64,7 +64,7 @@ export const updateLinkContextText = (
  */
 function isMatchingLinkLine(line: string, link: FlowLink): boolean {
     const trimmedLine = line.trim();
-    
+
     // Skip empty lines or lines that don't contain arrows
     if (!trimmedLine || (!trimmedLine.includes('->') && !trimmedLine.includes('->>') && !trimmedLine.includes('+>'))) {
         return false;
@@ -72,7 +72,7 @@ function isMatchingLinkLine(line: string, link: FlowLink): boolean {
 
     // Extract the link part (before any semicolon)
     const linkPart = trimmedLine.split(';')[0].trim();
-    
+
     // Handle different link syntaxes
     let sourcePattern = '';
     let targetPattern = '';
@@ -106,11 +106,11 @@ function isMatchingLinkLine(line: string, link: FlowLink): boolean {
 function updateLinkLineContext(line: string, newContextText: string): string {
     const trimmedLine = line.trim();
     const leadingWhitespace = line.match(/^\s*/)?.[0] || '';
-    
+
     // Split the line at the semicolon
     const parts = trimmedLine.split(';');
     const linkPart = parts[0].trim();
-    
+
     if (newContextText) {
         // Add or update context
         return `${leadingWhitespace}${linkPart};${newContextText}`;
@@ -126,10 +126,7 @@ function updateLinkLineContext(line: string, newContextText: string): string {
 function unescapeComponentName(name: string): string {
     // Remove quotes if present and unescape
     if (name.startsWith('"') && name.endsWith('"')) {
-        return name.slice(1, -1)
-            .replace(/\\"/g, '"')
-            .replace(/\\n/g, '\n')
-            .replace(/\\\\/g, '\\');
+        return name.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
     }
     return name;
 }
