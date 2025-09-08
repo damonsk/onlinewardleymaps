@@ -191,64 +191,67 @@ function checkForNameConflicts(newName: string, oldName: string, mapText: string
  * Update all references to the anchor throughout the map text
  */
 function updateAnchorReferences(lines: string[], oldName: string, newName: string, formattedNewName: string): string[] {
+    const isDefinitionLine = (text: string) =>
+        /^(component|anchor|market|ecosystem|note|pipeline)\s/i.test(text) || /^evolve\s/i.test(text);
+
+    const parseEndpoint = (endpointRaw: string): {raw: string; name: string; quoted: boolean} => {
+        const ep = endpointRaw.trim();
+        if (ep.startsWith('"')) {
+            const match = ep.match(/^"((?:[^"\\]|\\.)*)"/);
+            if (match) {
+                const unescaped = match[1]
+                    .replace(/\\"/g, '"')
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\\\/g, '\\');
+                return {raw: match[0], name: unescaped, quoted: true};
+            }
+        }
+        const nameMatch = ep.match(/^(\S+)/);
+        const name = nameMatch ? nameMatch[1] : ep;
+        return {raw: name, name, quoted: false};
+    };
+
+    const renderNewEndpoint = (endpoint: {quoted: boolean}): string => {
+        return endpoint.quoted || formattedNewName.startsWith('"') ? formattedNewName : newName;
+    };
+
     return lines.map((line, index) => {
         try {
-            const trimmedLine = line.trim();
-            
-            // Skip the anchor definition line itself (already updated)
-            // But return the already updated line
-            if (trimmedLine.startsWith('anchor ')) {
+            const trimmed = line.trim();
+            if (!trimmed.includes('->') || isDefinitionLine(trimmed)) {
                 return line;
             }
-            
-            // Update link references
-            // Links can reference anchors like: Component->AnchorName or "Component"->"Anchor Name"
-            let updatedLine = line;
-            
-            // Handle quoted references in links
-            const quotedPattern = /"((?:[^"\\]|\\.)*)"/g;
-            updatedLine = updatedLine.replace(quotedPattern, (match, content) => {
-                try {
-                    // Unescape the content to compare with the original name
-                    const unescapedContent = content
-                        .replace(/\\"/g, '"')
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\\\/g, '\\');
-                    
-                    if (componentNamesMatch(unescapedContent, oldName)) {
-                        // Replace with the formatted new name (already properly escaped)
-                        return formattedNewName;
-                    }
-                    return match;
-                } catch (e) {
-                    console.error('Error processing quoted pattern:', e);
-                    return match;
-                }
-            });
-            
-            // Handle unquoted references (for single-line names)
-            if (!oldName.includes('\n')) {
-                try {
-                    // Use word boundaries and context-aware matching
-                    // Match anchor names that are followed by -> or at the end of the line
-                    const anchorNamePattern = new RegExp(
-                        `\\b${oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?=\\s*(?:->|$))`,
-                        'g',
-                    );
-                    
-                    updatedLine = updatedLine.replace(anchorNamePattern, () => {
-                        // If the new name needs quoting (multi-line), use quoted format
-                        if (formattedNewName.startsWith('"')) {
-                            return formattedNewName;
-                        }
-                        return newName;
-                    });
-                } catch (e) {
-                    console.error('Error processing unquoted pattern:', e);
-                }
+
+            const arrowIndex = trimmed.indexOf('->');
+            const leftRaw = trimmed.slice(0, arrowIndex);
+            const rightRaw = trimmed.slice(arrowIndex + 2);
+
+            const left = parseEndpoint(leftRaw);
+            const right = parseEndpoint(rightRaw);
+
+            let leftOut = left.raw;
+            let rightOut = right.raw;
+
+            if (componentNamesMatch(left.name, oldName)) {
+                leftOut = renderNewEndpoint(left);
             }
-            
-            return updatedLine;
+
+            if (componentNamesMatch(right.name, oldName)) {
+                rightOut = renderNewEndpoint(right);
+            }
+
+            const leftStart = leftRaw.length - leftRaw.trimStart().length;
+            const leftTokenStart = leftStart;
+            const leftTokenEnd = leftTokenStart + left.raw.length;
+            const leftRebuilt = `${leftRaw.slice(0, leftTokenStart)}${leftOut}${leftRaw.slice(leftTokenEnd)}`;
+
+            const rightStart = rightRaw.length - rightRaw.trimStart().length;
+            const rightTokenStart = rightStart;
+            const rightTokenEnd = rightTokenStart + right.raw.length;
+            const rightRebuilt = `${rightRaw.slice(0, rightTokenStart)}${rightOut}${rightRaw.slice(rightTokenEnd)}`;
+
+            const reconstructed = `${leftRebuilt}->${rightRebuilt}`;
+            return line.replace(trimmed, reconstructed);
         } catch (e) {
             console.error('Error processing line:', index, line, e);
             return line;

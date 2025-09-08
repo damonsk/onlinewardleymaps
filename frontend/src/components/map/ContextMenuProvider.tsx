@@ -22,7 +22,7 @@ export interface ContextMenuProviderProps {
     mapText: string;
     onDeleteComponent?: (
         componentId: string,
-        componentType?: 'component' | 'evolved-component' | 'pst-element',
+        componentType?: 'component' | 'evolved-component' | 'pst-element' | 'anchor',
         componentData?: any,
     ) => void;
     onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;

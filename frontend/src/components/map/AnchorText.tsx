@@ -19,7 +19,7 @@ interface AnchorTextProps {
     mutateMapText: (newText: string) => void;
     mapStyleDefs: MapTheme;
     scaleFactor?: number;
-    onClick?: (event: MouseEvent) => void;
+    onClick?: (event: React.MouseEvent) => void;
 }
 
 const AnchorText: React.FC<AnchorTextProps> = ({
@@ -93,11 +93,7 @@ const AnchorText: React.FC<AnchorTextProps> = ({
         }
 
         // Execute onClick if provided (e.g., to select the anchor)
-        if (onClick && event) {
-            // Convert React.MouseEvent to MouseEvent for compatibility
-            const nativeEvent = event.nativeEvent;
-            onClick(nativeEvent);
-        }
+        if (onClick && event) onClick(event);
 
         // Always attempt to start edit mode on double-click if feature is enabled
         if (enableDoubleClickRename && mapText && anchor.line) {
@@ -110,21 +106,6 @@ const AnchorText: React.FC<AnchorTextProps> = ({
         const currentDisplayName = getDisplayText();
 
         if (mutateMapText && mapText && text !== currentDisplayName && anchor.line) {
-            // Determine if we need quoted format for multi-line or special characters
-            const needsQuotes = text.includes('\n') || text.includes('"') || text.includes("'") || text.includes('\\');
-
-            let processedText = text;
-            if (needsQuotes) {
-                // Escape the text for DSL format
-                processedText = `"${
-                    text
-                        .replace(/\\/g, '\\\\') // Escape backslashes first
-                        .replace(/"/g, '\\"') // Escape double quotes
-                        .replace(/'/g, "\\'") // Escape single quotes
-                        .replace(/\n/g, '\\n') // Escape line breaks
-                }"`;
-            }
-
             const result = renameAnchor(anchor.line, currentDisplayName, text, mapText, mutateMapText);
 
             if (!result.success) {

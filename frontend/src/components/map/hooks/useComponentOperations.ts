@@ -18,7 +18,7 @@ interface UseComponentOperationsProps {
 export interface ComponentOperations {
     handleDeleteComponent: (
         componentId: string,
-        componentType?: 'component' | 'evolved-component' | 'pst-element',
+        componentType?: 'component' | 'evolved-component' | 'pst-element' | 'anchor',
         componentData?: any,
     ) => void;
     handleDeleteLink: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
@@ -47,7 +47,11 @@ export const useComponentOperations = ({
     );
 
     const handleDeleteComponent = useCallback(
-        (componentId: string, componentType?: 'component' | 'evolved-component' | 'pst-element', componentData?: any) => {
+        (
+            componentId: string,
+            componentType?: 'component' | 'evolved-component' | 'pst-element' | 'anchor',
+            componentData?: any,
+        ) => {
             if (!componentId || !mapText) {
                 console.warn('Cannot delete component: missing componentId or mapText');
                 return;

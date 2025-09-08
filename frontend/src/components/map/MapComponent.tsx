@@ -331,7 +331,6 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
                     cx={0}
                     cy={0}
                     styles={mapStyleDefs?.component}
-                    id={`component_text_${component.id}`}
                     element={{
                         id: component.id,
                         name: component.evolved && component.override ? component.override : component.name,

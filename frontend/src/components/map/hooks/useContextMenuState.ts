@@ -170,7 +170,7 @@ export const useContextMenuState = ({mapText, wardleyMap, onContextMenuReady}: U
 
             // Check for anchors first
             if (wardleyMap && wardleyMap.anchors) {
-                const anchor = wardleyMap.anchors.find(a => a.id === componentId || String(a.id) === String(componentId));
+                const anchor = wardleyMap.anchors.find((a: any) => a.id === componentId || String(a.id) === String(componentId));
                 if (anchor) {
                     const anchorProperties: AnchorProperties = {
                         name: anchor.name,
@@ -181,11 +181,11 @@ export const useContextMenuState = ({mapText, wardleyMap, onContextMenuReady}: U
 
                     const mapElement: MapElement = {
                         type: 'anchor',
-                        id: anchor.id,
+                        id: String(anchor.id),
                         name: anchor.name,
                         properties: anchorProperties,
                         anchorData: {
-                            id: anchor.id,
+                            id: String(anchor.id),
                             name: anchor.name,
                             maturity: anchor.maturity,
                             visibility: anchor.visibility,
