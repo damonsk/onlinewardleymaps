@@ -26,7 +26,7 @@ export const useLinkHandlers = (deps: LinkHandlerDependencies): LinkHandlers => 
             deps.clearSelection();
             deps.selectionManager.selectLink(linkInfo);
         },
-        [deps.clearSelection, deps.selectionManager],
+        [deps],
     );
 
     const handleLinkContextMenu = useCallback(
