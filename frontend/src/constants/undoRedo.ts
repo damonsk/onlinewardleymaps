@@ -45,7 +45,7 @@ export const ACTION_DEBOUNCE_TIMES: Record<ActionType, number> = {
 /**
  * Actions that should be grouped together when performed in sequence
  */
-export const GROUPABLE_ACTIONS: Set<ActionType> = new Set(['canvas-move', 'editor-text']);
+export const GROUPABLE_ACTIONS: Set<ActionType> = new Set<ActionType>(['canvas-move', 'editor-text']);
 
 /**
  * Maximum time between actions to consider them part of the same group

@@ -23,7 +23,7 @@ export interface SVGWrapperProps {
     onClick: React.MouseEventHandler<SVGSVGElement>;
 }
 
-export const SVGWrapper: React.FunctionComponent<SVGWrapperProps> = ({
+export const SVGWrapper: React.FC<SVGWrapperProps> = ({
     title = '',
     style = {},
     mapStyleDefs,
@@ -61,7 +61,7 @@ export interface ComponentIconProps {
     hideLabel?: boolean;
 }
 
-export const ComponentIcon: React.FunctionComponent<ComponentIconProps> = ({
+export const ComponentIcon: React.FC<ComponentIconProps> = ({
     id,
     mapStyleDefs,
     onClick,
@@ -81,13 +81,13 @@ export const ComponentIcon: React.FunctionComponent<ComponentIconProps> = ({
     </IconWrapper>
 );
 
-export const GenericNoteIcon: React.FunctionComponent<IconProps> = ({id, hideLabel, mapStyleDefs, onClick}) => (
+export const GenericNoteIcon: React.FC<IconProps> = ({id, hideLabel, mapStyleDefs, onClick}) => (
     <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
         <ComponentTextSymbol id={id} note={'note'} textTheme={mapStyleDefs.note} x="1" y="20" />
     </IconWrapper>
 );
 
-export const ComponentEvolvedIcon: React.FunctionComponent<IconProps> = ({mapStyleDefs, id}) => (
+export const ComponentEvolvedIcon: React.FC<IconProps> = ({mapStyleDefs, id}) => (
     <ComponentIcon id={id} mapStyleDefs={mapStyleDefs} evolved text="Evolution" />
 );
 
@@ -98,7 +98,7 @@ export interface IconProps {
     onClick: MouseEventHandler<SVGSVGElement>;
 }
 
-export const InertiaIcon: React.FunctionComponent<IconProps> = ({hideLabel, mapStyleDefs, id, onClick}) => (
+export const InertiaIcon: React.FC<IconProps> = ({hideLabel, mapStyleDefs, id, onClick}) => (
     <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
         {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text="Inertia" x="8" y="15" />}
         <ComponentSymbol styles={mapStyleDefs.component} cx="8px" cy="25px" />
@@ -106,7 +106,7 @@ export const InertiaIcon: React.FunctionComponent<IconProps> = ({hideLabel, mapS
     </IconWrapper>
 );
 
-export const MarketIcon: React.FunctionComponent<IconProps> = ({id, hideLabel, mapStyleDefs, onClick}) => (
+export const MarketIcon: React.FC<IconProps> = ({id, hideLabel, mapStyleDefs, onClick}) => (
     <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
         {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text="Market" x="45" y="15" />}
         <g transform="translate(20 20) scale(0.8)">
@@ -128,7 +128,7 @@ export interface MethodIconProps extends IconProps {
     outsource?: boolean;
 }
 
-export const MethodIcon: React.FunctionComponent<MethodIconProps> = ({hideLabel, id, onClick, mapStyleDefs, buy, build, outsource}) => {
+export const MethodIcon: React.FC<MethodIconProps> = ({hideLabel, id, onClick, mapStyleDefs, buy, build, outsource}) => {
     // Determine method type from boolean flags
     let methodText = 'Build'; // Default
     if (buy) methodText = 'Buy';
@@ -146,19 +146,19 @@ export const MethodIcon: React.FunctionComponent<MethodIconProps> = ({hideLabel,
     );
 };
 
-export const BuyMethodIcon: React.FunctionComponent<IconProps> = ({onClick, hideLabel, id, mapStyleDefs}) => (
+export const BuyMethodIcon: React.FC<IconProps> = ({onClick, hideLabel, id, mapStyleDefs}) => (
     <MethodIcon id={id} buy={true} build={false} outsource={false} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
-export const BuildMethodIcon: React.FunctionComponent<IconProps> = ({id, onClick, mapStyleDefs, hideLabel}) => (
+export const BuildMethodIcon: React.FC<IconProps> = ({id, onClick, mapStyleDefs, hideLabel}) => (
     <MethodIcon id={id} buy={false} build={true} outsource={false} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
-export const OutSourceMethodIcon: React.FunctionComponent<IconProps> = ({id, onClick, hideLabel, mapStyleDefs}) => (
+export const OutSourceMethodIcon: React.FC<IconProps> = ({id, onClick, hideLabel, mapStyleDefs}) => (
     <MethodIcon id={id} buy={false} build={false} outsource={true} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
-export const EcosystemIcon: React.FunctionComponent<IconProps> = ({hideLabel, mapStyleDefs, onClick, id}) => (
+export const EcosystemIcon: React.FC<IconProps> = ({hideLabel, mapStyleDefs, onClick, id}) => (
     <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
         {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text="Ecosystem" x="45" y="15" />}
         <g transform="translate(21 21) scale(0.5)">

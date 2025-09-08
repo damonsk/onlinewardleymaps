@@ -1,11 +1,13 @@
 import {ComponentEvolvedIcon, ComponentIcon, InertiaIcon} from '../components/symbols/icons';
 
+type IconComponentType = typeof ComponentIcon | typeof ComponentEvolvedIcon | typeof InertiaIcon;
+
 interface Usage {
     title: string;
     summary: string;
     examples: string[];
     toolbarButtonText?: string;
-    Icon?: React.ComponentType<any>;
+    Icon?: IconComponentType;
 }
 const usages: Usage[] = [
     {
