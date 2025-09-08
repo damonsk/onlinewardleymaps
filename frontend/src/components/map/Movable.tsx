@@ -57,6 +57,11 @@ const Movable: React.FC<ModernMovableProps> = props => {
     );
 
     const handleMouseDown = (e: MouseEvent<SVGGElement>) => {
+        // Only initiate drag on left mouse button (button 0)
+        if (e.button !== 0) {
+            return;
+        }
+        
         setMoving(true);
         const pageX = e.pageX;
         const pageY = e.pageY;

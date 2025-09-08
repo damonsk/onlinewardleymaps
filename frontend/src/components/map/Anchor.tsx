@@ -5,7 +5,8 @@ import {UnifiedComponent} from '../../types/unified';
 import {createSelectionBoxDimensions, estimateTextDimensions, measureTextElement} from '../../utils/textMeasurement';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
-import ComponentTextSymbol from '../symbols/ComponentTextSymbol';
+import {useContextMenu} from './ContextMenuProvider';
+import AnchorText from './AnchorText';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
@@ -33,6 +34,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
 }) => {
     const {isSelected, selectComponent} = useComponentSelection();
     const {setHoveredComponent} = useComponentLinkHighlight();
+    const {showContextMenu} = useContextMenu();
     const identity = 'anchor';
     const textElementRef = useRef<SVGTextElement>(null);
     const [selectionBoxDimensions, setSelectionBoxDimensions] = useState(() => {
@@ -89,6 +91,20 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
         event.stopPropagation();
     };
 
+    const handleContextMenu = (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Select the anchor when right-clicked
+        selectComponent(anchor.id);
+        
+        // Show context menu
+        showContextMenu(
+            {x: event.clientX, y: event.clientY},
+            anchor.id
+        );
+    };
+
     const handleMouseEnter = () => {
         setHoveredComponent(anchor.name);
     };
@@ -104,6 +120,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                     data-testid={`map-anchor-${anchor.id}`}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
+                    onContextMenu={handleContextMenu}
                     style={{
                         cursor: 'pointer',
                         transition: 'all 0.2s ease-in-out',
@@ -149,15 +166,14 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                     />
 
                     {/* Anchor text content - rendered last so it appears on top */}
-                    <ComponentTextSymbol
-                        ref={textElementRef}
-                        id={elementKey('text')}
-                        text={anchor.name}
-                        x="0"
-                        y="-10"
-                        textAnchor="middle"
-                        evolved={anchor.evolved}
-                        textTheme={mapStyleDefs.component}
+                    <AnchorText
+                        anchor={anchor}
+                        cx="0"
+                        cy="-10"
+                        mapText={mapText}
+                        mutateMapText={mutateMapText}
+                        mapStyleDefs={mapStyleDefs}
+                        scaleFactor={scaleFactor}
                         onClick={handleClick}
                     />
                 </g>

@@ -24,13 +24,11 @@ interface ModernComponentTextProps {
     styles: any;
     mutateMapText: (newText: string) => void;
     mapText: string;
-    id?: string;
     element?: any;
     onLabelMove?: (moved: MovedPosition) => void;
     scaleFactor?: number;
     mapStyleDefs?: any;
     onClick?: () => void;
-    mapDimensions?: {width: number; height: number};
 }
 
 const ComponentText: React.FC<ModernComponentTextProps> = ({
@@ -44,50 +42,51 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
     scaleFactor = 1,
     mapStyleDefs,
     onClick,
-    id,
     element,
-    mapDimensions,
 }) => {
+    // Resolve the display text for the component (handles evolved overrides and quoted names)
+    const getDisplayText = () => {
+        // For evolved components, always prioritize the unquoted override name
+        if (component.evolved && component.override) {
+            if (component.override.startsWith('"') && component.override.endsWith('"')) {
+                return component.override
+                    .slice(1, -1)
+                    .replace(/\\"/g, '"')
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\\\/g, '\\');
+            }
+            return component.override;
+        }
+
+        // For regular components, check if the name needs unescaping
+        let name = element?.name || component.name;
+
+        // If the component name is quoted (multi-line or escaped), unescape it for display
+        if (name && name.startsWith('"') && name.endsWith('"')) {
+            name = name
+                .slice(1, -1)
+                .replace(/\\"/g, '"')
+                .replace(/\\n/g, '\n')
+                .replace(/\\\\/g, '\\');
+        }
+
+        return name;
+    };
     const {enableDoubleClickRename} = useFeatureSwitches();
     const {startEditing, stopEditing, isElementEditing, editingState} = useEditing();
-    const {t, originalT} = useI18n();
+    const {originalT} = useI18n();
     const {showUserFeedback} = useUserFeedback();
     const [editMode, setEditMode] = useState(false);
-    const [forceMultiLine, setForceMultiLine] = useState(false);
-
-    const actualComponent = element
-        ? {
-              name: element.name,
-          }
-        : component;
-
-    // For evolved components, use the override name (evolved component name) for display
-    const displayName = component.evolved ? component.override || component.name : actualComponent.name;
-    const [text, setText] = useState(displayName);
+    const [text, setText] = useState(getDisplayText());
 
     // Enhanced setText that handles multi-line content
     const handleTextChange = (newText: string) => {
         setText(newText);
-        // Keep forceMultiLine state for potential future use
-        if (newText.includes('\n') && !forceMultiLine) {
-            setForceMultiLine(true);
-        }
     };
 
     useEffect(() => {
-        let nameToDisplay = displayName;
-        // Handle quoted override names for evolved components
-        if (component.evolved && component.override) {
-            if (component.override.startsWith('"') && component.override.endsWith('"')) {
-                nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-            } else {
-                nameToDisplay = component.override;
-            }
-        }
-        setText(nameToDisplay);
-        // Reset multi-line mode when component name changes
-        setForceMultiLine(nameToDisplay.includes('\n'));
-    }, [displayName, component.override, component.evolved]);
+        setText(getDisplayText());
+    }, [component.name, component.override, component.evolved, element?.name]);
 
     // Sync with EditingContext - respond to external editing requests (e.g., from context menu)
     useEffect(() => {
@@ -394,23 +393,13 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
             }
         }
         setEditMode(false);
-        setForceMultiLine(false); // Reset multi-line mode
         stopEditing();
     };
 
     const handleCancel = () => {
-        let nameToDisplay = displayName;
-        // Handle quoted override names for evolved components
-        if (component.evolved && component.override) {
-            if (component.override.startsWith('"') && component.override.endsWith('"')) {
-                nameToDisplay = component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-            } else {
-                nameToDisplay = component.override;
-            }
-        }
+        const nameToDisplay = getDisplayText();
         setText(nameToDisplay);
         setEditMode(false);
-        setForceMultiLine(false); // Reset multi-line mode
         stopEditing();
     };
     const getX = () => {
@@ -675,25 +664,7 @@ const ComponentText: React.FC<ModernComponentTextProps> = ({
         mutateMapText(mapText.split('\n').map(processLine).join('\n'));
     }
 
-    const getDisplayText = () => {
-        // For evolved components, always prioritize the unquoted override name
-        if (component.evolved && component.override) {
-            if (component.override.startsWith('"') && component.override.endsWith('"')) {
-                return component.override.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-            }
-            return component.override;
-        }
-
-        // For regular components, check if the name needs unescaping
-        let displayName = element?.name || component.name;
-
-        // If the component name is quoted (multi-line or escaped), unescape it for display
-        if (displayName && displayName.startsWith('"') && displayName.endsWith('"')) {
-            displayName = displayName.slice(1, -1).replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
-        }
-
-        return displayName;
-    };
+    // getDisplayText moved earlier, above state initialization
 
     const renderText = () => (
         <RelativeMovable

@@ -3,12 +3,12 @@ import React, {createContext, useContext, useState, ReactNode, useCallback, useE
 interface EditingState {
     isEditing: boolean;
     editingElementId: string | null;
-    editingElementType: 'component' | 'note' | null;
+    editingElementType: 'component' | 'note' | 'anchor' | null;
 }
 
 interface EditingContextType {
     editingState: EditingState;
-    startEditing: (elementId: string, elementType: 'component' | 'note') => void;
+    startEditing: (elementId: string, elementType: 'component' | 'note' | 'anchor') => void;
     stopEditing: () => void;
     isAnyElementEditing: () => boolean;
     isElementEditing: (elementId: string) => boolean;
@@ -29,7 +29,7 @@ export interface EditingProviderProps {
 export const EditingProvider: React.FC<EditingProviderProps> = ({children}) => {
     const [editingState, setEditingState] = useState<EditingState>(defaultEditingState);
 
-    const startEditing = useCallback((elementId: string, elementType: 'component' | 'note') => {
+    const startEditing = useCallback((elementId: string, elementType: 'component' | 'note' | 'anchor') => {
         setEditingState({
             isEditing: true,
             editingElementId: elementId,

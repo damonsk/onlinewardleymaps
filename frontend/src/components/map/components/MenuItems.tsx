@@ -128,6 +128,27 @@ export const useMenuItems = ({
                     icon: DeleteIcon,
                     destructive: true,
                 });
+            } else if (currentElement.type === 'anchor') {
+                // Anchor operations - Edit and Delete
+                if (availableHandlers.onEditComponent) {
+                    items.push({
+                        id: 'edit',
+                        label: 'Edit Anchor',
+                        action: () => menuActions.handleEditComponent(currentElement, hideContextMenu),
+                        disabled: false,
+                        icon: EditIcon,
+                    });
+                }
+
+                // Delete Anchor - always available for anchors
+                items.push({
+                    id: 'delete',
+                    label: 'Delete Anchor',
+                    action: () => menuActions.handleDeleteComponent(currentElement, hideContextMenu),
+                    disabled: false,
+                    icon: DeleteIcon,
+                    destructive: true,
+                });
             } else if (currentElement.type === 'link') {
                 // Delete Link - available for all links
                 if (availableHandlers.onDeleteLink) {

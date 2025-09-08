@@ -3,13 +3,14 @@ import {findEvolvedComponentInfo} from '../../../utils/evolvedComponentUtils';
 import {useComponentSelection} from '../../ComponentSelectionContext';
 
 export interface MapElement {
-    type: 'component' | 'evolved-component' | 'link' | 'pst-element' | 'canvas';
+    type: 'component' | 'evolved-component' | 'link' | 'pst-element' | 'canvas' | 'anchor';
     id: string;
     name: string;
-    properties: ComponentProperties | LinkProperties | PSTProperties | CanvasProperties;
+    properties: ComponentProperties | LinkProperties | PSTProperties | CanvasProperties | AnchorProperties;
     componentData?: any;
     linkData?: {start: string; end: string; flow?: boolean; flowValue?: string; line: number};
     pstData?: {type: string; id: string};
+    anchorData?: {id: string; name: string; maturity: number; visibility: number; line: number};
 }
 
 interface CanvasProperties {
@@ -34,6 +35,13 @@ interface LinkProperties {
 interface PSTProperties {
     type: 'pioneers' | 'settlers' | 'townplanners';
     name?: string;
+}
+
+interface AnchorProperties {
+    name: string;
+    maturity: number;
+    visibility: number;
+    line?: number;
 }
 
 interface ContextMenuState {
@@ -160,12 +168,41 @@ export const useContextMenuState = ({mapText, wardleyMap, onContextMenuReady}: U
                 return mapElement;
             }
 
+            // Check for anchors first
+            if (wardleyMap && wardleyMap.anchors) {
+                const anchor = wardleyMap.anchors.find(a => a.id === componentId || String(a.id) === String(componentId));
+                if (anchor) {
+                    const anchorProperties: AnchorProperties = {
+                        name: anchor.name,
+                        maturity: anchor.maturity,
+                        visibility: anchor.visibility,
+                        line: anchor.line,
+                    };
+
+                    const mapElement: MapElement = {
+                        type: 'anchor',
+                        id: anchor.id,
+                        name: anchor.name,
+                        properties: anchorProperties,
+                        anchorData: {
+                            id: anchor.id,
+                            name: anchor.name,
+                            maturity: anchor.maturity,
+                            visibility: anchor.visibility,
+                            line: anchor.line,
+                        },
+                    };
+
+                    return mapElement;
+                }
+            }
+
             // For regular components, search in wardley map
             if (!wardleyMap) {
                 return null;
             }
 
-            const allComponents = [...(wardleyMap.components || []), ...(wardleyMap.anchors || [])];
+            const allComponents = [...(wardleyMap.components || [])];
             let component = allComponents.find(c => c.id === componentId);
 
             // Try with string/number conversion if not found
@@ -234,7 +271,7 @@ export const useContextMenuState = ({mapText, wardleyMap, onContextMenuReady}: U
             }
 
             // Auto-select the component if not already selected
-            if (mapElement.type === 'component' || mapElement.type === 'evolved-component' || mapElement.type === 'pst-element') {
+            if (mapElement.type === 'component' || mapElement.type === 'evolved-component' || mapElement.type === 'pst-element' || mapElement.type === 'anchor') {
                 if (!isSelected(mapElement.id)) {
                     selectComponent(mapElement.id);
                 }

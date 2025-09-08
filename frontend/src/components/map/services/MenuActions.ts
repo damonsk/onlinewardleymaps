@@ -40,7 +40,8 @@ export class MenuActions {
             (typeof currentElement === 'object' &&
                 currentElement.type !== 'component' &&
                 currentElement.type !== 'evolved-component' &&
-                currentElement.type !== 'pst-element')
+                currentElement.type !== 'pst-element' &&
+                currentElement.type !== 'anchor')
         ) {
             console.warn('Cannot delete component: missing element or mapText');
             hideContextMenu();
@@ -54,7 +55,8 @@ export class MenuActions {
                     typeof currentElement === 'object' &&
                     (currentElement.type === 'component' ||
                         currentElement.type === 'evolved-component' ||
-                        currentElement.type === 'pst-element')
+                        currentElement.type === 'pst-element' ||
+                        currentElement.type === 'anchor')
                         ? currentElement.type
                         : undefined;
                 const componentData = typeof currentElement === 'object' ? currentElement.componentData : undefined;
@@ -68,7 +70,9 @@ export class MenuActions {
                     componentId: String(componentId),
                     componentName,
                     componentType:
-                        componentType === 'evolved-component' ? 'evolved-component' : componentType === 'pst-element' ? 'pst' : 'component',
+                        componentType === 'evolved-component' ? 'evolved-component' : 
+                        componentType === 'pst-element' ? 'pst' : 
+                        componentType === 'anchor' ? 'anchor' : 'component',
                 });
             }
 
@@ -89,7 +93,10 @@ export class MenuActions {
 
         // For backward compatibility, allow string/number IDs
         // Only check type restriction if we have a MapElement object
-        if (typeof currentElement === 'object' && currentElement.type !== 'component' && currentElement.type !== 'evolved-component') {
+        if (typeof currentElement === 'object' && 
+            currentElement.type !== 'component' && 
+            currentElement.type !== 'evolved-component' &&
+            currentElement.type !== 'anchor') {
             console.warn('Cannot edit: invalid element type');
             hideContextMenu();
             return;

@@ -137,7 +137,10 @@ export const useComponentOperations = ({
                 showUserFeedback(`Component "${componentId}" not found`, 'error');
                 return;
             }
-            startEditing(componentId, 'component');
+            
+            // Determine the correct editing type based on component properties
+            const editingType = component.type === 'anchor' ? 'anchor' : 'component';
+            startEditing(componentId, editingType);
         },
         [findComponent, startEditing, showUserFeedback],
     );
