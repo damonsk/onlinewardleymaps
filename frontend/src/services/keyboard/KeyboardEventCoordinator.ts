@@ -115,7 +115,7 @@ export class KeyboardEventCoordinator {
  * Single Responsibility: Only handles React integration for keyboard events
  */
 export const useKeyboardEventCoordinator = (handlers: IKeyboardActionHandlers) => {
-    const coordinator = useCallback(() => new KeyboardEventCoordinator(handlers), []);
+    const coordinator = useCallback(() => new KeyboardEventCoordinator(handlers), [handlers]);
 
     return coordinator().handleKeyDown;
 };
