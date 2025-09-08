@@ -26,7 +26,10 @@ export const useSelectionService = () => {
         service.addObserver(reactObserver.current);
 
         return () => {
-            service.removeObserver(reactObserver.current);
+            const observer = reactObserver.current;
+            if (observer) {
+                service.removeObserver(observer);
+            }
         };
     }, []);
 
@@ -48,12 +51,12 @@ export const useSelectionService = () => {
         (elementId: string): boolean => {
             return selectionServiceRef.current.isSelected(elementId);
         },
-        [selectionVersion],
-    ); // Depend on selectionVersion to trigger re-evaluation
+        [],
+    );
 
     const getSelectedElement = useCallback((): SelectableElement | null => {
         return selectionServiceRef.current.getSelected();
-    }, [selectionVersion]);
+    }, []);
 
     const getSelectedLink = useCallback(() => {
         const selected = selectionServiceRef.current.getSelected();
@@ -64,7 +67,7 @@ export const useSelectionService = () => {
             };
         }
         return null;
-    }, [selectionVersion]);
+    }, []);
 
     const getSelectedComponent = useCallback(() => {
         const selected = selectionServiceRef.current.getSelected();
@@ -75,7 +78,7 @@ export const useSelectionService = () => {
             };
         }
         return null;
-    }, [selectionVersion]);
+    }, []);
 
     return {
         selectComponent,
