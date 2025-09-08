@@ -42,12 +42,7 @@ export const useClickHandlers = (deps: ClickHandlerDependencies): ClickHandlers 
             }
         },
         [
-            deps.toolbarState.selectedToolbarItem,
-            deps.linkingState.linkingState,
-            deps.toolbarState,
-            deps.linkingState,
-            deps.showUserFeedback,
-            deps.onPipelineHighlightClear,
+            deps,
         ],
     );
 
@@ -56,7 +51,7 @@ export const useClickHandlers = (deps: ClickHandlerDependencies): ClickHandlers 
             deps.clearSelection();
             deps.selectionManager.clearSelection();
         },
-        [deps.clearSelection, deps.selectionManager],
+        [deps],
     );
 
     const handleCanvasContextMenu = useCallback(
@@ -67,7 +62,7 @@ export const useClickHandlers = (deps: ClickHandlerDependencies): ClickHandlers 
             deps.clearSelection();
             deps.selectionManager.clearSelection();
         },
-        [deps.clearSelection, deps.selectionManager],
+        [deps],
     );
 
     return {
