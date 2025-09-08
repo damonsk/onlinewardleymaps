@@ -155,6 +155,7 @@ export const useComponentOperations = ({
             handleMethodApplication(component, 'inertia');
         },
         [findComponent, showUserFeedback],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     );
 
     const handleEvolveComponent = useCallback(
