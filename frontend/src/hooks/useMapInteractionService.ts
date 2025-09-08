@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from 'react';
+import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {useSelectionService} from '../hooks/useSelectionService';
 import {DeletionService} from '../services/deletion/DeletionService';
 import {DeletionContext, IDeletionObserver, IDeletionService} from '../services/deletion/IDeletionService';
@@ -42,7 +42,10 @@ export const useMapInteractionService = ({mapText, mutateMapText, onToolSelect, 
         service.addObserver(deletionObserver.current);
 
         return () => {
-            service.removeObserver(deletionObserver.current);
+            const observer = deletionObserver.current;
+            if (observer) {
+                service.removeObserver(observer);
+            }
         };
     }, []);
 
@@ -63,7 +66,7 @@ export const useMapInteractionService = ({mapText, mutateMapText, onToolSelect, 
     }, [selectionService, mapText, mutateMapText]);
 
     // Keyboard action handlers
-    const keyboardHandlers: IKeyboardActionHandlers = {
+    const keyboardHandlers = useMemo<IKeyboardActionHandlers>(() => ({
         onDelete: handleDelete,
         onEscape: () => {
             selectionService.clearSelection();
@@ -72,7 +75,7 @@ export const useMapInteractionService = ({mapText, mutateMapText, onToolSelect, 
         onUndo,
         onRedo,
         onToolSelect,
-    };
+    }), [handleDelete, selectionService, onUndo, onRedo, onToolSelect]);
 
     // Setup keyboard event coordination
     const keyboardCoordinator = useRef(new KeyboardEventCoordinator(keyboardHandlers));
@@ -80,7 +83,7 @@ export const useMapInteractionService = ({mapText, mutateMapText, onToolSelect, 
     // Update keyboard handlers when dependencies change
     useEffect(() => {
         keyboardCoordinator.current.updateHandlers(keyboardHandlers);
-    }, [handleDelete, onToolSelect, onUndo, onRedo, selectionService]);
+    }, [handleDelete, onToolSelect, onUndo, onRedo, selectionService, keyboardHandlers]);
 
     // Global keyboard event listener
     useEffect(() => {
