@@ -1603,6 +1603,13 @@
   dependencies:
     fast-glob "3.3.1"
 
+"@next/eslint-plugin-next@15.5.4":
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.4.tgz#e7af86b7197a26e8a9d3784d1e365a2eb9298f5b"
+  integrity sha512-SR1vhXNNg16T4zffhJ4TS7Xn7eq4NfKfcOsRwea7RIAHrjRpI9ALYbamqIJqkAhowLlERffiwk0FMvTLNdnVtw==
+  dependencies:
+    fast-glob "3.3.1"
+
 "@next/swc-darwin-arm64@15.3.4":
   version "15.3.4"
   resolved "https://registry.yarnpkg.com/@next/swc-darwin-arm64/-/swc-darwin-arm64-15.3.4.tgz#cb2849b8374eb6b52376d4e7abed2a21a2ff24d6"
@@ -3204,12 +3211,12 @@ eslint-compat-utils@^0.5.1:
   dependencies:
     semver "^7.5.4"
 
-eslint-config-next@15.3.4:
-  version "15.3.4"
-  resolved "https://registry.yarnpkg.com/eslint-config-next/-/eslint-config-next-15.3.4.tgz#57d288e6b7fd86c97eece5201896f411dc815b2f"
-  integrity sha512-WqeumCq57QcTP2lYlV6BRUySfGiBYEXlQ1L0mQ+u4N4X4ZhUVSSQ52WtjqHv60pJ6dD7jn+YZc0d1/ZSsxccvg==
+eslint-config-next@15.5.4:
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/eslint-config-next/-/eslint-config-next-15.5.4.tgz#b15f15aa9030098fc5a48ea5bb3c2bba6a531f70"
+  integrity sha512-BzgVVuT3kfJes8i2GHenC1SRJ+W3BTML11lAOYFOOPzrk2xp66jBOAGEFRw+3LkYCln5UzvFsLhojrshb5Zfaw==
   dependencies:
-    "@next/eslint-plugin-next" "15.3.4"
+    "@next/eslint-plugin-next" "15.5.4"
     "@rushstack/eslint-patch" "^1.10.3"
     "@typescript-eslint/eslint-plugin" "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
     "@typescript-eslint/parser" "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
