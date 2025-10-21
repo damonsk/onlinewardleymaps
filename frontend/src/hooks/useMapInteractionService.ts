@@ -42,9 +42,10 @@ export const useMapInteractionService = ({mapText, mutateMapText, onToolSelect, 
         service.addObserver(deletionObserver.current);
 
         return () => {
+            const currentService = deletionServiceRef.current as DeletionService;
             const observer = deletionObserver.current;
-            if (observer) {
-                service.removeObserver(observer);
+            if (observer && currentService) {
+                currentService.removeObserver(observer);
             }
         };
     }, []);

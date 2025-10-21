@@ -26,9 +26,10 @@ export const useSelectionService = () => {
         service.addObserver(reactObserver.current);
 
         return () => {
+            const currentService = selectionServiceRef.current as SelectionService;
             const observer = reactObserver.current;
-            if (observer) {
-                service.removeObserver(observer);
+            if (observer && currentService) {
+                currentService.removeObserver(observer);
             }
         };
     }, []);

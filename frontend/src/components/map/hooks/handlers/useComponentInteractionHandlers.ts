@@ -27,47 +27,20 @@ export interface ComponentInteractionHandlers {
 }
 
 export const useComponentInteractionHandlers = (deps: ComponentInteractionDependencies): ComponentInteractionHandlers => {
-    const handleComponentClick = useCallback(
-        (component: UnifiedComponent | null, position?: {x: number; y: number}) => {
-            if (component === null) {
-                handleNullComponentClick(position);
-                return;
-            }
-
-            handleValidComponentClick(component);
+    const isInvalidTarget = useCallback(
+        (component: UnifiedComponent): boolean => {
+            return component.id === deps.linkingState.sourceComponent?.id;
         },
-        [deps],
+        [deps.linkingState.sourceComponent],
     );
 
-    const handleNullComponentClick = useCallback(
-        (position?: {x: number; y: number}) => {
-            if (deps.linkingState.linkingState === 'selecting-target' && position && deps.linkingState.sourceComponent) {
-                deps.componentLinkingOps.createComponentAndLink(position);
-            } else if (deps.linkingState.linkingState !== 'idle') {
-                deps.linkingState.resetLinkingState();
-                deps.showUserFeedback('Linking cancelled', 'info');
-            }
-            deps.selectionManager.clearSelection();
+    const isDuplicateLink = useCallback(
+        (component: UnifiedComponent): boolean => {
+            if (!deps.linkingState.sourceComponent) return false;
+            const existingLinks = deps.wardleyMap.links || [];
+            return linkExists(deps.linkingState.sourceComponent, component, existingLinks);
         },
-        [deps],
-    );
-
-    const handleValidComponentClick = useCallback(
-        (component: UnifiedComponent) => {
-            switch (deps.linkingState.linkingState) {
-                case 'selecting-source':
-                    startLinking(component);
-                    break;
-                case 'selecting-target':
-                    completeLinking(component);
-                    break;
-                case 'idle':
-                default:
-                    selectComponent(component);
-                    break;
-            }
-        },
-        [deps],
+        [deps.linkingState.sourceComponent, deps.wardleyMap.links],
     );
 
     const startLinking = useCallback(
@@ -103,7 +76,7 @@ export const useComponentInteractionHandlers = (deps: ComponentInteractionDepend
 
             deps.componentLinkingOps.createLink(component);
         },
-        [deps],
+        [isDuplicateLink, isInvalidTarget, deps],
     );
 
     const selectComponent = useCallback(
@@ -113,20 +86,47 @@ export const useComponentInteractionHandlers = (deps: ComponentInteractionDepend
         [deps],
     );
 
-    const isInvalidTarget = useCallback(
-        (component: UnifiedComponent): boolean => {
-            return component.id === deps.linkingState.sourceComponent?.id;
+    const handleNullComponentClick = useCallback(
+        (position?: {x: number; y: number}) => {
+            if (deps.linkingState.linkingState === 'selecting-target' && position && deps.linkingState.sourceComponent) {
+                deps.componentLinkingOps.createComponentAndLink(position);
+            } else if (deps.linkingState.linkingState !== 'idle') {
+                deps.linkingState.resetLinkingState();
+                deps.showUserFeedback('Linking cancelled', 'info');
+            }
+            deps.selectionManager.clearSelection();
         },
-        [deps.linkingState.sourceComponent],
+        [deps],
     );
 
-    const isDuplicateLink = useCallback(
-        (component: UnifiedComponent): boolean => {
-            if (!deps.linkingState.sourceComponent) return false;
-            const existingLinks = deps.wardleyMap.links || [];
-            return linkExists(deps.linkingState.sourceComponent, component, existingLinks);
+    const handleValidComponentClick = useCallback(
+        (component: UnifiedComponent) => {
+            switch (deps.linkingState.linkingState) {
+                case 'selecting-source':
+                    startLinking(component);
+                    break;
+                case 'selecting-target':
+                    completeLinking(component);
+                    break;
+                case 'idle':
+                default:
+                    selectComponent(component);
+                    break;
+            }
         },
-        [deps.linkingState.sourceComponent, deps.wardleyMap.links],
+        [completeLinking, selectComponent, startLinking, deps.linkingState.linkingState],
+    );
+
+    const handleComponentClick = useCallback(
+        (component: UnifiedComponent | null, position?: {x: number; y: number}) => {
+            if (component === null) {
+                handleNullComponentClick(position);
+                return;
+            }
+
+            handleValidComponentClick(component);
+        },
+        [handleNullComponentClick, handleValidComponentClick],
     );
 
     return {

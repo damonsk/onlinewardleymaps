@@ -1,17 +1,17 @@
-import React, {MouseEvent, useEffect, useRef, useState} from 'react';
-import {MapDimensions} from '../../constants/defaults';
-import {MapTheme} from '../../types/map/styles';
-import {UnifiedComponent} from '../../types/unified';
-import {createSelectionBoxDimensions, estimateTextDimensions, measureTextElement} from '../../utils/textMeasurement';
-import {useComponentSelection} from '../ComponentSelectionContext';
-import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
-import {useContextMenu} from './ContextMenuProvider';
+import React, { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MapDimensions } from '../../constants/defaults';
+import { MapTheme } from '../../types/map/styles';
+import { UnifiedComponent } from '../../types/unified';
+import { createSelectionBoxDimensions, estimateTextDimensions, measureTextElement } from '../../utils/textMeasurement';
+import { useComponentSelection } from '../ComponentSelectionContext';
+import { useComponentLinkHighlight } from '../contexts/ComponentLinkHighlightContext';
 import AnchorText from './AnchorText';
+import { useContextMenu } from './ContextMenuProvider';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
-import {ModernExistingCoordsMatcher} from './positionUpdaters/ModernExistingCoordsMatcher';
-import {ModernNotDefinedCoordsMatcher} from './positionUpdaters/ModernNotDefinedCoordsMatcher';
+import { ModernExistingCoordsMatcher } from './positionUpdaters/ModernExistingCoordsMatcher';
+import { ModernNotDefinedCoordsMatcher } from './positionUpdaters/ModernNotDefinedCoordsMatcher';
 
 interface ModernAnchorProps {
     anchor: UnifiedComponent;
@@ -127,7 +127,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                     {isElementSelected && (
                         <rect
                             x={selectionBoxDimensions.x}
-                            y={selectionBoxDimensions.y}
+                            y={selectionBoxDimensions.y - 15}
                             width={selectionBoxDimensions.width}
                             height={selectionBoxDimensions.height}
                             fill="rgba(33, 150, 243, 0.1)"
@@ -147,7 +147,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
                     <rect
                         className="anchor-hover-indicator"
                         x={selectionBoxDimensions.x}
-                        y={selectionBoxDimensions.y}
+                        y={selectionBoxDimensions.y - 15}
                         width={selectionBoxDimensions.width}
                         height={selectionBoxDimensions.height}
                         fill="#87ceeb"

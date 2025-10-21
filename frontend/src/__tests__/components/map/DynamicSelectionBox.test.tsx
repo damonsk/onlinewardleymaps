@@ -5,6 +5,68 @@ import Anchor from '../../../components/map/Anchor';
 import {ComponentSelectionProvider, useComponentSelection} from '../../../components/ComponentSelectionContext';
 import {EditingProvider} from '../../../components/EditingContext';
 import {ComponentLinkHighlightProvider} from '../../../components/contexts/ComponentLinkHighlightContext';
+// Mock the ContextMenuProvider
+jest.mock('../../../components/map/ContextMenuProvider', () => ({
+    ContextMenuProvider: ({children}: {children: React.ReactNode}) => <>{children}</>,
+    useContextMenu: () => ({
+        showContextMenu: jest.fn(),
+        showLinkContextMenu: jest.fn(),
+        showCanvasContextMenu: jest.fn(),
+        hideContextMenu: jest.fn(),
+        isContextMenuOpen: false,
+    }),
+}));
+import {ContextMenuProvider} from '../../../components/map/ContextMenuProvider';
+
+// Mock additional hooks/contexts that are missing
+jest.mock('../../../components/FeatureSwitchesContext', () => ({
+    useFeatureSwitches: () => ({
+        enableDoubleClickRename: true,
+    }),
+}));
+
+jest.mock('../../../components/map/hooks/useUserFeedback', () => ({
+    useUserFeedback: () => ({
+        showUserFeedback: jest.fn(),
+    }),
+}));
+
+jest.mock('react-i18next', () => ({
+    useTranslation: () => ({
+        t: jest.fn((key, defaultValue) => defaultValue || key),
+        i18n: { 
+            language: 'en', 
+            changeLanguage: jest.fn(),
+            on: jest.fn(),
+            off: jest.fn()
+        },
+        ready: true,
+    }),
+}));
+
+jest.mock('next/router', () => ({
+    useRouter: () => ({
+        locale: 'en',
+        push: jest.fn(),
+        pathname: '/',
+        asPath: '/',
+        query: {},
+    }),
+}));
+
+jest.mock('../../../hooks/useI18n', () => ({
+    useI18n: () => ({
+        t: jest.fn((key, defaultValue) => defaultValue || key),
+        originalT: jest.fn((key, defaultValue) => defaultValue || key),
+        changeLanguage: jest.fn(),
+        currentLanguage: 'en',
+        isRTL: false,
+        ready: true,
+        isHydrated: true,
+        supportedLanguages: [],
+    }),
+}));
+
 import {MapDimensions} from '../../../constants/defaults';
 import {MapTheme} from '../../../constants/mapstyles';
 import {MapNotes} from '../../../types/base';
@@ -86,7 +148,11 @@ describe('Dynamic Selection Boxes', () => {
             <svg>
                 <ComponentSelectionProvider>
                     <ComponentLinkHighlightProvider>
-                        <EditingProvider>{component}</EditingProvider>
+                        <EditingProvider>
+                            <ContextMenuProvider mapText="test map text">
+                                {component}
+                            </ContextMenuProvider>
+                        </EditingProvider>
                     </ComponentLinkHighlightProvider>
                 </ComponentSelectionProvider>
             </svg>,
@@ -273,7 +339,9 @@ describe('Dynamic Selection Boxes', () => {
                 <svg>
                     <ComponentSelectionProvider>
                         <EditingProvider>
-                            <TestWrapper />
+                            <ContextMenuProvider mapText="test map text">
+                                <TestWrapper />
+                            </ContextMenuProvider>
                         </EditingProvider>
                     </ComponentSelectionProvider>
                 </svg>,

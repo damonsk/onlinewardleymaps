@@ -272,6 +272,8 @@ export function useMapEventHandlers({
         },
         [
             selectedToolbarItem,
+            linkingState,
+            highlightedComponent,
             enableZoomOnClick,
             handleMapCanvasClick,
             handleDrawingMode,
