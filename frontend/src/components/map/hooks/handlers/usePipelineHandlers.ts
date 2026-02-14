@@ -29,6 +29,9 @@ export interface PipelineHandlers {
 export const usePipelineHandlers = (deps: PipelineHandlerDependencies): PipelineHandlers => {
     const {originalT} = useI18n();
     const [highlightedPipelineId, setHighlightedPipelineId] = useState<string | null>(null);
+    const getTranslationOrFallback = useCallback((translation: unknown, fallback: string): string => {
+        return typeof translation === 'string' ? translation : fallback;
+    }, []);
 
     const handlePipelineMouseEnter = useCallback((pipelineId: string) => {
         setHighlightedPipelineId(pipelineId);
@@ -62,10 +65,13 @@ export const usePipelineHandlers = (deps: PipelineHandlerDependencies): Pipeline
                 );
 
                 deps.showUserFeedback(
-                    originalT('map.feedback.pipeline.componentAdded', {
-                        componentName,
-                        pipelineName: pipelineBounds.name,
-                    }) || `Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`,
+                    getTranslationOrFallback(
+                        originalT('map.feedback.pipeline.componentAdded', {
+                            componentName,
+                            pipelineName: pipelineBounds.name,
+                        }),
+                        `Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`,
+                    ),
                     'success',
                 );
 
@@ -74,7 +80,7 @@ export const usePipelineHandlers = (deps: PipelineHandlerDependencies): Pipeline
                 handlePipelineError(pipelineBounds.name, error);
             }
         },
-        [deps, originalT],
+        [deps, originalT, getTranslationOrFallback],
     );
 
     const cleanupAfterOperation = useCallback(() => {
@@ -87,13 +93,15 @@ export const usePipelineHandlers = (deps: PipelineHandlerDependencies): Pipeline
         (pipelineName: string, error: unknown) => {
             console.error('Pipeline component insertion failed:', error);
             deps.showUserFeedback(
-                originalT('map.feedback.pipeline.addFailed', {pipelineName}) ||
+                getTranslationOrFallback(
+                    originalT('map.feedback.pipeline.addFailed', {pipelineName}),
                     `Failed to add component to pipeline "${pipelineName}". Please try again.`,
+                ),
                 'error',
             );
             cleanupAfterOperation();
         },
-        [deps, cleanupAfterOperation, originalT],
+        [deps, cleanupAfterOperation, originalT, getTranslationOrFallback],
     );
 
     return {

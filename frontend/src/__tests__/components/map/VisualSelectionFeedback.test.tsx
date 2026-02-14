@@ -146,7 +146,7 @@ describe('Visual Selection Feedback', () => {
             expect(screen.getByTestId(`pst-box-selection-outline-${mockPSTElement.id}`)).toBeInTheDocument();
         });
 
-        it('should show hover indicator when PST element is hovered', () => {
+        it('should show hover outline when PST element is hovered', () => {
             const mockProps = {
                 pstElement: mockPSTElement,
                 mapDimensions: mockMapDimensions,
@@ -163,8 +163,8 @@ describe('Visual Selection Feedback', () => {
 
             renderWithProvider(<PSTBox {...mockProps} />);
 
-            // Should show delete indicator when hovered
-            expect(screen.getByTestId(`pst-box-delete-indicator-${mockPSTElement.id}`)).toBeInTheDocument();
+            // Should show hover outline when hovered
+            expect(screen.getByTestId(`pst-box-hover-outline-${mockPSTElement.id}`)).toBeInTheDocument();
         });
     });
 

@@ -41,6 +41,9 @@ export interface DrawingToolbarHandlers {
 
 export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): DrawingToolbarHandlers => {
     const {t, originalT} = useI18n();
+    const getTranslationOrFallback = useCallback((translation: unknown, fallback: string): string => {
+        return typeof translation === 'string' ? translation : fallback;
+    }, []);
 
     const handleMouseDown = useCallback(
         (position: {x: number; y: number}) => {
@@ -96,11 +99,15 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
                 deps.props.mutateMapText(updatedMapText, 'toolbar-pst', 'Added PST box');
 
                 const boxSize = `${Math.round(rectangle.width * 100)}% × ${Math.round(rectangle.height * 100)}%`;
+                const pstFallback = `${deps.toolbarState.selectedToolbarItem.selectedSubItem.label} box created successfully! (${boxSize})`;
                 deps.showUserFeedback(
-                    originalT('map.feedback.drawing.pstCreated', {
-                        label: deps.toolbarState.selectedToolbarItem.selectedSubItem.label,
-                        boxSize,
-                    }) || `${deps.toolbarState.selectedToolbarItem.selectedSubItem.label} box created successfully! (${boxSize})`,
+                    getTranslationOrFallback(
+                        originalT('map.feedback.drawing.pstCreated', {
+                            label: deps.toolbarState.selectedToolbarItem.selectedSubItem.label,
+                            boxSize,
+                        }),
+                        pstFallback,
+                    ),
                     'success',
                 );
 
@@ -171,10 +178,14 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
 
                 const successMessage =
                     item.id === 'pipeline'
-                        ? originalT('map.feedback.placement.pipelineCreated', {componentName: result.componentName}) ||
-                          `Pipeline "${result.componentName}" created with default components!`
-                        : originalT('map.feedback.placement.componentAdded', {componentName: result.componentName}) ||
-                          `Component "${result.componentName}" added successfully!`;
+                        ? getTranslationOrFallback(
+                              originalT('map.feedback.placement.pipelineCreated', {componentName: result.componentName}),
+                              `Pipeline "${result.componentName}" created with default components!`,
+                          )
+                        : getTranslationOrFallback(
+                              originalT('map.feedback.placement.componentAdded', {componentName: result.componentName}),
+                              `Component "${result.componentName}" added successfully!`,
+                          );
 
                 deps.showUserFeedback(successMessage, 'success');
                 cleanupAfterPlacement();
@@ -182,7 +193,7 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
                 handlePlacementError(error);
             }
         },
-        [deps, originalT],
+        [deps, originalT, getTranslationOrFallback],
     );
 
     // Helper functions
