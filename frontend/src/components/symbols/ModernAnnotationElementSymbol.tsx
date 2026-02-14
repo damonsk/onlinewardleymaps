@@ -21,7 +21,7 @@ const ModernAnnotationElementSymbol: React.FC<ModernAnnotationElementSymbolProps
                 stroke={styles.stroke}
                 strokeWidth={styles.strokeWidth}
             />
-            <text x="-5" y="5" className="label draggable" textAnchor="start">
+            <text x="0" y="0" className="label draggable" textAnchor="middle" dominantBaseline="middle">
                 {annotation.number}
             </text>
         </>

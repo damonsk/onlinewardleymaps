@@ -396,7 +396,8 @@
                 "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
                 "11": "Market and Ecosystem linking pulse indicator sizing improved.",
                 "12": "Link relationship syntax highlighting now supports slash names (#176).",
-                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions.",
+                "14": "Fixed annotation number centering for large values in annotation circles (#129)."
             },
             "releaseLabel": "February 2026 release",
             "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
