@@ -244,6 +244,20 @@ describe('KeyboardShortcutHandler', () => {
             expect(screen.getByText('Editing selected element')).toBeInTheDocument();
         });
 
+        it('should handle Enter key to edit selected element when selected id is numeric zero', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 0,
+                onEditComponent: mockOnEditComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Enter',
+            });
+
+            expect(mockOnEditComponent).toHaveBeenCalledWith('0');
+            expect(screen.getByText('Editing selected element')).toBeInTheDocument();
+        });
+
         it('should not trigger edit when Enter has modifier keys', () => {
             renderWithUndoRedo({
                 selectedComponentId: 'selected-element',

@@ -115,6 +115,7 @@ const Anchor: React.FunctionComponent<ModernAnchorProps> = ({
             <Movable id={elementKey()} scaleFactor={scaleFactor} onMove={endDrag} x={x()} y={y()} fixedY={false} fixedX={false}>
                 <g
                     data-testid={`map-anchor-${anchor.id}`}
+                    onClick={handleClick}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                     onContextMenu={handleContextMenu}

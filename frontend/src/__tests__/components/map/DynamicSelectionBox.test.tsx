@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, screen, waitFor} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import Note from '../../../components/map/Note';
 import Anchor from '../../../components/map/Anchor';
 import {ComponentSelectionProvider, useComponentSelection} from '../../../components/ComponentSelectionContext';
@@ -301,6 +301,33 @@ describe('Dynamic Selection Boxes', () => {
 
             const anchorElement = screen.getByTestId('map-anchor-anchor-2');
             expect(anchorElement).toBeInTheDocument();
+        });
+
+        it('should select anchor on single click', () => {
+            const anchor: UnifiedComponent = {
+                id: 'anchor-click',
+                name: 'Clickable Anchor',
+                maturity: 0.7,
+                visibility: 0.8,
+                evolved: false,
+                line: 1,
+            };
+
+            renderWithProviders(
+                <Anchor
+                    anchor={anchor}
+                    mapDimensions={mockMapDimensions}
+                    mapText="anchor Clickable Anchor [0.7, 0.8]"
+                    mutateMapText={mockMutateMapText}
+                    mapStyleDefs={mockMapStyleDefs}
+                    onClick={mockOnClick}
+                    scaleFactor={1}
+                />,
+            );
+
+            const anchorElement = screen.getByTestId('map-anchor-anchor-click');
+            fireEvent.click(anchorElement);
+            expect(mockOnClick).toHaveBeenCalled();
         });
     });
 

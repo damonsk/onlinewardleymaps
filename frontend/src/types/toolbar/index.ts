@@ -121,7 +121,7 @@ export interface KeyboardShortcutHandlerProps {
     isEnabled: boolean;
     currentSelectedTool: string | null;
     undoRedoEnabled?: boolean; // Default: true
-    selectedComponentId?: string | null; // Currently selected component for deletion
+    selectedComponentId?: string | number | null; // Currently selected component for deletion
     onEditComponent?: (componentId: string) => void; // Callback for selected element editing
     onDeleteComponent?: (componentId: string) => void; // Callback for component deletion
     getSelectedLink?: () => {id: string; linkData: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}} | null; // Get selected link data

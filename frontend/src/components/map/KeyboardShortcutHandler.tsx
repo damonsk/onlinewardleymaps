@@ -63,6 +63,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
     }) => {
         const [announceText, setAnnounceText] = useState('');
         const [platform] = useState(() => detectPlatform());
+        const hasSelectedComponentId = selectedComponentId !== null && selectedComponentId !== undefined;
 
         // Get undo/redo context safely (may be null if provider is not available)
         const undoRedoContext = useContext(UndoRedoContext);
@@ -104,7 +105,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                 const selectedLink = getSelectedLink?.();
 
                 // Check if we have either a component or link selected
-                const hasComponentSelection = selectedComponentId && onDeleteComponent;
+                const hasComponentSelection = hasSelectedComponentId && onDeleteComponent;
                 const hasLinkSelection = selectedLink && onDeleteLink;
 
                 if (!hasComponentSelection && !hasLinkSelection) {
@@ -140,7 +141,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
                 return false;
             },
-            [selectedComponentId, onDeleteComponent, getSelectedLink, onDeleteLink, clearSelection],
+            [selectedComponentId, hasSelectedComponentId, onDeleteComponent, getSelectedLink, onDeleteLink, clearSelection],
         );
 
         /**
@@ -193,7 +194,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
          */
         const handleEditShortcut = useCallback(
             (event: KeyboardEvent): boolean => {
-                if (!selectedComponentId || !onEditComponent) {
+                if (!hasSelectedComponentId || !onEditComponent) {
                     return false;
                 }
 
@@ -207,7 +208,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
                 return false;
             },
-            [selectedComponentId, onEditComponent],
+            [selectedComponentId, hasSelectedComponentId, onEditComponent],
         );
 
         /**
