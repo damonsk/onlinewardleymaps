@@ -52,7 +52,10 @@
         "becomePatron": "후원자 되기 ❤️"
     },
     "map": {
-        "title": "워들리 맵",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "새 맵",
         "saveMap": "맵 저장",
         "loadMap": "맵 불러오기",
@@ -133,7 +136,21 @@
         "saving": "저장 중...",
         "contextMenu": {
             "title": "컨텍스트 메뉴",
-            "ariaLabel": "컨텍스트 메뉴"
+            "ariaLabel": "컨텍스트 메뉴",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
         }
     },
     "components": {
@@ -208,7 +225,6 @@
             "to_set_the_title": "제목 설정하기",
             "to_create_a_component": "구성 요소 만들기",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "구성 요소 이름 [가시성(Y축), 성숙도(X축)]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "관성 - 구성 요소가 변화에 저항할 가능성이 있습니다.",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "구성 요소 이름 [가시성(Y축), 성숙도(X축)] 관성",
             "to_evolve_a_component": "구성 요소 진화시키기",
             "evole_name_(x_axis)": "진화 이름(X축)",
@@ -226,7 +242,8 @@
             "pioneers,_settlers,_townplanners_area": "개척자, 정착자, 도시계획가 영역",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "어떤 작업 방식이 구성 요소 개발을 지원하는지 나타내는 영역 추가",
             "build,_buy,_outsource_components": "구축, 구매, 외주 구성 요소",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "구축, 구매 또는 외주 실행 방법으로 구성 요소 강조 표시"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "구축, 구매 또는 외주 실행 방법으로 구성 요소 강조 표시",
+            "inertia_-_component_likely_to_face_resistance_to_change": "관성 - 구성 요소가 변화에 저항할 가능성이 있습니다."
         },
         "hideUsage": "사용법 숨기기",
         "showUsage": "사용법 보기",

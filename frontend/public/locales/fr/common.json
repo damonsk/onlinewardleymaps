@@ -52,7 +52,10 @@
         "becomePatron": "Devenir un Patron ❤️"
     },
     "map": {
-        "title": "Carte de Wardley",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "Nouvelle Carte",
         "saveMap": "Enregistrer la Carte",
         "loadMap": "Charger la Carte",
@@ -222,7 +225,6 @@
             "to_set_the_title": "Pour définir le titre",
             "to_create_a_component": "Pour créer un composant",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "composant Nom [Visibilité (Axe Y), Maturité (Axe X)]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "Inertie - composant susceptible de rencontrer une résistance au changement.",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "composant Nom [Visibilité (Axe Y), Maturité (Axe X)] inertie",
             "to_evolve_a_component": "Pour faire évoluer un composant",
             "evole_name_(x_axis)": "évoluer Nom (Axe X)",
@@ -240,7 +242,8 @@
             "pioneers,_settlers,_townplanners_area": "Zone des Pionniers, Colons, Urbanistes",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Ajouter des zones indiquant quel type d'approche de travail soutient le développement des composants",
             "build,_buy,_outsource_components": "Composants construire, acheter, externaliser",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Mettre en évidence un composant avec une méthode d'exécution de construction, d'achat ou d'externalisation"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Mettre en évidence un composant avec une méthode d'exécution de construction, d'achat ou d'externalisation",
+            "inertia_-_component_likely_to_face_resistance_to_change": "Inertie - composant susceptible de rencontrer une résistance au changement."
         },
         "hideUsage": "Masquer l'Utilisation",
         "showUsage": "Afficher l'Utilisation",

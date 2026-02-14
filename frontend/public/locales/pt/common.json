@@ -52,7 +52,10 @@
         "becomePatron": "Torne-se um Patrono ❤️"
     },
     "map": {
-        "title": "Mapa de Wardley",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "Novo Mapa",
         "saveMap": "Guardar Mapa",
         "loadMap": "Carregar Mapa",
@@ -133,7 +136,21 @@
         "saving": "salvando...",
         "contextMenu": {
             "title": "Menu contextual",
-            "ariaLabel": "Menu contextual"
+            "ariaLabel": "Menu contextual",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
         }
     },
     "components": {
@@ -208,7 +225,6 @@
             "to_set_the_title": "Para definir o título",
             "to_create_a_component": "Para criar um componente",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "Nome do Componente [Visibilidade (Eixo Y), Maturidade (Eixo X)]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "Inércia - componente provavelmente enfrentará resistência à mudança.",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "Nome do Componente [Visibilidade (Eixo Y), Maturidade (Eixo X)] inércia",
             "to_evolve_a_component": "Para evoluir um componente",
             "evole_name_(x_axis)": "evoluir Nome (Eixo X)",
@@ -226,7 +242,8 @@
             "pioneers,_settlers,_townplanners_area": "Área de pioneiros, colonos, urbanistas",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Adicionar áreas indicando que tipo de abordagem de trabalho suporta o desenvolvimento de componentes",
             "build,_buy,_outsource_components": "Componentes de construção, compra, terceirização",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar um componente com um método de execução de construção, compra ou terceirização"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar um componente com um método de execução de construção, compra ou terceirização",
+            "inertia_-_component_likely_to_face_resistance_to_change": "Inércia - componente provavelmente enfrentará resistência à mudança."
         },
         "hideUsage": "Ocultar Utilização",
         "showUsage": "Mostrar Utilização",

@@ -136,7 +136,21 @@
         "saving": "speichern...",
         "contextMenu": {
             "title": "Kontextmenü",
-            "ariaLabel": "Kontextmenü"
+            "ariaLabel": "Kontextmenü",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
         }
     },
     "components": {
@@ -235,7 +249,6 @@
             "to_set_the_title": "Um den Titel festzulegen",
             "to_create_a_component": "Um eine Komponente zu erstellen",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "Komponente Name [Sichtbarkeit (Y-Achse), Reife (X-Achse)]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "Trägheit - Komponente, die wahrscheinlich auf Widerstand gegen Veränderungen stoßen wird.",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "Komponente Name [Sichtbarkeit (Y-Achse), Reife (X-Achse)] Trägheit",
             "to_evolve_a_component": "Um eine Komponente weiterzuentwickeln",
             "evole_name_(x_axis)": "entwickeln Name (X-Achse)",
@@ -253,7 +266,8 @@
             "pioneers,_settlers,_townplanners_area": "Pioniere, Siedler, Stadtplaner Bereich",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Bereiche hinzufügen, die angeben, welche Art von Arbeitsansatz die Komponentenentwicklung unterstützt",
             "build,_buy,_outsource_components": "Komponenten bauen, kaufen, auslagern",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Eine Komponente mit einer Methode zur Ausführung durch Bauen, Kaufen oder Auslagern hervorheben"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Eine Komponente mit einer Methode zur Ausführung durch Bauen, Kaufen oder Auslagern hervorheben",
+            "inertia_-_component_likely_to_face_resistance_to_change": "Trägheit - Komponente, die wahrscheinlich auf Widerstand gegen Veränderungen stoßen wird."
         },
         "hideUsage": "Verwendung Ausblenden",
         "showUsage": "Verwendung Anzeigen"

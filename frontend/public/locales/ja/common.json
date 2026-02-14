@@ -52,7 +52,10 @@
         "becomePatron": "パトロンになる ❤️"
     },
     "map": {
-        "title": "ワードレイマップ",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "新しいマップ",
         "saveMap": "マップを保存",
         "loadMap": "マップを読み込む",
@@ -133,7 +136,21 @@
         "saving": "保存中...",
         "contextMenu": {
             "title": "コンテキストメニュー",
-            "ariaLabel": "コンテキストメニュー"
+            "ariaLabel": "コンテキストメニュー",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
         }
     },
     "components": {
@@ -208,7 +225,6 @@
             "to_set_the_title": "タイトルを設定する",
             "to_create_a_component": "コンポーネントを作成する",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "コンポーネント名 [可視性（Y軸）、成熟度（X軸）]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "慣性 - コンポーネントは変更への抵抗に直面する可能性があります。",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "コンポーネント名 [可視性（Y軸）、成熟度（X軸）] 慣性",
             "to_evolve_a_component": "コンポーネントを進化させる",
             "evole_name_(x_axis)": "進化 名前（X軸）",
@@ -226,7 +242,8 @@
             "pioneers,_settlers,_townplanners_area": "パイオニア、セトラー、タウンプランナーエリア",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "コンポーネント開発をサポートする作業アプローチのタイプを示すエリアを追加",
             "build,_buy,_outsource_components": "ビルド、バイ、アウトソースのコンポーネント",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "ビルド、バイ、アウトソースの実行方法でコンポーネントをハイライト"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "ビルド、バイ、アウトソースの実行方法でコンポーネントをハイライト",
+            "inertia_-_component_likely_to_face_resistance_to_change": "慣性 - コンポーネントは変更への抵抗に直面する可能性があります。"
         },
         "hideUsage": "使用法を非表示",
         "showUsage": "使用法を表示",

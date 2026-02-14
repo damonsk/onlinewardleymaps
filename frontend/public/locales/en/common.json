@@ -249,7 +249,6 @@
             "to_set_the_title": "To set the title",
             "to_create_a_component": "To create a component",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "component Name [Visibility (Y Axis), Maturity (X Axis)]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "Inertia - component likely to face resistance to change.",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "component Name [Visibility (Y Axis), Maturity (X Axis)] inertia",
             "to_evolve_a_component": "To evolve a component",
             "evole_name_(x_axis)": "evole Name (X Axis)",
@@ -267,7 +266,8 @@
             "pioneers,_settlers,_townplanners_area": "Pioneers, Settlers, Townplanners area",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Add areas indicating which type of working approach supports component development",
             "build,_buy,_outsource_components": "Build, buy, outsource components",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Highlight a component with a build, buy, or outsource method of execution"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Highlight a component with a build, buy, or outsource method of execution",
+            "inertia_-_component_likely_to_face_resistance_to_change": "Inertia - component likely to face resistance to change."
         },
         "hideUsage": "Hide Usage",
         "showUsage": "Show Usage"

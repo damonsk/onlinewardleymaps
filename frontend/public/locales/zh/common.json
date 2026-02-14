@@ -52,7 +52,10 @@
         "becomePatron": "成为赞助者 ❤️"
     },
     "map": {
-        "title": "沃德利地图",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "新地图",
         "saveMap": "保存地图",
         "loadMap": "加载地图",
@@ -133,7 +136,21 @@
         "saving": "保存中...",
         "contextMenu": {
             "title": "上下文菜单",
-            "ariaLabel": "上下文菜单"
+            "ariaLabel": "上下文菜单",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
         }
     },
     "components": {
@@ -208,7 +225,6 @@
             "to_set_the_title": "设置标题",
             "to_create_a_component": "创建组件",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "组件名称 [可见度（Y轴）, 成熟度（X轴）]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "惯性 - 组件可能面临变更阻力。",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "组件名称 [可见度（Y轴）, 成熟度（X轴）] 惯性",
             "to_evolve_a_component": "演变组件",
             "evole_name_(x_axis)": "演变 名称（X轴）",
@@ -226,7 +242,8 @@
             "pioneers,_settlers,_townplanners_area": "先驱者，定居者，城镇规划者区域",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "添加区域指示哪种工作方式支持组件开发",
             "build,_buy,_outsource_components": "构建、购买、外包组件",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "突出显示具有构建、购买或外包执行方法的组件"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "突出显示具有构建、购买或外包执行方法的组件",
+            "inertia_-_component_likely_to_face_resistance_to_change": "惯性 - 组件可能面临变更阻力。"
         },
         "hideUsage": "隐藏用法",
         "showUsage": "显示用法",

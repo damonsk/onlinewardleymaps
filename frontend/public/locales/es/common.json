@@ -52,7 +52,10 @@
         "becomePatron": "Conviértete en Patron ❤️"
     },
     "map": {
-        "title": "Mapa de Wardley",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "Nuevo Mapa",
         "saveMap": "Guardar Mapa",
         "loadMap": "Cargar Mapa",
@@ -222,7 +225,6 @@
             "to_set_the_title": "Para establecer el título",
             "to_create_a_component": "Para crear un componente",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]": "componente Nombre [Visibilidad (Eje Y), Madurez (Eje X)]",
-            "inertia_-_component_likely_to_face_resistance_to_change.": "Inercia - componente que probablemente enfrentará resistencia al cambio.",
             "component_name_[visibility_(y_axis),_maturity_(x_axis)]_inertia": "componente Nombre [Visibilidad (Eje Y), Madurez (Eje X)] inercia",
             "to_evolve_a_component": "Para evolucionar un componente",
             "evole_name_(x_axis)": "evolucionar Nombre (Eje X)",
@@ -240,7 +242,8 @@
             "pioneers,_settlers,_townplanners_area": "Área de Pioneros, Colonos, Urbanistas",
             "add_areas_indicating_which_type_of_working_approach_supports_component_development": "Añadir áreas indicando qué tipo de enfoque de trabajo soporta el desarrollo de componentes",
             "build,_buy,_outsource_components": "Componentes construir, comprar, externalizar",
-            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar un componente con un método de ejecución de construir, comprar o externalizar"
+            "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Destacar un componente con un método de ejecución de construir, comprar o externalizar",
+            "inertia_-_component_likely_to_face_resistance_to_change": "Inercia - componente que probablemente enfrentará resistencia al cambio."
         },
         "hideUsage": "Ocultar Uso",
         "showUsage": "Mostrar Uso",
