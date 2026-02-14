@@ -17,16 +17,6 @@ const nextConfig = {
         }
         return config;
     },
-    turbopack: {
-        root: __dirname,
-        resolveAlias: {
-            // Turbopack equivalent of webpack resolve.fallback
-            // Only polyfill fs for browser/client-side code
-            fs: {
-                browser: require.resolve('./fs-polyfill.js'),
-            },
-        },
-    },
 };
 
 module.exports = nextConfig;
