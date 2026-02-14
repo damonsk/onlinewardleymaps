@@ -49,6 +49,22 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
         const errorColor = '#dc3545';
         const warningColor = '#ffc107';
         const previewOpacity = 0.6;
+        const getComponentSizeClass = (component: UnifiedComponent | null): 'default' | 'market' | 'ecosystem' => {
+            if (!component) return 'default';
+            if (component.type === 'ecosystem' || component.decorators?.ecosystem === true) return 'ecosystem';
+            if (component.type === 'market' || component.decorators?.market === true) return 'market';
+            return 'default';
+        };
+
+        const sourceSizeClass = getComponentSizeClass(sourceComponent);
+        const highlightedSizeClass = getComponentSizeClass(highlightedComponent);
+
+        const sourceBaseRadius = sourceSizeClass === 'ecosystem' ? 32 : sourceSizeClass === 'market' ? 18 : 12;
+        const sourcePulseRadius = sourceSizeClass === 'ecosystem' ? 44 : sourceSizeClass === 'market' ? 24 : 16;
+        const highlightedBaseRadius = highlightedSizeClass === 'ecosystem' ? 32 : highlightedSizeClass === 'market' ? 18 : 12;
+        const highlightedPulseRadius = highlightedSizeClass === 'ecosystem' ? 44 : highlightedSizeClass === 'market' ? 24 : 16;
+        const targetBaseRadius = highlightedSizeClass === 'ecosystem' ? 32 : highlightedSizeClass === 'market' ? 16 : 10;
+        const targetPulseRadius = highlightedSizeClass === 'ecosystem' ? 44 : highlightedSizeClass === 'market' ? 22 : 14;
 
         // Determine colors based on link validity
         const getPreviewColor = () => {
@@ -112,13 +128,13 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
                     <circle
                         cx={sourceSVG.x}
                         cy={sourceSVG.y}
-                        r="12"
+                        r={sourceBaseRadius}
                         fill="none"
                         stroke={getHighlightColor()}
                         strokeWidth="3"
                         opacity={0.8}
                         pointerEvents="none">
-                        <animate attributeName="r" values="12;16;12" dur="1.5s" repeatCount="indefinite" />
+                        <animate attributeName="r" values={`${sourceBaseRadius};${sourcePulseRadius};${sourceBaseRadius}`} dur="1.5s" repeatCount="indefinite" />
                         <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" repeatCount="indefinite" />
                     </circle>
                 )}
@@ -128,13 +144,18 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
                     <circle
                         cx={highlightedSVG.x}
                         cy={highlightedSVG.y}
-                        r="12"
+                        r={highlightedBaseRadius}
                         fill="none"
                         stroke={highlightColor}
                         strokeWidth="3"
                         opacity={0.8}
                         pointerEvents="none">
-                        <animate attributeName="r" values="12;16;12" dur="1.5s" repeatCount="indefinite" />
+                        <animate
+                            attributeName="r"
+                            values={`${highlightedBaseRadius};${highlightedPulseRadius};${highlightedBaseRadius}`}
+                            dur="1.5s"
+                            repeatCount="indefinite"
+                        />
                         <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" repeatCount="indefinite" />
                     </circle>
                 )}
@@ -147,13 +168,13 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
                         <circle
                             cx={highlightedSVG.x}
                             cy={highlightedSVG.y}
-                            r="10"
+                            r={targetBaseRadius}
                             fill="none"
                             stroke={getHighlightColor()}
                             strokeWidth="2"
                             opacity={0.9}
                             pointerEvents="none">
-                            <animate attributeName="r" values="10;14;10" dur="1s" repeatCount="indefinite" />
+                            <animate attributeName="r" values={`${targetBaseRadius};${targetPulseRadius};${targetBaseRadius}`} dur="1s" repeatCount="indefinite" />
                         </circle>
                     )}
 

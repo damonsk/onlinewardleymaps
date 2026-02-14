@@ -80,6 +80,28 @@ describe('LinkingPreview', () => {
         },
     };
 
+    const mockMarketHighlightedComponent: UnifiedComponent = {
+        ...mockHighlightedComponent,
+        id: 'target-market',
+        name: 'Target Market Component',
+        type: 'market',
+        decorators: {
+            ...mockHighlightedComponent.decorators,
+            market: true,
+        },
+    };
+
+    const mockEcosystemHighlightedComponent: UnifiedComponent = {
+        ...mockHighlightedComponent,
+        id: 'target-ecosystem',
+        name: 'Target Ecosystem Component',
+        type: 'ecosystem',
+        decorators: {
+            ...mockHighlightedComponent.decorators,
+            ecosystem: true,
+        },
+    };
+
     it('renders nothing when linking state is idle', () => {
         act(() => {
             root.render(
@@ -154,6 +176,58 @@ describe('LinkingPreview', () => {
         // Should have target component highlight
         const targetHighlight = container.querySelector('circle[r="10"]');
         expect(targetHighlight).toBeTruthy();
+    });
+
+    it('uses larger pulsing highlight for market targets', () => {
+        act(() => {
+            root.render(
+                <svg>
+                    <LinkingPreview
+                        linkingState="selecting-target"
+                        sourceComponent={mockSourceComponent}
+                        mousePosition={{x: 0.6, y: 0.4}}
+                        highlightedComponent={mockMarketHighlightedComponent}
+                        mapStyleDefs={mockMapStyleDefs}
+                        mapDimensions={mockMapDimensions}
+                    />
+                </svg>,
+            );
+        });
+
+        const linkingPreview = container.querySelector('.linking-preview');
+        expect(linkingPreview).toBeTruthy();
+
+        const marketTargetHighlight = container.querySelector('circle[r="16"]');
+        expect(marketTargetHighlight).toBeTruthy();
+
+        const marketPulseAnimation = marketTargetHighlight?.querySelector('animate[attributeName="r"]');
+        expect(marketPulseAnimation?.getAttribute('values')).toBe('16;22;16');
+    });
+
+    it('uses larger pulsing highlight for ecosystem targets', () => {
+        act(() => {
+            root.render(
+                <svg>
+                    <LinkingPreview
+                        linkingState="selecting-target"
+                        sourceComponent={mockSourceComponent}
+                        mousePosition={{x: 0.6, y: 0.4}}
+                        highlightedComponent={mockEcosystemHighlightedComponent}
+                        mapStyleDefs={mockMapStyleDefs}
+                        mapDimensions={mockMapDimensions}
+                    />
+                </svg>,
+            );
+        });
+
+        const linkingPreview = container.querySelector('.linking-preview');
+        expect(linkingPreview).toBeTruthy();
+
+        const ecosystemTargetHighlight = container.querySelector('circle[r="32"]');
+        expect(ecosystemTargetHighlight).toBeTruthy();
+
+        const ecosystemPulseAnimation = ecosystemTargetHighlight?.querySelector('animate[attributeName="r"]');
+        expect(ecosystemPulseAnimation?.getAttribute('values')).toBe('32;44;32');
     });
 
     it('does not highlight source component as target', () => {
