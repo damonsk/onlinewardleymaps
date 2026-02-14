@@ -76,6 +76,48 @@
             "dragHandle": "도구 모음을 이동하기 위한 드래그 핸들",
             "dragTitle": "드래그하여 도구 모음 이동"
         },
+        "feedback": {
+            "mapStyleChanged": "맵 스타일이 {{style}}(으)로 변경되었습니다",
+            "mapStyleChangeFailed": "맵 스타일을 변경하지 못했습니다",
+            "mapSizeSet": "맵 크기가 {{width}}x{{height}}(으)로 설정되었습니다",
+            "mapSizeSetFailed": "맵 크기를 설정하지 못했습니다",
+            "evolutionStagesUpdated": "진화 단계가 업데이트되었습니다",
+            "evolutionStagesUpdateFailed": "진화 단계를 업데이트하지 못했습니다",
+            "drawing": {
+                "clickAndDragPst": "클릭 후 드래그하여 {{label}} 상자를 그리세요",
+                "selectPstTypeFirst": "먼저 드롭다운에서 PST 유형을 선택하세요",
+                "pstCreated": "{{label}} 상자가 생성되었습니다. ({{boxSize}})",
+                "pstCreateFailed": "PST 상자를 생성하지 못했습니다. 다시 시도해 주세요."
+            },
+            "placement": {
+                "pipelineCreated": "기본 구성 요소와 함께 파이프라인 {{componentName}}이 생성되었습니다.",
+                "componentAdded": "구성 요소 {{componentName}}이(가) 추가되었습니다.",
+                "addComponentFailed": "구성 요소를 추가하지 못했습니다. 다시 시도해 주세요."
+            },
+            "method": {
+                "hoverApply": "구성 요소 위에 마우스를 올려 {{methodName}} 메서드를 적용하세요"
+            },
+            "linking": {
+                "hoverClickComponents": "구성 요소 위에 마우스를 올리고 클릭하여 링크하세요",
+                "sourceSelected": "{{componentName}}이(가) 소스로 선택되었습니다. 링크를 만들려면 다른 구성 요소를 클릭하세요.",
+                "cannotLinkSelf": "구성 요소를 자기 자신과 연결할 수 없습니다. 다른 구성 요소를 선택하세요.",
+                "duplicateLink": "{{sourceName}}와 {{targetName}} 사이의 링크가 이미 존재합니다.",
+                "cancelled": "링크 작업이 취소되었습니다",
+                "noSourceSelected": "링크할 소스 구성 요소가 선택되지 않았습니다",
+                "createdComponentAndLinked": "{{componentName}}이(가) 생성되어 {{sourceName}}에서 링크되었습니다",
+                "linkCreated": "링크 생성됨: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "구성 요소 및 링크 생성에 실패했습니다. 다시 시도해 주세요.",
+                "createLinkFailed": "링크 생성에 실패했습니다. 다시 시도해 주세요.",
+                "clickToCancel": "클릭하여 취소",
+                "sourceDeleted": "소스 구성 요소가 삭제되었습니다",
+                "targetDeleted": "대상 구성 요소가 삭제되었습니다",
+                "duplicateLinkShort": "링크가 이미 존재합니다"
+            },
+            "pipeline": {
+                "componentAdded": "구성 요소 {{componentName}}이(가) 파이프라인 {{pipelineName}}에 추가되었습니다.",
+                "addFailed": "구성 요소를 파이프라인 {{pipelineName}}에 추가하지 못했습니다. 다시 시도해 주세요."
+            }
+        },
         "evolution": {
             "genesis": "기원",
             "custom": "커스텀",

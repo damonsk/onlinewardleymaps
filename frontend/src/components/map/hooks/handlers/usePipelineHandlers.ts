@@ -1,4 +1,5 @@
 import {useCallback, useState} from 'react';
+import {useI18n} from '../../../../hooks/useI18n';
 import {ActionType} from '../../../../types/undo-redo';
 import {UnifiedWardleyMap} from '../../../../types/unified/map';
 import {extractAllComponentNames, insertPipelineComponent} from '../../../../utils/mapTextGeneration';
@@ -26,6 +27,7 @@ export interface PipelineHandlers {
 }
 
 export const usePipelineHandlers = (deps: PipelineHandlerDependencies): PipelineHandlers => {
+    const {originalT} = useI18n();
     const [highlightedPipelineId, setHighlightedPipelineId] = useState<string | null>(null);
 
     const handlePipelineMouseEnter = useCallback((pipelineId: string) => {
@@ -59,14 +61,20 @@ export const usePipelineHandlers = (deps: PipelineHandlerDependencies): Pipeline
                     `Added component "${componentName}" to pipeline "${pipelineBounds.name}"`,
                 );
 
-                deps.showUserFeedback(`Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`, 'success');
+                deps.showUserFeedback(
+                    originalT('map.feedback.pipeline.componentAdded', {
+                        componentName,
+                        pipelineName: pipelineBounds.name,
+                    }) || `Component "${componentName}" added to pipeline "${pipelineBounds.name}"!`,
+                    'success',
+                );
 
                 cleanupAfterOperation();
             } catch (error) {
                 handlePipelineError(pipelineBounds.name, error);
             }
         },
-        [deps],
+        [deps, originalT],
     );
 
     const cleanupAfterOperation = useCallback(() => {
@@ -78,10 +86,14 @@ export const usePipelineHandlers = (deps: PipelineHandlerDependencies): Pipeline
     const handlePipelineError = useCallback(
         (pipelineName: string, error: unknown) => {
             console.error('Pipeline component insertion failed:', error);
-            deps.showUserFeedback(`Failed to add component to pipeline "${pipelineName}". Please try again.`, 'error');
+            deps.showUserFeedback(
+                originalT('map.feedback.pipeline.addFailed', {pipelineName}) ||
+                    `Failed to add component to pipeline "${pipelineName}". Please try again.`,
+                'error',
+            );
             cleanupAfterOperation();
         },
-        [deps, cleanupAfterOperation],
+        [deps, cleanupAfterOperation, originalT],
     );
 
     return {

@@ -79,6 +79,48 @@
             "dragHandle": "Ziehgriff zum Verschieben der Symbolleiste",
             "dragTitle": "Ziehen zum Verschieben der Symbolleiste"
         },
+        "feedback": {
+            "mapStyleChanged": "Kartenstil zu {{style}} geändert",
+            "mapStyleChangeFailed": "Kartenstil konnte nicht geändert werden",
+            "mapSizeSet": "Kartengröße auf {{width}}x{{height}} gesetzt",
+            "mapSizeSetFailed": "Kartengröße konnte nicht gesetzt werden",
+            "evolutionStagesUpdated": "Evolutionsstufen aktualisiert",
+            "evolutionStagesUpdateFailed": "Evolutionsstufen konnten nicht aktualisiert werden",
+            "drawing": {
+                "clickAndDragPst": "Klicken und ziehen, um ein {{label}}-Feld zu zeichnen",
+                "selectPstTypeFirst": "Bitte zuerst einen PST-Typ im Dropdown auswählen",
+                "pstCreated": "{{label}}-Feld erfolgreich erstellt! ({{boxSize}})",
+                "pstCreateFailed": "PST-Feld konnte nicht erstellt werden. Bitte erneut versuchen."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline {{componentName}} mit Standardkomponenten erstellt!",
+                "componentAdded": "Komponente {{componentName}} erfolgreich hinzugefügt!",
+                "addComponentFailed": "Komponente konnte nicht hinzugefügt werden. Bitte erneut versuchen."
+            },
+            "method": {
+                "hoverApply": "Über Komponenten fahren, um die Methode {{methodName}} anzuwenden"
+            },
+            "linking": {
+                "hoverClickComponents": "Komponenten überfahren und anklicken, um zu verknüpfen",
+                "sourceSelected": "{{componentName}} als Quelle gewählt. Klicken Sie auf eine weitere Komponente, um einen Link zu erstellen.",
+                "cannotLinkSelf": "Eine Komponente kann nicht mit sich selbst verknüpft werden. Wählen Sie eine andere Komponente.",
+                "duplicateLink": "Ein Link zwischen {{sourceName}} und {{targetName}} existiert bereits.",
+                "cancelled": "Verknüpfung abgebrochen",
+                "noSourceSelected": "Keine Quellkomponente für die Verknüpfung ausgewählt",
+                "createdComponentAndLinked": "{{componentName}} erstellt und von {{sourceName}} verknüpft",
+                "linkCreated": "Link erstellt: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "Komponente und Link konnten nicht erstellt werden. Bitte erneut versuchen.",
+                "createLinkFailed": "Link konnte nicht erstellt werden. Bitte erneut versuchen.",
+                "clickToCancel": "Zum Abbrechen klicken",
+                "sourceDeleted": "Quellkomponente gelöscht",
+                "targetDeleted": "Zielkomponente gelöscht",
+                "duplicateLinkShort": "Link existiert bereits"
+            },
+            "pipeline": {
+                "componentAdded": "Komponente {{componentName}} zur Pipeline {{pipelineName}} hinzugefügt!",
+                "addFailed": "Komponente konnte nicht zur Pipeline {{pipelineName}} hinzugefügt werden. Bitte erneut versuchen."
+            }
+        },
         "evolution": {
             "genesis": "Entstehung",
             "custom": "Angepasst",

@@ -1,4 +1,5 @@
 import {useCallback} from 'react';
+import {useI18n} from '../../../../hooks/useI18n';
 import {ToolbarItem} from '../../../../types/toolbar';
 import {ActionType} from '../../../../types/undo-redo';
 import {UnifiedWardleyMap} from '../../../../types/unified/map';
@@ -39,6 +40,8 @@ export interface DrawingToolbarHandlers {
 }
 
 export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): DrawingToolbarHandlers => {
+    const {t, originalT} = useI18n();
+
     const handleMouseDown = useCallback(
         (position: {x: number; y: number}) => {
             const isDrawingTool =
@@ -94,7 +97,10 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
 
                 const boxSize = `${Math.round(rectangle.width * 100)}% × ${Math.round(rectangle.height * 100)}%`;
                 deps.showUserFeedback(
-                    `${deps.toolbarState.selectedToolbarItem.selectedSubItem.label} box created successfully! (${boxSize})`,
+                    originalT('map.feedback.drawing.pstCreated', {
+                        label: deps.toolbarState.selectedToolbarItem.selectedSubItem.label,
+                        boxSize,
+                    }) || `${deps.toolbarState.selectedToolbarItem.selectedSubItem.label} box created successfully! (${boxSize})`,
                     'success',
                 );
 
@@ -165,8 +171,10 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
 
                 const successMessage =
                     item.id === 'pipeline'
-                        ? `Pipeline "${result.componentName}" created with default components!`
-                        : `Component "${result.componentName}" added successfully!`;
+                        ? originalT('map.feedback.placement.pipelineCreated', {componentName: result.componentName}) ||
+                          `Pipeline "${result.componentName}" created with default components!`
+                        : originalT('map.feedback.placement.componentAdded', {componentName: result.componentName}) ||
+                          `Component "${result.componentName}" added successfully!`;
 
                 deps.showUserFeedback(successMessage, 'success');
                 cleanupAfterPlacement();
@@ -174,7 +182,7 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
                 handlePlacementError(error);
             }
         },
-        [deps],
+        [deps, originalT],
     );
 
     // Helper functions
@@ -203,19 +211,19 @@ export const useDrawingToolbarHandlers = (deps: DrawingToolbarDependencies): Dra
     const handleDrawingError = useCallback(
         (error: unknown) => {
             console.error('Failed to create PST box:', error);
-            deps.showUserFeedback('Failed to create PST box. Please try again.', 'error');
+            deps.showUserFeedback(t('map.feedback.drawing.pstCreateFailed', 'Failed to create PST box. Please try again.'), 'error');
             deps.drawingState.stopDrawing();
         },
-        [deps],
+        [deps, t],
     );
 
     const handlePlacementError = useCallback(
         (error: unknown) => {
             console.error('Component placement failed:', error);
-            deps.showUserFeedback('Failed to add component. Please try again.', 'error');
+            deps.showUserFeedback(t('map.feedback.placement.addComponentFailed', 'Failed to add component. Please try again.'), 'error');
             cleanupAfterPlacement();
         },
-        [deps, cleanupAfterPlacement],
+        [deps, cleanupAfterPlacement, t],
     );
 
     return {

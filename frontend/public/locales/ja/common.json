@@ -76,6 +76,48 @@
             "dragHandle": "ツールバーを移動するためのドラッグハンドル",
             "dragTitle": "ドラッグしてツールバーを移動"
         },
+        "feedback": {
+            "mapStyleChanged": "マップスタイルを{{style}}に変更しました",
+            "mapStyleChangeFailed": "マップスタイルの変更に失敗しました",
+            "mapSizeSet": "マップサイズを{{width}}x{{height}}に設定しました",
+            "mapSizeSetFailed": "マップサイズの設定に失敗しました",
+            "evolutionStagesUpdated": "進化ステージを更新しました",
+            "evolutionStagesUpdateFailed": "進化ステージの更新に失敗しました",
+            "drawing": {
+                "clickAndDragPst": "クリックしてドラッグし、{{label}}ボックスを描画します",
+                "selectPstTypeFirst": "先にドロップダウンからPSTタイプを選択してください",
+                "pstCreated": "{{label}}ボックスを作成しました。 ({{boxSize}})",
+                "pstCreateFailed": "PSTボックスの作成に失敗しました。もう一度お試しください。"
+            },
+            "placement": {
+                "pipelineCreated": "パイプライン{{componentName}}を既定コンポーネント付きで作成しました。",
+                "componentAdded": "コンポーネント{{componentName}}を追加しました。",
+                "addComponentFailed": "コンポーネントの追加に失敗しました。もう一度お試しください。"
+            },
+            "method": {
+                "hoverApply": "コンポーネントにホバーして{{methodName}}メソッドを適用します"
+            },
+            "linking": {
+                "hoverClickComponents": "コンポーネントにホバーしてクリックするとリンクできます",
+                "sourceSelected": "{{componentName}}をソースとして選択しました。別のコンポーネントをクリックしてリンクを作成します。",
+                "cannotLinkSelf": "コンポーネントを自分自身にリンクできません。別のコンポーネントを選択してください。",
+                "duplicateLink": "{{sourceName}}と{{targetName}}の間のリンクは既に存在します。",
+                "cancelled": "リンク作成をキャンセルしました",
+                "noSourceSelected": "リンク元コンポーネントが選択されていません",
+                "createdComponentAndLinked": "{{componentName}}を作成し、{{sourceName}}からリンクしました",
+                "linkCreated": "リンクを作成しました: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "コンポーネントとリンクの作成に失敗しました。もう一度お試しください。",
+                "createLinkFailed": "リンクの作成に失敗しました。もう一度お試しください。",
+                "clickToCancel": "クリックしてキャンセル",
+                "sourceDeleted": "ソースコンポーネントが削除されました",
+                "targetDeleted": "ターゲットコンポーネントが削除されました",
+                "duplicateLinkShort": "リンクは既に存在します"
+            },
+            "pipeline": {
+                "componentAdded": "コンポーネント{{componentName}}をパイプライン{{pipelineName}}に追加しました。",
+                "addFailed": "コンポーネントをパイプライン{{pipelineName}}に追加できませんでした。もう一度お試しください。"
+            }
+        },
         "evolution": {
             "genesis": "創生期",
             "custom": "カスタム",

@@ -52,7 +52,10 @@
         "becomePatron": "Become a Patron ❤️"
     },
     "map": {
-        "title": "Wardley Map",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "New Map",
         "saveMap": "Save Map",
         "loadMap": "Load Map",
@@ -65,10 +68,6 @@
         "yourMap": "Your Map",
         "unsaved": "unsaved",
         "saving": "saving...",
-        "title": {
-            "placeholder": "Enter map title",
-            "ariaLabel": "Edit map title"
-        },
         "contextMenu": {
             "title": "Context menu",
             "ariaLabel": "Context menu",
@@ -100,6 +99,48 @@
             "wysiwygLabel": "Map component toolbar with keyboard shortcuts",
             "dragHandle": "Drag handle to move toolbar",
             "dragTitle": "Drag to move toolbar"
+        },
+        "feedback": {
+            "mapStyleChanged": "Map style changed to {{style}}",
+            "mapStyleChangeFailed": "Failed to change map style",
+            "mapSizeSet": "Map size set to {{width}}x{{height}}",
+            "mapSizeSetFailed": "Failed to set map size",
+            "evolutionStagesUpdated": "Evolution stages updated",
+            "evolutionStagesUpdateFailed": "Failed to update evolution stages",
+            "drawing": {
+                "clickAndDragPst": "Click and drag to draw {{label}} box",
+                "selectPstTypeFirst": "Select a PST type from the dropdown first",
+                "pstCreated": "{{label}} box created successfully! ({{boxSize}})",
+                "pstCreateFailed": "Failed to create PST box. Please try again."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline \"{{componentName}}\" created with default components!",
+                "componentAdded": "Component \"{{componentName}}\" added successfully!",
+                "addComponentFailed": "Failed to add component. Please try again."
+            },
+            "method": {
+                "hoverApply": "Hover over components to apply {{methodName}} method"
+            },
+            "linking": {
+                "hoverClickComponents": "Hover & click components to link",
+                "sourceSelected": "Selected \"{{componentName}}\" as source. Click another component to create a link.",
+                "cannotLinkSelf": "Cannot link a component to itself. Select a different component.",
+                "duplicateLink": "Link between \"{{sourceName}}\" and \"{{targetName}}\" already exists.",
+                "cancelled": "Linking cancelled",
+                "noSourceSelected": "No source component selected for linking",
+                "createdComponentAndLinked": "Created \"{{componentName}}\" and linked from \"{{sourceName}}\"",
+                "linkCreated": "Link created: \"{{sourceName}}\" -> \"{{targetName}}\"",
+                "createComponentAndLinkFailed": "Failed to create component and link. Please try again.",
+                "createLinkFailed": "Failed to create link. Please try again.",
+                "clickToCancel": "Click to cancel",
+                "sourceDeleted": "Source component deleted",
+                "targetDeleted": "Target component deleted",
+                "duplicateLinkShort": "Link already exists"
+            },
+            "pipeline": {
+                "componentAdded": "Component \"{{componentName}}\" added to pipeline \"{{pipelineName}}\"!",
+                "addFailed": "Failed to add component to pipeline \"{{pipelineName}}\". Please try again."
+            }
         },
         "evolution": {
             "genesis": "Genesis",

@@ -76,6 +76,48 @@
             "dragHandle": "拖拽手柄以移动工具栏",
             "dragTitle": "拖拽以移动工具栏"
         },
+        "feedback": {
+            "mapStyleChanged": "地图样式已更改为 {{style}}",
+            "mapStyleChangeFailed": "无法更改地图样式",
+            "mapSizeSet": "地图尺寸已设置为 {{width}}x{{height}}",
+            "mapSizeSetFailed": "无法设置地图尺寸",
+            "evolutionStagesUpdated": "演化阶段已更新",
+            "evolutionStagesUpdateFailed": "无法更新演化阶段",
+            "drawing": {
+                "clickAndDragPst": "点击并拖拽以绘制 {{label}} 区域",
+                "selectPstTypeFirst": "请先在下拉菜单中选择 PST 类型",
+                "pstCreated": "{{label}} 区域创建成功。 ({{boxSize}})",
+                "pstCreateFailed": "创建 PST 区域失败。请重试。"
+            },
+            "placement": {
+                "pipelineCreated": "管道 {{componentName}} 已创建，并包含默认组件。",
+                "componentAdded": "组件 {{componentName}} 已成功添加。",
+                "addComponentFailed": "添加组件失败。请重试。"
+            },
+            "method": {
+                "hoverApply": "将鼠标悬停在组件上以应用 {{methodName}} 方法"
+            },
+            "linking": {
+                "hoverClickComponents": "悬停并点击组件以建立连接",
+                "sourceSelected": "已将 {{componentName}} 选为源组件。点击另一个组件以创建连接。",
+                "cannotLinkSelf": "不能将组件连接到自身。请选择其他组件。",
+                "duplicateLink": "{{sourceName}} 与 {{targetName}} 之间的连接已存在。",
+                "cancelled": "连接已取消",
+                "noSourceSelected": "未选择用于连接的源组件",
+                "createdComponentAndLinked": "已创建 {{componentName}}，并从 {{sourceName}} 建立连接",
+                "linkCreated": "连接已创建: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "创建组件和连接失败。请重试。",
+                "createLinkFailed": "创建连接失败。请重试。",
+                "clickToCancel": "点击取消",
+                "sourceDeleted": "源组件已删除",
+                "targetDeleted": "目标组件已删除",
+                "duplicateLinkShort": "链接已存在"
+            },
+            "pipeline": {
+                "componentAdded": "组件 {{componentName}} 已添加到管道 {{pipelineName}}。",
+                "addFailed": "无法将组件添加到管道 {{pipelineName}}。请重试。"
+            }
+        },
         "evolution": {
             "genesis": "创新期",
             "custom": "定制期",

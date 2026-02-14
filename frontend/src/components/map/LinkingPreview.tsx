@@ -1,4 +1,5 @@
 import React, {memo} from 'react';
+import {useI18n} from '../../hooks/useI18n';
 import {MapTheme} from '../../constants/mapstyles';
 import {UnifiedComponent} from '../../types/unified/components';
 import PositionCalculator from './PositionCalculator';
@@ -36,6 +37,8 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
         isSourceDeleted = false,
         isTargetDeleted = false,
     }) => {
+        const {t} = useI18n();
+
         // Don't render anything if not in linking mode
         if (linkingState === 'idle') {
             return null;
@@ -204,7 +207,7 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
                             fontSize="12"
                             fontFamily="Arial, sans-serif"
                             pointerEvents="none">
-                            Click to cancel
+                            {t('map.feedback.linking.clickToCancel', 'Click to cancel')}
                         </text>
                     </g>
                 )}
@@ -232,7 +235,9 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
                             fontSize="12"
                             fontFamily="Arial, sans-serif"
                             pointerEvents="none">
-                            {isSourceDeleted ? 'Source component deleted' : 'Target component deleted'}
+                            {isSourceDeleted
+                                ? t('map.feedback.linking.sourceDeleted', 'Source component deleted')
+                                : t('map.feedback.linking.targetDeleted', 'Target component deleted')}
                         </text>
                     </g>
                 )}
@@ -260,7 +265,7 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
                             fontSize="12"
                             fontFamily="Arial, sans-serif"
                             pointerEvents="none">
-                            Link already exists
+                            {t('map.feedback.linking.duplicateLinkShort', 'Link already exists')}
                         </text>
                     </g>
                 )}

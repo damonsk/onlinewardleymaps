@@ -76,6 +76,48 @@
             "dragHandle": "Alça de arrastar para mover a barra de ferramentas",
             "dragTitle": "Arrastar para mover a barra de ferramentas"
         },
+        "feedback": {
+            "mapStyleChanged": "Estilo do mapa alterado para {{style}}",
+            "mapStyleChangeFailed": "Falha ao alterar o estilo do mapa",
+            "mapSizeSet": "Tamanho do mapa definido para {{width}}x{{height}}",
+            "mapSizeSetFailed": "Falha ao definir o tamanho do mapa",
+            "evolutionStagesUpdated": "Etapas de evolução atualizadas",
+            "evolutionStagesUpdateFailed": "Falha ao atualizar as etapas de evolução",
+            "drawing": {
+                "clickAndDragPst": "Clique e arraste para desenhar uma caixa {{label}}",
+                "selectPstTypeFirst": "Selecione primeiro um tipo PST no menu",
+                "pstCreated": "Caixa {{label}} criada com sucesso. ({{boxSize}})",
+                "pstCreateFailed": "Falha ao criar a caixa PST. Tente novamente."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline {{componentName}} criada com componentes padrão.",
+                "componentAdded": "Componente {{componentName}} adicionado com sucesso.",
+                "addComponentFailed": "Falha ao adicionar componente. Tente novamente."
+            },
+            "method": {
+                "hoverApply": "Passe sobre os componentes para aplicar o método {{methodName}}"
+            },
+            "linking": {
+                "hoverClickComponents": "Passe e clique nos componentes para ligar",
+                "sourceSelected": "{{componentName}} selecionado como origem. Clique noutro componente para criar uma ligação.",
+                "cannotLinkSelf": "Não é possível ligar um componente a si próprio. Selecione outro componente.",
+                "duplicateLink": "Já existe uma ligação entre {{sourceName}} e {{targetName}}.",
+                "cancelled": "Ligação cancelada",
+                "noSourceSelected": "Nenhum componente de origem selecionado para ligação",
+                "createdComponentAndLinked": "{{componentName}} criado e ligado a partir de {{sourceName}}",
+                "linkCreated": "Ligação criada: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "Falha ao criar componente e ligação. Tente novamente.",
+                "createLinkFailed": "Falha ao criar ligação. Tente novamente.",
+                "clickToCancel": "Clique para cancelar",
+                "sourceDeleted": "Componente de origem removido",
+                "targetDeleted": "Componente de destino removido",
+                "duplicateLinkShort": "A ligação já existe"
+            },
+            "pipeline": {
+                "componentAdded": "Componente {{componentName}} adicionado ao pipeline {{pipelineName}}.",
+                "addFailed": "Falha ao adicionar componente ao pipeline {{pipelineName}}. Tente novamente."
+            }
+        },
         "evolution": {
             "genesis": "Génese",
             "custom": "Personalizado",

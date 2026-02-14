@@ -97,6 +97,48 @@
             "dragHandle": "Poignée de glissement pour déplacer la barre d'outils",
             "dragTitle": "Glisser pour déplacer la barre d'outils"
         },
+        "feedback": {
+            "mapStyleChanged": "Style de la carte changé en {{style}}",
+            "mapStyleChangeFailed": "Échec du changement de style de la carte",
+            "mapSizeSet": "Taille de la carte définie à {{width}}x{{height}}",
+            "mapSizeSetFailed": "Échec de la définition de la taille de la carte",
+            "evolutionStagesUpdated": "Étapes d'évolution mises à jour",
+            "evolutionStagesUpdateFailed": "Échec de la mise à jour des étapes d'évolution",
+            "drawing": {
+                "clickAndDragPst": "Cliquez et faites glisser pour dessiner une boîte {{label}}",
+                "selectPstTypeFirst": "Sélectionnez d'abord un type PST dans la liste",
+                "pstCreated": "Boîte {{label}} créée avec succès. ({{boxSize}})",
+                "pstCreateFailed": "Impossible de créer la boîte PST. Veuillez réessayer."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline {{componentName}} créée avec les composants par défaut.",
+                "componentAdded": "Composant {{componentName}} ajouté avec succès.",
+                "addComponentFailed": "Impossible d'ajouter le composant. Veuillez réessayer."
+            },
+            "method": {
+                "hoverApply": "Survolez les composants pour appliquer la méthode {{methodName}}"
+            },
+            "linking": {
+                "hoverClickComponents": "Survolez et cliquez sur des composants pour les relier",
+                "sourceSelected": "{{componentName}} sélectionné comme source. Cliquez sur un autre composant pour créer un lien.",
+                "cannotLinkSelf": "Impossible de relier un composant à lui-même. Sélectionnez un autre composant.",
+                "duplicateLink": "Un lien entre {{sourceName}} et {{targetName}} existe déjà.",
+                "cancelled": "Création de lien annulée",
+                "noSourceSelected": "Aucun composant source sélectionné pour la liaison",
+                "createdComponentAndLinked": "{{componentName}} créé et relié depuis {{sourceName}}",
+                "linkCreated": "Lien créé : {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "Impossible de créer le composant et le lien. Veuillez réessayer.",
+                "createLinkFailed": "Impossible de créer le lien. Veuillez réessayer.",
+                "clickToCancel": "Cliquez pour annuler",
+                "sourceDeleted": "Composant source supprimé",
+                "targetDeleted": "Composant cible supprimé",
+                "duplicateLinkShort": "Le lien existe déjà"
+            },
+            "pipeline": {
+                "componentAdded": "Composant {{componentName}} ajouté au pipeline {{pipelineName}}.",
+                "addFailed": "Impossible d'ajouter le composant au pipeline {{pipelineName}}. Veuillez réessayer."
+            }
+        },
         "evolution": {
             "genesis": "Genèse",
             "custom": "Personnalisé",

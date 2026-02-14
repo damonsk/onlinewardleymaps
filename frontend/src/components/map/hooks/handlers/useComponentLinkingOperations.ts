@@ -1,4 +1,5 @@
 import {useCallback} from 'react';
+import {useI18n} from '../../../../hooks/useI18n';
 import {ActionType} from '../../../../types/undo-redo';
 import {UnifiedComponent} from '../../../../types/unified/components';
 import {UnifiedWardleyMap} from '../../../../types/unified/map';
@@ -27,6 +28,8 @@ export interface ComponentLinkingOperations {
 }
 
 export const useComponentLinkingOperations = (deps: ComponentLinkingDependencies): ComponentLinkingOperations => {
+    const {t, originalT} = useI18n();
+
     const createComponentAndLink = useCallback(
         async (position: {x: number; y: number}) => {
             const validation = validatePosition(position);
@@ -36,7 +39,7 @@ export const useComponentLinkingOperations = (deps: ComponentLinkingDependencies
             }
 
             if (!deps.linkingState.sourceComponent) {
-                deps.showUserFeedback('No source component selected for linking', 'error');
+                deps.showUserFeedback(t('map.feedback.linking.noSourceSelected', 'No source component selected for linking'), 'error');
                 return;
             }
 
@@ -51,14 +54,20 @@ export const useComponentLinkingOperations = (deps: ComponentLinkingDependencies
 
                 deps.props.mutateMapText(updatedMapText, 'toolbar-component', `Added component "${componentName}" with link`);
 
-                deps.showUserFeedback(`Created "${componentName}" and linked from "${deps.linkingState.sourceComponent.name}"`, 'success');
+                deps.showUserFeedback(
+                    originalT('map.feedback.linking.createdComponentAndLinked', {
+                        componentName,
+                        sourceName: deps.linkingState.sourceComponent.name,
+                    }) || `Created "${componentName}" and linked from "${deps.linkingState.sourceComponent.name}"`,
+                    'success',
+                );
 
                 cleanupAfterOperation();
             } catch (error) {
-                handleOperationError('Failed to create component and link. Please try again.', error);
+                handleOperationError(t('map.feedback.linking.createComponentAndLinkFailed', 'Failed to create component and link. Please try again.'), error);
             }
         },
-        [deps],
+        [deps, t, originalT],
     );
 
     const createLink = useCallback(
@@ -77,14 +86,20 @@ export const useComponentLinkingOperations = (deps: ComponentLinkingDependencies
                     `Added link: "${deps.linkingState.sourceComponent.name}" → "${component.name}"`,
                 );
 
-                deps.showUserFeedback(`Link created: "${deps.linkingState.sourceComponent.name}" → "${component.name}"`, 'success');
+                deps.showUserFeedback(
+                    originalT('map.feedback.linking.linkCreated', {
+                        sourceName: deps.linkingState.sourceComponent.name,
+                        targetName: component.name,
+                    }) || `Link created: "${deps.linkingState.sourceComponent.name}" -> "${component.name}"`,
+                    'success',
+                );
 
                 cleanupAfterOperation();
             } catch (error) {
-                handleOperationError('Failed to create link. Please try again.', error);
+                handleOperationError(t('map.feedback.linking.createLinkFailed', 'Failed to create link. Please try again.'), error);
             }
         },
-        [deps],
+        [deps, t, originalT],
     );
 
     // Helper functions

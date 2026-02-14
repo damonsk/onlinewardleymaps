@@ -8,6 +8,7 @@ import {MapTheme} from '../../types/map/styles';
 import {ToolbarItem} from '../../types/toolbar';
 import {ActionType} from '../../types/undo-redo';
 import {UnifiedWardleyMap} from '../../types/unified/map';
+import {useI18n} from '../../hooks/useI18n';
 import {useComponentSelection} from '../ComponentSelectionContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
@@ -57,6 +58,7 @@ export interface ModernMapViewRefactoredProps {
 const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = props => {
     const featureSwitches = useFeatureSwitches();
     const {clearSelection} = useComponentSelection();
+    const {t, originalT} = useI18n();
 
     // State to store context menu actions
     const [contextMenuActions, setContextMenuActions] = React.useState<{
@@ -95,13 +97,13 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             try {
                 const result = MapPropertiesManager.updateMapStyle(props.mapText, style);
                 props.mutateMapText(result.updatedMapText, 'editor-text', `Changed map style to ${style}`);
-                showUserFeedback(`Map style changed to ${style}`, 'success');
+                showUserFeedback(originalT('map.feedback.mapStyleChanged', {style}) || `Map style changed to ${style}`, 'success');
             } catch (error) {
                 console.error('Failed to change map style:', error);
-                showUserFeedback('Failed to change map style', 'error');
+                showUserFeedback(t('map.feedback.mapStyleChangeFailed', 'Failed to change map style'), 'error');
             }
         },
-        [props, showUserFeedback],
+        [props, showUserFeedback, t, originalT],
     );
 
     // Dialog opening handlers for context menu
@@ -119,14 +121,14 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             try {
                 const result = MapPropertiesManager.updateMapSize(props.mapText, size.width, size.height);
                 props.mutateMapText(result.updatedMapText, 'editor-text', `Set map size to ${size.width}x${size.height}`);
-                showUserFeedback(`Map size set to ${size.width}x${size.height}`, 'success');
+                showUserFeedback(originalT('map.feedback.mapSizeSet', {width: size.width, height: size.height}) || `Map size set to ${size.width}x${size.height}`, 'success');
                 setMapSizeDialogOpen(false);
             } catch (error) {
                 console.error('Failed to set map size:', error);
-                showUserFeedback('Failed to set map size', 'error');
+                showUserFeedback(t('map.feedback.mapSizeSetFailed', 'Failed to set map size'), 'error');
             }
         },
-        [props, showUserFeedback],
+        [props, showUserFeedback, t, originalT],
     );
 
     const handleConfirmEvolutionStages = useCallback(
@@ -134,14 +136,14 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             try {
                 const result = MapPropertiesManager.updateEvolutionStages(props.mapText, stages);
                 props.mutateMapText(result.updatedMapText, 'editor-text', 'Updated evolution stages');
-                showUserFeedback('Evolution stages updated', 'success');
+                showUserFeedback(t('map.feedback.evolutionStagesUpdated', 'Evolution stages updated'), 'success');
                 setEvolutionStagesDialogOpen(false);
             } catch (error) {
                 console.error('Failed to update evolution stages:', error);
-                showUserFeedback('Failed to update evolution stages', 'error');
+                showUserFeedback(t('map.feedback.evolutionStagesUpdateFailed', 'Failed to update evolution stages'), 'error');
             }
         },
-        [props, showUserFeedback],
+        [props, showUserFeedback, t],
     );
 
     // Dialog cancellation handlers
@@ -213,7 +215,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 linkingState.setSourceComponent(null);
                 linkingState.setHighlightedComponent(null);
                 linkingState.setShowCancellationHint(false);
-                showUserFeedback('Hover & click components to link', 'info');
+                showUserFeedback(t('map.feedback.linking.hoverClickComponents', 'Hover & click components to link'), 'info');
                 // Reset drawing state when switching to linking
                 drawingState.stopDrawing();
             } else if (item?.toolType === 'drawing') {
@@ -225,16 +227,23 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                     toolbarState.setMethodHighlightedComponent(null);
                 }
                 if (item.selectedSubItem) {
-                    showUserFeedback(`Click and drag to draw ${item.selectedSubItem.label} box`, 'info');
+                    showUserFeedback(
+                        originalT('map.feedback.drawing.clickAndDragPst', {label: item.selectedSubItem.label}) ||
+                            `Click and drag to draw ${item.selectedSubItem.label} box`,
+                        'info',
+                    );
                 } else {
-                    showUserFeedback('Select a PST type from the dropdown first', 'warning');
+                    showUserFeedback(t('map.feedback.drawing.selectPstTypeFirst', 'Select a PST type from the dropdown first'), 'warning');
                 }
             } else if (item?.toolType === 'method-application') {
                 // Reset linking and drawing state when switching to method application
                 linkingState.resetLinkingState();
                 drawingState.stopDrawing();
                 const methodName = item.methodName || 'method';
-                showUserFeedback(`Hover over components to apply ${methodName} method`, 'info');
+                showUserFeedback(
+                    originalT('map.feedback.method.hoverApply', {methodName}) || `Hover over components to apply ${methodName} method`,
+                    'info',
+                );
             } else {
                 // Reset all tool states when switching to other tools or deselecting
                 linkingState.resetLinkingState();
@@ -256,7 +265,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
 
             console.log('Toolbar item processed:', finalItem?.id || 'none', 'with toolType:', finalItem?.toolType || 'none');
         },
-        [toolbarState, linkingState, drawingState, showUserFeedback, clearSelection],
+        [toolbarState, linkingState, drawingState, showUserFeedback, clearSelection, t, originalT],
     );
 
     return (

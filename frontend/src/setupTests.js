@@ -13,7 +13,7 @@ jest.mock('next/router', () => ({
         query: {},
         asPath: '/',
         locale: 'en',
-        locales: ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko', 'ru'],
+        locales: ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko'],
         defaultLocale: 'en',
         isReady: true,
         isFallback: false,

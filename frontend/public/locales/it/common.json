@@ -76,6 +76,48 @@
             "dragHandle": "Maniglia di trascinamento per spostare la barra degli strumenti",
             "dragTitle": "Trascina per spostare la barra degli strumenti"
         },
+        "feedback": {
+            "mapStyleChanged": "Stile mappa cambiato in {{style}}",
+            "mapStyleChangeFailed": "Impossibile cambiare lo stile della mappa",
+            "mapSizeSet": "Dimensione mappa impostata a {{width}}x{{height}}",
+            "mapSizeSetFailed": "Impossibile impostare la dimensione della mappa",
+            "evolutionStagesUpdated": "Fasi di evoluzione aggiornate",
+            "evolutionStagesUpdateFailed": "Impossibile aggiornare le fasi di evoluzione",
+            "drawing": {
+                "clickAndDragPst": "Fai clic e trascina per disegnare un riquadro {{label}}",
+                "selectPstTypeFirst": "Seleziona prima un tipo PST dal menu a discesa",
+                "pstCreated": "Riquadro {{label}} creato correttamente. ({{boxSize}})",
+                "pstCreateFailed": "Impossibile creare il riquadro PST. Riprova."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline {{componentName}} creata con componenti predefiniti.",
+                "componentAdded": "Componente {{componentName}} aggiunto con successo.",
+                "addComponentFailed": "Impossibile aggiungere il componente. Riprova."
+            },
+            "method": {
+                "hoverApply": "Passa sui componenti per applicare il metodo {{methodName}}"
+            },
+            "linking": {
+                "hoverClickComponents": "Passa sui componenti e fai clic per collegarli",
+                "sourceSelected": "{{componentName}} selezionato come sorgente. Fai clic su un altro componente per creare un collegamento.",
+                "cannotLinkSelf": "Non puoi collegare un componente a se stesso. Seleziona un altro componente.",
+                "duplicateLink": "Esiste già un collegamento tra {{sourceName}} e {{targetName}}.",
+                "cancelled": "Collegamento annullato",
+                "noSourceSelected": "Nessun componente sorgente selezionato per il collegamento",
+                "createdComponentAndLinked": "{{componentName}} creato e collegato da {{sourceName}}",
+                "linkCreated": "Collegamento creato: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "Impossibile creare componente e collegamento. Riprova.",
+                "createLinkFailed": "Impossibile creare il collegamento. Riprova.",
+                "clickToCancel": "Clicca per annullare",
+                "sourceDeleted": "Componente sorgente eliminato",
+                "targetDeleted": "Componente destinazione eliminato",
+                "duplicateLinkShort": "Il collegamento esiste già"
+            },
+            "pipeline": {
+                "componentAdded": "Componente {{componentName}} aggiunto alla pipeline {{pipelineName}}.",
+                "addFailed": "Impossibile aggiungere il componente alla pipeline {{pipelineName}}. Riprova."
+            }
+        },
         "evolution": {
             "genesis": "Genesi",
             "custom": "Personalizzato",

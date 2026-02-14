@@ -32,7 +32,7 @@ export const useI18n = () => {
             const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
             if (saved) {
                 // Check if it's a valid locale
-                const supportedLocales = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko', 'ru'];
+                const supportedLocales = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko'];
                 if (supportedLocales.includes(saved)) {
                     return saved;
                 }
@@ -157,7 +157,6 @@ export const useI18n = () => {
             {code: 'ja', name: 'Japanese', nativeName: '日本語'},
             {code: 'zh', name: 'Chinese', nativeName: '中文'},
             {code: 'ko', name: 'Korean', nativeName: '한국어'},
-            {code: 'ru', name: 'Russian', nativeName: 'Русский'},
         ],
     };
 };

@@ -1,4 +1,5 @@
 import {useCallback} from 'react';
+import {useI18n} from '../../../../hooks/useI18n';
 import {ToolbarItem} from '../../../../types/toolbar';
 
 interface ClickHandlerDependencies {
@@ -26,6 +27,8 @@ export interface ClickHandlers {
 }
 
 export const useClickHandlers = (deps: ClickHandlerDependencies): ClickHandlers => {
+    const {t} = useI18n();
+
     const handleContainerClick = useCallback(
         (event: React.MouseEvent) => {
             if (event.target !== event.currentTarget) return;
@@ -38,11 +41,12 @@ export const useClickHandlers = (deps: ClickHandlerDependencies): ClickHandlers 
 
             if (deps.linkingState.linkingState !== 'idle') {
                 deps.linkingState.resetLinkingState();
-                deps.showUserFeedback('Linking cancelled', 'info');
+                deps.showUserFeedback(t('map.feedback.linking.cancelled', 'Linking cancelled'), 'info');
             }
         },
         [
             deps,
+            t,
         ],
     );
 

@@ -1,4 +1,5 @@
 import {useCallback} from 'react';
+import {useI18n} from '../../../../hooks/useI18n';
 import {UnifiedComponent} from '../../../../types/unified/components';
 import {linkExists} from '../../../../utils/componentDetection';
 import {ComponentLinkingOperations} from './useComponentLinkingOperations';
@@ -27,6 +28,8 @@ export interface ComponentInteractionHandlers {
 }
 
 export const useComponentInteractionHandlers = (deps: ComponentInteractionDependencies): ComponentInteractionHandlers => {
+    const {t, originalT} = useI18n();
+
     const isInvalidTarget = useCallback(
         (component: UnifiedComponent): boolean => {
             return component.id === deps.linkingState.sourceComponent?.id;
@@ -47,9 +50,13 @@ export const useComponentInteractionHandlers = (deps: ComponentInteractionDepend
         (component: UnifiedComponent) => {
             deps.linkingState.setSourceComponent(component);
             deps.linkingState.setLinkingState('selecting-target');
-            deps.showUserFeedback(`Selected "${component.name}" as source. Click another component to create a link.`, 'info');
+            deps.showUserFeedback(
+                originalT('map.feedback.linking.sourceSelected', {componentName: component.name}) ||
+                    `Selected "${component.name}" as source. Click another component to create a link.`,
+                'info',
+            );
         },
-        [deps],
+        [deps, originalT],
     );
 
     const completeLinking = useCallback(
@@ -60,14 +67,17 @@ export const useComponentInteractionHandlers = (deps: ComponentInteractionDepend
             }
 
             if (isInvalidTarget(component)) {
-                deps.showUserFeedback('Cannot link a component to itself. Select a different component.', 'warning');
+                deps.showUserFeedback(t('map.feedback.linking.cannotLinkSelf', 'Cannot link a component to itself. Select a different component.'), 'warning');
                 deps.linkingState.resetLinkingState();
                 return;
             }
 
             if (isDuplicateLink(component)) {
                 deps.showUserFeedback(
-                    `Link between "${deps.linkingState.sourceComponent.name}" and "${component.name}" already exists.`,
+                    originalT('map.feedback.linking.duplicateLink', {
+                        sourceName: deps.linkingState.sourceComponent.name,
+                        targetName: component.name,
+                    }) || `Link between "${deps.linkingState.sourceComponent.name}" and "${component.name}" already exists.`,
                     'warning',
                 );
                 deps.linkingState.resetLinkingState();
@@ -76,7 +86,7 @@ export const useComponentInteractionHandlers = (deps: ComponentInteractionDepend
 
             deps.componentLinkingOps.createLink(component);
         },
-        [isDuplicateLink, isInvalidTarget, deps],
+        [isDuplicateLink, isInvalidTarget, deps, t, originalT],
     );
 
     const selectComponent = useCallback(
@@ -92,11 +102,11 @@ export const useComponentInteractionHandlers = (deps: ComponentInteractionDepend
                 deps.componentLinkingOps.createComponentAndLink(position);
             } else if (deps.linkingState.linkingState !== 'idle') {
                 deps.linkingState.resetLinkingState();
-                deps.showUserFeedback('Linking cancelled', 'info');
+                deps.showUserFeedback(t('map.feedback.linking.cancelled', 'Linking cancelled'), 'info');
             }
             deps.selectionManager.clearSelection();
         },
-        [deps],
+        [deps, t],
     );
 
     const handleValidComponentClick = useCallback(
