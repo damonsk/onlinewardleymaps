@@ -390,10 +390,11 @@ export class ToolbarPositioning {
         // In editor mode, check if toolbar is positioned within the snap zone area
         // In presentation mode, check traditional snap zone boundaries
         if (mode.isEditorMode) {
-            // Check if toolbar is positioned within the snap zone area (after editor panel)
+            // In editor mode, dock/undock should be driven by horizontal placement only.
+            // Vertical bounds can shift while the page/layout scrolls, which incorrectly
+            // flips docked toolbars back to floating.
             const isInHorizontalRange = position.x >= snapZone.x && position.x <= snapZone.x + snapZone.width + CONFIG.DEFAULT_MARGIN;
-            const isInVerticalRange = position.y >= snapZone.y && position.y + toolbarRect.height <= snapZone.y + snapZone.height;
-            return isInHorizontalRange && isInVerticalRange;
+            return isInHorizontalRange;
         } else {
             // Presentation mode: use center-based detection
             const toolbarCenterX = position.x + toolbarRect.width / 2;

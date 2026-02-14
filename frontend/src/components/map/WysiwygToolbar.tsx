@@ -12,7 +12,7 @@ import {useToolbarState} from './hooks/useToolbarState';
 import {KeyboardShortcutHandler} from './KeyboardShortcutHandler';
 
 const ToolbarContainer = styled.div<{$isDragging: boolean; $isSnapped: boolean}>`
-    position: fixed;
+    position: ${props => (props.$isSnapped ? 'absolute' : 'fixed')};
     width: 48px;
     background: #ffffff;
     border: 1px solid #e1e5e9;
@@ -365,6 +365,29 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         // Only show action items if undo/redo context is available
         const actionItems = undoRedoContext ? TOOLBAR_ITEMS.filter(item => item.category === 'action') : [];
 
+        const toolbarStyle = (() => {
+            if (!isSnapped) {
+                return {
+                    left: `${position.x}px`,
+                    top: `${position.y}px`,
+                };
+            }
+
+            const offsetParent = toolbarRef.current?.offsetParent;
+            if (!(offsetParent instanceof HTMLElement)) {
+                return {
+                    left: `${position.x}px`,
+                    top: `${position.y}px`,
+                };
+            }
+
+            const parentRect = offsetParent.getBoundingClientRect();
+            return {
+                left: `${Math.max(0, position.x - parentRect.left)}px`,
+                top: `${Math.max(0, position.y - parentRect.top)}px`,
+            };
+        })();
+
         return (
             <>
                 <KeyboardShortcutHandler
@@ -392,10 +415,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     $isDragging={isDragging}
                     $isSnapped={isSnapped}
                     suppressHydrationWarning={true}
-                    style={{
-                        left: `${position.x}px`,
-                        top: `${position.y}px`,
-                    }}>
+                    style={toolbarStyle}>
                     <div
                         id="toolbar-instructions"
                         style={{
