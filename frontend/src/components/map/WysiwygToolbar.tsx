@@ -216,6 +216,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
         mapText,
         getSelectedLink,
         onDeleteLink,
+        onEditComponent,
         clearSelection,
         onSnapChange,
         mapOnlyView,
@@ -372,6 +373,7 @@ export const WysiwygToolbar: React.FC<WysiwygToolbarProps> = memo(
                     isEnabled={keyboardShortcutsEnabled}
                     currentSelectedTool={selectedItem?.id || null}
                     selectedComponentId={componentSelection.getSelectedComponentId()}
+                    onEditComponent={onEditComponent}
                     onDeleteComponent={handleDeleteComponent}
                     getSelectedLink={getSelectedLink}
                     onDeleteLink={onDeleteLink}

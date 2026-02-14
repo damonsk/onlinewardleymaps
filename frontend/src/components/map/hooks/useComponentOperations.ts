@@ -40,10 +40,23 @@ export const useComponentOperations = ({
 
     const findComponent = useCallback(
         (componentId: string): UnifiedComponent | null => {
-            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+            const allComponents = [
+                ...wardleyMap.components,
+                ...wardleyMap.anchors,
+                ...wardleyMap.markets,
+                ...wardleyMap.ecosystems,
+                ...wardleyMap.submaps,
+            ];
             return allComponents.find(c => c.id === componentId) || allComponents.find(c => String(c.id) === String(componentId)) || null;
         },
         [wardleyMap],
+    );
+
+    const findNote = useCallback(
+        (componentId: string) => {
+            return wardleyMap.notes.find(note => String(note.id) === String(componentId)) || null;
+        },
+        [wardleyMap.notes],
     );
 
     const handleDeleteComponent = useCallback(
@@ -131,18 +144,25 @@ export const useComponentOperations = ({
                 return;
             }
 
-            // For regular components, verify the component exists in the map
+            // For components and anchors, verify the element exists in the map
             const component = findComponent(componentId);
-            if (!component) {
-                showUserFeedback(`Component "${componentId}" not found`, 'error');
+            if (component) {
+                // Determine the correct editing type based on component properties
+                const editingType = component.type === 'anchor' ? 'anchor' : 'component';
+                startEditing(componentId, editingType);
                 return;
             }
 
-            // Determine the correct editing type based on component properties
-            const editingType = component.type === 'anchor' ? 'anchor' : 'component';
-            startEditing(componentId, editingType);
+            // Notes use a separate editor flow
+            const note = findNote(componentId);
+            if (note) {
+                startEditing(componentId, 'note');
+                return;
+            }
+
+            showUserFeedback(`Element "${componentId}" not found`, 'error');
         },
-        [findComponent, startEditing, showUserFeedback],
+        [findComponent, findNote, startEditing, showUserFeedback],
     );
 
 

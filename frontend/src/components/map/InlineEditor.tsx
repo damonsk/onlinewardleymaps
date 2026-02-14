@@ -221,9 +221,9 @@ const StyledTextarea = styled.textarea<StyledEditorProps>`
     }
 `;
 
-const ErrorMessage = styled.div<{$theme: MapTheme}>`
+const ErrorMessage = styled.div<{$theme: MapTheme; $offsetBelowControls?: boolean}>`
     position: absolute;
-    top: 100%;
+    top: ${props => (props.$offsetBelowControls ? 'calc(100% + 24px)' : '100%')};
     left: 0;
     right: 0;
     margin-top: 2px;
@@ -621,6 +621,8 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         $dynamicHeight: dynamicHeight,
     };
 
+    const hasBottomControls = shouldShowActionButtons || !!(showCharacterCount && validation?.maxLength);
+
     return (
         <EditorContainer
             data-testid="inline-editor"
@@ -639,7 +641,7 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
                 <StyledInput {...commonProps} data-testid="inline-editor-input" />
             )}
             {validationError && (
-                <ErrorMessage $theme={mapStyleDefs} id="inline-editor-description" role="alert">
+                <ErrorMessage $theme={mapStyleDefs} $offsetBelowControls={hasBottomControls} id="inline-editor-description" role="alert">
                     {validationError}
                 </ErrorMessage>
             )}

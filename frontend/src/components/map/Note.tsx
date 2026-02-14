@@ -42,7 +42,7 @@ const Note: React.FC<ModernNoteProps> = ({
     scaleFactor,
     enableInlineEditing = false,
 }) => {
-    const {startEditing, stopEditing, isElementEditing} = useEditing();
+    const {startEditing, stopEditing, editingState} = useEditing();
     const {isSelected, selectComponent} = useComponentSelection();
     const {t} = useI18n();
     const {showUserFeedback} = useUserFeedback();
@@ -71,6 +71,22 @@ const Note: React.FC<ModernNoteProps> = ({
         const estimated = estimateTextDimensions(note.text, fontSize, mapStyleDefs?.fontFamily || 'Arial, sans-serif', isMultiLine);
         setSelectionBoxDimensions(createSelectionBoxDimensions(estimated, 6));
     }, [note.id, note.text, mapStyleDefs]);
+
+    // Sync with EditingContext - respond to external editing requests (e.g., keyboard Enter/context menu)
+    useEffect(() => {
+        const shouldBeEditing =
+            enableInlineEditing &&
+            editingState.isEditing &&
+            editingState.editingElementType === 'note' &&
+            String(editingState.editingElementId) === String(note.id);
+
+        if (shouldBeEditing && !editMode) {
+            setEditMode(true);
+            setEditText(note.text);
+        } else if (!shouldBeEditing && editMode) {
+            setEditMode(false);
+        }
+    }, [editingState.isEditing, editingState.editingElementId, editingState.editingElementType, note.id, note.text, editMode, enableInlineEditing]);
 
     // Measure actual text element dimensions after render
     useEffect(() => {

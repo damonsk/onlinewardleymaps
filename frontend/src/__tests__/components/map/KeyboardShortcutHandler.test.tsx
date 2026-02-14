@@ -48,6 +48,7 @@ describe('KeyboardShortcutHandler', () => {
     const mockOnToolSelect = jest.fn();
     const mockMutateMapText = jest.fn();
     const mockOnDeleteComponent = jest.fn();
+    const mockOnEditComponent = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -227,6 +228,34 @@ describe('KeyboardShortcutHandler', () => {
 
             expect(mockOnToolSelect).toHaveBeenCalledWith(null);
             expect(screen.getByText('All tools deselected')).toBeInTheDocument();
+        });
+
+        it('should handle Enter key to edit selected element', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'selected-element',
+                onEditComponent: mockOnEditComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Enter',
+            });
+
+            expect(mockOnEditComponent).toHaveBeenCalledWith('selected-element');
+            expect(screen.getByText('Editing selected element')).toBeInTheDocument();
+        });
+
+        it('should not trigger edit when Enter has modifier keys', () => {
+            renderWithUndoRedo({
+                selectedComponentId: 'selected-element',
+                onEditComponent: mockOnEditComponent,
+            });
+
+            fireEvent.keyDown(document, {
+                key: 'Enter',
+                ctrlKey: true,
+            });
+
+            expect(mockOnEditComponent).not.toHaveBeenCalled();
         });
     });
 

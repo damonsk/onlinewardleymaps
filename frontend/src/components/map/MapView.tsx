@@ -293,6 +293,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                         onItemSelect={handleUnifiedToolbarSelection}
                         keyboardShortcutsEnabled={true}
                         getSelectedLink={selectionManager.getSelectedLink}
+                        onEditComponent={componentOps.handleEditComponent}
                         onDeleteLink={componentOps.handleDeleteLink}
                         clearSelection={selectionManager.clearSelection}
                         onSnapChange={props.onToolbarSnapChange}

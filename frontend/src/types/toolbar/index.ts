@@ -68,6 +68,7 @@ export interface WysiwygToolbarProps {
     keyboardShortcutsEnabled?: boolean;
     getSelectedLink?: () => {id: string; linkData: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}} | null;
     onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void;
+    onEditComponent?: (componentId: string) => void;
     clearSelection?: () => void; // Callback to clear current selection
     onSnapChange?: (isSnapped: boolean) => void; // Callback for snap state changes
     mapOnlyView?: boolean; // Presentation mode (true) vs Editor mode (false)
@@ -121,6 +122,7 @@ export interface KeyboardShortcutHandlerProps {
     currentSelectedTool: string | null;
     undoRedoEnabled?: boolean; // Default: true
     selectedComponentId?: string | null; // Currently selected component for deletion
+    onEditComponent?: (componentId: string) => void; // Callback for selected element editing
     onDeleteComponent?: (componentId: string) => void; // Callback for component deletion
     getSelectedLink?: () => {id: string; linkData: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}} | null; // Get selected link data
     onDeleteLink?: (linkInfo: {start: string; end: string; flow?: boolean; flowValue?: string; line: number}) => void; // Callback for link deletion

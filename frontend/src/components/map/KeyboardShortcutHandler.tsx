@@ -55,6 +55,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
         currentSelectedTool,
         undoRedoEnabled = true,
         selectedComponentId,
+        onEditComponent,
         onDeleteComponent,
         getSelectedLink,
         onDeleteLink,
@@ -188,6 +189,28 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
         );
 
         /**
+         * Handle Enter key to edit the currently selected element
+         */
+        const handleEditShortcut = useCallback(
+            (event: KeyboardEvent): boolean => {
+                if (!selectedComponentId || !onEditComponent) {
+                    return false;
+                }
+
+                if (event.key === 'Enter' && !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey) {
+                    event.preventDefault();
+                    onEditComponent(String(selectedComponentId));
+                    setAnnounceText(`Editing selected element`);
+                    setTimeout(() => setAnnounceText(''), 1000);
+                    return true;
+                }
+
+                return false;
+            },
+            [selectedComponentId, onEditComponent],
+        );
+
+        /**
          * Handle keyboard events for toolbar shortcuts
          */
         const handleKeyDown = useCallback(
@@ -201,6 +224,11 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
 
                 // Handle deletion shortcuts (Delete/Backspace keys)
                 if (handleDeletionShortcuts(event)) {
+                    return;
+                }
+
+                // Handle edit shortcut (Enter key)
+                if (handleEditShortcut(event)) {
                     return;
                 }
 
@@ -238,7 +266,7 @@ export const KeyboardShortcutHandler: React.FC<KeyboardShortcutHandlerProps> = m
                     setTimeout(() => setAnnounceText(''), 1000);
                 }
             },
-            [shouldHandleShortcuts, onToolSelect, currentSelectedTool, handleUndoRedoShortcuts, handleDeletionShortcuts],
+            [shouldHandleShortcuts, onToolSelect, currentSelectedTool, handleUndoRedoShortcuts, handleDeletionShortcuts, handleEditShortcut],
         );
 
         /**
