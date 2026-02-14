@@ -1,7 +1,9 @@
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import {Backdrop, Box, CircularProgress} from '@mui/material';
 import html2canvas from 'html2canvas';
 import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react';
+import packageJson from '../../package.json';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
@@ -15,6 +17,7 @@ import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
 
 import {ComponentSelectionProvider} from './ComponentSelectionContext';
 import Editor from './editor/Editor';
+import {AppUpdateDialog} from './common/AppUpdateDialog';
 import {MapLayout} from './map/components/MapLayout';
 import {useMapDimensions} from './map/hooks/useMapDimensions';
 import {useMapParsing} from './map/hooks/useMapParsing';
@@ -43,6 +46,25 @@ interface MapEnvironmentWithUndoRedoProps extends MapEnvironmentProps {
     setCurrentIteration: React.Dispatch<React.SetStateAction<number>>;
     unifiedMapState: any; // Pass the unified state from parent
 }
+
+const LAST_SEEN_VERSION_STORAGE_KEY = 'onlinewardleymaps_lastSeenVersion';
+const APP_VERSION = packageJson.version;
+
+const compareVersions = (a: string, b: string): number => {
+    const aParts = a.split('.').map(part => parseInt(part, 10));
+    const bParts = b.split('.').map(part => parseInt(part, 10));
+    const maxLength = Math.max(aParts.length, bParts.length);
+
+    for (let i = 0; i < maxLength; i++) {
+        const aValue = Number.isNaN(aParts[i]) ? 0 : (aParts[i] ?? 0);
+        const bValue = Number.isNaN(bParts[i]) ? 0 : (bParts[i] ?? 0);
+
+        if (aValue > bValue) return 1;
+        if (aValue < bValue) return -1;
+    }
+
+    return 0;
+};
 
 /**
  * Component that uses the UndoRedoProvider's enhanced mutateMapText
@@ -230,6 +252,7 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
 
     const [actionInProgress, setActionInProgress] = useState(false);
     const [hideNav, setHideNav] = useState(false);
+    const [showAppUpdateDialog, setShowAppUpdateDialog] = useState(false);
 
     // Enhanced mutateMapText function that records history for normal operations
     const mutateMapText = (
@@ -369,12 +392,46 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         if (shouldLoad) mapPersistence.loadFromRemoteStorage();
     }, [shouldLoad, mapPersistence]);
 
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        try {
+            const lastSeenVersion = localStorage.getItem(LAST_SEEN_VERSION_STORAGE_KEY);
+            const isNewUser = !lastSeenVersion;
+            const isOlderVersion = !!lastSeenVersion && compareVersions(lastSeenVersion, APP_VERSION) < 0;
+
+            if (isNewUser || isOlderVersion) {
+                setShowAppUpdateDialog(true);
+            }
+        } catch (error) {
+            console.warn('Failed to read app update version from localStorage:', error);
+        }
+    }, []);
+
+    const handleCloseAppUpdateDialog = useCallback(() => {
+        setShowAppUpdateDialog(false);
+
+        if (typeof window === 'undefined') return;
+        try {
+            localStorage.setItem(LAST_SEEN_VERSION_STORAGE_KEY, APP_VERSION);
+        } catch (error) {
+            console.warn('Failed to save app update version to localStorage:', error);
+        }
+    }, []);
+
     const submenu = [
         {
             name: mapState.showUsage ? t('editor.hideUsage', 'Hide Usage') : t('editor.showUsage', 'Show Usage'),
             icon: <HelpCenterIcon />,
             action: () => {
                 toggleUsage();
+            },
+        },
+        {
+            name: t('updates.title', "What's New"),
+            icon: <NewReleasesIcon />,
+            action: () => {
+                setShowAppUpdateDialog(true);
             },
         },
     ];
@@ -702,6 +759,8 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                 open={actionInProgress}>
                 <CircularProgress color="inherit" />
             </Backdrop>
+
+            <AppUpdateDialog isOpen={showAppUpdateDialog} onClose={handleCloseAppUpdateDialog} />
         </>
     );
 };

@@ -361,5 +361,33 @@
         "instructions": {
             "keyboardShortcuts": "Verwenden Sie Tastaturkürzel zur schnellen Werkzeugauswahl: C für Komponente, L für Verknüpfung, N für Notiz, P für Pipeline, A für Anker, M für Methode, T für PST. Drücken Sie Escape zum Abwählen."
         }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "Sie verwenden jetzt Version {{version}}.",
+        "placeholder": "Wir werden hier bald detaillierte Versionshinweise hinzufügen.",
+        "dismiss": "Verstanden",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }
