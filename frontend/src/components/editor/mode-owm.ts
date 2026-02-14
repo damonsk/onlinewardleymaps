@@ -390,7 +390,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(evolve)(\\s+[a-zA-Z0-9\\s]+)(->)([a-zA-Z0-9\\s]+)(\\s*\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                        regex: '(evolve)(\\s+[\\/a-zA-Z0-9\\s]+)(->)([\\/a-zA-Z0-9\\s]+)(\\s*\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
                         token: ['keyword', 'variable.parameter.function.asp', 'constant.numeric'],
@@ -436,7 +436,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'constant.numeric',
                             'punctuation',
                         ],
-                        regex: '(evolve)(\\s*")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([a-zA-Z0-9\\s]+)(\\s*\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
+                        regex: '(evolve)(\\s*")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([\\/a-zA-Z0-9\\s]+)(\\s*\\d+(?:\\.\\d+)?)(\\s+label)(\\s*\\[)(-?\\d+(?:\\.\\d+)?)(\\s*,\\s*)(-?\\d+(?:\\.\\d+)?)(\\])',
                     },
                     {
                         token: [
@@ -448,7 +448,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'variable.parameter.function.asp',
                             'constant.numeric',
                         ],
-                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([a-zA-Z0-9\\s]+)\\s*(\\d+(?:\\.\\d+)?)',
+                        regex: '(evolve)(\\s+")((?:[^"\\\\]|\\\\.*)*)(")(-\\>)([\\/a-zA-Z0-9\\s]+)\\s*(\\d+(?:\\.\\d+)?)',
                     },
                     {
                         token: ['punctuation', 'constant.numeric', 'punctuation'],
@@ -498,7 +498,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation',
                             'variable.parameter.function.asp',
                         ],
-                        regex: '(")((?:[^"\\\\]|\\\\.)*)(")(\\-\\>)(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)',
+                        regex: '(")((?:[^"\\\\]|\\\\.)*)(")(\\-\\>)(\\s*[#;&$£%^*()-+,.\\/a-zA-Z0-9\\s*]+)',
                     },
                     {
                         token: [
@@ -508,11 +508,11 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'string.quoted.double.asp',
                             'punctuation.definition.string.end.asp',
                         ],
-                        regex: '(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)(\\-\\>)(")((?:[^"\\\\]|\\\\.)*)(")',
+                        regex: '(\\s*[#;&$£%^*()-+,.\\/a-zA-Z0-9\\s*]+)(\\-\\>)(")((?:[^"\\\\]|\\\\.)*)(")',
                     },
                     {
                         token: ['variable.parameter.function.asp', 'punctuation', 'variable.parameter.function.asp'],
-                        regex: '(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[#;&$£%^*()-+,.a-zA-Z0-9\\s*]+)',
+                        regex: '(\\s*[#;&$£%^*()-+,.\\/a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[#;&$£%^*()-+,.\\/a-zA-Z0-9\\s*]+)',
                     },
                     {
                         token: [
@@ -534,7 +534,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation',
                             'variable.parameter.function.asp',
                         ],
-                        regex: '(")((?:[^"\\\\]|\\\\.)*)(")(\\+(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)',
+                        regex: '(")((?:[^"\\\\]|\\\\.)*)(")(\\+(?:\\<\\>|\\<|\\>))(\\s*[\\/a-zA-Z0-9\\s*]+)',
                     },
                     {
                         token: [
@@ -544,11 +544,11 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'string.quoted.double.asp',
                             'punctuation.definition.string.end.asp',
                         ],
-                        regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(")((?:[^"\\\\]|\\\\.)*)(")',
+                        regex: '(\\s*[\\/a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(")((?:[^"\\\\]|\\\\.)*)(")',
                     },
                     {
                         token: ['variable.parameter.function.asp', 'punctuation', 'variable.parameter.function.asp'],
-                        regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)',
+                        regex: '(\\s*[\\/a-zA-Z0-9\\s*]+)(\\+(?:\\<\\>|\\<|\\>))(\\s*[\\/a-zA-Z0-9\\s*]+)',
                     },
                     {
                         token: [
@@ -574,7 +574,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation',
                             'variable.parameter.function.asp',
                         ],
-                        regex: '(")([^"\\\\]*(?:\\\\.[^"\\\\]*)*)(")( \\+(?:\\\'))([^\']+)(\\\'(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+) ',
+                        regex: '(")([^"\\\\]*(?:\\\\.[^"\\\\]*)*)(")( \\+(?:\\\'))([^\']+)(\\\'(?:\\<\\>|\\<|\\>))(\\s*[\\/a-zA-Z0-9\\s*]+) ',
                     },
                     {
                         token: [
@@ -586,7 +586,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'string.quoted.double.asp',
                             'punctuation.definition.string.end.asp',
                         ],
-                        regex: '(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\\'))([^\']+)(\\\'(?:\\<\\>|\\<|\\>))(")([^"\\\\]*(?:\\\\.[^"\\\\]*)*)(") ',
+                        regex: '(\\s*[\\/a-zA-Z0-9\\s*]+)(\\+(?:\\\'))([^\']+)(\\\'(?:\\<\\>|\\<|\\>))(")([^"\\\\]*(?:\\\\.[^"\\\\]*)*)(") ',
                     },
                     {
                         token: [
@@ -596,7 +596,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                             'punctuation',
                             'variable.parameter.function.asp',
                         ],
-                        regex: "(\\s*[a-zA-Z0-9\\s*]+)(\\+(?:\\'))([^']+)(\\'(?:\\<\\>|\\<|\\>))(\\s*[a-zA-Z0-9\\s*]+)",
+                        regex: "(\\s*[\\/a-zA-Z0-9\\s*]+)(\\+(?:\\'))([^']+)(\\'(?:\\<\\>|\\<|\\>))(\\s*[\\/a-zA-Z0-9\\s*]+)",
                     },
                     {
                         token: 'text',
