@@ -41,6 +41,7 @@ export interface InlineEditorProps {
     ariaLabel?: string;
     ariaDescription?: string;
     safariFixedPosition?: {x: number; y: number};
+    showActionButtons?: boolean;
 }
 
 interface StyledEditorProps {
@@ -250,6 +251,36 @@ const CharacterCounter = styled.div<{$theme: MapTheme; $isWarning?: boolean; $is
     z-index: 1000;
 `;
 
+const ActionButtons = styled.div`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 2px;
+    display: flex;
+    gap: 4px;
+    z-index: 1001;
+`;
+
+const ActionButton = styled.button<{$theme: MapTheme; $variant: 'save' | 'cancel'}>`
+    border: 1px solid ${props => props.$theme.component?.stroke || '#ccc'};
+    background-color: ${props => (props.$variant === 'save' ? '#2e7d32' : '#f5f5f5')};
+    color: ${props => (props.$variant === 'save' ? '#fff' : props.$theme.component?.textColor || '#222')};
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 11px;
+    line-height: 1.2;
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(0.95);
+    }
+
+    &:focus {
+        outline: 2px solid #007bff;
+        outline-offset: 1px;
+    }
+`;
+
 const InlineEditor: React.FC<InlineEditorProps> = ({
     value,
     onChange,
@@ -274,12 +305,14 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
     autoResize = true,
     ariaLabel,
     ariaDescription,
+    showActionButtons,
 }) => {
     const {t, originalT} = useI18n();
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const [validationError, setValidationError] = useState<string | null>(null);
     const [showRealTimeValidation, setShowRealTimeValidation] = useState(false);
     const [dynamicHeight, setDynamicHeight] = useState<number | undefined>(undefined);
+    const shouldShowActionButtons = showActionButtons ?? isMultiLine;
 
     // Calculate dynamic height for auto-resize
     const calculateHeight = useCallback(() => {
@@ -537,6 +570,18 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
         }
     };
 
+    const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSave();
+    };
+
+    const handleCancelClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onCancel();
+    };
+
     const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         // Handle focus event for additional text selection if needed
         if (selectAllOnFocus && e.target.value) {
@@ -605,6 +650,30 @@ const InlineEditor: React.FC<InlineEditorProps> = ({
                     $isError={!!validationError && validationError.includes('Maximum length')}>
                     {value.length}/{validation.maxLength}
                 </CharacterCounter>
+            )}
+            {shouldShowActionButtons && (
+                <ActionButtons>
+                    <ActionButton
+                        type="button"
+                        $theme={mapStyleDefs}
+                        $variant="save"
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={handleSaveClick}
+                        aria-label={t('editor.inline.actions.save', 'Save changes')}
+                        title={t('editor.inline.actions.saveTitle', 'Save')}>
+                        OK
+                    </ActionButton>
+                    <ActionButton
+                        type="button"
+                        $theme={mapStyleDefs}
+                        $variant="cancel"
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={handleCancelClick}
+                        aria-label={t('editor.inline.actions.cancel', 'Cancel changes')}
+                        title={t('editor.inline.actions.cancelTitle', 'Cancel')}>
+                        X
+                    </ActionButton>
+                </ActionButtons>
             )}
         </EditorContainer>
     );

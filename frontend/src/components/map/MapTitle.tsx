@@ -57,6 +57,7 @@ function MapTitle(props: MapTitleProps) {
                     onChange={handleChange}
                     onSave={handleSave}
                     onCancel={handleCancel}
+                    showActionButtons={true}
                     x={0}
                     y={0}
                     fontSize="20px"
