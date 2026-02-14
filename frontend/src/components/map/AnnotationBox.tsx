@@ -3,6 +3,7 @@ import {MapTheme} from '../../constants/mapstyles';
 import {MapAnnotations} from '../../types/base';
 import AnnotationBoxSymbol from '../symbols/AnnotationBoxSymbol';
 import AnnotationTextSymbol from '../symbols/AnnotationTextSymbol';
+import InlineEditor from './InlineEditor';
 import ModernPositionCalculator from './ModernPositionCalculator';
 import Movable from './Movable';
 import ModernDefaultPositionUpdater from './positionUpdaters/ModernDefaultPositionUpdater';
@@ -31,10 +32,24 @@ interface MovedPosition {
     y: number;
 }
 
+export const updateAnnotationLineText = (line: string, annotationNumber: number, annotationText: string): string => {
+    const escapedNumber = annotationNumber.toString().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const annotationPattern = new RegExp(`^(\\s*annotation\\s+${escapedNumber}\\s+)(\\[\\[.*?\\]\\]|\\[[^\\]]*\\])(.*)$`);
+    const match = line.match(annotationPattern);
+
+    if (!match) return line;
+
+    const [, prefix, coordinates] = match;
+    const trimmedText = annotationText.trim();
+    return `${prefix}${coordinates}${trimmedText.length > 0 ? ` ${trimmedText}` : ''}`;
+};
+
 const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
     const positionCalc = new ModernPositionCalculator();
     const identifier = 'annotations';
     const [, setBoxBounds] = useState<DOMRect | null>(null);
+    const [editingAnnotationNumber, setEditingAnnotationNumber] = useState<number | null>(null);
+    const [editingText, setEditingText] = useState('');
 
     const defaultPositionUpdater = new ModernDefaultPositionUpdater(identifier, props.mapText, props.mutateMapText, [
         ModernExistingCoordsMatcher,
@@ -104,15 +119,70 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
         return () => clearTimeout(timer);
     }, [props.position.maturity, props.position.visibility, props.mapDimensions, props.mapStyleDefs, props.annotations, redraw]);
 
+    const handleAnnotationDoubleClick = (annotation: MapAnnotations) => (event: React.MouseEvent<SVGTSpanElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setEditingAnnotationNumber(annotation.number);
+        setEditingText(annotation.text || '');
+        if (props.setHighlightLine && typeof (annotation as any).line === 'number') {
+            props.setHighlightLine((annotation as any).line);
+        }
+    };
+
+    const handleSaveAnnotation = () => {
+        if (editingAnnotationNumber === null) return;
+
+        const updatedMapText = props.mapText
+            .split('\n')
+            .map((line: string) => updateAnnotationLineText(line, editingAnnotationNumber, editingText))
+            .join('\n');
+
+        props.mutateMapText(updatedMapText);
+        setEditingAnnotationNumber(null);
+    };
+
+    const handleCancelAnnotation = () => {
+        setEditingAnnotationNumber(null);
+        setEditingText('');
+    };
+
+    const editingIndex = editingAnnotationNumber !== null ? props.annotations.findIndex(a => a.number === editingAnnotationNumber) : -1;
+    const showInlineEditor = editingAnnotationNumber !== null && editingIndex >= 0;
+    const lineHeight = 18;
+    const headerOffset = 4;
+    const editorY = headerOffset + lineHeight * (editingIndex + 1) - 14;
+
     return (
         <Movable id={'annotationsBox'} onMove={endDrag} fixedY={false} fixedX={false} x={x()} y={y()} scaleFactor={props.scaleFactor}>
             <g id="movable_annotationsBox">
                 <AnnotationBoxSymbol id={'annotationsBoxTextContainer'} dy={0} x={2} theme={props.mapStyleDefs.annotation}>
                     {props.annotations &&
                         props.annotations.map((a, i) => (
-                            <AnnotationTextSymbol key={i} annotation={a} styles={props.mapStyleDefs.annotation} />
+                            <AnnotationTextSymbol key={i} annotation={a} styles={props.mapStyleDefs.annotation} onDoubleClick={handleAnnotationDoubleClick(a)} />
                         ))}
                 </AnnotationBoxSymbol>
+                {showInlineEditor && (
+                    <foreignObject x={4} y={editorY} width={280} height={44} style={{overflow: 'visible'}}>
+                        <div style={{width: '100%', height: '100%', position: 'relative'}}>
+                            <InlineEditor
+                                value={editingText}
+                                onChange={setEditingText}
+                                onSave={handleSaveAnnotation}
+                                onCancel={handleCancelAnnotation}
+                                x={0}
+                                y={0}
+                                width={260}
+                                minWidth={220}
+                                mapStyleDefs={props.mapStyleDefs}
+                                autoFocus={true}
+                                selectAllOnFocus={true}
+                                validation={{
+                                    maxLength: 500,
+                                }}
+                            />
+                        </div>
+                    </foreignObject>
+                )}
             </g>
         </Movable>
     );
