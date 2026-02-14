@@ -16,6 +16,19 @@ import LinkIcon from '../symbols/LinkIcon';
 import UndoIcon from '../symbols/UndoIcon';
 import RedoIcon from '../symbols/RedoIcon';
 
+const noopClick = () => {};
+
+type HideLabelIconProps = ToolbarIconProps & {
+    hideLabel?: boolean;
+};
+
+const createHideLabelIconWrapper = (IconComponent: React.ComponentType<HideLabelIconProps>): React.FC<ToolbarIconProps> => {
+    const WrappedIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
+        <IconComponent id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || noopClick} hideLabel={true} />
+    );
+    return WrappedIcon;
+};
+
 /**
  * Wrapper for ComponentIcon to normalize props
  */
@@ -23,7 +36,7 @@ export const ToolbarComponentIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDe
     <ComponentIcon
         id={id}
         mapStyleDefs={mapStyleDefs}
-        onClick={onClick || (() => {})}
+        onClick={onClick || noopClick}
         hideLabel={true}
         evolved={undefined}
         text="Component"
@@ -33,72 +46,52 @@ export const ToolbarComponentIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDe
 /**
  * Wrapper for InertiaIcon to normalize props
  */
-export const ToolbarInertiaIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <InertiaIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarInertiaIcon = createHideLabelIconWrapper(InertiaIcon);
 
 /**
  * Wrapper for MarketIcon to normalize props
  */
-export const ToolbarMarketIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <MarketIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarMarketIcon = createHideLabelIconWrapper(MarketIcon);
 
 /**
  * Wrapper for EcosystemIcon to normalize props
  */
-export const ToolbarEcosystemIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <EcosystemIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarEcosystemIcon = createHideLabelIconWrapper(EcosystemIcon);
 
 /**
  * Wrapper for BuyMethodIcon to normalize props
  */
-export const ToolbarBuyMethodIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <BuyMethodIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarBuyMethodIcon = createHideLabelIconWrapper(BuyMethodIcon);
 
 /**
  * Wrapper for BuildMethodIcon to normalize props
  */
-export const ToolbarBuildMethodIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <BuildMethodIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarBuildMethodIcon = createHideLabelIconWrapper(BuildMethodIcon);
 
 /**
  * Wrapper for OutSourceMethodIcon to normalize props
  */
-export const ToolbarOutSourceMethodIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <OutSourceMethodIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarOutSourceMethodIcon = createHideLabelIconWrapper(OutSourceMethodIcon);
 
 /**
  * Wrapper for GenericNoteIcon to normalize props
  */
-export const ToolbarGenericNoteIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <GenericNoteIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarGenericNoteIcon = createHideLabelIconWrapper(GenericNoteIcon);
 
 /**
  * Wrapper for PipelineIcon to normalize props
  */
-export const ToolbarPipelineIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <PipelineIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarPipelineIcon = createHideLabelIconWrapper(PipelineIcon);
 
 /**
  * Wrapper for AnchorIcon to normalize props
  */
-export const ToolbarAnchorIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <AnchorIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarAnchorIcon = createHideLabelIconWrapper(AnchorIcon);
 
 /**
  * Wrapper for LinkIcon to normalize props
  */
-export const ToolbarLinkIcon: React.FC<ToolbarIconProps> = ({id, mapStyleDefs, onClick}) => (
-    <LinkIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} />
-);
+export const ToolbarLinkIcon = createHideLabelIconWrapper(LinkIcon);
 
 /**
  * PST Icon component for the toolbar
@@ -130,12 +123,12 @@ export interface EnhancedToolbarIconProps extends ToolbarIconProps {
  * Wrapper for UndoIcon to normalize props
  */
 export const ToolbarUndoIcon: React.FC<EnhancedToolbarIconProps> = ({id, mapStyleDefs, onClick, disabled = false}) => (
-    <UndoIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} disabled={disabled} />
+    <UndoIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || noopClick} hideLabel={true} disabled={disabled} />
 );
 
 /**
  * Wrapper for RedoIcon to normalize props
  */
 export const ToolbarRedoIcon: React.FC<EnhancedToolbarIconProps> = ({id, mapStyleDefs, onClick, disabled = false}) => (
-    <RedoIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} hideLabel={true} disabled={disabled} />
+    <RedoIcon id={id} mapStyleDefs={mapStyleDefs} onClick={onClick || noopClick} hideLabel={true} disabled={disabled} />
 );
