@@ -14,7 +14,7 @@ export interface ComponentTextSymbolProps {
     onClick?: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void;
     onDoubleClick?: (e: React.MouseEvent<SVGTextElement, MouseEvent>) => void;
     note?: string;
-    textAnchor?: string;
+    textAnchor?: React.SVGAttributes<SVGTextElement>['textAnchor'];
     setShowTextField?: (value: React.SetStateAction<boolean>) => void;
 }
 
@@ -23,7 +23,7 @@ const ComponentTextSymbol = forwardRef<SVGTextElement, ComponentTextSymbolProps>
         const renderMultiLineText = (id: string, textContent: string) => {
             // Split by actual line breaks (\n) only - no word wrapping for multi-line content
             const lines = textContent.split('\n');
-            const tspans: JSX.Element[] = [];
+            const tspans: React.ReactElement[] = [];
 
             // Use the textAnchor prop if provided, otherwise default to 'middle' for proper centering
             const anchor = textAnchor || 'middle';

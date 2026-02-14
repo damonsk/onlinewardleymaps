@@ -64,17 +64,13 @@ const EditorContainer = styled.div<StyledEditorProps>`
     display: block;
     min-width: ${props => props.$minWidth || 120}px;
     width: ${props => (props.$width ? `${props.$width}px` : 'auto')};
-    /* Cross-browser compatibility fixes */
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    /* Chrome-specific fixes for foreignObject */
     background-color: transparent;
-    /* Ensure proper rendering across browsers */
     z-index: 1000;
 
-    /* Responsive design adjustments */
     @media (max-width: 768px) {
         min-width: ${props => Math.min(props.$minWidth || 120, 100)}px;
         width: ${props => (props.$width ? `${Math.min(props.$width, 200)}px` : 'auto')};
@@ -99,7 +95,6 @@ const StyledInput = styled.input<StyledEditorProps>`
     font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
     font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
 
-    /* Responsive font size adjustments */
     @media (max-width: 768px) {
         font-size: ${props => {
             const baseFontSize = parseInt(props.$fontSize || props.$theme.component?.fontSize || '14', 10);
@@ -118,20 +113,17 @@ const StyledInput = styled.input<StyledEditorProps>`
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
-    /* Safari compatibility fixes */
     -webkit-appearance: none;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    /* Ensure proper rendering */
     position: relative;
     z-index: 1;
 
     &:focus {
         border-color: #007bff;
-        box-shadow: 0 0 0 2px #007bff 33;
-        /* High contrast focus ring for accessibility */
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         outline: 2px solid transparent;
         outline-offset: 2px;
     }
@@ -144,7 +136,7 @@ const StyledInput = styled.input<StyledEditorProps>`
     }
 
     &::placeholder {
-        color: ${props => props.$theme.component?.textColor || '#999'}66;
+        color: ${props => props.$theme.component?.textColor || '#999'};
         opacity: 0.7;
     }
 `;
@@ -165,7 +157,6 @@ const StyledTextarea = styled.textarea<StyledEditorProps>`
     font-size: ${props => props.$fontSize || props.$theme.component?.fontSize || '14px'};
     font-weight: ${props => props.$theme.component?.fontWeight || 'normal'};
 
-    /* Responsive font size adjustments */
     @media (max-width: 768px) {
         font-size: ${props => {
             const baseFontSize = parseInt(props.$fontSize || props.$theme.component?.fontSize || '14', 10);
@@ -190,20 +181,17 @@ const StyledTextarea = styled.textarea<StyledEditorProps>`
         border-color 0.2s ease,
         box-shadow 0.2s ease,
         height 0.1s ease;
-    /* Safari compatibility fixes */
     -webkit-appearance: none;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    /* Ensure proper rendering */
     position: relative;
     z-index: 1;
 
     &:focus {
         border-color: #007bff;
-        box-shadow: 0 0 0 2px #007bff 33;
-        /* High contrast focus ring for accessibility */
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         outline: 2px solid transparent;
         outline-offset: 2px;
     }
@@ -216,7 +204,7 @@ const StyledTextarea = styled.textarea<StyledEditorProps>`
     }
 
     &::placeholder {
-        color: ${props => props.$theme.component?.textColor || '#999'} 66;
+        color: ${props => props.$theme.component?.textColor || '#999'};
         opacity: 0.7;
     }
 `;

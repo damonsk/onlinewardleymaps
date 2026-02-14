@@ -20,7 +20,7 @@ export interface SVGWrapperProps {
     height: string;
     viewBox?: string;
     children: ReactNode;
-    onClick: React.MouseEventHandler<SVGSVGElement>;
+    onClick?: React.MouseEventHandler<SVGSVGElement>;
 }
 
 export const SVGWrapper: React.FC<SVGWrapperProps> = ({
@@ -85,22 +85,22 @@ export const ComponentEvolvedIcon: React.FC<IconProps> = ({mapStyleDefs, id}) =>
 );
 
 export interface IconProps {
-    hideLabel: boolean;
+    hideLabel?: boolean;
     mapStyleDefs: MapTheme;
     id: string;
-    onClick: MouseEventHandler<SVGSVGElement>;
+    onClick?: MouseEventHandler<SVGSVGElement>;
 }
 
-export const InertiaIcon: React.FC<IconProps> = ({hideLabel, mapStyleDefs, id, onClick}) => (
-    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
+export const InertiaIcon: React.FC<IconProps> = ({hideLabel = false, mapStyleDefs, id, onClick}) => (
+    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})}>
         {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text="Inertia" x="8" y="15" />}
         <ComponentSymbol styles={mapStyleDefs.component} cx="8px" cy="25px" />
         <InertiaSymbol x={50} y={25} />
     </IconWrapper>
 );
 
-export const MarketIcon: React.FC<IconProps> = ({id, hideLabel, mapStyleDefs, onClick}) => (
-    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
+export const MarketIcon: React.FC<IconProps> = ({id, hideLabel = false, mapStyleDefs, onClick}) => (
+    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})}>
         {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text="Market" x="45" y="15" />}
         <g transform="translate(20 20) scale(0.8)">
             <MarketSymbol
@@ -121,7 +121,7 @@ export interface MethodIconProps extends IconProps {
     outsource?: boolean;
 }
 
-export const MethodIcon: React.FC<MethodIconProps> = ({hideLabel, id, onClick, mapStyleDefs, buy, build, outsource}) => {
+export const MethodIcon: React.FC<MethodIconProps> = ({hideLabel = false, id, onClick, mapStyleDefs, buy, build, outsource}) => {
     // Determine method type from boolean flags
     let methodText = 'Build'; // Default
     if (buy) methodText = 'Buy';
@@ -129,7 +129,7 @@ export const MethodIcon: React.FC<MethodIconProps> = ({hideLabel, id, onClick, m
     else if (build) methodText = 'Build';
 
     return (
-        <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
+        <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})}>
             {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text={methodText} x="45" y="15" />}
             <g transform="translate(21 21) scale(0.8)">
                 <MethodSymbol buy={buy} build={build} outsource={outsource} styles={mapStyleDefs.methods} x="0" y="0" />
@@ -151,8 +151,8 @@ export const OutSourceMethodIcon: React.FC<IconProps> = ({id, onClick, hideLabel
     <MethodIcon id={id} buy={false} build={false} outsource={true} onClick={onClick} mapStyleDefs={mapStyleDefs} hideLabel={hideLabel} />
 );
 
-export const EcosystemIcon: React.FC<IconProps> = ({hideLabel, mapStyleDefs, onClick, id}) => (
-    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick}>
+export const EcosystemIcon: React.FC<IconProps> = ({hideLabel = false, mapStyleDefs, onClick, id}) => (
+    <IconWrapper width={hideLabel ? hideLabelIconWidth : iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})}>
         {hideLabel === false && <ComponentTextSymbol id={id} textTheme={mapStyleDefs.component} text="Ecosystem" x="45" y="15" />}
         <g transform="translate(21 21) scale(0.5)">
             <EcosystemSymbol styles={mapStyleDefs.component} />

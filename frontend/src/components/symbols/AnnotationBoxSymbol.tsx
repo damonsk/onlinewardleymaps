@@ -7,7 +7,7 @@ interface ModernAnnotationBoxSymbolProps {
     dy?: string | number;
     theme: MapAnnotationTheme;
     fill?: string;
-    textAnchor?: string;
+    textAnchor?: React.SVGAttributes<SVGTSpanElement>['textAnchor'];
     textDecoration?: string;
     className?: string;
     children: ReactNode;

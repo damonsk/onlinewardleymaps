@@ -5,14 +5,14 @@ import {IconProps, SVGWrapper} from './icons';
  * Anchor Icon Component
  * Visual representation of an anchor for the toolbar
  */
-export const AnchorIcon: React.FunctionComponent<IconProps> = ({id, hideLabel, mapStyleDefs, onClick}) => {
+export const AnchorIcon: React.FunctionComponent<IconProps> = ({id, hideLabel = false, mapStyleDefs, onClick}) => {
     const iconWidth = hideLabel ? '50px' : '120px';
     const iconHeight = '40px';
     const stroke = mapStyleDefs.component?.stroke || '#000';
     const fill = mapStyleDefs.component?.fill || 'none';
 
     return (
-        <SVGWrapper width={iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick} title={`Anchor-${id}`}>
+        <SVGWrapper width={iconWidth} height={iconHeight} mapStyleDefs={mapStyleDefs} onClick={onClick || (() => {})} title={`Anchor-${id}`}>
             {hideLabel === false && (
                 <text
                     x="45"
