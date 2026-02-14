@@ -150,6 +150,7 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
     const showInlineEditor = editingAnnotationNumber !== null && editingIndex >= 0;
     const lineHeight = 18;
     const headerOffset = 4;
+    const editorHeight = 96;
     const editorY = headerOffset + lineHeight * (editingIndex + 1) - 14;
 
     return (
@@ -162,7 +163,7 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
                         ))}
                 </AnnotationBoxSymbol>
                 {showInlineEditor && (
-                    <foreignObject x={4} y={editorY} width={280} height={44} style={{overflow: 'visible'}}>
+                    <foreignObject x={4} y={editorY} width={280} height={editorHeight} style={{overflow: 'visible'}}>
                         <div style={{width: '100%', height: '100%', position: 'relative'}}>
                             <InlineEditor
                                 value={editingText}
@@ -176,6 +177,8 @@ const AnnotationBox: React.FC<ModernAnnotationBoxProps> = props => {
                                 mapStyleDefs={props.mapStyleDefs}
                                 autoFocus={true}
                                 selectAllOnFocus={true}
+                                showCharacterCount={true}
+                                showActionButtons={true}
                                 validation={{
                                     maxLength: 500,
                                 }}
