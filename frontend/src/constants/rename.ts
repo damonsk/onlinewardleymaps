@@ -177,7 +177,7 @@ export const rename = (
                 // Build pattern to match whole component names, not partial words
                 // Use word boundaries and context-aware matching
                 const componentNamePattern = new RegExp(
-                    `\\b${nameForMatching.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?=\\s*(?:->|\\s+\\d+\\.\\d+|$))`,
+                    `\\b${nameForMatching.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?=\\s*(?:->|;|\\s+\\d+(?:\\.\\d+)?|$))`,
                     'g',
                 );
 

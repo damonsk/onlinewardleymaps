@@ -9,39 +9,22 @@ import {useContextMenu} from './ContextMenuProvider';
 import ResizeHandles from './ResizeHandles';
 
 interface PSTBoxProps {
-    /** PST element to render */
     pstElement: PSTElement;
-    /** Map dimensions for coordinate conversion */
     mapDimensions: MapDimensions;
-    /** Map theme for styling */
     mapStyleDefs: MapTheme;
-    /** Scale factor for responsive sizing */
     scaleFactor: number;
-    /** Whether this PST element is currently hovered */
     isHovered: boolean;
-    /** Whether this PST element is currently being resized */
     isResizing: boolean;
-    /** Whether this PST element is currently being dragged */
     isDragging?: boolean;
-    /** Keyboard modifiers for resize operations */
     keyboardModifiers?: {maintainAspectRatio: boolean; resizeFromCenter: boolean};
-    /** Callback when resize operation starts */
     onResizeStart: (element: PSTElement, handle: ResizeHandle, startPosition: {x: number; y: number}) => void;
-    /** Callback during resize operation */
     onResizeMove?: (handle: ResizeHandle, currentPosition: {x: number; y: number}) => void;
-    /** Callback when resize operation ends */
     onResizeEnd: (element: PSTElement, newCoordinates: any) => void;
-    /** Callback when drag operation starts */
     onDragStart?: (element: PSTElement, startPosition: {x: number; y: number}) => void;
-    /** Callback during drag operation */
     onDragMove?: (element: PSTElement, currentPosition: {x: number; y: number}) => void;
-    /** Callback when drag operation ends */
     onDragEnd?: (element: PSTElement) => void;
-    /** Callback when hover state changes */
     onHover: (element: PSTElement | null) => void;
-    /** Function to update map text */
     mutateMapText: (newText: string) => void;
-    /** Current map text */
     mapText: string;
 }
 
@@ -564,23 +547,6 @@ const PSTBox: React.FC<PSTBoxProps> = ({
                         animation: 'pstHoverPulse 1.5s ease-in-out infinite',
                     }}
                 />
-            )}
-
-            {/* Deletable indicator - small icon when hovered and not selected */}
-            {isHovered && !isElementSelected && (
-                <g
-                    data-testid={`pst-box-delete-indicator-${pstElement.id}`}
-                    transform={`translate(${bounds.x + bounds.width - 16}, ${bounds.y + 4})`}
-                    pointerEvents="none"
-                    style={{
-                        opacity: 0.7,
-                        animation: 'fadeIn 0.2s ease-in-out',
-                    }}>
-                    <circle cx="8" cy="8" r="8" fill="rgba(244, 67, 54, 0.9)" stroke="white" strokeWidth="1" />
-                    <text x="8" y="8" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">
-                        ×
-                    </text>
-                </g>
             )}
 
             {/* Visual feedback for touch selection - solid outline */}

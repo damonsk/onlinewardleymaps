@@ -148,115 +148,27 @@ const Note: React.FC<ModernNoteProps> = ({
     const renderEditMode = () => {
         // Browser-specific rendering fixes
         const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
         const editorWidth = 140;
         const editorHeight = 80;
-
-        if (isChrome) {
-            // Chrome-specific rendering with local coordinate positioning
-            // Since we're inside a Movable component with transform, use local coordinates (0,0)
-            // and position the editor relative to the local origin
-            const editorX = -editorWidth / 2;
-            const editorY = -editorHeight / 2;
-
-            return (
-                <foreignObject
-                    x={editorX}
-                    y={editorY}
-                    width={editorWidth}
-                    height={editorHeight}
-                    style={{
-                        overflow: 'visible',
-                        // Chrome-specific transform fixes
-                        transform: 'translateZ(0)',
-                        WebkitTransform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        WebkitBackfaceVisibility: 'hidden',
-                    }}>
-                    <div
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            position: 'relative',
-                            display: 'block',
-                            backgroundColor: 'white',
-                            border: `2px solid ${mapStyleDefs?.component?.stroke || '#ccc'}`,
-                            borderRadius: '4px',
-                            padding: '4px',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                            zIndex: '1000',
-                            boxSizing: 'border-box',
-                            // Additional Chrome-specific fixes
-                            transform: 'translateZ(0)',
-                            WebkitTransform: 'translateZ(0)',
-                        }}>
-                        <textarea
-                            value={editText}
-                            onChange={e => setEditText(e.target.value)}
-                            onKeyDown={e => {
-                                e.stopPropagation();
-                                if (e.key === 'Escape') {
-                                    e.preventDefault();
-                                    handleCancel();
-                                } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-                                    e.preventDefault();
-                                    handleSave();
-                                }
-                            }}
-                            onBlur={e => {
-                                // Reset border color on blur
-                                if (e.target.parentElement) {
-                                    e.target.parentElement.style.border = `2px solid ${mapStyleDefs?.component?.stroke || '#ccc'}`;
-                                }
-                                handleSave();
-                            }}
-                            onFocus={e => {
-                                e.target.select();
-                                // Set focus border color to match InlineEditor
-                                if (e.target.parentElement) {
-                                    e.target.parentElement.style.border = `2px solid #007bff`;
-                                }
-                            }}
-                            autoFocus
-                            maxLength={500}
-                            style={{
-                                width: '100%',
-                                height: 'calc(100% - 8px)', // Account for padding
-                                border: 'none',
-                                outline: 'none',
-                                resize: 'none',
-                                fontFamily: mapStyleDefs?.fontFamily || 'Arial, sans-serif',
-                                fontSize: mapStyleDefs?.note?.fontSize || '14px',
-                                backgroundColor: 'transparent',
-                                color: mapStyleDefs?.note?.textColor || 'black',
-                                boxSizing: 'border-box',
-                                // Chrome-specific text rendering fixes
-                                WebkitFontSmoothing: 'antialiased',
-                                MozOsxFontSmoothing: 'grayscale',
-                            }}
-                        />
-                    </div>
-                </foreignObject>
-            );
-        }
-
-        // Default rendering for Safari and other browsers
-        // Calculate proper positioning for the editor relative to note position
-        const noteX = x();
-        const noteY = y();
-        const editorX = noteX - editorWidth / 2;
-        const editorY = noteY - editorHeight / 2;
+        // The editor is rendered inside a <Movable> group that already translates to the note position.
+        // Keep foreignObject coordinates local to avoid browser-dependent double offsets.
+        const editorX = -editorWidth / 2;
+        const editorY = -editorHeight / 2;
+        const foreignObjectStyle = isChrome
+            ? {
+                  overflow: 'visible' as const,
+                  transform: 'translateZ(0)',
+                  WebkitTransform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden' as const,
+                  WebkitBackfaceVisibility: 'hidden' as const,
+              }
+            : {
+                  overflow: 'visible' as const,
+              };
 
         return (
-            <foreignObject
-                x={editorX}
-                y={editorY}
-                width={editorWidth}
-                height={editorHeight}
-                style={{
-                    overflow: 'visible',
-                }}>
+            <foreignObject x={editorX} y={editorY} width={editorWidth} height={editorHeight} style={foreignObjectStyle}>
                 <div
                     style={{
                         width: '100%',

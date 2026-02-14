@@ -26,6 +26,26 @@ describe('rename function with multi-line components', () => {
     });
 
     describe('link updates for multi-line components', () => {
+        it('should update link targets when link line has semicolon metadata', () => {
+            const mapText = [
+                'component Kettle [0.43, 0.35] label [-57.00, 20.00]',
+                'evolve Kettle->Electric Kettle 0.62 label [16, 5]',
+                'sasasasa->Kettle; limited by',
+                'Kettle->Power',
+            ].join('\n');
+
+            const result = rename(1, 'Kettle', 'FooBar', mapText, mockMutateMapMethod);
+
+            expect(result.success).toBe(true);
+            const updatedText = mockMutateMapMethod.mock.calls[0][0];
+            const lines = updatedText.split('\n');
+
+            expect(lines[0]).toBe('component FooBar [0.43, 0.35] label [-57.00, 20.00]');
+            expect(lines[1]).toBe('evolve FooBar->Electric FooBar 0.62 label [16, 5]');
+            expect(lines[2]).toBe('sasasasa->FooBar; limited by');
+            expect(lines[3]).toBe('FooBar->Power');
+        });
+
         it('should update links when renaming a multi-line component', () => {
             const mapText = [
                 'component "Multi-line\\nSource" [0.3, 0.7]',

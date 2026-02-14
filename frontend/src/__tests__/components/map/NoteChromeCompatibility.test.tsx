@@ -96,7 +96,7 @@ describe('Note Chrome Compatibility', () => {
         delete (navigator as any).vendor;
     });
 
-    it('should render Chrome-specific editor when Chrome is detected', () => {
+    it('should render InlineEditor when Chrome is detected', () => {
         // Mock Chrome user agent
         mockUserAgent(
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -116,14 +116,9 @@ describe('Note Chrome Compatibility', () => {
         const noteText = screen.getByTestId('modern_note_text_note1');
         fireEvent.doubleClick(noteText);
 
-        // Should render a textarea for Chrome
-        const textarea = screen.getByDisplayValue('Test Note Content');
-        expect(textarea.tagName).toBe('TEXTAREA');
-        expect(textarea).toHaveStyle({
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '14px',
-            color: '#000000',
-        });
+        // Chrome now uses the same InlineEditor path as other browsers
+        expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
+        expect(screen.getByTestId('inline-editor-input').tagName).toBe('INPUT');
     });
 
     it('should render default InlineEditor when Safari is detected', () => {
@@ -172,14 +167,14 @@ describe('Note Chrome Compatibility', () => {
         expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
     });
 
-    it('should apply Chrome-specific styling correctly', () => {
+    it('should apply Chrome-specific foreignObject styling correctly', () => {
         // Mock Chrome user agent
         mockUserAgent(
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         );
         mockVendor('Google Inc.');
 
-        render(
+        const {container} = render(
             <EditingProvider>
                 <ComponentSelectionProvider>
                     <svg>
@@ -192,45 +187,21 @@ describe('Note Chrome Compatibility', () => {
         const noteText = screen.getByTestId('modern_note_text_note1');
         fireEvent.doubleClick(noteText);
 
-        // Check that the container div has Chrome-specific styling
-        const container = screen.getByDisplayValue('Test Note Content').parentElement;
-
-        // Check key styling properties individually
-        expect(container).toHaveStyle('width: 100%');
-        expect(container).toHaveStyle('height: 100%');
-        expect(container).toHaveStyle('position: relative');
-        expect(container).toHaveStyle('display: block');
-        expect(container).toHaveStyle('background-color: rgb(255, 255, 255)');
-        expect(container).toHaveStyle('border-radius: 4px');
-        expect(container).toHaveStyle('padding: 4px');
-        expect(container).toHaveStyle('box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)');
-        expect(container).toHaveStyle('z-index: 1000');
-        expect(container).toHaveStyle('box-sizing: border-box');
-
-        // Check that the textarea has proper Chrome-specific styling
-        const textarea = screen.getByDisplayValue('Test Note Content');
-        expect(textarea).toHaveStyle({
-            height: 'calc(100% - 8px)',
-        });
-
-        // Verify Chrome-specific properties are present in the style attribute
-        const textareaStyle = textarea.getAttribute('style');
-        expect(textareaStyle).toContain('box-sizing: border-box');
-
-        // Test border color consistency - should use theme colors
-        // The container should have a border that uses theme colors (focus state is applied on autoFocus)
-        const containerStyle = container?.getAttribute('style');
-        expect(containerStyle).toContain('border: 2px solid');
+        const foreignObject = container.querySelector('foreignObject');
+        expect(foreignObject).toBeInTheDocument();
+        const foreignObjectStyle = foreignObject?.getAttribute('style');
+        expect(foreignObjectStyle).toContain('transform: translateZ(0)');
+        expect(foreignObjectStyle).toContain('-webkit-transform: translateZ(0)');
     });
 
-    it('should use consistent border colors between Chrome and Safari', () => {
-        // Test Chrome border color
+    it('should render InlineEditor consistently in both Chrome and Safari', () => {
+        // Chrome
         mockUserAgent(
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         );
         mockVendor('Google Inc.');
 
-        const {container: chromeContainer, unmount: chromeUnmount} = render(
+        const {unmount: chromeUnmount} = render(
             <EditingProvider>
                 <ComponentSelectionProvider>
                     <svg>
@@ -242,25 +213,18 @@ describe('Note Chrome Compatibility', () => {
 
         const chromeNoteText = screen.getByTestId('modern_note_text_note1');
         fireEvent.doubleClick(chromeNoteText);
-
-        const chromeTextarea = screen.getByDisplayValue('Test Note Content');
-        const chromeEditorContainer = chromeTextarea.parentElement;
-
-        // Blur to get the default border color (not focus state)
-        fireEvent.blur(chromeTextarea);
-
-        const chromeBorderStyle = chromeEditorContainer?.getAttribute('style');
+        expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
 
         // Clean up Chrome render completely
         chromeUnmount();
 
-        // Test Safari border color
+        // Safari
         mockUserAgent(
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
         );
         mockVendor('Apple Computer, Inc.');
 
-        const {container: safariContainer, unmount: safariUnmount} = render(
+        const {unmount: safariUnmount} = render(
             <EditingProvider>
                 <ComponentSelectionProvider>
                     <svg>
@@ -273,12 +237,7 @@ describe('Note Chrome Compatibility', () => {
         const safariNoteText = screen.getByTestId('modern_note_text_note1');
         fireEvent.doubleClick(safariNoteText);
 
-        // Safari uses InlineEditor which should have consistent theming
-        const inlineEditor = screen.getByTestId('inline-editor');
-        expect(inlineEditor).toBeInTheDocument();
-
-        // Both should use theme-based border colors for consistency
-        expect(chromeBorderStyle).toContain('border: 2px solid');
+        expect(screen.getByTestId('inline-editor')).toBeInTheDocument();
 
         // Clean up Safari render
         safariUnmount();
