@@ -16,7 +16,7 @@ const PreviewContainer = styled.div.withConfig({
     position: fixed;
     left: ${props => props.x}px;
     top: ${props => props.y}px;
-    transform: translate(-50%, -50%); /* Center on cursor */
+    transform: translate(calc(-50% + 13px), calc(-50% + 6px)); /* Fine-tuned cursor offset */
     pointer-events: none;
     z-index: 10000;
     opacity: ${props => (props.isVisible ? 0.7 : 0)};
@@ -33,16 +33,18 @@ const PreviewContainer = styled.div.withConfig({
 const GhostPreview = styled.div.withConfig({
     shouldForwardProp: prop => prop !== 'isValidDropZone',
 })<{isValidDropZone: boolean}>`
-    background: ${props => (props.isValidDropZone ? 'rgba(25, 118, 210, 0.05)' : 'rgba(211, 47, 47, 0.05)')};
-    border: 1px solid ${props => (props.isValidDropZone ? '#1976d2' : '#d32f2f')};
-    border-radius: 4px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
     padding: 4px 8px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    min-width: 80px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(2px);
+    justify-content: center;
+    gap: 4px;
+    min-width: 70px;
+    box-shadow: none;
+    backdrop-filter: none;
 
     @keyframes pulse-valid {
         0%,
@@ -204,17 +206,30 @@ const GhostPreview = styled.div.withConfig({
         min-width: 100px;
         padding: 6px 10px;
     }
+
+    /* Keep drag preview chrome-free across all theme overrides */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
 `;
 
 /**
  * Icon container for the preview
  */
-const PreviewIcon = styled.div`
+const PreviewIcon = styled.div.withConfig({
+    shouldForwardProp: prop => !['offsetX', 'offsetY'].includes(prop),
+})<{
+    offsetX?: number;
+    offsetY?: number;
+}>`
     transform: scale(0.8);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0.8;
+    margin-left: ${props => (props.offsetX ? `${props.offsetX}px` : '0')};
+    margin-top: ${props => (props.offsetY ? `${props.offsetY}px` : '0')};
 `;
 
 /**
@@ -344,6 +359,16 @@ export const DragPreview: React.FC<DragPreviewProps> = memo(({selectedItem, mous
     }
 
     const IconComponent = selectedItem.icon;
+    const previewIconOffset =
+        selectedItem.id === 'method-market' || selectedItem.id === 'method-ecosystem'
+            ? {
+                  x: -8,
+                  y: 6,
+              }
+            : {
+                  x: 0,
+                  y: 0,
+              };
 
     return (
         <PreviewContainer
@@ -355,7 +380,7 @@ export const DragPreview: React.FC<DragPreviewProps> = memo(({selectedItem, mous
             role="img"
             aria-label={`Dragging ${selectedItem.label}`}>
             <GhostPreview isValidDropZone={isValidDropZone}>
-                <PreviewIcon>
+                <PreviewIcon offsetX={previewIconOffset.x} offsetY={previewIconOffset.y}>
                     <IconComponent
                         id={`preview-${selectedItem.id}`}
                         mapStyleDefs={mapStyleDefs}
