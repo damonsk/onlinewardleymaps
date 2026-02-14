@@ -40,11 +40,16 @@ jobs:
           mkdir -p frontend/wmlandscape/node_modules/react/jsx-runtime
           echo 'export * from "react";' > frontend/wmlandscape/node_modules/react/jsx-runtime/index.js
           
-      - name: Publish wmlandscape
-        run: | 
+      - name: Build wmlandscape
+        run: |
+            cd frontend/wmlandscape/
+            yarn build
+
+      - name: Publish wmlandscape (temporarily disabled)
+        if: ${{ false }}
+        run: |
             cd frontend/wmlandscape/
             npm version 2.$GITHUB_RUN_NUMBER.0
-            yarn build
             npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
