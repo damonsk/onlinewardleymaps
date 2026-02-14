@@ -121,18 +121,33 @@ const StyledToolbarButton = styled.button<{$isSelected: boolean}>`
  * Icon container with consistent scaling to match WYSIWYG toolbar
  */
 const IconContainer = styled.div`
-    transform: scale(0.55);
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
+
+    /* MUI icons need explicit sizing (they are smaller than toolbar SVG symbols when scaled) */
+    & > svg {
+        width: 22px;
+        height: 22px;
+        font-size: 22px;
+    }
 
     /* Responsive scaling */
     @media (max-width: 1200px) {
-        transform: scale(0.5);
+        & > svg {
+            width: 20px;
+            height: 20px;
+            font-size: 20px;
+        }
     }
 
     @media (max-width: 768px) {
-        transform: scale(0.45);
+        & > svg {
+            width: 18px;
+            height: 18px;
+            font-size: 18px;
+        }
     }
 `;
 
