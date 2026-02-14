@@ -26,8 +26,31 @@
   "jestrunner.jestPath": "/Users/damonskelhorn/.yarn/bin/jest",
   "eslint.lintTask.enable": true,
   "eslint.run": "onSave",
-  "eslint.workingDirectories": ["frontend"],
   "eslint.debug": true,
+  "eslint.workingDirectories": [
+    {
+      "directory": "./frontend",
+      "changeProcessCWD": true
+    }
+  ],
+  "eslint.nodePath": "frontend/node_modules",
+  "eslint.useESLintClass": false,
+  "eslint.experimental.useFlatConfig": true,
+
+  "eslint.codeActionsOnSave.mode": "problems",
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
   "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
   "typescript.preferences.includePackageJsonAutoImports": "off"

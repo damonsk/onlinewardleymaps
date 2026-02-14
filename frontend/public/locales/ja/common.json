@@ -23,7 +23,8 @@
         "close": "閉じる",
         "confirm": "確認",
         "update": "更新",
-        "rename": "名前を変更"
+        "rename": "名前を変更",
+        "closeNotification": "通知を閉じる"
     },
     "navigation": {
         "home": "ホーム",
@@ -69,7 +70,53 @@
             "zoomOut": "ズームアウト",
             "fit": "フィット",
             "fullscreen": "全画面",
-            "exitFullscreen": "全画面終了"
+            "exitFullscreen": "全画面終了",
+            "pstTypeSelection": "PSTタイプ選択",
+            "wysiwygLabel": "キーボードショートカット付きマップコンポーネントツールバー",
+            "dragHandle": "ツールバーを移動するためのドラッグハンドル",
+            "dragTitle": "ドラッグしてツールバーを移動"
+        },
+        "feedback": {
+            "mapStyleChanged": "マップスタイルを{{style}}に変更しました",
+            "mapStyleChangeFailed": "マップスタイルの変更に失敗しました",
+            "mapSizeSet": "マップサイズを{{width}}x{{height}}に設定しました",
+            "mapSizeSetFailed": "マップサイズの設定に失敗しました",
+            "evolutionStagesUpdated": "進化ステージを更新しました",
+            "evolutionStagesUpdateFailed": "進化ステージの更新に失敗しました",
+            "drawing": {
+                "clickAndDragPst": "クリックしてドラッグし、{{label}}ボックスを描画します",
+                "selectPstTypeFirst": "先にドロップダウンからPSTタイプを選択してください",
+                "pstCreated": "{{label}}ボックスを作成しました。 ({{boxSize}})",
+                "pstCreateFailed": "PSTボックスの作成に失敗しました。もう一度お試しください。"
+            },
+            "placement": {
+                "pipelineCreated": "パイプライン{{componentName}}を既定コンポーネント付きで作成しました。",
+                "componentAdded": "コンポーネント{{componentName}}を追加しました。",
+                "addComponentFailed": "コンポーネントの追加に失敗しました。もう一度お試しください。"
+            },
+            "method": {
+                "hoverApply": "コンポーネントにホバーして{{methodName}}メソッドを適用します"
+            },
+            "linking": {
+                "hoverClickComponents": "コンポーネントにホバーしてクリックするとリンクできます",
+                "sourceSelected": "{{componentName}}をソースとして選択しました。別のコンポーネントをクリックしてリンクを作成します。",
+                "cannotLinkSelf": "コンポーネントを自分自身にリンクできません。別のコンポーネントを選択してください。",
+                "duplicateLink": "{{sourceName}}と{{targetName}}の間のリンクは既に存在します。",
+                "cancelled": "リンク作成をキャンセルしました",
+                "noSourceSelected": "リンク元コンポーネントが選択されていません",
+                "createdComponentAndLinked": "{{componentName}}を作成し、{{sourceName}}からリンクしました",
+                "linkCreated": "リンクを作成しました: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "コンポーネントとリンクの作成に失敗しました。もう一度お試しください。",
+                "createLinkFailed": "リンクの作成に失敗しました。もう一度お試しください。",
+                "clickToCancel": "クリックしてキャンセル",
+                "sourceDeleted": "ソースコンポーネントが削除されました",
+                "targetDeleted": "ターゲットコンポーネントが削除されました",
+                "duplicateLinkShort": "リンクは既に存在します"
+            },
+            "pipeline": {
+                "componentAdded": "コンポーネント{{componentName}}をパイプライン{{pipelineName}}に追加しました。",
+                "addFailed": "コンポーネントをパイプライン{{pipelineName}}に追加できませんでした。もう一度お試しください。"
+            }
         },
         "evolution": {
             "genesis": "創生期",
@@ -83,7 +130,11 @@
         },
         "yourMap": "あなたのマップ",
         "unsaved": "未保存",
-        "saving": "保存中..."
+        "saving": "保存中...",
+        "contextMenu": {
+            "title": "コンテキストメニュー",
+            "ariaLabel": "コンテキストメニュー"
+        }
     },
     "components": {
         "component": "コンポーネント",
@@ -95,9 +146,10 @@
         "maturity": "成熟度",
         "visibility": "可視性",
         "inertia": "慣性",
-        "quickAdd": "クイック追加",
+        "linkComponents": "コンポーネントをリンク",
         "type": "タイプ",
-        "text": "テキスト"
+        "text": "テキスト",
+        "saveError": "コンポーネントの保存エラー: {{error}}"
     },
     "links": {
         "link": "リンク",
@@ -113,7 +165,8 @@
         "addAnnotation": "注釈を追加",
         "editAnnotation": "注釈を編集",
         "deleteAnnotation": "注釈を削除",
-        "annotationText": "注釈テキスト"
+        "annotationText": "注釈テキスト",
+        "saveError": "ノートの保存エラー: {{error}}"
     },
     "iterations": {
         "iteration": "イテレーション",
@@ -134,11 +187,22 @@
         "usage": "使用法",
         "example": "例",
         "usageDescription": "利用可能なすべてのマップ要素のクイックリファレンス。利用可能なリンクをクリックすることで、例をマップに追加できます。",
+        "undo": {
+            "title": "元に戻す",
+            "description": "最後のアクションを元に戻す",
+            "tooltip": "マップで実行された最後のアクションを元に戻すにはクリックしてください"
+        },
+        "redo": {
+            "title": "やり直し",
+            "description": "最後に元に戻したアクションをやり直す",
+            "tooltip": "元に戻された最後のアクションをやり直すにはクリックしてください"
+        },
         "validation": {
             "error": "検証エラー",
             "lineError": "行 {{line}} でエラー",
             "componentNotFound": "コンポーネント「{{component}}」が見つかりません",
-            "invalidSyntax": "無効な構文"
+            "invalidSyntax": "無効な構文",
+            "elementNotFound": "マップ要素が見つからないか、構文が無効です"
         },
         "usages": {
             "to_set_the_title": "タイトルを設定する",
@@ -165,7 +229,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "ビルド、バイ、アウトソースの実行方法でコンポーネントをハイライト"
         },
         "hideUsage": "使用法を非表示",
-        "showUsage": "使用法を表示"
+        "showUsage": "使用法を表示",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "複数行テキストエディタ",
+                "singleLine": "テキストエディタ"
+            },
+            "validation": {
+                "required": "このフィールドは必須です",
+                "minLength": "最小文字数は{{count}}文字です",
+                "maxLength": "最大文字数は{{count}}文字です",
+                "invalidFormat": "無効な形式です",
+                "invalidCharacters": "無効な文字が含まれています",
+                "saveFailed": "保存に失敗しました。もう一度お試しください。"
+            }
+        },
+        "link": {
+            "placeholder": "リンクテキストを入力...",
+            "ariaDescription": "リンクに表示するテキストを入力してください。改行やセミコロンは含められません。",
+            "validation": {
+                "noLineBreaks": "リンクテキストに改行を含めることはできません",
+                "noSemicolons": "リンクテキストにセミコロンを含めることはできません",
+                "updateFailed": "リンクテキストの更新に失敗しました",
+                "unexpectedError": "予期しないエラーが発生しました"
+            }
+        }
     },
     "theme": {
         "light": "ライトテーマ",
@@ -201,7 +289,8 @@
         "downloadExtension": "Download Visual Studio Code Extension",
         "wardleyMapping": "ワードリーマッピングはサイモン・ワードリーの提供、CC BY-SA 4.0。詳細については、",
         "wardleyMappingLink": "書籍",
-        "createdBy": "作成者"
+        "createdBy": "作成者",
+        "patreonAlt": "パトロンになる"
     },
     "dialogs": {
         "deleteConfirmation": "この操作は元に戻せません。",
@@ -210,6 +299,92 @@
         "networkError": "ネットワークエラー。もう一度お試しください。",
         "saveError": "保存エラー。もう一度お試しください。",
         "loadError": "読み込みエラー。もう一度お試しください。",
-        "areYouSure": "Are you sure?"
+        "areYouSure": "Are you sure?",
+        "setMapSize": "マップサイズの設定",
+        "mapSizeDescription": "マップキャンバスのサイズを設定します。値は100〜5000ピクセルの間である必要があります。",
+        "width": "幅",
+        "height": "高さ",
+        "editEvolutionStages": "進化段階の編集",
+        "evolutionStagesDescription": "4つの進化段階の名前をカスタマイズします。これらはマップの進化軸にラベルとして表示されます。",
+        "stage1": "段階1 (創成期)",
+        "stage2": "段階2 (カスタム構築)",
+        "stage3": "段階3 (製品)",
+        "stage4": "段階4 (コモディティ)",
+        "validation": {
+            "required": "{{field}}は必須です",
+            "invalidNumber": "{{field}}は有効な数値である必要があります",
+            "wholeNumber": "{{field}}は整数である必要があります",
+            "tooSmall": "{{field}}は最低{{min}}である必要があります",
+            "tooLarge": "{{field}}は最大{{max}}を超えてはいけません",
+            "stageRequired": "段階{{number}}の名前は必須です",
+            "stageTooLong": "段階{{number}}の名前は50文字以下である必要があります"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "元に戻す/やり直しエラー",
+            "description": "元に戻す/やり直しシステムでエラーが発生しました。アプリケーションは動作を続けますが、元に戻す/やり直し機能が制限される場合があります。",
+            "detailsLabel": "エラー詳細"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "コンポーネント (C)",
+            "inertia": "慣性 (I)",
+            "market": "マーケット (M)",
+            "ecosystem": "エコシステム (E)",
+            "buildMethod": "構築メソッド (B)",
+            "buyMethod": "購入メソッド (U)",
+            "outsourceMethod": "アウトソーシングメソッド (O)",
+            "note": "ノート (N)",
+            "pipeline": "パイプライン (P)",
+            "anchor": "アンカー (A)",
+            "link": "コンポーネントをリンク (L)",
+            "pst": "PSTボックス (T)"
+        },
+        "pst": {
+            "pioneers": "パイオニア",
+            "settlers": "セトラー",
+            "townPlanners": "タウンプランナー"
+        },
+        "undo": {
+            "noActions": "元に戻すアクションがありません",
+            "withAction": "元に戻す: {{action}}"
+        },
+        "redo": {
+            "noActions": "やり直すアクションがありません",
+            "withAction": "やり直す: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "キーボードショートカットでツールを素早く選択できます：Cはコンポーネント、Lはリンク、Nはノート、Pはパイプライン、Aはアンカー、Mはメソッド、TはPST。Escapeで選択を解除。"
+        }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "現在のバージョンは{{version}}です。",
+        "placeholder": "詳細なリリースノートは近日ここに追加されます。",
+        "dismiss": "了解",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }

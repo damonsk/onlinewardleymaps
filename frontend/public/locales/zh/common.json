@@ -23,7 +23,8 @@
         "close": "关闭",
         "confirm": "确认",
         "update": "更新",
-        "rename": "重命名"
+        "rename": "重命名",
+        "closeNotification": "关闭通知"
     },
     "navigation": {
         "home": "首页",
@@ -69,7 +70,53 @@
             "zoomOut": "缩小",
             "fit": "适应",
             "fullscreen": "全屏",
-            "exitFullscreen": "退出全屏"
+            "exitFullscreen": "退出全屏",
+            "pstTypeSelection": "PST类型选择",
+            "wysiwygLabel": "带键盘快捷键的地图组件工具栏",
+            "dragHandle": "拖拽手柄以移动工具栏",
+            "dragTitle": "拖拽以移动工具栏"
+        },
+        "feedback": {
+            "mapStyleChanged": "地图样式已更改为 {{style}}",
+            "mapStyleChangeFailed": "无法更改地图样式",
+            "mapSizeSet": "地图尺寸已设置为 {{width}}x{{height}}",
+            "mapSizeSetFailed": "无法设置地图尺寸",
+            "evolutionStagesUpdated": "演化阶段已更新",
+            "evolutionStagesUpdateFailed": "无法更新演化阶段",
+            "drawing": {
+                "clickAndDragPst": "点击并拖拽以绘制 {{label}} 区域",
+                "selectPstTypeFirst": "请先在下拉菜单中选择 PST 类型",
+                "pstCreated": "{{label}} 区域创建成功。 ({{boxSize}})",
+                "pstCreateFailed": "创建 PST 区域失败。请重试。"
+            },
+            "placement": {
+                "pipelineCreated": "管道 {{componentName}} 已创建，并包含默认组件。",
+                "componentAdded": "组件 {{componentName}} 已成功添加。",
+                "addComponentFailed": "添加组件失败。请重试。"
+            },
+            "method": {
+                "hoverApply": "将鼠标悬停在组件上以应用 {{methodName}} 方法"
+            },
+            "linking": {
+                "hoverClickComponents": "悬停并点击组件以建立连接",
+                "sourceSelected": "已将 {{componentName}} 选为源组件。点击另一个组件以创建连接。",
+                "cannotLinkSelf": "不能将组件连接到自身。请选择其他组件。",
+                "duplicateLink": "{{sourceName}} 与 {{targetName}} 之间的连接已存在。",
+                "cancelled": "连接已取消",
+                "noSourceSelected": "未选择用于连接的源组件",
+                "createdComponentAndLinked": "已创建 {{componentName}}，并从 {{sourceName}} 建立连接",
+                "linkCreated": "连接已创建: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "创建组件和连接失败。请重试。",
+                "createLinkFailed": "创建连接失败。请重试。",
+                "clickToCancel": "点击取消",
+                "sourceDeleted": "源组件已删除",
+                "targetDeleted": "目标组件已删除",
+                "duplicateLinkShort": "链接已存在"
+            },
+            "pipeline": {
+                "componentAdded": "组件 {{componentName}} 已添加到管道 {{pipelineName}}。",
+                "addFailed": "无法将组件添加到管道 {{pipelineName}}。请重试。"
+            }
         },
         "evolution": {
             "genesis": "创新期",
@@ -83,7 +130,11 @@
         },
         "yourMap": "您的地图",
         "unsaved": "未保存",
-        "saving": "保存中..."
+        "saving": "保存中...",
+        "contextMenu": {
+            "title": "上下文菜单",
+            "ariaLabel": "上下文菜单"
+        }
     },
     "components": {
         "component": "组件",
@@ -95,9 +146,10 @@
         "maturity": "成熟度",
         "visibility": "可见度",
         "inertia": "惯性",
-        "quickAdd": "快速添加",
+        "linkComponents": "链接组件",
         "type": "类型",
-        "text": "文本"
+        "text": "文本",
+        "saveError": "保存组件错误：{{error}}"
     },
     "links": {
         "link": "链接",
@@ -113,7 +165,8 @@
         "addAnnotation": "添加注释",
         "editAnnotation": "编辑注释",
         "deleteAnnotation": "删除注释",
-        "annotationText": "注释文本"
+        "annotationText": "注释文本",
+        "saveError": "保存笔记错误：{{error}}"
     },
     "iterations": {
         "iteration": "迭代",
@@ -134,11 +187,22 @@
         "usage": "用法",
         "example": "示例",
         "usageDescription": "所有可用地图元素的快速参考。您可以通过点击可用链接将示例添加到您的地图中。",
+        "undo": {
+            "title": "撤销",
+            "description": "撤销上一个操作",
+            "tooltip": "点击撤销在地图上执行的最后一个操作"
+        },
+        "redo": {
+            "title": "重做",
+            "description": "重做上一个撤销的操作",
+            "tooltip": "点击重做最后一个被撤销的操作"
+        },
         "validation": {
             "error": "验证错误",
             "lineError": "第 {{line}} 行出错",
             "componentNotFound": "找不到组件 '{{component}}'",
-            "invalidSyntax": "无效语法"
+            "invalidSyntax": "无效语法",
+            "elementNotFound": "未找到地图元素或语法无效"
         },
         "usages": {
             "to_set_the_title": "设置标题",
@@ -165,7 +229,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "突出显示具有构建、购买或外包执行方法的组件"
         },
         "hideUsage": "隐藏用法",
-        "showUsage": "显示用法"
+        "showUsage": "显示用法",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "多行文本编辑器",
+                "singleLine": "文本编辑器"
+            },
+            "validation": {
+                "required": "此字段是必填的",
+                "minLength": "最小长度为{{count}}个字符",
+                "maxLength": "最大长度为{{count}}个字符",
+                "invalidFormat": "格式无效",
+                "invalidCharacters": "包含无效字符",
+                "saveFailed": "保存失败。请重试。"
+            }
+        },
+        "link": {
+            "placeholder": "输入链接文本...",
+            "ariaDescription": "输入在链接上显示的文本。不能包含换行符或分号。",
+            "validation": {
+                "noLineBreaks": "链接文本不能包含换行符",
+                "noSemicolons": "链接文本不能包含分号",
+                "updateFailed": "更新链接文本失败",
+                "unexpectedError": "发生了意外错误"
+            }
+        }
     },
     "theme": {
         "light": "浅色主题",
@@ -201,7 +289,8 @@
         "downloadExtension": "Download Visual Studio Code Extension",
         "wardleyMapping": "沃德利映射由西蒙·沃德利提供，CC BY-SA 4.0。了解更多，请参阅",
         "wardleyMappingLink": "书籍",
-        "createdBy": "创建者"
+        "createdBy": "创建者",
+        "patreonAlt": "成为赞助者"
     },
     "dialogs": {
         "deleteConfirmation": "此操作无法撤消。",
@@ -210,6 +299,92 @@
         "networkError": "网络错误。请重试。",
         "saveError": "保存错误。请重试。",
         "loadError": "加载错误。请重试。",
-        "areYouSure": "Are you sure?"
+        "areYouSure": "Are you sure?",
+        "setMapSize": "设置地图大小",
+        "mapSizeDescription": "为您的地图画布设置尺寸。数值必须在100到5000像素之间。",
+        "width": "宽度",
+        "height": "高度",
+        "editEvolutionStages": "编辑进化阶段",
+        "evolutionStagesDescription": "自定义四个进化阶段的名称。这些将作为标签显示在您地图的进化轴上。",
+        "stage1": "阶段1（起源）",
+        "stage2": "阶段2（定制构建）",
+        "stage3": "阶段3（产品）",
+        "stage4": "阶段4（商品）",
+        "validation": {
+            "required": "{{field}}是必填的",
+            "invalidNumber": "{{field}}必须是有效数字",
+            "wholeNumber": "{{field}}必须是整数",
+            "tooSmall": "{{field}}必须至少为{{min}}",
+            "tooLarge": "{{field}}不能超过{{max}}",
+            "stageRequired": "阶段{{number}}名称是必填的",
+            "stageTooLong": "阶段{{number}}名称必须在50个字符或更少"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "撤销/重做错误",
+            "description": "撤销/重做系统发生错误。应用程序将继续工作，但撤销/重做功能可能会受限。",
+            "detailsLabel": "错误详情"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "组件 (C)",
+            "inertia": "惯性 (I)",
+            "market": "市场 (M)",
+            "ecosystem": "生态系统 (E)",
+            "buildMethod": "构建方法 (B)",
+            "buyMethod": "购买方法 (U)",
+            "outsourceMethod": "外包方法 (O)",
+            "note": "笔记 (N)",
+            "pipeline": "流水线 (P)",
+            "anchor": "锚点 (A)",
+            "link": "连接组件 (L)",
+            "pst": "PST盒子 (T)"
+        },
+        "pst": {
+            "pioneers": "先锋者",
+            "settlers": "定居者",
+            "townPlanners": "城镇规划师"
+        },
+        "undo": {
+            "noActions": "没有可撤销的操作",
+            "withAction": "撤销：{{action}}"
+        },
+        "redo": {
+            "noActions": "没有可重做的操作",
+            "withAction": "重做：{{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "使用键盘快捷键快速选择工具：C代表组件，L代表链接，N代表笔记，P代表流水线，A代表锚点，M代表方法，T代表PST。按Escape取消选择。"
+        }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "你当前使用的是版本 {{version}}。",
+        "placeholder": "我们将在此处尽快添加详细的更新说明。",
+        "dismiss": "知道了",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }

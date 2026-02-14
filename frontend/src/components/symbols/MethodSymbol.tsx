@@ -18,11 +18,10 @@ const MethodSymbol: React.FC<ModernMethodSymbolProps> = ({id, x, y, buy, build, 
     else if (outsource) methodType = 'outsource';
     else if (build) methodType = 'build';
 
-    const style = (styles[methodType as keyof MapMethodsTheme] || styles.build) as MapMethodTheme;
-    console.log(`Rendering MethodSymbol: ${methodType}`, style, {build, buy, outsource});
+    const style = (styles?.[methodType as keyof MapMethodsTheme] || styles?.build || {fill: '#d7d7d7', stroke: 'black'}) as MapMethodTheme;
     return (
         <g id={id} transform={`translate(${x},${y})`} onClick={onClick} style={{cursor: onClick ? 'pointer' : 'default'}}>
-            <circle cx="0" cy="0" r="15" fill={style.fill} stroke={style.stroke} />
+            <circle cx="0" cy="0" r="15" fill={style?.fill || '#d7d7d7'} stroke={style?.stroke || 'black'} />
         </g>
     );
 };

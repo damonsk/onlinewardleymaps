@@ -1,4 +1,5 @@
 import {IParseStrategy} from '../types/base';
+import {unescapeComponentNameFromMapText} from '../utils/componentNameMatching';
 import ParseError from './ParseError';
 
 export default class LinksExtractionStrategy implements IParseStrategy {
@@ -75,8 +76,8 @@ export default class LinksExtractionStrategy implements IParseStrategy {
                         }
 
                         linksToReturn.push({
-                            start,
-                            end: end.trim().split(';')[0].trim(),
+                            start: unescapeComponentNameFromMapText(start.trim()),
+                            end: unescapeComponentNameFromMapText(end.trim().split(';')[0].trim()),
                             flow,
                             flowValue,
                             future,
@@ -94,8 +95,8 @@ export default class LinksExtractionStrategy implements IParseStrategy {
                     if (start.trim().length === 0 && end.trim().length === 0) throw new ParseError(i);
 
                     linksToReturn.push({
-                        start: start.trim(),
-                        end: end.trim().split(';')[0].trim(),
+                        start: unescapeComponentNameFromMapText(start.trim()),
+                        end: unescapeComponentNameFromMapText(end.trim().split(';')[0].trim()),
                         flow,
                         future,
                         past,

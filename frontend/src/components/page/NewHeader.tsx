@@ -64,6 +64,10 @@ export interface NewHeaderProps {
     setMapOnlyView: any;
     mapOnlyView: any;
     toggleMenu: any;
+    showWysiwygToolbar: boolean;
+    setShowWysiwygToolbar: React.Dispatch<React.SetStateAction<boolean>>;
+    showMapIterations: boolean;
+    setShowMapIterations: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const NewHeader: FunctionComponent<NewHeaderProps> = ({
@@ -81,6 +85,10 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     setMapOnlyView,
     mapOnlyView,
     toggleMenu,
+    showWysiwygToolbar,
+    setShowWysiwygToolbar,
+    showMapIterations,
+    setShowMapIterations,
 }) => {
     const [anchorMoreEl, setAnchorMoreEl] = useState<Element | null>();
     const [modalShow, setModalShow] = useState(false);
@@ -140,6 +148,16 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 {showLinkedEvolved
                     ? t('header.hideEvolvedLinks', 'Hide Evolved Links')
                     : t('header.showEvolvedLinks', 'Show Evolved Links')}
+            </MenuItem>
+            <MenuItem onClick={() => handleMoreClose(() => setShowWysiwygToolbar(!showWysiwygToolbar))} disableRipple>
+                {showWysiwygToolbar
+                    ? t('header.hideWysiwygToolbar', 'Hide WYSIWYG Toolbar')
+                    : t('header.showWysiwygToolbar', 'Show WYSIWYG Toolbar')}
+            </MenuItem>
+            <MenuItem onClick={() => handleMoreClose(() => setShowMapIterations(!showMapIterations))} disableRipple>
+                {showMapIterations
+                    ? t('header.hideMapIterations', 'Hide Map Iterations')
+                    : t('header.showMapIterations', 'Show Map Iterations')}
             </MenuItem>
             <Divider />
             <MenuItem onClick={() => handleMoreClose(() => window.open('https://docs.onlinewardleymaps.com'))} disableRipple>

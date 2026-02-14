@@ -1,67 +1,28 @@
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
-import {Backdrop, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import {Backdrop, Box, CircularProgress} from '@mui/material';
 import html2canvas from 'html2canvas';
-import Router from 'next/router';
-import React, {FunctionComponent, useEffect, useRef, useState} from 'react';
+import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react';
+import packageJson from '../../package.json';
 import * as Defaults from '../constants/defaults';
 import * as MapStyles from '../constants/mapstyles';
-import Converter from '../conversion/Converter';
 import {UnifiedConverter} from '../conversion/UnifiedConverter';
 import {useI18n} from '../hooks/useI18n';
 import {useLegacyMapState, useUnifiedMapState} from '../hooks/useUnifiedMapState';
-import {LoadMap} from '../repository/LoadMap';
-import {MapIteration, OwnApiWardleyMap} from '../repository/OwnApiWardleyMap';
-import {SaveMap} from '../repository/SaveMap';
+import {MapIteration} from '../repository/OwnApiWardleyMap';
 import {MapAnnotationsPosition, MapSize} from '../types/base';
+import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
-import {ModKeyPressedProvider} from './KeyPressContext';
-import QuickAdd from './actions/QuickAdd';
-import {ResizableSplitPane} from './common/ResizableSplitPane';
-import {Breadcrumb} from './editor/Breadcrumb';
+import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
+
+import {ComponentSelectionProvider} from './ComponentSelectionContext';
 import Editor from './editor/Editor';
-import {NewMapIterations} from './editor/MapIterations';
+import {AppUpdateDialog} from './common/AppUpdateDialog';
+import {MapLayout} from './map/components/MapLayout';
+import {useMapDimensions} from './map/hooks/useMapDimensions';
+import {useMapParsing} from './map/hooks/useMapParsing';
+import {useMapPersistence} from './map/hooks/useMapPersistence';
 import {MapView} from './map/MapView';
-import {LeftNavigation} from './page/LeftNavigation';
-import NewHeader from './page/NewHeader';
-import {UsageInfo} from './page/UseageInfo';
-
-function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): (...args: Parameters<T>) => void {
-    let timer: NodeJS.Timeout | null;
-
-    return function (this: any, ...args: Parameters<T>): void {
-        clearTimeout(timer!);
-        timer = setTimeout(() => {
-            timer = null;
-            fn.apply(this, args);
-        }, ms);
-    };
-}
-
-const getHeight = () => {
-    const mapElement = document.getElementById('map');
-    const clientHeight = mapElement?.clientHeight;
-
-    // If map element doesn't exist or has no height, fall back to window calculation
-    if (!clientHeight || clientHeight < 100) {
-        const winHeight = window.innerHeight;
-        const topNavHeight = document.getElementById('top-nav-wrapper')?.clientHeight;
-        const titleHeight = document.getElementById('title')?.clientHeight;
-        return winHeight - (topNavHeight || 0) - (titleHeight || 0) - 65; // Fallback calculation
-    }
-
-    // Use the actual map container height with margin for toolbar area
-    // The toolbar is positioned absolutely at bottom: 20px, so we need some space for it
-    return Math.max(clientHeight - 60, 400); // Increased margin to account for toolbar
-};
-const getWidth = () => {
-    const mapElement = document.getElementById('map');
-    const clientWidth = mapElement?.clientWidth;
-    // If map element doesn't exist or has no width, use window width with some margin
-    if (!clientWidth || clientWidth < 100) {
-        return Math.max(window.innerWidth - 100, 800); // Fallback to reasonable minimum
-    }
-    return Math.max(clientWidth - 10, 600); // Minimal margin, ensure reasonable minimum
-};
 
 interface MapEnvironmentProps {
     toggleMenu: () => void;
@@ -76,7 +37,39 @@ interface MapEnvironmentProps {
     setCurrentId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
+interface MapEnvironmentWithUndoRedoProps extends MapEnvironmentProps {
+    saveOutstanding: boolean;
+    setSaveOutstanding: React.Dispatch<React.SetStateAction<boolean>>;
+    mapIterations: MapIteration[];
+    setMapIterations: React.Dispatch<React.SetStateAction<MapIteration[]>>;
+    currentIteration: number;
+    setCurrentIteration: React.Dispatch<React.SetStateAction<number>>;
+    unifiedMapState: any; // Pass the unified state from parent
+}
+
+const LAST_SEEN_VERSION_STORAGE_KEY = 'onlinewardleymaps_lastSeenVersion';
+const APP_VERSION = packageJson.version;
+
+const compareVersions = (a: string, b: string): number => {
+    const aParts = a.split('.').map(part => parseInt(part, 10));
+    const bParts = b.split('.').map(part => parseInt(part, 10));
+    const maxLength = Math.max(aParts.length, bParts.length);
+
+    for (let i = 0; i < maxLength; i++) {
+        const aValue = Number.isNaN(aParts[i]) ? 0 : (aParts[i] ?? 0);
+        const bValue = Number.isNaN(bParts[i]) ? 0 : (bParts[i] ?? 0);
+
+        if (aValue > bValue) return 1;
+        if (aValue < bValue) return -1;
+    }
+
+    return 0;
+};
+
+/**
+ * Component that uses the UndoRedoProvider's enhanced mutateMapText
+ */
+const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoProps> = ({
     toggleMenu,
     menuVisible,
     toggleTheme,
@@ -87,10 +80,696 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     currentId,
     setCurrentId,
     setShouldLoad,
+    saveOutstanding,
+    setSaveOutstanding,
+    mapIterations,
+    setMapIterations,
+    currentIteration,
+    setCurrentIteration,
+    unifiedMapState,
 }) => {
     const featureSwitches = useFeatureSwitches();
     const mapRef = useRef<HTMLElement | null>(null);
     const {t} = useI18n();
+
+    // Get the undo/redo context
+    const undoRedoContext = useUndoRedo();
+
+    // Use the unified state passed from parent
+    const {state: mapState, actions: mapActions} = unifiedMapState;
+
+    // Extract individual values for backward compatibility using legacy hook
+    const legacyState = useLegacyMapState(unifiedMapState);
+
+    // Remaining individual state that's not part of unified state
+    const [currentUrl, setCurrentUrl] = useState('');
+    const [mapTitle, setMapTitle] = useState('Untitled Map');
+    const [rawMapTitle, setRawMapTitle] = useState('Untitled Map');
+    const [invalid, setInvalid] = useState(false);
+    const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState<MapAnnotationsPosition>({
+        maturity: 0,
+        visibility: 0,
+    });
+    const [mapSize, setMapSize] = useState<MapSize>({width: 0, height: 0});
+    const [mapStyle, setMapStyle] = useState('plain');
+    const [errorLine, setErrorLine] = useState<number[]>([]);
+    const [showLineNumbers, setShowLineNumbers] = useState(false);
+    // Helper function to get initial mapOnlyView state from localStorage
+    const getInitialMapOnlyView = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_mapOnlyView');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return false; // Default to Editor Mode (false = Editor Mode, true = Presentation Mode)
+    }, []);
+
+    const [mapOnlyView, setMapOnlyView] = useState(() => getInitialMapOnlyView());
+
+    // Wrapper function to persist mapOnlyView state to localStorage
+    const setMapOnlyViewWithPersistence = useCallback(
+        (value: boolean | ((prev: boolean) => boolean)) => {
+            const newValue = typeof value === 'function' ? value(mapOnlyView) : value;
+
+            // Update state
+            setMapOnlyView(newValue);
+
+            // Persist to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('onlinewardleymaps_mapOnlyView', newValue.toString());
+                } catch (error) {
+                    // Ignore localStorage errors (e.g., private browsing mode)
+                    console.warn('Failed to save mapOnlyView to localStorage:', error);
+                }
+            }
+        },
+        [mapOnlyView],
+    );
+
+    // Helper function to get initial showWysiwygToolbar state from localStorage
+    const getInitialShowWysiwygToolbar = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_showWysiwygToolbar');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return true; // Default to showing the toolbar
+    }, []);
+
+    // Helper function to get initial showMapIterations state from localStorage
+    const getInitialShowMapIterations = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_showMapIterations');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return true; // Default to showing the map iterations
+    }, []);
+
+    // Helper function to get initial toolbar snap state from localStorage
+    const getInitialToolbarSnapped = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('onlinewardleymaps_toolbarSnapped');
+            if (saved !== null) {
+                return saved === 'true'; // Convert string to boolean
+            }
+        }
+        return false; // Default to not snapped
+    }, []);
+
+    const [showWysiwygToolbar, setShowWysiwygToolbar] = useState(() => getInitialShowWysiwygToolbar());
+
+    // Wrapper function to persist showWysiwygToolbar state to localStorage
+    const setShowWysiwygToolbarWithPersistence = useCallback(
+        (value: boolean | ((prev: boolean) => boolean)) => {
+            const newValue = typeof value === 'function' ? value(showWysiwygToolbar) : value;
+
+            // Update state
+            setShowWysiwygToolbar(newValue);
+
+            // Persist to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('onlinewardleymaps_showWysiwygToolbar', newValue.toString());
+                } catch (error) {
+                    // Ignore localStorage errors (e.g., private browsing mode)
+                    console.warn('Failed to save showWysiwygToolbar to localStorage:', error);
+                }
+            }
+        },
+        [showWysiwygToolbar],
+    );
+
+    const [showMapIterations, setShowMapIterations] = useState(() => getInitialShowMapIterations());
+
+    // Wrapper function to persist showMapIterations state to localStorage
+    const setShowMapIterationsWithPersistence = useCallback(
+        (value: boolean | ((prev: boolean) => boolean)) => {
+            const newValue = typeof value === 'function' ? value(showMapIterations) : value;
+
+            // Update state
+            setShowMapIterations(newValue);
+
+            // Persist to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('onlinewardleymaps_showMapIterations', newValue.toString());
+                } catch (error) {
+                    // Ignore localStorage errors (e.g., private browsing mode)
+                    console.warn('Failed to save showMapIterations to localStorage:', error);
+                }
+            }
+        },
+        [showMapIterations],
+    );
+
+    const [toolbarSnapped, setToolbarSnapped] = useState(() => getInitialToolbarSnapped());
+
+    // Wrapper function to persist toolbarSnapped state to localStorage
+    const setToolbarSnappedWithPersistence = useCallback(
+        (value: boolean | ((prev: boolean) => boolean)) => {
+            const newValue = typeof value === 'function' ? value(toolbarSnapped) : value;
+
+            // Update state
+            setToolbarSnapped(newValue);
+
+            // Persist to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('onlinewardleymaps_toolbarSnapped', newValue.toString());
+                } catch (error) {
+                    // Ignore localStorage errors (e.g., private browsing mode)
+                    console.warn('Failed to save toolbarSnapped to localStorage:', error);
+                }
+            }
+        },
+        [toolbarSnapped],
+    );
+
+    const [actionInProgress, setActionInProgress] = useState(false);
+    const [hideNav, setHideNav] = useState(false);
+    const [showAppUpdateDialog, setShowAppUpdateDialog] = useState(false);
+
+    // Enhanced mutateMapText function that records history for normal operations
+    const mutateMapText = (
+        newText: string,
+        actionType?: Parameters<typeof undoRedoContext.recordChange>[1],
+        description?: string,
+        groupId?: string,
+    ) => {
+        // Record the change in history (if not an undo/redo operation)
+        if (!undoRedoContext.isUndoRedoOperation) {
+            undoRedoContext.recordChange(newText, actionType || 'editor-text', description || 'Map text changed', groupId);
+        }
+
+        // Apply the change using the parent's mapActions
+        mapActions.setMapText(newText);
+
+        // Parse the new map text and update the unified map state
+        try {
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+            const unifiedMap = unifiedConverter.parse(newText);
+            mapActions.setMap(unifiedMap);
+        } catch (err) {
+            console.log('Error parsing map text:', err);
+        }
+
+        setSaveOutstanding(true);
+
+        if (currentIteration !== null && currentIteration > -1) {
+            const newList = [...mapIterations];
+            const item = newList[currentIteration];
+            item.mapText = newText;
+            newList.splice(currentIteration, 1);
+            newList.splice(currentIteration, 0, item);
+            setMapIterations(newList);
+        }
+    };
+
+    const launchUrl = useCallback(
+        (urlId: string) => {
+            const mapUrl = legacyState.mapUrls.find(u => u.name === urlId);
+            if (mapUrl) {
+                window.open(mapUrl.url);
+            }
+        },
+        [legacyState.mapUrls],
+    );
+
+    const toggleUsage = useCallback(() => {
+        mapActions.setShowUsage(!mapState.showUsage);
+    }, [mapActions, mapState.showUsage]);
+
+    // Map persistence hook
+    const mapPersistence = useMapPersistence({
+        currentId,
+        setCurrentId,
+        mapPersistenceStrategy,
+        setMapPersistenceStrategy,
+        setShouldLoad,
+        setCurrentUrl,
+        setSaveOutstanding,
+        saveOutstanding,
+        setActionInProgress,
+        mapIterations,
+        setMapIterations,
+        currentIteration,
+        setCurrentIteration,
+        mapText: legacyState.mapText,
+        mutateMapText,
+    });
+
+    // Map parsing hook
+    const {parsedMapData, getMapStyleDefs} = useMapParsing({
+        mapText: legacyState.mapText,
+        featureSwitches,
+    });
+
+    // Map dimensions hook
+    const {getHeight, getWidth} = useMapDimensions({
+        mapSize,
+        mapOnlyView,
+        hideNav,
+        setMapDimensions: mapActions.setMapDimensions,
+        setMapCanvasDimensions: mapActions.setMapCanvasDimensions,
+    });
+
+    useEffect(() => {
+        if (parsedMapData.isValid && parsedMapData.legacy) {
+            const r = parsedMapData.legacy;
+            setErrorLine([]);
+            setInvalid(false);
+            setRawMapTitle(r.title);
+            setMapAnnotationsPresentation(r.presentation.annotations);
+            setMapStyle(r.presentation.style);
+            setMapSize(r.presentation.size);
+            mapActions.setMapEvolutionStates({
+                genesis: {l1: r.evolution[0].line1, l2: r.evolution[0].line2},
+                custom: {l1: r.evolution[1].line1, l2: r.evolution[1].line2},
+                product: {l1: r.evolution[2].line1, l2: r.evolution[2].line2},
+                commodity: {
+                    l1: r.evolution[3].line1,
+                    l2: r.evolution[3].line2,
+                },
+            });
+            if (parsedMapData.errors.length > 0) {
+                setErrorLine(parsedMapData.errors.map(e => e.line));
+            }
+            if (parsedMapData.unified) {
+                mapActions.setMap(parsedMapData.unified);
+            }
+        }
+    }, [parsedMapData, mapActions]);
+
+    useEffect(() => {
+        document.title = mapTitle + ' - ' + Defaults.PageTitle;
+    }, [mapTitle]);
+
+    useEffect(() => {
+        mapActions.setMapDimensions({
+            width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+            height: mapSize.height > 0 ? mapSize.height : getHeight(),
+        });
+    }, [mapOnlyView, hideNav, mapSize, mapActions, getWidth, getHeight]);
+
+    useEffect(() => {
+        if (currentIteration > -1) {
+            setMapTitle(rawMapTitle + ' [' + mapIterations[currentIteration].name + ']');
+        } else {
+            setMapTitle(rawMapTitle);
+        }
+    }, [currentIteration, rawMapTitle, mapIterations]);
+
+    useEffect(() => {
+        mapActions.setMapStyleDefs(getMapStyleDefs(mapStyle));
+    }, [mapStyle, getMapStyleDefs, mapActions]);
+
+    useEffect(() => {
+        if (shouldLoad) mapPersistence.loadFromRemoteStorage();
+    }, [shouldLoad, mapPersistence]);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        try {
+            const lastSeenVersion = localStorage.getItem(LAST_SEEN_VERSION_STORAGE_KEY);
+            const isNewUser = !lastSeenVersion;
+            const isOlderVersion = !!lastSeenVersion && compareVersions(lastSeenVersion, APP_VERSION) < 0;
+
+            if (isNewUser || isOlderVersion) {
+                setShowAppUpdateDialog(true);
+            }
+        } catch (error) {
+            console.warn('Failed to read app update version from localStorage:', error);
+        }
+    }, []);
+
+    const handleCloseAppUpdateDialog = useCallback(() => {
+        setShowAppUpdateDialog(false);
+
+        if (typeof window === 'undefined') return;
+        try {
+            localStorage.setItem(LAST_SEEN_VERSION_STORAGE_KEY, APP_VERSION);
+        } catch (error) {
+            console.warn('Failed to save app update version to localStorage:', error);
+        }
+    }, []);
+
+    const submenu = [
+        {
+            name: mapState.showUsage ? t('editor.hideUsage', 'Hide Usage') : t('editor.showUsage', 'Show Usage'),
+            icon: <HelpCenterIcon />,
+            action: () => {
+                toggleUsage();
+            },
+        },
+        {
+            name: t('updates.title', "What's New"),
+            icon: <NewReleasesIcon />,
+            action: () => {
+                setShowAppUpdateDialog(true);
+            },
+        },
+    ];
+
+    const shouldHideNav = useCallback(() => {
+        setHideNav(!hideNav);
+    }, [hideNav]);
+
+    // Helper function to wait for SVG element to be available
+    const waitForSVGElement = (retries = 5, delay = 200): Promise<SVGSVGElement> => {
+        return new Promise((resolve, reject) => {
+            const checkForSVG = (attemptsLeft: number) => {
+                // First try direct getElementById
+                let svgElement = document.getElementById('svgMap');
+
+                // If not found, look for ReactSVGPanZoom's SVG structure
+                if (!svgElement) {
+                    // Look for the main SVG that contains the map content
+                    const mapCanvas = document.getElementById('map-canvas');
+                    if (mapCanvas) {
+                        // Find the SVG within the map canvas that has the transform group containing our content
+                        const svgs = mapCanvas.querySelectorAll('svg');
+                        for (const svg of svgs) {
+                            // Look for SVG that contains a transform group with our map content
+                            const transformGroup = svg.querySelector('g[transform*="matrix"] g rect[fill="transparent"]');
+                            if (transformGroup) {
+                                svgElement = svg as unknown as HTMLElement;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback: look for any SVG with our expected map content
+                if (!svgElement) {
+                    const allSvgs = document.querySelectorAll('svg');
+                    for (const svg of allSvgs) {
+                        // Look for SVG containing map elements (components, anchors, etc.)
+                        const hasMapContent = svg.querySelector('#mapContent, #grid, [id*="element_"], [id*="anchor_"]');
+                        if (hasMapContent) {
+                            svgElement = svg as unknown as HTMLElement;
+                            break;
+                        }
+                    }
+                }
+
+                if (svgElement && svgElement.tagName.toLowerCase() === 'svg') {
+                    console.log('Found SVG element for export:', {
+                        id: svgElement.id || 'no-id',
+                        width: svgElement.getAttribute('width'),
+                        height: svgElement.getAttribute('height'),
+                        hasMapContent: !!svgElement.querySelector('#mapContent, #grid'),
+                    });
+                    resolve(svgElement as unknown as SVGSVGElement);
+                    return;
+                }
+
+                if (attemptsLeft <= 0) {
+                    console.error('SVG element search failed. Available SVGs:', {
+                        allSvgs: Array.from(document.querySelectorAll('svg')).map(svg => ({
+                            id: svg.id,
+                            class: svg.className,
+                            width: svg.getAttribute('width'),
+                            height: svg.getAttribute('height'),
+                            hasTransform: !!svg.querySelector('g[transform]'),
+                            hasMapContent: !!svg.querySelector('#mapContent, #grid, [id*="element_"]'),
+                        })),
+                    });
+                    reject(new Error('SVG element with map content not found. Make sure the map is fully loaded.'));
+                    return;
+                }
+
+                console.log(`Searching for SVG element... attempts remaining: ${attemptsLeft}`);
+                setTimeout(() => checkForSVG(attemptsLeft - 1), delay);
+            };
+
+            checkForSVG(retries);
+        });
+    };
+
+    // Download functions that are still needed
+    function downloadMap() {
+        waitForSVGElement()
+            .then(reactSvgElement => {
+                // For ReactSVGPanZoom, we need to extract the actual map content
+                // Find the transformed group that contains our map
+                const transformedGroup = reactSvgElement.querySelector('g[transform*="matrix"]');
+                if (!transformedGroup) {
+                    throw new Error('Could not find map content within ReactSVGPanZoom');
+                }
+
+                // Create a new SVG with just the map content
+                const newSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+                // Set dimensions based on the map content (looking for the fill area or grid)
+                const fillArea = transformedGroup.querySelector('#fillArea, rect[fill*="Gradient"], rect[fill="white"]');
+                let width = 800; // fallback
+                let height = 600; // fallback
+
+                if (fillArea) {
+                    width = parseInt(fillArea.getAttribute('width') || '800') + 70; // padding for labels
+                    height = parseInt(fillArea.getAttribute('height') || '600') + 90; // padding for labels
+                }
+
+                // Set up the new SVG
+                newSvg.setAttribute('width', width.toString());
+                newSvg.setAttribute('height', height.toString());
+                newSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                newSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                newSvg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
+                // Clone the map content without the transform
+                const mapContent = transformedGroup.cloneNode(true) as SVGGElement;
+                mapContent.removeAttribute('transform'); // Remove the pan/zoom transform
+
+                // Wrap in a group with proper positioning
+                const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                contentGroup.setAttribute('transform', 'translate(35, 45)'); // Offset for proper positioning
+                contentGroup.appendChild(mapContent);
+                newSvg.appendChild(contentGroup);
+
+                // Create a container for the SVG with proper sizing
+                const tempElement = document.createElement('div');
+                tempElement.style.position = 'absolute';
+                tempElement.style.left = '-9999px';
+                tempElement.style.top = '-9999px';
+                tempElement.style.width = `${width}px`;
+                tempElement.style.height = `${height}px`;
+                tempElement.style.backgroundColor = 'white';
+                tempElement.style.overflow = 'visible';
+                tempElement.appendChild(newSvg);
+
+                document.body.appendChild(tempElement);
+
+                html2canvas(tempElement, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: 'white',
+                    scale: 2,
+                    width: width,
+                    height: height,
+                })
+                    .then(canvas => {
+                        const base64image = canvas.toDataURL('image/png');
+                        const link = document.createElement('a');
+                        link.download = `${mapTitle}.png`;
+                        link.href = base64image;
+                        link.click();
+                        tempElement.remove();
+                    })
+                    .catch(error => {
+                        console.error('Error generating PNG export:', error);
+                        alert(`Failed to export PNG: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                        tempElement.remove();
+                    });
+            })
+            .catch(error => {
+                console.error('Error finding SVG element:', error);
+                alert(`Failed to export PNG: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            });
+    }
+
+    function downloadMapAsSVG() {
+        waitForSVGElement()
+            .then(reactSvgElement => {
+                // For ReactSVGPanZoom, we need to extract the actual map content
+                // Find the transformed group that contains our map
+                const transformedGroup = reactSvgElement.querySelector('g[transform*="matrix"]');
+                if (!transformedGroup) {
+                    throw new Error('Could not find map content within ReactSVGPanZoom');
+                }
+
+                // Create a new SVG with just the map content
+                const newSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+                // Set dimensions based on the map content
+                const fillArea = transformedGroup.querySelector('#fillArea, rect[fill*="Gradient"], rect[fill="white"]');
+                let width = 800; // fallback
+                let height = 600; // fallback
+
+                if (fillArea) {
+                    width = parseInt(fillArea.getAttribute('width') || '800') + 70;
+                    height = parseInt(fillArea.getAttribute('height') || '600') + 90;
+                }
+
+                // Set up the new SVG
+                newSvg.setAttribute('width', width.toString());
+                newSvg.setAttribute('height', height.toString());
+                newSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                newSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                newSvg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
+                // Clone the map content without the transform
+                const mapContent = transformedGroup.cloneNode(true) as SVGGElement;
+                mapContent.removeAttribute('transform'); // Remove the pan/zoom transform
+
+                // Wrap in a group with proper positioning
+                const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                contentGroup.setAttribute('transform', 'translate(35, 45)');
+                contentGroup.appendChild(mapContent);
+                newSvg.appendChild(contentGroup);
+
+                const svgMapText = newSvg.outerHTML.replace(/&nbsp;/g, ' ');
+                saveMapText(
+                    `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
+                    `${mapTitle}.svg`,
+                );
+            })
+            .catch(error => {
+                console.error('Error generating SVG export:', error);
+                alert(`Failed to export SVG: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            });
+    }
+
+    const saveMapText = (data: string, fileName: string) => {
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        const blob = new Blob([data], {type: 'data:attachment/xml'});
+        const url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+
+    const leftPanel = (
+        <Editor
+            wardleyMap={unifiedMapState.getUnifiedMap()}
+            hideNav={hideNav}
+            isLightTheme={isLightTheme}
+            highlightLine={legacyState.highlightedLine}
+            mapText={legacyState.mapText}
+            invalid={invalid}
+            mutateMapText={mutateMapText}
+            errorLine={errorLine}
+            showLineNumbers={showLineNumbers}
+        />
+    );
+
+    const rightPanel = (
+        <Box
+            className="map-view"
+            sx={{
+                backgroundColor: legacyState.mapStyleDefs.containerBackground,
+                width: '100%',
+                height: '100%',
+            }}>
+            <EditingProvider>
+                <ComponentSelectionProvider>
+                    <MapView
+                        wardleyMap={unifiedMapState.getUnifiedMap()}
+                        shouldHideNav={shouldHideNav}
+                        hideNav={hideNav}
+                        mapTitle={mapTitle}
+                        mapAnnotationsPresentation={mapAnnotationsPresentation}
+                        mapStyleDefs={legacyState.mapStyleDefs}
+                        mapCanvasDimensions={legacyState.mapCanvasDimensions}
+                        mapDimensions={legacyState.mapDimensions}
+                        mapEvolutionStates={legacyState.mapEvolutionStates}
+                        mapRef={mapRef}
+                        mapText={legacyState.mapText}
+                        mutateMapText={mutateMapText}
+                        evolutionOffsets={Defaults.EvoOffsets}
+                        launchUrl={launchUrl}
+                        setHighlightLine={legacyState.setHighlightLine}
+                        setNewComponentContext={legacyState.setNewComponentContext}
+                        showLinkedEvolved={legacyState.showLinkedEvolved}
+                        showWysiwygToolbar={showWysiwygToolbar}
+                        toolbarSnapped={toolbarSnapped}
+                        onToolbarSnapChange={setToolbarSnappedWithPersistence}
+                        mapOnlyView={mapOnlyView}
+                    />
+                </ComponentSelectionProvider>
+            </EditingProvider>
+        </Box>
+    );
+
+    return (
+        <>
+            <MapLayout
+                toggleMenu={toggleMenu}
+                menuVisible={menuVisible}
+                submenu={submenu}
+                toggleTheme={toggleTheme}
+                isLightTheme={isLightTheme}
+                hideNav={hideNav}
+                shouldHideNav={shouldHideNav}
+                mapOnlyView={mapOnlyView}
+                setMapOnlyView={setMapOnlyViewWithPersistence}
+                showWysiwygToolbar={showWysiwygToolbar}
+                setShowWysiwygToolbar={setShowWysiwygToolbarWithPersistence}
+                showMapIterations={showMapIterations}
+                setShowMapIterations={setShowMapIterationsWithPersistence}
+                currentUrl={currentUrl}
+                saveOutstanding={saveOutstanding}
+                mutateMapText={mutateMapText}
+                newMapClick={mapPersistence.newMap}
+                saveMapClick={mapPersistence.saveMap}
+                downloadMapImage={downloadMap}
+                showLineNumbers={showLineNumbers}
+                setShowLineNumbers={setShowLineNumbers}
+                showLinkedEvolved={legacyState.showLinkedEvolved}
+                setShowLinkedEvolved={legacyState.setShowLinkedEvolved}
+                downloadMapAsSVG={downloadMapAsSVG}
+                mapIterations={mapIterations}
+                currentIteration={currentIteration}
+                setMapIterations={setMapIterations}
+                setMapText={legacyState.mutateMapText}
+                addIteration={mapPersistence.addIteration}
+                setCurrentIteration={setCurrentIteration}
+                leftPanel={leftPanel}
+                rightPanel={rightPanel}
+                showUsage={mapState.showUsage}
+                setShowUsage={mapActions.setShowUsage}
+                mapStyleDefs={legacyState.mapStyleDefs}
+                mapText={legacyState.mapText}
+            />
+
+            <Backdrop
+                sx={{
+                    color: '#fff',
+                    zIndex: theme => theme.zIndex.drawer + 1,
+                }}
+                open={actionInProgress}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+            <AppUpdateDialog isOpen={showAppUpdateDialog} onClose={handleCloseAppUpdateDialog} />
+        </>
+    );
+};
+
+/**
+ * Main MapEnvironment component with integrated UndoRedoProvider
+ */
+const MapEnvironment: FunctionComponent<MapEnvironmentProps> = props => {
+    const featureSwitches = useFeatureSwitches();
 
     // Initialize unified map state
     const unifiedMapState = useUnifiedMapState({
@@ -108,35 +787,34 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
     });
 
     // Extract state and actions from unified state
-    const {state: mapState, actions: mapActions} = unifiedMapState;
+    const {actions: mapActions} = unifiedMapState;
 
     // Extract individual values for backward compatibility using legacy hook
     const legacyState = useLegacyMapState(unifiedMapState);
 
-    // Remaining individual state that's not part of unified state
-    const [currentUrl, setCurrentUrl] = useState('');
-    const [mapTitle, setMapTitle] = useState('Untitled Map');
-    const [rawMapTitle, setRawMapTitle] = useState('Untitled Map');
-    const [invalid, setInvalid] = useState(false);
-    const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState<MapAnnotationsPosition>({
-        maturity: 0,
-        visibility: 0,
-    });
-    const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
-    const [mapSize, setMapSize] = useState<MapSize>({width: 0, height: 0});
-    const [mapStyle, setMapStyle] = useState('plain');
+    // State for save and iterations that needs to be shared with UndoRedoProvider
     const [saveOutstanding, setSaveOutstanding] = useState(false);
-    const [errorLine, setErrorLine] = useState<number[]>([]);
-    const [showLineNumbers, setShowLineNumbers] = useState(false);
-    const [mapOnlyView, setMapOnlyView] = useState(false);
+    const [mapIterations, setMapIterations] = useState<MapIteration[]>([]);
     const [currentIteration, setCurrentIteration] = useState(-1);
-    const [actionInProgress, setActionInProgress] = useState(false);
-    const [hideNav, setHideNav] = useState(false);
 
-    // Wrapper function for setting map text that also handles iterations and save state
-    const mutateMapText = (newText: string) => {
-        legacyState.mutateMapText(newText);
+    // Base mutateMapText function that handles save state and iterations
+    // This is what the UndoRedoProvider will call for undo/redo operations
+    const baseMutateMapText = (newText: string) => {
+        // Update the map text directly using the actions
+        mapActions.setMapText(newText);
+
+        // Parse the new map text and update the unified map state
+        try {
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+            const unifiedMap = unifiedConverter.parse(newText);
+            mapActions.setMap(unifiedMap);
+        } catch (err) {
+            console.log('Error parsing map text:', err);
+        }
+
+        // Handle save state and iterations
         setSaveOutstanding(true);
+
         if (currentIteration !== null && currentIteration > -1) {
             const newList = [...mapIterations];
             const item = newList[currentIteration];
@@ -147,525 +825,19 @@ const MapEnvironment: FunctionComponent<MapEnvironmentProps> = ({
         }
     };
 
-    const launchUrl = (urlId: string) => {
-        const mapUrl = legacyState.mapUrls.find(u => u.name === urlId);
-        if (mapUrl) {
-            window.open(mapUrl.url);
-        }
-    };
-
-    const toggleUsage = () => {
-        mapActions.setShowUsage(!mapState.showUsage);
-    };
-
-    const saveToRemoteStorage = async function (hash: string) {
-        setActionInProgress(true);
-        const mapToPersist: OwnApiWardleyMap = {
-            mapText: legacyState.mapText,
-            imageData: '',
-            mapIterations,
-            readOnly: false,
-        };
-
-        const followOnActions = async function (id: string) {
-            if (currentId === '') {
-                console.log('[followOnActions::switch]', {
-                    mapPersistenceStrategy,
-                    currentId,
-                    id,
-                });
-                switch (mapPersistenceStrategy) {
-                    case Defaults.MapPersistenceStrategy.Legacy:
-                        window.location.hash = '#' + id;
-                        break;
-                }
-            }
-
-            setCurrentId(id);
-            setActionInProgress(false);
-            setCurrentUrl(window.location.href);
-            setSaveOutstanding(false);
-
-            console.log('saveToPrivateDataStore', {
-                mapPersistenceStrategy,
-            });
-        };
-
-        await SaveMap(mapPersistenceStrategy, mapToPersist, hash, followOnActions);
-    };
-
-    const loadFromRemoteStorage = async function () {
-        const followOnActions = (mapPersistenceStrategy: string, map: OwnApiWardleyMap) => {
-            setMapPersistenceStrategy(mapPersistenceStrategy);
-            setShouldLoad(false);
-            legacyState.mutateMapText(map.mapText);
-            if (map.mapIterations && map.mapIterations.length > 0) {
-                setMapIterations(map.mapIterations);
-                setCurrentIteration(0);
-                legacyState.mutateMapText(map.mapIterations[0].mapText);
-            }
-            setCurrentUrl(window.location.href);
-
-            if (window.location.hash.indexOf('#clone:') === 0) {
-                setCurrentUrl(`(${t('map.unsaved', 'unsaved')})`);
-                setSaveOutstanding(true);
-                setCurrentId('');
-                window.location.hash = '';
-            }
-
-            setSaveOutstanding(false);
-            setActionInProgress(false);
-
-            switch (mapPersistenceStrategy) {
-                case Defaults.MapPersistenceStrategy.Legacy:
-                    break;
-                default:
-                    setMapPersistenceStrategy(mapPersistenceStrategy);
-                    break;
-            }
-        };
-
-        setActionInProgress(true);
-        setCurrentUrl('(loading...)');
-        console.log('--- Set Load Strategy: ', mapPersistenceStrategy);
-        await LoadMap(mapPersistenceStrategy, followOnActions, currentId);
-    };
-
-    function newMap(mapPersistenceStrategy: string) {
-        legacyState.mutateMapText('');
-        setCurrentId('');
-        setCurrentUrl(`(${t('map.unsaved', 'unsaved')})`);
-        setSaveOutstanding(false);
-        setCurrentIteration(-1);
-        setMapIterations([]);
-        setMapPersistenceStrategy(mapPersistenceStrategy);
-        Router.push({pathname: '/'}, undefined, {shallow: true});
-    }
-
-    async function saveMap() {
-        setCurrentUrl(`(${t('map.saving', 'saving...')})`);
-        saveToRemoteStorage(currentId);
-    }
-
-    function downloadMap() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current.getElementsByTagName('svg')[0].outerHTML;
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = svgMapText;
-        tempElement.style.position = 'absolute';
-        tempElement.style.left = '-9999px';
-        document.body.appendChild(tempElement);
-        html2canvas(tempElement, {useCORS: true, allowTaint: true})
-            .then(canvas => {
-                const base64image = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = mapTitle;
-                link.href = base64image;
-                link.click();
-                tempElement.remove();
-            })
-
-            .catch(_ => {
-                tempElement.remove();
-            });
-    }
-
-    function downloadMapAsSVG() {
-        if (mapRef.current === null) return;
-        const svgMapText = mapRef.current
-            .getElementsByTagName('svg')[0]
-            .outerHTML.replace(/&nbsp;/g, ' ')
-            .replace(/<svg([^>]*)>/, '<svg xmlns="http://www.w3.org/2000/svg"$1>');
-        saveMapText(
-            `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
-            `${mapTitle}.svg`,
-        );
-    }
-
-    const addIteration = () => {
-        const iterations = [...mapIterations];
-        iterations.push({
-            name: `Iteration ${iterations.length + 1}`,
-            mapText: legacyState.mapText,
-        });
-        setMapIterations(iterations);
-    };
-
-    const saveMapText = (data: string, fileName: string) => {
-        const a = document.createElement('a');
-        document.body.appendChild(a);
-        a.setAttribute('style', 'display: none');
-        const blob = new Blob([data], {type: 'data:attachment/xml'});
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
-
-    useEffect(() => {
-        window.addEventListener('beforeunload', (event: BeforeUnloadEvent) => {
-            if (saveOutstanding) {
-                event.preventDefault();
-                event.returnValue = '';
-            }
-        });
-    });
-
-    useEffect(() => {
-        try {
-            setErrorLine([]);
-            setInvalid(false);
-            const r = new Converter(featureSwitches).parse(legacyState.mapText);
-            console.log('MapEnvironment', r);
-            setRawMapTitle(r.title);
-            setMapAnnotationsPresentation(r.presentation.annotations);
-            setMapStyle(r.presentation.style);
-            setMapSize(r.presentation.size);
-            mapActions.setMapEvolutionStates({
-                genesis: {l1: r.evolution[0].line1, l2: r.evolution[0].line2},
-                custom: {l1: r.evolution[1].line1, l2: r.evolution[1].line2},
-                product: {l1: r.evolution[2].line1, l2: r.evolution[2].line2},
-                commodity: {
-                    l1: r.evolution[3].line1,
-                    l2: r.evolution[3].line2,
-                },
-            });
-            if (r.errors.length > 0) {
-                setErrorLine(r.errors.map(e => e.line));
-            }
-
-            // CRITICAL FIX: Also update the unified map state
-            const unifiedConverter = new UnifiedConverter(featureSwitches);
-            const unifiedMap = unifiedConverter.parse(legacyState.mapText);
-            mapActions.setMap(unifiedMap);
-        } catch (err) {
-            console.log('Error:', err);
-        }
-    }, [legacyState.mapText, featureSwitches, mapActions]);
-
-    useEffect(() => {
-        document.title = mapTitle + ' - ' + Defaults.PageTitle;
-    }, [mapTitle]);
-
-    useEffect(() => {
-        mapActions.setMapDimensions({
-            width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-            height: mapSize.height > 0 ? mapSize.height : getHeight(),
-        });
-    }, [mapOnlyView, hideNav, mapSize, mapActions]);
-
-    useEffect(() => {
-        if (currentIteration > -1) {
-            setMapTitle(rawMapTitle + ' [' + mapIterations[currentIteration].name + ']');
-        } else {
-            setMapTitle(rawMapTitle);
-        }
-    }, [currentIteration, rawMapTitle, mapIterations]);
-
-    useEffect(() => {
-        switch (mapStyle) {
-            case 'colour':
-            case 'color':
-                mapActions.setMapStyleDefs(MapStyles.Colour);
-                break;
-            case 'wardley':
-                mapActions.setMapStyleDefs(MapStyles.Wardley);
-                break;
-            case 'dark':
-                mapActions.setMapStyleDefs(MapStyles.Dark);
-                break;
-            case 'handwritten':
-                mapActions.setMapStyleDefs(MapStyles.Handwritten);
-                break;
-            default:
-                mapActions.setMapStyleDefs(MapStyles.Plain);
-        }
-    }, [mapStyle, mapActions]);
-
-    useEffect(() => {
-        if (shouldLoad) loadFromRemoteStorage();
-    }, [shouldLoad]);
-
-    useEffect(() => {
-        const debouncedHandleResize = debounce(() => {
-            const dimensions = {
-                width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-                height: mapSize.height > 0 ? mapSize.height : getHeight(),
-            };
-            mapActions.setMapDimensions(dimensions);
-        }, 1);
-
-        // Handle standard window resize events (but not panel resizes)
-        const handleWindowResize = (event: Event) => {
-            // Only handle if it's not a programmatically dispatched event from panel resize
-            if (!event.isTrusted) return;
-            debouncedHandleResize();
-        };
-
-        window.addEventListener('resize', handleWindowResize);
-        debouncedHandleResize();
-
-        return function cleanup() {
-            window.removeEventListener('resize', handleWindowResize);
-        };
-    }, [mapSize, mapActions]);
-
-    useEffect(() => {
-        const newDimensions = {
-            width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-            height: mapSize.height > 0 ? mapSize.height : getHeight(),
-        };
-        mapActions.setMapDimensions(newDimensions);
-        mapActions.setMapCanvasDimensions({
-            width: getWidth(),
-            height: getHeight(),
-        });
-    }, [mapOnlyView, hideNav, mapActions]);
-
-    useEffect(() => {
-        const initialLoad = () => {
-            mapActions.setMapCanvasDimensions({
-                width: getWidth(),
-                height: getHeight(),
-            });
-        };
-
-        const debouncedHandleCanvasResize = debounce(() => {
-            mapActions.setMapCanvasDimensions({
-                width: getWidth(),
-                height: getHeight(),
-            });
-        }, 500);
-
-        // Handle panel resize events specifically
-
-        const handlePanelResize = (event: CustomEvent) => {
-            // Update both map dimensions and canvas dimensions when panel resizes
-            // This should work exactly like browser window resize
-            setTimeout(() => {
-                const newWidth = getWidth();
-                const newHeight = getHeight();
-
-                // Update map dimensions (like window resize does)
-                const dimensions = {
-                    width: mapSize.width > 0 ? mapSize.width : 100 + newWidth,
-                    height: mapSize.height > 0 ? mapSize.height : newHeight,
-                };
-                mapActions.setMapDimensions(dimensions);
-
-                // Update canvas dimensions
-                mapActions.setMapCanvasDimensions({
-                    width: newWidth,
-                    height: newHeight,
-                });
-            }, 200); // Delay to ensure DOM has fully updated and map container has resized
-        };
-
-        // Handle standard window resize events (but not panel resizes)
-        const handleWindowResize = (event: Event) => {
-            // Only handle if it's not a programmatically dispatched event from panel resize
-            if (!event.isTrusted) return;
-            debouncedHandleCanvasResize();
-        };
-
-        window.addEventListener('load', initialLoad);
-        window.addEventListener('resize', handleWindowResize);
-        window.addEventListener('panelResize', handlePanelResize as EventListener);
-
-        return function cleanup() {
-            window.removeEventListener('resize', handleWindowResize);
-            window.removeEventListener('load', initialLoad);
-            window.removeEventListener('panelResize', handlePanelResize as EventListener);
-        };
-    }, [mapActions]);
-
-    const submenu = [
-        {
-            name: mapState.showUsage ? t('editor.hideUsage', 'Hide Usage') : t('editor.showUsage', 'Show Usage'),
-            icon: <HelpCenterIcon />,
-            action: () => {
-                toggleUsage();
-            },
-        },
-    ];
-
-    const shouldHideNav = () => {
-        setHideNav(!hideNav);
-    };
-
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100vh',
-                overflow: 'hidden',
-            }}>
-            <LeftNavigation
-                toggleMenu={toggleMenu}
-                menuVisible={menuVisible}
-                submenu={submenu}
-                toggleTheme={toggleTheme}
-                isLightTheme={isLightTheme}
+        <UndoRedoProvider mutateMapText={baseMutateMapText} mapText={legacyState.mapText} maxHistorySize={50} debounceMs={300}>
+            <MapEnvironmentWithUndoRedo
+                {...props}
+                saveOutstanding={saveOutstanding}
+                setSaveOutstanding={setSaveOutstanding}
+                mapIterations={mapIterations}
+                setMapIterations={setMapIterations}
+                currentIteration={currentIteration}
+                setCurrentIteration={setCurrentIteration}
+                unifiedMapState={unifiedMapState}
             />
-
-            <Box
-                id="top-nav-wrapper"
-                sx={{
-                    display: hideNav ? 'none' : 'block',
-                    flexShrink: 0,
-                }}>
-                <NewHeader
-                    mapOnlyView={mapOnlyView}
-                    setMapOnlyView={setMapOnlyView}
-                    currentUrl={currentUrl}
-                    saveOutstanding={saveOutstanding}
-                    mutateMapText={mutateMapText}
-                    newMapClick={newMap}
-                    saveMapClick={saveMap}
-                    downloadMapImage={downloadMap}
-                    showLineNumbers={showLineNumbers}
-                    setShowLineNumbers={setShowLineNumbers}
-                    showLinkedEvolved={legacyState.showLinkedEvolved}
-                    setShowLinkedEvolved={legacyState.setShowLinkedEvolved}
-                    downloadMapAsSVG={downloadMapAsSVG}
-                    toggleMenu={toggleMenu}
-                />
-
-                <Breadcrumb currentUrl={currentUrl} />
-
-                <NewMapIterations
-                    mapIterations={mapIterations}
-                    currentIteration={currentIteration}
-                    setMapIterations={setMapIterations}
-                    setMapText={legacyState.mutateMapText}
-                    addIteration={addIteration}
-                    setCurrentIteration={setCurrentIteration}
-                />
-            </Box>
-
-            <Box sx={{flexGrow: 1, height: '100%', overflow: 'hidden'}}>
-                {mapOnlyView === false ? (
-                    <ResizableSplitPane
-                        defaultLeftWidth={33}
-                        minLeftWidth={20}
-                        maxLeftWidth={60}
-                        storageKey="wardleyMapEditor_splitPaneWidth"
-                        isDarkTheme={!isLightTheme}
-                        leftPanel={
-                            <Editor
-                                wardleyMap={unifiedMapState.getUnifiedMap()}
-                                hideNav={hideNav}
-                                isLightTheme={isLightTheme}
-                                highlightLine={legacyState.highlightedLine}
-                                mapText={legacyState.mapText}
-                                invalid={invalid}
-                                mutateMapText={mutateMapText}
-                                errorLine={errorLine}
-                                showLineNumbers={showLineNumbers}
-                            />
-                        }
-                        rightPanel={
-                            <Box
-                                className="map-view"
-                                sx={{
-                                    backgroundColor: legacyState.mapStyleDefs.containerBackground,
-                                    width: '100%',
-                                    height: '100%',
-                                }}>
-                                <ModKeyPressedProvider>
-                                    <MapView
-                                        wardleyMap={unifiedMapState.getUnifiedMap()}
-                                        shouldHideNav={shouldHideNav}
-                                        hideNav={hideNav}
-                                        mapTitle={mapTitle}
-                                        mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                        mapStyleDefs={legacyState.mapStyleDefs}
-                                        mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                        mapDimensions={legacyState.mapDimensions}
-                                        mapEvolutionStates={legacyState.mapEvolutionStates}
-                                        mapRef={mapRef}
-                                        mapText={legacyState.mapText}
-                                        mutateMapText={mutateMapText}
-                                        evolutionOffsets={Defaults.EvoOffsets}
-                                        launchUrl={launchUrl}
-                                        setHighlightLine={legacyState.setHighlightLine}
-                                        setNewComponentContext={legacyState.setNewComponentContext}
-                                        showLinkedEvolved={legacyState.showLinkedEvolved}
-                                    />
-                                </ModKeyPressedProvider>
-                            </Box>
-                        }
-                    />
-                ) : (
-                    <Box
-                        className="map-view"
-                        sx={{
-                            backgroundColor: legacyState.mapStyleDefs.containerBackground,
-                            width: '100%',
-                            height: '100%',
-                        }}>
-                        <ModKeyPressedProvider>
-                            <MapView
-                                wardleyMap={unifiedMapState.getUnifiedMap()}
-                                shouldHideNav={shouldHideNav}
-                                hideNav={hideNav}
-                                mapTitle={mapTitle}
-                                mapAnnotationsPresentation={mapAnnotationsPresentation}
-                                mapStyleDefs={legacyState.mapStyleDefs}
-                                mapCanvasDimensions={legacyState.mapCanvasDimensions}
-                                mapDimensions={legacyState.mapDimensions}
-                                mapEvolutionStates={legacyState.mapEvolutionStates}
-                                mapRef={mapRef}
-                                mapText={legacyState.mapText}
-                                mutateMapText={mutateMapText}
-                                evolutionOffsets={Defaults.EvoOffsets}
-                                launchUrl={launchUrl}
-                                setHighlightLine={legacyState.setHighlightLine}
-                                setNewComponentContext={legacyState.setNewComponentContext}
-                                showLinkedEvolved={legacyState.showLinkedEvolved}
-                            />
-                        </ModKeyPressedProvider>
-                    </Box>
-                )}
-            </Box>
-
-            <Dialog maxWidth={'lg'} open={mapState.showUsage} onClose={() => mapActions.setShowUsage(false)}>
-                <DialogTitle>{t('editor.usage', 'Usage')}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {t(
-                            'editor.usageDescription',
-                            'Quick reference of all available map elements. You can add an example to your map by clicking the available links.',
-                        )}
-                    </DialogContentText>
-                    <Box marginTop={2}>
-                        <UsageInfo mapStyleDefs={legacyState.mapStyleDefs} mutateMapText={mutateMapText} mapText={legacyState.mapText} />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => mapActions.setShowUsage(false)}>{t('common.close', 'Close')}</Button>
-                </DialogActions>
-            </Dialog>
-
-            <QuickAdd
-                newComponentContext={legacyState.newComponentContext}
-                mutateMapText={mutateMapText}
-                setNewComponentContext={legacyState.setNewComponentContext}
-                mapText={legacyState.mapText}
-                mapStyleDefs={legacyState.mapStyleDefs}
-            />
-
-            <Backdrop
-                sx={{
-                    color: '#fff',
-                    zIndex: theme => theme.zIndex.drawer + 1,
-                }}
-                open={actionInProgress}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-        </Box>
+        </UndoRedoProvider>
     );
 };
 

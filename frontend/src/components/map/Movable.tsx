@@ -1,7 +1,5 @@
 import React, {MouseEvent, useCallback, useEffect} from 'react';
 
-const HIGHLIGHT_DEF = 'url(#ctrlHighlight)';
-
 interface MovedPosition {
     x: number;
     y: number;
@@ -24,17 +22,9 @@ interface ModernMovableProps {
     fixedX?: boolean;
     fixedY?: boolean;
     shouldShowMoving?: boolean;
-    isModKeyPressed?: boolean;
     scaleFactor?: number;
     children: React.ReactNode;
 }
-
-const shouldHighlight = ({isModKeyPressed}: {isModKeyPressed?: boolean}) => {
-    if (isModKeyPressed) {
-        return HIGHLIGHT_DEF;
-    }
-    return undefined;
-};
 
 const Movable: React.FC<ModernMovableProps> = props => {
     const x = useCallback(() => props.x, [props.x]);
@@ -67,7 +57,11 @@ const Movable: React.FC<ModernMovableProps> = props => {
     );
 
     const handleMouseDown = (e: MouseEvent<SVGGElement>) => {
-        if (props.isModKeyPressed) return;
+        // Only initiate drag on left mouse button (button 0)
+        if (e.button !== 0) {
+            return;
+        }
+
         setMoving(true);
         const pageX = e.pageX;
         const pageY = e.pageY;
@@ -95,7 +89,6 @@ const Movable: React.FC<ModernMovableProps> = props => {
     };
 
     const handleMouseUp = () => {
-        if (props.isModKeyPressed) return;
         document.removeEventListener('mousemove', handleMouseMove);
         setPosition(position =>
             Object.assign({}, position, {
@@ -122,8 +115,6 @@ const Movable: React.FC<ModernMovableProps> = props => {
         });
     }, [x, y]);
 
-    const filter = shouldHighlight(props);
-
     return (
         <g
             className={'draggable'}
@@ -131,7 +122,6 @@ const Movable: React.FC<ModernMovableProps> = props => {
             onMouseDown={e => handleMouseDown(e)}
             onMouseUp={() => handleMouseUp()}
             id={`modern_movable_${props.id}`}
-            filter={filter}
             transform={'translate(' + (props.fixedX ? x() : position.x) + ',' + (props.fixedY ? y() : position.y) + ')'}>
             <rect x="-15" y="-15" rx="30" ry="30" width="30" height="30" fillOpacity={shouldShowMoving && moving ? 0.2 : 0.0} />
             {props.children}

@@ -6,6 +6,7 @@ export const featureSwitches: IProvideFeatureSwitches = {
     enableLinkContext: true,
     enableAccelerators: true,
     enableDoubleClickRename: true,
+    enableNoteInlineEditing: true, // Enable double-click editing for Notes
     showToggleFullscreen: true,
     showMapToolbar: true,
     showMiniMap: false,

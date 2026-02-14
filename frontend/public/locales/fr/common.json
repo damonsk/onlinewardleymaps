@@ -23,7 +23,8 @@
         "close": "Fermer",
         "confirm": "Confirmer",
         "update": "Mettre à jour",
-        "rename": "Renommer"
+        "rename": "Renommer",
+        "closeNotification": "Fermer la notification"
     },
     "navigation": {
         "home": "Accueil",
@@ -64,6 +65,24 @@
         "yourMap": "Votre Carte",
         "unsaved": "non sauvegardé",
         "saving": "sauvegarde...",
+        "contextMenu": {
+            "title": "Menu contextuel",
+            "ariaLabel": "Menu contextuel",
+            "editComponent": "Éditer Composant",
+            "deleteComponent": "Supprimer Composant",
+            "deleteLink": "Supprimer Lien",
+            "addInertia": "Ajouter Inertie",
+            "removeInertia": "Supprimer Inertie",
+            "evolveComponent": "Faire Évoluer Composant",
+            "mapStyles": {
+                "plain": "Simple",
+                "wardley": "Wardley",
+                "colour": "Couleur"
+            },
+            "setMapSize": "Définir Taille de la Carte",
+            "editEvolutionStages": "Éditer les Étapes d'Évolution",
+            "delete": "Supprimer"
+        },
         "toolbar": {
             "group": "groupe de boutons",
             "select": "Sélectionner",
@@ -72,7 +91,53 @@
             "zoomOut": "Zoom Arrière",
             "fit": "Ajuster",
             "fullscreen": "Plein Écran",
-            "exitFullscreen": "Quitter le Plein Écran"
+            "exitFullscreen": "Quitter le Plein Écran",
+            "pstTypeSelection": "Sélection du type PST",
+            "wysiwygLabel": "Barre d'outils des composants de carte avec raccourcis clavier",
+            "dragHandle": "Poignée de glissement pour déplacer la barre d'outils",
+            "dragTitle": "Glisser pour déplacer la barre d'outils"
+        },
+        "feedback": {
+            "mapStyleChanged": "Style de la carte changé en {{style}}",
+            "mapStyleChangeFailed": "Échec du changement de style de la carte",
+            "mapSizeSet": "Taille de la carte définie à {{width}}x{{height}}",
+            "mapSizeSetFailed": "Échec de la définition de la taille de la carte",
+            "evolutionStagesUpdated": "Étapes d'évolution mises à jour",
+            "evolutionStagesUpdateFailed": "Échec de la mise à jour des étapes d'évolution",
+            "drawing": {
+                "clickAndDragPst": "Cliquez et faites glisser pour dessiner une boîte {{label}}",
+                "selectPstTypeFirst": "Sélectionnez d'abord un type PST dans la liste",
+                "pstCreated": "Boîte {{label}} créée avec succès. ({{boxSize}})",
+                "pstCreateFailed": "Impossible de créer la boîte PST. Veuillez réessayer."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline {{componentName}} créée avec les composants par défaut.",
+                "componentAdded": "Composant {{componentName}} ajouté avec succès.",
+                "addComponentFailed": "Impossible d'ajouter le composant. Veuillez réessayer."
+            },
+            "method": {
+                "hoverApply": "Survolez les composants pour appliquer la méthode {{methodName}}"
+            },
+            "linking": {
+                "hoverClickComponents": "Survolez et cliquez sur des composants pour les relier",
+                "sourceSelected": "{{componentName}} sélectionné comme source. Cliquez sur un autre composant pour créer un lien.",
+                "cannotLinkSelf": "Impossible de relier un composant à lui-même. Sélectionnez un autre composant.",
+                "duplicateLink": "Un lien entre {{sourceName}} et {{targetName}} existe déjà.",
+                "cancelled": "Création de lien annulée",
+                "noSourceSelected": "Aucun composant source sélectionné pour la liaison",
+                "createdComponentAndLinked": "{{componentName}} créé et relié depuis {{sourceName}}",
+                "linkCreated": "Lien créé : {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "Impossible de créer le composant et le lien. Veuillez réessayer.",
+                "createLinkFailed": "Impossible de créer le lien. Veuillez réessayer.",
+                "clickToCancel": "Cliquez pour annuler",
+                "sourceDeleted": "Composant source supprimé",
+                "targetDeleted": "Composant cible supprimé",
+                "duplicateLinkShort": "Le lien existe déjà"
+            },
+            "pipeline": {
+                "componentAdded": "Composant {{componentName}} ajouté au pipeline {{pipelineName}}.",
+                "addFailed": "Impossible d'ajouter le composant au pipeline {{pipelineName}}. Veuillez réessayer."
+            }
         },
         "evolution": {
             "genesis": "Genèse",
@@ -95,9 +160,10 @@
         "maturity": "Maturité",
         "visibility": "Visibilité",
         "inertia": "Inertie",
-        "quickAdd": "Ajout Rapide",
+        "linkComponents": "Lier les Composants",
         "type": "Catégorie",
-        "text": "Texte"
+        "text": "Texte",
+        "saveError": "Erreur lors de l'enregistrement du composant: {{error}}"
     },
     "links": {
         "link": "Lien",
@@ -113,7 +179,8 @@
         "addAnnotation": "Ajouter une Annotation",
         "editAnnotation": "Modifier l'Annotation",
         "deleteAnnotation": "Supprimer l'Annotation",
-        "annotationText": "Texte d'Annotation"
+        "annotationText": "Texte d'Annotation",
+        "saveError": "Erreur lors de l'enregistrement de la note: {{error}}"
     },
     "iterations": {
         "iteration": "Itération",
@@ -134,11 +201,22 @@
         "usage": "Utilisation",
         "example": "Exemple",
         "usageDescription": "Référence rapide de tous les éléments de carte disponibles. Vous pouvez ajouter un exemple à votre carte en cliquant sur les liens disponibles.",
+        "undo": {
+            "title": "Annuler",
+            "description": "Annuler la dernière action",
+            "tooltip": "Cliquez pour annuler la dernière action effectuée sur la carte"
+        },
+        "redo": {
+            "title": "Rétablir",
+            "description": "Rétablir la dernière action annulée",
+            "tooltip": "Cliquez pour rétablir la dernière action qui a été annulée"
+        },
         "validation": {
             "error": "Erreur de Validation",
             "lineError": "Erreur à la ligne {{line}}",
             "componentNotFound": "Composant '{{component}}' non trouvé",
-            "invalidSyntax": "Syntaxe invalide"
+            "invalidSyntax": "Syntaxe invalide",
+            "elementNotFound": "Élément de carte introuvable ou syntaxe invalide"
         },
         "usages": {
             "to_set_the_title": "Pour définir le titre",
@@ -165,7 +243,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Mettre en évidence un composant avec une méthode d'exécution de construction, d'achat ou d'externalisation"
         },
         "hideUsage": "Masquer l'Utilisation",
-        "showUsage": "Afficher l'Utilisation"
+        "showUsage": "Afficher l'Utilisation",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Éditeur de texte multiligne",
+                "singleLine": "Éditeur de texte"
+            },
+            "validation": {
+                "required": "Ce champ est obligatoire",
+                "minLength": "La longueur minimale est de {{count}} caractères",
+                "maxLength": "La longueur maximale est de {{count}} caractères",
+                "invalidFormat": "Format invalide",
+                "invalidCharacters": "Contient des caractères invalides",
+                "saveFailed": "Échec de l'enregistrement. Veuillez réessayer."
+            }
+        },
+        "link": {
+            "placeholder": "Entrez le texte du lien...",
+            "ariaDescription": "Entrez le texte à afficher sur le lien. Ne peut pas contenir de sauts de ligne ou de point-virgules.",
+            "validation": {
+                "noLineBreaks": "Le texte du lien ne peut pas contenir de sauts de ligne",
+                "noSemicolons": "Le texte du lien ne peut pas contenir de point-virgules",
+                "updateFailed": "Échec de la mise à jour du texte du lien",
+                "unexpectedError": "Une erreur inattendue s'est produite"
+            }
+        }
     },
     "theme": {
         "light": "Thème Clair",
@@ -201,7 +303,8 @@
         "community": "Rejoindre la communauté",
         "documentation": "Documentation",
         "support": "Assistance technique",
-        "createdBy": "Créé par"
+        "createdBy": "Créé par",
+        "patreonAlt": "Devenir un Mécène"
     },
     "dialogs": {
         "areYouSure": "Êtes-vous sûr ?",
@@ -210,6 +313,92 @@
         "invalidInput": "Veuillez entrer une saisie valide.",
         "networkError": "Erreur réseau. Veuillez réessayer.",
         "saveError": "Erreur lors de l'enregistrement. Veuillez réessayer.",
-        "loadError": "Erreur lors du chargement. Veuillez réessayer."
+        "loadError": "Erreur lors du chargement. Veuillez réessayer.",
+        "setMapSize": "Définir la Taille de la Carte",
+        "mapSizeDescription": "Définissez les dimensions de votre canevas de carte. Les valeurs doivent être comprises entre 100 et 5000 pixels.",
+        "width": "Largeur",
+        "height": "Hauteur",
+        "editEvolutionStages": "Modifier les Étapes d'Évolution",
+        "evolutionStagesDescription": "Personnalisez les noms des quatre étapes d'évolution. Celles-ci apparaîtront comme étiquettes sur l'axe d'évolution de votre carte.",
+        "stage1": "Étape 1 (Genèse)",
+        "stage2": "Étape 2 (Sur Mesure)",
+        "stage3": "Étape 3 (Produit)",
+        "stage4": "Étape 4 (Commodité)",
+        "validation": {
+            "required": "{{field}} est obligatoire",
+            "invalidNumber": "{{field}} doit être un nombre valide",
+            "wholeNumber": "{{field}} doit être un nombre entier",
+            "tooSmall": "{{field}} doit être au moins {{min}}",
+            "tooLarge": "{{field}} ne doit pas dépasser {{max}}",
+            "stageRequired": "Le nom de l'Étape {{number}} est obligatoire",
+            "stageTooLong": "Le nom de l'Étape {{number}} doit contenir 50 caractères ou moins"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Erreur Annuler/Rétablir",
+            "description": "Une erreur s'est produite dans le système d'annulation/rétablissement. L'application continuera à fonctionner, mais la fonctionnalité d'annulation/rétablissement peut être limitée.",
+            "detailsLabel": "Détails de l'Erreur"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Composant (C)",
+            "inertia": "Inertie (I)",
+            "market": "Marché (M)",
+            "ecosystem": "Écosystème (E)",
+            "buildMethod": "Méthode de Construction (B)",
+            "buyMethod": "Méthode d'Achat (U)",
+            "outsourceMethod": "Méthode d'Externalisation (O)",
+            "note": "Note (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Ancre (A)",
+            "link": "Lier les Composants (L)",
+            "pst": "Boîtes PST (T)"
+        },
+        "pst": {
+            "pioneers": "Pionniers",
+            "settlers": "Colons",
+            "townPlanners": "Urbanistes"
+        },
+        "undo": {
+            "noActions": "Aucune action à annuler",
+            "withAction": "Annuler : {{action}}"
+        },
+        "redo": {
+            "noActions": "Aucune action à rétablir",
+            "withAction": "Rétablir : {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Utilisez les raccourcis clavier pour sélectionner rapidement les outils : C pour Composant, L pour Lien, N pour Note, P pour Pipeline, A pour Ancre, M pour Méthode, T pour PST. Appuyez sur Échap pour désélectionner."
+        }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "Vous utilisez maintenant la version {{version}}.",
+        "placeholder": "Nous ajouterons bientôt ici des notes de version détaillées.",
+        "dismiss": "Compris",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }

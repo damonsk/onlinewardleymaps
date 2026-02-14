@@ -23,6 +23,10 @@ interface ModernPipelineProps {
     mapStyleDefs: MapTheme;
     setHighlightLine: (line?: number) => void;
     scaleFactor: number;
+    isHighlighted?: boolean;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
+    selectedToolbarItem?: any;
 }
 
 function Pipeline(props: ModernPipelineProps): React.JSX.Element {
@@ -76,6 +80,11 @@ function Pipeline(props: ModernPipelineProps): React.JSX.Element {
                 x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
                 stroke={props.mapStyleDefs.component.stroke}
+                isHighlighted={props.isHighlighted}
+                onMouseEnter={
+                    props.selectedToolbarItem?.id === 'component' ? () => props.onPipelineMouseEnter?.(props.pipeline.name) : undefined
+                }
+                onMouseLeave={props.selectedToolbarItem?.id === 'component' ? props.onPipelineMouseLeave : undefined}
             />
             <Movable
                 id={'pipeline_x1_' + props.pipeline.id}

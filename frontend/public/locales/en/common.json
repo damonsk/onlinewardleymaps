@@ -23,7 +23,8 @@
         "close": "Close",
         "confirm": "Confirm",
         "update": "Update",
-        "rename": "Rename"
+        "rename": "Rename",
+        "closeNotification": "Close notification"
     },
     "navigation": {
         "home": "Home",
@@ -51,7 +52,10 @@
         "becomePatron": "Become a Patron ❤️"
     },
     "map": {
-        "title": "Wardley Map",
+        "title": {
+            "placeholder": "Enter map title",
+            "ariaLabel": "Edit map title"
+        },
         "newMap": "New Map",
         "saveMap": "Save Map",
         "loadMap": "Load Map",
@@ -64,6 +68,24 @@
         "yourMap": "Your Map",
         "unsaved": "unsaved",
         "saving": "saving...",
+        "contextMenu": {
+            "title": "Context menu",
+            "ariaLabel": "Context menu",
+            "editComponent": "Edit Component",
+            "deleteComponent": "Delete Component",
+            "deleteLink": "Delete Link",
+            "addInertia": "Add Inertia",
+            "removeInertia": "Remove Inertia",
+            "evolveComponent": "Evolve Component",
+            "mapStyles": {
+                "plain": "Plain",
+                "wardley": "Wardley",
+                "colour": "Colour"
+            },
+            "setMapSize": "Set Map Size",
+            "editEvolutionStages": "Edit Evolution Stages",
+            "delete": "Delete"
+        },
         "toolbar": {
             "group": "button group",
             "select": "Select",
@@ -72,7 +94,53 @@
             "zoomOut": "Zoom Out",
             "fit": "Fit",
             "fullscreen": "Fullscreen",
-            "exitFullscreen": "Exit Fullscreen"
+            "exitFullscreen": "Exit Fullscreen",
+            "pstTypeSelection": "PST type selection",
+            "wysiwygLabel": "Map component toolbar with keyboard shortcuts",
+            "dragHandle": "Drag handle to move toolbar",
+            "dragTitle": "Drag to move toolbar"
+        },
+        "feedback": {
+            "mapStyleChanged": "Map style changed to {{style}}",
+            "mapStyleChangeFailed": "Failed to change map style",
+            "mapSizeSet": "Map size set to {{width}}x{{height}}",
+            "mapSizeSetFailed": "Failed to set map size",
+            "evolutionStagesUpdated": "Evolution stages updated",
+            "evolutionStagesUpdateFailed": "Failed to update evolution stages",
+            "drawing": {
+                "clickAndDragPst": "Click and drag to draw {{label}} box",
+                "selectPstTypeFirst": "Select a PST type from the dropdown first",
+                "pstCreated": "{{label}} box created successfully! ({{boxSize}})",
+                "pstCreateFailed": "Failed to create PST box. Please try again."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline \"{{componentName}}\" created with default components!",
+                "componentAdded": "Component \"{{componentName}}\" added successfully!",
+                "addComponentFailed": "Failed to add component. Please try again."
+            },
+            "method": {
+                "hoverApply": "Hover over components to apply {{methodName}} method"
+            },
+            "linking": {
+                "hoverClickComponents": "Hover & click components to link",
+                "sourceSelected": "Selected \"{{componentName}}\" as source. Click another component to create a link.",
+                "cannotLinkSelf": "Cannot link a component to itself. Select a different component.",
+                "duplicateLink": "Link between \"{{sourceName}}\" and \"{{targetName}}\" already exists.",
+                "cancelled": "Linking cancelled",
+                "noSourceSelected": "No source component selected for linking",
+                "createdComponentAndLinked": "Created \"{{componentName}}\" and linked from \"{{sourceName}}\"",
+                "linkCreated": "Link created: \"{{sourceName}}\" -> \"{{targetName}}\"",
+                "createComponentAndLinkFailed": "Failed to create component and link. Please try again.",
+                "createLinkFailed": "Failed to create link. Please try again.",
+                "clickToCancel": "Click to cancel",
+                "sourceDeleted": "Source component deleted",
+                "targetDeleted": "Target component deleted",
+                "duplicateLinkShort": "Link already exists"
+            },
+            "pipeline": {
+                "componentAdded": "Component \"{{componentName}}\" added to pipeline \"{{pipelineName}}\"!",
+                "addFailed": "Failed to add component to pipeline \"{{pipelineName}}\". Please try again."
+            }
         },
         "evolution": {
             "genesis": "Genesis",
@@ -95,9 +163,10 @@
         "maturity": "Maturity",
         "visibility": "Visibility",
         "inertia": "Inertia",
-        "quickAdd": "Quick Add",
+        "linkComponents": "Link Components",
         "type": "Type",
-        "text": "Text"
+        "text": "Text",
+        "saveError": "Error saving component: {{error}}"
     },
     "links": {
         "link": "Link",
@@ -113,7 +182,8 @@
         "addAnnotation": "Add Annotation",
         "editAnnotation": "Edit Annotation",
         "deleteAnnotation": "Delete Annotation",
-        "annotationText": "Annotation Text"
+        "annotationText": "Annotation Text",
+        "saveError": "Error saving note: {{error}}"
     },
     "iterations": {
         "iteration": "Iteration",
@@ -134,11 +204,46 @@
         "usage": "Usage",
         "example": "Example",
         "usageDescription": "Quick reference of all available map elements. You can add an example to your map by clicking the available links.",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Multi-line text editor",
+                "singleLine": "Text editor"
+            },
+            "validation": {
+                "required": "This field is required",
+                "minLength": "Minimum length is {{count}} characters",
+                "maxLength": "Maximum length is {{count}} characters",
+                "invalidFormat": "Invalid format",
+                "invalidCharacters": "Contains invalid characters",
+                "saveFailed": "Failed to save. Please try again."
+            }
+        },
+        "link": {
+            "placeholder": "Enter link text...",
+            "ariaDescription": "Enter text to display on the link. Cannot contain line breaks or semicolons.",
+            "validation": {
+                "noLineBreaks": "Link text cannot contain line breaks",
+                "noSemicolons": "Link text cannot contain semicolons",
+                "updateFailed": "Failed to update link text",
+                "unexpectedError": "An unexpected error occurred"
+            }
+        },
+        "undo": {
+            "title": "Undo",
+            "description": "Undo last action",
+            "tooltip": "Click to undo the last action performed on the map"
+        },
+        "redo": {
+            "title": "Redo",
+            "description": "Redo last undone action",
+            "tooltip": "Click to redo the last action that was undone"
+        },
         "validation": {
             "error": "Validation Error",
             "lineError": "Error on line {{line}}",
             "componentNotFound": "Component '{{component}}' not found",
-            "invalidSyntax": "Invalid syntax"
+            "invalidSyntax": "Invalid syntax",
+            "elementNotFound": "Map element not found or invalid syntax"
         },
         "usages": {
             "to_set_the_title": "To set the title",
@@ -201,7 +306,8 @@
         "community": "Join the community",
         "documentation": "Documentation",
         "support": "Support",
-        "createdBy": "Created by"
+        "createdBy": "Created by",
+        "patreonAlt": "Become a Patron"
     },
     "dialogs": {
         "areYouSure": "Are you sure?",
@@ -210,6 +316,92 @@
         "invalidInput": "Please enter a valid input.",
         "networkError": "Network error. Please try again.",
         "saveError": "Error saving. Please try again.",
-        "loadError": "Error loading. Please try again."
+        "loadError": "Error loading. Please try again.",
+        "setMapSize": "Set Map Size",
+        "mapSizeDescription": "Set the dimensions for your map canvas. Values must be between 100 and 5000 pixels.",
+        "width": "Width",
+        "height": "Height",
+        "editEvolutionStages": "Edit Evolution Stages",
+        "evolutionStagesDescription": "Customize the names of the four evolution stages. These will appear as labels on the evolution axis of your map.",
+        "stage1": "Stage 1 (Genesis)",
+        "stage2": "Stage 2 (Custom Built)",
+        "stage3": "Stage 3 (Product)",
+        "stage4": "Stage 4 (Commodity)",
+        "validation": {
+            "required": "{{field}} is required",
+            "invalidNumber": "{{field}} must be a valid number",
+            "wholeNumber": "{{field}} must be a whole number",
+            "tooSmall": "{{field}} must be at least {{min}}",
+            "tooLarge": "{{field}} must be no more than {{max}}",
+            "stageRequired": "Stage {{number}} name is required",
+            "stageTooLong": "Stage {{number}} name must be 50 characters or less"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Undo/Redo Error",
+            "description": "An error occurred in the undo/redo system. The application will continue to work, but undo/redo functionality may be limited.",
+            "detailsLabel": "Error Details"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Component (C)",
+            "inertia": "Inertia (I)",
+            "market": "Market (M)",
+            "ecosystem": "Ecosystem (E)",
+            "buildMethod": "Build Method (B)",
+            "buyMethod": "Buy Method (U)",
+            "outsourceMethod": "Outsource Method (O)",
+            "note": "Note (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Anchor (A)",
+            "link": "Link Components (L)",
+            "pst": "PST Boxes (T)"
+        },
+        "pst": {
+            "pioneers": "Pioneers",
+            "settlers": "Settlers",
+            "townPlanners": "Town Planners"
+        },
+        "undo": {
+            "noActions": "No actions to undo",
+            "withAction": "Undo: {{action}}"
+        },
+        "redo": {
+            "noActions": "No actions to redo",
+            "withAction": "Redo: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Use keyboard shortcuts to quickly select tools: C for Component, L for Link, N for Note, P for Pipeline, A for Anchor, M for Method, T for PST. Press Escape to deselect."
+        }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "You are now on version {{version}}.",
+        "placeholder": "We will add detailed release notes here soon.",
+        "dismiss": "Got it",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }

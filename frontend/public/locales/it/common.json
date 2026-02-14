@@ -23,7 +23,8 @@
         "close": "Chiudi",
         "confirm": "Conferma",
         "update": "Aggiorna",
-        "rename": "Rinomina"
+        "rename": "Rinomina",
+        "closeNotification": "Chiudi notifica"
     },
     "navigation": {
         "home": "Pagina iniziale",
@@ -69,7 +70,53 @@
             "zoomOut": "Rimpicciolisci",
             "fit": "Adatta",
             "fullscreen": "Schermo Intero",
-            "exitFullscreen": "Esci da Schermo Intero"
+            "exitFullscreen": "Esci da Schermo Intero",
+            "pstTypeSelection": "Selezione tipo PST",
+            "wysiwygLabel": "Barra degli strumenti dei componenti mappa con scorciatoie da tastiera",
+            "dragHandle": "Maniglia di trascinamento per spostare la barra degli strumenti",
+            "dragTitle": "Trascina per spostare la barra degli strumenti"
+        },
+        "feedback": {
+            "mapStyleChanged": "Stile mappa cambiato in {{style}}",
+            "mapStyleChangeFailed": "Impossibile cambiare lo stile della mappa",
+            "mapSizeSet": "Dimensione mappa impostata a {{width}}x{{height}}",
+            "mapSizeSetFailed": "Impossibile impostare la dimensione della mappa",
+            "evolutionStagesUpdated": "Fasi di evoluzione aggiornate",
+            "evolutionStagesUpdateFailed": "Impossibile aggiornare le fasi di evoluzione",
+            "drawing": {
+                "clickAndDragPst": "Fai clic e trascina per disegnare un riquadro {{label}}",
+                "selectPstTypeFirst": "Seleziona prima un tipo PST dal menu a discesa",
+                "pstCreated": "Riquadro {{label}} creato correttamente. ({{boxSize}})",
+                "pstCreateFailed": "Impossibile creare il riquadro PST. Riprova."
+            },
+            "placement": {
+                "pipelineCreated": "Pipeline {{componentName}} creata con componenti predefiniti.",
+                "componentAdded": "Componente {{componentName}} aggiunto con successo.",
+                "addComponentFailed": "Impossibile aggiungere il componente. Riprova."
+            },
+            "method": {
+                "hoverApply": "Passa sui componenti per applicare il metodo {{methodName}}"
+            },
+            "linking": {
+                "hoverClickComponents": "Passa sui componenti e fai clic per collegarli",
+                "sourceSelected": "{{componentName}} selezionato come sorgente. Fai clic su un altro componente per creare un collegamento.",
+                "cannotLinkSelf": "Non puoi collegare un componente a se stesso. Seleziona un altro componente.",
+                "duplicateLink": "Esiste già un collegamento tra {{sourceName}} e {{targetName}}.",
+                "cancelled": "Collegamento annullato",
+                "noSourceSelected": "Nessun componente sorgente selezionato per il collegamento",
+                "createdComponentAndLinked": "{{componentName}} creato e collegato da {{sourceName}}",
+                "linkCreated": "Collegamento creato: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "Impossibile creare componente e collegamento. Riprova.",
+                "createLinkFailed": "Impossibile creare il collegamento. Riprova.",
+                "clickToCancel": "Clicca per annullare",
+                "sourceDeleted": "Componente sorgente eliminato",
+                "targetDeleted": "Componente destinazione eliminato",
+                "duplicateLinkShort": "Il collegamento esiste già"
+            },
+            "pipeline": {
+                "componentAdded": "Componente {{componentName}} aggiunto alla pipeline {{pipelineName}}.",
+                "addFailed": "Impossibile aggiungere il componente alla pipeline {{pipelineName}}. Riprova."
+            }
         },
         "evolution": {
             "genesis": "Genesi",
@@ -83,7 +130,11 @@
         },
         "yourMap": "La Vostra Mappa",
         "unsaved": "non salvato",
-        "saving": "salvando..."
+        "saving": "salvando...",
+        "contextMenu": {
+            "title": "Menu contestuale",
+            "ariaLabel": "Menu contestuale"
+        }
     },
     "components": {
         "component": "Componente",
@@ -95,9 +146,10 @@
         "maturity": "Maturità",
         "visibility": "Visibilità",
         "inertia": "Inerzia",
-        "quickAdd": "Aggiunta Rapida",
+        "linkComponents": "Collega Componenti",
         "type": "Tipo",
-        "text": "Testo"
+        "text": "Testo",
+        "saveError": "Errore nel salvare il componente: {{error}}"
     },
     "links": {
         "link": "Collegamento",
@@ -113,7 +165,8 @@
         "addAnnotation": "Aggiungi Annotazione",
         "editAnnotation": "Modifica Annotazione",
         "deleteAnnotation": "Elimina Annotazione",
-        "annotationText": "Testo Annotazione"
+        "annotationText": "Testo Annotazione",
+        "saveError": "Errore nel salvare la nota: {{error}}"
     },
     "iterations": {
         "iteration": "Iterazione",
@@ -134,11 +187,22 @@
         "usage": "Utilizzo",
         "example": "Esempio",
         "usageDescription": "Riferimento rapido di tutti gli elementi della mappa disponibili. Puoi aggiungere un esempio alla tua mappa facendo clic sui link disponibili.",
+        "undo": {
+            "title": "Annulla",
+            "description": "Annulla ultima azione",
+            "tooltip": "Clicca per annullare l'ultima azione eseguita sulla mappa"
+        },
+        "redo": {
+            "title": "Ripeti",
+            "description": "Ripeti ultima azione annullata",
+            "tooltip": "Clicca per ripetere l'ultima azione che è stata annullata"
+        },
         "validation": {
             "error": "Errore di Validazione",
             "lineError": "Errore alla riga {{line}}",
             "componentNotFound": "Componente '{{component}}' non trovato",
-            "invalidSyntax": "Sintassi non valida"
+            "invalidSyntax": "Sintassi non valida",
+            "elementNotFound": "Elemento della mappa non trovato o sintassi non valida"
         },
         "usages": {
             "to_set_the_title": "Per impostare il titolo",
@@ -165,7 +229,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "Evidenzia un componente con un metodo di esecuzione di costruzione, acquisto o esternalizzazione"
         },
         "hideUsage": "Nascondi Utilizzo",
-        "showUsage": "Mostra Utilizzo"
+        "showUsage": "Mostra Utilizzo",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "Editor di testo multi-riga",
+                "singleLine": "Editor di testo"
+            },
+            "validation": {
+                "required": "Questo campo è obbligatorio",
+                "minLength": "La lunghezza minima è {{count}} caratteri",
+                "maxLength": "La lunghezza massima è {{count}} caratteri",
+                "invalidFormat": "Formato non valido",
+                "invalidCharacters": "Contiene caratteri non validi",
+                "saveFailed": "Salvataggio fallito. Riprova."
+            }
+        },
+        "link": {
+            "placeholder": "Inserisci il testo del collegamento...",
+            "ariaDescription": "Inserisci il testo da visualizzare sul collegamento. Non può contenere interruzioni di riga o punti e virgola.",
+            "validation": {
+                "noLineBreaks": "Il testo del collegamento non può contenere interruzioni di riga",
+                "noSemicolons": "Il testo del collegamento non può contenere punti e virgola",
+                "updateFailed": "Aggiornamento del testo del collegamento fallito",
+                "unexpectedError": "Si è verificato un errore imprevisto"
+            }
+        }
     },
     "theme": {
         "light": "Tema Chiaro",
@@ -201,7 +289,8 @@
         "downloadExtension": "Scarica Estensione Visual Studio Code",
         "wardleyMapping": "Mappatura Wardley per gentile concessione di Simon Wardley, CC BY-SA 4.0. Per saperne di più, vedi",
         "wardleyMappingLink": "il libro",
-        "createdBy": "Creato da"
+        "createdBy": "Creato da",
+        "patreonAlt": "Diventa un Sostenitore"
     },
     "dialogs": {
         "deleteConfirmation": "Questa azione non può essere annullata.",
@@ -210,6 +299,92 @@
         "networkError": "Errore di rete. Riprova.",
         "saveError": "Errore durante il salvataggio. Riprova.",
         "loadError": "Errore durante il caricamento. Riprova.",
-        "areYouSure": "Sei sicuro?"
+        "areYouSure": "Sei sicuro?",
+        "setMapSize": "Imposta Dimensione Mappa",
+        "mapSizeDescription": "Imposta le dimensioni per il tuo canvas della mappa. I valori devono essere compresi tra 100 e 5000 pixel.",
+        "width": "Larghezza",
+        "height": "Altezza",
+        "editEvolutionStages": "Modifica Fasi di Evoluzione",
+        "evolutionStagesDescription": "Personalizza i nomi delle quattro fasi di evoluzione. Queste appariranno come etichette sull'asse di evoluzione della tua mappa.",
+        "stage1": "Fase 1 (Genesi)",
+        "stage2": "Fase 2 (Personalizzato)",
+        "stage3": "Fase 3 (Prodotto)",
+        "stage4": "Fase 4 (Commodity)",
+        "validation": {
+            "required": "{{field}} è obbligatorio",
+            "invalidNumber": "{{field}} deve essere un numero valido",
+            "wholeNumber": "{{field}} deve essere un numero intero",
+            "tooSmall": "{{field}} deve essere almeno {{min}}",
+            "tooLarge": "{{field}} non deve superare {{max}}",
+            "stageRequired": "Il nome della Fase {{number}} è obbligatorio",
+            "stageTooLong": "Il nome della Fase {{number}} deve essere di 50 caratteri o meno"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "Errore Annulla/Ripristina",
+            "description": "Si è verificato un errore nel sistema di annulla/ripristina. L'applicazione continuerà a funzionare, ma la funzionalità di annulla/ripristina potrebbe essere limitata.",
+            "detailsLabel": "Dettagli dell'Errore"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "Componente (C)",
+            "inertia": "Inerzia (I)",
+            "market": "Mercato (M)",
+            "ecosystem": "Ecosistema (E)",
+            "buildMethod": "Metodo di Costruzione (B)",
+            "buyMethod": "Metodo di Acquisto (U)",
+            "outsourceMethod": "Metodo di Esternalizzazione (O)",
+            "note": "Nota (N)",
+            "pipeline": "Pipeline (P)",
+            "anchor": "Ancora (A)",
+            "link": "Collega Componenti (L)",
+            "pst": "Caselle PST (T)"
+        },
+        "pst": {
+            "pioneers": "Pionieri",
+            "settlers": "Coloni",
+            "townPlanners": "Urbanisti"
+        },
+        "undo": {
+            "noActions": "Nessuna azione da annullare",
+            "withAction": "Annulla: {{action}}"
+        },
+        "redo": {
+            "noActions": "Nessuna azione da ripristinare",
+            "withAction": "Ripristina: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "Usa le scorciatoie da tastiera per selezionare rapidamente gli strumenti: C per Componente, L per Collegamento, N per Nota, P per Pipeline, A per Ancora, M per Metodo, T per PST. Premi Escape per deselezionare."
+        }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "Ora stai usando la versione {{version}}.",
+        "placeholder": "Aggiungeremo presto qui note di rilascio dettagliate.",
+        "dismiss": "Ho capito",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }

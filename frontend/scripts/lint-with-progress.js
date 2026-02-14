@@ -44,11 +44,14 @@ const eslint = spawn('npx', ['eslint', ...args], {
 });
 
 // Add a timeout to prevent hanging
-const timeout = setTimeout(() => {
-    console.log('⏰ ESLint timed out after 5 minutes. Killing process...');
-    eslint.kill('SIGTERM');
-    process.exit(1);
-}, 5 * 60 * 1000); // 5 minutes
+const timeout = setTimeout(
+    () => {
+        console.log('⏰ ESLint timed out after 5 minutes. Killing process...');
+        eslint.kill('SIGTERM');
+        process.exit(1);
+    },
+    5 * 60 * 1000,
+); // 5 minutes
 
 eslint.on('close', code => {
     clearTimeout(timeout);

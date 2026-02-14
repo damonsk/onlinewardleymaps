@@ -2,7 +2,6 @@ import React, {MouseEvent} from 'react';
 import {MapDimensions} from '../../constants/defaults';
 import {MapTheme} from '../../types/map/styles';
 import {PipelineComponentData, PipelineData, UnifiedComponent} from '../../types/unified/components';
-import {useModKeyPressedConsumer} from '../KeyPressContext';
 import ComponentSymbol from '../symbols/ComponentSymbol';
 import ModernPipelineBoxSymbol from '../symbols/ModernPipelineBoxSymbol';
 import ComponentText from './ComponentText';
@@ -31,11 +30,14 @@ interface ModernPipelineVersion2Props {
     setHighlightLine: (line?: number) => void;
     linkingFunction: (data: {el: UnifiedComponent; e: MouseEvent<Element>}) => void;
     scaleFactor: number;
+    isHighlighted?: boolean;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
+    selectedToolbarItem?: any;
 }
 
 function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element {
     const positionCalc = new PositionCalculator();
-    const isModKeyPressed = useModKeyPressedConsumer();
 
     const noLabelMatcher: MatcherFunction = {
         matcher: (line: string, identifier: string, type: string): boolean => {
@@ -66,18 +68,40 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
     function endDragForLabel(pipelineComponent: PipelineComponentData, moved: MovedPosition): void {
         const correctedX = Math.round(moved.x);
         const correctedY = Math.round(moved.y);
+        
         props.mutateMapText(
             props.mapText
                 .split('\n')
                 .map((line: string) => {
-                    const regex = new RegExp(`component\\s+${pipelineComponent.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-                    if (regex.test(line)) {
-                        console.log('Found line to update:', line);
+                    // Check if this line contains our component by extracting and comparing names
+                    if (line.trim().startsWith('component ')) {
+                        const componentContent = line.trim().substring(10).trim(); // Remove 'component '
 
-                        if (line.includes('label')) {
-                            return line.replace(/\slabel\s\[([^[\]]+)\]/g, ` label [${correctedX}, ${correctedY}]`);
+                        // Extract component name from the line
+                        let componentNameInLine = '';
+                        if (componentContent.startsWith('"')) {
+                            // Extract quoted component name
+                            const quotedMatch = componentContent.match(/^"((?:[^"\\]|\\.)*)"/);
+                            if (quotedMatch) {
+                                componentNameInLine = quotedMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+                            }
+                        } else {
+                            // Extract unquoted component name (up to first bracket or label)
+                            const unquotedMatch = componentContent.match(/^([^\[\]]+?)(?:\s*\[|\s*label|\s*$)/);
+                            if (unquotedMatch) {
+                                componentNameInLine = unquotedMatch[1].trim();
+                            }
                         }
-                        return line + ` label [${correctedX}, ${correctedY}]`;
+
+                        // Direct string comparison to check if this is our component
+                        if (componentNameInLine === pipelineComponent.name) {
+                            console.log('Found line to update:', line);
+
+                            if (line.includes('label')) {
+                                return line.replace(/\slabel\s\[([^[\]]+)\]/g, ` label [${correctedX}, ${correctedY}]`);
+                            }
+                            return line + ` label [${correctedX}, ${correctedY}]`;
+                        }
                     }
                     return line;
                 })
@@ -141,16 +165,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                         id={`pipeline_v2_circle_${props.pipeline.id}_${i}`}
                         styles={props.mapStyleDefs.component}
                         component={component}
-                        onClick={(e: MouseEvent<SVGElement>) => {
-                            if (isModKeyPressed) {
-                                props.linkingFunction({
-                                    el: component,
-                                    e,
-                                });
-                                return;
-                            }
-                            props.setHighlightLine(c.pipelineComponent.line);
-                        }}
+                        onClick={() => props.setHighlightLine(c.pipelineComponent.line)}
                     />
                 </Movable>
                 {c.pipelineComponent.label && (
@@ -164,6 +179,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                             mutateMapText={props.mutateMapText}
                             onLabelMove={moved => endDragForLabel(c.pipelineComponent, moved)}
                             scaleFactor={props.scaleFactor}
+                            mapStyleDefs={props.mapStyleDefs}
                         />
                     </g>
                 )}
@@ -196,6 +212,11 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                 x2={x2 + 15}
                 styles={props.mapStyleDefs.component}
                 stroke={props.mapStyleDefs.component.stroke}
+                isHighlighted={props.isHighlighted}
+                onMouseEnter={
+                    props.selectedToolbarItem?.id === 'component' ? () => props.onPipelineMouseEnter?.(props.pipeline.name) : undefined
+                }
+                onMouseLeave={props.selectedToolbarItem?.id === 'component' ? props.onPipelineMouseLeave : undefined}
             />
             {componentSymbols}
         </>

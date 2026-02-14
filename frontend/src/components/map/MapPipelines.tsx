@@ -18,6 +18,10 @@ interface ModernMapPipelinesProps {
     mapElements: MapElements;
     pipelines?: PipelineData[];
     clicked?: (data: {el: UnifiedComponent; e: MouseEvent<Element> | null}) => void;
+    highlightedPipelineId?: string | null;
+    onPipelineMouseEnter?: (pipelineId: string) => void;
+    onPipelineMouseLeave?: () => void;
+    selectedToolbarItem?: any;
 }
 
 const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
@@ -31,6 +35,10 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
     enableNewPipelines = true,
     scaleFactor = 1,
     clicked,
+    highlightedPipelineId,
+    onPipelineMouseEnter,
+    onPipelineMouseLeave,
+    selectedToolbarItem,
 }) => {
     const handleSetHighlightLine = (line?: number) => {
         if (line !== undefined) {
@@ -40,15 +48,6 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
 
     const pipelinesToRender = pipelines || mapElements.getPipelineComponents();
     if (pipelinesToRender.length === 0) return;
-
-    console.log(
-        `Rendering ${pipelinesToRender.length} pipelines:`,
-        pipelinesToRender.map(p => ({
-            name: p.name,
-            visibility: p.visibility,
-            components: p.components?.length || 0,
-        })),
-    );
 
     const linkingFunction = clicked
         ? (data: {el: any; e: MouseEvent<Element>}) => {
@@ -78,6 +77,10 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
                                     setHighlightLine={handleSetHighlightLine}
                                     linkingFunction={linkingFunction || (() => {})}
                                     scaleFactor={scaleFactor}
+                                    isHighlighted={highlightedPipelineId === p.name}
+                                    onPipelineMouseEnter={onPipelineMouseEnter}
+                                    onPipelineMouseLeave={onPipelineMouseLeave}
+                                    selectedToolbarItem={selectedToolbarItem}
                                 />
                             ) : (
                                 <Pipeline
@@ -89,6 +92,10 @@ const MapPipelines: React.FC<ModernMapPipelinesProps> = ({
                                     mapStyleDefs={mapStyleDefs}
                                     setHighlightLine={handleSetHighlightLine}
                                     scaleFactor={scaleFactor}
+                                    isHighlighted={highlightedPipelineId === p.name}
+                                    onPipelineMouseEnter={onPipelineMouseEnter}
+                                    onPipelineMouseLeave={onPipelineMouseLeave}
+                                    selectedToolbarItem={selectedToolbarItem}
                                 />
                             )}
                         </React.Fragment>

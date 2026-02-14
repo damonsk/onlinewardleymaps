@@ -24,6 +24,7 @@ const MapBackground: React.FunctionComponent<MapBackgroundProps> = ({mapStyleCla
             height={mapDimensions.height}
             id="fillArea"
             fill={fill[mapStyleClass as keyof DefaultThemes]}
+            style={{pointerEvents: 'none'}}
         />
     );
 };

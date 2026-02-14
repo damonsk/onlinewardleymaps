@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {EvolutionStages, MapCanvasDimensions, MapDimensions, Offsets} from '../constants/defaults';
 import {MapTheme} from '../types/map/styles';
 import {MapRenderState, UnifiedComponent, UnifiedWardleyMap, createEmptyMap, groupComponentsByType} from '../types/unified';
@@ -176,39 +176,79 @@ export const useUnifiedMapState = (initialState?: Partial<ConsolidatedMapState>)
         ...initialState,
     }));
 
-    // Actions for updating state
+    // Actions for updating state - use useCallback to ensure stability
+    const setMapText = useCallback((text: string) => setState(prev => ({...prev, mapText: text})), []);
+    const setMap = useCallback((map: UnifiedWardleyMap) => {
+        // Process the map to ensure consistent label spacing for evolution components
+        const processedMap = applyConsistentLabelSpacingForEvolution(map);
+        setState(prev => ({...prev, map: processedMap}));
+    }, []);
+    const setHighlightedLine = useCallback((line: number) => setState(prev => ({...prev, highlightedLine: line})), []);
+    const setNewComponentContext = useCallback((context: any | null) => setState(prev => ({...prev, newComponentContext: context})), []);
+    const setShowLinkedEvolved = useCallback((show: boolean) => setState(prev => ({...prev, showLinkedEvolved: show})), []);
+    const setMapDimensions = useCallback((dimensions: MapDimensions) => setState(prev => ({...prev, mapDimensions: dimensions})), []);
+    const setMapCanvasDimensions = useCallback(
+        (dimensions: MapCanvasDimensions) =>
+            setState(prev => ({
+                ...prev,
+                mapCanvasDimensions: dimensions,
+            })),
+        [],
+    );
+    const setMapStyleDefs = useCallback((style: MapTheme) => setState(prev => ({...prev, mapStyleDefs: style})), []);
+    const setEvolutionOffsets = useCallback((offsets: Offsets) => setState(prev => ({...prev, evolutionOffsets: offsets})), []);
+    const setMapEvolutionStates = useCallback((states: EvolutionStages) => setState(prev => ({...prev, mapEvolutionStates: states})), []);
+    const setIsLoading = useCallback((loading: boolean) => setState(prev => ({...prev, isLoading: loading})), []);
+    const setErrors = useCallback((errors: string[]) => setState(prev => ({...prev, errors})), []);
+    const addError = useCallback(
+        (error: string) =>
+            setState(prev => ({
+                ...prev,
+                errors: [...prev.errors, error],
+            })),
+        [],
+    );
+    const clearErrors = useCallback(() => setState(prev => ({...prev, errors: []})), []);
+    const setShowUsage = useCallback((show: boolean) => setState(prev => ({...prev, showUsage: show})), []);
+    const setActionInProgress = useCallback((inProgress: boolean) => setState(prev => ({...prev, actionInProgress: inProgress})), []);
+
     const actions = useMemo<MapStateActions>(
         () => ({
-            setMapText: (text: string) => setState(prev => ({...prev, mapText: text})),
-            setMap: (map: UnifiedWardleyMap) => {
-                // Process the map to ensure consistent label spacing for evolution components
-                const processedMap = applyConsistentLabelSpacingForEvolution(map);
-                setState(prev => ({...prev, map: processedMap}));
-            },
-            setHighlightedLine: (line: number) => setState(prev => ({...prev, highlightedLine: line})),
-            setNewComponentContext: (context: any | null) => setState(prev => ({...prev, newComponentContext: context})),
-            setShowLinkedEvolved: (show: boolean) => setState(prev => ({...prev, showLinkedEvolved: show})),
-            setMapDimensions: (dimensions: MapDimensions) => setState(prev => ({...prev, mapDimensions: dimensions})),
-            setMapCanvasDimensions: (dimensions: MapCanvasDimensions) =>
-                setState(prev => ({
-                    ...prev,
-                    mapCanvasDimensions: dimensions,
-                })),
-            setMapStyleDefs: (style: MapTheme) => setState(prev => ({...prev, mapStyleDefs: style})),
-            setEvolutionOffsets: (offsets: Offsets) => setState(prev => ({...prev, evolutionOffsets: offsets})),
-            setMapEvolutionStates: (states: EvolutionStages) => setState(prev => ({...prev, mapEvolutionStates: states})),
-            setIsLoading: (loading: boolean) => setState(prev => ({...prev, isLoading: loading})),
-            setErrors: (errors: string[]) => setState(prev => ({...prev, errors})),
-            addError: (error: string) =>
-                setState(prev => ({
-                    ...prev,
-                    errors: [...prev.errors, error],
-                })),
-            clearErrors: () => setState(prev => ({...prev, errors: []})),
-            setShowUsage: (show: boolean) => setState(prev => ({...prev, showUsage: show})),
-            setActionInProgress: (inProgress: boolean) => setState(prev => ({...prev, actionInProgress: inProgress})),
+            setMapText,
+            setMap,
+            setHighlightedLine,
+            setNewComponentContext,
+            setShowLinkedEvolved,
+            setMapDimensions,
+            setMapCanvasDimensions,
+            setMapStyleDefs,
+            setEvolutionOffsets,
+            setMapEvolutionStates,
+            setIsLoading,
+            setErrors,
+            addError,
+            clearErrors,
+            setShowUsage,
+            setActionInProgress,
         }),
-        [],
+        [
+            setMapText,
+            setMap,
+            setHighlightedLine,
+            setNewComponentContext,
+            setShowLinkedEvolved,
+            setMapDimensions,
+            setMapCanvasDimensions,
+            setMapStyleDefs,
+            setEvolutionOffsets,
+            setMapEvolutionStates,
+            setIsLoading,
+            setErrors,
+            addError,
+            clearErrors,
+            setShowUsage,
+            setActionInProgress,
+        ],
     );
 
     const groupedComponents = useMemo(() => groupComponentsByType(state.map), [state.map]);
@@ -298,6 +338,12 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
     const legacyEcosystems = groupedComponents.ecosystems.map(convertToLegacyComponent);
     const legacyLinks = convertToLegacyLinks(state.map.links);
 
+    // Memoize the setter functions to prevent infinite loops in useEffect dependencies
+    const mutateMapText = useMemo(() => createReactSetter(actions.setMapText), [actions.setMapText]);
+    const setHighlightLine = useMemo(() => createReactSetter(actions.setHighlightedLine), [actions.setHighlightedLine]);
+    const setNewComponentContext = useMemo(() => createReactSetter(actions.setNewComponentContext), [actions.setNewComponentContext]);
+    const setShowLinkedEvolved = useMemo(() => createReactSetter(actions.setShowLinkedEvolved), [actions.setShowLinkedEvolved]);
+
     return {
         mapText: state.mapText,
         mapTitle: state.map.title,
@@ -324,9 +370,9 @@ export const useLegacyMapState = (unifiedState: UseMapStateResult) => {
         evolutionOffsets: state.evolutionOffsets,
         mapEvolutionStates: state.mapEvolutionStates,
 
-        mutateMapText: createReactSetter(actions.setMapText),
-        setHighlightLine: createReactSetter(actions.setHighlightedLine),
-        setNewComponentContext: createReactSetter(actions.setNewComponentContext),
-        setShowLinkedEvolved: createReactSetter(actions.setShowLinkedEvolved),
+        mutateMapText,
+        setHighlightLine,
+        setNewComponentContext,
+        setShowLinkedEvolved,
     };
 };

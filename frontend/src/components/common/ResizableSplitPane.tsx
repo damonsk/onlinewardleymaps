@@ -24,7 +24,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     storageKey = 'resizableSplitPane_leftWidth',
     isDarkTheme = false,
 }) => {
-    const getInitialWidth = () => {
+    const getInitialWidth = useCallback(() => {
         if (typeof window !== 'undefined' && storageKey) {
             const saved = localStorage.getItem(storageKey);
             if (saved) {
@@ -35,7 +35,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
             }
         }
         return defaultLeftWidth;
-    };
+    }, [defaultLeftWidth, minLeftWidth, maxLeftWidth, storageKey]);
 
     const [leftWidth, setLeftWidth] = useState(defaultLeftWidth);
     const [isDragging, setIsDragging] = useState(false);
@@ -44,7 +44,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
     const startWidthRef = useRef<number>(0);
     const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Load width from localStorage on mount
+    // Load width from localStorage on mount only
     useEffect(() => {
         const initialWidth = getInitialWidth();
         console.log('ResizableSplitPane: localStorage check', {
@@ -57,8 +57,9 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
             setLeftWidth(initialWidth);
             onResize?.(initialWidth);
 
-            // Simple delayed panel resize event - let map handle its own zoom state
-            setTimeout(() => {
+            // Dispatch panel resize event immediately after setting width
+            // Use requestAnimationFrame to ensure the DOM has updated
+            requestAnimationFrame(() => {
                 console.log('ResizableSplitPane: Dispatching panelResize event');
                 const mapContainer = document.getElementById('map');
                 if (mapContainer) {
@@ -73,10 +74,28 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
                     window.dispatchEvent(panelResizeEvent);
                     console.log('ResizableSplitPane: panelResize event dispatched');
                 } else {
-                    console.log('ResizableSplitPane: map container not found');
+                    console.log('ResizableSplitPane: map container not found, retrying...');
+                    // Retry once if map container not found
+                    setTimeout(() => {
+                        const retryMapContainer = document.getElementById('map');
+                        if (retryMapContainer) {
+                            const retryEvent = new CustomEvent('panelResize', {
+                                detail: {
+                                    leftWidthPercent: initialWidth,
+                                    rightWidthPercent: 100 - initialWidth,
+                                    mapContainerWidth: retryMapContainer.clientWidth,
+                                    mapContainerHeight: retryMapContainer.clientHeight,
+                                },
+                            });
+                            window.dispatchEvent(retryEvent);
+                            console.log('ResizableSplitPane: panelResize event dispatched on retry');
+                        }
+                    }, 100);
                 }
-            }, 1000); // Simpler delay, let map handle its own initial state
+            });
         }
+        // Only run this effect once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Dispatch resize events when width changes to notify the map

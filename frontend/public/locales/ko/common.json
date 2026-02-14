@@ -23,7 +23,8 @@
         "close": "닫기",
         "confirm": "확인",
         "update": "업데이트",
-        "rename": "이름 바꾸기"
+        "rename": "이름 바꾸기",
+        "closeNotification": "알림 닫기"
     },
     "navigation": {
         "home": "홈",
@@ -69,7 +70,53 @@
             "zoomOut": "축소",
             "fit": "맞춤",
             "fullscreen": "전체 화면",
-            "exitFullscreen": "전체 화면 나가기"
+            "exitFullscreen": "전체 화면 나가기",
+            "pstTypeSelection": "PST 유형 선택",
+            "wysiwygLabel": "키보드 단축키가 있는 맵 구성 요소 도구 모음",
+            "dragHandle": "도구 모음을 이동하기 위한 드래그 핸들",
+            "dragTitle": "드래그하여 도구 모음 이동"
+        },
+        "feedback": {
+            "mapStyleChanged": "맵 스타일이 {{style}}(으)로 변경되었습니다",
+            "mapStyleChangeFailed": "맵 스타일을 변경하지 못했습니다",
+            "mapSizeSet": "맵 크기가 {{width}}x{{height}}(으)로 설정되었습니다",
+            "mapSizeSetFailed": "맵 크기를 설정하지 못했습니다",
+            "evolutionStagesUpdated": "진화 단계가 업데이트되었습니다",
+            "evolutionStagesUpdateFailed": "진화 단계를 업데이트하지 못했습니다",
+            "drawing": {
+                "clickAndDragPst": "클릭 후 드래그하여 {{label}} 상자를 그리세요",
+                "selectPstTypeFirst": "먼저 드롭다운에서 PST 유형을 선택하세요",
+                "pstCreated": "{{label}} 상자가 생성되었습니다. ({{boxSize}})",
+                "pstCreateFailed": "PST 상자를 생성하지 못했습니다. 다시 시도해 주세요."
+            },
+            "placement": {
+                "pipelineCreated": "기본 구성 요소와 함께 파이프라인 {{componentName}}이 생성되었습니다.",
+                "componentAdded": "구성 요소 {{componentName}}이(가) 추가되었습니다.",
+                "addComponentFailed": "구성 요소를 추가하지 못했습니다. 다시 시도해 주세요."
+            },
+            "method": {
+                "hoverApply": "구성 요소 위에 마우스를 올려 {{methodName}} 메서드를 적용하세요"
+            },
+            "linking": {
+                "hoverClickComponents": "구성 요소 위에 마우스를 올리고 클릭하여 링크하세요",
+                "sourceSelected": "{{componentName}}이(가) 소스로 선택되었습니다. 링크를 만들려면 다른 구성 요소를 클릭하세요.",
+                "cannotLinkSelf": "구성 요소를 자기 자신과 연결할 수 없습니다. 다른 구성 요소를 선택하세요.",
+                "duplicateLink": "{{sourceName}}와 {{targetName}} 사이의 링크가 이미 존재합니다.",
+                "cancelled": "링크 작업이 취소되었습니다",
+                "noSourceSelected": "링크할 소스 구성 요소가 선택되지 않았습니다",
+                "createdComponentAndLinked": "{{componentName}}이(가) 생성되어 {{sourceName}}에서 링크되었습니다",
+                "linkCreated": "링크 생성됨: {{sourceName}} -> {{targetName}}",
+                "createComponentAndLinkFailed": "구성 요소 및 링크 생성에 실패했습니다. 다시 시도해 주세요.",
+                "createLinkFailed": "링크 생성에 실패했습니다. 다시 시도해 주세요.",
+                "clickToCancel": "클릭하여 취소",
+                "sourceDeleted": "소스 구성 요소가 삭제되었습니다",
+                "targetDeleted": "대상 구성 요소가 삭제되었습니다",
+                "duplicateLinkShort": "링크가 이미 존재합니다"
+            },
+            "pipeline": {
+                "componentAdded": "구성 요소 {{componentName}}이(가) 파이프라인 {{pipelineName}}에 추가되었습니다.",
+                "addFailed": "구성 요소를 파이프라인 {{pipelineName}}에 추가하지 못했습니다. 다시 시도해 주세요."
+            }
         },
         "evolution": {
             "genesis": "기원",
@@ -83,7 +130,11 @@
         },
         "yourMap": "귀하의 지도",
         "unsaved": "저장되지 않음",
-        "saving": "저장 중..."
+        "saving": "저장 중...",
+        "contextMenu": {
+            "title": "컨텍스트 메뉴",
+            "ariaLabel": "컨텍스트 메뉴"
+        }
     },
     "components": {
         "component": "구성 요소",
@@ -95,9 +146,10 @@
         "maturity": "성숙도",
         "visibility": "가시성",
         "inertia": "관성",
-        "quickAdd": "빠른 추가",
+        "linkComponents": "구성 요소 연결",
         "type": "유형",
-        "text": "텍스트"
+        "text": "텍스트",
+        "saveError": "컴포넌트 저장 오류: {{error}}"
     },
     "links": {
         "link": "링크",
@@ -113,7 +165,8 @@
         "addAnnotation": "주석 추가",
         "editAnnotation": "주석 편집",
         "deleteAnnotation": "주석 삭제",
-        "annotationText": "주석 텍스트"
+        "annotationText": "주석 텍스트",
+        "saveError": "노트 저장 오류: {{error}}"
     },
     "iterations": {
         "iteration": "반복",
@@ -134,11 +187,22 @@
         "usage": "사용법",
         "example": "예제",
         "usageDescription": "사용 가능한 모든 맵 요소에 대한 빠른 참조. 사용 가능한 링크를 클릭하여 예제를 맵에 추가할 수 있습니다.",
+        "undo": {
+            "title": "실행 취소",
+            "description": "마지막 작업 실행 취소",
+            "tooltip": "지도에서 수행된 마지막 작업을 실행 취소하려면 클릭하세요"
+        },
+        "redo": {
+            "title": "다시 실행",
+            "description": "마지막으로 취소된 작업 다시 실행",
+            "tooltip": "취소된 마지막 작업을 다시 실행하려면 클릭하세요"
+        },
         "validation": {
             "error": "유효성 검사 오류",
             "lineError": "{{line}}번 줄에서 오류",
             "componentNotFound": "구성 요소 '{{component}}'를 찾을 수 없습니다",
-            "invalidSyntax": "잘못된 구문"
+            "invalidSyntax": "잘못된 구문",
+            "elementNotFound": "맵 요소를 찾을 수 없거나 문법이 잘못되었습니다"
         },
         "usages": {
             "to_set_the_title": "제목 설정하기",
@@ -165,7 +229,31 @@
             "highlight_a_component_with_a_build,_buy,_or_outsource_method_of_execution": "구축, 구매 또는 외주 실행 방법으로 구성 요소 강조 표시"
         },
         "hideUsage": "사용법 숨기기",
-        "showUsage": "사용법 보기"
+        "showUsage": "사용법 보기",
+        "inline": {
+            "ariaLabel": {
+                "multiLine": "다중 라인 텍스트 에디터",
+                "singleLine": "텍스트 에디터"
+            },
+            "validation": {
+                "required": "이 필드는 필수입니다",
+                "minLength": "최소 길이는 {{count}}자입니다",
+                "maxLength": "최대 길이는 {{count}}자입니다",
+                "invalidFormat": "잘못된 형식입니다",
+                "invalidCharacters": "잘못된 문자가 포함되어 있습니다",
+                "saveFailed": "저장에 실패했습니다. 다시 시도해 주세요."
+            }
+        },
+        "link": {
+            "placeholder": "링크 텍스트 입력...",
+            "ariaDescription": "링크에 표시할 텍스트를 입력하세요. 줄바꿈이나 세미콜론은 포함할 수 없습니다.",
+            "validation": {
+                "noLineBreaks": "링크 텍스트에는 줄바꿈을 포함할 수 없습니다",
+                "noSemicolons": "링크 텍스트에는 세미콜론을 포함할 수 없습니다",
+                "updateFailed": "링크 텍스트 업데이트에 실패했습니다",
+                "unexpectedError": "예상치 못한 오류가 발생했습니다"
+            }
+        }
     },
     "theme": {
         "light": "라이트 테마",
@@ -201,7 +289,8 @@
         "downloadExtension": "Download Visual Studio Code Extension",
         "wardleyMapping": "워들리 매핑은 사이먼 워들리 제공, CC BY-SA 4.0. 더 자세한 내용은",
         "wardleyMappingLink": "책",
-        "createdBy": "제작자"
+        "createdBy": "제작자",
+        "patreonAlt": "후원자가 되기"
     },
     "dialogs": {
         "deleteConfirmation": "이 작업은 취소할 수 없습니다.",
@@ -210,6 +299,92 @@
         "networkError": "네트워크 오류. 다시 시도하세요.",
         "saveError": "저장 오류. 다시 시도하세요.",
         "loadError": "로드 오류. 다시 시도하세요.",
-        "areYouSure": "Are you sure?"
+        "areYouSure": "Are you sure?",
+        "setMapSize": "맵 크기 설정",
+        "mapSizeDescription": "맵 캔버스의 치수를 설정합니다. 값은 100에서 5000 픽셀 사이여야 합니다.",
+        "width": "너비",
+        "height": "높이",
+        "editEvolutionStages": "진화 단계 편집",
+        "evolutionStagesDescription": "4가지 진화 단계의 이름을 사용자 정의합니다. 이것들은 맵의 진화 축에 라벨로 표시됩니다.",
+        "stage1": "단계 1 (창세기)",
+        "stage2": "단계 2 (맞춤 제작)",
+        "stage3": "단계 3 (제품)",
+        "stage4": "단계 4 (상품)",
+        "validation": {
+            "required": "{{field}}는 필수입니다",
+            "invalidNumber": "{{field}}는 유효한 숫자여야 합니다",
+            "wholeNumber": "{{field}}는 정수여야 합니다",
+            "tooSmall": "{{field}}는 최소 {{min}}이어야 합니다",
+            "tooLarge": "{{field}}는 {{max}}를 초과할 수 없습니다",
+            "stageRequired": "단계 {{number}} 이름이 필요합니다",
+            "stageTooLong": "단계 {{number}} 이름은 50자 이하여야 합니다"
+        }
+    },
+    "undoRedo": {
+        "error": {
+            "title": "실행 취소/다시 실행 오류",
+            "description": "실행 취소/다시 실행 시스템에서 오류가 발생했습니다. 애플리케이션은 계속 작동하지만, 실행 취소/다시 실행 기능이 제한될 수 있습니다.",
+            "detailsLabel": "오류 세부 정보"
+        }
+    },
+    "wysiwyg": {
+        "tooltips": {
+            "component": "컴포넌트 (C)",
+            "inertia": "관성 (I)",
+            "market": "시장 (M)",
+            "ecosystem": "생태계 (E)",
+            "buildMethod": "구축 방법 (B)",
+            "buyMethod": "구매 방법 (U)",
+            "outsourceMethod": "아웃소싱 방법 (O)",
+            "note": "노트 (N)",
+            "pipeline": "파이프라인 (P)",
+            "anchor": "앵커 (A)",
+            "link": "컴포넌트 연결 (L)",
+            "pst": "PST 박스 (T)"
+        },
+        "pst": {
+            "pioneers": "선구자",
+            "settlers": "정착자",
+            "townPlanners": "도시 계획가"
+        },
+        "undo": {
+            "noActions": "취소할 작업이 없습니다",
+            "withAction": "취소: {{action}}"
+        },
+        "redo": {
+            "noActions": "다시 실행할 작업이 없습니다",
+            "withAction": "다시 실행: {{action}}"
+        },
+        "instructions": {
+            "keyboardShortcuts": "키보드 단축키로 도구를 빠르게 선택하세요: C는 컴포넌트, L은 링크, N은 노트, P는 파이프라인, A는 앵커, M은 방법, T는 PST. Escape로 선택 해제."
+        }
+    },
+    "updates": {
+        "title": "What's New 🎉",
+        "latestAvailable": "현재 버전은 {{version}}입니다.",
+        "placeholder": "자세한 릴리스 노트는 곧 여기에 추가됩니다.",
+        "dismiss": "확인",
+        "feb2026": {
+            "title": "February 2026 update highlights:",
+            "items": {
+                "1": "Added full WYSIWYG editing for major map elements.",
+                "2": "Expanded keyboard shortcuts, including improved linking with L.",
+                "3": "Right-click actions for delete, inertia add/remove, evolve, and map settings.",
+                "4": "Select links and press Delete/Backspace, or right-click links to delete.",
+                "5": "Hovering components now highlights Flow of Value lines in blue.",
+                "6": "Inline editing upgraded: double-click or Enter, save with Ctrl+Enter or OK, cancel with X.",
+                "7": "Multi-line component names and notes are now fully supported (#127).",
+                "8": "Toolbar improvements: dock support, hide/show toggle, and better preview positioning.",
+                "9": "Map title, anchors, annotations, and link context text support inline editing.",
+                "10": "Cross-browser fixes for Safari and Chrome inline editor behavior.",
+                "11": "Market and Ecosystem linking pulse indicator sizing improved.",
+                "12": "Link relationship syntax highlighting now supports slash names (#176).",
+                "13": "General bug fixes and stability improvements across editing, linking, and toolbar interactions."
+            },
+            "releaseLabel": "February 2026 release",
+            "contact": "Reach out on linkedin.com/in/skels or on github.com/damonsk/onlinewardleymaps",
+            "contactPrefix": "Reach out on",
+            "contactOr": "or on"
+        }
     }
 }
