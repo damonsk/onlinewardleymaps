@@ -55,8 +55,6 @@ const Map: React.FC<MapProps> = props => {
                 <meta property="og:title" content={pageTitle} />
                 <meta property="og:description" content={pageDescription} />
                 <meta property="og:locale" content={currentLanguage} />
-                <meta name="twitter:title" content={pageTitle} />
-                <meta name="twitter:description" content={pageDescription} />
                 <link rel="canonical" href={`https://onlinewardleymaps.com${router.asPath}`} />
             </Head>
             <MapEnvironment

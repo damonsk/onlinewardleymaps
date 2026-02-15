@@ -1,0 +1,69 @@
+name: Deploy to Docker
+
+on:
+  workflow_dispatch:
+    inputs:
+      web_image_tag:
+        description: Web image tag to deploy (defaults to latest)
+        required: false
+        default: latest
+      api_image_tag:
+        description: API image tag to deploy (defaults to latest)
+        required: false
+        default: latest
+  workflow_run:
+    workflows:
+      - Publish Docker Images
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on:
+      - self-hosted
+      - docker-deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Resolve image tags
+        id: tags
+        shell: bash
+        run: |
+          WEB_TAG="latest"
+          API_TAG="latest"
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            WEB_TAG="${{ github.event.inputs.web_image_tag }}"
+            API_TAG="${{ github.event.inputs.api_image_tag }}"
+          elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            # Deploy the exact image set published by the upstream run
+            API_TAG="sha-${{ github.event.workflow_run.head_sha }}"
+            WEB_TAG="$API_TAG"
+          fi
+
+          echo "web_tag=$WEB_TAG" >> "$GITHUB_OUTPUT"
+          echo "api_tag=$API_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Ensure persistent data path exists
+        run: mkdir -p /home/damon/Docker/owm/volumes/owm/data
+
+      - name: Deploy compose stack
+        env:
+          OWM_IMAGE_OWNER: ${{ github.repository_owner }}
+          OWM_WEB_IMAGE_TAG: ${{ steps.tags.outputs.web_tag }}
+          OWM_API_IMAGE_TAG: ${{ steps.tags.outputs.api_tag }}
+          OWM_DATA_PATH: /home/damon/Docker/owm/volumes/owm/data
+        run: |
+          cd /home/damon/Docker/owm
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
+          docker image prune -f

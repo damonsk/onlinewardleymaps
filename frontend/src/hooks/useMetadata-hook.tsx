@@ -26,8 +26,6 @@ export const useMetadata = () => {
             <meta property="og:title" content={`${t('app.title', 'Wardley Maps')} - ${t('app.name', 'Online Wardley Maps')}`} />
             <meta property="og:description" content={t('app.description', 'Create and share Wardley Maps online')} />
             <meta property="og:locale" content={currentLanguage} />
-            <meta name="twitter:title" content={`${t('app.title', 'Wardley Maps')} - ${t('app.name', 'Online Wardley Maps')}`} />
-            <meta name="twitter:description" content={t('app.description', 'Create and share Wardley Maps online')} />
 
             {/* Canonical URL with current language */}
             <link rel="canonical" href={`https://onlinewardleymaps.com${router.asPath}`} />

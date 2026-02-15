@@ -6,7 +6,7 @@ The source code that runs www.OnlineWardleyMaps.com.
 
 Also available as a standalone Visual Studio Extension - [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps).
 
-Developed by [@damonsk](https://twitter.com/damonsk).
+Developed by [Damon Skelhorn](https://www.linkedin.com/in/skels/).
 
 Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see [Simon's book](https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec).
 

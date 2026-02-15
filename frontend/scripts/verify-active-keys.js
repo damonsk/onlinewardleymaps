@@ -35,7 +35,6 @@ const activeKeys = [
 
     // Footer.tsx
     'footer.downloadExtension',
-    'footer.twitter',
     'footer.wardleyMapping',
     'footer.wardleyMappingLink',
     'footer.createdBy',

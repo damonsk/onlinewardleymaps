@@ -48,16 +48,6 @@ class MyDocument extends Document {
                     <meta property="og:image:height" content="512" />
                     <meta property="og:image:alt" content="Online Wardley Maps Logo" />
 
-                    {/* Twitter */}
-                    <meta name="twitter:card" content="summary" />
-                    <meta name="twitter:title" content="Online Wardley Maps" />
-                    <meta
-                        name="twitter:description"
-                        content="Create and share Wardley Maps online. A visual tool for strategic planning."
-                    />
-                    <meta name="twitter:site" content="@MapsAsCode" />
-                    <meta name="twitter:image" content="https://onlinewardleymaps.com/android-chrome-512x512.png" />
-
                     {/* Favicon */}
                     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
                     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
