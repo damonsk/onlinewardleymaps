@@ -18,7 +18,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org/
           cache: yarn
           cache-dependency-path: frontend/wmlandscape/yarn.lock
       - name: Enable Corepack
@@ -53,7 +52,11 @@ jobs:
         if: steps.npm.outputs.exists == 'false'
         run: |
           cd frontend/wmlandscape
+          rm -f "$HOME/.npmrc"
           npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ""
+          NPM_TOKEN: ""
 
       - name: Skip publish (version already on npm)
         if: steps.npm.outputs.exists == 'true'

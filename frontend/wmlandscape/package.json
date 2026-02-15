@@ -1,6 +1,6 @@
 {
     "name": "wmlandscape",
-    "version": "1.269.1",
+    "version": "3.0.1",
     "description": "The engine that powers OnlineWardleyMaps and VSCode-Wardley-Maps",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -28,13 +28,13 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/damonsk/onlinewardleymaps-ts.git",
+        "url": "git+https://github.com/damonsk/onlinewardleymaps.git",
         "directory": "frontend/wmlandscape"
     },
     "bugs": {
-        "url": "https://github.com/damonsk/onlinewardleymaps-ts/issues"
+        "url": "https://github.com/damonsk/onlinewardleymaps/issues"
     },
-    "homepage": "https://github.com/damonsk/onlinewardleymaps-ts/tree/main/frontend/wmlandscape",
+    "homepage": "https://github.com/damonsk/onlinewardleymaps/tree/main/frontend/wmlandscape",
     "publishConfig": {
         "access": "public"
     },
