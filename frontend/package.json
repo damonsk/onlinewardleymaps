@@ -117,7 +117,7 @@
         "format:check": "prettier --check .",
         "format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
         "precommit": "yarn run format-staged && yarn test",
-        "package": "rollup -c",
+        "package": "yarn --cwd wmlandscape build",
         "test": "jest --env=jsdom",
         "test:watch": "jest --watchAll --env=jsdom",
         "sonar": "node sonar-project.js"
