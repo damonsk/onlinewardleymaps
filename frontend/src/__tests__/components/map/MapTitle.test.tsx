@@ -56,6 +56,20 @@ describe('MapTitle', () => {
         expect(screen.getByDisplayValue('Test Map')).toBeInTheDocument();
     });
 
+    it('renders title editor foreignObject with enough height for action buttons', () => {
+        const {container} = render(
+            <MapTitle mapTitle="Test Map" onTitleUpdate={mockOnTitleUpdate} mapStyleDefs={mockMapStyleDefs} isEditable={true} />,
+        );
+
+        const titleElement = screen.getByText('Test Map');
+        fireEvent.doubleClick(titleElement);
+
+        const foreignObject = container.querySelector('foreignObject');
+        expect(foreignObject).toBeInTheDocument();
+        expect(foreignObject).toHaveAttribute('height', '70');
+        expect(foreignObject).toHaveStyle('overflow: visible');
+    });
+
     it('does not enter edit mode when not editable', () => {
         render(<MapTitle mapTitle="Test Map" onTitleUpdate={mockOnTitleUpdate} mapStyleDefs={mockMapStyleDefs} isEditable={false} />);
 

@@ -24,6 +24,7 @@ export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose
         t('updates.feb2026.items.12', 'Link relationship syntax highlighting now supports slash names (#176).'),
         t('updates.feb2026.items.13', 'General bug fixes and stability improvements across editing, linking, and toolbar interactions.'),
         t('updates.feb2026.items.14', 'Fixed annotation number centering for large values in annotation circles (#129).'),
+        t('updates.feb2026.items.15', 'Fixed map title inline edit save/cancel controls being partially hidden by the canvas in Chrome (#272).'),
     ];
 
     return (

@@ -13,6 +13,9 @@ interface MapTitleProps {
 }
 
 function MapTitle(props: MapTitleProps) {
+    const TITLE_EDITOR_WIDTH = 300;
+    const TITLE_EDITOR_HEIGHT = 70; // Includes space for inline editor action buttons rendered below the input
+
     const {mapTitle, mapText, onTitleUpdate, mapStyleDefs, isEditable = true} = props;
     const {t} = useI18n();
     const [isEditing, setIsEditing] = useState(false);
@@ -44,14 +47,19 @@ function MapTitle(props: MapTitleProps) {
     if (isEditing && mapStyleDefs) {
         // Calculate cross-browser compatible position for the editor
         const titlePosition = {x: 0, y: -10}; // Position of the title text
-        const editorDimensions = {width: 300, height: 40};
+        const editorDimensions = {width: TITLE_EDITOR_WIDTH, height: TITLE_EDITOR_HEIGHT};
         const editorPosition = calculateTitleEditorPosition(titlePosition, editorDimensions);
 
         // Debug positioning in development
         debugPosition('MapTitle Editor', titlePosition, editorPosition);
 
         return (
-            <foreignObject x={editorPosition.x} y={editorPosition.y} width={editorPosition.width} height={editorPosition.height}>
+            <foreignObject
+                x={editorPosition.x}
+                y={editorPosition.y}
+                width={editorPosition.width}
+                height={editorPosition.height}
+                style={{overflow: 'visible', pointerEvents: 'auto'}}>
                 <InlineEditor
                     value={editValue}
                     onChange={handleChange}
