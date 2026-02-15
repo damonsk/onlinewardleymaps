@@ -26,3 +26,4 @@ frontend/SOLID_REFACTORING.md
 api/node_modules/
 api/dist/
 data/
+*.tgz

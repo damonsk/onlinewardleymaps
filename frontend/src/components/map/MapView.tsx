@@ -9,7 +9,9 @@ import {ToolbarItem} from '../../types/toolbar';
 import {ActionType} from '../../types/undo-redo';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 import {useI18n} from '../../hooks/useI18n';
-import {useComponentSelection} from '../ComponentSelectionContext';
+import {EditingProvider} from '../EditingContext';
+import {UndoRedoProvider} from '../UndoRedoProvider';
+import {ComponentSelectionProvider, useComponentSelection} from '../ComponentSelectionContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
 import EvolutionStagesDialog from './EvolutionStagesDialog';
@@ -377,8 +379,19 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
     );
 };
 
+// Keep provider wiring internal so consumers of MapView don't need to manage this context.
+const MapViewWithProviders: React.FunctionComponent<ModernMapViewRefactoredProps> = props => (
+    <UndoRedoProvider mapText={props.mapText} mutateMapText={props.mutateMapText}>
+        <EditingProvider>
+            <ComponentSelectionProvider>
+                <MapViewComponent {...props} />
+            </ComponentSelectionProvider>
+        </EditingProvider>
+    </UndoRedoProvider>
+);
+
 // Memoized component to prevent unnecessary re-renders
-export const MapView = React.memo(MapViewComponent);
+export const MapView = React.memo(MapViewWithProviders);
 
 // Extracted style helpers
 const getContainerStyle = (mapStyleDefs: MapTheme): React.CSSProperties => {

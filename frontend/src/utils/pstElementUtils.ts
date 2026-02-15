@@ -4,6 +4,7 @@
  */
 
 import {PSTElement, PSTType, PSTCoordinates} from '../types/map/pst';
+import {updatePSTElementInMapText} from './pstMapTextMutation';
 
 /**
  * Convert attitude data structure to PST element
@@ -50,53 +51,11 @@ export function extractPSTElementsFromAttitudes(attitudes: any[]): PSTElement[] 
  * Update map text with new PST coordinates after resize
  */
 export function updatePSTInMapText(mapText: string, pstElement: PSTElement, newCoordinates: PSTCoordinates): string {
-    // Use our working implementation from pstMapTextMutation
-    try {
-        // Import the working function
-        const {updatePSTElementInMapText} = require('./pstMapTextMutation');
-
-        return updatePSTElementInMapText({
-            mapText,
-            pstElement,
-            newCoordinates,
-        });
-    } catch (error) {
-        console.error('Error using pstMapTextMutation, falling back to legacy implementation:', error);
-
-        // Fallback to legacy implementation with fixes
-        const lines = mapText.split('\n');
-
-        // Use 0-based line indexing (our working implementation uses 0-based)
-        const lineIndex = pstElement.line;
-
-        if (lineIndex < 0 || lineIndex >= lines.length) {
-            console.warn(`Invalid line number ${lineIndex} for PST element ${pstElement.id}`);
-            return mapText;
-        }
-
-        const currentLine = lines[lineIndex];
-
-        // Create the new PST syntax with updated coordinates (using consistent precision)
-        const formatCoordinate = (coord: number) => coord.toFixed(2);
-        let newPSTSyntax = `${pstElement.type} [${formatCoordinate(newCoordinates.visibility1)}, ${formatCoordinate(newCoordinates.maturity1)}, ${formatCoordinate(newCoordinates.visibility2)}, ${formatCoordinate(newCoordinates.maturity2)}]`;
-
-        // Add name if it exists
-        if (pstElement.name) {
-            newPSTSyntax += ` ${pstElement.name}`;
-        }
-
-        // Replace the PST coordinates in the line using a more robust pattern
-        const pstPattern = new RegExp(
-            `${pstElement.type}\\s*\\[\\s*[+-]?\\d*\\.?\\d+\\s*,\\s*[+-]?\\d*\\.?\\d+\\s*,\\s*[+-]?\\d*\\.?\\d+\\s*,\\s*[+-]?\\d*\\.?\\d+\\s*\\](?:\\s+.+)?`,
-        );
-
-        const updatedLine = currentLine.replace(pstPattern, newPSTSyntax);
-
-        // Update the line in the array
-        lines[lineIndex] = updatedLine;
-
-        return lines.join('\n');
-    }
+    return updatePSTElementInMapText({
+        mapText,
+        pstElement,
+        newCoordinates,
+    });
 }
 
 /**

@@ -36,13 +36,21 @@ module.exports = {
             exclude: 'node_modules/**',
             babelHelpers: 'bundled',
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
-            presets: ['@babel/preset-env', '@babel/preset-react', ['@babel/preset-typescript', {allowNamespaces: true}]],
+            presets: [
+                '@babel/preset-env',
+                ['@babel/preset-react', {runtime: 'automatic'}],
+                ['@babel/preset-typescript', {allowNamespaces: true}],
+            ],
         }),
         commonjs(),
     ],
     external: [
         'react',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
         'react-dom',
+        /^react\/.*/,
+        /^react-dom\/.*/,
         'core-js',
         'lodash.merge',
         'prop-types',
@@ -63,13 +71,6 @@ module.exports = {
         /@mui\/.*/,
         /@emotion\/.*/,
         /next\/.*/,
-        // Exclude all relative imports that might be problematic
-        id => {
-            // Don't bundle Next.js internals or relative imports from Next.js
-            if (id.includes('next/dist/') || id.includes('./utils/') || id.includes('../')) {
-                return true;
-            }
-            return false;
-        },
+        /next\/dist\/.*/,
     ],
 };

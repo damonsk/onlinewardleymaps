@@ -43,6 +43,8 @@ To create package for use in [vscode-wardley-maps](https://github.com/damonsk/vs
 
     `yarn package`
 
+Publishing `wmlandscape` to npm is handled by GitHub Actions on `main`.
+
 Alternatively, you can also run it locally using the provided Dockerfile.
 
 From the root repository, build a container image via

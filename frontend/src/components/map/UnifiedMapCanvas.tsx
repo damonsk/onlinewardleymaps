@@ -40,6 +40,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
 
     const {isAnyElementEditing, editingState} = useEditing();
     const Viewer = useRef<ReactSVGPanZoom>(null);
+    const hasCompletedInitialFit = useRef(false);
+    const previousCanvasSize = useRef<{width: number; height: number}>({width: 0, height: 0});
 
     // Computed values
     const mapElements = useMemo(() => {
@@ -243,6 +245,10 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     }, [setWaitingForPanelRestore]);
 
     useEffect(() => {
+        if (hasCompletedInitialFit.current) {
+            return;
+        }
+
         if (mapDimensions.width > 0 && mapDimensions.height > 0 && !waitingForPanelRestore) {
             console.log('Initial fit effect triggered', {
                 width: mapDimensions.width,
@@ -276,6 +282,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                                     mapDimensions.height + 90, // Margin for evolution labels at bottom
                                 );
                                 // Mark sizing as complete
+                                hasCompletedInitialFit.current = true;
                                 setIsInitialSizingComplete(true);
                             }
                         }, 300); // Reduced delay since panel restore is already complete
@@ -309,8 +316,41 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapCanvasDimensions.height,
         waitingForPanelRestore,
         setIsInitialSizingComplete,
-        wardleyMap.components.length,
     ]);
+
+    // Refit only when the viewport size changes (e.g., VS Code panel/window resize).
+    // This keeps map proportions responsive without re-fitting on normal map edits.
+    useEffect(() => {
+        if (!hasCompletedInitialFit.current || !Viewer.current?.fitSelection) {
+            return;
+        }
+
+        const {width, height} = mapCanvasDimensions;
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
+        const prev = previousCanvasSize.current;
+        const sizeChanged = prev.width !== width || prev.height !== height;
+        previousCanvasSize.current = {width, height};
+
+        if (!sizeChanged) {
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            if (Viewer.current?.fitSelection) {
+                Viewer.current.fitSelection(
+                    -60,
+                    -70,
+                    mapDimensions.width + 80,
+                    mapDimensions.height + 90,
+                );
+            }
+        }, 60);
+
+        return () => clearTimeout(timer);
+    }, [mapCanvasDimensions.width, mapCanvasDimensions.height, mapDimensions.width, mapDimensions.height]);
 
     // Style configuration
     const fill = {
@@ -551,7 +591,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                     style={{
                         position: 'absolute',
                         bottom: '20px',
-                        left: '20px',
+                        left: '40px',
                         zIndex: 1000,
                         backgroundColor: '#ffffff',
                         borderRadius: '8px',

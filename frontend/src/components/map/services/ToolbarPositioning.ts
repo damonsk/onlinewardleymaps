@@ -283,6 +283,16 @@ export class ToolbarPositioning {
      * Gets the editor panel width using multiple fallback strategies
      */
     private static getEditorPanelWidth(): number {
+        // VS Code webview integration does not render the split-pane layout used by OWM.
+        // In that environment we intentionally dock to the absolute left.
+        const isVsCodeWebview = typeof window !== 'undefined' && typeof (window as any).acquireVsCodeApi === 'function';
+        const hasEditorLayout = !!document.querySelector(
+            '.editor-panel, [data-testid="left-panel"], .left-panel, [data-testid="resizable-split-pane"], .resizable-split-pane',
+        );
+        if (isVsCodeWebview && !hasEditorLayout) {
+            return 0;
+        }
+
         // Primary: Get width from localStorage (most reliable for editor mode)
         const savedWidth = localStorage.getItem(CONFIG.PANEL_WIDTH_STORAGE_KEY);
         if (savedWidth) {
@@ -420,6 +430,20 @@ export class ToolbarPositioning {
         const snapZone = ToolbarPositioning.getSnapZone(mapOnlyView);
         const toolbarRect = toolbarElement.getBoundingClientRect();
         const contentAreaBounds = ToolbarPositioning.getMainContentAreaBounds();
+        const mode = ToolbarPositioning.getViewportMode(mapOnlyView);
+
+        // In editor mode keep the docked toolbar pinned near the top-left of the
+        // map content area so it doesn't overlap important central canvas content.
+        if (mode.isEditorMode) {
+            const minY = contentAreaBounds.top + CONFIG.DEFAULT_MARGIN;
+            const maxY = contentAreaBounds.top + contentAreaBounds.height - toolbarRect.height - CONFIG.DEFAULT_MARGIN;
+            const clampedY = Math.max(minY, Math.min(minY, maxY));
+
+            return {
+                x: snapZone.x + CONFIG.DEFAULT_MARGIN,
+                y: clampedY,
+            };
+        }
 
         // Calculate ideal centered Y position within the content area
         const contentCenterY = contentAreaBounds.top + contentAreaBounds.height / 2;
