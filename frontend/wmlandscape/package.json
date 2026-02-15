@@ -36,7 +36,8 @@
     },
     "homepage": "https://github.com/damonsk/onlinewardleymaps/tree/main/frontend/wmlandscape",
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
     },
     "devDependencies": {
         "@babel/cli": "^7.12.1",

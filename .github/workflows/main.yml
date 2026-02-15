@@ -1,4 +1,4 @@
-name: Build and Publish wmlandscape
+name: Build wmlandscape
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     permissions:
@@ -33,29 +33,3 @@ jobs:
         run: |
           cd frontend/wmlandscape
           yarn build
-
-      - name: Resolve package version
-        id: pkg
-        run: |
-          VERSION=$(node -p "require('./frontend/wmlandscape/package.json').version")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Check if version already exists on npm
-        id: npm
-        run: |
-          if npm view "wmlandscape@${{ steps.pkg.outputs.version }}" version >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Publish wmlandscape
-        if: steps.npm.outputs.exists == 'false'
-        run: |
-          cd frontend/wmlandscape
-          npm publish --access public --provenance
-
-      - name: Skip publish (version already on npm)
-        if: steps.npm.outputs.exists == 'true'
-        run: |
-          echo "wmlandscape@${{ steps.pkg.outputs.version }} already exists on npm; skipping publish."

@@ -118,6 +118,8 @@
         "format-staged": "prettier --write \"$(git diff --name-only --cached)\"",
         "precommit": "yarn run format-staged && yarn test",
         "package": "yarn --cwd wmlandscape build",
+        "package:pack": "yarn --cwd wmlandscape pack:check",
+        "package:publish": "cd wmlandscape && npm publish --registry https://registry.npmjs.org/ --access public",
         "test": "jest --env=jsdom",
         "test:watch": "jest --watchAll --env=jsdom",
         "sonar": "node sonar-project.js"
