@@ -23,3 +23,6 @@ frontend/.qoder
 frontend/SOLID_REFACTORING.md
 .qoder
 .next
+api/node_modules/
+api/dist/
+data/

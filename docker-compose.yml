@@ -1,0 +1,25 @@
+services:
+  onlinewardleymaps:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_ENDPOINT: ${NEXT_PUBLIC_API_ENDPOINT:-http://localhost:3001/v1/maps/}
+    container_name: onlinewardleymaps
+    ports:
+      - "3000:3000"
+    depends_on:
+      - onlinewardleymaps-api
+
+  onlinewardleymaps-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: onlinewardleymaps-api
+    environment:
+      PORT: 3001
+      DATA_DIR: ${OWM_DATA_DIR:-/data}
+    ports:
+      - "3001:3001"
+    volumes:
+      - ${OWM_DATA_PATH:-./data}:${OWM_DATA_DIR:-/data}
