@@ -8,6 +8,7 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directories: # Location of package manifests
     - "/frontend"
+    - "/api"
     - "/frontend/wmlandscape"
     schedule:
       interval: "weekly"
