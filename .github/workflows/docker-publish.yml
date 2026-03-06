@@ -56,7 +56,7 @@ jobs:
             type=sha
 
       - name: Build and push web image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
@@ -67,7 +67,7 @@ jobs:
             NEXT_PUBLIC_API_ENDPOINT=${{ github.event.inputs.next_public_api_endpoint || 'https://api.onlinewardleymaps.com/v1/maps/' }}
 
       - name: Build and push api image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./api
           file: ./api/Dockerfile
