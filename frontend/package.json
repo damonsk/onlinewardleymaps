@@ -43,7 +43,7 @@
         "lint-staged": "^16.1.2",
         "prettier": "^3.6.2",
         "rollup": "^4.59.0",
-        "sonarqube-scanner": "^4.3.0",
+        "sonarqube-scanner": "^4.3.5",
         "typescript": "^5.4.3"
     },
     "env": {
