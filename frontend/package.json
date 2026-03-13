@@ -79,7 +79,7 @@
         "react": "^19.1.0",
         "react-ace": "^14.0.1",
         "react-dom": "^19.1.0",
-        "react-i18next": "^15.5.3",
+        "react-i18next": "^16.5.8",
         "react-svg-pan-zoom": "^3.13.1",
         "sass": "^1.89.2",
         "styled-components": "6.1.19"
