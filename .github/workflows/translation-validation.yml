@@ -60,7 +60,7 @@ jobs:
           
       - name: Comment PR with translation issues
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const { execSync } = require('child_process');
