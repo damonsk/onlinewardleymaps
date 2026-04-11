@@ -22,11 +22,15 @@ const mockMapDimensions: MapDimensions = {
 };
 
 const mockMapTheme: MapTheme = {
+    className: 'plain',
     component: {
         fontSize: '14px',
         fontWeight: 'normal',
         textColor: '#000',
         evolvedTextColor: '#666',
+        stroke: '#000',
+        strokeWidth: 1,
+        radius: 5,
     },
     attitudes: {
         pioneers: {fill: '#ff0000', stroke: '#ff0000'},
@@ -76,6 +80,8 @@ const mockComponent: UnifiedComponent = {
     visibility: 0.7,
     uncertaintyLowerMaturity: 0.5,
     uncertaintyUpperMaturity: 0.5,
+    uncertaintyLowerOffsetMaturity: 0,
+    uncertaintyUpperOffsetMaturity: 0,
     evolved: false,
     evolving: false,
     line: 1,
@@ -95,6 +101,10 @@ const mockAnchor: UnifiedComponent = {
     type: 'anchor',
     maturity: 0.6,
     visibility: 0.8,
+    uncertaintyLowerMaturity: 0.6,
+    uncertaintyUpperMaturity: 0.6,
+    uncertaintyLowerOffsetMaturity: 0,
+    uncertaintyUpperOffsetMaturity: 0,
     evolved: false,
     evolving: false,
     line: 3,
@@ -199,6 +209,8 @@ describe('Visual Selection Feedback', () => {
                 id: 'test-component-uncertain',
                 uncertaintyLowerMaturity: 0.35,
                 uncertaintyUpperMaturity: 0.75,
+                uncertaintyLowerOffsetMaturity: -0.15,
+                uncertaintyUpperOffsetMaturity: 0.25,
             };
 
             const mockProps = {
@@ -215,12 +227,68 @@ describe('Visual Selection Feedback', () => {
             expect(screen.getByTestId(`component-uncertainty-${uncertainComponent.id}`)).toBeInTheDocument();
         });
 
+        it('should anchor non-wardley gradient peak on component maturity inside uncertainty range', () => {
+            const uncertainComponent: UnifiedComponent = {
+                ...mockComponent,
+                id: 'test-component-uncertain-gradient-peak',
+                maturity: 0.5,
+                uncertaintyLowerMaturity: 0.35,
+                uncertaintyUpperMaturity: 0.75,
+                uncertaintyLowerOffsetMaturity: -0.15,
+                uncertaintyUpperOffsetMaturity: 0.25,
+            };
+
+            const mockProps = {
+                mapDimensions: mockMapDimensions,
+                component: uncertainComponent,
+                mapText: 'test map text',
+                mutateMapText: jest.fn(),
+                mapStyleDefs: {...mockMapTheme, className: 'plain'},
+                setHighlightLine: jest.fn(),
+                scaleFactor: 1,
+            };
+
+            const {container} = renderWithProvider(<MapComponent {...mockProps} />);
+            const expectedPeakOffset = '37.50%';
+            const peakStop = container.querySelector(
+                `#component-uncertainty-gradient-${uncertainComponent.id} stop[offset="${expectedPeakOffset}"]`,
+            );
+
+            expect(peakStop).not.toBeNull();
+        });
+
+        it('should render wardley uncertainty as centered line with end caps', () => {
+            const uncertainComponent: UnifiedComponent = {
+                ...mockComponent,
+                id: 'test-component-uncertain-wardley',
+                uncertaintyLowerMaturity: 0.35,
+                uncertaintyUpperMaturity: 0.75,
+                uncertaintyLowerOffsetMaturity: -0.15,
+                uncertaintyUpperOffsetMaturity: 0.25,
+            };
+
+            const mockProps = {
+                mapDimensions: mockMapDimensions,
+                component: uncertainComponent,
+                mapText: 'test map text',
+                mutateMapText: jest.fn(),
+                mapStyleDefs: {...mockMapTheme, className: 'wardley'},
+                setHighlightLine: jest.fn(),
+                scaleFactor: 1,
+            };
+
+            renderWithProvider(<MapComponent {...mockProps} />);
+            expect(screen.getByTestId(`component-uncertainty-${uncertainComponent.id}`)).toBeInTheDocument();
+        });
+
         it('should not render uncertainty segment when lower and upper bounds are equal', () => {
             const certainComponent: UnifiedComponent = {
                 ...mockComponent,
                 id: 'test-component-certain',
                 uncertaintyLowerMaturity: 0.5,
                 uncertaintyUpperMaturity: 0.5,
+                uncertaintyLowerOffsetMaturity: 0,
+                uncertaintyUpperOffsetMaturity: 0,
             };
 
             const mockProps = {

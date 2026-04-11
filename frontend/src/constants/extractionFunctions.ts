@@ -432,6 +432,8 @@ export const setUncertaintyBounds = (
         maturity?: number;
         uncertaintyLowerMaturity?: number;
         uncertaintyUpperMaturity?: number;
+        uncertaintyLowerOffsetMaturity?: number;
+        uncertaintyUpperOffsetMaturity?: number;
     },
     element: string,
 ): void => {
@@ -439,13 +441,45 @@ export const setUncertaintyBounds = (
     let lowerBoundary = componentMaturity;
     let upperBoundary = componentMaturity;
 
-    const uncertaintyMatch = element.match(/\buncertainty\s*\[\s*([^,\]]+)\s*,\s*([^\]]+)\s*\]/i);
-    if (uncertaintyMatch) {
-        const parsedLower = parseFloat(uncertaintyMatch[1].trim());
-        const parsedUpper = parseFloat(uncertaintyMatch[2].trim());
+    const parseUncertaintyBoundary = (rawValue: string, fallback: number): number => {
+        const value = rawValue.trim();
+        if (value.length === 0) {
+            return fallback;
+        }
 
-        lowerBoundary = Number.isNaN(parsedLower) ? componentMaturity : parsedLower;
-        upperBoundary = Number.isNaN(parsedUpper) ? componentMaturity : parsedUpper;
+        // Relative syntax support, e.g. +0.10 or -0.20
+        const relativeMatch = value.match(/^([+-])\s*([0-9]*\.?[0-9]+)$/);
+        if (relativeMatch) {
+            const sign = relativeMatch[1] === '-' ? -1 : 1;
+            const delta = parseFloat(relativeMatch[2]);
+            return Number.isNaN(delta) ? fallback : fallback + sign * delta;
+        }
+
+        const parsedAbsolute = parseFloat(value);
+        return Number.isNaN(parsedAbsolute) ? fallback : parsedAbsolute;
+    };
+
+    // Priority 1: readable one-sided syntax
+    //   uncertainty left -0.15
+    //   uncertainty right +0.20
+    const sideSyntaxMatch = element.match(/\buncertainty\s+(left|right)\s+([+-]?\s*[0-9]*\.?[0-9]+)\b/i);
+    if (sideSyntaxMatch) {
+        const side = sideSyntaxMatch[1].toLowerCase();
+        const sideValue = parseUncertaintyBoundary(sideSyntaxMatch[2], componentMaturity);
+        if (side === 'left') {
+            lowerBoundary = sideValue;
+            upperBoundary = componentMaturity;
+        } else {
+            lowerBoundary = componentMaturity;
+            upperBoundary = sideValue;
+        }
+    } else {
+        // Priority 2: bracket syntax (absolute/relative/empty)
+        const uncertaintyMatch = element.match(/\buncertainty\s*\[\s*([^,\]]*)\s*,\s*([^\]]*)\s*\]/i);
+        if (uncertaintyMatch) {
+            lowerBoundary = parseUncertaintyBoundary(uncertaintyMatch[1], componentMaturity);
+            upperBoundary = parseUncertaintyBoundary(uncertaintyMatch[2], componentMaturity);
+        }
     }
 
     if (lowerBoundary > upperBoundary) {
@@ -455,6 +489,8 @@ export const setUncertaintyBounds = (
     Object.assign(baseElement, {
         uncertaintyLowerMaturity: lowerBoundary,
         uncertaintyUpperMaturity: upperBoundary,
+        uncertaintyLowerOffsetMaturity: lowerBoundary - componentMaturity,
+        uncertaintyUpperOffsetMaturity: upperBoundary - componentMaturity,
     });
 };
 

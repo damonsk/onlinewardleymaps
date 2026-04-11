@@ -31,6 +31,8 @@ describe('Convert test suite', function () {
         expect(result[e.container][0].maturity).toEqual(0.4);
         expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
         expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toEqual(0);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toEqual(0);
 
         expect(result[e.container][1].id).toEqual(2);
         expect(result[e.container][1].name).toEqual('Customer2');
@@ -38,6 +40,8 @@ describe('Convert test suite', function () {
         expect(result[e.container][1].maturity).toEqual(0.1);
         expect(result[e.container][1].uncertaintyLowerMaturity).toEqual(0.1);
         expect(result[e.container][1].uncertaintyUpperMaturity).toEqual(0.1);
+        expect(result[e.container][1].uncertaintyLowerOffsetMaturity).toEqual(0);
+        expect(result[e.container][1].uncertaintyUpperOffsetMaturity).toEqual(0);
     });
 
     test.each(genericMapComponents)('should create map component with inertia tag set to true', e => {
@@ -53,6 +57,8 @@ describe('Convert test suite', function () {
         expect(result[e.container][0].inertia).toEqual(true);
         expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
         expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toEqual(0);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toEqual(0);
     });
 
     test.each(genericMapComponents)('should parse uncertainty bounds as absolute maturity boundaries', e => {
@@ -64,6 +70,8 @@ describe('Convert test suite', function () {
         expect(result[e.container][0].maturity).toEqual(0.4);
         expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.25);
         expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.75);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(-0.15, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0.35, 10);
     });
 
     test.each(genericMapComponents)('should preserve uncertainty with inertia and decorators on one component line', e => {
@@ -74,9 +82,86 @@ describe('Convert test suite', function () {
 
         expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.2);
         expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.8);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(-0.2, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0.4, 10);
         expect(result[e.container][0].inertia).toEqual(true);
         expect(result[e.container][0].decorators.buy).toEqual(true);
         expect(result[e.container][0].label).toEqual({x: 7, y: -3});
+    });
+
+    test.each(genericMapComponents)('should parse one-sided uncertainty with empty lower bound', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty [, 0.7]\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.7);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(0, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0.3, 10);
+    });
+
+    test.each(genericMapComponents)('should parse one-sided uncertainty with relative upper bound', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty [,+0.2]\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toBeCloseTo(0.6, 10);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(0, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0.2, 10);
+    });
+
+    test.each(genericMapComponents)('should parse one-sided uncertainty with relative lower bound', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty [-0.15, ]\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toBeCloseTo(0.25, 10);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(-0.15, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0, 10);
+    });
+
+    test.each(genericMapComponents)('should parse readable right uncertainty syntax', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty right +0.2\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toBeCloseTo(0.6, 10);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(0, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0.2, 10);
+    });
+
+    test.each(genericMapComponents)('should parse readable left uncertainty syntax', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty left -0.1\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toBeCloseTo(0.3, 10);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerOffsetMaturity).toBeCloseTo(-0.1, 10);
+        expect(result[e.container][0].uncertaintyUpperOffsetMaturity).toBeCloseTo(0, 10);
+    });
+
+    test.each(genericMapComponents)('should prioritize readable side syntax over bracket syntax when both are present', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty left -0.1 uncertainty [0.0, 1.0]\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].uncertaintyLowerMaturity).toBeCloseTo(0.3, 10);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
     });
 
     test('should create links from string', function () {

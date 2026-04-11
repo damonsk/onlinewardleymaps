@@ -11,6 +11,8 @@ export interface MapElement {
     type: string;
     uncertaintyLowerMaturity: number;
     uncertaintyUpperMaturity: number;
+    uncertaintyLowerOffsetMaturity: number;
+    uncertaintyUpperOffsetMaturity: number;
     evolveMaturity?: number;
     maturity: number;
     evolving: boolean;
@@ -173,6 +175,8 @@ export interface Component {
     maturity: number;
     uncertaintyLowerMaturity: number;
     uncertaintyUpperMaturity: number;
+    uncertaintyLowerOffsetMaturity: number;
+    uncertaintyUpperOffsetMaturity: number;
     evolveMaturity?: number;
     evolving: boolean;
     evolved: boolean;

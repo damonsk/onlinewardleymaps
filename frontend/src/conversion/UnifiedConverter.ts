@@ -66,6 +66,14 @@ export class UnifiedConverter {
                 typeof component.uncertaintyLowerMaturity === 'number' ? component.uncertaintyLowerMaturity : maturity;
             const uncertaintyUpperMaturity =
                 typeof component.uncertaintyUpperMaturity === 'number' ? component.uncertaintyUpperMaturity : maturity;
+            const uncertaintyLowerOffsetMaturity =
+                typeof component.uncertaintyLowerOffsetMaturity === 'number'
+                    ? component.uncertaintyLowerOffsetMaturity
+                    : uncertaintyLowerMaturity - maturity;
+            const uncertaintyUpperOffsetMaturity =
+                typeof component.uncertaintyUpperOffsetMaturity === 'number'
+                    ? component.uncertaintyUpperOffsetMaturity
+                    : uncertaintyUpperMaturity - maturity;
 
             return createUnifiedComponent({
                 id: component.id || this.generateId(component.name, type),
@@ -75,6 +83,8 @@ export class UnifiedConverter {
                 visibility: component.visibility || 0,
                 uncertaintyLowerMaturity,
                 uncertaintyUpperMaturity,
+                uncertaintyLowerOffsetMaturity,
+                uncertaintyUpperOffsetMaturity,
                 line: component.line,
                 label: component.label,
                 evolving: component.evolving || false,
