@@ -55,6 +55,8 @@ export default class Converter {
             notes: [],
             presentation: nullPresentation,
             evolution: [],
+            showEvolutionAxis: true,
+            showValueChainAxis: true,
             submaps: [],
             urls: [],
             attitudes: [],

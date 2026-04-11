@@ -214,6 +214,8 @@ pipeline Kettle
             },
             errors: [],
             evolution: [],
+            showEvolutionAxis: true,
+            showValueChainAxis: true,
             urls: [],
         });
 

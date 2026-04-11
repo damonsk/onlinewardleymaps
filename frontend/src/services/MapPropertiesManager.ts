@@ -24,7 +24,7 @@ export class MapPropertiesManager {
     private static readonly DSL_PATTERNS = {
         style: /^style\s+(plain|wardley|colour)\s*$/m,
         size: /^size\s+\[(\d+),\s*(\d+)\]\s*$/m,
-        evolution: /^evolution\s+(.+?)->(.+?)->(.+?)->(.+?)\s*$/m,
+        evolution: /^evolution(?:\s+--hide)?(?:\s+.*)?\s*$/m,
     };
 
     private static readonly DEFAULT_EVOLUTION_STAGES = {
@@ -56,7 +56,7 @@ export class MapPropertiesManager {
         }
 
         // Parse evolution stages
-        const evolutionMatch = mapText.match(this.DSL_PATTERNS.evolution);
+        const evolutionMatch = mapText.match(/^evolution(?:\s+--hide)?\s+(.*?)->(.*?)->(.*?)->(.*?)\s*$/m);
         if (evolutionMatch) {
             properties.evolution = {
                 stage1: evolutionMatch[1].trim(),

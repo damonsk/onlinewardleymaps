@@ -72,6 +72,7 @@
         "core-js": "^3.36.1",
         "html2canvas": "^1.4.1",
         "i18next": "^25.8.14",
+        "jest": "^30.3.0",
         "lodash.merge": "^4.6.2",
         "next": "^16.0.0",
         "next-i18next": "^15.4.2",

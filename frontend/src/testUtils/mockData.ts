@@ -29,6 +29,8 @@ export function createMockWardleyMap(): UnifiedWardleyMap {
         },
         errors: [],
         evolution: [],
+        showEvolutionAxis: true,
+        showValueChainAxis: true,
         urls: [],
     };
 }

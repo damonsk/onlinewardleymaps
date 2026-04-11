@@ -37,6 +37,8 @@ export interface UnifiedWardleyMap {
     evolved: EvolvedElementData[];
     pipelines: PipelineData[];
     evolution: MapEvolution;
+    showEvolutionAxis: boolean;
+    showValueChainAxis: boolean;
 
     // Connections and relationships
     links: FlowLink[];
@@ -99,6 +101,8 @@ export const createEmptyMap = (): UnifiedWardleyMap => {
         evolved: [],
         pipelines: [],
         evolution: [] as EvolutionLabel[],
+        showEvolutionAxis: true,
+        showValueChainAxis: true,
         links: [],
         annotations: [],
         notes: [],

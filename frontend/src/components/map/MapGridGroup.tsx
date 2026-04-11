@@ -13,6 +13,8 @@ interface MapGridGroupProps {
     mapTitle: string;
     evolutionOffsets: Offsets;
     mapEvolutionStates: EvolutionStages;
+    showEvolutionAxis: boolean;
+    showValueChainAxis: boolean;
     mapText?: string;
     onTitleUpdate?: (newTitle: string) => void;
 }
@@ -23,6 +25,8 @@ const MapGridGroup: React.FC<MapGridGroupProps> = ({
     mapTitle,
     evolutionOffsets,
     mapEvolutionStates,
+    showEvolutionAxis,
+    showValueChainAxis,
     mapText,
     onTitleUpdate,
 }) => {
@@ -32,13 +36,21 @@ const MapGridGroup: React.FC<MapGridGroupProps> = ({
             <g id="grid">
                 <MapBackground mapDimensions={mapDimensions} mapStyleClass={mapStyleDefs.className || ''} />
                 <MapTitle mapTitle={mapTitle} mapText={mapText} onTitleUpdate={onTitleUpdate} mapStyleDefs={mapStyleDefs} />
-                <MapGrid mapDimensions={mapDimensions} mapStyleDefs={mapStyleDefs} evolutionOffsets={evolutionOffsets} />
-                <MapEvolution
+                <MapGrid
                     mapDimensions={mapDimensions}
-                    mapEvolutionStates={mapEvolutionStates}
                     mapStyleDefs={mapStyleDefs}
                     evolutionOffsets={evolutionOffsets}
+                    showValueChainAxis={showValueChainAxis}
+                    showEvolutionSeparators={showEvolutionAxis}
                 />
+                {showEvolutionAxis && (
+                    <MapEvolution
+                        mapDimensions={mapDimensions}
+                        mapEvolutionStates={mapEvolutionStates}
+                        mapStyleDefs={mapStyleDefs}
+                        evolutionOffsets={evolutionOffsets}
+                    />
+                )}
             </g>
         </>
     );

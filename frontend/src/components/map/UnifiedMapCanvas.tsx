@@ -516,6 +516,8 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                         mapStyleDefs={mapStyleDefs}
                         mapEvolutionStates={mapEvolutionStates}
                         evolutionOffsets={evolutionOffsets}
+                        showEvolutionAxis={wardleyMap.showEvolutionAxis}
+                        showValueChainAxis={wardleyMap.showValueChainAxis}
                         mapTitle={wardleyMap.title}
                         mapText={mapText}
                         onTitleUpdate={handleTitleUpdate}

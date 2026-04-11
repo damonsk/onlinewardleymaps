@@ -102,6 +102,15 @@ describe('Monaco Editor OWM Mode Syntax Highlighting', () => {
                 expect(flowLinkRules.length).toBeGreaterThan(0);
             }
         });
+
+        it('should include valuechain as a DSL keyword rule', () => {
+            if (OwmHighlightRules) {
+                const rules = new OwmHighlightRules();
+                const keywordRules = rules.$rules.start.filter((rule: any) => rule.regex && typeof rule.regex === 'string');
+                const hasValuechain = keywordRules.some((rule: any) => rule.regex.includes('valuechain'));
+                expect(hasValuechain).toBe(true);
+            }
+        });
     });
 
     describe('Regex Pattern Validation', () => {

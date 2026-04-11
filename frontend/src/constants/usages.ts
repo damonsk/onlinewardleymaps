@@ -111,8 +111,13 @@ const usages: Usage[] = [
     },
     {
         title: 'Stages of Evolution',
-        summary: 'Change the stages of evolution labels on the map',
-        examples: ['evolution First->Second->Third->Fourth', 'evolution Novel->Emerging->Good->Best'],
+        summary: 'Hide evolution axis or change stage labels (shown by default)',
+        examples: ['evolution --hide', 'evolution First->Second->Third->Fourth', 'evolution Phase 1->Phase 2->->Phase 4'],
+    },
+    {
+        title: 'Value Chain Axis',
+        summary: 'Hide the value chain axis (shown by default)',
+        examples: ['valuechain --hide'],
     },
     {
         title: 'Add notes',

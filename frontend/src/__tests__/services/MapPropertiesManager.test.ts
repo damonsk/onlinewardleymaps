@@ -107,6 +107,57 @@ component A [0.1, 0.9]`;
             const stages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
             expect(stages).toBeNull();
         });
+
+        it('should return current evolution stages with no axis flag syntax', () => {
+            const mapText = `title Test Map
+evolution Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            const stages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
+            expect(stages).toEqual({
+                stage1: 'Alpha',
+                stage2: 'Beta',
+                stage3: 'Gamma',
+                stage4: 'Delta',
+            });
+        });
+
+        it('should return null when evolution line has only show/hide config', () => {
+            const mapText = `title Test Map
+evolution --hide
+component A [0.1, 0.9]`;
+
+            const stages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
+            expect(stages).toBeNull();
+        });
+
+        it('should allow empty evolution stage labels', () => {
+            const mapText = `title Test Map
+evolution test->test->->test
+component A [0.1, 0.9]`;
+
+            const stages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
+            expect(stages).toEqual({
+                stage1: 'test',
+                stage2: 'test',
+                stage3: '',
+                stage4: 'test',
+            });
+        });
+
+        it('should parse evolution stages when using hide flag with labels', () => {
+            const mapText = `title Test Map
+evolution --hide Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            const stages = MapPropertiesManager.getCurrentEvolutionStages(mapText);
+            expect(stages).toEqual({
+                stage1: 'Alpha',
+                stage2: 'Beta',
+                stage3: 'Gamma',
+                stage4: 'Delta',
+            });
+        });
     });
 
     describe('updateMapStyle', () => {

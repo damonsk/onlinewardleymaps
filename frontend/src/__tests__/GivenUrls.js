@@ -25,4 +25,9 @@ describe('Given Urls', function () {
         expect(EditorPrefixes.includes('url <name>')).toEqual(true);
         expect(EditorPrefixes.includes('url <name> [<address>]')).toEqual(true);
     });
+
+    test('Editor prefixes are defined for value chain axis config', function () {
+        expect(EditorPrefixes.includes('valuechain')).toEqual(true);
+        expect(EditorPrefixes.includes('valuechain --hide')).toEqual(true);
+    });
 });

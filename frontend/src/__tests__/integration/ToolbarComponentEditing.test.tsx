@@ -259,6 +259,8 @@ describe('Toolbar Component Editing Integration Tests', () => {
         pipelines: [],
         submaps: [],
         evolved: [],
+        showEvolutionAxis: true,
+        showValueChainAxis: true,
         presentation: {
             style: 'wardley',
         },

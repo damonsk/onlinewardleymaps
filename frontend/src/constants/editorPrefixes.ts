@@ -49,6 +49,9 @@ export const EditorPrefixes: string[] = [
     'title',
     'size',
     'evolution',
+    'evolution --hide',
+    'valuechain',
+    'valuechain --hide',
     'accelerator',
     'deaccelerator',
 ];
