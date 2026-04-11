@@ -28,7 +28,6 @@ describe('Given Urls', function () {
 
     test('Editor prefixes are defined for value chain axis config', function () {
         expect(EditorPrefixes.includes('valuechain')).toEqual(true);
-        expect(EditorPrefixes.includes('valuechain --show')).toEqual(true);
         expect(EditorPrefixes.includes('valuechain --hide')).toEqual(true);
     });
 });

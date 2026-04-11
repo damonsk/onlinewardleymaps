@@ -134,8 +134,19 @@ describe('Convert test suite', function () {
         expect(result.evolution[0].line1).toEqual('Genesis');
     });
 
-    test('should show evolution axis and set custom stages', function () {
-        let actual = 'evolution --show Phase 1->Phase 2->Phase 3->Phase 4';
+    test('should keep evolution axis hidden when labels are provided with hide flag', function () {
+        let actual = 'evolution --hide Phase 1->Phase 2->Phase 3->Phase 4';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(false);
+        expect(result.evolution[0].line1).toEqual('Phase 1');
+        expect(result.evolution[1].line1).toEqual('Phase 2');
+        expect(result.evolution[2].line1).toEqual('Phase 3');
+        expect(result.evolution[3].line1).toEqual('Phase 4');
+    });
+
+    test('should set custom evolution stages without show flag', function () {
+        let actual = 'evolution Phase 1->Phase 2->Phase 3->Phase 4';
         let result = new Converter(mockContextValue).parse(actual);
 
         expect(result.showEvolutionAxis).toEqual(true);
@@ -145,8 +156,8 @@ describe('Convert test suite', function () {
         expect(result.evolution[3].line1).toEqual('Phase 4');
     });
 
-    test('should allow empty evolution stage labels with show flag', function () {
-        let actual = 'evolution --show test->test->->test';
+    test('should allow empty evolution stage labels', function () {
+        let actual = 'evolution test->test->->test';
         let result = new Converter(mockContextValue).parse(actual);
 
         expect(result.showEvolutionAxis).toEqual(true);
@@ -156,13 +167,25 @@ describe('Convert test suite', function () {
         expect(result.evolution[3].line1).toEqual('test');
     });
 
-    test('should keep default evolution stages when show flag has no labels', function () {
+    test('should keep evolution axis hidden with empty stage labels', function () {
+        let actual = 'evolution --hide test->test->->test';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(false);
+        expect(result.evolution[0].line1).toEqual('test');
+        expect(result.evolution[1].line1).toEqual('test');
+        expect(result.evolution[2].line1).toEqual('');
+        expect(result.evolution[3].line1).toEqual('test');
+    });
+
+    test('should report parse error for evolution show flag', function () {
         let actual = 'evolution --show';
         let result = new Converter(mockContextValue).parse(actual);
 
         expect(result.showEvolutionAxis).toEqual(true);
         expect(result.evolution[0].line1).toEqual('Genesis');
         expect(result.evolution[1].line1).toEqual('Custom-Built');
+        expect(result.errors.length).toEqual(1);
     });
 
     test('should hide value chain axis', function () {
@@ -173,11 +196,19 @@ describe('Convert test suite', function () {
         expect(result.showValueChainAxis).toEqual(false);
     });
 
-    test('should show value chain axis', function () {
+    test('should keep value chain axis hidden when hide flag has trailing text', function () {
+        let actual = 'valuechain --hide keep-this';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showValueChainAxis).toEqual(false);
+    });
+
+    test('should report parse error for valuechain show flag', function () {
         let actual = 'valuechain --show';
         let result = new Converter(mockContextValue).parse(actual);
 
         expect(result.showValueChainAxis).toEqual(true);
+        expect(result.errors.length).toBeGreaterThan(0);
     });
 
     test('should create map object with annotations property with an annotation with a single occurance', function () {

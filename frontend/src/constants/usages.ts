@@ -111,18 +111,13 @@ const usages: Usage[] = [
     },
     {
         title: 'Stages of Evolution',
-        summary: 'Show/hide evolution axis and change stage labels on the map',
-        examples: [
-            'evolution --show',
-            'evolution --hide',
-            'evolution --show Phase 1->Phase 2->Phase 3->Phase 4',
-            'evolution First->Second->Third->Fourth',
-        ],
+        summary: 'Hide evolution axis or change stage labels (shown by default)',
+        examples: ['evolution --hide', 'evolution First->Second->Third->Fourth', 'evolution Phase 1->Phase 2->->Phase 4'],
     },
     {
         title: 'Value Chain Axis',
-        summary: 'Show or hide the value chain axis',
-        examples: ['valuechain --show', 'valuechain --hide'],
+        summary: 'Hide the value chain axis (shown by default)',
+        examples: ['valuechain --hide'],
     },
     {
         title: 'Add notes',

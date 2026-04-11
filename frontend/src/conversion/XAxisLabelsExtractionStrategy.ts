@@ -19,6 +19,19 @@ export default class XAxisLabelsExtractionStrategy implements IParseStrategy {
         let evolution: EvolutionLabel[] = defaultEvolution;
         let showEvolutionAxis = true;
         let showValueChainAxis = true;
+        const parseEvolutionLabels = (labelsRaw: string) => {
+            const names = labelsRaw.split('->').map(name => name.trim());
+            if (names.length !== 4) {
+                throw new Error('Evolution labels must have exactly 4 stages');
+            }
+
+            evolution = [
+                {line1: names[0], line2: ''},
+                {line1: names[1], line2: ''},
+                {line1: names[2], line2: ''},
+                {line1: names[3], line2: ''},
+            ];
+        };
 
         for (let i = 0; i < lines.length; i++) {
             const element = lines[i];
@@ -26,41 +39,29 @@ export default class XAxisLabelsExtractionStrategy implements IParseStrategy {
 
             try {
                 if (trimmed.indexOf('evolution') === 0) {
-                    const evolutionMatch = trimmed.match(/^evolution(?:\s+--(show|hide))?(?:\s+(.+))?$/);
-                    if (!evolutionMatch) {
-                        throw new Error('Invalid evolution config');
-                    }
-
-                    const axisFlag = evolutionMatch[1];
-                    const labelsRaw = evolutionMatch[2]?.trim();
-
-                    if (axisFlag) {
-                        showEvolutionAxis = axisFlag === 'show';
-                    }
-
-                    if (labelsRaw) {
-                        const names = labelsRaw.split('->').map(name => name.trim());
-                        if (names.length !== 4) {
-                            throw new Error('Evolution labels must have exactly 4 stages');
+                    const evolutionHideMatch = trimmed.match(/^evolution\s+--hide(?:\s+(.*))?$/);
+                    if (evolutionHideMatch) {
+                        showEvolutionAxis = false;
+                        const labelsRaw = evolutionHideMatch[1]?.trim();
+                        if (labelsRaw) {
+                            parseEvolutionLabels(labelsRaw);
                         }
-
-                        evolution = [
-                            {line1: names[0], line2: ''},
-                            {line1: names[1], line2: ''},
-                            {line1: names[2], line2: ''},
-                            {line1: names[3], line2: ''},
-                        ];
-                    } else if (!axisFlag) {
-                        throw new Error('Evolution labels are required when no axis flag is provided');
+                    } else if (trimmed.match(/^evolution\s+--show(?:\s+.*)?$/)) {
+                        throw new Error('Evolution show flag is not supported');
+                    } else {
+                        const labelsRaw = trimmed.replace(/^evolution\s+/, '').trim();
+                        parseEvolutionLabels(labelsRaw);
                     }
                 }
 
                 if (trimmed.indexOf('valuechain') === 0) {
-                    const valueChainMatch = trimmed.match(/^valuechain\s+--(show|hide)$/);
-                    if (!valueChainMatch) {
-                        throw new Error('Invalid valuechain config');
+                    if (trimmed.match(/^valuechain\s+--hide(?:\s+.*)?$/)) {
+                        showValueChainAxis = false;
+                    } else if (trimmed.match(/^valuechain\s+--show(?:\s+.*)?$/)) {
+                        throw new Error('Valuechain show flag is not supported');
+                    } else {
+                        throw new Error('Invalid valuechain config. Use valuechain --hide');
                     }
-                    showValueChainAxis = valueChainMatch[1] === 'show';
                 }
             } catch {
                 errors.push(new ParseError(i));
