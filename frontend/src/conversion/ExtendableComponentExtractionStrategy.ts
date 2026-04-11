@@ -19,6 +19,7 @@ export default class ExtendableComponentExtractionStrategy implements IParseStra
         let extractionFuncs = [
             ExtractionFunctions.decorators,
             ExtractionFunctions.setCoords,
+            ExtractionFunctions.setUncertaintyBounds,
             ExtractionFunctions.setName,
             ExtractionFunctions.setInertia,
             ExtractionFunctions.setLabel,

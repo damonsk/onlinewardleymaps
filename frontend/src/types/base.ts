@@ -9,6 +9,10 @@ export interface MapElement {
     id: string;
     visibility: number;
     type: string;
+    uncertaintyLowerMaturity: number;
+    uncertaintyUpperMaturity: number;
+    uncertaintyLowerOffsetMaturity: number;
+    uncertaintyUpperOffsetMaturity: number;
     evolveMaturity?: number;
     maturity: number;
     evolving: boolean;
@@ -169,6 +173,10 @@ export interface Component {
     visibility: number;
     type: string;
     maturity: number;
+    uncertaintyLowerMaturity: number;
+    uncertaintyUpperMaturity: number;
+    uncertaintyLowerOffsetMaturity: number;
+    uncertaintyUpperOffsetMaturity: number;
     evolveMaturity?: number;
     evolving: boolean;
     evolved: boolean;

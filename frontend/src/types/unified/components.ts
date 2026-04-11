@@ -11,6 +11,10 @@ export interface BaseMapElement {
     name: string;
     maturity: number;
     visibility: number;
+    uncertaintyLowerMaturity?: number;
+    uncertaintyUpperMaturity?: number;
+    uncertaintyLowerOffsetMaturity?: number;
+    uncertaintyUpperOffsetMaturity?: number;
     line?: number;
 }
 
@@ -55,6 +59,10 @@ export interface UrlElement {
  */
 export interface UnifiedComponent extends BaseMapElement, LabelableElement, EvolvableElement, DecoratedElement, UrlElement {
     type: string;
+    uncertaintyLowerMaturity: number;
+    uncertaintyUpperMaturity: number;
+    uncertaintyLowerOffsetMaturity: number;
+    uncertaintyUpperOffsetMaturity: number;
     pipeline?: boolean;
     // PST-specific properties (optional, only present for PST components)
     pstType?: string;
@@ -182,6 +190,7 @@ export const isPST = (component: UnifiedComponent): component is MapPSTData => {
 export const createUnifiedComponent = (
     partial: Partial<UnifiedComponent> & Pick<UnifiedComponent, 'id' | 'name' | 'type'>,
 ): UnifiedComponent => {
+    const defaultMaturity = typeof partial.maturity === 'number' ? partial.maturity : 0;
     const defaultDecorators = {
         ecosystem: false,
         market: false,
@@ -197,8 +206,12 @@ export const createUnifiedComponent = (
     };
 
     return {
-        maturity: 0,
+        maturity: defaultMaturity,
         visibility: 0,
+        uncertaintyLowerMaturity: defaultMaturity,
+        uncertaintyUpperMaturity: defaultMaturity,
+        uncertaintyLowerOffsetMaturity: 0,
+        uncertaintyUpperOffsetMaturity: 0,
         label: {x: 0, y: 0},
         evolving: false,
         evolved: false,
