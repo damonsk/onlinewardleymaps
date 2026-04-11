@@ -160,6 +160,8 @@ describe('Pipeline Placement Integration Tests', () => {
         pipelines: [],
         submaps: [],
         evolved: [],
+        showEvolutionAxis: true,
+        showValueChainAxis: true,
         presentation: {
             style: 'wardley',
             annotations: {},

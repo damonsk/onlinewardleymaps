@@ -123,6 +123,8 @@ describe('Pipeline Toolbar Integration Tests', () => {
             },
             errors: [],
             evolution: [],
+            showEvolutionAxis: true,
+            showValueChainAxis: true,
             urls: [],
         });
 
@@ -242,6 +244,8 @@ describe('Pipeline Toolbar Integration Tests', () => {
                 },
                 errors: [],
                 evolution: [],
+                showEvolutionAxis: true,
+                showValueChainAxis: true,
                 urls: [],
             };
 
@@ -331,6 +335,8 @@ pipeline Kettle
                 },
                 errors: [],
                 evolution: [],
+                showEvolutionAxis: true,
+                showValueChainAxis: true,
                 urls: [],
             };
 

@@ -43,6 +43,8 @@ export class UnifiedConverter {
         target.presentation = source.presentation;
         target.errors = source.errors || [];
         target.evolution = source.evolution || [];
+        target.showEvolutionAxis = source.showEvolutionAxis;
+        target.showValueChainAxis = source.showValueChainAxis;
     }
 
     private copyAdditionalProperties(source: WardleyMap, target: UnifiedWardleyMap): void {

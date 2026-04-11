@@ -121,6 +121,63 @@ describe('Convert test suite', function () {
         expect(result.evolution[1].line1).toEqual('Emerging');
         expect(result.evolution[2].line1).toEqual('Good');
         expect(result.evolution[3].line1).toEqual('Best');
+        expect(result.showEvolutionAxis).toEqual(true);
+        expect(result.showValueChainAxis).toEqual(true);
+    });
+
+    test('should hide evolution axis', function () {
+        let actual = 'evolution --hide';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(false);
+        expect(result.showValueChainAxis).toEqual(true);
+        expect(result.evolution[0].line1).toEqual('Genesis');
+    });
+
+    test('should show evolution axis and set custom stages', function () {
+        let actual = 'evolution --show Phase 1->Phase 2->Phase 3->Phase 4';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(true);
+        expect(result.evolution[0].line1).toEqual('Phase 1');
+        expect(result.evolution[1].line1).toEqual('Phase 2');
+        expect(result.evolution[2].line1).toEqual('Phase 3');
+        expect(result.evolution[3].line1).toEqual('Phase 4');
+    });
+
+    test('should allow empty evolution stage labels with show flag', function () {
+        let actual = 'evolution --show test->test->->test';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(true);
+        expect(result.evolution[0].line1).toEqual('test');
+        expect(result.evolution[1].line1).toEqual('test');
+        expect(result.evolution[2].line1).toEqual('');
+        expect(result.evolution[3].line1).toEqual('test');
+    });
+
+    test('should keep default evolution stages when show flag has no labels', function () {
+        let actual = 'evolution --show';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(true);
+        expect(result.evolution[0].line1).toEqual('Genesis');
+        expect(result.evolution[1].line1).toEqual('Custom-Built');
+    });
+
+    test('should hide value chain axis', function () {
+        let actual = 'valuechain --hide';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showEvolutionAxis).toEqual(true);
+        expect(result.showValueChainAxis).toEqual(false);
+    });
+
+    test('should show value chain axis', function () {
+        let actual = 'valuechain --show';
+        let result = new Converter(mockContextValue).parse(actual);
+
+        expect(result.showValueChainAxis).toEqual(true);
     });
 
     test('should create map object with annotations property with an annotation with a single occurance', function () {

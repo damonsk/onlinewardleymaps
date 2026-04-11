@@ -147,6 +147,8 @@ export interface WardleyMap {
     annotations: MapAnnotations[];
     notes: MapNotes[];
     evolution: MapEvolution;
+    showEvolutionAxis: boolean;
+    showValueChainAxis: boolean;
     title: string;
     submaps: MapSubmaps[];
     urls: MapUrls[];

@@ -161,6 +161,8 @@ const createTestMapData = (): UnifiedWardleyMap => ({
     },
     errors: [],
     evolution: [],
+    showEvolutionAxis: true,
+    showValueChainAxis: true,
     urls: [],
 });
 

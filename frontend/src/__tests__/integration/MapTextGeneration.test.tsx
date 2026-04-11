@@ -164,6 +164,8 @@ describe('Map Text Generation Integration Tests', () => {
         pipelines: [],
         submaps: [],
         evolved: [],
+        showEvolutionAxis: true,
+        showValueChainAxis: true,
         presentation: {
             style: 'wardley',
             annotations: {},

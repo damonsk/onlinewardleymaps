@@ -374,7 +374,7 @@ interface DocCommentHighlightRules extends TextHighlightRules {
                     },
                     {
                         token: ['keyword', 'variable.parameter.function.asp'],
-                        regex: '(deaccelerator|accelerator|evolution|note|anchor|annotations|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
+                        regex: '(deaccelerator|accelerator|evolution|valuechain|note|anchor|annotations|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\'"#;&$£%^*()-+,./a-zA-Z0-9\\s*]+)',
                     },
                     {
                         token: [

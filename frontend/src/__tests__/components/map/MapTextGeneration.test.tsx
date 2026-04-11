@@ -49,6 +49,21 @@ describe('Map Text Generation and Mutation', () => {
         accelerators: [],
         methods: [],
         annotations: [],
+        showEvolutionAxis: true,
+        showValueChainAxis: true,
+        submaps: [],
+        markets: [],
+        ecosystems: [],
+        pipelines: [],
+        evolved: [],
+        evolution: [],
+        presentation: {
+            style: 'wardley',
+            annotations: {visibility: 0, maturity: 0},
+            size: {height: 600, width: 800},
+        },
+        errors: [],
+        urls: [],
     };
 
     beforeEach(() => {

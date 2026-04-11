@@ -73,6 +73,8 @@ describe('MapElements', () => {
             attitudes: [],
             accelerators: [],
             evolution: [],
+            showEvolutionAxis: true,
+            showValueChainAxis: true,
             urls: [],
             errors: [],
             presentation: {
