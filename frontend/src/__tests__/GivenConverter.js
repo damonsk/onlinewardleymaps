@@ -29,11 +29,15 @@ describe('Convert test suite', function () {
         expect(result[e.container][0].name).toEqual('Customer');
         expect(result[e.container][0].visibility).toEqual(1);
         expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
 
         expect(result[e.container][1].id).toEqual(2);
         expect(result[e.container][1].name).toEqual('Customer2');
         expect(result[e.container][1].visibility).toEqual(0);
         expect(result[e.container][1].maturity).toEqual(0.1);
+        expect(result[e.container][1].uncertaintyLowerMaturity).toEqual(0.1);
+        expect(result[e.container][1].uncertaintyUpperMaturity).toEqual(0.1);
     });
 
     test.each(genericMapComponents)('should create map component with inertia tag set to true', e => {
@@ -47,6 +51,32 @@ describe('Convert test suite', function () {
         expect(result[e.container][0].visibility).toEqual(1);
         expect(result[e.container][0].maturity).toEqual(0.4);
         expect(result[e.container][0].inertia).toEqual(true);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.4);
+    });
+
+    test.each(genericMapComponents)('should parse uncertainty bounds as absolute maturity boundaries', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty [0.25, 0.75]\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].maturity).toEqual(0.4);
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.25);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.75);
+    });
+
+    test.each(genericMapComponents)('should preserve uncertainty with inertia and decorators on one component line', e => {
+        let actual = `${e.keyword} Customer [1, 0.4] uncertainty [0.2, 0.8] inertia (buy) label [7, -3]\n`;
+
+        let obj = new Converter(mockContextValue);
+        let result = obj.parse(actual);
+
+        expect(result[e.container][0].uncertaintyLowerMaturity).toEqual(0.2);
+        expect(result[e.container][0].uncertaintyUpperMaturity).toEqual(0.8);
+        expect(result[e.container][0].inertia).toEqual(true);
+        expect(result[e.container][0].decorators.buy).toEqual(true);
+        expect(result[e.container][0].label).toEqual({x: 7, y: -3});
     });
 
     test('should create links from string', function () {

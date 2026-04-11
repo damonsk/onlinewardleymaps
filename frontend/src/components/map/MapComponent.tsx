@@ -45,6 +45,14 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
     const calculatedPosition = new ModernPositionCalculator();
     const posX = calculatedPosition.maturityToX(component.maturity, mapDimensions.width);
     const posY = calculatedPosition.visibilityToY(component.visibility, mapDimensions.height) + (component.offsetY ? component.offsetY : 0);
+    const clampMaturity = (value: number) => Math.min(1, Math.max(0, value));
+    const lowerBoundary = clampMaturity(component.uncertaintyLowerMaturity ?? component.maturity);
+    const upperBoundary = clampMaturity(component.uncertaintyUpperMaturity ?? component.maturity);
+    const uncertaintyStart = Math.min(lowerBoundary, upperBoundary);
+    const uncertaintyEnd = Math.max(lowerBoundary, upperBoundary);
+    const shouldRenderUncertainty = uncertaintyEnd - uncertaintyStart > 0;
+    const uncertaintyX1 = calculatedPosition.maturityToX(uncertaintyStart, mapDimensions.width);
+    const uncertaintyX2 = calculatedPosition.maturityToX(uncertaintyEnd, mapDimensions.width);
 
     // Check if this component is currently selected
     const isElementSelected = isSelected(component.id);
@@ -267,6 +275,19 @@ const MapComponent: React.FC<ModernMapComponentProps> = ({
 
     return (
         <>
+            {shouldRenderUncertainty && (
+                <line
+                    data-testid={`component-uncertainty-${component.id}`}
+                    x1={uncertaintyX1}
+                    y1={posY}
+                    x2={uncertaintyX2}
+                    y2={posY}
+                    stroke={mapStyleDefs?.component?.stroke || '#6b7280'}
+                    strokeWidth={1}
+                    strokeOpacity={0.55}
+                    pointerEvents="none"
+                />
+            )}
             <Movable
                 id={`element_${component.id}`}
                 x={posX}

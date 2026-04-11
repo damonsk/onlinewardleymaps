@@ -11,6 +11,8 @@ export interface BaseMapElement {
     name: string;
     maturity: number;
     visibility: number;
+    uncertaintyLowerMaturity?: number;
+    uncertaintyUpperMaturity?: number;
     line?: number;
 }
 
@@ -182,6 +184,7 @@ export const isPST = (component: UnifiedComponent): component is MapPSTData => {
 export const createUnifiedComponent = (
     partial: Partial<UnifiedComponent> & Pick<UnifiedComponent, 'id' | 'name' | 'type'>,
 ): UnifiedComponent => {
+    const defaultMaturity = typeof partial.maturity === 'number' ? partial.maturity : 0;
     const defaultDecorators = {
         ecosystem: false,
         market: false,
@@ -197,8 +200,10 @@ export const createUnifiedComponent = (
     };
 
     return {
-        maturity: 0,
+        maturity: defaultMaturity,
         visibility: 0,
+        uncertaintyLowerMaturity: defaultMaturity,
+        uncertaintyUpperMaturity: defaultMaturity,
         label: {x: 0, y: 0},
         evolving: false,
         evolved: false,

@@ -61,12 +61,20 @@ export class UnifiedConverter {
 
     private transformComponents(legacyComponents: any[], type: string): UnifiedComponent[] {
         return legacyComponents.map(component => {
+            const maturity = component.maturity || 0;
+            const uncertaintyLowerMaturity =
+                typeof component.uncertaintyLowerMaturity === 'number' ? component.uncertaintyLowerMaturity : maturity;
+            const uncertaintyUpperMaturity =
+                typeof component.uncertaintyUpperMaturity === 'number' ? component.uncertaintyUpperMaturity : maturity;
+
             return createUnifiedComponent({
                 id: component.id || this.generateId(component.name, type),
                 name: component.name || '',
                 type: type,
-                maturity: component.maturity || 0,
+                maturity: maturity,
                 visibility: component.visibility || 0,
+                uncertaintyLowerMaturity,
+                uncertaintyUpperMaturity,
                 line: component.line,
                 label: component.label,
                 evolving: component.evolving || false,

@@ -28,6 +28,7 @@ export const EditorPrefixes: string[] = [
     'component <name> [<visibility>, <maturity>] (outsource)',
     'component <name> [<visibility>, <maturity>] (build)',
     'component <name> [<visibility>, <maturity>] (buy)',
+    'component <name> [<visibility>, <maturity>] uncertainty [<lowerboundary>, <higherboundary>]',
     ...iterations,
     'anchor',
     'annotation',

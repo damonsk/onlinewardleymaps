@@ -74,6 +74,8 @@ const mockComponent: UnifiedComponent = {
     type: 'component',
     maturity: 0.5,
     visibility: 0.7,
+    uncertaintyLowerMaturity: 0.5,
+    uncertaintyUpperMaturity: 0.5,
     evolved: false,
     evolving: false,
     line: 1,
@@ -189,6 +191,50 @@ describe('Visual Selection Feedback', () => {
 
             // Should have selection styling applied
             expect(component).toHaveStyle('filter: brightness(1.2) drop-shadow(0 0 6px rgba(33, 150, 243, 0.4))');
+        });
+
+        it('should render a horizontal uncertainty segment when bounds differ', () => {
+            const uncertainComponent: UnifiedComponent = {
+                ...mockComponent,
+                id: 'test-component-uncertain',
+                uncertaintyLowerMaturity: 0.35,
+                uncertaintyUpperMaturity: 0.75,
+            };
+
+            const mockProps = {
+                mapDimensions: mockMapDimensions,
+                component: uncertainComponent,
+                mapText: 'test map text',
+                mutateMapText: jest.fn(),
+                mapStyleDefs: mockMapTheme,
+                setHighlightLine: jest.fn(),
+                scaleFactor: 1,
+            };
+
+            renderWithProvider(<MapComponent {...mockProps} />);
+            expect(screen.getByTestId(`component-uncertainty-${uncertainComponent.id}`)).toBeInTheDocument();
+        });
+
+        it('should not render uncertainty segment when lower and upper bounds are equal', () => {
+            const certainComponent: UnifiedComponent = {
+                ...mockComponent,
+                id: 'test-component-certain',
+                uncertaintyLowerMaturity: 0.5,
+                uncertaintyUpperMaturity: 0.5,
+            };
+
+            const mockProps = {
+                mapDimensions: mockMapDimensions,
+                component: certainComponent,
+                mapText: 'test map text',
+                mutateMapText: jest.fn(),
+                mapStyleDefs: mockMapTheme,
+                setHighlightLine: jest.fn(),
+                scaleFactor: 1,
+            };
+
+            renderWithProvider(<MapComponent {...mockProps} />);
+            expect(screen.queryByTestId(`component-uncertainty-${certainComponent.id}`)).not.toBeInTheDocument();
         });
     });
 

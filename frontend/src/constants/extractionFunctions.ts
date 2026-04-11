@@ -427,6 +427,37 @@ export const setCoords = (
     });
 };
 
+export const setUncertaintyBounds = (
+    baseElement: IProvideBaseElement & {
+        maturity?: number;
+        uncertaintyLowerMaturity?: number;
+        uncertaintyUpperMaturity?: number;
+    },
+    element: string,
+): void => {
+    const componentMaturity = typeof baseElement.maturity === 'number' ? baseElement.maturity : 0.1;
+    let lowerBoundary = componentMaturity;
+    let upperBoundary = componentMaturity;
+
+    const uncertaintyMatch = element.match(/\buncertainty\s*\[\s*([^,\]]+)\s*,\s*([^\]]+)\s*\]/i);
+    if (uncertaintyMatch) {
+        const parsedLower = parseFloat(uncertaintyMatch[1].trim());
+        const parsedUpper = parseFloat(uncertaintyMatch[2].trim());
+
+        lowerBoundary = Number.isNaN(parsedLower) ? componentMaturity : parsedLower;
+        upperBoundary = Number.isNaN(parsedUpper) ? componentMaturity : parsedUpper;
+    }
+
+    if (lowerBoundary > upperBoundary) {
+        [lowerBoundary, upperBoundary] = [upperBoundary, lowerBoundary];
+    }
+
+    Object.assign(baseElement, {
+        uncertaintyLowerMaturity: lowerBoundary,
+        uncertaintyUpperMaturity: upperBoundary,
+    });
+};
+
 export const isDeAccelerator = (baseElement: IProvideBaseElement & {deaccelerator?: boolean}, element: string): void => {
     Object.assign(baseElement, {
         deaccelerator: element.indexOf('deaccelerator') === 0,
