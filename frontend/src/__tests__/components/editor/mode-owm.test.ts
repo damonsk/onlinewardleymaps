@@ -102,6 +102,51 @@ describe('Monaco Editor OWM Mode Syntax Highlighting', () => {
                 expect(flowLinkRules.length).toBeGreaterThan(0);
             }
         });
+
+        it('should include valuechain as a DSL keyword rule', () => {
+            if (OwmHighlightRules) {
+                const rules = new OwmHighlightRules();
+                const keywordRules = rules.$rules.start.filter((rule: any) => rule.regex && typeof rule.regex === 'string');
+                const hasValuechain = keywordRules.some((rule: any) => rule.regex.includes('valuechain'));
+                expect(hasValuechain).toBe(true);
+            }
+        });
+
+        it('should include uncertainty highlighting rules for mixed syntax', () => {
+            if (OwmHighlightRules) {
+                const rules = new OwmHighlightRules();
+                const stringRules = rules.$rules.start.filter((rule: any) => typeof rule.regex === 'string');
+
+                const hasUncertaintyBracket = stringRules.some((rule: any) => rule.regex.includes('uncertainty\\s*\\['));
+                const hasUncertaintySides = stringRules.some((rule: any) => rule.regex.includes('(left|right)'));
+
+                expect(hasUncertaintyBracket).toBe(true);
+                expect(hasUncertaintySides).toBe(true);
+            }
+        });
+
+        it('should match uncertainty mixed syntax patterns', () => {
+            if (OwmHighlightRules) {
+                const rules = new OwmHighlightRules();
+                const uncertaintyRules = rules.$rules.start.filter(
+                    (rule: any) => typeof rule.regex === 'string' && rule.regex.includes('uncertainty'),
+                );
+                const compiled = uncertaintyRules.map((rule: any) => new RegExp(rule.regex));
+
+                const samples = [
+                    'component A [0.8, 0.5] uncertainty [, 0.7]',
+                    'component A [0.8, 0.5] uncertainty [0.3, ]',
+                    'component A [0.8, 0.5] uncertainty [,+0.2]',
+                    'component A [0.8, 0.5] uncertainty [-0.15, ]',
+                    'component A [0.8, 0.5] uncertainty right +0.20',
+                    'component A [0.8, 0.5] uncertainty left -0.15',
+                ];
+
+                samples.forEach(sample => {
+                    expect(compiled.some(regex => regex.test(sample))).toBe(true);
+                });
+            }
+        });
     });
 
     describe('Regex Pattern Validation', () => {

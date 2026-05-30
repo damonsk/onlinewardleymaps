@@ -427,6 +427,73 @@ export const setCoords = (
     });
 };
 
+export const setUncertaintyBounds = (
+    baseElement: IProvideBaseElement & {
+        maturity?: number;
+        uncertaintyLowerMaturity?: number;
+        uncertaintyUpperMaturity?: number;
+        uncertaintyLowerOffsetMaturity?: number;
+        uncertaintyUpperOffsetMaturity?: number;
+    },
+    element: string,
+): void => {
+    const componentMaturity = typeof baseElement.maturity === 'number' ? baseElement.maturity : 0.1;
+    let lowerBoundary = componentMaturity;
+    let upperBoundary = componentMaturity;
+
+    const parseUncertaintyBoundary = (rawValue: string, fallback: number): number => {
+        const value = rawValue.trim();
+        if (value.length === 0) {
+            return fallback;
+        }
+
+        // Relative syntax support, e.g. +0.10 or -0.20
+        const relativeMatch = value.match(/^([+-])\s*([0-9]*\.?[0-9]+)$/);
+        if (relativeMatch) {
+            const sign = relativeMatch[1] === '-' ? -1 : 1;
+            const delta = parseFloat(relativeMatch[2]);
+            return Number.isNaN(delta) ? fallback : fallback + sign * delta;
+        }
+
+        const parsedAbsolute = parseFloat(value);
+        return Number.isNaN(parsedAbsolute) ? fallback : parsedAbsolute;
+    };
+
+    // Priority 1: readable one-sided syntax
+    //   uncertainty left -0.15
+    //   uncertainty right +0.20
+    const sideSyntaxMatch = element.match(/\buncertainty\s+(left|right)\s+([+-]?\s*[0-9]*\.?[0-9]+)\b/i);
+    if (sideSyntaxMatch) {
+        const side = sideSyntaxMatch[1].toLowerCase();
+        const sideValue = parseUncertaintyBoundary(sideSyntaxMatch[2], componentMaturity);
+        if (side === 'left') {
+            lowerBoundary = sideValue;
+            upperBoundary = componentMaturity;
+        } else {
+            lowerBoundary = componentMaturity;
+            upperBoundary = sideValue;
+        }
+    } else {
+        // Priority 2: bracket syntax (absolute/relative/empty)
+        const uncertaintyMatch = element.match(/\buncertainty\s*\[\s*([^,\]]*)\s*,\s*([^\]]*)\s*\]/i);
+        if (uncertaintyMatch) {
+            lowerBoundary = parseUncertaintyBoundary(uncertaintyMatch[1], componentMaturity);
+            upperBoundary = parseUncertaintyBoundary(uncertaintyMatch[2], componentMaturity);
+        }
+    }
+
+    if (lowerBoundary > upperBoundary) {
+        [lowerBoundary, upperBoundary] = [upperBoundary, lowerBoundary];
+    }
+
+    Object.assign(baseElement, {
+        uncertaintyLowerMaturity: lowerBoundary,
+        uncertaintyUpperMaturity: upperBoundary,
+        uncertaintyLowerOffsetMaturity: lowerBoundary - componentMaturity,
+        uncertaintyUpperOffsetMaturity: upperBoundary - componentMaturity,
+    });
+};
+
 export const isDeAccelerator = (baseElement: IProvideBaseElement & {deaccelerator?: boolean}, element: string): void => {
     Object.assign(baseElement, {
         deaccelerator: element.indexOf('deaccelerator') === 0,

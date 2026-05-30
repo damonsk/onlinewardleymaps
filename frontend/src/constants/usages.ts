@@ -30,6 +30,11 @@ const usages: Usage[] = [
         examples: ['component Customer [0.95, 0.5] inertia', 'component Cup of Tea [0.9, 0.5] inertia'],
     },
     {
+        title: 'Horizontal uncertainty bounds',
+        summary: 'component Name [Visibility (Y Axis), Maturity (X Axis)] uncertainty [Lower Maturity Bound, Upper Maturity Bound]',
+        examples: ['component Customer [0.95, 0.5] uncertainty [0.35, 0.72]', 'component Cup of Tea [0.9, 0.5] uncertainty [0.45, 0.61]'],
+    },
+    {
         Icon: ComponentEvolvedIcon,
         title: 'To evolve a component',
         summary: 'evole Name (X Axis)',
