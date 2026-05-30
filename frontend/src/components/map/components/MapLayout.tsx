@@ -32,6 +32,8 @@ interface MapLayoutProps {
     newMapClick: (strategy: string) => void;
     saveMapClick: () => Promise<void>;
     downloadMapImage: () => void;
+    downloadMapAsMermaid: () => void;
+    copyMapAsMermaid: () => void;
     showLineNumbers: boolean;
     setShowLineNumbers: React.Dispatch<React.SetStateAction<boolean>>;
     showLinkedEvolved: boolean;
@@ -77,6 +79,8 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
     newMapClick,
     saveMapClick,
     downloadMapImage,
+    downloadMapAsMermaid,
+    copyMapAsMermaid,
     showLineNumbers,
     setShowLineNumbers,
     showLinkedEvolved,
@@ -132,6 +136,8 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
                     newMapClick={newMapClick}
                     saveMapClick={saveMapClick}
                     downloadMapImage={downloadMapImage}
+                    downloadMapAsMermaid={downloadMapAsMermaid}
+                    copyMapAsMermaid={copyMapAsMermaid}
                     showLineNumbers={showLineNumbers}
                     setShowLineNumbers={setShowLineNumbers}
                     showLinkedEvolved={showLinkedEvolved}

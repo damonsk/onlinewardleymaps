@@ -291,6 +291,8 @@
     "export": {
         "exportAs": "导出为",
         "png": "PNG图片",
+        "mermaid": "导出为 Mermaid",
+        "copyMermaid": "复制为 Mermaid",
         "svg": "SVG图片",
         "pdf": "PDF文档",
         "json": "JSON数据",

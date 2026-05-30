@@ -11,6 +11,7 @@ import {useI18n} from '../hooks/useI18n';
 import {useLegacyMapState, useUnifiedMapState} from '../hooks/useUnifiedMapState';
 import {MapIteration} from '../repository/OwnApiWardleyMap';
 import {MapAnnotationsPosition, MapSize} from '../types/base';
+import {exportWardleyMapToMermaid} from '../utils/mermaidWardleyExport';
 import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
 import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
@@ -646,11 +647,31 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
             });
     }
 
-    const saveMapText = (data: string, fileName: string) => {
+    function downloadMapAsMermaid() {
+        try {
+            const mermaidText = exportWardleyMapToMermaid(unifiedMapState.getUnifiedMap());
+            saveMapText(mermaidText, `${mapTitle}.mmd`, 'text/plain;charset=utf-8');
+        } catch (error) {
+            console.error('Error generating Mermaid export:', error);
+            alert(`Failed to export Mermaid: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    async function copyMapAsMermaid() {
+        try {
+            const mermaidText = exportWardleyMapToMermaid(unifiedMapState.getUnifiedMap());
+            await navigator.clipboard.writeText(mermaidText);
+        } catch (error) {
+            console.error('Error copying Mermaid export:', error);
+            alert(`Failed to copy Mermaid: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    const saveMapText = (data: string, fileName: string, mimeType: string = 'data:attachment/xml') => {
         const a = document.createElement('a');
         document.body.appendChild(a);
         a.setAttribute('style', 'display: none');
-        const blob = new Blob([data], {type: 'data:attachment/xml'});
+        const blob = new Blob([data], {type: mimeType});
         const url = window.URL.createObjectURL(blob);
         a.href = url;
         a.download = fileName;
@@ -732,6 +753,8 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                 newMapClick={mapPersistence.newMap}
                 saveMapClick={mapPersistence.saveMap}
                 downloadMapImage={downloadMap}
+                downloadMapAsMermaid={downloadMapAsMermaid}
+                copyMapAsMermaid={copyMapAsMermaid}
                 showLineNumbers={showLineNumbers}
                 setShowLineNumbers={setShowLineNumbers}
                 showLinkedEvolved={legacyState.showLinkedEvolved}

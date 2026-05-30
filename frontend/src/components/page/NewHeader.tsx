@@ -55,6 +55,8 @@ export interface NewHeaderProps {
     mutateMapText: any;
     newMapClick: any;
     downloadMapImage: any;
+    downloadMapAsMermaid: any;
+    copyMapAsMermaid: any;
     currentUrl: any;
     setShowLineNumbers: any;
     showLineNumbers: any;
@@ -76,6 +78,8 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     mutateMapText,
     newMapClick,
     downloadMapImage,
+    downloadMapAsMermaid,
+    copyMapAsMermaid,
     currentUrl,
     setShowLineNumbers,
     showLineNumbers,
@@ -136,6 +140,12 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
             <Divider />
             <MenuItem onClick={() => handleMoreClose(() => downloadMapImage())} disableRipple>
                 {t('export.png', 'Download as PNG')}
+            </MenuItem>
+            <MenuItem onClick={() => handleMoreClose(() => downloadMapAsMermaid())} disableRipple>
+                {t('export.mermaid', 'Export as Mermaid')}
+            </MenuItem>
+            <MenuItem onClick={() => handleMoreClose(() => copyMapAsMermaid())} disableRipple>
+                {t('export.copyMermaid', 'Copy as Mermaid')}
             </MenuItem>
             <MenuItem onClick={() => handleMoreClose(() => downloadMapAsSVG())} disableRipple>
                 {t('export.svg', 'Download as SVG')}

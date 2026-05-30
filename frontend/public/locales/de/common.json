@@ -291,6 +291,8 @@
     "export": {
         "exportAs": "Exportieren als",
         "png": "PNG-Bild",
+        "mermaid": "Als Mermaid exportieren",
+        "copyMermaid": "Als Mermaid kopieren",
         "svg": "SVG-Bild",
         "pdf": "PDF-Dokument",
         "json": "JSON-Daten",
