@@ -35,7 +35,6 @@
         "menu": "메뉴",
         "dashboard": "대시보드",
         "editor": "편집기",
-        "classicVersion": "클래식 버전 사용",
         "enableDarkTheme": "다크 테마 활성화",
         "enableLightTheme": "라이트 테마 활성화"
     },

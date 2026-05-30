@@ -35,7 +35,6 @@
         "menu": "menu principal",
         "dashboard": "Tableau de Bord",
         "editor": "Éditeur",
-        "classicVersion": "Utiliser la Version Classique",
         "enableDarkTheme": "Activer le Thème Sombre",
         "enableLightTheme": "Activer le Thème Clair"
     },

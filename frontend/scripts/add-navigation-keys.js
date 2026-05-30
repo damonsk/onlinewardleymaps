@@ -10,7 +10,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Dashboard',
             'navigation.editor': 'Editor',
-            'navigation.classicVersion': 'Use Classic Version',
             'navigation.enableDarkTheme': 'Enable Dark Theme',
             'navigation.enableLightTheme': 'Enable Light Theme',
             'common:back': 'Back',
@@ -31,7 +30,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Tablero',
             'navigation.editor': 'Editor',
-            'navigation.classicVersion': 'Usar Versión Clásica',
             'navigation.enableDarkTheme': 'Activar Tema Oscuro',
             'navigation.enableLightTheme': 'Activar Tema Claro',
             'common:back': 'Atrás',
@@ -53,7 +51,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Tableau de Bord',
             'navigation.editor': 'Éditeur',
-            'navigation.classicVersion': 'Utiliser la Version Classique',
             'navigation.enableDarkTheme': 'Activer le Thème Sombre',
             'navigation.enableLightTheme': 'Activer le Thème Clair',
             'common:back': 'Retour',
@@ -75,7 +72,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Dashboard',
             'navigation.editor': 'Editor',
-            'navigation.classicVersion': 'Klassische Version verwenden',
             'navigation.enableDarkTheme': 'Dunkles Theme aktivieren',
             'navigation.enableLightTheme': 'Helles Theme aktivieren',
             'common:back': 'Zurück',
@@ -97,7 +93,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Dashboard',
             'navigation.editor': 'Editor',
-            'navigation.classicVersion': 'Usa Versione Classica',
             'navigation.enableDarkTheme': 'Attiva Tema Scuro',
             'navigation.enableLightTheme': 'Attiva Tema Chiaro',
             'common:back': 'Indietro',
@@ -119,7 +114,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Painel',
             'navigation.editor': 'Editor',
-            'navigation.classicVersion': 'Usar Versão Clássica',
             'navigation.enableDarkTheme': 'Activar Tema Escuro',
             'navigation.enableLightTheme': 'Activar Tema Claro',
             'common:back': 'Voltar',
@@ -140,7 +134,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'ダッシュボード',
             'navigation.editor': 'エディター',
-            'navigation.classicVersion': 'クラシック版を使用',
             'navigation.enableDarkTheme': 'ダークテーマを有効にする',
             'navigation.enableLightTheme': 'ライトテーマを有効にする',
             'common:back': '戻る',
@@ -161,7 +154,6 @@ const languages = [
         keys: {
             'navigation.dashboard': '仪表板',
             'navigation.editor': '编辑器',
-            'navigation.classicVersion': '使用经典版本',
             'navigation.enableDarkTheme': '启用深色主题',
             'navigation.enableLightTheme': '启用浅色主题',
             'common:back': '返回',
@@ -182,7 +174,6 @@ const languages = [
         keys: {
             'navigation.dashboard': '대시보드',
             'navigation.editor': '편집기',
-            'navigation.classicVersion': '클래식 버전 사용',
             'navigation.enableDarkTheme': '다크 테마 활성화',
             'navigation.enableLightTheme': '라이트 테마 활성화',
             'common:back': '뒤로',
@@ -203,7 +194,6 @@ const languages = [
         keys: {
             'navigation.dashboard': 'Панель управления',
             'navigation.editor': 'Редактор',
-            'navigation.classicVersion': 'Использовать классическую версию',
             'navigation.enableDarkTheme': 'Включить тёмную тему',
             'navigation.enableLightTheme': 'Включить светлую тему',
             'common:back': 'Назад',

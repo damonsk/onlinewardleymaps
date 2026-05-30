@@ -35,7 +35,6 @@
         "menu": "menu",
         "dashboard": "Dashboard",
         "editor": "Editor",
-        "classicVersion": "Use Classic Version",
         "enableDarkTheme": "Enable Dark Theme",
         "enableLightTheme": "Enable Light Theme"
     },

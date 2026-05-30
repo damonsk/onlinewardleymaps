@@ -82,12 +82,6 @@ export const LeftNavigation: FunctionComponent<LeftNavigationProps> = ({menuVisi
                 action: () => complete(() => history.push('/')),
                 visible: true,
             },
-            {
-                name: t('navigation.classicVersion', 'Use Classic Version'),
-                icon: <MapIcon />,
-                action: () => complete(() => history.push('https://classic.onlinewardleymaps.com')),
-                visible: true,
-            },
         ],
         [t, enableDashboard, complete, history],
     );
