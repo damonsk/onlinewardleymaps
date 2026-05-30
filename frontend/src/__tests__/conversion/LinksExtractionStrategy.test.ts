@@ -175,6 +175,18 @@ describe('LinksExtractionStrategy with Multi-line Component Names', () => {
             expect(result.links[0].end).toBe('Target');
         });
 
+        it('should ignore valuechain hide directives', () => {
+            const mapText = ['valuechain --hide', 'Source->Target'].join('\n');
+
+            const extractor = new LinksExtractionStrategy(mapText);
+            const result = extractor.apply();
+
+            expect(result.links).toHaveLength(1);
+            expect(result.links[0].start).toBe('Source');
+            expect(result.links[0].end).toBe('Target');
+            expect(result.errors).toHaveLength(0);
+        });
+
         it('should handle malformed links gracefully', () => {
             const mapText = [
                 'ValidLink->Target',

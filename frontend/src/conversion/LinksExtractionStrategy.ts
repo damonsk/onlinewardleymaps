@@ -9,6 +9,7 @@ export default class LinksExtractionStrategy implements IParseStrategy {
         this.data = data;
         this.notLinks = [
             'evolution',
+            'valuechain',
             'anchor',
             'evolve',
             'component',
