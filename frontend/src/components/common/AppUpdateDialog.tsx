@@ -9,6 +9,20 @@ interface AppUpdateDialogProps {
 
 export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose}) => {
     const {t} = useI18n();
+    const may2026Items = [
+        t(
+            'updates.may2026.items.1',
+            'PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.',
+        ),
+        t(
+            'updates.may2026.items.2',
+            '`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.',
+        ),
+        t(
+            'updates.may2026.items.3',
+            'The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes.',
+        ),
+    ];
     const feb2026Items = [
         t('updates.feb2026.items.1', 'Added full WYSIWYG editing for major map elements.'),
         t('updates.feb2026.items.2', 'Expanded keyboard shortcuts, including improved linking with L.'),
@@ -26,21 +40,28 @@ export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose
         t('updates.feb2026.items.14', 'Fixed annotation number centering for large values in annotation circles (#129).'),
         t('updates.feb2026.items.15', 'Fixed map title inline edit save/cancel controls being partially hidden by the canvas in Chrome (#272).'),
     ];
+    const sections = [
+        {key: 'may2026', title: t('updates.may2026.title', 'May 2026 update highlights:'), items: may2026Items},
+        {key: 'feb2026', title: t('updates.feb2026.title', 'February 2026 update highlights:'), items: feb2026Items},
+    ];
 
     return (
         <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth aria-labelledby="app-update-dialog-title">
             <DialogTitle id="app-update-dialog-title">{t('updates.title', "What's New 🎉")}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    {t('updates.feb2026.title', 'February 2026 update highlights:')}
-                </DialogContentText>
-                <ul style={{marginTop: 8, paddingLeft: 20}}>
-                    {feb2026Items.map(item => (
-                        <li key={item}>
-                            <DialogContentText component="span">{item}</DialogContentText>
-                        </li>
-                    ))}
-                </ul>
+            <DialogContent dividers sx={{maxHeight: '70vh', overflowY: 'auto'}}>
+                {sections.map((section, index) => (
+                    <React.Fragment key={section.key}>
+                        {index > 0 && <DialogContentText sx={{mt: 3}} />}
+                        <DialogContentText>{section.title}</DialogContentText>
+                        <ul style={{marginTop: 8, paddingLeft: 20}}>
+                            {section.items.map(item => (
+                                <li key={`${section.key}-${item}`}>
+                                    <DialogContentText component="span">{item}</DialogContentText>
+                                </li>
+                            ))}
+                        </ul>
+                    </React.Fragment>
+                ))}
                 <DialogContentText sx={{mt: 2}}>
                     {t('updates.feb2026.contactPrefix', 'Reach out on')}{' '}
                     <MuiLink href="https://linkedin.com/in/skels" target="_blank" rel="noopener noreferrer">

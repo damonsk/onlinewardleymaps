@@ -1,20 +1,35 @@
-import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
+import {Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField, Typography} from '@mui/material';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useI18n} from '../../hooks/useI18n';
 
 interface EvolutionStagesDialogProps {
     isOpen: boolean;
     currentStages: {stage1: string; stage2: string; stage3: string; stage4: string} | null;
-    onConfirm: (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => void;
+    showEvolutionAxis: boolean;
+    showValueChainAxis: boolean;
+    onConfirm: (config: {
+        stages: {stage1: string; stage2: string; stage3: string; stage4: string};
+        showEvolutionAxis: boolean;
+        showValueChainAxis: boolean;
+    }) => void;
     onCancel: () => void;
 }
 
-export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isOpen, currentStages, onConfirm, onCancel}) => {
+export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({
+    isOpen,
+    currentStages,
+    showEvolutionAxis,
+    showValueChainAxis,
+    onConfirm,
+    onCancel,
+}) => {
     const {t} = useI18n();
     const [stage1, setStage1] = useState<string>('');
     const [stage2, setStage2] = useState<string>('');
     const [stage3, setStage3] = useState<string>('');
     const [stage4, setStage4] = useState<string>('');
+    const [isEvolutionAxisVisible, setIsEvolutionAxisVisible] = useState<boolean>(true);
+    const [isValueChainAxisVisible, setIsValueChainAxisVisible] = useState<boolean>(true);
     const [stage1Error, setStage1Error] = useState<string>('');
     const [stage2Error, setStage2Error] = useState<string>('');
     const [stage3Error, setStage3Error] = useState<string>('');
@@ -39,12 +54,14 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isO
             setStage2(stages.stage2);
             setStage3(stages.stage3);
             setStage4(stages.stage4);
+            setIsEvolutionAxisVisible(showEvolutionAxis);
+            setIsValueChainAxisVisible(showValueChainAxis);
             setStage1Error('');
             setStage2Error('');
             setStage3Error('');
             setStage4Error('');
         }
-    }, [isOpen, currentStages, defaultStages]);
+    }, [isOpen, currentStages, defaultStages, showEvolutionAxis, showValueChainAxis]);
 
     const validateStageName = (value: string, stageNumber: number): string => {
         const trimmedValue = value.trim();
@@ -83,10 +100,14 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isO
 
         if (!stage1Validation && !stage2Validation && !stage3Validation && !stage4Validation) {
             onConfirm({
-                stage1: stage1.trim(),
-                stage2: stage2.trim(),
-                stage3: stage3.trim(),
-                stage4: stage4.trim(),
+                stages: {
+                    stage1: stage1.trim(),
+                    stage2: stage2.trim(),
+                    stage3: stage3.trim(),
+                    stage4: stage4.trim(),
+                },
+                showEvolutionAxis: isEvolutionAxisVisible,
+                showValueChainAxis: isValueChainAxisVisible,
             });
         }
     };
@@ -112,16 +133,26 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({isO
             onClose={handleCancel}
             maxWidth="sm"
             fullWidth
-            aria-labelledby="evolution-stages-dialog-title"
+            aria-labelledby="map-axis-dialog-title"
             onKeyDown={handleKeyDown}>
-            <DialogTitle id="evolution-stages-dialog-title">{t('dialogs.editEvolutionStages', 'Edit Evolution Stages')}</DialogTitle>
+            <DialogTitle id="map-axis-dialog-title">{t('dialogs.editMapAxis', 'Edit Map Axis')}</DialogTitle>
             <DialogContent>
                 <Typography variant="body2" color="textSecondary" sx={{mb: 2}}>
                     {t(
-                        'dialogs.evolutionStagesDescription',
-                        'Customize the names of the four evolution stages. These will appear as labels on the evolution axis of your map.',
+                        'dialogs.mapAxisDescription',
+                        'Customize the evolution stage labels and control whether the evolution and value chain axes are visible on your map.',
                     )}
                 </Typography>
+                <FormControlLabel
+                    control={<Checkbox checked={isEvolutionAxisVisible} onChange={e => setIsEvolutionAxisVisible(e.target.checked)} />}
+                    label={t('dialogs.showEvolutionAxis', 'Show evolution axis')}
+                    sx={{mb: 0.5}}
+                />
+                <FormControlLabel
+                    control={<Checkbox checked={isValueChainAxisVisible} onChange={e => setIsValueChainAxisVisible(e.target.checked)} />}
+                    label={t('dialogs.showValueChainAxis', 'Show value chain axis')}
+                    sx={{mb: 1}}
+                />
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, mt: 1}}>
                     <TextField
                         autoFocus

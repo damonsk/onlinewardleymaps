@@ -21,6 +21,8 @@ component B [0.5, 0.5]`;
                     stage3: 'Product',
                     stage4: 'Commodity',
                 },
+                showEvolutionAxis: true,
+                showValueChainAxis: true,
             });
         });
 
@@ -31,7 +33,7 @@ component B [0.5, 0.5]`;
 
             const properties = MapPropertiesManager.parseMapProperties(mapText);
 
-            expect(properties).toEqual({});
+            expect(properties).toEqual({showEvolutionAxis: true, showValueChainAxis: true});
         });
 
         it('should handle partial properties', () => {
@@ -43,7 +45,31 @@ component A [0.1, 0.9]`;
 
             expect(properties).toEqual({
                 style: 'plain',
+                showEvolutionAxis: true,
+                showValueChainAxis: true,
             });
+        });
+
+        it('should parse hidden evolution axis state', () => {
+            const mapText = `title Test Map
+evolution --hide Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            const properties = MapPropertiesManager.parseMapProperties(mapText);
+
+            expect(properties.showEvolutionAxis).toBe(false);
+            expect(properties.showValueChainAxis).toBe(true);
+        });
+
+        it('should parse hidden value chain axis state', () => {
+            const mapText = `title Test Map
+valuechain --hide
+component A [0.1, 0.9]`;
+
+            const properties = MapPropertiesManager.parseMapProperties(mapText);
+
+            expect(properties.showEvolutionAxis).toBe(true);
+            expect(properties.showValueChainAxis).toBe(false);
         });
     });
 
@@ -157,6 +183,48 @@ component A [0.1, 0.9]`;
                 stage3: 'Gamma',
                 stage4: 'Delta',
             });
+        });
+    });
+
+    describe('getCurrentEvolutionAxisVisibility', () => {
+        it('should return true by default when no evolution config exists', () => {
+            const mapText = `title Test Map
+component A [0.1, 0.9]`;
+
+            expect(MapPropertiesManager.getCurrentEvolutionAxisVisibility(mapText)).toBe(true);
+        });
+
+        it('should return true when evolution stages are visible', () => {
+            const mapText = `title Test Map
+evolution Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            expect(MapPropertiesManager.getCurrentEvolutionAxisVisibility(mapText)).toBe(true);
+        });
+
+        it('should return false when evolution axis is hidden', () => {
+            const mapText = `title Test Map
+evolution --hide Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            expect(MapPropertiesManager.getCurrentEvolutionAxisVisibility(mapText)).toBe(false);
+        });
+    });
+
+    describe('getCurrentValueChainAxisVisibility', () => {
+        it('should return true by default when no valuechain config exists', () => {
+            const mapText = `title Test Map
+component A [0.1, 0.9]`;
+
+            expect(MapPropertiesManager.getCurrentValueChainAxisVisibility(mapText)).toBe(true);
+        });
+
+        it('should return false when value chain axis is hidden', () => {
+            const mapText = `title Test Map
+valuechain --hide
+component A [0.1, 0.9]`;
+
+            expect(MapPropertiesManager.getCurrentValueChainAxisVisibility(mapText)).toBe(false);
         });
     });
 
@@ -285,6 +353,25 @@ component A [0.1, 0.9]`);
             expect(result.propertyUpdated).toBe(true);
         });
 
+        it('should preserve hidden evolution axis when requested', () => {
+            const mapText = `title Test Map
+evolution Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            const stages = {
+                stage1: 'Start',
+                stage2: 'Build',
+                stage3: 'Scale',
+                stage4: 'Optimize',
+            };
+
+            const result = MapPropertiesManager.updateEvolutionStages(mapText, stages, false);
+
+            expect(result.updatedMapText).toBe(`title Test Map
+evolution --hide Start->Build->Scale->Optimize
+component A [0.1, 0.9]`);
+        });
+
         it('should throw error for invalid stage names', () => {
             const mapText = `title Test Map
 component A [0.1, 0.9]`;
@@ -309,6 +396,47 @@ component A [0.1, 0.9]`;
         });
     });
 
+    describe('updateMapAxes', () => {
+        it('should update both evolution and value chain axis visibility', () => {
+            const mapText = `title Test Map
+component A [0.1, 0.9]`;
+
+            const stages = {
+                stage1: 'Start',
+                stage2: 'Build',
+                stage3: 'Scale',
+                stage4: 'Optimize',
+            };
+
+            const result = MapPropertiesManager.updateMapAxes(mapText, stages, false, false);
+
+            expect(result.updatedMapText).toBe(`title Test Map
+valuechain --hide
+evolution --hide Start->Build->Scale->Optimize
+component A [0.1, 0.9]`);
+        });
+
+        it('should remove valuechain hide config when showing the axis again', () => {
+            const mapText = `title Test Map
+valuechain --hide
+evolution --hide Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`;
+
+            const stages = {
+                stage1: 'Alpha',
+                stage2: 'Beta',
+                stage3: 'Gamma',
+                stage4: 'Delta',
+            };
+
+            const result = MapPropertiesManager.updateMapAxes(mapText, stages, true, true);
+
+            expect(result.updatedMapText).toBe(`title Test Map
+evolution Alpha->Beta->Gamma->Delta
+component A [0.1, 0.9]`);
+        });
+    });
+
     describe('DSL generation', () => {
         it('should generate correct style DSL', () => {
             expect(MapPropertiesManager.generateStyleDSL('plain')).toBe('style plain');
@@ -326,6 +454,7 @@ component A [0.1, 0.9]`;
             expect(MapPropertiesManager.generateEvolutionDSL('Genesis', 'Custom Built', 'Product', 'Commodity')).toBe(
                 'evolution Genesis->Custom Built->Product->Commodity',
             );
+            expect(MapPropertiesManager.generateEvolutionDSL('A', 'B', 'C', 'D', false)).toBe('evolution --hide A->B->C->D');
         });
     });
 
@@ -364,6 +493,17 @@ component A [0.1, 0.9]`;
                 style: 2,
                 size: 3,
                 evolution: 4,
+            });
+        });
+
+        it('should get valuechain property line number', () => {
+            const mapText = `title Test Map
+valuechain --hide
+component A [0.1, 0.9]`;
+
+            const lineNumbers = MapPropertiesManager.getPropertyLineNumbers(mapText);
+            expect(lineNumbers).toEqual({
+                valuechain: 2,
             });
         });
     });

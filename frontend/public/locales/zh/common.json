@@ -149,7 +149,7 @@
                 "colour": "Colour"
             },
             "setMapSize": "Set Map Size",
-            "editEvolutionStages": "Edit Evolution Stages",
+            "editMapAxis": "编辑地图轴",
             "delete": "Delete"
         }
     },
@@ -320,8 +320,10 @@
         "mapSizeDescription": "为您的地图画布设置尺寸。数值必须在100到5000像素之间。",
         "width": "宽度",
         "height": "高度",
-        "editEvolutionStages": "编辑进化阶段",
-        "evolutionStagesDescription": "自定义四个进化阶段的名称。这些将作为标签显示在您地图的进化轴上。",
+        "editMapAxis": "编辑地图轴",
+        "mapAxisDescription": "自定义进化阶段标签，并控制进化轴和价值链轴是否在地图上显示。",
+        "showEvolutionAxis": "显示进化轴",
+        "showValueChainAxis": "显示价值链轴",
         "stage1": "阶段1（起源）",
         "stage2": "阶段2（定制构建）",
         "stage3": "阶段3（产品）",
@@ -380,6 +382,14 @@
         "latestAvailable": "你当前使用的是版本 {{version}}。",
         "placeholder": "我们将在此处尽快添加详细的更新说明。",
         "dismiss": "知道了",
+        "may2026": {
+            "title": "May 2026 update highlights:",
+            "items": {
+                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
+                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
+                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+            }
+        },
         "feb2026": {
             "title": "February 2026 update highlights:",
             "items": {

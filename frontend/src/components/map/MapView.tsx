@@ -134,15 +134,24 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
     );
 
     const handleConfirmEvolutionStages = useCallback(
-        (stages: {stage1: string; stage2: string; stage3: string; stage4: string}) => {
+        (config: {
+            stages: {stage1: string; stage2: string; stage3: string; stage4: string};
+            showEvolutionAxis: boolean;
+            showValueChainAxis: boolean;
+        }) => {
             try {
-                const result = MapPropertiesManager.updateEvolutionStages(props.mapText, stages);
-                props.mutateMapText(result.updatedMapText, 'editor-text', 'Updated evolution stages');
-                showUserFeedback(t('map.feedback.evolutionStagesUpdated', 'Evolution stages updated'), 'success');
+                const result = MapPropertiesManager.updateMapAxes(
+                    props.mapText,
+                    config.stages,
+                    config.showEvolutionAxis,
+                    config.showValueChainAxis,
+                );
+                props.mutateMapText(result.updatedMapText, 'editor-text', 'Updated map axis settings');
+                showUserFeedback(t('map.feedback.evolutionStagesUpdated', 'Map axis settings updated'), 'success');
                 setEvolutionStagesDialogOpen(false);
             } catch (error) {
-                console.error('Failed to update evolution stages:', error);
-                showUserFeedback(t('map.feedback.evolutionStagesUpdateFailed', 'Failed to update evolution stages'), 'error');
+                console.error('Failed to update map axis settings:', error);
+                showUserFeedback(t('map.feedback.evolutionStagesUpdateFailed', 'Failed to update map axis settings'), 'error');
             }
         },
         [props, showUserFeedback, t],
@@ -372,6 +381,8 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
             <EvolutionStagesDialog
                 isOpen={evolutionStagesDialogOpen}
                 currentStages={MapPropertiesManager.getCurrentEvolutionStages(props.mapText)}
+                showEvolutionAxis={MapPropertiesManager.getCurrentEvolutionAxisVisibility(props.mapText)}
+                showValueChainAxis={MapPropertiesManager.getCurrentValueChainAxisVisibility(props.mapText)}
                 onConfirm={handleConfirmEvolutionStages}
                 onCancel={handleCancelEvolutionStages}
             />

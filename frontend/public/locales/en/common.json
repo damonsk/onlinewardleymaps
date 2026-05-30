@@ -83,7 +83,7 @@
                 "colour": "Colour"
             },
             "setMapSize": "Set Map Size",
-            "editEvolutionStages": "Edit Evolution Stages",
+            "editMapAxis": "Edit Map Axis",
             "delete": "Delete"
         },
         "toolbar": {
@@ -320,8 +320,10 @@
         "mapSizeDescription": "Set the dimensions for your map canvas. Values must be between 100 and 5000 pixels.",
         "width": "Width",
         "height": "Height",
-        "editEvolutionStages": "Edit Evolution Stages",
-        "evolutionStagesDescription": "Customize the names of the four evolution stages. These will appear as labels on the evolution axis of your map.",
+        "editMapAxis": "Edit Map Axis",
+        "mapAxisDescription": "Customize the evolution stage labels and control whether the evolution and value chain axes are visible on your map.",
+        "showEvolutionAxis": "Show evolution axis",
+        "showValueChainAxis": "Show value chain axis",
         "stage1": "Stage 1 (Genesis)",
         "stage2": "Stage 2 (Custom Built)",
         "stage3": "Stage 3 (Product)",
@@ -380,6 +382,14 @@
         "latestAvailable": "You are now on version {{version}}.",
         "placeholder": "We will add detailed release notes here soon.",
         "dismiss": "Got it",
+        "may2026": {
+            "title": "May 2026 update highlights:",
+            "items": {
+                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
+                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
+                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+            }
+        },
         "feb2026": {
             "title": "February 2026 update highlights:",
             "items": {

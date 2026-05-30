@@ -149,7 +149,7 @@
                 "colour": "Colour"
             },
             "setMapSize": "Set Map Size",
-            "editEvolutionStages": "Edit Evolution Stages",
+            "editMapAxis": "Modifica Assi della Mappa",
             "delete": "Delete"
         }
     },
@@ -320,8 +320,10 @@
         "mapSizeDescription": "Imposta le dimensioni per il tuo canvas della mappa. I valori devono essere compresi tra 100 e 5000 pixel.",
         "width": "Larghezza",
         "height": "Altezza",
-        "editEvolutionStages": "Modifica Fasi di Evoluzione",
-        "evolutionStagesDescription": "Personalizza i nomi delle quattro fasi di evoluzione. Queste appariranno come etichette sull'asse di evoluzione della tua mappa.",
+        "editMapAxis": "Modifica Assi della Mappa",
+        "mapAxisDescription": "Personalizza le etichette delle fasi di evoluzione e controlla se gli assi di evoluzione e della catena del valore sono visibili sulla tua mappa.",
+        "showEvolutionAxis": "Mostra asse di evoluzione",
+        "showValueChainAxis": "Mostra asse della catena del valore",
         "stage1": "Fase 1 (Genesi)",
         "stage2": "Fase 2 (Personalizzato)",
         "stage3": "Fase 3 (Prodotto)",
@@ -380,6 +382,14 @@
         "latestAvailable": "Ora stai usando la versione {{version}}.",
         "placeholder": "Aggiungeremo presto qui note di rilascio dettagliate.",
         "dismiss": "Ho capito",
+        "may2026": {
+            "title": "May 2026 update highlights:",
+            "items": {
+                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
+                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
+                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+            }
+        },
         "feb2026": {
             "title": "February 2026 update highlights:",
             "items": {

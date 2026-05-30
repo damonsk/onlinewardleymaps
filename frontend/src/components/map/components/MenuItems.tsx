@@ -1,5 +1,6 @@
 import {useCallback} from 'react';
 import {MapPropertiesManager} from '../../../services/MapPropertiesManager';
+import {useI18n} from '../../../hooks/useI18n';
 import {useComponentSelection} from '../../ComponentSelectionContext';
 import {ContextMenuItem} from '../ContextMenu';
 import {MapElement} from '../hooks/useContextMenuState';
@@ -63,6 +64,7 @@ export const useMenuItems = ({
     availableHandlers,
 }: UseMenuItemsProps): ContextMenuItem[] => {
     const {getSelectedComponentId} = useComponentSelection();
+    const {t} = useI18n();
 
     return useCallback((): ContextMenuItem[] => {
         if (!currentElement) return [];
@@ -207,7 +209,7 @@ export const useMenuItems = ({
                 if (availableHandlers.onEditEvolutionStages) {
                     items.push({
                         id: 'edit-evolution',
-                        label: 'Edit Evolution Stages',
+                        label: t('common.contextMenu.editMapAxis', 'Edit Map Axis'),
                         action: () => menuActions.handleEditEvolutionStages(hideContextMenu),
                         disabled: false,
                     });

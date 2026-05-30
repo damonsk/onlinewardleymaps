@@ -149,7 +149,7 @@
                 "colour": "Colour"
             },
             "setMapSize": "Set Map Size",
-            "editEvolutionStages": "Edit Evolution Stages",
+            "editMapAxis": "マップ軸を編集",
             "delete": "Delete"
         }
     },
@@ -320,8 +320,10 @@
         "mapSizeDescription": "マップキャンバスのサイズを設定します。値は100〜5000ピクセルの間である必要があります。",
         "width": "幅",
         "height": "高さ",
-        "editEvolutionStages": "進化段階の編集",
-        "evolutionStagesDescription": "4つの進化段階の名前をカスタマイズします。これらはマップの進化軸にラベルとして表示されます。",
+        "editMapAxis": "マップ軸を編集",
+        "mapAxisDescription": "進化段階のラベルをカスタマイズし、進化軸とバリューチェーン軸をマップ上に表示するかどうかを設定します。",
+        "showEvolutionAxis": "進化軸を表示",
+        "showValueChainAxis": "バリューチェーン軸を表示",
         "stage1": "段階1 (創成期)",
         "stage2": "段階2 (カスタム構築)",
         "stage3": "段階3 (製品)",
@@ -380,6 +382,14 @@
         "latestAvailable": "現在のバージョンは{{version}}です。",
         "placeholder": "詳細なリリースノートは近日ここに追加されます。",
         "dismiss": "了解",
+        "may2026": {
+            "title": "May 2026 update highlights:",
+            "items": {
+                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
+                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
+                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+            }
+        },
         "feb2026": {
             "title": "February 2026 update highlights:",
             "items": {

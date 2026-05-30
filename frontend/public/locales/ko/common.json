@@ -149,7 +149,7 @@
                 "colour": "Colour"
             },
             "setMapSize": "Set Map Size",
-            "editEvolutionStages": "Edit Evolution Stages",
+            "editMapAxis": "맵 축 편집",
             "delete": "Delete"
         }
     },
@@ -320,8 +320,10 @@
         "mapSizeDescription": "맵 캔버스의 치수를 설정합니다. 값은 100에서 5000 픽셀 사이여야 합니다.",
         "width": "너비",
         "height": "높이",
-        "editEvolutionStages": "진화 단계 편집",
-        "evolutionStagesDescription": "4가지 진화 단계의 이름을 사용자 정의합니다. 이것들은 맵의 진화 축에 라벨로 표시됩니다.",
+        "editMapAxis": "맵 축 편집",
+        "mapAxisDescription": "진화 단계 라벨을 사용자 정의하고 진화 축과 가치 사슬 축을 맵에 표시할지 제어합니다.",
+        "showEvolutionAxis": "진화 축 표시",
+        "showValueChainAxis": "가치 사슬 축 표시",
         "stage1": "단계 1 (창세기)",
         "stage2": "단계 2 (맞춤 제작)",
         "stage3": "단계 3 (제품)",
@@ -380,6 +382,14 @@
         "latestAvailable": "현재 버전은 {{version}}입니다.",
         "placeholder": "자세한 릴리스 노트는 곧 여기에 추가됩니다.",
         "dismiss": "확인",
+        "may2026": {
+            "title": "May 2026 update highlights:",
+            "items": {
+                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
+                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
+                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+            }
+        },
         "feb2026": {
             "title": "February 2026 update highlights:",
             "items": {

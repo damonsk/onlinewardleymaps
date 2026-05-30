@@ -21,12 +21,14 @@ describe('EvolutionStagesDialog', () => {
             <EvolutionStagesDialog
                 isOpen={true}
                 currentStages={{stage1: 'Genesis', stage2: 'Custom Built', stage3: 'Product', stage4: 'Commodity'}}
+                showEvolutionAxis={true}
+                showValueChainAxis={true}
                 onConfirm={mockOnConfirm}
                 onCancel={mockOnCancel}
             />,
         );
 
-        expect(screen.getByText('Edit Evolution Stages')).toBeInTheDocument();
+        expect(screen.getByText('Edit Map Axis')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Genesis')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Custom Built')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Product')).toBeInTheDocument();
@@ -34,13 +36,31 @@ describe('EvolutionStagesDialog', () => {
     });
 
     it('does not render dialog when closed', () => {
-        render(<EvolutionStagesDialog isOpen={false} currentStages={null} onConfirm={mockOnConfirm} onCancel={mockOnCancel} />);
+        render(
+            <EvolutionStagesDialog
+                isOpen={false}
+                currentStages={null}
+                showEvolutionAxis={true}
+                showValueChainAxis={true}
+                onConfirm={mockOnConfirm}
+                onCancel={mockOnCancel}
+            />,
+        );
 
-        expect(screen.queryByText('Edit Evolution Stages')).not.toBeInTheDocument();
+        expect(screen.queryByText('Edit Map Axis')).not.toBeInTheDocument();
     });
 
     it('uses default stages when currentStages is null', () => {
-        render(<EvolutionStagesDialog isOpen={true} currentStages={null} onConfirm={mockOnConfirm} onCancel={mockOnCancel} />);
+        render(
+            <EvolutionStagesDialog
+                isOpen={true}
+                currentStages={null}
+                showEvolutionAxis={true}
+                showValueChainAxis={true}
+                onConfirm={mockOnConfirm}
+                onCancel={mockOnCancel}
+            />,
+        );
 
         expect(screen.getByDisplayValue('Genesis')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Custom Built')).toBeInTheDocument();
@@ -53,6 +73,8 @@ describe('EvolutionStagesDialog', () => {
             <EvolutionStagesDialog
                 isOpen={true}
                 currentStages={{stage1: 'Genesis', stage2: 'Custom Built', stage3: 'Product', stage4: 'Commodity'}}
+                showEvolutionAxis={true}
+                showValueChainAxis={true}
                 onConfirm={mockOnConfirm}
                 onCancel={mockOnCancel}
             />,
@@ -62,15 +84,28 @@ describe('EvolutionStagesDialog', () => {
         fireEvent.click(confirmButton);
 
         expect(mockOnConfirm).toHaveBeenCalledWith({
-            stage1: 'Genesis',
-            stage2: 'Custom Built',
-            stage3: 'Product',
-            stage4: 'Commodity',
+            stages: {
+                stage1: 'Genesis',
+                stage2: 'Custom Built',
+                stage3: 'Product',
+                stage4: 'Commodity',
+            },
+            showEvolutionAxis: true,
+            showValueChainAxis: true,
         });
     });
 
     it('calls onCancel when cancel button is clicked', () => {
-        render(<EvolutionStagesDialog isOpen={true} currentStages={null} onConfirm={mockOnConfirm} onCancel={mockOnCancel} />);
+        render(
+            <EvolutionStagesDialog
+                isOpen={true}
+                currentStages={null}
+                showEvolutionAxis={true}
+                showValueChainAxis={true}
+                onConfirm={mockOnConfirm}
+                onCancel={mockOnCancel}
+            />,
+        );
 
         const cancelButton = screen.getByText('Cancel');
         fireEvent.click(cancelButton);
@@ -79,7 +114,16 @@ describe('EvolutionStagesDialog', () => {
     });
 
     it('validates stage inputs and shows errors', () => {
-        render(<EvolutionStagesDialog isOpen={true} currentStages={null} onConfirm={mockOnConfirm} onCancel={mockOnCancel} />);
+        render(
+            <EvolutionStagesDialog
+                isOpen={true}
+                currentStages={null}
+                showEvolutionAxis={true}
+                showValueChainAxis={true}
+                onConfirm={mockOnConfirm}
+                onCancel={mockOnCancel}
+            />,
+        );
 
         const stage1Input = screen.getByLabelText('Stage 1 (Genesis)');
 
@@ -90,5 +134,38 @@ describe('EvolutionStagesDialog', () => {
         // Test too long stage name
         fireEvent.change(stage1Input, {target: {value: 'A'.repeat(51)}});
         expect(screen.getByText('Stage 1 name must be 50 characters or less')).toBeInTheDocument();
+    });
+
+    it('initializes and submits hidden evolution axis state', () => {
+        render(
+            <EvolutionStagesDialog
+                isOpen={true}
+                currentStages={{stage1: 'Genesis', stage2: 'Custom Built', stage3: 'Product', stage4: 'Commodity'}}
+                showEvolutionAxis={false}
+                showValueChainAxis={false}
+                onConfirm={mockOnConfirm}
+                onCancel={mockOnCancel}
+            />,
+        );
+
+        const evolutionCheckbox = screen.getByLabelText('Show evolution axis') as HTMLInputElement;
+        const valueChainCheckbox = screen.getByLabelText('Show value chain axis') as HTMLInputElement;
+        expect(evolutionCheckbox.checked).toBe(false);
+        expect(valueChainCheckbox.checked).toBe(false);
+
+        fireEvent.click(evolutionCheckbox);
+        fireEvent.click(valueChainCheckbox);
+        fireEvent.click(screen.getByText('Confirm'));
+
+        expect(mockOnConfirm).toHaveBeenCalledWith({
+            stages: {
+                stage1: 'Genesis',
+                stage2: 'Custom Built',
+                stage3: 'Product',
+                stage4: 'Commodity',
+            },
+            showEvolutionAxis: true,
+            showValueChainAxis: true,
+        });
     });
 });

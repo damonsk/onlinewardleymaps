@@ -11,6 +11,8 @@ export interface MapProperties {
     style?: 'plain' | 'wardley' | 'colour';
     size?: {width: number; height: number};
     evolution?: {stage1: string; stage2: string; stage3: string; stage4: string};
+    showEvolutionAxis?: boolean;
+    showValueChainAxis?: boolean;
 }
 
 export interface MapPropertiesUpdateResult {
@@ -25,6 +27,7 @@ export class MapPropertiesManager {
         style: /^style\s+(plain|wardley|colour)\s*$/m,
         size: /^size\s+\[(\d+),\s*(\d+)\]\s*$/m,
         evolution: /^evolution(?:\s+--hide)?(?:\s+.*)?\s*$/m,
+        valuechain: /^valuechain(?:\s+--hide(?:\s+.*)?)?\s*$/m,
     };
 
     private static readonly DEFAULT_EVOLUTION_STAGES = {
@@ -66,6 +69,12 @@ export class MapPropertiesManager {
             };
         }
 
+        const evolutionVisibilityMatch = mapText.match(/^evolution\s+--hide(?:\s+.*)?\s*$/m);
+        properties.showEvolutionAxis = !evolutionVisibilityMatch;
+
+        const valueChainVisibilityMatch = mapText.match(/^valuechain\s+--hide(?:\s+.*)?\s*$/m);
+        properties.showValueChainAxis = !valueChainVisibilityMatch;
+
         return properties;
     }
 
@@ -94,6 +103,42 @@ export class MapPropertiesManager {
     }
 
     /**
+     * Get current evolution axis visibility from map text
+     */
+    static getCurrentEvolutionAxisVisibility(mapText: string): boolean {
+        const properties = this.parseMapProperties(mapText);
+        return properties.showEvolutionAxis ?? true;
+    }
+
+    /**
+     * Get current value chain axis visibility from map text
+     */
+    static getCurrentValueChainAxisVisibility(mapText: string): boolean {
+        const properties = this.parseMapProperties(mapText);
+        return properties.showValueChainAxis ?? true;
+    }
+
+    /**
+     * Update map axis settings in map text
+     */
+    static updateMapAxes(
+        mapText: string,
+        stages: {stage1: string; stage2: string; stage3: string; stage4: string},
+        showEvolutionAxis = true,
+        showValueChainAxis = true,
+    ): MapPropertiesUpdateResult {
+        const evolutionResult = this.updateEvolutionStages(mapText, stages, showEvolutionAxis);
+        const updatedMapText = this.updateValueChainAxisVisibility(evolutionResult.updatedMapText, showValueChainAxis);
+
+        return {
+            updatedMapText,
+            propertyAdded: evolutionResult.propertyAdded,
+            propertyUpdated: evolutionResult.propertyUpdated,
+            lineNumber: evolutionResult.lineNumber,
+        };
+    }
+
+    /**
      * Update map style in map text
      */
     static updateMapStyle(mapText: string, style: 'plain' | 'wardley' | 'colour'): MapPropertiesUpdateResult {
@@ -119,13 +164,25 @@ export class MapPropertiesManager {
     static updateEvolutionStages(
         mapText: string,
         stages: {stage1: string; stage2: string; stage3: string; stage4: string},
+        showEvolutionAxis = true,
     ): MapPropertiesUpdateResult {
         if (!this.validateEvolutionStages(stages)) {
             throw new Error('Invalid evolution stages: all stage names must be non-empty and 1-50 characters long');
         }
 
-        const evolutionDSL = this.generateEvolutionDSL(stages.stage1, stages.stage2, stages.stage3, stages.stage4);
+        const evolutionDSL = this.generateEvolutionDSL(stages.stage1, stages.stage2, stages.stage3, stages.stage4, showEvolutionAxis);
         return this.updateOrAddProperty(mapText, 'evolution', evolutionDSL);
+    }
+
+    /**
+     * Update value chain axis visibility in map text
+     */
+    static updateValueChainAxisVisibility(mapText: string, showValueChainAxis = true): string {
+        if (showValueChainAxis) {
+            return this.removeProperty(mapText, 'valuechain');
+        }
+
+        return this.updateOrAddProperty(mapText, 'valuechain', 'valuechain --hide').updatedMapText;
     }
 
     /**
@@ -145,8 +202,9 @@ export class MapPropertiesManager {
     /**
      * Generate DSL syntax for evolution stages
      */
-    static generateEvolutionDSL(stage1: string, stage2: string, stage3: string, stage4: string): string {
-        return `evolution ${stage1}->${stage2}->${stage3}->${stage4}`;
+    static generateEvolutionDSL(stage1: string, stage2: string, stage3: string, stage4: string, showEvolutionAxis = true): string {
+        const stagesDsl = `${stage1}->${stage2}->${stage3}->${stage4}`;
+        return showEvolutionAxis ? `evolution ${stagesDsl}` : `evolution --hide ${stagesDsl}`;
     }
 
     /**
@@ -154,7 +212,7 @@ export class MapPropertiesManager {
      */
     private static updateOrAddProperty(
         mapText: string,
-        propertyType: 'style' | 'size' | 'evolution',
+        propertyType: 'style' | 'size' | 'evolution' | 'valuechain',
         newDSL: string,
     ): MapPropertiesUpdateResult {
         const lines = mapText.split('\n');
@@ -203,6 +261,23 @@ export class MapPropertiesManager {
     }
 
     /**
+     * Remove a property line from map text
+     */
+    private static removeProperty(mapText: string, propertyType: 'style' | 'size' | 'evolution' | 'valuechain'): string {
+        const lines = mapText.split('\n');
+        const pattern = this.DSL_PATTERNS[propertyType];
+
+        for (let i = 0; i < lines.length; i++) {
+            if (pattern.test(lines[i])) {
+                lines.splice(i, 1);
+                break;
+            }
+        }
+
+        return lines.join('\n');
+    }
+
+    /**
      * Validate map size values
      */
     private static validateSize(width: number, height: number): boolean {
@@ -229,15 +304,21 @@ export class MapPropertiesManager {
      */
     static hasCustomProperties(mapText: string): boolean {
         const properties = this.parseMapProperties(mapText);
-        return !!(properties.style || properties.size || properties.evolution);
+        return !!(
+            properties.style ||
+            properties.size ||
+            properties.evolution ||
+            properties.showEvolutionAxis === false ||
+            properties.showValueChainAxis === false
+        );
     }
 
     /**
      * Get property line numbers for debugging/editing purposes
      */
-    static getPropertyLineNumbers(mapText: string): {style?: number; size?: number; evolution?: number} {
+    static getPropertyLineNumbers(mapText: string): {style?: number; size?: number; evolution?: number; valuechain?: number} {
         const lines = mapText.split('\n');
-        const lineNumbers: {style?: number; size?: number; evolution?: number} = {};
+        const lineNumbers: {style?: number; size?: number; evolution?: number; valuechain?: number} = {};
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
@@ -247,6 +328,8 @@ export class MapPropertiesManager {
                 lineNumbers.size = i + 1;
             } else if (this.DSL_PATTERNS.evolution.test(line)) {
                 lineNumbers.evolution = i + 1;
+            } else if (this.DSL_PATTERNS.valuechain.test(line)) {
+                lineNumbers.valuechain = i + 1;
             }
         }
 
