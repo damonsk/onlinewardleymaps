@@ -22,6 +22,10 @@ export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose
             'updates.may2026.items.3',
             'The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes.',
         ),
+        t(
+            'updates.may2026.items.4',
+            'Linking now supports pipeline child components, including child-to-child links, with corrected rendering and preview alignment.',
+        ),
     ];
     const feb2026Items = [
         t('updates.feb2026.items.1', 'Added full WYSIWYG editing for major map elements.'),
