@@ -299,11 +299,15 @@
         "text": "Formato de Texto"
     },
     "import": {
+        "importAs": "Importar",
         "fromMermaid": "Importar do Mermaid",
         "mermaidTitle": "Importar mapa Wardley do Mermaid",
         "mermaidDescription": "Cole aqui a sintaxe Wardley do Mermaid. O mapa sera convertido para o DSL nativo do OWM e substituira o texto atual do mapa.",
         "mermaidPlaceholder": "wardley-beta\ntitle Meu mapa\ncomponent Usuario [0.95, 0.95]\ncomponent API [0.6, 0.7]",
         "importMermaid": "Importar Mermaid"
+    },
+    "transfer": {
+        "label": "Importar/Exportar"
     },
     "footer": {
         "github": "Repositório GitHub",
@@ -397,7 +401,8 @@
                 "2": "`evolution --hide` agora oferece suporte a rótulos de estágio personalizados inline e estágios vazios, e `valuechain --hide` aceita contexto ao final.",
                 "3": "O editor de clique com o botão direito no canvas foi expandido e renomeado de “Edit Evolution Stages” para “Edit Map Axis”, com alternadores para ambos os eixos.",
                 "4": "A vinculação agora oferece suporte a componentes filhos de pipeline, incluindo links entre componentes filhos, com renderização e alinhamento de pré-visualização corrigidos.",
-                "5": "“Exportar como Mermaid” e “Copiar como Mermaid” agora estão disponíveis no menu de exportação."
+                "5": "“Exportar como Mermaid” e “Copiar como Mermaid” agora estão disponíveis no menu de exportação.",
+                "6": "“Importar do Mermaid” agora está disponível no menu e converte a sintaxe Wardley do Mermaid de volta para o texto de mapa OWM (#318)."
             }
         },
         "feb2026": {

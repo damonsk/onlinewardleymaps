@@ -299,11 +299,15 @@
         "text": "텍스트 형식"
     },
     "import": {
+        "importAs": "가져오기",
         "fromMermaid": "Mermaid에서 가져오기",
         "mermaidTitle": "Mermaid Wardley 맵 가져오기",
         "mermaidDescription": "여기에 Mermaid Wardley 구문을 붙여 넣으세요. 맵은 네이티브 OWM DSL로 변환되어 현재 맵 텍스트를 대체합니다.",
         "mermaidPlaceholder": "wardley-beta\ntitle 내 맵\ncomponent User [0.95, 0.95]\ncomponent API [0.6, 0.7]",
         "importMermaid": "Mermaid 가져오기"
+    },
+    "transfer": {
+        "label": "가져오기/내보내기"
     },
     "footer": {
         "github": "GitHub 저장소",
@@ -397,7 +401,8 @@
                 "2": "`evolution --hide`는 이제 인라인 사용자 지정 단계 레이블과 빈 단계를 지원하고, `valuechain --hide`는 후행 컨텍스트를 허용합니다.",
                 "3": "캔버스 우클릭 편집기가 확장되었고 “Edit Evolution Stages”에서 “Edit Map Axis”로 이름이 변경되었으며, 두 축 모두에 대한 토글이 추가되었습니다.",
                 "4": "이제 링크 기능이 파이프라인 하위 컴포넌트를 지원하며, 하위 컴포넌트 간 링크도 가능합니다. 렌더링과 미리보기 정렬도 수정되었습니다.",
-                "5": "“Mermaid로 내보내기”와 “Mermaid로 복사”를 이제 내보내기 메뉴에서 사용할 수 있습니다."
+                "5": "“Mermaid로 내보내기”와 “Mermaid로 복사”를 이제 내보내기 메뉴에서 사용할 수 있습니다.",
+                "6": "이제 메뉴에서 “Mermaid에서 가져오기”를 사용할 수 있으며 Mermaid Wardley 구문을 다시 OWM 맵 텍스트로 변환합니다 (#318)."
             }
         },
         "feb2026": {

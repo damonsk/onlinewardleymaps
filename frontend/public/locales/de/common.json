@@ -299,11 +299,15 @@
         "text": "Textformat"
     },
     "import": {
+        "importAs": "Importieren",
         "fromMermaid": "Aus Mermaid importieren",
         "mermaidTitle": "Mermaid-Wardley-Karte importieren",
         "mermaidDescription": "Fügen Sie hier Mermaid-Wardley-Syntax ein. Die Karte wird in natives OWM-DSL umgewandelt und ersetzt den aktuellen Kartentext.",
         "mermaidPlaceholder": "wardley-beta\ntitle Meine Karte\ncomponent Nutzer [0.95, 0.95]\ncomponent API [0.6, 0.7]",
         "importMermaid": "Mermaid importieren"
+    },
+    "transfer": {
+        "label": "Import/Export"
     },
     "footer": {
         "downloadExtension": "Visual Studio Code Extension Herunterladen",
@@ -397,7 +401,8 @@
                 "2": "`evolution --hide` unterstützt jetzt benutzerdefinierte Inline-Stufenbezeichnungen und leere Stufen, und `valuechain --hide` akzeptiert nachgestellten Kontext.",
                 "3": "Der Rechtsklick-Editor auf der Zeichenfläche wurde erweitert und von „Edit Evolution Stages“ in „Edit Map Axis“ umbenannt, mit Schaltern für beide Achsen.",
                 "4": "Verknüpfungen unterstützen jetzt Pipeline-Kindkomponenten, einschließlich Links zwischen Kindkomponenten, mit korrigierter Darstellung und Vorschauausrichtung.",
-                "5": "„Als Mermaid exportieren“ und „Als Mermaid kopieren“ sind jetzt im Exportmenü verfügbar."
+                "5": "„Als Mermaid exportieren“ und „Als Mermaid kopieren“ sind jetzt im Exportmenü verfügbar.",
+                "6": "„Aus Mermaid importieren“ ist jetzt im Menü verfügbar und wandelt Mermaid-Wardley-Syntax zurück in OWM-Kartentext um (#318)."
             }
         },
         "feb2026": {

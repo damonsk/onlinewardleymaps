@@ -1,4 +1,10 @@
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import AddIcon from '@mui/icons-material/Add';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DownloadIcon from '@mui/icons-material/Download';
+import ImageIcon from '@mui/icons-material/Image';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SaveIcon from '@mui/icons-material/Save';
 import {MenuListProps, PopoverVirtualElement, Stack} from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -97,6 +103,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     setShowMapIterations,
 }) => {
     const [anchorMoreEl, setAnchorMoreEl] = useState<Element | null>();
+    const [anchorTransferEl, setAnchorTransferEl] = useState<Element | null>();
     const [modalShow, setModalShow] = useState(false);
     const [importModalOpen, setImportModalOpen] = useState(false);
     const [mermaidImportText, setMermaidImportText] = useState('');
@@ -115,9 +122,14 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     };
 
     const openMore = Boolean(anchorMoreEl);
+    const openTransfer = Boolean(anchorTransferEl);
 
     const handleMoreClick = (event: MouseEvent) => {
         setAnchorMoreEl(event.currentTarget);
+    };
+
+    const handleTransferClick = (event: MouseEvent) => {
+        setAnchorTransferEl(event.currentTarget);
     };
 
     const handleMoreClose = (preAction?: () => void) => {
@@ -125,9 +137,18 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
         setAnchorMoreEl(null);
     };
 
+    const handleTransferClose = (preAction?: () => void) => {
+        if (preAction) preAction();
+        setAnchorTransferEl(null);
+    };
+
     // Separate handler for Material-UI Menu onClose that doesn't expect parameters
     const handleMenuClose = () => {
         setAnchorMoreEl(null);
+    };
+
+    const handleTransferMenuClose = () => {
+        setAnchorTransferEl(null);
     };
 
     const handleOpenMermaidImport = () => {
@@ -165,22 +186,6 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 {t('header.getCloneUrl', 'Get Clone URL')}
             </MenuItem>
             <Divider />
-            <MenuItem onClick={() => handleMoreClose(handleOpenMermaidImport)} disableRipple>
-                {t('import.fromMermaid', 'Import from Mermaid')}
-            </MenuItem>
-            <MenuItem onClick={() => handleMoreClose(() => downloadMapAsMermaid())} disableRipple>
-                {t('export.mermaid', 'Export as Mermaid')}
-            </MenuItem>
-            <MenuItem onClick={() => handleMoreClose(() => copyMapAsMermaid())} disableRipple>
-                {t('export.copyMermaid', 'Copy as Mermaid')}
-            </MenuItem>
-            <MenuItem onClick={() => handleMoreClose(() => downloadMapImage())} disableRipple>
-                {t('export.png', 'Download as PNG')}
-            </MenuItem>
-            <MenuItem onClick={() => handleMoreClose(() => downloadMapAsSVG())} disableRipple>
-                {t('export.svg', 'Download as SVG')}
-            </MenuItem>
-            <Divider />
             <MenuItem onClick={() => handleMoreClose(() => setShowLineNumbers(!showLineNumbers))} disableRipple>
                 {showLineNumbers ? t('header.hideLineNumbers', 'Hide Line Numbers') : t('header.showLineNumbers', 'Show Line Numbers')}
             </MenuItem>
@@ -209,6 +214,39 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
             </MenuItem>
         </StyledMenu>
     );
+
+    const transferMenu = (
+        <StyledMenu
+            id="transfer-menu"
+            MenuListProps={{
+                'aria-labelledby': 'transfer-menu-button',
+            }}
+            anchorEl={anchorTransferEl}
+            open={openTransfer}
+            onClose={handleTransferMenuClose}>
+            <MenuItem onClick={() => handleTransferClose(handleOpenMermaidImport)} disableRipple>
+                <AccountTreeIcon />
+                {t('import.fromMermaid', 'Import from Mermaid')}
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={() => handleTransferClose(() => downloadMapAsMermaid())} disableRipple>
+                <AccountTreeIcon />
+                {t('export.mermaid', 'Export as Mermaid')}
+            </MenuItem>
+            <MenuItem onClick={() => handleTransferClose(() => copyMapAsMermaid())} disableRipple>
+                <ContentCopyIcon />
+                {t('export.copyMermaid', 'Copy as Mermaid')}
+            </MenuItem>
+            <MenuItem onClick={() => handleTransferClose(() => downloadMapImage())} disableRipple>
+                <ImageIcon />
+                {t('export.png', 'Download as PNG')}
+            </MenuItem>
+            <MenuItem onClick={() => handleTransferClose(() => downloadMapAsSVG())} disableRipple>
+                <DownloadIcon />
+                {t('export.svg', 'Download as SVG')}
+            </MenuItem>
+        </StyledMenu>
+    );
     return (
         <CoreHeader toggleMenu={toggleMenu}>
             <Stack direction="row" alignItems="flex-start" spacing={0.5} divider={<Divider orientation="vertical" flexItem />}>
@@ -223,6 +261,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                     color="inherit"
                     size="small"
                     variant="text"
+                    startIcon={<AddIcon />}
                     id="new-menu-button"
                     onClick={() => newMapClick(MapPersistenceStrategy.Legacy)}>
                     {t('common.new', 'New')}
@@ -233,8 +272,22 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                     size="small"
                     onClick={saveMapClick}
                     variant={saveOutstanding ? 'outlined' : 'text'}
+                    startIcon={<SaveIcon />}
                     sx={saveOutstanding ? {backgroundColor: '#d32f2f', color: 'white'} : null}>
                     {t('common.save', 'Save')}
+                </Button>
+
+                <Button
+                    color="inherit"
+                    size="small"
+                    variant="text"
+                    startIcon={<DownloadIcon />}
+                    onClick={handleTransferClick}
+                    id="transfer-menu-button"
+                    aria-controls={openTransfer ? 'transfer-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={openTransfer ? 'true' : undefined}>
+                    {t('transfer.label', 'Import/Export')}
                 </Button>
 
                 <Button
@@ -250,6 +303,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 </Button>
             </Stack>
 
+            {transferMenu}
             {moreMenu}
 
             <Dialog open={modalShow} onClose={() => setModalShow(false)}>

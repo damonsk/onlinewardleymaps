@@ -299,11 +299,15 @@
         "text": "文本格式"
     },
     "import": {
+        "importAs": "导入",
         "fromMermaid": "从 Mermaid 导入",
         "mermaidTitle": "导入 Mermaid Wardley 地图",
         "mermaidDescription": "在此粘贴 Mermaid Wardley 语法。地图将被转换为原生 OWM DSL，并替换当前的地图文本。",
         "mermaidPlaceholder": "wardley-beta\ntitle 我的地图\ncomponent User [0.95, 0.95]\ncomponent API [0.6, 0.7]",
         "importMermaid": "导入 Mermaid"
+    },
+    "transfer": {
+        "label": "导入/导出"
     },
     "footer": {
         "github": "GitHub仓库",
@@ -397,7 +401,8 @@
                 "2": "`evolution --hide` 现在支持内联自定义阶段标签和空阶段，`valuechain --hide` 也支持尾随上下文。",
                 "3": "画布右键编辑器已扩展，并从“Edit Evolution Stages”更名为“Edit Map Axis”，同时增加了两个坐标轴的开关。",
                 "4": "链接功能现在支持流水线子组件，包括子组件之间的链接，并修正了渲染和预览对齐问题。",
-                "5": "现在可以从导出菜单中使用“导出为 Mermaid”和“复制为 Mermaid”。"
+                "5": "现在可以从导出菜单中使用“导出为 Mermaid”和“复制为 Mermaid”。",
+                "6": "现在也可以从菜单中使用“从 Mermaid 导入”，将 Mermaid Wardley 语法转换回 OWM 地图文本（#318）。"
             }
         },
         "feb2026": {

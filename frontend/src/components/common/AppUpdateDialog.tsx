@@ -30,6 +30,10 @@ export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose
             'updates.may2026.items.5',
             'Export as Mermaid and Copy as Mermaid are now available from the export menu, using Mermaid Wardley syntax.',
         ),
+        t(
+            'updates.may2026.items.6',
+            'Import from Mermaid is now available from the menu, converting Mermaid Wardley syntax back into OWM map text (#318).',
+        ),
     ];
     const feb2026Items = [
         t('updates.feb2026.items.1', 'Added full WYSIWYG editing for major map elements.'),

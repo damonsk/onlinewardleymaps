@@ -210,7 +210,7 @@ const parseEvolutionLine = (line: string): string => {
     const stages = line
         .replace(/^evolution\s+/, '')
         .split(/\s*->\s*/)
-        .map(stage => stage.trim());
+        .map(stage => stage.trim().replace(/@\s*-?\d*\.?\d+\s*$/u, '').trim());
 
     if (stages.length !== 4) {
         throw new Error('Evolution lines must define exactly four stages.');
@@ -257,6 +257,17 @@ const parseNoteLine = (line: string): string => {
 };
 
 const parseComponentLine = (line: string, keyword: 'component' | 'anchor'): string => {
+    const parsed = parseCoordinateLine(line, keyword);
+
+    if (parsed.coordinates.length !== 2) {
+        throw new Error(`${keyword} requires [visibility, evolution].`);
+    }
+
+    const suffix = parsed.suffix ? ` ${parsed.suffix}` : '';
+    return `${keyword} ${formatName(parsed.name)} [${parsed.coordinates[0]}, ${parsed.coordinates[1]}]${suffix}`;
+};
+
+const parseSimpleCoordinateKeywordLine = (line: string, keyword: 'accelerator' | 'deaccelerator'): string => {
     const parsed = parseCoordinateLine(line, keyword);
 
     if (parsed.coordinates.length !== 2) {
@@ -371,6 +382,16 @@ export const importWardleyMapFromMermaid = (input: string): string => {
 
             if (current.startsWith('anchor ')) {
                 output.push(parseComponentLine(current, 'anchor'));
+                continue;
+            }
+
+            if (current.startsWith('accelerator ')) {
+                output.push(parseSimpleCoordinateKeywordLine(current, 'accelerator'));
+                continue;
+            }
+
+            if (current.startsWith('deaccelerator ')) {
+                output.push(parseSimpleCoordinateKeywordLine(current, 'deaccelerator'));
                 continue;
             }
 

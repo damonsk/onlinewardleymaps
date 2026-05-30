@@ -64,6 +64,19 @@ component PUBLISHING_INDUSTRY [0.93, 0.62] label [-14, -25]`;
         expect(imported).toBe('component "PUBLISHING_INDUSTRY" [0.93, 0.62] label [-14, -25]');
     });
 
+    it('supports evolution stage positions and accelerator lines', () => {
+        const mermaid = `wardley-beta
+evolution Genesis@0.25 -> Custom@0.5 -> Product@0.75 -> Commodity@1.0
+accelerator "Cloud Native" [0.20, 0.85]
+deaccelerator "Legacy Data" [0.45, 0.35]`;
+
+        const imported = importWardleyMapFromMermaid(mermaid);
+
+        expect(imported).toBe(`evolution Genesis->Custom->Product->Commodity
+accelerator Cloud Native [0.2, 0.85]
+deaccelerator Legacy Data [0.45, 0.35]`);
+    });
+
     it('throws a line-specific error for unsupported syntax', () => {
         expect(() =>
             importWardleyMapFromMermaid(`wardley-beta

@@ -299,11 +299,15 @@
         "text": "テキスト形式"
     },
     "import": {
+        "importAs": "インポート",
         "fromMermaid": "Mermaid からインポート",
         "mermaidTitle": "Mermaid Wardley マップをインポート",
         "mermaidDescription": "ここに Mermaid Wardley 構文を貼り付けてください。マップはネイティブな OWM DSL に変換され、現在のマップテキストを置き換えます。",
         "mermaidPlaceholder": "wardley-beta\ntitle マイマップ\ncomponent User [0.95, 0.95]\ncomponent API [0.6, 0.7]",
         "importMermaid": "Mermaid をインポート"
+    },
+    "transfer": {
+        "label": "インポート/エクスポート"
     },
     "footer": {
         "github": "GitHubリポジトリ",
@@ -397,7 +401,8 @@
                 "2": "`evolution --hide` は、インラインのカスタムステージラベルと空のステージをサポートするようになり、`valuechain --hide` は末尾のコンテキストを受け付けます。",
                 "3": "キャンバスの右クリックエディタが拡張され、「Edit Evolution Stages」から「Edit Map Axis」に名前変更され、両方の軸の切り替えが追加されました。",
                 "4": "リンク機能がパイプライン子コンポーネントをサポートし、子同士のリンクも可能になりました。描画とプレビュー位置合わせも修正されています。",
-                "5": "「Mermaid としてエクスポート」と「Mermaid としてコピー」がエクスポートメニューから利用できるようになりました。"
+                "5": "「Mermaid としてエクスポート」と「Mermaid としてコピー」がエクスポートメニューから利用できるようになりました。",
+                "6": "「Mermaid からインポート」がメニューから利用できるようになり、Mermaid Wardley 構文を OWM のマップテキストへ戻して変換できます (#318)。"
             }
         },
         "feb2026": {
