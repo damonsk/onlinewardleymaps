@@ -1,6 +1,7 @@
 import {render, screen} from '@testing-library/react';
 import {EditingProvider} from '../../../components/EditingContext';
 import {FeatureSwitchesProvider} from '../../../components/FeatureSwitchesContext';
+import {ComponentLinkHighlightProvider} from '../../../components/contexts/ComponentLinkHighlightContext';
 import PipelineVersion2 from '../../../components/map/PipelineVersion2';
 import {MapTheme} from '../../../types/map/styles';
 import {PipelineData} from '../../../types/unified/components';
@@ -72,18 +73,20 @@ const renderPipelineComponent = (pipeline: PipelineData) => {
     return render(
         <EditingProvider>
             <FeatureSwitchesProvider value={{enableDoubleClickRename: true}}>
-                <svg>
-                    <PipelineVersion2
-                        pipeline={pipeline}
-                        mapDimensions={mockMapDimensions}
-                        mapText="component Test [0.5, 0.6]\npipeline Test\n{\n  component Pipeline Component 1 [0.3]\n}"
-                        mutateMapText={mockMutateMapText}
-                        mapStyleDefs={mockMapStyleDefs}
-                        setHighlightLine={mockSetHighlightLine}
-                        linkingFunction={mockLinkingFunction}
-                        scaleFactor={1}
-                    />
-                </svg>
+                <ComponentLinkHighlightProvider>
+                    <svg>
+                        <PipelineVersion2
+                            pipeline={pipeline}
+                            mapDimensions={mockMapDimensions}
+                            mapText="component Test [0.5, 0.6]\npipeline Test\n{\n  component Pipeline Component 1 [0.3]\n}"
+                            mutateMapText={mockMutateMapText}
+                            mapStyleDefs={mockMapStyleDefs}
+                            setHighlightLine={mockSetHighlightLine}
+                            linkingFunction={mockLinkingFunction}
+                            scaleFactor={1}
+                        />
+                    </svg>
+                </ComponentLinkHighlightProvider>
             </FeatureSwitchesProvider>
         </EditingProvider>,
     );

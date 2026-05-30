@@ -153,9 +153,8 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
         } as UnifiedComponent;
 
         return (
-            <>
+            <React.Fragment key={c.pipelineComponent.id || `${props.pipeline.id}-${c.pipelineComponent.name}-${i}`}>
                 <Movable
-                    key={i}
                     id={`pipeline_v2_${c.pipelineComponent.name}_${i}`}
                     onMove={(moved: MovedPosition) => endDragForComponent(c.pipelineComponent, moved)}
                     x={c.x}
@@ -190,7 +189,7 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                         />
                     </g>
                 )}
-            </>
+            </React.Fragment>
         );
     });
 
