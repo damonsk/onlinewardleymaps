@@ -298,6 +298,13 @@
         "json": "Données JSON",
         "text": "Format Texte"
     },
+    "import": {
+        "fromMermaid": "Importer depuis Mermaid",
+        "mermaidTitle": "Importer une carte Wardley Mermaid",
+        "mermaidDescription": "Collez ici la syntaxe Wardley de Mermaid. La carte sera convertie en DSL OWM natif et remplacera le texte actuel de la carte.",
+        "mermaidPlaceholder": "wardley-beta\ntitle Ma carte\ncomponent Utilisateur [0.95, 0.95]\ncomponent API [0.6, 0.7]",
+        "importMermaid": "Importer Mermaid"
+    },
     "footer": {
         "downloadExtension": "Télécharger l'Extension Visual Studio Code",
         "github": "Dépôt GitHub",
@@ -384,11 +391,13 @@
         "placeholder": "Nous ajouterons bientôt ici des notes de version détaillées.",
         "dismiss": "Compris",
         "may2026": {
-            "title": "May 2026 update highlights:",
+            "title": "Points forts de la mise a jour de mai 2026 :",
             "items": {
-                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
-                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
-                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+                "1": "La PR #309 ajoute des commandes d’axes de carte pour la visibilite de l’evolution et de la chaine de valeur, y compris la possibilite de masquer l’un ou l’autre axe depuis la DSL.",
+                "2": "`evolution --hide` prend maintenant en charge des libelles d’etape personnalises en ligne et des etapes vides, et `valuechain --hide` accepte un contexte final.",
+                "3": "L’editeur accessible par clic droit sur le canevas a ete etendu et renomme de « Edit Evolution Stages » en « Edit Map Axis », avec des bascules pour les deux axes.",
+                "4": "La creation de liens prend maintenant en charge les composants enfants de pipeline, y compris les liens entre enfants, avec un rendu et un alignement de l’aperçu corriges.",
+                "5": "« Exporter en Mermaid » et « Copier comme Mermaid » sont maintenant disponibles dans le menu d’export."
             }
         },
         "feb2026": {

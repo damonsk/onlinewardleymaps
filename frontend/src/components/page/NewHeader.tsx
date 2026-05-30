@@ -57,6 +57,7 @@ export interface NewHeaderProps {
     downloadMapImage: any;
     downloadMapAsMermaid: any;
     copyMapAsMermaid: any;
+    importMapFromMermaid: (mermaidText: string) => string | null;
     currentUrl: any;
     setShowLineNumbers: any;
     showLineNumbers: any;
@@ -80,6 +81,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     downloadMapImage,
     downloadMapAsMermaid,
     copyMapAsMermaid,
+    importMapFromMermaid,
     currentUrl,
     setShowLineNumbers,
     showLineNumbers,
@@ -96,6 +98,9 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
 }) => {
     const [anchorMoreEl, setAnchorMoreEl] = useState<Element | null>();
     const [modalShow, setModalShow] = useState(false);
+    const [importModalOpen, setImportModalOpen] = useState(false);
+    const [mermaidImportText, setMermaidImportText] = useState('');
+    const [mermaidImportError, setMermaidImportError] = useState<string | null>(null);
 
     // Get translation function
     const {t} = useI18n();
@@ -125,6 +130,28 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
         setAnchorMoreEl(null);
     };
 
+    const handleOpenMermaidImport = () => {
+        setMermaidImportError(null);
+        setImportModalOpen(true);
+    };
+
+    const handleCloseMermaidImport = () => {
+        setImportModalOpen(false);
+        setMermaidImportError(null);
+    };
+
+    const handleImportMermaid = () => {
+        const result = importMapFromMermaid(mermaidImportText);
+        if (result) {
+            setMermaidImportError(result);
+            return;
+        }
+
+        setMermaidImportText('');
+        setMermaidImportError(null);
+        setImportModalOpen(false);
+    };
+
     const moreMenu = (
         <StyledMenu
             id="more-menu"
@@ -138,14 +165,17 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 {t('header.getCloneUrl', 'Get Clone URL')}
             </MenuItem>
             <Divider />
-            <MenuItem onClick={() => handleMoreClose(() => downloadMapImage())} disableRipple>
-                {t('export.png', 'Download as PNG')}
+            <MenuItem onClick={() => handleMoreClose(handleOpenMermaidImport)} disableRipple>
+                {t('import.fromMermaid', 'Import from Mermaid')}
             </MenuItem>
             <MenuItem onClick={() => handleMoreClose(() => downloadMapAsMermaid())} disableRipple>
                 {t('export.mermaid', 'Export as Mermaid')}
             </MenuItem>
             <MenuItem onClick={() => handleMoreClose(() => copyMapAsMermaid())} disableRipple>
                 {t('export.copyMermaid', 'Copy as Mermaid')}
+            </MenuItem>
+            <MenuItem onClick={() => handleMoreClose(() => downloadMapImage())} disableRipple>
+                {t('export.png', 'Download as PNG')}
             </MenuItem>
             <MenuItem onClick={() => handleMoreClose(() => downloadMapAsSVG())} disableRipple>
                 {t('export.svg', 'Download as SVG')}
@@ -246,6 +276,44 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
                 <DialogActions>
                     <Button onClick={() => setModalShow(false)}>{t('common.cancel', 'Cancel')}</Button>
                     <Button onClick={saveMapClick}>{t('map.saveMap', 'Save Map')}</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={importModalOpen} onClose={handleCloseMermaidImport} maxWidth="md" fullWidth>
+                <DialogTitle>{t('import.mermaidTitle', 'Import Mermaid Wardley Map')}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {t(
+                            'import.mermaidDescription',
+                            'Paste Mermaid Wardley syntax here. The map will be converted into native OWM DSL and replace the current map text.',
+                        )}
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        multiline
+                        minRows={12}
+                        margin="dense"
+                        fullWidth
+                        placeholder={t(
+                            'import.mermaidPlaceholder',
+                            'wardley-beta\\ntitle My Map\\ncomponent User [0.95, 0.95]\\ncomponent API [0.6, 0.7]',
+                        )}
+                        value={mermaidImportText}
+                        onChange={event => {
+                            setMermaidImportText(event.target.value);
+                            if (mermaidImportError) {
+                                setMermaidImportError(null);
+                            }
+                        }}
+                        error={!!mermaidImportError}
+                        helperText={mermaidImportError}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseMermaidImport}>{t('common.cancel', 'Cancel')}</Button>
+                    <Button onClick={handleImportMermaid} disabled={!mermaidImportText.trim()}>
+                        {t('import.importMermaid', 'Import Mermaid')}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </CoreHeader>

@@ -298,6 +298,13 @@
         "json": "JSON Data",
         "text": "Text Format"
     },
+    "import": {
+        "fromMermaid": "Import from Mermaid",
+        "mermaidTitle": "Import Mermaid Wardley Map",
+        "mermaidDescription": "Paste Mermaid Wardley syntax here. The map will be converted into native OWM DSL and replace the current map text.",
+        "mermaidPlaceholder": "wardley-beta\ntitle My Map\ncomponent User [0.95, 0.95]\ncomponent API [0.6, 0.7]",
+        "importMermaid": "Import Mermaid"
+    },
     "footer": {
         "downloadExtension": "Download Visual Studio Code Extension",
         "github": "GitHub Repository",
@@ -386,10 +393,11 @@
         "may2026": {
             "title": "May 2026 update highlights:",
             "items": {
-                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
+                "1": "Add map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL. (PR#309)",
                 "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
                 "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes.",
-                "4": "Linking now supports pipeline child components, including child-to-child links, with corrected rendering and preview alignment."
+                "4": "Linking now supports pipeline child components, including child-to-child links, with corrected rendering and preview alignment.",
+                "5": "Export as Mermaid and Copy as Mermaid are now available from the export menu."
             }
         },
         "feb2026": {

@@ -298,6 +298,13 @@
         "json": "JSONデータ",
         "text": "テキスト形式"
     },
+    "import": {
+        "fromMermaid": "Mermaid からインポート",
+        "mermaidTitle": "Mermaid Wardley マップをインポート",
+        "mermaidDescription": "ここに Mermaid Wardley 構文を貼り付けてください。マップはネイティブな OWM DSL に変換され、現在のマップテキストを置き換えます。",
+        "mermaidPlaceholder": "wardley-beta\ntitle マイマップ\ncomponent User [0.95, 0.95]\ncomponent API [0.6, 0.7]",
+        "importMermaid": "Mermaid をインポート"
+    },
     "footer": {
         "github": "GitHubリポジトリ",
         "community": "コミュニティに参加",
@@ -384,11 +391,13 @@
         "placeholder": "詳細なリリースノートは近日ここに追加されます。",
         "dismiss": "了解",
         "may2026": {
-            "title": "May 2026 update highlights:",
+            "title": "2026年5月アップデートの主な内容:",
             "items": {
-                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
-                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
-                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+                "1": "PR #309 で、進化軸とバリューチェーン軸の表示を制御するマップ軸コントロールが追加され、DSL からどちらの軸も非表示にできるようになりました。",
+                "2": "`evolution --hide` は、インラインのカスタムステージラベルと空のステージをサポートするようになり、`valuechain --hide` は末尾のコンテキストを受け付けます。",
+                "3": "キャンバスの右クリックエディタが拡張され、「Edit Evolution Stages」から「Edit Map Axis」に名前変更され、両方の軸の切り替えが追加されました。",
+                "4": "リンク機能がパイプライン子コンポーネントをサポートし、子同士のリンクも可能になりました。描画とプレビュー位置合わせも修正されています。",
+                "5": "「Mermaid としてエクスポート」と「Mermaid としてコピー」がエクスポートメニューから利用できるようになりました。"
             }
         },
         "feb2026": {

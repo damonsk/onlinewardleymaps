@@ -12,6 +12,7 @@ import {useLegacyMapState, useUnifiedMapState} from '../hooks/useUnifiedMapState
 import {MapIteration} from '../repository/OwnApiWardleyMap';
 import {MapAnnotationsPosition, MapSize} from '../types/base';
 import {exportWardleyMapToMermaid} from '../utils/mermaidWardleyExport';
+import {importWardleyMapFromMermaid} from '../utils/mermaidWardleyImport';
 import {EditingProvider} from './EditingContext';
 import {useFeatureSwitches} from './FeatureSwitchesContext';
 import {UndoRedoProvider, useUndoRedo} from './UndoRedoProvider';
@@ -667,6 +668,28 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
         }
     }
 
+    function importMapFromMermaid(mermaidText: string): string | null {
+        try {
+            const importedMapText = importWardleyMapFromMermaid(mermaidText);
+            const unifiedConverter = new UnifiedConverter(featureSwitches);
+            const parsedMap = unifiedConverter.parse(importedMapText);
+            if (parsedMap.errors && parsedMap.errors.length > 0) {
+                const errorLines = parsedMap.errors.map(error => error.line).filter((line): line is number => typeof line === 'number');
+                if (errorLines.length > 0) {
+                    throw new Error(`Imported Mermaid map could not be parsed at line${errorLines.length > 1 ? 's' : ''} ${errorLines.join(', ')}.`);
+                }
+
+                throw new Error('Imported Mermaid map could not be parsed.');
+            }
+
+            mutateMapText(importedMapText, 'editor-text', 'Imported Mermaid Wardley map');
+            return null;
+        } catch (error) {
+            console.error('Error importing Mermaid Wardley map:', error);
+            return error instanceof Error ? error.message : 'Unknown Mermaid import error';
+        }
+    }
+
     const saveMapText = (data: string, fileName: string, mimeType: string = 'data:attachment/xml') => {
         const a = document.createElement('a');
         document.body.appendChild(a);
@@ -755,6 +778,7 @@ const MapEnvironmentWithUndoRedo: FunctionComponent<MapEnvironmentWithUndoRedoPr
                 downloadMapImage={downloadMap}
                 downloadMapAsMermaid={downloadMapAsMermaid}
                 copyMapAsMermaid={copyMapAsMermaid}
+                importMapFromMermaid={importMapFromMermaid}
                 showLineNumbers={showLineNumbers}
                 setShowLineNumbers={setShowLineNumbers}
                 showLinkedEvolved={legacyState.showLinkedEvolved}

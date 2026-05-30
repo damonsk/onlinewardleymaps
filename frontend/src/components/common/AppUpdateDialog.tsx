@@ -26,6 +26,10 @@ export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose
             'updates.may2026.items.4',
             'Linking now supports pipeline child components, including child-to-child links, with corrected rendering and preview alignment.',
         ),
+        t(
+            'updates.may2026.items.5',
+            'Export as Mermaid and Copy as Mermaid are now available from the export menu, using Mermaid Wardley syntax.',
+        ),
     ];
     const feb2026Items = [
         t('updates.feb2026.items.1', 'Added full WYSIWYG editing for major map elements.'),

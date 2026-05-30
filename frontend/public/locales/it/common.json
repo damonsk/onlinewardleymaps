@@ -298,6 +298,13 @@
         "json": "Dati JSON",
         "text": "Formato Testo"
     },
+    "import": {
+        "fromMermaid": "Importa da Mermaid",
+        "mermaidTitle": "Importa mappa Wardley Mermaid",
+        "mermaidDescription": "Incolla qui la sintassi Wardley di Mermaid. La mappa verra convertita nel DSL nativo di OWM e sostituira il testo attuale della mappa.",
+        "mermaidPlaceholder": "wardley-beta\ntitle La mia mappa\ncomponent Utente [0.95, 0.95]\ncomponent API [0.6, 0.7]",
+        "importMermaid": "Importa Mermaid"
+    },
     "footer": {
         "github": "Repository GitHub",
         "community": "Unisciti alla comunità",
@@ -384,11 +391,13 @@
         "placeholder": "Aggiungeremo presto qui note di rilascio dettagliate.",
         "dismiss": "Ho capito",
         "may2026": {
-            "title": "May 2026 update highlights:",
+            "title": "Novita principali dell'aggiornamento di maggio 2026:",
             "items": {
-                "1": "PR #309 adds map-axis controls for evolution and value chain visibility, including the ability to hide either axis from the DSL.",
-                "2": "`evolution --hide` now supports inline custom stage labels and empty stages, and `valuechain --hide` accepts trailing context.",
-                "3": "The canvas right-click editor has been expanded and renamed from “Edit Evolution Stages” to “Edit Map Axis”, with toggles for both axes."
+                "1": "La PR #309 aggiunge controlli degli assi della mappa per la visibilita di evoluzione e catena del valore, inclusa la possibilita di nascondere entrambi gli assi dal DSL.",
+                "2": "`evolution --hide` ora supporta etichette di fase personalizzate inline e fasi vuote, e `valuechain --hide` accetta contesto finale.",
+                "3": "L'editor del clic destro sul canvas e stato ampliato e rinominato da “Edit Evolution Stages” a “Edit Map Axis”, con interruttori per entrambi gli assi.",
+                "4": "Il collegamento ora supporta i componenti figlio delle pipeline, inclusi i collegamenti tra componenti figlio, con rendering e allineamento dell'anteprima corretti.",
+                "5": "“Esporta come Mermaid” e “Copia come Mermaid” sono ora disponibili dal menu di esportazione."
             }
         },
         "feb2026": {

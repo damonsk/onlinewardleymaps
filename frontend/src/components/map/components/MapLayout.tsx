@@ -34,6 +34,7 @@ interface MapLayoutProps {
     downloadMapImage: () => void;
     downloadMapAsMermaid: () => void;
     copyMapAsMermaid: () => void;
+    importMapFromMermaid: (mermaidText: string) => string | null;
     showLineNumbers: boolean;
     setShowLineNumbers: React.Dispatch<React.SetStateAction<boolean>>;
     showLinkedEvolved: boolean;
@@ -81,6 +82,7 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
     downloadMapImage,
     downloadMapAsMermaid,
     copyMapAsMermaid,
+    importMapFromMermaid,
     showLineNumbers,
     setShowLineNumbers,
     showLinkedEvolved,
@@ -138,6 +140,7 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
                     downloadMapImage={downloadMapImage}
                     downloadMapAsMermaid={downloadMapAsMermaid}
                     copyMapAsMermaid={copyMapAsMermaid}
+                    importMapFromMermaid={importMapFromMermaid}
                     showLineNumbers={showLineNumbers}
                     setShowLineNumbers={setShowLineNumbers}
                     showLinkedEvolved={showLinkedEvolved}
