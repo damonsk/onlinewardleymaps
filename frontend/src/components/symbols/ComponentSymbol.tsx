@@ -4,6 +4,8 @@ import {BaseMapElement, EvolvableElement, LabelableElement} from '../../types/un
 
 interface ModernComponentSymbolProps {
     onClick?: (e: MouseEvent<SVGElement>) => void;
+    onMouseEnter?: (e: MouseEvent<SVGElement>) => void;
+    onMouseLeave?: (e: MouseEvent<SVGElement>) => void;
     id?: string;
     cx?: string;
     cy?: string;
@@ -12,7 +14,7 @@ interface ModernComponentSymbolProps {
     evolved?: boolean; // Support for evolved prop used in icons.tsx
 }
 
-const ComponentSymbol: React.FunctionComponent<ModernComponentSymbolProps> = ({id, cx, cy, component, onClick, styles}) => {
+const ComponentSymbol: React.FunctionComponent<ModernComponentSymbolProps> = ({id, cx, cy, component, onClick, onMouseEnter, onMouseLeave, styles}) => {
     const evolved = component?.evolved || false;
 
     // Provide default styles if none are provided (for testing)
@@ -39,6 +41,8 @@ const ComponentSymbol: React.FunctionComponent<ModernComponentSymbolProps> = ({i
             stroke={stroke}
             fill={fill}
             onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         />
     );
 };

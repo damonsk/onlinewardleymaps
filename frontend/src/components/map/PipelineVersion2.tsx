@@ -10,6 +10,7 @@ import PositionCalculator from './PositionCalculator';
 import DefaultPositionUpdater from './positionUpdaters/DefaultPositionUpdater';
 import {ExistingMaturityMatcher} from './positionUpdaters/ExistingMaturityMatcher';
 import {NotDefinedMaturityMatcher} from './positionUpdaters/NotDefinedMaturityMatcher';
+import {useComponentLinkHighlight} from '../contexts/ComponentLinkHighlightContext';
 
 interface MovedPosition {
     x: number;
@@ -38,6 +39,7 @@ interface ModernPipelineVersion2Props {
 
 function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element {
     const positionCalc = new PositionCalculator();
+    const {setHoveredComponent} = useComponentLinkHighlight();
 
     const noLabelMatcher: MatcherFunction = {
         matcher: (line: string, identifier: string, type: string): boolean => {
@@ -165,6 +167,8 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                         id={`pipeline_v2_circle_${props.pipeline.id}_${i}`}
                         styles={props.mapStyleDefs.component}
                         component={component}
+                        onMouseEnter={() => setHoveredComponent(component.name)}
+                        onMouseLeave={() => setHoveredComponent(null)}
                         onClick={e => {
                             props.setHighlightLine(c.pipelineComponent.line);
                             props.linkingFunction({el: component, e});
