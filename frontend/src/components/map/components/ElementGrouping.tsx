@@ -8,6 +8,7 @@ import {AnnotationRenderer} from '../renderers/AnnotationRenderer';
 import {ComponentRenderer} from '../renderers/ComponentRenderer';
 import {LinkRenderer} from '../renderers/LinkRenderer';
 import {PSTRenderer} from '../renderers/PSTRenderer';
+import MapPipelines from '../MapPipelines';
 
 interface ElementGroupingProps {
     mapAttitudes: any[];
@@ -142,6 +143,23 @@ export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
                 isTargetDeleted={props.isTargetDeleted}
             />
 
+            {/* Pipelines - Rendered before components so pipeline squares/circles appear above enclosing boxes */}
+            <MapPipelines
+                enableNewPipelines={props.enableNewPipelines || false}
+                mapElements={props.mapElements}
+                mapDimensions={props.mapDimensions}
+                mapText={props.mapText}
+                mutateMapText={props.mutateMapText}
+                mapStyleDefs={props.mapStyleDefs}
+                setHighlightLine={props.setHighlightLine}
+                clicked={props.clicked}
+                scaleFactor={props.scaleFactor}
+                highlightedPipelineId={props.highlightedPipelineId}
+                onPipelineMouseEnter={props.onPipelineMouseEnter}
+                onPipelineMouseLeave={props.onPipelineMouseLeave}
+                selectedToolbarItem={props.selectedToolbarItem}
+            />
+
             {/* Components - Main map components rendered after links */}
             <ComponentRenderer
                 mapElements={props.mapElements}
@@ -171,15 +189,10 @@ export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
                 mapAnnotationsPresentation={props.mapAnnotationsPresentation}
                 mapElements={props.mapElements}
                 setHighlightLine={props.setHighlightLine}
-                clicked={props.clicked}
-                enableNewPipelines={props.enableNewPipelines}
                 isDrawing={props.isDrawing}
                 drawingStartPosition={props.drawingStartPosition}
                 drawingCurrentPosition={props.drawingCurrentPosition}
                 selectedToolbarItem={props.selectedToolbarItem}
-                highlightedPipelineId={props.highlightedPipelineId}
-                onPipelineMouseEnter={props.onPipelineMouseEnter}
-                onPipelineMouseLeave={props.onPipelineMouseLeave}
             />
         </g>
     );

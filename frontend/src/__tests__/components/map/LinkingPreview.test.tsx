@@ -102,6 +102,14 @@ describe('LinkingPreview', () => {
         },
     };
 
+    const mockPipelineHighlightedComponent: UnifiedComponent = {
+        ...mockHighlightedComponent,
+        id: 'target-pipeline-child',
+        name: 'Pipeline Child Component',
+        pipeline: true,
+        offsetY: 11,
+    };
+
     it('renders nothing when linking state is idle', () => {
         act(() => {
             root.render(
@@ -228,6 +236,27 @@ describe('LinkingPreview', () => {
 
         const ecosystemPulseAnimation = ecosystemTargetHighlight?.querySelector('animate[attributeName="r"]');
         expect(ecosystemPulseAnimation?.getAttribute('values')).toBe('32;44;32');
+    });
+
+    it('applies component offset to pipeline child target highlight positioning', () => {
+        act(() => {
+            root.render(
+                <svg>
+                    <LinkingPreview
+                        linkingState="selecting-target"
+                        sourceComponent={mockSourceComponent}
+                        mousePosition={{x: 0.6, y: 0.4}}
+                        highlightedComponent={mockPipelineHighlightedComponent}
+                        mapStyleDefs={mockMapStyleDefs}
+                        mapDimensions={mockMapDimensions}
+                    />
+                </svg>,
+            );
+        });
+
+        const targetHighlight = container.querySelector('circle[r="10"]');
+        expect(targetHighlight).toBeTruthy();
+        expect(targetHighlight?.getAttribute('cy')).toBe('431');
     });
 
     it('does not highlight source component as target', () => {

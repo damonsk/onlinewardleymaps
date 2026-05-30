@@ -1,7 +1,7 @@
 import {useCallback, useEffect} from 'react';
 import {ToolbarItem} from '../../../types/toolbar';
 import {UnifiedComponent} from '../../../types/unified/components';
-import {UnifiedWardleyMap} from '../../../types/unified/map';
+import {getAllLinkableComponents, UnifiedWardleyMap} from '../../../types/unified/map';
 import {findNearestComponent} from '../../../utils/componentDetection';
 import {useCoordinateConversion} from './useCoordinateConversion';
 
@@ -164,7 +164,7 @@ export function useMapEventHandlers({
             if (highlightedComponent) {
                 onComponentClick(highlightedComponent);
             } else {
-                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+                const allComponents = getAllLinkableComponents(wardleyMap);
                 const clickedComponent = findNearestComponent(coordinates, allComponents, 0.05);
 
                 if (clickedComponent) {
@@ -337,7 +337,7 @@ export function useMapEventHandlers({
                 onMouseMove({...coordinates, nearestComponent});
             } else if (linkingState === 'selecting-source' || linkingState === 'selecting-target') {
                 const coordinates = convertSvgToMapCoordinates(svgX, svgY);
-                const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+                const allComponents = getAllLinkableComponents(wardleyMap);
                 const nearestComponent = findNearestComponent(coordinates, allComponents, 0.1);
                 onMouseMove({...coordinates, nearestComponent});
             }

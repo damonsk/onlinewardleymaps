@@ -13,7 +13,7 @@ import {
     MapPresentationStyle,
     MapUrls,
 } from '../base';
-import {EvolvedElementData, PipelineData, UnifiedComponent} from './components';
+import {EvolvedElementData, PipelineData, UnifiedComponent, createUnifiedComponent} from './components';
 import {FlowLink} from './links';
 
 /**
@@ -125,6 +125,28 @@ export const groupComponentsByType = (map: UnifiedWardleyMap): GroupedComponents
 
 export const getAllMapElements = (map: UnifiedWardleyMap): UnifiedComponent[] => {
     return [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
+};
+
+export const getPipelineChildComponents = (map: UnifiedWardleyMap): UnifiedComponent[] => {
+    return map.pipelines.flatMap((pipeline, index) =>
+        (pipeline.components || []).map((component, componentIndex) =>
+            createUnifiedComponent({
+                id: component.id || `${pipeline.id || pipeline.name || index}-${componentIndex}`,
+                name: component.name,
+                type: 'component',
+                maturity: component.maturity,
+                visibility: pipeline.visibility,
+                line: component.line,
+                label: component.label || {x: 0, y: 0},
+                offsetY: 11,
+                pipeline: true,
+            }),
+        ),
+    );
+};
+
+export const getAllLinkableComponents = (map: UnifiedWardleyMap): UnifiedComponent[] => {
+    return [...map.components, ...map.anchors, ...getPipelineChildComponents(map)];
 };
 
 /**

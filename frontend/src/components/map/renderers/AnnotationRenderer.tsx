@@ -5,10 +5,8 @@ import {useFeatureSwitches} from '../../FeatureSwitchesContext';
 import AnnotationBox from '../AnnotationBox';
 import AnnotationElement from '../AnnotationElement';
 import DrawingPreview from '../DrawingPreview';
-import MapPipelines from '../MapPipelines';
 import Note from '../Note';
 import {MapElements} from '../../../processing/MapElements';
-import {MouseEvent} from 'react';
 
 interface AnnotationRendererProps {
     mapDimensions: MapDimensions;
@@ -25,10 +23,6 @@ interface AnnotationRendererProps {
 
     // Event handlers
     setHighlightLine: React.Dispatch<React.SetStateAction<number>>;
-    clicked: (data: {el: any; e: MouseEvent<Element> | null}) => void;
-
-    // Feature flags
-    enableNewPipelines: boolean;
 
     // Drawing functionality props
     isDrawing?: boolean;
@@ -36,10 +30,6 @@ interface AnnotationRendererProps {
     drawingCurrentPosition?: {x: number; y: number};
     selectedToolbarItem?: any;
 
-    // Pipeline highlighting
-    highlightedPipelineId?: string | null;
-    onPipelineMouseEnter?: (pipelineId: string) => void;
-    onPipelineMouseLeave?: () => void;
 }
 
 export const AnnotationRenderer: React.FC<AnnotationRendererProps> = ({
@@ -53,15 +43,10 @@ export const AnnotationRenderer: React.FC<AnnotationRendererProps> = ({
     mapAnnotationsPresentation,
     mapElements,
     setHighlightLine,
-    clicked,
-    enableNewPipelines,
     isDrawing,
     drawingStartPosition,
     drawingCurrentPosition,
     selectedToolbarItem,
-    highlightedPipelineId,
-    onPipelineMouseEnter,
-    onPipelineMouseLeave,
 }) => {
     const featureSwitches = useFeatureSwitches();
 
@@ -87,22 +72,6 @@ export const AnnotationRenderer: React.FC<AnnotationRendererProps> = ({
                     setHighlightLine={setHighlightLineDispatch}
                 />
             )}
-
-            <MapPipelines
-                enableNewPipelines={enableNewPipelines || false}
-                mapElements={mapElements}
-                mapDimensions={mapDimensions}
-                mapText={mapText}
-                mutateMapText={mutateMapText}
-                mapStyleDefs={mapStyleDefs}
-                setHighlightLine={setHighlightLineDispatch}
-                clicked={clicked}
-                scaleFactor={scaleFactor}
-                highlightedPipelineId={highlightedPipelineId}
-                onPipelineMouseEnter={onPipelineMouseEnter}
-                onPipelineMouseLeave={onPipelineMouseLeave}
-                selectedToolbarItem={selectedToolbarItem}
-            />
 
             <g id="notes">
                 {mapNotes.map((n: any, i: number) => (

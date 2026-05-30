@@ -165,7 +165,10 @@ function PipelineVersion2(props: ModernPipelineVersion2Props): React.JSX.Element
                         id={`pipeline_v2_circle_${props.pipeline.id}_${i}`}
                         styles={props.mapStyleDefs.component}
                         component={component}
-                        onClick={() => props.setHighlightLine(c.pipelineComponent.line)}
+                        onClick={e => {
+                            props.setHighlightLine(c.pipelineComponent.line);
+                            props.linkingFunction({el: component, e});
+                        }}
                     />
                 </Movable>
                 {c.pipelineComponent.label && (

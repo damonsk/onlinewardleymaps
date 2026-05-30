@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {ActionType} from '../../../types/undo-redo';
 import {UnifiedComponent} from '../../../types/unified/components';
-import {UnifiedWardleyMap} from '../../../types/unified/map';
+import {getAllLinkableComponents, UnifiedWardleyMap} from '../../../types/unified/map';
 
 export interface LinkingState {
     linkingState: 'idle' | 'selecting-source' | 'selecting-target';
@@ -55,7 +55,7 @@ export const useLinkingState = (
     // Monitor component deletion and automatically cancel linking if source is deleted
     useEffect(() => {
         if (linkingState !== 'idle' && sourceComponent) {
-            const allComponents = [...wardleyMap.components, ...wardleyMap.anchors];
+            const allComponents = getAllLinkableComponents(wardleyMap);
             const sourceExists = allComponents.some(c => c.id === sourceComponent.id);
 
             if (!sourceExists) {
@@ -63,7 +63,7 @@ export const useLinkingState = (
                 showUserFeedback?.('Source component was deleted. Linking cancelled.', 'warning');
             }
         }
-    }, [linkingState, sourceComponent, wardleyMap.components, wardleyMap.anchors, resetLinkingState, showUserFeedback]);
+    }, [linkingState, sourceComponent, wardleyMap, resetLinkingState, showUserFeedback]);
 
     return {
         linkingState,

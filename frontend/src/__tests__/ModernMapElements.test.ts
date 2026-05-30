@@ -201,6 +201,33 @@ describe('MapElements', () => {
         expect(pipelines[0].name).toBe('Component B');
     });
 
+    test('should include pipeline child components in link resolution component sets only', () => {
+        const pipelineChildMap = {
+            ...testMap,
+            pipelines: [
+                createPipeline({
+                    id: 'pipeline_b',
+                    name: 'Component B',
+                    visibility: 0.7,
+                    line: 6,
+                    components: [{id: 'pipeline_child_1', name: 'Pipeline Child', maturity: 0.55, visibility: 0, line: 7, label: {x: 0, y: 0}}],
+                }),
+            ],
+        };
+
+        const mapElements = new MapElements(pipelineChildMap);
+        const allComponents = mapElements.getAllComponents();
+        const linkableComponents = mapElements.getNeitherEvolvedNorEvolvingComponents();
+        const renderedPipelineChild = allComponents.find(component => component.id === 'pipeline_child_1');
+        const linkablePipelineChild = linkableComponents.find(component => component.id === 'pipeline_child_1');
+
+        expect(renderedPipelineChild).toBeUndefined();
+        expect(linkablePipelineChild).toBeDefined();
+        expect(linkablePipelineChild?.name).toBe('Pipeline Child');
+        expect(linkablePipelineChild?.pipeline).toBe(true);
+        expect(linkablePipelineChild?.visibility).toBe(0.7);
+    });
+
     test('should handle empty evolved elements', () => {
         // Create a test map with no evolved elements
         const emptyEvolvedMap = {

@@ -1,15 +1,18 @@
 import {EvolvedElementData, PipelineData, UnifiedComponent, UnifiedWardleyMap, createUnifiedComponent} from '../types/unified';
+import {getPipelineChildComponents} from '../types/unified/map';
 import {PSTElement} from '../types/map/pst';
 import {extractPSTElementsFromAttitudes} from '../utils/pstElementUtils';
 
 export class MapElements {
     private allComponents: UnifiedComponent[];
+    private pipelineChildComponents: UnifiedComponent[];
     private evolvedElements: EvolvedElementData[];
     private pipelines: PipelineData[];
     private pstElements: PSTElement[];
 
     constructor(map: UnifiedWardleyMap) {
         this.allComponents = [...map.components, ...map.anchors, ...map.submaps, ...map.markets, ...map.ecosystems];
+        this.pipelineChildComponents = getPipelineChildComponents(map);
         this.evolvedElements = map.evolved;
         this.pipelines = map.pipelines;
         this.pstElements = extractPSTElementsFromAttitudes(map.attitudes);
@@ -201,15 +204,15 @@ export class MapElements {
     }
 
     getNeitherEvolvedNorEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolving && !c.evolved && c.type !== 'pst');
+        return [...this.allComponents.filter(c => !c.evolving && !c.evolved && c.type !== 'pst'), ...this.pipelineChildComponents];
     }
 
     getNonEvolvingComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolving && c.type !== 'pst');
+        return [...this.allComponents.filter(c => !c.evolving && c.type !== 'pst'), ...this.pipelineChildComponents];
     }
 
     getNonEvolvedComponents(): UnifiedComponent[] {
-        return this.allComponents.filter(c => !c.evolved && c.type !== 'pst');
+        return [...this.allComponents.filter(c => !c.evolved && c.type !== 'pst'), ...this.pipelineChildComponents];
     }
 
     getEitherEvolvedOrEvolvingComponents(): UnifiedComponent[] {

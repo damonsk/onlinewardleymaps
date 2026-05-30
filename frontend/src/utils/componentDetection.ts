@@ -107,22 +107,42 @@ export const generateLinkSyntax = (sourceComponent: UnifiedComponent, targetComp
 export const addLinkToMapText = (mapText: string, sourceComponent: UnifiedComponent, targetComponent: UnifiedComponent): string => {
     const linkSyntax = generateLinkSyntax(sourceComponent, targetComponent);
 
-    // Find the best place to insert the link
-    // Links should typically go after component definitions
     const lines = mapText.split('\n');
-    let insertIndex = lines.length;
-
-    // Find the last component definition line
-    for (let i = lines.length - 1; i >= 0; i--) {
-        const line = lines[i].trim();
-        if (line.startsWith('component ') || line.startsWith('anchor ') || line.startsWith('note ') || line.startsWith('pipeline ')) {
-            insertIndex = i + 1;
-            break;
-        }
-    }
+    const insertIndex = findTopLevelLinkInsertIndex(lines);
 
     // Insert the link at the appropriate position
     lines.splice(insertIndex, 0, linkSyntax);
 
     return lines.join('\n');
+};
+
+const countOccurrences = (value: string, pattern: string): number => {
+    return (value.match(new RegExp(`\\${pattern}`, 'g')) || []).length;
+};
+
+const findTopLevelLinkInsertIndex = (lines: string[]): number => {
+    let insertIndex = lines.length;
+    let braceDepth = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const openingBraces = countOccurrences(line, '{');
+        const closingBraces = countOccurrences(line, '}');
+        const closesTopLevelBlock = braceDepth > 0 && braceDepth - closingBraces <= 0;
+
+        if (
+            braceDepth === 0 &&
+            (line.startsWith('component ') || line.startsWith('anchor ') || line.startsWith('note ') || line.startsWith('pipeline '))
+        ) {
+            insertIndex = i + 1;
+        } else if (closesTopLevelBlock) {
+            insertIndex = i + 1;
+        }
+
+        braceDepth += openingBraces;
+        braceDepth -= closingBraces;
+        braceDepth = Math.max(0, braceDepth);
+    }
+
+    return insertIndex;
 };

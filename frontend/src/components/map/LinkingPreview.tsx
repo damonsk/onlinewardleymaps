@@ -85,9 +85,9 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
         const positionCalculator = new PositionCalculator();
 
         // Convert map coordinates (0-1) to SVG coordinates
-        const convertToSVG = (maturity: number, visibility: number) => {
+        const convertToSVG = (maturity: number, visibility: number, offsetY: number = 0) => {
             const svgX = positionCalculator.maturityToX(maturity, mapDimensions.width);
-            const svgY = positionCalculator.visibilityToY(visibility, mapDimensions.height);
+            const svgY = positionCalculator.visibilityToY(visibility, mapDimensions.height) + offsetY;
             return {x: svgX, y: svgY};
         };
 
@@ -95,10 +95,14 @@ export const LinkingPreview: React.FC<LinkingPreviewProps> = memo(
         const mouseSVG = convertToSVG(mousePosition.x, mousePosition.y);
 
         // Convert source component position to SVG coordinates
-        const sourceSVG = sourceComponent ? convertToSVG(sourceComponent.maturity, sourceComponent.visibility) : null;
+        const sourceSVG = sourceComponent
+            ? convertToSVG(sourceComponent.maturity, sourceComponent.visibility, sourceComponent.offsetY ?? 0)
+            : null;
 
         // Convert highlighted component position to SVG coordinates
-        const highlightedSVG = highlightedComponent ? convertToSVG(highlightedComponent.maturity, highlightedComponent.visibility) : null;
+        const highlightedSVG = highlightedComponent
+            ? convertToSVG(highlightedComponent.maturity, highlightedComponent.visibility, highlightedComponent.offsetY ?? 0)
+            : null;
 
         return (
             <g className="linking-preview">
