@@ -3,7 +3,7 @@ import {styled} from '@mui/material/styles';
 import React from 'react';
 import {useI18n} from '../../hooks/useI18n';
 
-const StyledFooter = styled((props: {children?: React.ReactNode}) => <Grid container padding={4} {...props} />)(({theme}) => ({
+const StyledFooter = styled((props: {children?: React.ReactNode}) => <Grid container sx={{p: 4}} {...props} />)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.background.paper,
     borderTop: `2px solid ${theme.palette.divider}`,
     '& .gh-icon': {

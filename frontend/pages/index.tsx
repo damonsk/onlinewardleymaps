@@ -1,5 +1,5 @@
 import {GetStaticProps} from 'next';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {serverSideTranslations} from 'next-i18next/pages/serverSideTranslations';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';

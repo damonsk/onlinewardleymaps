@@ -162,8 +162,10 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({
                         error={!!stage1Error}
                         helperText={stage1Error}
                         fullWidth
-                        inputProps={{
-                            maxLength: 50,
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 50,
+                            },
                         }}
                     />
                     <TextField
@@ -173,8 +175,10 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({
                         error={!!stage2Error}
                         helperText={stage2Error}
                         fullWidth
-                        inputProps={{
-                            maxLength: 50,
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 50,
+                            },
                         }}
                     />
                     <TextField
@@ -184,8 +188,10 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({
                         error={!!stage3Error}
                         helperText={stage3Error}
                         fullWidth
-                        inputProps={{
-                            maxLength: 50,
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 50,
+                            },
                         }}
                     />
                     <TextField
@@ -195,8 +201,10 @@ export const EvolutionStagesDialog: React.FC<EvolutionStagesDialogProps> = ({
                         error={!!stage4Error}
                         helperText={stage4Error}
                         fullWidth
-                        inputProps={{
-                            maxLength: 50,
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 50,
+                            },
                         }}
                     />
                 </Box>

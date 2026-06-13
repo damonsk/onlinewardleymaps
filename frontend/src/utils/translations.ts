@@ -1,4 +1,4 @@
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import {serverSideTranslations} from 'next-i18next/pages/serverSideTranslations';
 
 /**
  * Helper function to get translations for static pages

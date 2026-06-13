@@ -1,7 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import {ThemeProvider as MaterialUIThemeProvider} from '@mui/material/styles';
 import StylesProvider from '@mui/styles/StylesProvider';
-import {appWithTranslation} from 'next-i18next';
+import {appWithTranslation} from 'next-i18next/pages';
 import {AppProps} from 'next/app';
 import Head from 'next/head';
 import React, {useEffect, useState} from 'react';

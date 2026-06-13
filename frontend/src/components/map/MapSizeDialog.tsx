@@ -114,10 +114,12 @@ export const MapSizeDialog: React.FC<MapSizeDialogProps> = ({isOpen, currentSize
                         error={!!widthError}
                         helperText={widthError}
                         fullWidth
-                        inputProps={{
-                            min: 100,
-                            max: 5000,
-                            step: 1,
+                        slotProps={{
+                            htmlInput: {
+                                min: 100,
+                                max: 5000,
+                                step: 1,
+                            },
                         }}
                     />
                     <TextField
@@ -128,10 +130,12 @@ export const MapSizeDialog: React.FC<MapSizeDialogProps> = ({isOpen, currentSize
                         error={!!heightError}
                         helperText={heightError}
                         fullWidth
-                        inputProps={{
-                            min: 100,
-                            max: 5000,
-                            step: 1,
+                        slotProps={{
+                            htmlInput: {
+                                min: 100,
+                                max: 5000,
+                                step: 1,
+                            },
                         }}
                     />
                 </Box>

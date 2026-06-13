@@ -188,7 +188,7 @@ export const MapLayout: React.FC<MapLayoutProps> = ({
                             'Quick reference of all available map elements. You can add an example to your map by clicking the available links.',
                         )}
                     </DialogContentText>
-                    <Box marginTop={2}>
+                    <Box sx={{mt: 2}}>
                         <UsageInfo mapStyleDefs={mapStyleDefs} mutateMapText={mutateMapText} mapText={mapText} />
                     </Box>
                 </DialogContent>

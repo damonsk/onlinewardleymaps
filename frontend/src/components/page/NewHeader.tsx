@@ -249,7 +249,7 @@ export const NewHeader: FunctionComponent<NewHeaderProps> = ({
     );
     return (
         <CoreHeader toggleMenu={toggleMenu}>
-            <Stack direction="row" alignItems="flex-start" spacing={0.5} divider={<Divider orientation="vertical" flexItem />}>
+            <Stack direction="row" sx={{alignItems: 'flex-start'}} spacing={0.5} divider={<Divider orientation="vertical" flexItem />}>
                 <Button color="inherit" size="small" onClick={() => setMapOnlyView(!mapOnlyView)}>
                     {mapOnlyView ? t('header.editorMode', 'Editor Mode') : t('header.presentationMode', 'Presentation Mode')}
                 </Button>
