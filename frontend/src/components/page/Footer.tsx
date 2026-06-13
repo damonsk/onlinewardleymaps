@@ -44,7 +44,12 @@ const Footer: React.FC = () => {
                         </Link>
                     </Typography>{' '}
                     <Box>
-                        <Link href="https://www.patreon.com/mapsascode" rel="noreferrer noopener" target="_blank" sx={{display: 'inline-flex'}}>
+                        <Link
+                            aria-label={t('footer.patreonAlt', 'Become a Patron')}
+                            href="https://www.patreon.com/mapsascode"
+                            rel="noreferrer noopener"
+                            target="_blank"
+                            sx={{cursor: 'pointer', display: 'inline-flex', lineHeight: 0, position: 'relative', zIndex: 1}}>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img alt={t('footer.patreonAlt', 'Become a Patron')} height="38" src="/become_a_patron_button.png" width="162" />
                         </Link>
