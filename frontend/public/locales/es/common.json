@@ -394,6 +394,14 @@
         "latestAvailable": "Ahora estás en la versión {{version}}.",
         "placeholder": "Pronto agregaremos aquí notas de versión detalladas.",
         "dismiss": "Entendido",
+        "june2026": {
+            "title": "Aspectos destacados de la actualización de junio de 2026:",
+            "items": {
+                "1": "Se corrigió el error por el que deshacer/rehacer podía desincronizarse del estado real del mapa y provocar un comportamiento inesperado.",
+                "2": "Se corrigió el error por el que la barra de herramientas no se posicionaba correctamente en el área de acoplamiento en modo presentación.",
+                "3": "Se actualizaron dependencias clave a sus últimas versiones principales."
+            }
+        },
         "may2026": {
             "title": "Aspectos destacados de la actualización de mayo de 2026:",
             "items": {

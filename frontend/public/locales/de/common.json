@@ -394,6 +394,14 @@
         "latestAvailable": "Sie verwenden jetzt Version {{version}}.",
         "placeholder": "Wir werden hier bald detaillierte Versionshinweise hinzufügen.",
         "dismiss": "Verstanden",
+        "june2026": {
+            "title": "Highlights des Updates vom Juni 2026:",
+            "items": {
+                "1": "Es wurde ein Fehler behoben, durch den Undo/Redo nicht mehr mit dem tatsächlichen Kartenstatus synchron war und unerwartetes Verhalten verursachte.",
+                "2": "Es wurde ein Fehler behoben, durch den die Toolbar im Präsentationsmodus im Snap-Bereich nicht korrekt positioniert wurde.",
+                "3": "Wichtige Abhängigkeiten wurden auf die neuesten Hauptversionen aktualisiert."
+            }
+        },
         "may2026": {
             "title": "Highlights des Updates vom Mai 2026:",
             "items": {

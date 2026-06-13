@@ -394,6 +394,14 @@
         "latestAvailable": "You are now on version {{version}}.",
         "placeholder": "We will add detailed release notes here soon.",
         "dismiss": "Got it",
+        "june2026": {
+            "title": "June 2026 update highlights:",
+            "items": {
+                "1": "Fixed that bug where undo/redo would get out of sync with the actual map state, leading to unexpected behavior.",
+                "2": "Fixed that bug where the toolbar would not position correclty in the snap area when in presentation mode.",
+                "3": "Updated to latest major version of key dependencies."
+            }
+        },
         "may2026": {
             "title": "May 2026 update highlights:",
             "items": {

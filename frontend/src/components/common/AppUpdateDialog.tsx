@@ -9,6 +9,20 @@ interface AppUpdateDialogProps {
 
 export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose}) => {
     const {t} = useI18n();
+    const june2026Items = [
+        t(
+            'updates.june2026.items.1',
+            'Fixed that bug where undo/redo would get out of sync with the actual map state, leading to unexpected behavior.',
+        ),
+        t(
+            'updates.june2026.items.2',
+            'Fixed that bug where the toolbar would not position correclty in the snap area when in presentation mode.',
+        ),
+        t(
+            'updates.june2026.items.3',
+            'Updated to latest major version of key dependencies.',
+        ),
+    ];
     const may2026Items = [
         t(
             'updates.may2026.items.1',
@@ -53,6 +67,7 @@ export const AppUpdateDialog: React.FC<AppUpdateDialogProps> = ({isOpen, onClose
         t('updates.feb2026.items.15', 'Fixed map title inline edit save/cancel controls being partially hidden by the canvas in Chrome (#272).'),
     ];
     const sections = [
+        {key: 'june2026', title: t('updates.june2026.title', 'June 2026 update highlights:'), items: june2026Items},
         {key: 'may2026', title: t('updates.may2026.title', 'May 2026 update highlights:'), items: may2026Items},
         {key: 'feb2026', title: t('updates.feb2026.title', 'February 2026 update highlights:'), items: feb2026Items},
     ];

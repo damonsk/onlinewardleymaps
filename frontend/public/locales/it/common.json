@@ -394,6 +394,14 @@
         "latestAvailable": "Ora stai usando la versione {{version}}.",
         "placeholder": "Aggiungeremo presto qui note di rilascio dettagliate.",
         "dismiss": "Ho capito",
+        "june2026": {
+            "title": "Novita principali dell'aggiornamento di giugno 2026:",
+            "items": {
+                "1": "Corretto il bug per cui annulla/ripristina poteva andare fuori sincronia con lo stato reale della mappa, causando comportamenti imprevisti.",
+                "2": "Corretto il bug per cui la barra degli strumenti non si posizionava correttamente nell'area di aggancio in modalita presentazione.",
+                "3": "Aggiornate le dipendenze principali alle ultime versioni major."
+            }
+        },
         "may2026": {
             "title": "Novita principali dell'aggiornamento di maggio 2026:",
             "items": {

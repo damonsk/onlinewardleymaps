@@ -394,6 +394,14 @@
         "latestAvailable": "Você está agora na versão {{version}}.",
         "placeholder": "Em breve adicionaremos aqui notas de versão detalhadas.",
         "dismiss": "Entendi",
+        "june2026": {
+            "title": "Destaques da atualização de junho de 2026:",
+            "items": {
+                "1": "Corrigido o bug em que desfazer/refazer ficava fora de sincronia com o estado real do mapa, causando comportamento inesperado.",
+                "2": "Corrigido o bug em que a barra de ferramentas não era posicionada corretamente na área de encaixe no modo de apresentação.",
+                "3": "Dependências principais atualizadas para as versões major mais recentes."
+            }
+        },
         "may2026": {
             "title": "Destaques da atualização de maio de 2026:",
             "items": {

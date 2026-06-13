@@ -394,6 +394,14 @@
         "latestAvailable": "Vous utilisez maintenant la version {{version}}.",
         "placeholder": "Nous ajouterons bientôt ici des notes de version détaillées.",
         "dismiss": "Compris",
+        "june2026": {
+            "title": "Points forts de la mise a jour de juin 2026 :",
+            "items": {
+                "1": "Correction d’un bug ou annuler/retablir pouvait se desynchroniser de l’etat reel de la carte et provoquer un comportement inattendu.",
+                "2": "Correction d’un bug ou la barre d’outils ne se positionnait pas correctement dans la zone d’ancrage en mode presentation.",
+                "3": "Mise a jour vers les dernieres versions majeures des dependances cles."
+            }
+        },
         "may2026": {
             "title": "Points forts de la mise a jour de mai 2026 :",
             "items": {
