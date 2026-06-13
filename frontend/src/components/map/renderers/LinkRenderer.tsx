@@ -6,7 +6,6 @@ import {UnifiedComponent} from '../../../types/unified';
 import ComponentLink from '../ComponentLink';
 import EvolvingComponentLink from '../EvolvingComponentLink';
 import FluidLink from '../FluidLink';
-import LinkingPreview from '../LinkingPreview';
 
 interface LinkRendererProps {
     mapDimensions: MapDimensions;
@@ -38,19 +37,9 @@ interface LinkRendererProps {
     ) => void;
     isLinkSelected?: (linkId: string) => boolean;
 
-    // Linking functionality props
-    linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
-    sourceComponent?: UnifiedComponent | null;
-    mousePosition?: {x: number; y: number};
-    highlightedComponent?: UnifiedComponent | null;
-    isDuplicateLink?: boolean;
-    isInvalidTarget?: boolean;
-    showCancellationHint?: boolean;
-    isSourceDeleted?: boolean;
-    isTargetDeleted?: boolean;
 }
 
-export const LinkRenderer: React.FC<LinkRendererProps> = ({
+export const LinkRenderer: React.FC<LinkRendererProps> = React.memo(({
     mapDimensions,
     mapStyleDefs,
     scaleFactor,
@@ -63,17 +52,11 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
     onLinkClick,
     onLinkContextMenu,
     isLinkSelected,
-    linkingState,
-    sourceComponent,
-    mousePosition,
-    highlightedComponent,
-    isDuplicateLink,
-    isInvalidTarget,
-    showCancellationHint,
-    isSourceDeleted,
-    isTargetDeleted,
 }) => {
-    const getElementByName = (elements: UnifiedComponent[], name: string) => elements.find(e => e.name === name);
+    const evolvingComponents = React.useMemo(() => mapElements.getEvolvingComponents(), [mapElements]);
+    const evolvedComponentsByName = React.useMemo(() => {
+        return new Map(mapElements.getEvolvedComponents().map(component => [component.name, component]));
+    }, [mapElements]);
 
     const passComponent = (component: UnifiedComponent): UnifiedComponent => {
         return component;
@@ -105,11 +88,10 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
             </g>
 
             <g id="evolvedLinks">
-                {mapElements.getEvolvingComponents().map((e: UnifiedComponent, i: number) => {
-                    const startElement = getElementByName(mapElements.getEvolvingComponents(), e.name);
-                    const endElement = getElementByName(mapElements.getEvolvedComponents(), e.name);
+                {evolvingComponents.map((startElement: UnifiedComponent, i: number) => {
+                    const endElement = evolvedComponentsByName.get(startElement.name);
 
-                    if (!startElement || !endElement) {
+                    if (!endElement) {
                         return null;
                     }
 
@@ -140,20 +122,8 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
                     ))}
             </g>
 
-            {/* Linking preview for component linking functionality */}
-            <LinkingPreview
-                linkingState={linkingState || 'idle'}
-                sourceComponent={sourceComponent || null}
-                mousePosition={mousePosition || {x: 0, y: 0}}
-                highlightedComponent={highlightedComponent || null}
-                mapStyleDefs={mapStyleDefs}
-                mapDimensions={mapDimensions}
-                isDuplicateLink={isDuplicateLink || false}
-                isInvalidTarget={isInvalidTarget || false}
-                showCancellationHint={showCancellationHint || false}
-                isSourceDeleted={isSourceDeleted || false}
-                isTargetDeleted={isTargetDeleted || false}
-            />
         </g>
     );
-};
+});
+
+LinkRenderer.displayName = 'LinkRenderer';

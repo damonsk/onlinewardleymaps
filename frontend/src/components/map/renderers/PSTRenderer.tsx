@@ -33,7 +33,7 @@ interface PSTRendererProps {
     onPSTDragEnd?: (element: PSTElement) => void;
 }
 
-export const PSTRenderer: React.FC<PSTRendererProps> = ({
+export const PSTRenderer: React.FC<PSTRendererProps> = React.memo(({
     pstElements,
     mapDimensions,
     mapStyleDefs,
@@ -168,4 +168,6 @@ export const PSTRenderer: React.FC<PSTRendererProps> = ({
             )}
         </g>
     );
-};
+});
+
+PSTRenderer.displayName = 'PSTRenderer';

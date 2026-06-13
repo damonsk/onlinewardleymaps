@@ -7,23 +7,29 @@ import {DragPreviewProps} from '../../types/toolbar';
  */
 const PreviewContainer = styled.div.withConfig({
     shouldForwardProp: prop => !['isValidDropZone', 'isVisible'].includes(prop),
-})<{
+}).attrs<{
+    x: number;
+    y: number;
+    isValidDropZone: boolean;
+    isVisible: boolean;
+}>(props => ({
+    style: {
+        filter: props.isValidDropZone ? 'none' : 'grayscale(100%) brightness(0.5)',
+        left: props.x,
+        opacity: props.isVisible ? 0.7 : 0,
+        top: props.y,
+    },
+}))<{
     x: number;
     y: number;
     isValidDropZone: boolean;
     isVisible: boolean;
 }>`
     position: fixed;
-    left: ${props => props.x}px;
-    top: ${props => props.y}px;
     transform: translate(calc(-50% + 13px), calc(-50% + 6px)); /* Fine-tuned cursor offset */
     pointer-events: none;
     z-index: 10000;
-    opacity: ${props => (props.isVisible ? 0.7 : 0)};
     transition: opacity 0.2s ease;
-
-    /* Visual feedback for drop zone validity */
-    filter: ${props => (props.isValidDropZone ? 'none' : 'grayscale(100%) brightness(0.5)')};
 `;
 
 /**
@@ -150,13 +156,6 @@ export const DragPreview: React.FC<DragPreviewProps> = memo(({selectedItem, mous
                     y: event.clientY,
                 });
 
-                // Log position occasionally for debugging
-                if (Math.random() < 0.01) {
-                    console.debug('Mouse position updated:', {
-                        clientX: event.clientX,
-                        clientY: event.clientY,
-                    });
-                }
             } catch (error) {
                 console.error('Error handling mouse move in drag preview:', error);
             }

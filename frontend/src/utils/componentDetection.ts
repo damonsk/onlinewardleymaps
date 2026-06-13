@@ -22,7 +22,8 @@ export const findNearestComponent = (
     }
 
     let nearestComponent: UnifiedComponent | null = null;
-    let minDistance = Infinity;
+    let minDistanceSquared = Infinity;
+    const maxDistanceSquared = maxDistance * maxDistance;
 
     for (const component of components) {
         // Skip components without valid coordinates
@@ -30,10 +31,12 @@ export const findNearestComponent = (
             continue;
         }
 
-        const distance = calculateDistance(mousePosition.x, mousePosition.y, component.maturity, component.visibility);
+        const xDistance = component.maturity - mousePosition.x;
+        const yDistance = component.visibility - mousePosition.y;
+        const distanceSquared = xDistance * xDistance + yDistance * yDistance;
 
-        if (distance < minDistance && distance <= maxDistance) {
-            minDistance = distance;
+        if (distanceSquared < minDistanceSquared && distanceSquared <= maxDistanceSquared) {
+            minDistanceSquared = distanceSquared;
             nearestComponent = component;
         }
     }

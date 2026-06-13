@@ -34,16 +34,6 @@ interface ModernUnifiedMapContentProps {
     mapAnnotationsPresentation: any;
     launchUrl?: (url: string) => void;
     mapMethods: any[];
-    // New props for linking functionality
-    linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
-    sourceComponent?: UnifiedComponent | null;
-    mousePosition?: {x: number; y: number};
-    highlightedComponent?: UnifiedComponent | null;
-    isDuplicateLink?: boolean;
-    isInvalidTarget?: boolean;
-    showCancellationHint?: boolean;
-    isSourceDeleted?: boolean;
-    isTargetDeleted?: boolean;
     // New props for PST drawing functionality
     isDrawing?: boolean;
     drawingStartPosition?: {x: number; y: number} | null;
@@ -81,8 +71,10 @@ interface ModernUnifiedMapContentProps {
     onPipelineMouseLeave?: () => void;
 }
 
-const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = props => {
+const UnifiedMapContent: React.FC<ModernUnifiedMapContentProps> = React.memo(props => {
     return <ElementGrouping {...props} />;
-};
+});
+
+UnifiedMapContent.displayName = 'UnifiedMapContent';
 
 export default UnifiedMapContent;

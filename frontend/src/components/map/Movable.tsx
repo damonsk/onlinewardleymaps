@@ -1,4 +1,4 @@
-import React, {MouseEvent, useCallback, useEffect} from 'react';
+import React, {MouseEvent, useCallback, useEffect, useRef} from 'react';
 
 interface MovedPosition {
     x: number;
@@ -36,10 +36,23 @@ const Movable: React.FC<ModernMovableProps> = props => {
         y: y(),
         coords: {},
     });
+    const positionRef = useRef(position);
+    const movingRef = useRef(false);
+    const handleMouseMoveRef = useRef<((e: globalThis.MouseEvent) => void) | null>(null);
+    const handleMouseUpRef = useRef<(() => void) | null>(null);
+    const handleEscapeRef = useRef<((k: KeyboardEvent) => void) | null>(null);
+
+    const updatePositionState = useCallback((updater: React.SetStateAction<Position>) => {
+        setPosition(previousPosition => {
+            const nextPosition = typeof updater === 'function' ? updater(previousPosition) : updater;
+            positionRef.current = nextPosition;
+            return nextPosition;
+        });
+    }, []);
 
     const handleMouseMove = useCallback(
         (e: globalThis.MouseEvent) => {
-            setPosition(position => {
+            updatePositionState(position => {
                 const scaleFactor = props.scaleFactor || 1;
                 const xDiff = (position.coords.x! - e.pageX) / scaleFactor;
                 const yDiff = (position.coords.y! - e.pageY) / scaleFactor;
@@ -53,8 +66,10 @@ const Movable: React.FC<ModernMovableProps> = props => {
                 };
             });
         },
-        [props.scaleFactor],
+        [props.scaleFactor, updatePositionState],
     );
+
+    handleMouseMoveRef.current = handleMouseMove;
 
     const handleMouseDown = (e: MouseEvent<SVGGElement>) => {
         // Only initiate drag on left mouse button (button 0)
@@ -63,10 +78,11 @@ const Movable: React.FC<ModernMovableProps> = props => {
         }
 
         setMoving(true);
+        movingRef.current = true;
         const pageX = e.pageX;
         const pageY = e.pageY;
 
-        setPosition(position =>
+        updatePositionState(position =>
             Object.assign({}, position, {
                 coords: {
                     x: pageX,
@@ -75,52 +91,93 @@ const Movable: React.FC<ModernMovableProps> = props => {
             }),
         );
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('keyup', handleEscape);
-    };
-
-    const handleEscape = (k: KeyboardEvent) => {
-        if (k.key === 'Escape' && moving) {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('keyup', handleEscape);
-            setMoving(false);
-            endDrag();
-            setPosition({x: x(), y: y(), coords: {}});
+        if (handleMouseUpRef.current) {
+            document.addEventListener('mouseup', handleMouseUpRef.current);
+        }
+        if (handleEscapeRef.current) {
+            document.addEventListener('keyup', handleEscapeRef.current);
         }
     };
 
+    const handleEscape = (k: KeyboardEvent) => {
+        if (k.key === 'Escape' && movingRef.current) {
+            if (handleMouseMoveRef.current) {
+                document.removeEventListener('mousemove', handleMouseMoveRef.current);
+            }
+            if (handleMouseUpRef.current) {
+                document.removeEventListener('mouseup', handleMouseUpRef.current);
+            }
+            if (handleEscapeRef.current) {
+                document.removeEventListener('keyup', handleEscapeRef.current);
+            }
+            movingRef.current = false;
+            setMoving(false);
+            endDrag();
+            updatePositionState({x: x(), y: y(), coords: {}});
+        }
+    };
+    handleEscapeRef.current = handleEscape;
+
     const handleMouseUp = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        setPosition(position =>
+        if (!movingRef.current) {
+            return;
+        }
+
+        if (handleMouseMoveRef.current) {
+            document.removeEventListener('mousemove', handleMouseMoveRef.current);
+        }
+        if (handleMouseUpRef.current) {
+            document.removeEventListener('mouseup', handleMouseUpRef.current);
+        }
+        if (handleEscapeRef.current) {
+            document.removeEventListener('keyup', handleEscapeRef.current);
+        }
+        updatePositionState(position =>
             Object.assign({}, position, {
                 coords: {},
             }),
         );
+        movingRef.current = false;
         setMoving(false);
         endDrag();
     };
+    handleMouseUpRef.current = handleMouseUp;
 
     function endDrag() {
         const moved: MovedPosition = {
-            x: position.x,
-            y: position.y,
+            x: positionRef.current.x,
+            y: positionRef.current.y,
         };
         props.onMove(moved);
     }
 
     useEffect(() => {
-        setPosition({
+        updatePositionState({
             x: x(),
             y: y(),
             coords: {},
         });
-    }, [x, y]);
+    }, [x, y, updatePositionState]);
+
+    useEffect(() => {
+        return () => {
+            if (handleMouseMoveRef.current) {
+                document.removeEventListener('mousemove', handleMouseMoveRef.current);
+            }
+            if (handleMouseUpRef.current) {
+                document.removeEventListener('mouseup', handleMouseUpRef.current);
+            }
+            if (handleEscapeRef.current) {
+                document.removeEventListener('keyup', handleEscapeRef.current);
+            }
+        };
+    }, []);
 
     return (
         <g
             className={'draggable'}
             style={{cursor: moving ? 'grabbing' : 'grab'}}
             onMouseDown={e => handleMouseDown(e)}
-            onMouseUp={() => handleMouseUp()}
             id={`modern_movable_${props.id}`}
             transform={'translate(' + (props.fixedX ? x() : position.x) + ',' + (props.fixedY ? y() : position.y) + ')'}>
             <rect x="-15" y="-15" rx="30" ry="30" width="30" height="30" fillOpacity={shouldShowMoving && moving ? 0.2 : 0.0} />

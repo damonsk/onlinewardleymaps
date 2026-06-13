@@ -40,7 +40,7 @@ interface ComponentRendererProps {
     selectedToolbarItem?: any;
 }
 
-export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
+export const ComponentRenderer: React.FC<ComponentRendererProps> = React.memo(({
     mapElements,
     mapDimensions,
     mapStyleDefs,
@@ -52,7 +52,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     launchUrl,
     enableAccelerators,
     mapAccelerators,
-    methodHighlightedComponent,
     selectedToolbarItem,
 }) => {
     const setHighlightLineDispatch = (value: any) => {
@@ -175,7 +174,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
                     .filter((c: UnifiedComponent) => c.type !== 'anchor')
                     .map((el: UnifiedComponent, i: number) => {
                         // Check if this component should be highlighted for method application
-                        const isMethodHighlighted = methodHighlightedComponent?.id === el.id;
                         const isMethodCompatible = el.type === 'component' && !el.pipeline;
                         const isInMethodApplicationMode =
                             selectedToolbarItem?.toolType === 'method-application' || selectedToolbarItem?.id === 'component';
@@ -298,4 +296,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
             </g>
         </g>
     );
-};
+});
+
+ComponentRenderer.displayName = 'ComponentRenderer';

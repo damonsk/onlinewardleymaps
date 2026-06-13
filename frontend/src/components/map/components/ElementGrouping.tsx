@@ -39,17 +39,6 @@ interface ElementGroupingProps {
     launchUrl?: (url: string) => void;
     mapMethods: any[];
 
-    // New props for linking functionality
-    linkingState?: 'idle' | 'selecting-source' | 'selecting-target';
-    sourceComponent?: UnifiedComponent | null;
-    mousePosition?: {x: number; y: number};
-    highlightedComponent?: UnifiedComponent | null;
-    isDuplicateLink?: boolean;
-    isInvalidTarget?: boolean;
-    showCancellationHint?: boolean;
-    isSourceDeleted?: boolean;
-    isTargetDeleted?: boolean;
-
     // New props for PST drawing functionality
     isDrawing?: boolean;
     drawingStartPosition?: {x: number; y: number} | null;
@@ -91,7 +80,7 @@ interface ElementGroupingProps {
     onPipelineMouseLeave?: () => void;
 }
 
-export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
+export const ElementGrouping: React.FC<ElementGroupingProps> = React.memo(props => {
     return (
         <g id="mapContent">
             {/* PST Elements - Rendered first as they appear behind other elements */}
@@ -132,15 +121,6 @@ export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
                 onLinkClick={props.onLinkClick}
                 onLinkContextMenu={props.onLinkContextMenu}
                 isLinkSelected={props.isLinkSelected}
-                linkingState={props.linkingState}
-                sourceComponent={props.sourceComponent}
-                mousePosition={props.mousePosition}
-                highlightedComponent={props.highlightedComponent}
-                isDuplicateLink={props.isDuplicateLink}
-                isInvalidTarget={props.isInvalidTarget}
-                showCancellationHint={props.showCancellationHint}
-                isSourceDeleted={props.isSourceDeleted}
-                isTargetDeleted={props.isTargetDeleted}
             />
 
             {/* Pipelines - Rendered before components so pipeline squares/circles appear above enclosing boxes */}
@@ -196,4 +176,6 @@ export const ElementGrouping: React.FC<ElementGroupingProps> = props => {
             />
         </g>
     );
-};
+});
+
+ElementGrouping.displayName = 'ElementGrouping';

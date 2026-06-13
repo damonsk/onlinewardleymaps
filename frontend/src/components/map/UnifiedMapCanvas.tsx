@@ -6,6 +6,7 @@ import {processLinks} from '../../utils/mapProcessing';
 import {useEditing} from '../EditingContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ComponentLinkHighlightProvider} from '../contexts/ComponentLinkHighlightContext';
+import LinkingPreview from './LinkingPreview';
 import MapCanvasToolbar from './MapCanvasToolbar';
 import MapGridGroup from './MapGridGroup';
 import UnifiedMapContent from './UnifiedMapContent';
@@ -37,11 +38,19 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapEvolutionStates,
         mapAnnotationsPresentation,
     } = props;
+    const {
+        selectedToolbarItem,
+        onMethodApplication,
+        onComponentClick,
+        onMouseMove: onCanvasMouseMove,
+    } = props;
 
     const {isAnyElementEditing, editingState} = useEditing();
     const Viewer = useRef<ReactSVGPanZoom>(null);
     const hasCompletedInitialFit = useRef(false);
     const previousCanvasSize = useRef<{width: number; height: number}>({width: 0, height: 0});
+    const mouseMoveFrame = useRef<number | null>(null);
+    const latestMousePosition = useRef<{x: number; y: number; nearestComponent?: any} | null>(null);
 
     // Computed values
     const mapElements = useMemo(() => {
@@ -81,6 +90,16 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
             showLinkedEvolved,
         );
     }, [wardleyMap.links, mapElements, wardleyMap.anchors, showLinkedEvolved]);
+
+    const mapAccelerators = useMemo(
+        () =>
+            wardleyMap.accelerators.map((accelerator: any) => ({
+                ...accelerator,
+                type: accelerator.deaccelerator ? 'deaccelerator' : 'accelerator',
+                label: accelerator.label || {x: 0, y: 0},
+            })),
+        [wardleyMap.accelerators],
+    );
 
     // State for element clicks tracking
     const [mapElementsClicked, setMapElementsClicked] = useState<
@@ -146,16 +165,28 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapDimensions,
         panZoomValue: value,
         wardleyMap,
-        selectedToolbarItem: props.selectedToolbarItem,
+        selectedToolbarItem,
         onToolbarItemDrop: props.onToolbarItemDrop,
         onMouseMove: position => {
-            setCurrentMousePosition(position);
-            props.onMouseMove?.(position);
+            latestMousePosition.current = position;
+            if (mouseMoveFrame.current !== null) {
+                return;
+            }
+
+            mouseMoveFrame.current = requestAnimationFrame(() => {
+                mouseMoveFrame.current = null;
+                if (!latestMousePosition.current) {
+                    return;
+                }
+
+                setCurrentMousePosition(latestMousePosition.current);
+                onCanvasMouseMove?.(latestMousePosition.current);
+            });
         },
         onMouseDown: props.onMouseDown,
         onMouseUp: props.onMouseUp,
-        onComponentClick: props.onComponentClick,
-        onMethodApplication: props.onMethodApplication,
+        onComponentClick,
+        onMethodApplication,
         handleMapCanvasClick: props.handleMapCanvasClick,
         setNewComponentContext: props.setNewComponentContext,
         linkingState: props.linkingState,
@@ -166,35 +197,47 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
     // Handle element clicks for linking functionality, method application, and component conversion
     const clicked = useCallback(
         (ctx: {el: any; e: MouseEvent<Element> | null}) => {
-            console.log('mapElementsClicked::clicked', ctx);
             setHighlightLine(ctx.el.line || 0);
 
             // Handle method application when a method tool is selected
-            if (props.selectedToolbarItem?.toolType === 'method-application' && ctx.el) {
-                const methodName = props.selectedToolbarItem.methodName;
-                if (methodName && props.onMethodApplication) {
-                    props.onMethodApplication(ctx.el, methodName);
+            if (selectedToolbarItem?.toolType === 'method-application' && ctx.el) {
+                const methodName = selectedToolbarItem.methodName;
+                if (methodName && onMethodApplication) {
+                    onMethodApplication(ctx.el, methodName);
                 }
                 return;
             }
 
             // Handle component conversion when component tool is selected
-            if (props.selectedToolbarItem?.id === 'component' && ctx.el) {
+            if (selectedToolbarItem?.id === 'component' && ctx.el) {
                 // Convert method components back to regular components
-                if (props.onMethodApplication) {
-                    props.onMethodApplication(ctx.el, 'component');
+                if (onMethodApplication) {
+                    onMethodApplication(ctx.el, 'component');
                 }
                 return;
             }
 
             // Handle component clicks for linking (existing functionality)
-            if (props.onComponentClick) {
-                props.onComponentClick(ctx.el);
+            if (onComponentClick) {
+                onComponentClick(ctx.el);
                 return;
             }
         },
-        [setHighlightLine, props],
+        [
+            selectedToolbarItem,
+            onMethodApplication,
+            onComponentClick,
+            setHighlightLine,
+        ],
     );
+
+    useEffect(() => {
+        return () => {
+            if (mouseMoveFrame.current !== null) {
+                cancelAnimationFrame(mouseMoveFrame.current);
+            }
+        };
+    }, []);
 
     // Title update handler
     const handleTitleUpdate = useCallback(
@@ -314,6 +357,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         mapDimensions.height,
         mapCanvasDimensions.width,
         mapCanvasDimensions.height,
+        wardleyMap.components.length,
         waitingForPanelRestore,
         setIsInitialSizingComplete,
     ]);
@@ -350,7 +394,7 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
         }, 60);
 
         return () => clearTimeout(timer);
-    }, [mapCanvasDimensions.width, mapCanvasDimensions.height, mapDimensions.width, mapDimensions.height]);
+    }, [mapCanvasDimensions, mapCanvasDimensions.width, mapCanvasDimensions.height, mapDimensions.width, mapDimensions.height]);
 
     // Style configuration
     const fill = {
@@ -541,24 +585,11 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                             setHighlightLine={setHighlightLine}
                             clicked={clicked}
                             enableAccelerators={enableAccelerators}
-                            mapAccelerators={wardleyMap.accelerators.map((accelerator: any) => ({
-                                ...accelerator,
-                                type: accelerator.deaccelerator ? 'deaccelerator' : 'accelerator',
-                                label: accelerator.label || {x: 0, y: 0},
-                            }))}
+                            mapAccelerators={mapAccelerators}
                             mapNotes={wardleyMap.notes}
                             mapAnnotations={wardleyMap.annotations}
                             mapAnnotationsPresentation={mapAnnotationsPresentation}
                             mapMethods={wardleyMap.methods}
-                            linkingState={props.linkingState}
-                            sourceComponent={props.sourceComponent}
-                            mousePosition={currentMousePosition}
-                            highlightedComponent={props.highlightedComponent}
-                            isDuplicateLink={props.isDuplicateLink}
-                            isInvalidTarget={props.isInvalidTarget}
-                            showCancellationHint={props.showCancellationHint}
-                            isSourceDeleted={props.isSourceDeleted}
-                            isTargetDeleted={props.isTargetDeleted}
                             isDrawing={props.isDrawing}
                             drawingStartPosition={props.drawingStartPosition}
                             drawingCurrentPosition={props.drawingCurrentPosition}
@@ -584,6 +615,19 @@ function UnifiedMapCanvas(props: UnifiedMapCanvasProps) {
                             highlightedPipelineId={props.highlightedPipelineId}
                             onPipelineMouseEnter={props.onPipelineMouseEnter}
                             onPipelineMouseLeave={props.onPipelineMouseLeave}
+                        />
+                        <LinkingPreview
+                            linkingState={props.linkingState || 'idle'}
+                            sourceComponent={props.sourceComponent || null}
+                            mousePosition={currentMousePosition}
+                            highlightedComponent={props.highlightedComponent || null}
+                            mapStyleDefs={mapStyleDefs}
+                            mapDimensions={mapDimensions}
+                            isDuplicateLink={props.isDuplicateLink || false}
+                            isInvalidTarget={props.isInvalidTarget || false}
+                            showCancellationHint={props.showCancellationHint || false}
+                            isSourceDeleted={props.isSourceDeleted || false}
+                            isTargetDeleted={props.isTargetDeleted || false}
                         />
                     </ComponentLinkHighlightProvider>
                 </svg>
