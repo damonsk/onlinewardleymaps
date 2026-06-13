@@ -397,23 +397,15 @@ export class ToolbarPositioning {
         const toolbarRect = toolbarElement.getBoundingClientRect();
         const mode = ToolbarPositioning.getViewportMode(mapOnlyView);
 
-        // In editor mode, check if toolbar is positioned within the snap zone area
-        // In presentation mode, check traditional snap zone boundaries
+        // Docking should be driven by horizontal placement. The toolbar can be
+        // taller than the available map area, especially in presentation mode,
+        // so vertical bounds would incorrectly unsnap it on mouse release.
         if (mode.isEditorMode) {
-            // In editor mode, dock/undock should be driven by horizontal placement only.
-            // Vertical bounds can shift while the page/layout scrolls, which incorrectly
-            // flips docked toolbars back to floating.
             const isInHorizontalRange = position.x >= snapZone.x && position.x <= snapZone.x + snapZone.width + CONFIG.DEFAULT_MARGIN;
             return isInHorizontalRange;
         } else {
-            // Presentation mode: use center-based detection
             const toolbarCenterX = position.x + toolbarRect.width / 2;
-            return (
-                toolbarCenterX >= snapZone.x &&
-                toolbarCenterX <= snapZone.x + snapZone.width &&
-                position.y >= snapZone.y &&
-                position.y + toolbarRect.height <= snapZone.y + snapZone.height
-            );
+            return toolbarCenterX >= snapZone.x && toolbarCenterX <= snapZone.x + snapZone.width;
         }
     }
 

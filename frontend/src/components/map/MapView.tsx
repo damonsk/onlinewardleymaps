@@ -423,15 +423,15 @@ const getContainerStyle = (mapStyleDefs: MapTheme): React.CSSProperties => {
     };
 };
 
-const getMapStyle = (toolbarSnapped = false): React.CSSProperties => {
-    const toolbarWidth = 48; // Width to reserve for snapped toolbar (48px toolbar + 0px margin, reduced from 80px)
+const DOCKED_TOOLBAR_GUTTER = 64; // 48px toolbar plus the 16px snap-zone margin.
 
+const getMapStyle = (toolbarSnapped = false): React.CSSProperties => {
     return {
-        width: toolbarSnapped ? `calc(100% - ${toolbarWidth}px)` : '100%',
+        width: toolbarSnapped ? `calc(100% - ${DOCKED_TOOLBAR_GUTTER}px)` : '100%',
         height: '100%',
         overflow: 'hidden',
         position: 'relative',
-        marginLeft: toolbarSnapped ? `${toolbarWidth}px` : '0',
+        marginLeft: toolbarSnapped ? `${DOCKED_TOOLBAR_GUTTER}px` : '0',
         transition: 'width 0.3s ease, margin-left 0.3s ease',
     };
 };

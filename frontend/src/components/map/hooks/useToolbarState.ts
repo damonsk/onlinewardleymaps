@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {ToolbarItem} from '../../../types/toolbar';
 import {Position, SnapState, ToolbarPositioning} from '../services/ToolbarPositioning';
 
@@ -9,6 +9,8 @@ const HOOK_CONFIG = {
     SNAP_EVENT_DELAY: 100,
     PANEL_RESIZE_DELAY: 200,
 } as const;
+
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 interface UseToolbarStateProps {
     defaultPosition?: Position;
@@ -55,6 +57,8 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
     const [dragOffset, setDragOffset] = useState<Position>({x: 0, y: 0});
     const [renderKey, setRenderKey] = useState(0);
     const toolbarRef = useRef<HTMLDivElement>(null);
+    const previousMapOnlyViewRef = useRef(mapOnlyView);
+    const isModeChangeRepositioningRef = useRef(false);
 
     // Calculate current snap state - now reactive to mapOnlyView prop changes
     const snapState = useMemo(() => {
@@ -102,19 +106,32 @@ export const useToolbarState = (props: UseToolbarStateProps = {}): UseToolbarSta
     }, [toolbarVisible, isSnapped, dispatchSnapEvent, effectiveSnappedForCanvas]);
 
     // Handle mode changes for snapped toolbars
-    useEffect(() => {
-        if (isSnapped && toolbarRef.current) {
+    useIsomorphicLayoutEffect(() => {
+        const modeChanged = previousMapOnlyViewRef.current !== mapOnlyView;
+        previousMapOnlyViewRef.current = mapOnlyView;
+
+        if (modeChanged && isSnapped && toolbarRef.current) {
+            isModeChangeRepositioningRef.current = true;
             const newPosition = ToolbarPositioning.handleModeChange(position, toolbarRef.current, isSnapped, mapOnlyView);
 
             // Only update position if it actually changed
             if (newPosition.x !== position.x || newPosition.y !== position.y) {
                 setPosition(newPosition);
             }
+
+            setTimeout(() => {
+                isModeChangeRepositioningRef.current = false;
+                dispatchSnapEvent(isSnapped && toolbarVisible);
+            }, 0);
         }
-    }, [mapOnlyView, isSnapped, position]); // React to mode changes and snap state changes
+    }, [mapOnlyView, isSnapped, position, toolbarVisible, dispatchSnapEvent]); // React to mode changes and snap state changes
 
     // Update snap state when position changes
     useEffect(() => {
+        if (isModeChangeRepositioningRef.current) {
+            return;
+        }
+
         const newSnapState = ToolbarPositioning.calculateSnapState(position, toolbarRef.current, mapOnlyView);
         if (newSnapState.isSnapped !== isSnapped) {
             setIsSnapped(newSnapState.isSnapped);
