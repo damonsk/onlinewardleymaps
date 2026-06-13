@@ -82,6 +82,34 @@ describe('useUndoRedoManager', () => {
             expect(result.current.undoStack[0].actionDescription).toBe('Add component "Test"');
         });
 
+        it('should record a change when map text rerenders to the pending value before debounce finishes', () => {
+            const {result, rerender} = renderHook(
+                ({mapText}) =>
+                    useUndoRedoManager({
+                        mapText,
+                        mutateMapText: mockMutateMapText,
+                        maxHistorySize: 5,
+                        debounceMs: 100,
+                    }),
+                {initialProps: {mapText: 'initial map text'}},
+            );
+
+            act(() => {
+                result.current.recordChange('new map text', 'toolbar-component', 'Add component "Test"');
+            });
+
+            rerender({mapText: 'new map text'});
+
+            act(() => {
+                jest.advanceTimersByTime(150);
+            });
+
+            expect(result.current.undoStack).toHaveLength(1);
+            expect(result.current.canUndo).toBe(true);
+            expect(result.current.undoStack[0].previousMapText).toBe('initial map text');
+            expect(result.current.undoStack[0].currentMapText).toBe('new map text');
+        });
+
         it('should not record changes during undo/redo operations', async () => {
             const {result, rerender} = renderHook(
                 ({mapText}) =>

@@ -10,7 +10,7 @@ import {ActionType} from '../../types/undo-redo';
 import {UnifiedWardleyMap} from '../../types/unified/map';
 import {useI18n} from '../../hooks/useI18n';
 import {EditingProvider} from '../EditingContext';
-import {UndoRedoProvider} from '../UndoRedoProvider';
+import {UndoRedoContext, UndoRedoProvider} from '../UndoRedoProvider';
 import {ComponentSelectionProvider, useComponentSelection} from '../ComponentSelectionContext';
 import {useFeatureSwitches} from '../FeatureSwitchesContext';
 import {ContextMenuProvider} from './ContextMenuProvider';
@@ -60,7 +60,9 @@ export interface ModernMapViewRefactoredProps {
 const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = props => {
     const featureSwitches = useFeatureSwitches();
     const {clearSelection} = useComponentSelection();
+    const undoRedoContext = React.useContext(UndoRedoContext);
     const {t, originalT} = useI18n();
+    const mutateMapText = undoRedoContext?.mutateMapText ?? props.mutateMapText;
 
     // State to store context menu actions
     const [contextMenuActions, setContextMenuActions] = React.useState<{
@@ -79,7 +81,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
     const {showUserFeedback, userFeedback, setUserFeedback} = useUserFeedback();
 
     // Separated state management using custom hooks
-    const linkingState = useLinkingState(props.wardleyMap, props.mapText, props.mutateMapText, showUserFeedback);
+    const linkingState = useLinkingState(props.wardleyMap, props.mapText, mutateMapText, showUserFeedback);
     const drawingState = useDrawingState(props.mapDimensions);
 
     // Toolbar item selection state management
@@ -88,7 +90,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
     // Component operations (delete, edit, evolve, etc.)
     const componentOps = useComponentOperations({
         mapText: props.mapText,
-        mutateMapText: props.mutateMapText,
+        mutateMapText,
         wardleyMap: props.wardleyMap,
         showUserFeedback,
     });
@@ -98,14 +100,14 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         (style: 'plain' | 'wardley' | 'colour') => {
             try {
                 const result = MapPropertiesManager.updateMapStyle(props.mapText, style);
-                props.mutateMapText(result.updatedMapText, 'editor-text', `Changed map style to ${style}`);
+                mutateMapText(result.updatedMapText, 'editor-text', `Changed map style to ${style}`);
                 showUserFeedback(originalT('map.feedback.mapStyleChanged', {style}) || `Map style changed to ${style}`, 'success');
             } catch (error) {
                 console.error('Failed to change map style:', error);
                 showUserFeedback(t('map.feedback.mapStyleChangeFailed', 'Failed to change map style'), 'error');
             }
         },
-        [props, showUserFeedback, t, originalT],
+        [props, mutateMapText, showUserFeedback, t, originalT],
     );
 
     // Dialog opening handlers for context menu
@@ -122,7 +124,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         (size: {width: number; height: number}) => {
             try {
                 const result = MapPropertiesManager.updateMapSize(props.mapText, size.width, size.height);
-                props.mutateMapText(result.updatedMapText, 'editor-text', `Set map size to ${size.width}x${size.height}`);
+                mutateMapText(result.updatedMapText, 'editor-text', `Set map size to ${size.width}x${size.height}`);
                 showUserFeedback(originalT('map.feedback.mapSizeSet', {width: size.width, height: size.height}) || `Map size set to ${size.width}x${size.height}`, 'success');
                 setMapSizeDialogOpen(false);
             } catch (error) {
@@ -130,7 +132,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 showUserFeedback(t('map.feedback.mapSizeSetFailed', 'Failed to set map size'), 'error');
             }
         },
-        [props, showUserFeedback, t, originalT],
+        [props, mutateMapText, showUserFeedback, t, originalT],
     );
 
     const handleConfirmEvolutionStages = useCallback(
@@ -146,7 +148,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                     config.showEvolutionAxis,
                     config.showValueChainAxis,
                 );
-                props.mutateMapText(result.updatedMapText, 'editor-text', 'Updated map axis settings');
+                mutateMapText(result.updatedMapText, 'editor-text', 'Updated map axis settings');
                 showUserFeedback(t('map.feedback.evolutionStagesUpdated', 'Map axis settings updated'), 'success');
                 setEvolutionStagesDialogOpen(false);
             } catch (error) {
@@ -154,7 +156,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                 showUserFeedback(t('map.feedback.evolutionStagesUpdateFailed', 'Failed to update map axis settings'), 'error');
             }
         },
-        [props, showUserFeedback, t],
+        [props, mutateMapText, showUserFeedback, t],
     );
 
     // Dialog cancellation handlers
@@ -175,9 +177,11 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
         componentOps,
     });
 
+    const undoRedoAwareProps = useMemo(() => ({...props, mutateMapText}), [props, mutateMapText]);
+
     // Consolidated handlers using custom hook
     const handlers = useMapHandlers({
-        props,
+        props: undoRedoAwareProps,
         toolbarState,
         linkingState,
         drawingState,
@@ -299,7 +303,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                         mapStyleDefs={props.mapStyleDefs}
                         mapDimensions={props.mapDimensions}
                         mapText={props.mapText}
-                        mutateMapText={props.mutateMapText}
+                        mutateMapText={mutateMapText}
                         selectedItem={toolbarState.selectedToolbarItem}
                         onItemSelect={handleUnifiedToolbarSelection}
                         keyboardShortcutsEnabled={true}
@@ -331,7 +335,7 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
                         evolutionOffsets={props.evolutionOffsets}
                         wardleyMap={props.wardleyMap}
                         mapText={props.mapText}
-                        mutateMapText={props.mutateMapText}
+                        mutateMapText={mutateMapText}
                         setHighlightLine={props.setHighlightLine}
                         setNewComponentContext={props.setNewComponentContext}
                         launchUrl={props.launchUrl}
@@ -391,15 +395,27 @@ const MapViewComponent: React.FunctionComponent<ModernMapViewRefactoredProps> = 
 };
 
 // Keep provider wiring internal so consumers of MapView don't need to manage this context.
-const MapViewWithProviders: React.FunctionComponent<ModernMapViewRefactoredProps> = props => (
-    <UndoRedoProvider mapText={props.mapText} mutateMapText={props.mutateMapText}>
-        <EditingProvider>
-            <ComponentSelectionProvider>
-                <MapViewComponent {...props} />
-            </ComponentSelectionProvider>
-        </EditingProvider>
-    </UndoRedoProvider>
+const MapViewInnerProviders: React.FunctionComponent<ModernMapViewRefactoredProps> = props => (
+    <EditingProvider>
+        <ComponentSelectionProvider>
+            <MapViewComponent {...props} />
+        </ComponentSelectionProvider>
+    </EditingProvider>
 );
+
+const MapViewWithProviders: React.FunctionComponent<ModernMapViewRefactoredProps> = props => {
+    const existingUndoRedoContext = React.useContext(UndoRedoContext);
+
+    if (existingUndoRedoContext) {
+        return <MapViewInnerProviders {...props} />;
+    }
+
+    return (
+        <UndoRedoProvider mapText={props.mapText} mutateMapText={props.mutateMapText}>
+            <MapViewInnerProviders {...props} />
+        </UndoRedoProvider>
+    );
+};
 
 // Memoized component to prevent unnecessary re-renders
 export const MapView = React.memo(MapViewWithProviders);

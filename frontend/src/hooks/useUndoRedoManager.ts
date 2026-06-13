@@ -34,6 +34,7 @@ export const useUndoRedoManager = ({
     const lastActionRef = useRef<HistoryEntry | null>(null);
     const currentGroupIdRef = useRef<string | null>(null);
     const pendingChangeRef = useRef<{
+        previousText: string;
         newText: string;
         actionType: ActionType;
         description: string;
@@ -147,7 +148,7 @@ export const useUndoRedoManager = ({
             return;
         }
 
-        const {newText, actionType, description, groupId} = pending;
+        const {previousText, newText, actionType, description, groupId} = pending;
 
         // Validate the new map text
         if (!isValidMapText(newText)) {
@@ -157,25 +158,25 @@ export const useUndoRedoManager = ({
         }
 
         // Don't record if text hasn't actually changed
-        if (newText === mapText) {
+        if (newText === previousText) {
             pendingChangeRef.current = null;
             return;
         }
 
         // Don't record if this would create a duplicate entry
         const lastEntry = undoStack[undoStack.length - 1];
-        if (lastEntry && lastEntry.currentMapText === newText && lastEntry.previousMapText === mapText) {
+        if (lastEntry && lastEntry.currentMapText === newText && lastEntry.previousMapText === previousText) {
             console.warn('Duplicate history entry detected, skipping');
             pendingChangeRef.current = null;
             return;
         }
 
         // Create history entry
-        const entry = createHistoryEntry(mapText, newText, actionType, description, groupId);
+        const entry = createHistoryEntry(previousText, newText, actionType, description, groupId);
 
         addToHistory(entry);
         pendingChangeRef.current = null;
-    }, [mapText, addToHistory, isUndoRedoOperation, undoStack]);
+    }, [addToHistory, isUndoRedoOperation, undoStack]);
 
     /**
      * Debounced function to process pending changes
@@ -224,6 +225,7 @@ export const useUndoRedoManager = ({
 
             // Store the pending change
             pendingChangeRef.current = {
+                previousText: mapText,
                 newText,
                 actionType,
                 description,
@@ -248,7 +250,7 @@ export const useUndoRedoManager = ({
         const pending = pendingChangeRef.current;
         if (!pending) return;
 
-        const {newText, actionType, description, groupId} = pending;
+        const {previousText, newText, actionType, description, groupId} = pending;
 
         // Validate the new map text
         if (!isValidMapText(newText)) {
@@ -257,16 +259,16 @@ export const useUndoRedoManager = ({
         }
 
         // Don't record if text hasn't actually changed
-        if (newText === mapText) {
+        if (newText === previousText) {
             return;
         }
 
         // Create history entry
-        const entry = createHistoryEntry(mapText, newText, actionType, description, groupId);
+        const entry = createHistoryEntry(previousText, newText, actionType, description, groupId);
 
         addToHistory(entry);
         pendingChangeRef.current = null;
-    }, [mapText, addToHistory]);
+    }, [addToHistory]);
 
     /**
      * Performs an undo operation

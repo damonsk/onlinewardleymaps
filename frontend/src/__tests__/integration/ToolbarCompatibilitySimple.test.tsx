@@ -308,6 +308,33 @@ describe('Toolbar Compatibility Integration Tests', () => {
             expect(updatedText).toContain('component Existing Component');
         });
 
+        it('should enable undo after adding a component from the toolbar', async () => {
+            const mockMutateMapText = jest.fn();
+            renderComponent({mutateMapText: mockMutateMapText});
+
+            const componentButton = container.querySelector('[aria-label*="Component"]:not([aria-label*="Inertia"])');
+            act(() => {
+                componentButton?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+            });
+
+            const svgPanZoom = container.querySelector('[data-testid="svg-pan-zoom"]');
+            act(() => {
+                const event = new MouseEvent('click', {
+                    clientX: 400,
+                    clientY: 300,
+                    bubbles: true,
+                });
+                svgPanZoom?.dispatchEvent(event);
+            });
+
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 350));
+            });
+
+            const undoButton = container.querySelector('[data-testid="toolbar-item-undo"]') as HTMLButtonElement;
+            expect(undoButton?.disabled).toBe(false);
+        });
+
         it('should preserve existing map structure when adding toolbar components', () => {
             const initialMapText = `title Test Map
 component A [0.1, 0.2]
