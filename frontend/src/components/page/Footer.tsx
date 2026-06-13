@@ -17,18 +17,20 @@ const Footer: React.FC = () => {
 
     return (
         <StyledFooter>
-            <Box sx={{width: '50%'}}>
+            <Box sx={{width: '100%'}}>
                 <Stack spacing={2}>
                     <Typography>
-                        <Link
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href="https://marketplace.visualstudio.com/items?itemName=damonsk.vscode-wardley-maps">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                alt={t('footer.downloadExtension')}
-                                src="https://img.shields.io/visual-studio-marketplace/v/damonsk.vscode-wardley-maps?style=flat&amp;label=Download Visual%20Studio%20Code%20Extension&amp;logo=visual-studio-code"
-                            />
+                        OnlineWardleyMaps by{' '}
+                        <Link href="https://www.linkedin.com/in/skels/" target="_blank" rel="noopener noreferrer">
+                            Damon Skelhorn
+                        </Link>{' '}
+                        · Wardley Maps by{' '}
+                        <Link href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec" target="_blank" rel="noopener noreferrer">
+                            Simon Wardley
+                        </Link>{' '}
+                        ·{' '}
+                        <Link href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">
+                            CC BY-SA
                         </Link>
                     </Typography>
                     <Typography>
@@ -41,28 +43,14 @@ const Footer: React.FC = () => {
                             https://github.com/damonsk/onlinewardleymaps
                         </Link>
                     </Typography>{' '}
-                    <Typography>
-                        {t('footer.wardleyMapping')}{' '}
-                        <Link target="blank" href="https://medium.com/wardleymaps/on-being-lost-2ef5f05eb1ec">
-                            {t('footer.wardleyMappingLink')}
+                    <Box>
+                        <Link href="https://www.patreon.com/mapsascode" rel="noreferrer noopener" target="_blank" sx={{display: 'inline-flex'}}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img alt={t('footer.patreonAlt', 'Become a Patron')} height="38" src="/become_a_patron_button.png" width="162" />
                         </Link>
-                        .
-                    </Typography>
+                    </Box>
+                    
                 </Stack>
-            </Box>
-            <Box sx={{width: '50%', textAlign: 'right'}}>
-                <Typography>
-                    <Link href="https://www.patreon.com/mapsascode" rel="noreferrer noopener" target="_blank">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img alt={t('footer.patreonAlt', 'Become a Patron')} height="38" src="/become_a_patron_button.png" width="162" />
-                    </Link>
-                </Typography>
-                <Typography>
-                    {t('footer.createdBy', 'Created by')}{' '}
-                    <Link href="https://www.linkedin.com/in/skels/" target="_blank" rel="noopener noreferrer">
-                        Damon Skelhorn
-                    </Link>
-                </Typography>
             </Box>
         </StyledFooter>
     );
