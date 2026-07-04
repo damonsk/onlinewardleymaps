@@ -74,7 +74,7 @@
         "html2canvas": "^1.4.1",
         "i18next": "^26.3.1",
         "lodash.merge": "^4.6.2",
-        "next": "^16.2.9",
+        "next": "^16.2.10",
         "next-i18next": "^16.0.7",
         "prop-types": "^15.8.1",
         "react": "^19.2.7",
