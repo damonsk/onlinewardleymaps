@@ -4,7 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "devDependencies": {
-        "@babel/core": "^7.24.3",
+        "@babel/core": "^7.29.6",
         "@babel/preset-env": "^7.28.5",
         "@babel/preset-react": "^7.24.1",
         "@babel/preset-typescript": "^7.24.1",
