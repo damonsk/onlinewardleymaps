@@ -1,0 +1,40 @@
+fixture_id: "SYN-000"
+fixture_version: 1
+title: "Fixture title"
+purpose: "Requirement or behaviour exercised"
+requirement_ids:
+  - "CMP-001"
+source:
+  category: "invented" # invented | upstream | book | blog | talk | user | private
+  title: null
+  author_or_owner: null
+  locator: null
+  captured_at: null
+rights:
+  class: "R0" # R0-R4 as defined in docs/12-canonical-map-corpus.md
+  licence_or_permission: "Project-owned invented fixture"
+  attribution: null
+  public_distribution: true
+  restrictions: null
+files:
+  input: "fixtures/SYN-000/input.json"
+  expected_semantic: "fixtures/SYN-000/expected-semantic.json"
+  expected_geometry: null
+  expected_visual: null
+checksums: {}
+state:
+  view_id: null
+  scenario_id: null
+  timeline_id: null
+  time: null
+expectations:
+  diagnostic_codes: []
+  coordinate_tolerance: 0.000001
+  pixel_tolerance: null
+  non_contractual_details: []
+review:
+  encoded_by: null
+  semantic_reviewed_by: null
+  rights_reviewed_by: null
+  approved_at: null
+notes: null

@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/strategic-graph/projection.schema.json",
+  "title": "Projection Definition",
+  "description": "Draft declarative projection definition for the Strategic Graph Platform.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "type", "xAxis", "yAxis", "missingValuePolicy"],
+  "properties": {
+    "id": { "$ref": "#/$defs/id" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["wardley", "metric", "graph-layout", "categorical", "custom"]
+    },
+    "xAxis": { "$ref": "#/$defs/axis" },
+    "yAxis": { "$ref": "#/$defs/axis" },
+    "missingValuePolicy": { "$ref": "#/$defs/missingValuePolicy" },
+    "constraints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/constraint" },
+      "default": []
+    },
+    "compositePositionPolicy": { "$ref": "#/$defs/compositePositionPolicy" },
+    "transitionDefaults": { "$ref": "#/$defs/transitionPolicySet" },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "source", "scale", "direction"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1 },
+        "source": { "$ref": "#/$defs/axisSource" },
+        "scale": { "$ref": "#/$defs/scale" },
+        "direction": { "enum": ["ascending", "descending"] },
+        "domain": {
+          "oneOf": [
+            {
+              "type": "array",
+              "prefixItems": [{ "type": "number" }, { "type": "number" }],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          ]
+        },
+        "clamp": { "type": "boolean", "default": true },
+        "bands": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/band" },
+          "default": []
+        },
+        "missingValuePolicy": { "$ref": "#/$defs/missingValuePolicy" },
+        "formatter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "style": { "enum": ["plain", "number", "percent", "currency", "unit"] },
+            "digits": { "type": "integer", "minimum": 0, "maximum": 10 },
+            "prefix": { "type": "string" },
+            "suffix": { "type": "string" }
+          }
+        }
+      }
+    },
+    "axisSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref"],
+      "properties": {
+        "kind": {
+          "enum": ["metric", "attribute", "graph-measure", "manual", "formula", "wardley-evolution", "wardley-visibility"]
+        },
+        "ref": { "type": "string", "minLength": 1 },
+        "algorithmVersion": { "type": "string" },
+        "configuration": { "type": "object" }
+      }
+    },
+    "scale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["linear", "log", "ordinal", "categorical", "quantile", "lookup"] },
+        "base": { "type": "number", "exclusiveMinimum": 0 },
+        "lookup": {
+          "type": "object",
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "band": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "from", "to"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string" },
+        "from": { "type": "number", "minimum": 0, "maximum": 1 },
+        "to": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "missingValuePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["exclude", "preserve-manual", "unknown-band", "default", "impute", "fail"] },
+        "defaultValue": {},
+        "imputation": { "enum": ["mean", "median", "mode", "constant", "nearest"] },
+        "markInView": { "type": "boolean", "default": true }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "entityIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["pin", "axis-pin", "bounds", "order", "same-band", "minimum-separation"] },
+        "entityIds": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "configuration": { "type": "object" }
+      }
+    },
+    "compositePositionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["explicit", "centroid", "weighted-centroid", "medoid", "bounding-box-centre", "anchor-member"] },
+        "metricId": { "$ref": "#/$defs/id" },
+        "anchorMemberId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "transitionPolicySet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": { "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "step"] },
+        "visibility": { "enum": ["fade", "step-start", "step-mid", "step-end"] },
+        "categorical": { "enum": ["step-start", "step-mid", "step-end"] },
+        "text": { "enum": ["cross-fade", "step-start", "step-mid", "step-end"] }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+      "additionalProperties": true
+    }
+  }
+}

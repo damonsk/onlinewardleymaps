@@ -1,0 +1,13 @@
+Strategic Graph Platform Documentation v0.1
+===========================================
+
+Status: Proposed architecture; repository audit complete and M0 evidence in progress.
+Markdown documents: 45
+Approximate Markdown word count: 45,831
+Requirements: 122
+Traceability rows: 122
+Test catalogue entries: 30
+Draft JSON Schemas: 3
+Invented example JSON files: 3
+Combined human-readable specification: SPECIFICATION.html (original Draft 0.1 with audit-supplement notice)
+Landing page: index.html (links to verified audit and change evidence)

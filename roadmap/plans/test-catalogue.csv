@@ -1,0 +1,31 @@
+test_id,level,title,fixture,requirement_ids,expected_evidence
+AUD-BASE-001,Audit,Build and run baseline,Current repository,TST-001; CTX-003,Reproducible commands and recorded results
+E2E-LEGACY-001,End to end,Open edit save reopen existing map,Legacy baseline,CTX-002; TST-001; TST-005,Semantic state preserved
+API-ROUNDTRIP-001,Integration,Save persist and reopen current API record,Synthetic temporary record,CTX-002; TST-001,Exact ID DSL text and mapIterations preserved
+PERF-PARSER-001,Performance,Parse and derive render-ready state at representative sizes,Synthetic 25/40 200/400 and 1000/2000 maps,TST-001,Structural counts exact and timings recorded
+AUD-WORKORDER-001,Review,Repository-specific work order and evidence review,AUD-EPIC-000,AGT-001,Real modules symbols commands and compatibility evidence cited
+UT-MODEL-001,Unit,Graph identity and referential validation,Synthetic,MOD-001; MOD-002,Duplicate/missing references diagnosed
+RT-NATIVE-001,Round trip,Native semantic round trip,SYN-001 plus audited fixtures,FMT-003; TST-005,Equivalent canonical domain state
+MIG-MATRIX-001,Migration,Oldest supported version to current,SYN-012,FMT-001; FMT-002,Valid current document and expected warnings
+RT-LEGACY-001,Round trip,Advanced state to legacy subset and back,SYN-003; SYN-005; SYN-006,FMT-005,Declared subset preserved; losses reported
+UT-CMP-001,Unit,Membership closure cycle and edge classification,SYN-003; SYN-004,CMP-002; CMP-005; CMP-009; CMP-010,Exact closure and bundle provenance
+PBT-CMP-001,Property,Collapse then expand preserves semantics,Generated bounded graphs,CMP-004; CMP-008,Domain and view state identity
+INT-CMP-001,Integration,Selection command resolver renderer undo,SYN-003,CMP-001; CMP-003; CMP-006,Atomic state and correct display graph
+E2E-CMP-001,End to end,Create collapse reload expand,SYN-003,CMP-001-CMP-008; CMP-014; CMP-015,User journey and accessible controls pass
+UT-TMP-001,Unit,Keyframe materialization and interpolation,SYN-005,TMP-002-TMP-005; TMP-013,Exact and midpoint expected states
+PBT-TMP-001,Property,Exact keyframe equals materialized state,Generated timelines,TMP-002; TMP-008,Invariant holds across generated patches
+INT-TMP-001,Integration,Timeline editor undo persistence,SYN-005,TMP-001; TMP-006; TMP-007,Authoring state survives reload
+E2E-TMP-001,End to end,Build three keyframes scrub and play,SYN-005,TMP-001-TMP-014,Semantic and accessible playback pass
+UT-PRJ-001,Unit,Scales missing values constraints aggregation,SYN-006,PRJ-003; PRJ-006; PRJ-008; PRJ-010,Expected coordinates and diagnostics
+PBT-PRJ-001,Property,Projection independent of input order,Generated values,PRJ-003,Equivalent canonical positions
+INT-PRJ-001,Integration,Wardley adapter and metric workbench,SYN-006,PRJ-001; PRJ-002; MET-001-MET-005,Current view equivalent; alternate view saved
+E2E-PRJ-001,End to end,Switch views inspect pin reset reload,SYN-006; SYN-007,PRJ-004; PRJ-005; PRJ-007; PRJ-009,Graph unchanged and provenance available
+UT-MET-001,Unit,Metric typing units status and aggregation,SYN-006,MET-001; MET-002; MET-005,Invalid values rejected; provenance retained
+INT-MET-001,Integration,CSV import identity mapping,SYN-006,MET-003,Ambiguity requires explicit resolution
+UT-STR-001,Unit,Story schema reference sanitization and filtering,SYN-009; SYN-010,STR-002; STR-003; STR-007; STR-008; STR-014,Safe validated build model
+BROWSER-STR-001,Browser,Navigate responsive story,SYN-009,STR-004; STR-006; STR-009-STR-013,"Active state, focus, reduced motion and no errors"
+SEC-STR-001,Security,Malicious content and path fixtures,SYN-010,SEC-001; SEC-003; SEC-005,No execution or unsafe output
+PRIVACY-BUILD-001,Privacy,Public story data minimization,SYN-009; SYN-010,PRV-001; PRV-002,Private notes and unselected data absent
+A11Y-EDITOR-001,Accessibility,Keyboard composite timeline projection flow,SYN-003; SYN-005; SYN-006,ACC-001-ACC-005,Manual and automated review passes
+A11Y-STORY-001,Accessibility,Keyboard screen reader reduced motion story,SYN-009,STR-009; STR-010; ACC-001-ACC-005,Representative story passes review
+CORPUS-MANIFEST-001,Meta,Validate rights and provenance manifest,All corpus,COR-001-COR-007; PRV-003,No unclassified or mispackaged fixture

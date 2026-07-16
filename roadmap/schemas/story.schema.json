@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/strategic-graph/story.schema.json",
+  "title": "Strategic Map Story",
+  "description": "Draft story authoring format for compiling a static interactive narrative.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "storyId", "title", "mapReference", "chapters"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1-draft" },
+    "storyId": { "$ref": "#/$defs/id" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "mapReference": { "$ref": "#/$defs/mapReference" },
+    "theme": { "$ref": "#/$defs/theme" },
+    "chapters": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/chapter" },
+      "minItems": 1
+    },
+    "assets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/asset" },
+      "default": []
+    },
+    "publication": { "$ref": "#/$defs/publication" },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      }
+    },
+    "mapReference": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "path", "documentId"],
+          "properties": {
+            "kind": { "const": "external" },
+            "path": { "type": "string", "minLength": 1 },
+            "documentId": { "$ref": "#/$defs/id" },
+            "expectedSchemaVersion": { "type": "string" },
+            "checksum": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "documentId", "embeddedMap"],
+          "properties": {
+            "kind": { "const": "embedded" },
+            "documentId": { "$ref": "#/$defs/id" },
+            "embeddedMap": { "$ref": "strategic-map.schema.json" }
+          }
+        }
+      ]
+    },
+    "stateReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["viewId"],
+      "properties": {
+        "viewId": { "$ref": "#/$defs/id" },
+        "projectionId": { "$ref": "#/$defs/id" },
+        "scenarioId": { "$ref": "#/$defs/id" },
+        "timelineId": { "$ref": "#/$defs/id" },
+        "keyframeId": { "$ref": "#/$defs/id" },
+        "time": { "type": "number" },
+        "highlightEntityIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "compositeCollapseOverrides": {
+          "type": "object",
+          "additionalProperties": { "type": "boolean" }
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": ["keyframeId", "time"]
+          }
+        }
+      ]
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "center": { "$ref": "#/$defs/point" },
+        "zoom": { "type": "number", "exclusiveMinimum": 0 },
+        "padding": { "type": "number", "minimum": 0 },
+        "focusEntityIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "durationMs": { "type": "integer", "minimum": 0, "maximum": 60000 },
+        "easing": { "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "step"] },
+        "reducedMotion": { "enum": ["instant", "fade", "same"] }
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "text": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["reflection", "discussion", "question", "action"] }
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "state"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "bodyMarkdown": { "type": "string" },
+        "state": { "$ref": "#/$defs/stateReference" },
+        "camera": { "$ref": "#/$defs/camera" },
+        "transition": { "$ref": "#/$defs/transition" },
+        "prompts": { "type": "array", "items": { "$ref": "#/$defs/prompt" }, "default": [] },
+        "speakerNotes": { "type": "string" },
+        "includeSpeakerNotesInPublicOutput": { "type": "boolean", "default": false },
+        "assetIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "path", "public"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["image", "audio", "video", "download", "data"] },
+        "path": { "type": "string", "minLength": 1 },
+        "mimeType": { "type": "string" },
+        "altText": { "type": "string" },
+        "attribution": { "type": "string" },
+        "public": { "type": "boolean" },
+        "checksum": { "type": "string" }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "mode": { "enum": ["light", "dark", "auto"] },
+        "logoAssetId": { "$ref": "#/$defs/id" },
+        "tokens": { "type": "object", "additionalProperties": { "type": ["string", "number", "boolean"] } }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "outputMode": { "enum": ["directory", "single-html"] },
+        "navigation": { "enum": ["scroll", "buttons", "both", "presentation"] },
+        "embedOnlyReferencedData": { "type": "boolean", "default": true },
+        "includeMapSummary": { "type": "boolean", "default": true },
+        "analytics": { "type": "boolean", "const": false }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+      "additionalProperties": true
+    }
+  }
+}

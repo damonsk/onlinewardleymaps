@@ -1,0 +1,241 @@
+backlog_version: "0.1"
+status: "Repository audit complete; M0 evidence in progress"
+principles:
+  - "Order work by dependency and risk reduction."
+  - "Keep the existing application releasable."
+  - "Every persisted change has migration and round-trip tests."
+  - "Each epic exits through a usable vertical slice."
+
+epics:
+  - id: "EPIC-000"
+    title: "Repository audit and baseline"
+    milestone: "M0"
+    requirements: ["CTX-001", "CTX-002", "CTX-003", "TST-001", "AGT-001"]
+    dependencies: []
+    exit_criteria:
+      - "Clean checkout builds and runs from recorded commands."
+      - "Critical current flows have characterization tests."
+      - "Format, identity, renderer, state, undo, and deployment are documented."
+    tasks:
+      - id: "AUD-001"
+        title: "Record exact fork, branch, commit, upstream, and licences"
+      - id: "AUD-002"
+        title: "Run install, development, build, test, lint, type-check, and deployment paths"
+      - id: "AUD-003"
+        title: "Trace create/move node, edge edit, open, save/export, and undo/redo flows"
+      - id: "AUD-004"
+        title: "Inventory domain representations, coordinate semantics, and stable identity"
+      - id: "AUD-005"
+        title: "Create current format and compatibility matrix"
+      - id: "AUD-006"
+        title: "Baseline accessibility, security, and performance"
+      - id: "AUD-007"
+        title: "Add minimum characterization suite"
+      - id: "AUD-008"
+        title: "Map target architecture responsibilities to actual modules"
+
+  - id: "EPIC-010"
+    title: "Identity, schema versioning, and test harness"
+    milestone: "M1"
+    requirements: ["MOD-002", "FMT-001", "FMT-002", "FMT-003", "FMT-004", "FMT-005", "TST-002", "TST-003", "TST-005"]
+    dependencies: ["EPIC-000"]
+    exit_criteria:
+      - "Stable IDs survive rename, reorder, save, and reload."
+      - "Supported legacy inputs migrate deterministically."
+      - "Native round-trip and diagnostic tests run in CI."
+    tasks:
+      - id: "ID-001"
+        title: "Approve repository-specific stable ID strategy"
+      - id: "ID-002"
+        title: "Implement legacy ID mapping or migration"
+      - id: "FMT-001"
+        title: "Add schema-version detection and structured diagnostics"
+      - id: "FMT-002"
+        title: "Implement sequential migration harness"
+      - id: "FMT-003"
+        title: "Canonicalize deterministic serialization"
+      - id: "COR-001"
+        title: "Create project-owned fixture manifest and first synthetic maps"
+      - id: "CI-001"
+        title: "Add migration, schema, round-trip, and documentation validation gates"
+
+  - id: "EPIC-020"
+    title: "Strategic graph and view compatibility seam"
+    milestone: "M2"
+    requirements: ["MOD-001", "MOD-003", "MOD-004", "PRJ-001", "TST-004"]
+    dependencies: ["EPIC-010"]
+    exit_criteria:
+      - "Current Wardley view renders through a stable adapter."
+      - "Domain tests run without a browser."
+      - "Renderer-neutral semantic snapshots are available."
+    tasks:
+      - id: "ARCH-001"
+        title: "Create graph facade over current state"
+      - id: "ARCH-002"
+        title: "Represent current coordinates in a default Wardley view"
+      - id: "ARCH-003"
+        title: "Define application command/query boundary"
+      - id: "ARCH-004"
+        title: "Define resolved display graph contract"
+      - id: "ARCH-005"
+        title: "Adapt existing renderer and prove equivalence"
+      - id: "ARCH-006"
+        title: "Enforce or review dependency direction"
+
+  - id: "EPIC-030"
+    title: "Composite nodes"
+    milestone: "M3"
+    requirements: ["CMP-001", "CMP-002", "CMP-003", "CMP-004", "CMP-005", "CMP-006", "CMP-007", "CMP-008", "CMP-009", "CMP-010", "CMP-011", "CMP-012", "CMP-013", "CMP-014", "CMP-015", "CMP-016"]
+    dependencies: ["EPIC-020"]
+    exit_criteria:
+      - "Create/collapse/reload/expand is lossless and undoable."
+      - "Boundary-edge provenance is inspectable."
+      - "Current maps remain unaffected."
+    tasks:
+      - id: "CMP-DEV-001"
+        title: "Implement membership closure, validation, and cycle detection"
+      - id: "CMP-DEV-002"
+        title: "Implement boundary-edge classification and bundling"
+      - id: "CMP-DEV-003"
+        title: "Render authored composite fixture behind feature flag"
+      - id: "CMP-DEV-004"
+        title: "Add lasso/multi-select and accessible selection path"
+      - id: "CMP-DEV-005"
+        title: "Add create, collapse, expand, dissolve, and proxy movement commands"
+      - id: "CMP-DEV-006"
+        title: "Integrate undo/redo and persistence"
+      - id: "CMP-DEV-007"
+        title: "Add metric aggregation and nested precedence"
+      - id: "CMP-DEV-008"
+        title: "Add legacy export diagnostics, accessibility, and performance tests"
+
+  - id: "EPIC-040"
+    title: "Temporal foundation"
+    milestone: "M4"
+    requirements: ["TMP-001", "TMP-002", "TMP-003", "TMP-004", "TMP-005", "TMP-006", "TMP-007", "TMP-008", "TMP-009", "TMP-010", "TMP-011", "TMP-012", "TMP-013", "TMP-014"]
+    dependencies: ["EPIC-020"]
+    exit_criteria:
+      - "Exact and intermediate states resolve deterministically."
+      - "Keyframes persist and are undoable."
+      - "Static maps retain current behaviour."
+    tasks:
+      - id: "TMP-DEV-001"
+        title: "Implement base-plus-patch keyframe resolver"
+      - id: "TMP-DEV-002"
+        title: "Implement property transition policies"
+      - id: "TMP-DEV-003"
+        title: "Add keyframe editor and timeline controls"
+      - id: "TMP-DEV-004"
+        title: "Integrate undo/redo, persistence, and change summaries"
+      - id: "TMP-DEV-005"
+        title: "Add node/edge lifecycle and composite collapse transitions"
+      - id: "TMP-DEV-006"
+        title: "Add reduced-motion, browser, and performance tests"
+
+  - id: "EPIC-050"
+    title: "Static story publishing"
+    milestone: "M5"
+    requirements: ["STR-001", "STR-002", "STR-003", "STR-004", "STR-005", "STR-006", "STR-007", "STR-008", "STR-009", "STR-010", "STR-011", "STR-012", "STR-013", "STR-014", "SEC-001", "SEC-003", "SEC-005", "PRV-001"]
+    dependencies: ["EPIC-030", "EPIC-040"]
+    exit_criteria:
+      - "A representative story compiles to secure static output."
+      - "Browser tests prove navigation and map state."
+      - "Private data is excluded by default."
+    tasks:
+      - id: "STR-DEV-001"
+        title: "Finalize story schema and reference validator"
+      - id: "STR-DEV-002"
+        title: "Build one-chapter deterministic static compiler"
+      - id: "STR-DEV-003"
+        title: "Add sanitization, safe assets, and data minimization"
+      - id: "STR-DEV-004"
+        title: "Build multi-chapter scroll/button runtime"
+      - id: "STR-DEV-005"
+        title: "Add responsive map summary and reduced motion"
+      - id: "STR-DEV-006"
+        title: "Add story authoring UI and preview"
+      - id: "STR-DEV-007"
+        title: "Add deterministic, security, accessibility, and browser gates"
+
+  - id: "EPIC-060"
+    title: "Metrics and alternative projections"
+    milestone: "M6"
+    requirements: ["PRJ-001", "PRJ-002", "PRJ-003", "PRJ-004", "PRJ-005", "PRJ-006", "PRJ-007", "PRJ-008", "PRJ-009", "PRJ-010", "MET-001", "MET-002", "MET-003", "MET-004", "MET-005", "MET-006", "SEC-002"]
+    dependencies: ["EPIC-020"]
+    exit_criteria:
+      - "Named metric projections are deterministic and inspectable."
+      - "Wardley view remains equivalent and first-class."
+      - "Missing data and legacy loss are explicit."
+    tasks:
+      - id: "MET-DEV-001"
+        title: "Implement metric definitions, values, provenance, and validation"
+      - id: "MET-DEV-002"
+        title: "Implement ID-based CSV import/export"
+      - id: "PRJ-DEV-001"
+        title: "Implement axis sources, scales, and missing-value policies"
+      - id: "PRJ-DEV-002"
+        title: "Implement Wardley projection adapter equivalence"
+      - id: "PRJ-DEV-003"
+        title: "Implement metric projection, pins, overrides, and constraints"
+      - id: "PRJ-DEV-004"
+        title: "Add provenance inspector and composite aggregation"
+      - id: "PRJ-DEV-005"
+        title: "Add projection switch and timeline/story integration"
+      - id: "PRJ-DEV-006"
+        title: "Add determinism, formula-security, and performance gates"
+
+  - id: "EPIC-070"
+    title: "Scenario branching"
+    milestone: "M7"
+    requirements: ["SCN-001", "SCN-002", "SCN-003", "SCN-004", "SCN-005", "SCN-006", "SCN-007", "SCN-008", "SCN-009"]
+    dependencies: ["EPIC-040"]
+    exit_criteria:
+      - "Branches share parent history and isolate changes."
+      - "Assumptions and comparisons are first-class."
+    tasks:
+      - id: "SCN-DEV-001"
+        title: "Implement scenario ancestry and exact branch resolution"
+      - id: "SCN-DEV-002"
+        title: "Add assumption records and editor"
+      - id: "SCN-DEV-003"
+        title: "Add structured scenario comparison"
+      - id: "SCN-DEV-004"
+        title: "Integrate persistence, stories, and ancestry validation"
+
+  - id: "EPIC-080"
+    title: "Reusable components"
+    milestone: "M8"
+    requirements: ["RCP-001", "RCP-002", "RCP-003", "RCP-004", "RCP-005", "RCP-006", "RCP-007", "RCP-008"]
+    dependencies: ["EPIC-030", "EPIC-060"]
+    exit_criteria:
+      - "Definitions and instances retain identity and provenance."
+      - "Updates are reviewable and never overwrite local choices silently."
+    tasks:
+      - id: "RCP-DEV-001"
+        title: "Define component definition, version, and instance mapping"
+      - id: "RCP-DEV-002"
+        title: "Create document-local definitions and instances"
+      - id: "RCP-DEV-003"
+        title: "Implement local overrides and detach"
+      - id: "RCP-DEV-004"
+        title: "Implement version diff, conflicts, and atomic update proposal"
+      - id: "RCP-DEV-005"
+        title: "Add local library, provenance, persistence, and tests"
+
+  - id: "EPIC-090"
+    title: "Assisted analysis and ecosystem"
+    milestone: "M9"
+    requirements: []
+    dependencies: ["EPIC-050", "EPIC-060", "EPIC-070", "EPIC-080"]
+    exit_criteria:
+      - "Any assistance is evidence-linked, optional, and reviewable."
+      - "Core product remains usable without external AI or services."
+    tasks:
+      - id: "AI-001"
+        title: "Draft AI assistance and data-transfer ADR"
+      - id: "AI-002"
+        title: "Prototype map explanation and change summary as proposals"
+      - id: "ECO-001"
+        title: "Define governed projection/export extension contracts"
+      - id: "COR-002"
+        title: "Evaluate public rights-cleared benchmark release"

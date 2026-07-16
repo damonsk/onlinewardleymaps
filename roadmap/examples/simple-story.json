@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "0.1-draft",
+  "storyId": "story-service-evolution",
+  "title": "How the service evolves",
+  "description": "An invented two-chapter story that references the example map.",
+  "mapReference": {
+    "kind": "external",
+    "path": "simple-map.json",
+    "documentId": "map-example-strategic-service",
+    "expectedSchemaVersion": "0.1-draft"
+  },
+  "theme": {
+    "name": "Documentation example",
+    "mode": "light",
+    "tokens": {
+      "maxTextWidth": "42rem",
+      "showProgress": true
+    }
+  },
+  "chapters": [
+    {
+      "id": "chapter-current",
+      "title": "Current state",
+      "bodyMarkdown": "The current service depends on a relatively costly data pipeline and a platform core shown in detail.",
+      "state": {
+        "viewId": "view-wardley-current",
+        "scenarioId": "scenario-baseline",
+        "timelineId": "timeline-evolution",
+        "keyframeId": "keyframe-now",
+        "highlightEntityIds": ["node-data-pipeline"]
+      },
+      "camera": {
+        "center": { "x": 0.55, "y": 0.56 },
+        "zoom": 1.1,
+        "padding": 0.06,
+        "focusEntityIds": ["node-data-pipeline", "node-runtime", "node-observability"]
+      },
+      "transition": {
+        "durationMs": 700,
+        "easing": "ease-in-out",
+        "reducedMotion": "instant"
+      },
+      "prompts": [
+        {
+          "id": "prompt-risk",
+          "text": "Which dependency contributes most to current operational risk?",
+          "kind": "discussion"
+        }
+      ],
+      "speakerNotes": "Private presenter note: invite the group to inspect the data pipeline.",
+      "includeSpeakerNotesInPublicOutput": false
+    },
+    {
+      "id": "chapter-target",
+      "title": "Target state",
+      "bodyMarkdown": "The platform core is collapsed to communicate at a higher abstraction level, while the data pipeline moves toward the intended target state.",
+      "state": {
+        "viewId": "view-wardley-current",
+        "scenarioId": "scenario-baseline",
+        "timelineId": "timeline-evolution",
+        "keyframeId": "keyframe-target",
+        "highlightEntityIds": ["composite-platform-core", "node-data-pipeline"],
+        "compositeCollapseOverrides": {
+          "composite-platform-core": true
+        }
+      },
+      "camera": {
+        "center": { "x": 0.62, "y": 0.48 },
+        "zoom": 1.05,
+        "padding": 0.06,
+        "focusEntityIds": ["composite-platform-core", "node-data-pipeline"]
+      },
+      "transition": {
+        "durationMs": 900,
+        "easing": "ease-in-out",
+        "reducedMotion": "instant"
+      },
+      "prompts": [
+        {
+          "id": "prompt-assumption",
+          "text": "Which assumption must hold for this transition to succeed?",
+          "kind": "reflection"
+        }
+      ],
+      "includeSpeakerNotesInPublicOutput": false
+    }
+  ],
+  "assets": [],
+  "publication": {
+    "outputMode": "directory",
+    "navigation": "both",
+    "embedOnlyReferencedData": true,
+    "includeMapSummary": true,
+    "analytics": false
+  }
+}

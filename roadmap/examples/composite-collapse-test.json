@@ -1,0 +1,42 @@
+{
+  "fixtureId": "SYN-003",
+  "title": "Composite boundary-edge resolution example",
+  "input": {
+    "nodeIds": ["outside-a", "inside-1", "inside-2", "outside-b"],
+    "edges": [
+      { "id": "e1", "sourceId": "outside-a", "targetId": "inside-1", "kind": "depends-on", "directed": true },
+      { "id": "e2", "sourceId": "outside-a", "targetId": "inside-2", "kind": "depends-on", "directed": true },
+      { "id": "e3", "sourceId": "inside-1", "targetId": "inside-2", "kind": "depends-on", "directed": true },
+      { "id": "e4", "sourceId": "inside-2", "targetId": "outside-b", "kind": "supplies", "directed": true }
+    ],
+    "composite": {
+      "id": "composite-inside",
+      "memberNodeIds": ["inside-1", "inside-2"],
+      "boundaryPolicy": "bundle-endpoint-kind"
+    }
+  },
+  "expected": {
+    "hiddenNodeIds": ["inside-1", "inside-2"],
+    "hiddenInternalEdgeIds": ["e3"],
+    "proxyNodeId": "composite-inside",
+    "edgeBundles": [
+      {
+        "sourceDisplayId": "outside-a",
+        "targetDisplayId": "composite-inside",
+        "kind": "depends-on",
+        "representedEdgeIds": ["e1", "e2"]
+      },
+      {
+        "sourceDisplayId": "composite-inside",
+        "targetDisplayId": "outside-b",
+        "kind": "supplies",
+        "representedEdgeIds": ["e4"]
+      }
+    ]
+  },
+  "invariants": [
+    "The original graph still contains all four edges.",
+    "The represented edge ID sets exactly partition the boundary edges.",
+    "Expanding the composite restores the original display endpoints."
+  ]
+}

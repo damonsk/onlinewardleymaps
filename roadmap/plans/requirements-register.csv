@@ -1,0 +1,123 @@
+id,area,title,priority,status,target_milestone,source_document,acceptance_summary
+CTX-001,Context,Evolve the existing application rather than rewrite it,Must,Draft,M0-M9,adr/0001-evolution-not-rewrite.md,"New work uses audited seams, adapters, and characterization tests unless an accepted ADR justifies replacement."
+CTX-002,Context,Preserve supported current maps and workflows,Must,Draft,M0-M9,docs/04-target-architecture-and-migration.md,Current supported files and core workflows remain available or follow an approved migration/deprecation process.
+CTX-003,Context,Audit repository before architecture implementation,Must,Draft,M0,docs/02-current-state-assessment-and-repository-audit.md,A reproducible repository audit and compatibility matrix exist before major feature work.
+MOD-001,Model,Strategic graph is the durable source of truth,Must,Draft,M2,adr/0002-strategic-graph-is-source-of-truth.md,"Nodes, edges, identity, metadata, and lifecycle are not owned by renderer coordinates."
+MOD-002,Model,Use stable identifiers,Must,Draft,M1,adr/0003-stable-identifiers-and-schema-versioning.md,"Durable entities retain identity across rename, reorder, views, keyframes, save, and load."
+MOD-003,Model,Store position in views or projection output,Must,Draft,M2,adr/0005-projections-are-separated-from-domain-graph.md,A node does not have one universal screen coordinate; current coordinates map to a default Wardley view.
+MOD-004,Model,Resolve a renderer-neutral display graph,Must,Draft,M2,docs/04-target-architecture-and-migration.md,"Renderer input expresses visible entities, proxy nodes, bundles, normalized coordinates, and provenance without mutating the domain graph."
+FMT-001,File format,Version advanced persisted documents,Must,Draft,M1,docs/05-file-format-and-versioning.md,Advanced documents include an explicit schema version and supported-version diagnostics.
+FMT-002,File format,Use sequential deterministic migrations,Must,Draft,M1,docs/05-file-format-and-versioning.md,Each supported source version migrates through tested sequential transformations.
+FMT-003,File format,Serialize deterministically,Must,Draft,M1,docs/05-file-format-and-versioning.md,Equivalent state produces equivalent canonical output apart from declared variable fields.
+FMT-004,File format,Preserve unknown compatible data,Must,Draft,M1,docs/05-file-format-and-versioning.md,Readers/writers preserve unknown compatible fields where the selected format permits.
+FMT-005,File format,Report lossy legacy export,Must,Draft,M1,docs/05-file-format-and-versioning.md,Flattening or unsupported advanced features are reported before export.
+CMP-001,Composite,Create composite from valid multi-selection,Must,Draft,M3,docs/06-feature-composite-nodes.md,A user can create a named composite from arbitrary valid selected nodes.
+CMP-002,Composite,Preserve member graph data,Must,Draft,M3,docs/06-feature-composite-nodes.md,Composite creation does not remove member nodes or original edges.
+CMP-003,Composite,Collapse in active view only,Must,Draft,M3,docs/06-feature-composite-nodes.md,Collapse hides members/internal edges only in the active view and displays a proxy.
+CMP-004,Composite,Expand losslessly,Must,Draft,M3,docs/06-feature-composite-nodes.md,"Expand restores exact member identity, topology, and stored view state."
+CMP-005,Composite,Trace boundary edge provenance,Must,Draft,M3,docs/06-feature-composite-nodes.md,Every displayed bundle retains all represented original edge IDs.
+CMP-006,Composite,Support undo and redo,Must,Draft,M3,docs/06-feature-composite-nodes.md,"Create, collapse, expand, dissolve, and membership edits are atomic and reversible."
+CMP-007,Composite,Persist composites,Must,Draft,M3,docs/06-feature-composite-nodes.md,"Save and reload preserve definitions, membership, policies, and view collapse state."
+CMP-008,Composite,Support duplicate labels,Must,Draft,M3,docs/06-feature-composite-nodes.md,Composite behaviour relies on stable IDs rather than labels.
+CMP-009,Composite,Reject membership cycles,Should,Draft,M3,docs/06-feature-composite-nodes.md,Cyclic or missing composite references produce actionable diagnostics.
+CMP-010,Composite,Resolve nested collapse deterministically,Should,Draft,M3,docs/06-feature-composite-nodes.md,Ancestor/descendant collapse state follows a defined precedence.
+CMP-011,Composite,Apply explicit proxy position policy,Should,Draft,M3,docs/06-feature-composite-nodes.md,Composite proxy placement follows declared policy and supports manual override.
+CMP-012,Composite,Aggregate metrics by definition,Should,Draft,M3,docs/06-feature-composite-nodes.md,Composite metrics use per-metric aggregation rather than an assumed mean.
+CMP-013,Composite,Diagnose legacy flattening,Should,Draft,M3,docs/06-feature-composite-nodes.md,Legacy export reports chosen abstraction/flattening and lost semantics.
+CMP-014,Composite,Keyboard collapse and expand,Should,Draft,M3,docs/06-feature-composite-nodes.md,Composite commands can be completed without a pointer.
+CMP-015,Composite,Accessible alternative to lasso,Should,Draft,M3,docs/06-feature-composite-nodes.md,A searchable/list-based selection route exists.
+CMP-016,Composite,Meet audited interaction budget,Should,Draft,M3,docs/06-feature-composite-nodes.md,Composite resolution remains responsive for the representative medium corpus.
+TMP-001,Temporal,Manage keyframes,Must,Draft,M4,docs/07-feature-temporal-maps.md,"Create, rename, move, and delete keyframes."
+TMP-002,Temporal,Resolve exact time deterministically,Must,Draft,M4,docs/07-feature-temporal-maps.md,Scrubbing or direct input returns the same semantic state for the same inputs.
+TMP-003,Temporal,Interpolate positions by policy,Must,Draft,M4,docs/07-feature-temporal-maps.md,Normalized positions use the declared easing and transition rule.
+TMP-004,Temporal,Handle categorical and text transitions explicitly,Must,Draft,M4,docs/07-feature-temporal-maps.md,Non-numeric values use declared step or cross-fade behaviour.
+TMP-005,Temporal,Preserve lifecycle across time,Must,Draft,M4,docs/07-feature-temporal-maps.md,Earlier and later states retain correct node and edge existence/status.
+TMP-006,Temporal,Create keyframe for intermediate edits,Must,Draft,M4,docs/07-feature-temporal-maps.md,Editing between keyframes is explicit and never silently mutates a neighbour.
+TMP-007,Temporal,Persist and undo timeline edits,Must,Draft,M4,docs/07-feature-temporal-maps.md,Timeline authoring survives reload and participates in undo/redo.
+TMP-008,Temporal,Keep entity identity across keyframes,Must,Draft,M4,docs/07-feature-temporal-maps.md,A component has one stable ID through temporal states.
+TMP-009,Temporal,Keyframe composite collapse state,Must,Draft,M4,docs/07-feature-temporal-maps.md,Collapse may vary over time without changing membership.
+TMP-010,Temporal,Distinguish projection change from strategic movement,Must,Draft,M4,docs/07-feature-temporal-maps.md,Axis/frame changes are visibly identified.
+TMP-011,Temporal,Reference temporal state from stories,Must,Draft,M4,docs/07-feature-temporal-maps.md,Story chapters can resolve keyframe or exact-time state.
+TMP-012,Temporal,Support keyboard and reduced motion,Must,Draft,M4,docs/07-feature-temporal-maps.md,Timeline controls and playback have accessible alternatives.
+TMP-013,Temporal,Diagnose invalid temporal references,Must,Draft,M4,docs/07-feature-temporal-maps.md,Missing or inconsistent keyframe/entity references are not silently ignored.
+TMP-014,Temporal,Preserve static map behaviour,Must,Draft,M4,docs/07-feature-temporal-maps.md,A document without timelines behaves as it did previously.
+PRJ-001,Projection,Represent current Wardley view through the projection contract,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,The adapter reproduces current Wardley semantics without visible regression.
+PRJ-002,Projection,Create named projection views,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,"Users can define x/y sources, scales, labels, and missing-value behaviour."
+PRJ-003,Projection,Produce normalized deterministic coordinates,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Equivalent inputs and configuration produce equivalent normalized output.
+PRJ-004,Projection,Do not mutate graph topology,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Switching projection leaves node/edge identity and relationships unchanged.
+PRJ-005,Projection,Explain position provenance,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,"Users can inspect values, scales, constraints, and overrides used."
+PRJ-006,Projection,Handle missing values explicitly,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Every projection defines and reports its missing-value policy.
+PRJ-007,Projection,Support reversible pins and overrides,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Manual changes are distinguishable from calculated positions and can be reset.
+PRJ-008,Projection,Project composites by declared policy,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Collapsed composites use explicit aggregation/position rules.
+PRJ-009,Projection,Support reduced-motion projection switch,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Frame changes remain understandable without movement.
+PRJ-010,Projection,Diagnose conflicting constraints,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Conflicts do not create nondeterministic placement.
+MET-001,Metrics,Define typed metrics,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,"Support release-approved numeric, ordinal, categorical, boolean, and time-series definitions."
+MET-002,Metrics,Retain metric provenance and confidence,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,"Values preserve unit, status, confidence, time, and evidence when supplied."
+MET-003,Metrics,Import metrics by stable identity,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,CSV matching uses IDs or explicit ambiguity resolution.
+MET-004,Metrics,Version derived measures,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Graph measures record algorithm and configuration versions.
+MET-005,Metrics,Define per-metric aggregation,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Composite aggregation is explicit for each metric.
+MET-006,Metrics,Diagnose metric loss on legacy export,Must,Draft,M6,docs/08-feature-projection-engine-and-metrics.md,Unsupported metric/projection information is reported.
+STR-001,Story,Manage story chapters,Must,Draft,M5,docs/09-feature-story-publishing.md,"Create, reorder, rename, and delete chapters."
+STR-002,Story,Reference valid map states,Must,Draft,M5,docs/09-feature-story-publishing.md,Each chapter references a valid view and optional timeline/scenario state.
+STR-003,Story,Validate references before build,Must,Draft,M5,docs/09-feature-story-publishing.md,Broken references fail or warn according to explicit policy before output.
+STR-004,Story,Build a static directory,Must,Draft,M5,docs/09-feature-story-publishing.md,Output works from a simple static web server without editor backend.
+STR-005,Story,Optionally build single-file HTML,Could,Draft,M5,docs/09-feature-story-publishing.md,"When included in release scope, documented size and security limits apply."
+STR-006,Story,Keep navigation state deterministic,Must,Draft,M5,docs/09-feature-story-publishing.md,Scroll and explicit controls activate the same chapter states.
+STR-007,Story,Minimize published data,Must,Draft,M5,docs/09-feature-story-publishing.md,"Output includes only selected narrative, map, and asset data by default."
+STR-008,Story,Sanitize authored content,Must,Draft,M5,docs/09-feature-story-publishing.md,Published output cannot execute arbitrary map-authored scripts.
+STR-009,Story,Support keyboard and reduced motion,Must,Draft,M5,docs/09-feature-story-publishing.md,Story navigation and transitions are accessible.
+STR-010,Story,Provide non-visual map summary,Must,Draft,M5,docs/09-feature-story-publishing.md,A structured map/entity representation accompanies the visual experience.
+STR-011,Story,Build deterministically,Must,Draft,M5,docs/09-feature-story-publishing.md,Equivalent source and compiler version produce equivalent normalized output.
+STR-012,Story,Support headless browser assertions,Must,Draft,M5,docs/09-feature-story-publishing.md,"Tests can inspect active chapter, entity state, navigation, and errors."
+STR-013,Story,Diagnose stale references,Must,Draft,M5,docs/09-feature-story-publishing.md,Deleted views/keyframes/assets produce actionable build diagnostics.
+STR-014,Story,Exclude speaker notes by default,Must,Draft,M5,docs/09-feature-story-publishing.md,Private notes require explicit public inclusion.
+RCP-001,Reusable components,Create versioned component definition,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,A valid composite/subgraph can become a versioned reusable definition.
+RCP-002,Reusable components,Maintain definition-to-instance identity mapping,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,Multiple instances remain distinct while tracing source entities.
+RCP-003,Reusable components,Preserve local view state on source updates,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,Source position changes do not overwrite local positions silently.
+RCP-004,Reusable components,Present update proposal,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,A newer definition produces a reviewable structured diff.
+RCP-005,Reusable components,Expose override conflicts,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,Local changes that conflict with source updates are explicit.
+RCP-006,Reusable components,Apply or reject atomically,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,Update review has an atomic result and audit record.
+RCP-007,Reusable components,Detach safely,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,Detaching preserves the current local graph and provenance.
+RCP-008,Reusable components,Persist mappings and versions,Should,Draft,M8,docs/10-feature-reusable-components-and-scenarios.md,Save/load and migration retain definition/instance state.
+SCN-001,Scenarios,Branch from exact parent time,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,A scenario is created from a deterministic parent state.
+SCN-002,Scenarios,Share history before branch,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,Unaffected parent history is reused rather than semantically duplicated.
+SCN-003,Scenarios,Isolate sibling edits,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,Changes in one branch do not mutate siblings.
+SCN-004,Scenarios,Record assumptions,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,Scenario assumptions are first-class and evidence-linkable.
+SCN-005,Scenarios,Resolve branches deterministically,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,Every scenario/time has reproducible state.
+SCN-006,Scenarios,Compare by stable identity,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,"Structured differences use IDs and semantics, not labels."
+SCN-007,Scenarios,Validate ancestry,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,Missing/cyclic parent references fail safely.
+SCN-008,Scenarios,Reference scenarios from stories,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,A chapter can target scenario-specific state.
+SCN-009,Scenarios,Persist scenario tree,Should,Draft,M7,docs/10-feature-reusable-components-and-scenarios.md,Save/load and migrations preserve branches and assumptions.
+TST-001,Testing,Characterize current critical behaviour,Must,Draft,M0,docs/11-testing-and-validation-strategy.md,Baseline open/edit/save/render/undo behaviour has automated protection.
+TST-002,Testing,Use unit and property tests for invariants,Must,Draft,M1-M9,docs/11-testing-and-validation-strategy.md,"Core identity, round-trip, collapse, projection, and timeline invariants are exercised."
+TST-003,Testing,Maintain canonical corpus,Must,Draft,M1-M9,docs/12-canonical-map-corpus.md,Rights-cleared fixtures provide semantic expected output and provenance.
+TST-004,Testing,Pair visual regression with semantic snapshots,Must,Draft,M2-M9,docs/11-testing-and-validation-strategy.md,"Pixel checks do not replace topology, identity, or normalized geometry assertions."
+TST-005,Testing,Test native and legacy round trips,Must,Draft,M1-M9,docs/11-testing-and-validation-strategy.md,Read/write/read and migration matrices preserve declared semantics.
+TST-006,Testing,Test stories in a headless browser,Must,Draft,M5,docs/11-testing-and-validation-strategy.md,"Navigation, state, responsive, and runtime error behaviour are automated."
+TST-007,Testing,Include accessibility and security gates,Must,Draft,M0-M9,docs/11-testing-and-validation-strategy.md,Automated and manual checks cover representative feature flows.
+TST-008,Testing,Maintain requirement traceability,Should,Draft,M1-M9,docs/11-testing-and-validation-strategy.md,Approved requirements link to tests and fixtures.
+COR-001,Corpus,Record fixture provenance,Must,Draft,M1,docs/12-canonical-map-corpus.md,"Every fixture states origin, purpose, and source details."
+COR-002,Corpus,Classify rights and distribution,Must,Draft,M1,docs/12-canonical-map-corpus.md,Every fixture has R0-R4 rights class and public/private scope.
+COR-003,Corpus,Store semantic expected output,Must,Draft,M1-M9,docs/12-canonical-map-corpus.md,"Canonical fixtures define IDs, topology, normalized state, and diagnostics."
+COR-004,Corpus,Segregate private fixtures,Must,Draft,M1-M9,docs/12-canonical-map-corpus.md,Restricted material cannot enter public repository or build artifacts.
+COR-005,Corpus,Dual-review exact transcriptions,Should,Draft,M1-M9,docs/12-canonical-map-corpus.md,One person encodes and another independently verifies permitted source material.
+COR-006,Corpus,Version fixture corrections,Should,Draft,M1-M9,docs/12-canonical-map-corpus.md,Fixture changes retain stable IDs and versioned expected output.
+COR-007,Corpus,Start public corpus with project-owned examples,Must,Draft,M1,docs/12-canonical-map-corpus.md,Development is not blocked on third-party permissions.
+SEC-001,Security,Prevent content script execution,Must,Draft,M0-M9,docs/13-security-privacy-accessibility.md,Imported/authored text cannot execute script in editor or story.
+SEC-002,Security,Prevent arbitrary formula code,Must,Draft,M6,docs/13-security-privacy-accessibility.md,"Projection/metric expressions use constrained, bounded evaluation."
+SEC-003,Security,Protect asset and output paths,Must,Draft,M5,docs/13-security-privacy-accessibility.md,Story compilation prevents path traversal and unsafe remote fetches.
+SEC-004,Security,Bound malicious or oversized inputs,Must,Draft,M0-M9,docs/13-security-privacy-accessibility.md,Size/depth/count/cycle limits fail safely.
+SEC-005,Security,Support restrictive story CSP,Must,Draft,M5,docs/13-security-privacy-accessibility.md,Static story runtime works under the defined content security policy.
+PRV-001,Privacy,Exclude private data from public stories,Must,Draft,M5,docs/13-security-privacy-accessibility.md,"Speaker notes, hidden metadata, and unselected graph data are excluded by default."
+PRV-002,Privacy,No undisclosed data upload,Must,Draft,M0-M9,docs/13-security-privacy-accessibility.md,"Map content leaves the device only through explicit, disclosed user action."
+PRV-003,Privacy,Protect restricted corpus material,Must,Draft,M1-M9,docs/13-security-privacy-accessibility.md,Private fixtures remain access-controlled and out of public output.
+ACC-001,Accessibility,Keyboard-equivalent primary workflows,Must,Draft,M0-M9,docs/13-security-privacy-accessibility.md,"Editing, composite, timeline, projection, and story flows work without a pointer."
+ACC-002,Accessibility,Provide structured textual map access,Must,Draft,M2-M9,docs/13-security-privacy-accessibility.md,"Entities, edges, view, time, metrics, and selection are available non-visually."
+ACC-003,Accessibility,Support reduced motion,Must,Draft,M3-M9,docs/13-security-privacy-accessibility.md,Motion can be replaced by immediate or minimal transitions.
+ACC-004,Accessibility,Manage focus logically,Must,Draft,M0-M9,docs/13-security-privacy-accessibility.md,"Collapse, expand, dialogs, and chapter activation preserve predictable focus."
+ACC-005,Accessibility,Avoid colour/motion-only meaning,Must,Draft,M0-M9,docs/13-security-privacy-accessibility.md,All visual encodings have non-colour and non-motion cues.
+AGT-001,Agent workflow,Inspect repository before modification,Must,Draft,M0-M9,docs/15-agent-development-guide.md,"Agents cite real modules, symbols, and baseline commands."
+AGT-002,Agent workflow,Use approved work orders,Must,Draft,M0-M9,docs/15-agent-development-guide.md,"Each implementation task defines delta, compatibility, tests, and non-goals."
+AGT-003,Agent workflow,Record material decisions in ADRs,Must,Draft,M0-M9,docs/15-agent-development-guide.md,"Architecture, format, identity, security, and runtime decisions are explicit."
+AGT-004,Agent workflow,Implement bounded vertical changes,Must,Draft,M0-M9,docs/15-agent-development-guide.md,Agents avoid unrelated rewrites and keep the repository buildable.
+AGT-005,Agent workflow,Produce change report and evidence,Must,Draft,M0-M9,docs/15-agent-development-guide.md,"Completion includes commands, tests, compatibility, limits, and rollback."

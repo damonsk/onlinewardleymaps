@@ -12,9 +12,9 @@ Wardley Mapping courtesy of Simon Wardley, CC BY-SA 4.0. To learn more, see [Sim
 
 ## Running locally
 
-Dependencies for running locally: Node.js and Yarn.
+Use Node.js 22 (the CI and container baseline) and Yarn 1 through Corepack. Next.js 16 requires Node.js 20.9 or newer.
 
-    `npm install yarn -g`
+    `corepack enable`
     
 
 Change directory to frontend.
@@ -23,7 +23,7 @@ Change directory to frontend.
 
 Install dependencies
 
-    `yarn install`
+    `yarn install --frozen-lockfile`
 
 Commands:
 

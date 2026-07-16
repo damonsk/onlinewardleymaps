@@ -1,0 +1,348 @@
+{
+  "schemaVersion": "0.1-draft",
+  "documentId": "map-example-strategic-service",
+  "title": "Invented Strategic Service Example",
+  "description": "A project-owned example used to exercise composites, metrics, projections, and keyframes.",
+  "metadata": {
+    "createdAt": "2026-07-16T08:12:00Z",
+    "updatedAt": "2026-07-16T08:12:00Z",
+    "authors": ["Project documentation example"],
+    "sourceFormat": "strategic-map-json",
+    "sourceVersion": "0.1-draft",
+    "licence": "Project-owned example",
+    "tags": ["synthetic", "documentation"]
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "node-user-need",
+        "kind": "need",
+        "label": "Reliable decisions",
+        "description": "A user need at the top of the value chain.",
+        "attributes": {
+          "wardleyVisibility": 0.95,
+          "wardleyEvolution": 0.70
+        },
+        "metricValues": {
+          "metric-cost": { "value": 10, "status": "estimated", "confidence": 0.7 },
+          "metric-risk": { "value": 8, "status": "estimated", "confidence": 0.6 }
+        },
+        "tags": ["user-facing"]
+      },
+      {
+        "id": "node-decision-service",
+        "kind": "component",
+        "label": "Decision service",
+        "attributes": {
+          "wardleyVisibility": 0.78,
+          "wardleyEvolution": 0.52
+        },
+        "metricValues": {
+          "metric-cost": { "value": 40, "status": "estimated", "confidence": 0.75 },
+          "metric-risk": { "value": 7, "status": "estimated", "confidence": 0.65 }
+        }
+      },
+      {
+        "id": "node-data-pipeline",
+        "kind": "component",
+        "label": "Data pipeline",
+        "attributes": {
+          "wardleyVisibility": 0.52,
+          "wardleyEvolution": 0.42
+        },
+        "metricValues": {
+          "metric-cost": { "value": 75, "status": "measured", "confidence": 0.9 },
+          "metric-risk": { "value": 9, "status": "estimated", "confidence": 0.8 }
+        }
+      },
+      {
+        "id": "node-runtime",
+        "kind": "component",
+        "label": "Runtime platform",
+        "attributes": {
+          "wardleyVisibility": 0.34,
+          "wardleyEvolution": 0.66
+        },
+        "metricValues": {
+          "metric-cost": { "value": 55, "status": "measured", "confidence": 0.95 },
+          "metric-risk": { "value": 4, "status": "measured", "confidence": 0.9 }
+        }
+      },
+      {
+        "id": "node-observability",
+        "kind": "component",
+        "label": "Observability",
+        "attributes": {
+          "wardleyVisibility": 0.28,
+          "wardleyEvolution": 0.72
+        },
+        "metricValues": {
+          "metric-cost": { "value": 25, "status": "measured", "confidence": 0.9 },
+          "metric-risk": { "value": 5, "status": "estimated", "confidence": 0.75 }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-need-service",
+        "sourceId": "node-user-need",
+        "targetId": "node-decision-service",
+        "kind": "depends-on",
+        "directed": true,
+        "attributes": {}
+      },
+      {
+        "id": "edge-service-data",
+        "sourceId": "node-decision-service",
+        "targetId": "node-data-pipeline",
+        "kind": "depends-on",
+        "directed": true,
+        "attributes": {}
+      },
+      {
+        "id": "edge-service-runtime",
+        "sourceId": "node-decision-service",
+        "targetId": "node-runtime",
+        "kind": "depends-on",
+        "directed": true,
+        "attributes": {}
+      },
+      {
+        "id": "edge-data-runtime",
+        "sourceId": "node-data-pipeline",
+        "targetId": "node-runtime",
+        "kind": "depends-on",
+        "directed": true,
+        "attributes": {}
+      },
+      {
+        "id": "edge-data-observability",
+        "sourceId": "node-data-pipeline",
+        "targetId": "node-observability",
+        "kind": "monitored-by",
+        "directed": true,
+        "attributes": {}
+      }
+    ]
+  },
+  "composites": [
+    {
+      "id": "composite-platform-core",
+      "label": "Platform core",
+      "description": "A non-destructive abstraction over runtime and observability.",
+      "memberRefs": [
+        { "type": "node", "id": "node-runtime" },
+        { "type": "node", "id": "node-observability" }
+      ],
+      "boundaryPolicy": "bundle-endpoint-kind",
+      "positionPolicy": { "kind": "centroid" },
+      "metricAggregation": {
+        "metric-cost": { "kind": "sum" },
+        "metric-risk": { "kind": "max" }
+      },
+      "attributes": {}
+    }
+  ],
+  "metricDefinitions": [
+    {
+      "id": "metric-cost",
+      "name": "Annual operating cost",
+      "description": "Invented relative cost value for the example.",
+      "valueType": "number",
+      "unit": "relative-points",
+      "aggregation": { "kind": "sum" },
+      "provenanceExpectation": "recommended",
+      "timeVarying": true
+    },
+    {
+      "id": "metric-risk",
+      "name": "Operational risk",
+      "valueType": "number",
+      "unit": "score-0-10",
+      "aggregation": { "kind": "max" },
+      "provenanceExpectation": "recommended",
+      "timeVarying": true
+    }
+  ],
+  "evidenceRecords": [],
+  "projections": [
+    {
+      "id": "projection-wardley",
+      "name": "Wardley",
+      "type": "wardley",
+      "xAxis": {
+        "id": "axis-evolution",
+        "label": "Evolution",
+        "source": { "kind": "wardley-evolution", "ref": "attributes.wardleyEvolution" },
+        "scale": { "kind": "linear" },
+        "direction": "ascending",
+        "domain": [0, 1],
+        "clamp": true
+      },
+      "yAxis": {
+        "id": "axis-visibility",
+        "label": "Visibility",
+        "source": { "kind": "wardley-visibility", "ref": "attributes.wardleyVisibility" },
+        "scale": { "kind": "linear" },
+        "direction": "ascending",
+        "domain": [0, 1],
+        "clamp": true
+      },
+      "missingValuePolicy": { "kind": "preserve-manual", "markInView": true },
+      "constraints": [],
+      "compositePositionPolicy": { "kind": "centroid" },
+      "transitionDefaults": {
+        "position": "ease-in-out",
+        "visibility": "fade",
+        "categorical": "step-mid",
+        "text": "cross-fade"
+      }
+    },
+    {
+      "id": "projection-cost-risk",
+      "name": "Cost versus risk",
+      "type": "metric",
+      "xAxis": {
+        "id": "axis-cost",
+        "label": "Annual operating cost",
+        "source": { "kind": "metric", "ref": "metric-cost" },
+        "scale": { "kind": "linear" },
+        "direction": "ascending",
+        "domain": [0, 100],
+        "clamp": true
+      },
+      "yAxis": {
+        "id": "axis-risk",
+        "label": "Operational risk",
+        "source": { "kind": "metric", "ref": "metric-risk" },
+        "scale": { "kind": "linear" },
+        "direction": "ascending",
+        "domain": [0, 10],
+        "clamp": true
+      },
+      "missingValuePolicy": { "kind": "preserve-manual", "markInView": true },
+      "constraints": [],
+      "compositePositionPolicy": { "kind": "weighted-centroid", "metricId": "metric-cost" },
+      "transitionDefaults": {
+        "position": "ease-in-out",
+        "visibility": "fade",
+        "categorical": "step-mid",
+        "text": "cross-fade"
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "view-wardley-current",
+      "name": "Current Wardley view",
+      "projectionId": "projection-wardley",
+      "scenarioId": "scenario-baseline",
+      "entityStates": {
+        "node-user-need": { "visible": true, "position": { "x": 0.70, "y": 0.95 }, "positionMode": "manual" },
+        "node-decision-service": { "visible": true, "position": { "x": 0.52, "y": 0.78 }, "positionMode": "manual" },
+        "node-data-pipeline": { "visible": true, "position": { "x": 0.42, "y": 0.52 }, "positionMode": "manual" },
+        "node-runtime": { "visible": true, "position": { "x": 0.66, "y": 0.34 }, "positionMode": "manual" },
+        "node-observability": { "visible": true, "position": { "x": 0.72, "y": 0.28 }, "positionMode": "manual" }
+      },
+      "compositeStates": {
+        "composite-platform-core": { "collapsed": false, "proxyPosition": { "x": 0.69, "y": 0.31 } }
+      },
+      "annotations": [],
+      "camera": { "center": { "x": 0.5, "y": 0.5 }, "zoom": 1, "padding": 0.05 }
+    },
+    {
+      "id": "view-cost-risk",
+      "name": "Cost versus risk",
+      "projectionId": "projection-cost-risk",
+      "scenarioId": "scenario-baseline",
+      "entityStates": {
+        "node-user-need": { "visible": true, "positionMode": "projected" },
+        "node-decision-service": { "visible": true, "positionMode": "projected" },
+        "node-data-pipeline": { "visible": true, "positionMode": "projected" },
+        "node-runtime": { "visible": true, "positionMode": "projected" },
+        "node-observability": { "visible": true, "positionMode": "projected" }
+      },
+      "compositeStates": {
+        "composite-platform-core": { "collapsed": true }
+      },
+      "annotations": [],
+      "camera": { "center": { "x": 0.5, "y": 0.5 }, "zoom": 1, "padding": 0.05 }
+    }
+  ],
+  "timelines": [
+    {
+      "id": "timeline-evolution",
+      "name": "Service evolution",
+      "duration": 1,
+      "timeUnit": "normalized",
+      "keyframes": [
+        {
+          "id": "keyframe-now",
+          "time": 0,
+          "label": "Current state",
+          "transitionToNext": {
+            "position": "ease-in-out",
+            "visibility": "fade",
+            "categorical": "step-mid",
+            "text": "cross-fade"
+          }
+        },
+        {
+          "id": "keyframe-transition",
+          "time": 0.5,
+          "label": "Consolidate platform",
+          "viewPatch": {
+            "entityStates": {
+              "node-data-pipeline": { "position": { "x": 0.50, "y": 0.56 }, "positionMode": "manual" }
+            },
+            "compositeStates": {
+              "composite-platform-core": { "collapsed": true, "proxyPosition": { "x": 0.74, "y": 0.35 } }
+            }
+          },
+          "transitionToNext": {
+            "position": "ease-in-out",
+            "visibility": "fade",
+            "categorical": "step-end",
+            "text": "cross-fade"
+          }
+        },
+        {
+          "id": "keyframe-target",
+          "time": 1,
+          "label": "Target state",
+          "metricPatch": {
+            "entityMetricValues": {
+              "node-data-pipeline": {
+                "metric-cost": { "value": 50, "status": "estimated", "confidence": 0.75 },
+                "metric-risk": { "value": 5, "status": "estimated", "confidence": 0.7 }
+              }
+            }
+          }
+        }
+      ],
+      "defaultTransition": {
+        "position": "ease-in-out",
+        "visibility": "fade",
+        "categorical": "step-mid",
+        "text": "cross-fade"
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "scenario-baseline",
+      "name": "Baseline plan",
+      "description": "An invented linear scenario.",
+      "timelineId": "timeline-evolution",
+      "assumptions": [
+        {
+          "id": "assumption-investment",
+          "statement": "Platform consolidation investment is approved.",
+          "confidence": 0.65,
+          "status": "open"
+        }
+      ],
+      "status": "active"
+    }
+  ]
+}

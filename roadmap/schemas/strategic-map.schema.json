@@ -1,0 +1,413 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/strategic-graph/strategic-map.schema.json",
+  "title": "Strategic Map Document",
+  "description": "Draft full-fidelity document format for a graph, views, composites, metrics, and temporal state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "documentId", "title", "graph", "composites", "metricDefinitions", "projections", "views", "timelines", "scenarios"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1-draft" },
+    "documentId": { "$ref": "#/$defs/id" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "metadata": { "$ref": "#/$defs/documentMetadata" },
+    "graph": { "$ref": "#/$defs/graph" },
+    "composites": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/composite" },
+      "default": []
+    },
+    "metricDefinitions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/metricDefinition" },
+      "default": []
+    },
+    "evidenceRecords": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidenceRecord" },
+      "default": []
+    },
+    "projections": {
+      "type": "array",
+      "items": { "$ref": "projection.schema.json" },
+      "minItems": 1
+    },
+    "views": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/view" },
+      "minItems": 1
+    },
+    "timelines": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/timeline" },
+      "default": []
+    },
+    "scenarios": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/scenario" },
+      "default": []
+    },
+    "extensions": { "$ref": "#/$defs/extensions" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "documentMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "authors": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "sourceFormat": { "type": "string" },
+        "sourceVersion": { "type": "string" },
+        "licence": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+        "edges": { "type": "array", "items": { "$ref": "#/$defs/edge" } }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "label", "attributes", "metricValues"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "attributes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/attributeValue" } },
+        "metricValues": { "type": "object", "additionalProperties": { "$ref": "#/$defs/metricValue" } },
+        "evidenceIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "lifecycle": { "$ref": "#/$defs/lifecycle" },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sourceId", "targetId", "kind", "directed", "attributes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "sourceId": { "$ref": "#/$defs/id" },
+        "targetId": { "$ref": "#/$defs/id" },
+        "kind": { "type": "string", "minLength": 1 },
+        "directed": { "type": "boolean" },
+        "label": { "type": "string" },
+        "attributes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/attributeValue" } },
+        "metricValues": { "type": "object", "additionalProperties": { "$ref": "#/$defs/metricValue" } },
+        "evidenceIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "lifecycle": { "$ref": "#/$defs/lifecycle" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "attributeValue": {
+      "type": ["string", "number", "integer", "boolean", "null", "array", "object"]
+    },
+    "metricValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "status"],
+      "properties": {
+        "value": {
+          "oneOf": [
+            { "type": ["number", "string", "boolean", "null"] },
+            { "type": "array", "items": { "$ref": "#/$defs/timeSeriesPoint" } }
+          ]
+        },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "validFrom": { "type": "string" },
+        "validTo": { "type": "string" },
+        "sourceEvidenceIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "status": { "enum": ["measured", "estimated", "inferred", "missing"] }
+      }
+    },
+    "timeSeriesPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time", "value"],
+      "properties": {
+        "time": { "type": ["number", "string"] },
+        "value": { "type": ["number", "string", "boolean", "null"] }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "effectiveFrom": { "type": ["number", "string"] },
+        "effectiveTo": { "type": ["number", "string"] },
+        "status": { "enum": ["planned", "active", "retired", "hypothetical"] }
+      }
+    },
+    "entityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "enum": ["node", "composite"] },
+        "id": { "$ref": "#/$defs/id" }
+      }
+    },
+    "composite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "memberRefs", "boundaryPolicy", "positionPolicy"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "memberRefs": { "type": "array", "items": { "$ref": "#/$defs/entityRef" }, "minItems": 1 },
+        "boundaryPolicy": { "enum": ["preserve", "bundle-endpoint", "bundle-endpoint-kind", "single-interface"] },
+        "positionPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "enum": ["explicit", "centroid", "weighted-centroid", "medoid", "bounding-box-centre", "anchor-member"] },
+            "metricId": { "$ref": "#/$defs/id" },
+            "anchorMemberId": { "$ref": "#/$defs/id" }
+          }
+        },
+        "metricAggregation": { "type": "object", "additionalProperties": { "$ref": "#/$defs/aggregationPolicy" } },
+        "attributes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/attributeValue" } },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "aggregationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["sum", "mean", "weighted-mean", "min", "max", "range", "mode", "all-equal", "explicit", "none"] },
+        "weightMetricId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "metricDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "valueType"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "valueType": { "enum": ["number", "ordinal", "category", "boolean", "timeseries"] },
+        "unit": { "type": "string" },
+        "allowedValues": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "aggregation": { "$ref": "#/$defs/aggregationPolicy" },
+        "provenanceExpectation": { "enum": ["required", "recommended", "optional"] },
+        "timeVarying": { "type": "boolean", "default": false }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "kind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["note", "url", "file", "dataset", "interview", "calculation"] },
+        "locator": { "type": "string" },
+        "summary": { "type": "string" },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "author": { "type": "string" },
+        "rights": { "type": "string" },
+        "checksum": { "type": "string" }
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "entityViewState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "visible": { "type": "boolean" },
+        "position": { "$ref": "#/$defs/point" },
+        "positionMode": { "enum": ["manual", "projected", "constrained"] },
+        "pinned": { "type": "boolean" },
+        "labelOverride": { "type": "string" },
+        "style": { "$ref": "#/$defs/style" },
+        "zIndex": { "type": "integer" }
+      }
+    },
+    "compositeViewState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["collapsed"],
+      "properties": {
+        "collapsed": { "type": "boolean" },
+        "proxyPosition": { "$ref": "#/$defs/point" },
+        "proxyStyle": { "$ref": "#/$defs/style" }
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "center": { "$ref": "#/$defs/point" },
+        "zoom": { "type": "number", "exclusiveMinimum": 0 },
+        "padding": { "type": "number", "minimum": 0 },
+        "focusEntityIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "body"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "body": { "type": "string" },
+        "entityIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "position": { "$ref": "#/$defs/point" }
+      }
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "projectionId", "entityStates", "compositeStates"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "projectionId": { "$ref": "#/$defs/id" },
+        "scenarioId": { "$ref": "#/$defs/id" },
+        "entityStates": { "type": "object", "additionalProperties": { "$ref": "#/$defs/entityViewState" } },
+        "compositeStates": { "type": "object", "additionalProperties": { "$ref": "#/$defs/compositeViewState" } },
+        "annotations": { "type": "array", "items": { "$ref": "#/$defs/annotation" }, "default": [] },
+        "camera": { "$ref": "#/$defs/camera" },
+        "themeId": { "type": "string" },
+        "extensions": { "$ref": "#/$defs/extensions" }
+      }
+    },
+    "graphPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "addNodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+        "updateNodes": { "type": "array", "items": { "type": "object" } },
+        "retireNodeIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "addEdges": { "type": "array", "items": { "$ref": "#/$defs/edge" } },
+        "updateEdges": { "type": "array", "items": { "type": "object" } },
+        "retireEdgeIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      }
+    },
+    "viewPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityStates": { "type": "object", "additionalProperties": { "$ref": "#/$defs/entityViewState" } },
+        "compositeStates": { "type": "object", "additionalProperties": { "$ref": "#/$defs/compositeViewState" } },
+        "camera": { "$ref": "#/$defs/camera" }
+      }
+    },
+    "metricPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityMetricValues": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/metricValue" }
+          }
+        }
+      }
+    },
+    "transitionPolicySet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": { "enum": ["linear", "ease-in", "ease-out", "ease-in-out", "step"] },
+        "visibility": { "enum": ["fade", "step-start", "step-mid", "step-end"] },
+        "categorical": { "enum": ["step-start", "step-mid", "step-end"] },
+        "text": { "enum": ["cross-fade", "step-start", "step-mid", "step-end"] }
+      }
+    },
+    "keyframe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "time"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "time": { "type": "number" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "graphPatch": { "$ref": "#/$defs/graphPatch" },
+        "viewPatch": { "$ref": "#/$defs/viewPatch" },
+        "metricPatch": { "$ref": "#/$defs/metricPatch" },
+        "transitionToNext": { "$ref": "#/$defs/transitionPolicySet" }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "duration", "timeUnit", "keyframes", "defaultTransition"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "duration": { "type": "number", "exclusiveMinimum": 0 },
+        "timeUnit": { "enum": ["normalized", "seconds", "days", "months", "years"] },
+        "keyframes": { "type": "array", "items": { "$ref": "#/$defs/keyframe" } },
+        "defaultTransition": { "$ref": "#/$defs/transitionPolicySet" }
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "statement": { "type": "string", "minLength": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "evidenceIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "owner": { "type": "string" },
+        "reviewDate": { "type": "string", "format": "date" },
+        "status": { "enum": ["open", "supported", "challenged", "invalidated"] }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "timelineId", "assumptions"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "parentScenarioId": { "$ref": "#/$defs/id" },
+        "branchTime": { "type": "number" },
+        "timelineId": { "$ref": "#/$defs/id" },
+        "assumptions": { "type": "array", "items": { "$ref": "#/$defs/assumption" }, "default": [] },
+        "status": { "enum": ["draft", "active", "archived"] }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+      "additionalProperties": true
+    }
+  }
+}

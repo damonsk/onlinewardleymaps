@@ -1,0 +1,123 @@
+requirement_id,source_document,planned_test_ids,fixture_ids,implementation_status,notes
+CTX-001,adr/0001-evolution-not-rewrite.md,AUD-BASE-001; E2E-LEGACY-001,Current working tree,In progress,Audit and bounded characterization preserve current architecture; owner review remains.
+CTX-002,docs/04-target-architecture-and-migration.md,AUD-BASE-001; API-ROUNDTRIP-001; E2E-LEGACY-001,Existing fixtures; synthetic API record,In progress,Current tests and API round trip protect semantics; browser journey remains.
+CTX-003,docs/02-current-state-assessment-and-repository-audit.md,AUD-BASE-001; E2E-LEGACY-001,Current working tree,Implemented,Repository audit report and compatibility matrix completed under AUD-EPIC-000.
+MOD-001,adr/0002-strategic-graph-is-source-of-truth.md,UT-MODEL-001; RT-NATIVE-001,TBD after audit,Not started,Refine after repository audit.
+MOD-002,adr/0003-stable-identifiers-and-schema-versioning.md,UT-MODEL-001; RT-NATIVE-001,TBD after audit,Not started,Refine after repository audit.
+MOD-003,adr/0005-projections-are-separated-from-domain-graph.md,UT-MODEL-001; RT-NATIVE-001,TBD after audit,Not started,Refine after repository audit.
+MOD-004,docs/04-target-architecture-and-migration.md,UT-MODEL-001; RT-NATIVE-001,TBD after audit,Not started,Refine after repository audit.
+FMT-001,docs/05-file-format-and-versioning.md,MIG-MATRIX-001; RT-NATIVE-001; RT-LEGACY-001,SYN-012,Not started,Refine after repository audit.
+FMT-002,docs/05-file-format-and-versioning.md,MIG-MATRIX-001; RT-NATIVE-001; RT-LEGACY-001,SYN-012,Not started,Refine after repository audit.
+FMT-003,docs/05-file-format-and-versioning.md,MIG-MATRIX-001; RT-NATIVE-001; RT-LEGACY-001,SYN-012,Not started,Refine after repository audit.
+FMT-004,docs/05-file-format-and-versioning.md,MIG-MATRIX-001; RT-NATIVE-001; RT-LEGACY-001,SYN-012,Not started,Refine after repository audit.
+FMT-005,docs/05-file-format-and-versioning.md,MIG-MATRIX-001; RT-NATIVE-001; RT-LEGACY-001,SYN-012,Not started,Refine after repository audit.
+CMP-001,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-002,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-003,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-004,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-005,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-006,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-007,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-008,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-009,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-010,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-011,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-012,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-013,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-014,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-015,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+CMP-016,docs/06-feature-composite-nodes.md,UT-CMP-001; PBT-CMP-001; INT-CMP-001; E2E-CMP-001,SYN-003; SYN-004,Not started,Refine after repository audit.
+TMP-001,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-002,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-003,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-004,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-005,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-006,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-007,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-008,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-009,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-010,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-011,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-012,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-013,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+TMP-014,docs/07-feature-temporal-maps.md,UT-TMP-001; PBT-TMP-001; INT-TMP-001; E2E-TMP-001,SYN-005; SYN-007,Not started,Refine after repository audit.
+PRJ-001,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-002,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-003,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-004,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-005,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-006,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-007,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-008,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-009,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+PRJ-010,docs/08-feature-projection-engine-and-metrics.md,UT-PRJ-001; PBT-PRJ-001; INT-PRJ-001; E2E-PRJ-001,SYN-006; SYN-007,Not started,Refine after repository audit.
+MET-001,docs/08-feature-projection-engine-and-metrics.md,UT-MET-001; INT-MET-001; E2E-MET-001,SYN-006,Not started,Refine after repository audit.
+MET-002,docs/08-feature-projection-engine-and-metrics.md,UT-MET-001; INT-MET-001; E2E-MET-001,SYN-006,Not started,Refine after repository audit.
+MET-003,docs/08-feature-projection-engine-and-metrics.md,UT-MET-001; INT-MET-001; E2E-MET-001,SYN-006,Not started,Refine after repository audit.
+MET-004,docs/08-feature-projection-engine-and-metrics.md,UT-MET-001; INT-MET-001; E2E-MET-001,SYN-006,Not started,Refine after repository audit.
+MET-005,docs/08-feature-projection-engine-and-metrics.md,UT-MET-001; INT-MET-001; E2E-MET-001,SYN-006,Not started,Refine after repository audit.
+MET-006,docs/08-feature-projection-engine-and-metrics.md,UT-MET-001; INT-MET-001; E2E-MET-001,SYN-006,Not started,Refine after repository audit.
+STR-001,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-002,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-003,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-004,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-005,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-006,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-007,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-008,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-009,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-010,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-011,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-012,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-013,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+STR-014,docs/09-feature-story-publishing.md,UT-STR-001; INT-STR-001; BROWSER-STR-001; SEC-STR-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+RCP-001,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-002,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-003,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-004,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-005,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-006,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-007,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+RCP-008,docs/10-feature-reusable-components-and-scenarios.md,UT-RCP-001; INT-RCP-001; RT-RCP-001,TBD after audit,Not started,Refine after repository audit.
+SCN-001,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-002,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-003,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-004,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-005,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-006,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-007,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-008,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+SCN-009,docs/10-feature-reusable-components-and-scenarios.md,UT-SCN-001; PBT-SCN-001; INT-SCN-001,TBD after audit,Not started,Refine after repository audit.
+TST-001,docs/11-testing-and-validation-strategy.md,AUD-BASE-001; API-ROUNDTRIP-001; PERF-PARSER-001; E2E-LEGACY-001,Existing Jest fixtures; synthetic API record,In progress,Green frontend baseline plus API and performance characterization; browser and accessibility automation remain.
+TST-002,docs/11-testing-and-validation-strategy.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+TST-003,docs/12-canonical-map-corpus.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+TST-004,docs/11-testing-and-validation-strategy.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+TST-005,docs/11-testing-and-validation-strategy.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+TST-006,docs/11-testing-and-validation-strategy.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+TST-007,docs/11-testing-and-validation-strategy.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+TST-008,docs/11-testing-and-validation-strategy.md,META-TEST-001,TBD after audit,Not started,Refine after repository audit.
+COR-001,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+COR-002,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+COR-003,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+COR-004,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+COR-005,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+COR-006,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+COR-007,docs/12-canonical-map-corpus.md,CORPUS-MANIFEST-001,Corpus manifest,Not started,Refine after repository audit.
+SEC-001,docs/13-security-privacy-accessibility.md,SEC-BOUNDARY-001; SEC-STR-001,SYN-010,Not started,Refine after repository audit.
+SEC-002,docs/13-security-privacy-accessibility.md,SEC-BOUNDARY-001; SEC-STR-001,SYN-010,Not started,Refine after repository audit.
+SEC-003,docs/13-security-privacy-accessibility.md,SEC-BOUNDARY-001; SEC-STR-001,SYN-010,Not started,Refine after repository audit.
+SEC-004,docs/13-security-privacy-accessibility.md,SEC-BOUNDARY-001; SEC-STR-001,SYN-010,Not started,Refine after repository audit.
+SEC-005,docs/13-security-privacy-accessibility.md,SEC-BOUNDARY-001; SEC-STR-001,SYN-010,Not started,Refine after repository audit.
+PRV-001,docs/13-security-privacy-accessibility.md,PRIVACY-BUILD-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+PRV-002,docs/13-security-privacy-accessibility.md,PRIVACY-BUILD-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+PRV-003,docs/13-security-privacy-accessibility.md,PRIVACY-BUILD-001,SYN-009; SYN-010,Not started,Refine after repository audit.
+ACC-001,docs/13-security-privacy-accessibility.md,A11Y-EDITOR-001; A11Y-STORY-001,SYN-009,Not started,Refine after repository audit.
+ACC-002,docs/13-security-privacy-accessibility.md,A11Y-EDITOR-001; A11Y-STORY-001,SYN-009,Not started,Refine after repository audit.
+ACC-003,docs/13-security-privacy-accessibility.md,A11Y-EDITOR-001; A11Y-STORY-001,SYN-009,Not started,Refine after repository audit.
+ACC-004,docs/13-security-privacy-accessibility.md,A11Y-EDITOR-001; A11Y-STORY-001,SYN-009,Not started,Refine after repository audit.
+ACC-005,docs/13-security-privacy-accessibility.md,A11Y-EDITOR-001; A11Y-STORY-001,SYN-009,Not started,Refine after repository audit.
+AGT-001,docs/15-agent-development-guide.md,AUD-WORKORDER-001,AUD-EPIC-000 work order,Implemented,Audit and bounded changes cite real modules symbols commands and evidence.
+AGT-002,docs/15-agent-development-guide.md,REVIEW-WORKORDER-001,TBD after audit,Not started,Refine after repository audit.
+AGT-003,docs/15-agent-development-guide.md,REVIEW-WORKORDER-001,TBD after audit,Not started,Refine after repository audit.
+AGT-004,docs/15-agent-development-guide.md,REVIEW-WORKORDER-001,TBD after audit,Not started,Refine after repository audit.
+AGT-005,docs/15-agent-development-guide.md,REVIEW-WORKORDER-001,TBD after audit,Not started,Refine after repository audit.
