@@ -24,7 +24,7 @@ Commands:
 
 To run locally, develop/edit. Open web browser @ http://localhost:3000
 
-     yarn start
+     yarn dev
 
 To create minified scripts/styling.
 
