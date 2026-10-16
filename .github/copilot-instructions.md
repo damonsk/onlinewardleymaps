@@ -24,7 +24,7 @@
 
 From within ./frontend/ directory.
 
-- `yarn start` - Start development server
+- `yarn dev` - Start development server
 - `yarn build` - Build production bundle
 - `yarn test` - Run all tests
 - `yarn test src/components/map/Anchor.test.js` - Run specific test
