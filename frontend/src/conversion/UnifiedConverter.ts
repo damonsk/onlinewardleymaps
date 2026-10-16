@@ -1,3 +1,4 @@
+import {featureSwitches as defaultFeatureSwitches} from '../constants/featureswitches';
 import {IProvideFeatureSwitches, WardleyMap} from '../types/base';
 import {
     EvolvedElementData,
@@ -18,7 +19,7 @@ interface LabelOffset {
 export class UnifiedConverter {
     private legacyConverter: Converter;
 
-    constructor(featureSwitches: IProvideFeatureSwitches) {
+    constructor(featureSwitches: IProvideFeatureSwitches = defaultFeatureSwitches) {
         this.legacyConverter = new Converter(featureSwitches);
     }
 
